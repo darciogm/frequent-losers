@@ -1,0 +1,39 @@
+\section{Data and Sample Definition}
+This section describes each data source and details the sample characteristics used in the empirical section. First, we present bidding-level data on common goods and services purchased by the São Paulo state government through the BEC with a particular interest in what health-related products the SES/SP purchased and how from 2009 to 2019.
+
+Second, we describe the data set at the individual level for all lawsuits associated with requests for free health-related products that occurred in the state courts of São Paulo during this period. This data set includes information on individual court requests and judges’ decision texts.
+
+From January 2009 to December 2019, we utilized a unique combination of administrative databases in public procurement bidding processes, health litigation registers, and judicial decision texts in São Paulo, Brazil.
+
+\subsection{Public Procurement Data: Health-Related Products}
+We use administrative data on bidding-level public procurement tenders of common goods and services in the state of São Paulo, Brazil, from January 2009 to December 2019. These transactions took place under the BEC electronic procurement platform, which is available to all public buyer units (PBUs) across the state. The Department of Finance of São Paulo state (SEFAZ/SP) is responsible for the operational management and centralization of BEC bidding data.
+
+In total, 1,344 PBUs make regular purchases through the BEC, including state-level executive, legislative, and judiciary bureaus in the state of São Paulo as well as other affiliated entities, such as some municipalities and a group of private organizations. PBUs purchased 169,607 different types of items (goods and services), totaling 3,866,407 transactions from 19,007 distinct firms during this period.
+
+The BEC has a very detailed catalog of standardized goods and services organized in three levels: group, class, and item. For instance, health items are classified as group 65 (Medical, dental and hospital equipment and supplies). Thus, the item coded 110639 is the drug “Furosemide 40 milligrams, coated tablets, units,” belonging to class 6531 (Medicines prescribed with or without ANVISA notification/registration) and group 65.
+
+%\begin{table}[ht]
+  %\centering
+  %\caption{Descriptive Statistics: Public Tenders}
+  % Add table content here if available
+%\end{table}
+
+Data are organized by purchase offer (PO), the electronic document issued by the PBU that identifies and quantifies the goods and services to be purchased. A PO is defined by a 22-character code and may contain one or more listed items, but each item has its own purchase process. Thus, the purchase of an item is uniquely identified by the combination of the PO and the purchased item codes (POI).
+
+Each POI provides information about the internal phase parameters, such as item quantities and reference prices, and external phase outcomes, such as bid prices (winners and losers), number of participant firms, number of bids, whether the public tender was successful or not, and the identification of the PBU and the auctioneer, among other variables.
+
+In the empirical section, we restrict attention to SES/SP purchases of prescription and nonprescription drugs. It is possible to identify government acquisitions as ordinary, administrative, and litigated purchases using bidding notices. In the public notice, there is a section called “Object of the Contract” that consists of a description of what is being purchased and the reason for the purchase. We use a regular expression algorithm (REGEX) to process the public notice texts and identify which POIs correspond to litigated purchases.
+
+\subsection{Health Litigation Data}
+Data about health litigation come from two sources: the S-CODES database and texts of court decisions.
+
+Managed by the SES/SP, S-CODES is an administrative database that contains a detailed record of all health claims against the state of São Paulo from 2009 to 2019 \citep{cnj2019judicializacao}. 
+
+The main variables that we derive from the S-CODES database for each litigated item are: 
+\begin{enumerate}
+  \item \textbf{SUS list}: a dummy variable with the value of 1 if the item belongs to the SUS list and 0 otherwise;
+  \item \textbf{Package}: with a value of 1 if the item was jointly litigated with other products and 0 otherwise; and
+  \item \textbf{Preliminary injunction}: with a value of 1 if the court decision was enforced through a preliminary injunction and 0 otherwise.
+\end{enumerate}
+
+Moreover, we use the texts of all court decisions against the state of São Paulo concerning health-related products from 2009 to 2019 to identify two aspects of health litigation: (i) individuals’ main reasons for litigating and (ii) the main arguments used by judges to grant or reject a judicial claim. We employ a supervised machine learning method to process all text decisions and search for litigation and judges’ decision patterns.

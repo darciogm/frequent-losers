@@ -1,0 +1,102 @@
+%==========================================================================
+% MODEL THEORETICAL FRAMEWORK
+%==========================================================================
+\section{Theoretical Model}
+This section develops a formal framework to analyze the effects of judicial mandates on public procurement. We model the procurement process as an auction, where the public buyer (the government) and suppliers interact under distinct procurement regimes, each characterized by different levels of urgency and competitive dynamics.
+
+\subsection{Model Framework and Assumptions}
+The model is based on the following assumptions:
+\begin{enumerate}
+    \item \textbf{Public Buyer (Government):} The government seeks to minimize procurement costs for health-related goods while ensuring the timely delivery of these goods. It faces two procurement regimes: \textit{Ordinary Procurement (O)} and \textit{Urgent Procurement (U)}.
+    \item \textbf{Suppliers:} Suppliers operate under constant marginal costs. Each supplier \(i\) has a marginal cost \(c_i\) (assumed homogeneous, i.e., \(c_i = c\) for all \(i\)). The probability of a supplier participating in the procurement auction is \(p_O\) in ordinary procurement and \(p_U < p_O\) in urgent procurement, reflecting the higher operational constraints and risks under urgency.
+    \item \textbf{Judiciary:} The judiciary functions as a stochastic enforcer. It intervenes with probability \(\pi\) and imposes a penalty \(\gamma\) if procurement conditions are not met. Judicial mandates introduce additional urgency into the procurement process, which reduces supplier entry and increases equilibrium prices through penalty-driven markups.
+\end{enumerate}
+
+\subsection{Procurement Types and Price Dynamics}
+Based on the assumptions, we distinguish three types of procurement:
+\begin{itemize}
+    \item \textbf{Ordinary Procurement (O):} Under planned procurement with ample time, the expected number of suppliers is \(E[N_O] = N_O \cdot p_O\). The large quantity procured, \(Q_O\), and competitive bidding yield a low equilibrium price \(P_O\), which approaches the marginal cost \(c\) (i.e., \(P_O \approx c\)).
+    
+    \item \textbf{Urgent Procurement (U):} Judicial or administrative mandates require urgent procurement with smaller quantities (\(Q_U < Q_O\)) and lower supplier participation (\(p_U < p_O\)). The urgency effect induces a markup \(\delta > 0\), so that the equilibrium price is:
+    \[
+    P_U = c + \delta.
+    \]
+    
+    \item \textbf{Litigated Urgent Procurement (Litigated U):} When judicial penalties are applied, suppliers face additional uncertainty regarding the cost of non-compliance. The equilibrium price in this regime incorporates an extra penalty markup:
+    \[
+    P_{Litigated} = c + \delta + \pi \cdot \gamma.
+    \]
+\end{itemize}
+
+\section{Theoretical Results and Equilibrium Analysis}
+
+\subsection{Expected Price Derivation}
+Using auction theory and probabilistic supplier entry, we derive the equilibrium prices under the three procurement regimes:
+
+\subsubsection{Ordinary Procurement Equilibrium Price}
+With high supplier entry, competitive bidding drives the equilibrium price close to the marginal cost:
+\[
+P_O = \min(b_i^{O}) = c + \epsilon, \quad \epsilon \to 0 \text{ as } N_O \cdot p_O \to \infty.
+\]
+
+\subsubsection{Urgent Procurement Equilibrium Price}
+Under urgent procurement, reduced competition results in a higher price:
+\[
+P_U = \min(b_i^{U}) = c + \delta, \quad \delta > \epsilon.
+\]
+
+\subsubsection{Litigated Urgent Procurement Equilibrium Price}
+Judicial penalties add an extra cost:
+\[
+P_{Litigated} = \min(b_i^{Litigated}) = c + \delta + \pi \cdot \gamma.
+\]
+
+\subsection{Theorem 1: Price Hierarchy Across Procurement Types}
+
+\textbf{Statement:} Judicially mandated urgent procurement yields the highest equilibrium price, leading to the hierarchy:
+\[
+\mathbb{E}[P_{Litigated}] > \mathbb{E}[P_U] > \mathbb{E}[P_O].
+\]
+
+\textbf{Proof:}
+\begin{enumerate}
+    \item \textit{Ordinary Procurement:} High supplier participation ensures that \(P_O \approx c\).
+    \item \textit{Urgent Procurement:} Lower participation introduces a markup, so \(P_U = c + \delta\).
+    \item \textit{Litigated Procurement:} The additional penalty term implies \(P_{Litigated} = c + \delta + \pi \cdot \gamma\).
+\end{enumerate}
+Thus, the expected price hierarchy is established. \(\Box\)
+
+\subsection{Welfare Analysis and Expected Welfare Loss}
+Social welfare is defined as the net benefit from procurement, computed as the difference between the public valuation \(V\) and the procurement cost, multiplied by the procured quantity.
+
+\subsubsection{Welfare in Ordinary Procurement}
+\[
+EW_O = Q_O \cdot (V - P_O).
+\]
+
+\subsubsection{Welfare in Urgent Procurement}
+\[
+EW_U = Q_U \cdot (V - P_U).
+\]
+The welfare loss from shifting from ordinary to urgent procurement is:
+\[
+\Delta W_U = EW_O - EW_U = Q_U \cdot (P_U - P_O).
+\]
+
+\subsubsection{Welfare in Litigated Urgent Procurement}
+\[
+EW_{Litigated} = Q_U \cdot (V - P_{Litigated}).
+\]
+The welfare loss induced by judicial mandates is:
+\[
+\Delta W_{Litigated} = EW_O - EW_{Litigated} = Q_U \cdot \left((P_{Litigated} - P_O) + \pi \cdot \gamma \right).
+\]
+
+\subsection{Theorem 2: Welfare Loss Under Judicial Mandates}
+
+\textbf{Statement:} Judicial mandates impose additional welfare losses due to urgency and penalties:
+\[
+\Delta W_{Litigated} = Q_U \cdot \left((P_{Litigated} - P_O) + \pi \cdot \gamma \right).
+\]
+
+\textbf{Proof:} By substituting the equilibrium prices into the welfare functions, the result follows immediately. \(\Box\)

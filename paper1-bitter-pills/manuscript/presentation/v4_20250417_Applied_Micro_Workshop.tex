@@ -1,0 +1,662 @@
+\documentclass[aspectratio=169]{beamer}
+% Choose a beamer theme (e.g., Copenhagen) and color scheme
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage[portuguese]{babel}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage[style=authoryear-comp]{biblatex}
+\addbibresource{References.bib}
+
+% -------------------------------------------------------------
+% Custom color (Dark Red)
+% -------------------------------------------------------------
+\definecolor{darkRed}{HTML}{8B0000}
+
+% Adjusting some colors for headings, titles, etc.
+\setbeamercolor{structure}{fg=darkRed}
+\setbeamercolor{title}{fg=white}     % Title in white
+\setbeamercolor{frametitle}{fg=white}
+\setbeamercolor{alerted text}{fg=darkRed}
+\setbeamercolor{item projected}{fg=white,bg=darkRed}
+\setbeamercolor{progress bar}{fg=darkRed,bg=darkRed!50}
+
+\onehalfspacing
+
+% -------------------------------------------------------------
+% Insper logo
+% -------------------------------------------------------------
+\logo{\includegraphics[height=0.8cm]{logo-insper-preto.png}}
+
+% -------------------------------------------------------------
+% Title and authors
+% -------------------------------------------------------------
+\title[Bitter Pills to Swallow]{\textbf{Bitter Pills to Swallow:\\ The Enforcement Costs of Health Litigation}}
+\author{\textbf{Darcio Genicolo-Martins \and Paulo Furquim de Azevedo}}
+\institute[]{Insper\\
+\href{mailto:d.g.martins@insper.edu.br}{\texttt{darciogm1@insper.edu.br}}}
+\date{\today}
+
+% -------------------------------------------------------------
+\begin{document}
+
+
+
+
+
+
+% Title frame
+{\setbeamercolor{background canvas}{bg=white}
+\begin{frame}
+  \titlepage
+\end{frame}
+}
+
+% Frame 1: Motivation and Research Question
+\begin{frame}{Overview}
+\begin{itemize}
+    \item This paper is about law enforcement costs.
+    \begin{itemize}
+        \item Unintended effects of law (over)enforcement.
+        \item It brings social benefits.
+        \item However, It could create relevant inefficiencies.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+% Frame 1: Motivation and Research Question
+\begin{frame}{Overview}
+\begin{itemize}
+    \item In Brazil, public procurement decisions are often influenced by judicial enforcement, especially in healthcare.
+    \item Court-mandated purchases:
+    \begin{itemize}
+        \item Are inherently urgent, disrupting procurement planning.
+        \item Create strong pressure to comply quickly, potentially increasing costs (\emph{“under the gun” effect}).
+    \end{itemize}
+    \item \textbf{Research Questions:}
+    \begin{enumerate}
+        \item What are the aggregate economic costs of judicial enforcement in health procurement?
+        \item How does the judicial threat of sanctions (the “under the gun” effect) specifically affect procurement outcomes?
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+% Frame 2: Main Results and Implications
+\begin{frame}{Overview}
+\begin{itemize}
+    \item \textbf{Empirical Approach:} 
+    \begin{itemize}
+        \item Unique dataset: administrative health litigation + procurement data from Brazil.
+        \item Econometric analysis with item/time fixed effects, comparing:
+        \begin{itemize}
+            \item Ordinary planned tenders
+            \item Urgent administrative (non-judicial) tenders
+            \item Urgent judicially-mandated tenders
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Results:}
+    \begin{itemize}
+        \item Judicial enforcement significantly increases negotiated prices (\textbf{30.7\%--44.4\%}), reduces firm participation, decreases number of bids, and lowers tender success rates.
+        \item Specifically, the judicial sanctions (“under the gun” effect) alone increase prices by about \textbf{10\%}.
+    \end{itemize}
+    
+\end{itemize}
+\end{frame}
+
+% Table of contents
+\begin{frame}{Sumário}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction and Motivation}
+
+\begin{frame}{Motivation: Courts and Public Procurement}
+  \begin{itemize}
+    \item Courts often intervene in public policy to enforce individual rights (e.g. right to health).
+    \item However, judicial mandates can disrupt planned procurement processes, forcing \textbf{urgent, unplanned purchases}.
+    \item Potential tension between \textit{ensuring access} vs. \textit{maintaining efficiency}: Are court-ordered purchases ``bitter pills'' in terms of economic cost?
+  \end{itemize}
+  \note{Courts play a crucial role in upholding individual rights. In health policy, for example, judges can order the government to provide expensive medications to patients. While this ensures access and can be life-saving, it may come at a cost. By bypassing normal procurement planning, these court orders can force the government into emergency purchases. This raises a key question: is there a trade-off between guaranteeing individual rights through the judiciary and maintaining the efficiency of public procurement? We suspect that these judicial interventions might impose significant costs on the system---in other words, they could be ``bitter pills'' for the government to swallow in economic terms.}
+\end{frame}
+
+\begin{frame}{A Real-World Example}
+  \begin{itemize}
+    \item A patient requires an expensive, rare drug not provided in public clinics.
+    \item The patient sues the state and obtains a court injunction for this high-cost medication (and all other additional medications for her treatment).
+    \item The Health Secretariat must immediately purchase these prescribed drugs (high-cost, not offered in public clinics, and the drugs usually offered in public clinics) from a private supplier.
+    \item \textbf{Outcome:} The drug is procured quickly but at a much higher price (no time for proper competitive bidding process).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{This Study: Research Questions}
+  \begin{itemize}
+    \item How do \textbf{urgent, court-mandated purchases} differ from \emph{ordinary planned purchases} in terms of price and efficiency?
+    \item What are the additional costs (``enforcement costs'') imposed on public procurement when the judiciary intervenes?
+    \item Does the \textbf{threat of judicial punishment} (being ``under the gun'') further increase procurement costs beyond a normal urgent purchase?
+    
+  \end{itemize}
+  \note{Our study addresses two main questions. First: What is the impact on procurement outcomes when the government is forced to buy something urgently due to a court order (or a similar urgent administrative demand), compared to when it buys through the normal planned process? We call these impacts the enforcement costs of health litigation. Second: Even among urgent purchases, does having a court order (with the risk of penalties for officials if they don't comply) make things even more costly than an urgent purchase that isn't court-ordered? To answer these, we build a formal model to understand the mechanism, and we analyze detailed data on public purchases and health-related lawsuits in S\~ao Paulo state.}
+\end{frame}
+
+\begin{frame}{Related Literature}
+  \begin{itemize}
+    \item \textbf{Law Enforcement and economic outcomes}: Intended and unintended impacts of law enforcement on economic outcomes. (\cite{LaPorta2008},Galle and Mungan 2020;Garoupa 1997;Lando and Mungan 2018)
+    \item \textbf{Health Litigation:} Courts help enforce access to health services (e.g. essential medicines). However, court orders can \textbf{bypass procurement norms}, leading to rushed purchases with fewer bidders $\rightarrow$ Higher prices observed. (\cite{wang2015right}).
+    \item \textbf{Public procurement inefficiencies:} Unplanned or urgent purchasing conditions tend to raise costs (similar to findings on passive waste in procurement \cite{bandiera2009active,mironov2016corruption}).
+    \item \textbf{Paper's main contribution:} We estimate the unintended effect of health litigation on public procurement: unplanned procurement tenders and overdeterrence (distorted incentives due to harsher sanctions).
+  \end{itemize}
+\end{frame}
+
+\section{Institutional Background}
+
+\begin{frame}{Health Litigation in Brazil: Context}
+  \begin{itemize}
+    \item In Brazil, health care is a constitutional right; citizens often sue the government (``health litigation'') to obtain medicines and treatments.
+    \item Health-related lawsuits have \textbf{skyrocketed}: e.g. in S\~ao Paulo state, annual cases grew by $\sim$913\% from 2008 to 2017 (about 2,300 to 23,460 cases).
+    \item These lawsuits compel the government to provide drugs outside its regular procurement plan, straining budgets.
+    \item The government must comply swiftly; judges may impose daily fines or sanctions on officials for non-compliance.
+  \end{itemize}
+  \note{Brazil recognizes health as a fundamental right, which has led to a phenomenon known as the judicialization of health. Thousands of patients have turned to the courts to get medicines or procedures that the public system did not supply them. In S\~ao Paulo, the number of such lawsuits jumped almost tenfold in ten years. This massive growth means the government faces many unplanned expenditures. When a judge orders the state to provide a medication, the health department must find a way to purchase it immediately, often diverting funds or using emergency budget sources. Importantly, if officials delay or fail to comply, judges can personally penalize them, for example by imposing fines for each day of delay. This creates a lot of pressure on the public managers to act quickly, sometimes regardless of cost.}
+\end{frame}
+
+\begin{frame}{Enforcement Cost: Urgent (Litigated) vs. Ordinary Purchases}
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/figure6.png}
+  
+\end{frame}
+
+\begin{frame}{Enforcement Cost: Urgent (Administrative) vs. Litigated Purchases}
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/figure4.png}
+  
+\end{frame}
+
+\begin{frame}{Geographical Distribution of Litigation Cases}
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/figure1.png}
+  \par {\small \textit{Litigation cases per municipality in S\~ao Paulo (2008--2017).}}
+  \note{This map shows where these health litigation cases are arising across the state of S\~ao Paulo. Each municipality is shaded by the number of lawsuits filed by its residents between 2008 and 2017. You can see that cases are spread throughout the state, with darker regions indicating higher concentrations. As expected, the largest urban centers — for example, the Greater S\~ao Paulo metropolitan area — show a high volume of litigation. This likely reflects both higher population and greater awareness or access to legal assistance in those areas. However, even many smaller cities have seen cases, illustrating that this is a widespread phenomenon, not just confined to the capital.}
+\end{frame}
+
+\begin{frame}{Public Buyer Units Across the State}
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/figure2.png}
+  \par {\small \textit{Locations of S\~ao Paulo State Health Secretariat (SES/SP) procurement units.}}
+  \note{This map displays the distribution of public procurement units of the S\~ao Paulo State Health Secretariat. These are the offices or hospitals that conduct purchases for the health system across the state. Each point represents a public buyer unit. We can see that these units are geographically spread out, meaning procurement activities (like tendering and purchasing) happen across many locations. This decentralized structure is part of the context in which urgent purchases take place. When litigation demands a drug, typically the nearest relevant health unit or a central office will handle the emergency purchase. The widespread presence of buyer units suggests the capacity to buy is available statewide, but it also means coordination is needed under urgent situations.}
+\end{frame}
+
+
+
+\begin{frame}{Types of Public Purchases}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/figure3.pdf}
+  \par {\small \textit{Comparison of Ordinary (planned) vs. Administrative (urgent) vs. Litigated (urgent with court) purchases.}}
+  \note{This table summarizes key differences between three modes of public procurement for health items. Under \textbf{Ordinary} procurement, the purchase is planned in advance as part of the budget; the government typically buys larger quantities and can wait 1 to 6 months for delivery. There is no direct penalty if things are delayed, because it's part of the normal process. Under an \textbf{Administrative Urgent} purchase, something happened (like an unexpected shortage) that forces an unplanned buy. The funding often has to come from outside the planned budget, quantities are smaller, and delivery is required quickly (often within about a week or so). Still, there's no judicial punishment involved. Now, under a \textbf{Litigated Urgent} purchase, it's similar urgency (extra-budget funds, small quantity, 1-10 day delivery), but crucially a court is overseeing it. That means if the officials don’t execute the purchase in time, they face potential punishment (like fines or contempt of court). So, the litigated scenario adds legal pressure on top of the urgent circumstances. These differences set the stage for how each scenario might result in different outcomes, especially price.}
+\end{frame}
+
+\section{Theoretical Framework}
+
+\begin{frame}{Model: Setup and Key Assumptions}
+  \begin{itemize}
+    \item \textbf{Government (Public Buyer):} Aims to minimize procurement cost.
+          \begin{itemize}
+            \item \textit{Ordinary Procurement (O):} Planned purchase, ample time for competitive bidding.
+            \item \textit{Urgent Procurement (U):} Unplanned immediate purchase ((i) due to lawsuit/injunction or, (ii) to an emergency administrative request).
+          \end{itemize}
+    \item \textbf{Suppliers:} Multiple potential suppliers, each with constant marginal cost $c$. They compete via an auction (bidding on price).
+    \item \textbf{Auction Format:} Competitive procurement auction (e.g., lowest bid wins). In ordinary regime, more suppliers can participate (open bidding). In urgent regime, effective competition may be lower (short notice or even direct contracting).
+    \item \textbf{Judicial Penalty:} In a litigated urgent case, if the government fails to purchase in time, it incurs a penalty $\gamma$ (e.g., a fine or sanction). No such penalty in purely administrative urgencies or ordinary cases.
+  \end{itemize}
+  \note{To analyze this formally, we set up a simple model. The government needs to buy some medicine. It wants to keep the cost as low as possible, but the environment can be either normal or urgent. We assume there are multiple suppliers who can provide the medicine. They each have a constant production cost, $c$. We model the procurement as an auction where these suppliers bid, and the lowest price wins, which is a standard way to capture competition in public tenders. Now, under an ordinary procurement, the government has time to allow all interested suppliers to bid, etc. Under an urgent procurement, by contrast, maybe only a few suppliers can respond quickly or the government has to expedite the process, leading to less competition. The unique feature we add is the judicial penalty: if it's a court-ordered case, and the officials don't deliver the drug quickly, there's a penalty $\gamma$. Think of $\gamma$ as a cost to the government (or the official) for non-compliance, like a fine. This penalty doesn’t exist in an administrative urgent scenario.}
+\end{frame}
+
+%\begin{frame}{Visual Structure of the Procurement Scenarios}
+  %\centering
+  %\includegraphics[width=0.85\textwidth]{figures/figure8.png}   
+%\end{frame}
+
+\begin{frame}{Equilibrium Predictions}
+  \begin{itemize}
+    \item \textbf{Ordinary vs. Urgent:} Urgent procurements lead to \textbf{higher prices} than ordinary ones.
+          \begin{itemize}
+            \item Urgent purchases lack the benefit of thorough planning and broad competition.
+            \item Fewer suppliers or hurried negotiations $\implies$ suppliers bid less aggressively.
+          \end{itemize}
+    \item \textbf{Urgent purchases: Litigated vs. Non-Litigated} -- Litigated urgent purchases have even \textbf{higher prices} than administrative (urgent, but non-litigated).
+          \begin{itemize}
+            \item The penalty threat (\(\gamma\)) in litigated cases acts as a \textit{markup} factor – the buyer is willing to pay more to avoid sanctions, and suppliers anticipate this.
+            \item Result: \(\text{Price}_{\text{Litigated}} > \text{Price}_{\text{Admin}} > \text{Price}_{\text{Ordinary}}\).
+          \end{itemize}
+    \item \textbf{Competitive effect:} In ordinary tenders, many bidders drive price $\approx c$ (cost). In urgent tenders, effectively fewer bidders, price above $c$; with a penalty, price is higher still.
+  \end{itemize}
+  \note{Our model yields clear predictions. First, comparing an urgent procurement to an ordinary one: the urgent situation results in a higher winning price. Intuitively, when you can't plan and have to buy right away, you might not get as many bidders or you have to rush the process, so you lose some bargaining power. It's like needing to buy something last-minute; you pay a premium.
+
+Second, if we compare a litigated urgent purchase to an administrative urgent purchase: the litigated one is predicted to be even more expensive. The reason is that the penalty threat in the litigated case means the government is extremely keen to finalize the purchase immediately, even at a bad price, because otherwise they get fined or worse. Suppliers can recognize that the government is desperate. So the presence of that penalty effectively inflates the price further. In other words, being ``under the gun'' adds an extra markup.
+
+So in summary, we expect an ordering of prices: the lowest in ordinary procurement, higher in urgent, and highest in court-mandated urgent situations. Another way to see it is through competition: ordinarily, high competition drives the price close to the suppliers' cost. Urgency limits competition, raising prices above cost. And the penalty in litigated cases distorts things further, raising prices most of all.}
+\end{frame}
+
+\begin{frame}{Why Are Urgent Purchases Costlier?}
+  \begin{itemize}
+    \item \textbf{Lack of Planning:} The government cannot consolidate demand or schedule purchases optimally.
+    \item \textbf{Smaller Quantities:} Urgent orders often for a single patient or immediate need $\implies$ lose bulk discounts.
+    \item \textbf{Shorter Timelines:} Less time for suppliers to prepare bids or for the government to seek alternatives $\implies$ reduced competition.
+    \item \textbf{Procedural Flexibility:} Urgent cases may use simplified or non-competitive procurement methods (e.g., direct contracting due to emergency rules).
+    \item \textbf{Supplier Leverage:} Suppliers know the buyer is desperate (especially if it's public knowledge it's an injunction) and may charge premium prices.
+  \end{itemize}
+  \note{We found that urgent purchases are much more expensive, but let's discuss why that is the case.
+
+Firstly, when a purchase isn't planned, the government can't do things like combine orders or carefully time the market. They lose the efficiencies of planning.
+
+Secondly, these urgent buys are usually small. Instead of buying a year’s supply for the whole state, you might be buying one patient's dose or a one-month supply. Buying in small batches usually means paying a higher unit price; you don't get volume discounts.
+
+Third, the timeline is extremely short. With maybe just a few days to arrange the purchase, there's no chance to invite many bidders or negotiate much. Some potential suppliers might not even hear about the tender in time. This naturally leads to less competition.
+
+Fourth, because of the urgency, procurement officials might be allowed to bypass normal competitive bidding rules—like they might be allowed to do a sole-source contract if it's an emergency. While that speeds things up, it often means you don't get the lowest price.
+
+And finally, suppliers are aware that when the government comes calling last-minute for a drug, it's likely an emergency. Especially if they know it was a court order (sometimes these things are public or known in the industry), they realize the government has no choice. That increases the bargaining power of the supplier, who can then quote a higher price. 
+
+All these factors contribute to why we see such a big price gap in urgent purchases. Essentially, the government is paying for the luxury of immediacy and certainty of supply.}
+\end{frame}
+
+
+
+\begin{frame}{Testable Hypotheses}
+  From the theory, we derive two main hypotheses for the empirical analysis:
+  \begin{enumerate}
+    \item \textbf{Enforcement Cost Hypothesis:} \emph{Public purchases triggered by litigation or urgent administrative requests have significantly higher prices than planned purchases.}
+    \item \textbf{Under-the-Gun Hypothesis:} \emph{Among urgent purchases, those under court order (litigated) are more expensive than those due to administrative urgency, due to the added pressure of potential sanctions.}
+  \end{enumerate}
+  \note{Now we turn these theoretical insights into concrete hypotheses that we can test with data. 
+
+First, the enforcement cost hypothesis: if we look at purchases that were made urgently (because either a lawsuit or some urgent demand forced it) and compare their prices to similar purchases that were done in the normal planned way, we expect the urgent ones to be a lot more expensive on average.
+
+Second, the under-the-gun hypothesis: if we focus only on urgent purchases and compare those that happened because of a court order versus those that were just administrative emergencies, the ones with a court order should on average cost more, reflecting that extra push from the judicial side.
+
+These are precisely the effects we will measure in the data.}
+\end{frame}
+
+\section{Data and Empirical Strategy}
+
+\begin{frame}{Data}
+  \begin{itemize}
+    \item \textbf{Procurement Data:} Detailed bidding records from S\~ao Paulo state's e-procurement system (BEC), covering purchases of medicines and health supplies.
+          \begin{itemize}
+            \item Contains tender characteristics, winning bids/prices, quantities, etc. (2009--2019).
+          \end{itemize}
+    \item \textbf{Health Litigation Data:} Database of individual lawsuits demanding health products in S\~ao Paulo state courts (2008--2017).
+          \begin{itemize}
+            \item Includes injunction dates, items requested.
+          \end{itemize}
+    \item \textbf{Administrative Urgent Requests:} Internal records (SES/SP) of urgent purchase requests not driven by lawsuits.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Data}
+  \begin{itemize}
+    \item \textbf{Sample:} Public tenders for medicines and medical supplies in S\~ao Paulo state. We focus on comparable items that appear in both ordinary and urgent contexts.
+    \item \textbf{Size:} Thousands of purchase records; hundreds of distinct items (pharmaceuticals).
+    \item \textbf{Identification of urgency:}
+          \begin{itemize}
+            \item ~5--10\% of purchases are marked as urgent (either admin or litigated).
+            \item Among urgent purchases, a fraction are linked to litigation (court orders); others to administrative needs.
+          \end{itemize}
+   
+  \end{itemize}
+  \note{Let me outline our analytical sample and some basic patterns. We have data on thousands of purchase instances for drugs and health supplies. Many different drug types are included, from common ones to some rarer ones. Only a minority of these purchases are urgent in nature—somewhere around 5 to 10 percent, depending on definitions. And of those urgent cases, some are because of lawsuits and some are just internal emergencies.
+
+Even before doing any heavy analysis, we see differences: urgent purchases are usually much smaller in volume (like buying 100 doses urgently versus a normal tender for 10000 doses for the year). Urgent cases might also involve only one offer (for example, the government might call one supplier to get a quick quote) whereas ordinary cases have time to get many bids. 
+
+So there are some inherent differences. Our strategy in analysis will account for that by comparing the same item under different scenarios, etc. But it’s clear that when the government buys under duress, it's a different process than when it buys in a planned way. The key outcome we'll focus on is the price paid. We want to see how that price changes for the same product when it's an urgent buy versus a planned buy, and further if it's a court-forced buy versus just an urgent buy.}
+\end{frame}
+
+\begin{frame}{Litigated vs. Ordinary Purchases}
+    \begin{columns}
+    \begin{column}{0.6\textwidth} % Left column for main content
+     \includegraphics[width=0.6\textwidth]{figures/figure9.jpg}
+    \end{column}
+    \begin{column}{0.4\textwidth} % Right column for the text box
+     \begin{itemize}
+     \item Heart diseases
+     \item Available in SUS list since jan/2013 (for free)
+     \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Metoprolol Succinate 25mg}
+    \begin{columns}
+    \begin{column}{0.6\textwidth} % Left column for main content
+     \begin{itemize}
+     \item Purchase in April 2014
+     \item PBU: Bauru Regional Unit
+     \item Auctioneer: Sergio Assuncao Orlandi
+     \item BEC-SP e-platform
+     \item Multi-round descending auction (pregao)
+     \item Quantities: 320 packages
+     \item Unit Price: R\$1.33
+     \color{red}
+     \item \textbf{160\% more expensive! Why?}
+     \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth} % Right column for the text box
+     \begin{itemize}
+     \item Purchase in April 2014
+     \item PBU: Bauru Regional Unit
+     \item Auctioneer: Sergio Assuncao Orlandi
+     \item BEC-SP e-platform
+     \item Multi-round descending auction (pregao)
+     \item Quantities: 320 packages
+     \item Unit Price: R\$0.51
+     \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Empirical Strategy: Enforcement Cost}
+   \begin{itemize}
+   \item Identification: Assume that, conditional on product and time, whether a purchase is urgent (unplanned) is exogenous to factors affecting price beyond the urgency itself. (i.e. the government didn't plan it because it couldn't, not because it expected a higher price.)
+    \item Check robustness with various specifications (adding controls for quantity, supplier, etc.).
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Empirical Strategy: Enforcement Cost}
+  \textbf{Idea:} Treat urgent, unplanned purchases as a ``treatment'' and compare against planned (ordinary) purchases.
+  \medskip
+  \begin{itemize}
+    \item Compare outcomes (mainly price paid) for the same item when procured under normal conditions vs. under urgent mandate.
+    \item Use a regression framework with item fixed effects and other controls:
+          $$Price_{ijt} = \alpha + \beta \cdot Urgent_{ijt} + \lambda_{i} + \delta_{t} + X_{ijt} + \varepsilon_{ijt},$$
+          where $Urgent_{ijt}=1$ if purchase $j$ of item $i$ at time $t$ was due to litigation/admin urgency.
+    \item $\beta$ captures the average price difference for urgent vs. ordinary purchases (the enforcement cost).
+  \end{itemize}
+\end{frame}
+
+
+\section{Empirical Results}
+
+\begin{frame}{Enforcement Cost: Urgent vs. Ordinary Purchases}
+ \begin{table}[ht]
+  \centering
+  \caption{Reference Prices: Urgent vs. Ordinary Purchases}
+  \resizebox{7cm}{!}{%
+  \begin{tabular}{lcccc}
+    \hline
+           & (1)        & (2)        & (3)        & (4)        \\
+           & OLS       & FE         & FE         & FE         \\
+    \hline
+    urgent     & 0.4988*** & 0.5243*** & 0.4967*** & 0.4725*** \\
+               & (0.0379)  & (0.0383)  & (0.0377)  & (0.0373)  \\
+    type\_mgmt & 0.6535*** &           & 0.6488*** & 0.553***  \\
+               & (0.0516)  &           & (0.0510)  & (0.0521)  \\
+    sealed-bid &           &           &           & -0.1708*** \\
+               &           &           &           & (0.0184)  \\
+    \_cons     & 0.33***   & 0.2554*** & -0.3851*** & -0.2307*** \\
+               & (0.0607)  & (0.0699)  & (0.0807)  & (0.0809)  \\
+    Observations & 59708   & 59708     & 59708     & 59708     \\
+    R-squared  & 0.7767    & 0.0702    & 0.0781    & 0.0816    \\
+    Item dummies & YES     & YES       & YES       & YES       \\
+    Year dummies & NO      & YES       & YES       & YES       \\
+    PBU dummies & YES      & NO        & YES       & YES       \\
+    \hline
+    \multicolumn{5}{l}{\footnotesize Standard errors are in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.1$}
+  \end{tabular}
+  }
+\end{table} 
+\end{frame}
+
+\begin{frame}{Enforcement Cost: Urgent vs. Ordinary Purchases}
+ \begin{table}[ht]
+  \centering
+  \caption{Negotiated Prices: Urgent vs. Ordinary Purchases}
+  \resizebox{6cm}{!}{%
+  \begin{tabular}{lcccc}
+    \hline
+           & (1)        & (2)        & (3)        & (4)        \\
+           & OLS       & FE         & FE         & FE         \\
+    \hline
+    urgent     & 0.3672*** & 0.3526*** & 0.3568*** & 0.2680*** \\
+               & (0.0414)  & (0.0429)  & (0.0417)  & (0.0432)  \\
+    lquantity  & -0.3081*** & -0.3011*** & -0.3025*** & -0.3301*** \\
+               & (0.0360)   & (0.0334)   & (0.0340)   & (0.0340)   \\
+    type\_mgmt & -0.1814**  &           & -0.1422*  & -0.4735*** \\
+               & (0.0801)  &           & (0.0742)  & (0.0863)   \\
+    sealed-bid &           &           &           & -0.5403*** \\
+               &           &           &           & (0.0344)   \\
+    \_cons     & 2.4156*** & 1.2356*** & 1.3862*** & 2.0863*** \\
+               & (0.2934)  & (0.2060)  & (0.2665)  & (0.2892)  \\
+    Observations & 38440   & 38440     & 38440     & 38440     \\
+    R-squared  & 0.8790    & 0.3393    & 0.3396    & 0.3798    \\
+    Item dummies & YES     & YES       & YES       & YES       \\
+    Year dummies & NO      & YES       & YES       & YES       \\
+    PBU dummies & YES      & NO        & YES       & YES       \\
+    \hline
+    \multicolumn{5}{l}{\footnotesize Standard errors are in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.1$}
+  \end{tabular}
+  }
+\end{table} 
+\end{frame}
+
+\begin{frame}{Enforcement Cost: Urgent vs. Ordinary Purchases}
+ \begin{table}[ht]
+  \centering
+  \caption{Participant Firms: Urgent vs. Ordinary Purchases}
+  \resizebox{6cm}{!}{%
+  \begin{tabular}{lcccc}
+    \hline
+           & (1)        & (2)        & (3)        & (4)        \\
+           & OLS       & FE         & FE         & FE         \\
+    \hline
+    urgent     & -0.3887*** & -0.3831*** & -0.3811*** & -0.3373*** \\
+               & (0.0190)   & (0.0191)   & (0.0191)   & (0.0200)   \\
+    lquantity  & 0.1480***  & 0.1475***  & 0.1468***  & 0.1604***  \\
+               & (0.0068)   & (0.0068)   & (0.0068)   & (0.0079)   \\
+    type\_mgmt & -0.0463*   &           & -0.0672**  & 0.0960***  \\
+               & (0.0267)   &           & (0.0281)   & (0.0293)   \\
+    sealed-bid &           &           &           & 0.2661***  \\
+               &           &           &           & (0.0184)   \\
+    \_cons     & -0.3167*** & -0.0293    & 0.0419     & -0.3030*** \\
+               & (0.0632)   & (0.0563)   & (0.0701)   & (0.0841)   \\
+    Observations & 38430   & 38430     & 38430     & 38430     \\
+    R-squared  & 0.4691    & 0.2645    & 0.2647    & 0.2886    \\
+    Item dummies & YES     & YES       & YES       & YES       \\
+    Year dummies & NO      & YES       & YES       & YES       \\
+    PBU dummies & YES      & NO        & YES       & YES       \\
+    \hline
+    \multicolumn{5}{l}{\footnotesize Standard errors are in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.1$}
+  \end{tabular}
+  }
+\end{table} 
+\end{frame}
+
+\begin{frame}{Enforcement Cost: Urgent vs. Ordinary Purchases}
+ \begin{table}[ht]
+  \centering
+  \caption{Participant Firms: Urgent vs. Ordinary Purchases}
+  \resizebox{6cm}{!}{%
+  \begin{tabular}{lcccc}
+    \hline
+           & (1)        & (2)        & (3)        & (4)        \\
+           & OLS       & FE         & FE         & FE         \\
+    \hline
+    urgent     & -0.3887*** & -0.3831*** & -0.3811*** & -0.3373*** \\
+               & (0.0190)   & (0.0191)   & (0.0191)   & (0.0200)   \\
+    lquantity  & 0.1480***  & 0.1475***  & 0.1468***  & 0.1604***  \\
+               & (0.0068)   & (0.0068)   & (0.0068)   & (0.0079)   \\
+    type\_mgmt & -0.0463*   &           & -0.0672**  & 0.0960***  \\
+               & (0.0267)   &           & (0.0281)   & (0.0293)   \\
+    sealed-bid &           &           &           & 0.2661***  \\
+               &           &           &           & (0.0184)   \\
+    \_cons     & -0.3167*** & -0.0293    & 0.0419     & -0.3030*** \\
+               & (0.0632)   & (0.0563)   & (0.0701)   & (0.0841)   \\
+    Observations & 38430   & 38430     & 38430     & 38430     \\
+    R-squared  & 0.4691    & 0.2645    & 0.2647    & 0.2886    \\
+    Item dummies & YES     & YES       & YES       & YES       \\
+    Year dummies & NO      & YES       & YES       & YES       \\
+    PBU dummies & YES      & NO        & YES       & YES       \\
+    \hline
+    \multicolumn{5}{l}{\footnotesize Standard errors are in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.1$}
+  \end{tabular}
+  }
+\end{table} 
+\end{frame}
+
+
+
+\begin{frame}{Empirical Strategy: ``Under the Gun'' Effect}
+  \begin{itemize}
+    \item Identification: Assuming that conditional on urgency, the reason (court vs admin) is not systematically correlated with unobservable cost factors (we control for item, time, etc.). 
+    
+    \item Essentially, a given drug might sometimes be urgently needed due to a lawsuit and other times due to administrative issues—any systematic price difference should be due to the court's involvement (threat of sanctions).
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Empirical Strategy: ``Under the Gun'' Effect}
+  \textbf{Idea:} Within urgent purchases, isolate the effect of being court-mandated (with sanctions threat) vs. merely urgent.
+  \medskip
+  \begin{itemize}
+    \item Restrict sample to \textbf{urgent purchases only}. Compare those with a lawsuit injunction to those without.
+    \item Regression approach:
+          $$Price_{ijt} = \gamma + \theta \cdot Litigated_{ijt} + \lambda_{i} + \delta_{t} + X'_{ijt} + \mu_{ijt},$$
+          where $Litigated_{ijt}=1$ if urgent purchase $j$ of item $i$ was due to a court order.
+    \item $\theta$ captures the additional price premium in litigated (court-ordered) tenders relative to administrative urgent tenders.
+    \item Both groups face urgent timing, so difference $\theta$ isolates the effect of the legal pressure (penalty threat).
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Under-the-Gun Effect: Litigated vs. Admin Urgent}
+  \begin{table}[ht]
+  \centering
+  \caption{Negotiated Prices: The “Under the Gun” Effect, Litigated vs. Administrative Tenders}
+  \resizebox{6cm}{!}{%
+  \begin{tabular}{lcccc}
+    \hline
+                 & (1)        & (2)        & (3)        & (4)        \\
+                 & OLS       & FE         & FE         & FE         \\
+    \hline
+    administrative   & -0.095*** & -0.0859*** & -0.0859*** & -0.0846*** \\
+                     & (0.0238)  & (0.0243)   & (0.0243)   & (0.0242)   \\
+    lquantity        & -0.4003*** & -0.3942*** & -0.3942*** & -0.3981*** \\
+                     & (0.0233)   & (0.0236)   & (0.0236)   & (0.0234)   \\
+    type\_mgmt       & -0.1564   &           & -0.1840    & -0.4322*   \\
+                     & (0.1810)  &           & (0.1879)   & (0.2519)   \\
+    sealed-bid       &           &           &           & -0.5173*** \\
+                     &           &           &           & (0.0401)   \\
+    \_cons           & 2.4521*** & 3.9031*** & 4.0871*** & 4.5326*** \\
+                     & (0.2431)  & (0.1344)   & (0.2391)   & (0.3013)   \\
+    Observations     & 51013     & 51013     & 51013     & 51013     \\
+    R-squared        & 0.9293    & 0.3718    & 0.3718    & 0.3837    \\
+    Item dummies     & YES       & YES       & YES       & YES       \\
+    Year dummies     & NO        & YES       & YES       & YES       \\
+    PBU dummies      & YES       & NO        & YES       & YES       \\
+    \hline
+    \multicolumn{5}{l}{\footnotesize Standard errors are in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.1$}
+  \end{tabular}
+  }
+\end{table} 
+\end{frame}
+
+
+\begin{frame}{Interpreting the Under-the-Gun Effect}
+  \begin{itemize}
+    \item When under a court injunction, officials behave differently:
+          \begin{itemize}
+            \item They are \textbf{less price-sensitive} -- priority is to fulfill the order immediately to avoid fines or contempt.
+            \item Procurement officers may choose faster but costlier procurement methods (e.g., single-source) to ensure compliance.
+          \end{itemize}
+    \item Suppliers exploit the situation:
+          \begin{itemize}
+            \item Recognize the government \textit{must} buy no matter the price $\implies$ quote higher offers.
+            \item No threat of the buyer walking away or delaying (since delay is not an option under court order).
+          \end{itemize}
+    \item \textbf{Net effect:} An extra $\sim$10\% price premium on top of usual urgency costs, purely due to legal pressure.
+    
+  \end{itemize}
+  \note{So why does having a court order add about 9\% more to the cost? It comes down to behavior under pressure.
+
+From the government's side, once a judge is involved, the procurement officials' top priority is to satisfy the court as quickly as possible. They become less concerned about getting the best price deal. For example, they might skip trying to negotiate or skip waiting for a possibly cheaper supplier if that could risk missing the judge's deadline. They might do a direct purchase from a known supplier who can deliver immediately, even if it's more expensive, just to ensure they obey the order.
+
+From the suppliers' side, if they know the government is under legal pressure and basically cannot say no, that gives the suppliers more power. The government isn't going to cancel the purchase even if the price is high, because they can't fail to buy the item. So suppliers might raise their prices or not offer any discount they might have offered otherwise. They know the buyer is essentially captive.
+
+So combining those, the legal pressure translates into an extra price premium of roughly 9\%. This is like a special kind of markup that only appears because of the enforcement mechanism. In terms of welfare, it's an additional cost that doesn't benefit the supplier much either beyond a one-time gain, and it's money straight out of the public coffer due to how the enforcement is structured.}
+\end{frame}
+
+\begin{frame}{Summary of Key Results}
+  \begin{table}[ht]
+    \centering
+    \begin{tabular}{lcc}
+      \toprule
+      & \textbf{Price Increase} & \textbf{Other Effects} \\
+      \midrule
+      \textbf{Urgent vs. Ordinary} & +44\% (approx.) & - Planning, - Competition, - Quantity \\
+      \textbf{Litigated vs. Admin (urgent)} & +10\% (approx.) & + Legal pressure, + Risk to officials \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{1em}
+  \begin{itemize}
+    \item Urgency imposes a large efficiency cost on procurement (prices much higher).
+    \item Judicial involvement adds a noticeable extra cost on top of urgency.
+    \item Both findings align with model predictions: $Price_L > Price_A > Price_O$.
+  \end{itemize}
+  \note{Let's recap the core findings in a succinct way. We have two big comparisons:
+
+First, urgent vs ordinary purchases. We find about a 65\% increase in price on average when a purchase is urgent. It's a huge difference. This is accompanied by things like less planning, reduced competition, and smaller purchase sizes in those urgent scenarios, all of which contribute to that higher price.
+
+Second, within urgent purchases, the presence of a litigation (the under-the-gun scenario) leads to roughly an additional 9\% increase in price compared to an administrative urgent purchase. This difference is specifically due to the legal pressure on officials, which isn't present in the admin case.
+
+These results confirm our theoretical predictions that litigated urgent purchases would be the most costly, followed by administrative urgent, and then ordinary being the least.
+
+In short: there's a big efficiency penalty to urgent, unplanned procurement, and an extra penalty when that urgency is enforced by courts.}
+\end{frame}
+
+\section{Conclusion and Discussion}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+    \item \textbf{Enforcement costs are substantial:} Judicial (and urgent administrative) interventions in health procurement lead to significantly higher costs. The government spends much more per unit when forced into urgent action.
+    \item \textbf{Mechanism confirmed:} Urgent purchases suffer from low competition and haste, and court-ordered cases further suffer from penalty-driven distortions. 
+    \item We quantify these effects: about 44\% price increase due to urgency, and an additional ~10\% due to being under judicial “gun”.
+    \item \textbf{Implication:} While litigation can save individual lives, it induces inefficiencies that can undermine the broader healthcare budget.
+  \end{itemize}
+  \note{In conclusion, our study shows that there are indeed bitter pills in the form of enforcement costs. When courts or emergencies compel the government to make an unplanned purchase of medication, it ends up paying a lot more—on the order of tens of percent more—than it would under normal circumstances. This is a significant inefficiency.
+
+We delved into why that is the case and found evidence supporting the idea that it’s driven by the nature of urgent procurement—less competition, less planning—and in the case of litigated ones, the pressure of penalties.
+
+Quantitatively, these are not trivial numbers: roughly a two-thirds increase in price for urgent situations, and even within those, nearly a ten percent additional jump if it’s a court-mandated purchase.
+
+This suggests that while the judiciary’s intentions are to fulfill rights and help individuals, these interventions are actually quite costly for the public budget. In other words, there's a trade-off: those individual health needs are being met, but at a cost of general efficiency that could have consequences for how many resources remain to help others.
+
+Now, knowing these numbers, we can discuss what might be done about it.}
+\end{frame}
+
+
+
+\begin{frame}{Thank You}
+  \centering
+  \Large{Thank you!\\[1ex]Q \& A}
+  \note{Thank you all for listening. I welcome any questions or comments you have about this research.}
+\end{frame}
+
+
+
+\end{document}

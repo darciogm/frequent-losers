@@ -1,0 +1,1 @@
+drop diamêsencerramento dataocagendamento quantidadedeitem propostavencedorprimeiro quantidadeitemvencedor quantidadedeitenssequência quantidadedefornecedorparticipan diamêsagendamento
