@@ -46,6 +46,11 @@ encode item, gen(item_id2)
 encode pbu_code, gen(pbu_id)
 * Use m_y directly as year-month identifier
 rename m_y ym
+* Numeric year for logit factor notation
+capture destring year, gen(year_num) force
+if _rc != 0 {
+    gen year_num = real(year)
+}
 
 di "Sample size: " _N
 di "Unique items: "
@@ -168,13 +173,38 @@ esttab using "`outdir'/table5_quantities_cluster_pbu.rtf", ///
 
 
 ********************************************************************************
-* TABLE 6: NEGOTIATED PRICES — Urgent vs. Ordinary (with quantity control)
+* TABLE 6: NEGOTIATED PRICES — Urgent vs. Ordinary
+* Panel A: Total effect (without quantity control)
+* Panel B: Direct effect (with quantity control)
 ********************************************************************************
 di ""
 di "==========================================="
 di "  TABLE 6: NEGOTIATED PRICES"
 di "==========================================="
 
+* --- Panel A: Total effect (without quantity control) ---
+eststo clear
+
+eststo: reghdfe bid_price_log urgent if po_firm_winner==1, ///
+    absorb(item_id2) vce(cluster pbu_id)
+
+eststo: reghdfe bid_price_log urgent if po_firm_winner==1, ///
+    absorb(item_id2 year) vce(cluster pbu_id)
+
+eststo: reghdfe bid_price_log urgent if po_firm_winner==1, ///
+    absorb(item_id2 year pbu_id) vce(cluster pbu_id)
+
+eststo: reghdfe bid_price_log urgent if po_firm_winner==1, ///
+    absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
+
+esttab using "`outdir'/table6a_neg_prices_total_effect.rtf", ///
+    b(%9.4f) se(%9.4f) ar2 ///
+    title("Table 6 Panel A: Negotiated Prices — Total Effect (no quantity control)") ///
+    mtitles("Item FE" "Item+Year" "Item+Year+PBU" "Item+YM+PBU") ///
+    note("Standard errors clustered at PBU level in parentheses. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
+    compress replace
+
+* --- Panel B: Direct effect (with quantity control) ---
 eststo clear
 
 eststo: reghdfe bid_price_log urgent bid_qty_log if po_firm_winner==1, ///
@@ -189,22 +219,47 @@ eststo: reghdfe bid_price_log urgent bid_qty_log if po_firm_winner==1, ///
 eststo: reghdfe bid_price_log urgent bid_qty_log if po_firm_winner==1, ///
     absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
 
-esttab using "`outdir'/table6_neg_prices_cluster_pbu.rtf", ///
+esttab using "`outdir'/table6b_neg_prices_direct_effect.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
-    title("Table 6: Negotiated Prices — Clustered SE at PBU Level") ///
+    title("Table 6 Panel B: Negotiated Prices — Direct Effect (quantity controlled)") ///
     mtitles("Item FE" "Item+Year" "Item+Year+PBU" "Item+YM+PBU") ///
-    note("Standard errors clustered at PBU level in parentheses. *** p<0.01, ** p<0.05, * p<0.1") ///
+    note("Standard errors clustered at PBU level in parentheses. Direct effect: quantity controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
 
 ********************************************************************************
 * TABLE 7: PARTICIPANT FIRMS — Urgent vs. Ordinary
+* Panel A: Total effect (without quantity control)
+* Panel B: Direct effect (with quantity control)
 ********************************************************************************
 di ""
 di "==========================================="
 di "  TABLE 7: PARTICIPANT FIRMS"
 di "==========================================="
 
+* --- Panel A: Total effect (without quantity control) ---
+eststo clear
+
+eststo: reghdfe ln_n_firms urgent if po_firm_winner==1, ///
+    absorb(item_id2) vce(cluster pbu_id)
+
+eststo: reghdfe ln_n_firms urgent if po_firm_winner==1, ///
+    absorb(item_id2 year) vce(cluster pbu_id)
+
+eststo: reghdfe ln_n_firms urgent if po_firm_winner==1, ///
+    absorb(item_id2 year pbu_id) vce(cluster pbu_id)
+
+eststo: reghdfe ln_n_firms urgent if po_firm_winner==1, ///
+    absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
+
+esttab using "`outdir'/table7a_firms_total_effect.rtf", ///
+    b(%9.4f) se(%9.4f) ar2 ///
+    title("Table 7 Panel A: Participant Firms — Total Effect (no quantity control)") ///
+    mtitles("Item FE" "Item+Year" "Item+Year+PBU" "Item+YM+PBU") ///
+    note("Standard errors clustered at PBU level in parentheses. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
+    compress replace
+
+* --- Panel B: Direct effect (with quantity control) ---
 eststo clear
 
 eststo: reghdfe ln_n_firms urgent bid_qty_log if po_firm_winner==1, ///
@@ -219,40 +274,64 @@ eststo: reghdfe ln_n_firms urgent bid_qty_log if po_firm_winner==1, ///
 eststo: reghdfe ln_n_firms urgent bid_qty_log if po_firm_winner==1, ///
     absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
 
-esttab using "`outdir'/table7_firms_cluster_pbu.rtf", ///
+esttab using "`outdir'/table7b_firms_direct_effect.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
-    title("Table 7: Participant Firms — Clustered SE at PBU Level") ///
+    title("Table 7 Panel B: Participant Firms — Direct Effect (quantity controlled)") ///
     mtitles("Item FE" "Item+Year" "Item+Year+PBU" "Item+YM+PBU") ///
-    note("Standard errors clustered at PBU level in parentheses. *** p<0.01, ** p<0.05, * p<0.1") ///
+    note("Standard errors clustered at PBU level in parentheses. Direct effect: quantity controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
 
 ********************************************************************************
 * TABLE 9: SUCCESS/FAILURE — Urgent vs. Ordinary (Logit)
+* Panel A: Total effect (without quantity control)
+* Panel B: Direct effect (with quantity control)
 ********************************************************************************
 di ""
 di "==========================================="
 di "  TABLE 9: SUCCESS/FAILURE (Logit)"
 di "==========================================="
 
+* --- Panel A: Total effect (without quantity control) ---
+eststo clear
+
+eststo: logit po_firm_winner urgent i.item_id2, ///
+    vce(cluster pbu_id) nolog
+
+eststo: logit po_firm_winner urgent i.item_id2 i.year_num, ///
+    vce(cluster pbu_id) nolog
+
+eststo: logit po_firm_winner urgent i.item_id2 i.year_num i.pbu_id, ///
+    vce(cluster pbu_id) nolog
+
+esttab using "`outdir'/table9a_success_total_effect.rtf", ///
+    b(%9.4f) se(%9.4f) ///
+    keep(urgent) ///
+    title("Table 9 Panel A: Successful Tenders (Logit) — Total Effect (no quantity control)") ///
+    mtitles("Item FE" "Item+Year" "Item+Year+PBU") ///
+    indicate("Item FE = *.item_id2" "Year FE = *.year_num" "PBU FE = *.pbu_id") ///
+    note("Standard errors clustered at PBU level in parentheses. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
+    compress replace
+
+* --- Panel B: Direct effect (with quantity control) ---
 eststo clear
 
 eststo: logit po_firm_winner urgent bid_qty_log i.item_id2, ///
     vce(cluster pbu_id) nolog
 
-eststo: logit po_firm_winner urgent bid_qty_log i.item_id2 i.year, ///
+eststo: logit po_firm_winner urgent bid_qty_log i.item_id2 i.year_num, ///
     vce(cluster pbu_id) nolog
 
-eststo: logit po_firm_winner urgent bid_qty_log i.item_id2 i.year i.pbu_id, ///
+eststo: logit po_firm_winner urgent bid_qty_log i.item_id2 i.year_num i.pbu_id, ///
     vce(cluster pbu_id) nolog
 
-esttab using "`outdir'/table9_success_cluster_pbu.rtf", ///
+esttab using "`outdir'/table9b_success_direct_effect.rtf", ///
     b(%9.4f) se(%9.4f) ///
     keep(urgent bid_qty_log) ///
-    title("Table 9: Successful Tenders (Logit) — Clustered SE at PBU Level") ///
+    title("Table 9 Panel B: Successful Tenders (Logit) — Direct Effect (quantity controlled)") ///
     mtitles("Item FE" "Item+Year" "Item+Year+PBU") ///
-    indicate("Item FE = *.item_id2" "Year FE = *.year" "PBU FE = *.pbu_id") ///
-    note("Standard errors clustered at PBU level in parentheses. *** p<0.01, ** p<0.05, * p<0.1") ///
+    indicate("Item FE = *.item_id2" "Year FE = *.year_num" "PBU FE = *.pbu_id") ///
+    note("Standard errors clustered at PBU level in parentheses. Direct effect: quantity controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
 
@@ -278,9 +357,31 @@ keep if has_admin == 1 & has_lit == 1
 
 di "Under the Gun sample: " _N
 
+* --- Panel A: Total effect (without quantity control) ---
 eststo clear
 
-* Cluster PBU
+eststo: reghdfe bid_price_log is_admin if po_firm_winner==1, ///
+    absorb(item_id2) vce(cluster pbu_id)
+
+eststo: reghdfe bid_price_log is_admin if po_firm_winner==1, ///
+    absorb(item_id2 year) vce(cluster pbu_id)
+
+eststo: reghdfe bid_price_log is_admin if po_firm_winner==1, ///
+    absorb(item_id2 year pbu_id) vce(cluster pbu_id)
+
+eststo: reghdfe bid_price_log is_admin if po_firm_winner==1, ///
+    absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
+
+esttab using "`outdir'/table10a_underthegun_total_effect.rtf", ///
+    b(%9.4f) se(%9.4f) ar2 ///
+    title("Table 10 Panel A: Under the Gun — Total Effect (no quantity control)") ///
+    mtitles("Item FE" "Item+Year" "Item+Year+PBU" "Item+YM+PBU") ///
+    note("Standard errors clustered at PBU level in parentheses. Admin=1 if administrative, 0 if litigated. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
+    compress replace
+
+* --- Panel B: Direct effect (with quantity control) ---
+eststo clear
+
 eststo: reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, ///
     absorb(item_id2) vce(cluster pbu_id)
 
@@ -293,14 +394,14 @@ eststo: reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, ///
 eststo: reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, ///
     absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
 
-esttab using "`outdir'/table10_underthegun_cluster_pbu.rtf", ///
+esttab using "`outdir'/table10b_underthegun_direct_effect.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
-    title("Table 10: Under the Gun Effect — Clustered SE at PBU Level") ///
+    title("Table 10 Panel B: Under the Gun — Direct Effect (quantity controlled)") ///
     mtitles("Item FE" "Item+Year" "Item+Year+PBU" "Item+YM+PBU") ///
-    note("Standard errors clustered at PBU level in parentheses. Admin=1 if administrative, 0 if litigated. *** p<0.01, ** p<0.05, * p<0.1") ///
+    note("Standard errors clustered at PBU level in parentheses. Admin=1 if administrative, 0 if litigated. Direct effect: quantity controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
-* Robustness: two-way clustering
+* Robustness: two-way clustering (with quantity control)
 eststo clear
 
 eststo: reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, ///
@@ -354,15 +455,15 @@ di "  urgent = " %9.4f _b[urgent] "  SE = " %9.4f _se[urgent]
 * Table 6 spec (3): Negotiated prices, Item+Year+PBU FE
 di ""
 di "--- Table 6 (Negotiated Prices) ---"
-di "Original (no cluster):"
-quietly reghdfe bid_price_log urgent bid_qty_log if po_firm_winner==1, absorb(item_id2 year pbu_id)
+di "Total effect (no qty control), Cluster PBU:"
+quietly reghdfe bid_price_log urgent if po_firm_winner==1, absorb(item_id2 year pbu_id) vce(cluster pbu_id)
 di "  urgent = " %9.4f _b[urgent] "  SE = " %9.4f _se[urgent]
 
-di "Cluster PBU:"
+di "Direct effect (qty controlled), Cluster PBU:"
 quietly reghdfe bid_price_log urgent bid_qty_log if po_firm_winner==1, absorb(item_id2 year pbu_id) vce(cluster pbu_id)
 di "  urgent = " %9.4f _b[urgent] "  SE = " %9.4f _se[urgent]
 
-di "Two-way (PBU x Item):"
+di "Direct effect (qty controlled), Two-way (PBU x Item):"
 quietly reghdfe bid_price_log urgent bid_qty_log if po_firm_winner==1, absorb(item_id2 year pbu_id) vce(cluster pbu_id item_id2)
 di "  urgent = " %9.4f _b[urgent] "  SE = " %9.4f _se[urgent]
 
@@ -376,15 +477,15 @@ bysort item: egen has_admin = max(is_admin == 1)
 bysort item: egen has_lit = max(is_admin == 0)
 keep if has_admin == 1 & has_lit == 1
 
-di "Original (no cluster):"
-quietly reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, absorb(item_id2 year pbu_id)
+di "Total effect (no qty control), Cluster PBU:"
+quietly reghdfe bid_price_log is_admin if po_firm_winner==1, absorb(item_id2 year pbu_id) vce(cluster pbu_id)
 di "  admin = " %9.4f _b[is_admin] "  SE = " %9.4f _se[is_admin]
 
-di "Cluster PBU:"
+di "Direct effect (qty controlled), Cluster PBU:"
 quietly reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, absorb(item_id2 year pbu_id) vce(cluster pbu_id)
 di "  admin = " %9.4f _b[is_admin] "  SE = " %9.4f _se[is_admin]
 
-di "Two-way (PBU x Item):"
+di "Direct effect (qty controlled), Two-way (PBU x Item):"
 quietly reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, absorb(item_id2 year pbu_id) vce(cluster pbu_id item_id2)
 di "  admin = " %9.4f _b[is_admin] "  SE = " %9.4f _se[is_admin]
 
