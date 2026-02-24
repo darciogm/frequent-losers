@@ -443,6 +443,25 @@
         <strong>Coluna 3: Item + Ano + PBU FE</strong>.
     </p>
 
+    <div class="key-finding warning">
+        <strong>Nota sobre interpretação dos coeficientes:</strong>
+        <p>
+            Em todas as regressões a variável dependente está em <strong>log</strong> e a variável de tratamento
+            é uma <strong>dummy</strong> (0/1). Portanto, o coeficiente &beta; estimado representa a diferença
+            em <strong>log-pontos</strong>, e <em>não</em> deve ser interpretado diretamente como uma variação percentual.
+            A variação percentual exata em Y é dada por:
+        </p>
+        <p style="text-align:center; font-size:1.1rem; margin:0.8rem 0;">
+            <strong>%&Delta;Y = (e<sup>&beta;</sup> &minus; 1) &times; 100</strong>
+        </p>
+        <p>
+            Para &beta; pequenos (|&beta;| &lt; 0.10), a aproximação &beta; &asymp; variação percentual é razoável.
+            Para &beta; maiores, a diferença torna-se relevante. Por exemplo: &beta; = 0.31 corresponde a
+            +36.8% (não +31%), e &beta; = -0.66 corresponde a -48.6% (não -66%).
+            Neste relatório, todas as interpretações percentuais utilizam a fórmula exata exp(&beta;)&minus;1.
+        </p>
+    </div>
+
     <h3>Table 4: Preços de Referência (VD: log preço referência)</h3>
     <table>
         <tr>
@@ -482,8 +501,10 @@
         </tr>
     </table>
     <div class="key-finding">
-        <strong>Resultado:</strong> O prêmio de preço de referência para compras urgentes (31% com Item FE)
-        <strong>desaparece completamente</strong> com a inclusão de efeitos fixos de PBU (&beta; = 0.029, p = 0.58).
+        <strong>Resultado:</strong> O prêmio de preço de referência para compras urgentes
+        (exp(0.313)&minus;1 = +36.8% com Item FE apenas)
+        <strong>desaparece completamente</strong> com a inclusão de efeitos fixos de PBU
+        (&beta; = 0.029 log-pontos, exp(0.029)&minus;1 = +2.9%, p = 0.58).
     </div>
 
     <h3>Table 5: Quantidades (VD: log quantidade)</h3>
@@ -526,7 +547,8 @@
     </table>
     <div class="key-finding">
         <strong>Resultado:</strong> Compras urgentes envolvem quantidades significativamente menores
-        (&beta; = -0.66, p = 0.09). Marginalmente significativo na especificação preferida.
+        (&beta; = -0.665 log-pontos, exp(-0.665)&minus;1 = &minus;48.6%, p = 0.09).
+        Marginalmente significativo na especificação preferida.
     </div>
 
     <h3>Table 6A: Preços Negociados &mdash; Efeito Total (sem controle de quantidade)</h3>
@@ -614,9 +636,9 @@
         </tr>
     </table>
     <div class="key-finding negative">
-        <strong>Resultado-chave:</strong> Controlando por quantidade, compras urgentes pagam
-        <strong>17-18% menos por unidade</strong> (&beta; = -0.190, p = 0.004). O efeito total
-        não-significativo mascara uma combinação de quantidades menores com preços unitários mais baixos.
+        <strong>Resultado-chave:</strong> Controlando por quantidade, compras urgentes pagam menos por unidade
+        (&beta; = -0.190 log-pontos, exp(-0.190)&minus;1 = <strong>&minus;17.3%</strong>, p = 0.004).
+        O efeito total não-significativo mascara uma combinação de quantidades menores com preços unitários mais baixos.
     </div>
 
     <h3>Table 7A: Empresas Participantes &mdash; Efeito Total</h3>
@@ -683,7 +705,8 @@
         </tr>
     </table>
     <div class="key-finding">
-        <strong>Resultado:</strong> Compras urgentes atraem ~11% menos empresas (efeito total significativo a 1%).
+        <strong>Resultado:</strong> Compras urgentes atraem menos empresas
+        (&beta; = -0.117 log-pontos, exp(-0.117)&minus;1 = &minus;11.0%, significativo a 1%).
         Controlando por quantidade, o efeito torna-se não-significativo, sugerindo que a menor participação
         é mediada pelo canal de quantidade.
     </div>
@@ -856,8 +879,10 @@
     <div class="key-finding positive">
         <strong>Resultado Under the Gun:</strong>
         <ul style="margin-top:0.5rem; padding-left:1.5rem;">
-            <li><strong>Efeito total:</strong> Compras administrativas pagam ~7.5% mais que litigadas (significativo a 5%).</li>
-            <li><strong>Efeito direto:</strong> Controlando por quantidade, administrativas pagam ~8% <em>menos</em> por unidade (p = 0.051).</li>
+            <li><strong>Efeito total:</strong> Compras administrativas pagam mais que litigadas
+                (&beta; = 0.073 log-pontos, exp(0.073)&minus;1 = +7.5%, significativo a 5%).</li>
+            <li><strong>Efeito direto:</strong> Controlando por quantidade, administrativas pagam <em>menos</em> por unidade
+                (&beta; = -0.080 log-pontos, exp(-0.080)&minus;1 = &minus;7.7%, p = 0.051).</li>
             <li>A pressão sancionatória das decisões judiciais reduz os preços totais, mas o efeito é mediado pela diferença de quantidades.</li>
         </ul>
     </div>
@@ -868,7 +893,7 @@
     <h2>5. Heterogeneity Analysis</h2>
     <p>
         Análise de heterogeneidade em 4 dimensões. VD = log preço negociado (efeito total),
-        Item+Ano+PBU FE, cluster PBU.
+        Item+Ano+PBU FE, cluster PBU. Coeficientes em log-pontos.
     </p>
 
     <table>
@@ -993,12 +1018,17 @@
         <strong>R$ 1,196 bilhões</strong> (9.1% do total de R$ 13.1 bilhões).
     </p>
 
+    <p class="note">
+        Os prêmios percentuais abaixo são calculados pela fórmula exata: (exp(&beta;) &minus; 1) &times; 100.
+        Os custos excedentes são calculados como: Gasto<sub>urgente</sub> &times; (1 &minus; exp(&minus;&beta;)).
+    </p>
+
     <h3>Canal A: Efeito Total (prêmio de urgência sobre preços)</h3>
     <table>
         <tr>
             <th>Especificação FE</th>
-            <th>&beta;</th>
-            <th>Prêmio (%)</th>
+            <th>&beta; (log-pontos)</th>
+            <th>exp(&beta;)&minus;1 (%)</th>
             <th>Custo Excedente (R$)</th>
             <th>Anual (R$)</th>
         </tr>
@@ -1029,8 +1059,8 @@
     <table>
         <tr>
             <th>Especificação FE</th>
-            <th>&beta;</th>
-            <th>Prêmio (%)</th>
+            <th>&beta; (log-pontos)</th>
+            <th>exp(&beta;)&minus;1 (%)</th>
             <th>Custo Excedente (R$)</th>
             <th>Anual (R$)</th>
         </tr>
@@ -1061,8 +1091,8 @@
     <table>
         <tr>
             <th>Especificação FE</th>
-            <th>&beta; (is_admin)</th>
-            <th>Prêmio litigado (%)</th>
+            <th>&beta; (is_admin, log-pontos)</th>
+            <th>exp(&minus;&beta;)&minus;1 (%)</th>
             <th>Custo sanção (R$)</th>
             <th>Anual (R$)</th>
         </tr>
@@ -1279,6 +1309,9 @@
     </table>
 
     <h3>8.2 Comparação de Coeficientes &mdash; Especificação Preferida (Item+Ano+PBU FE)</h3>
+    <p class="note">
+        Coeficientes em log-pontos. Para interpretar como variação percentual, aplicar exp(&beta;)&minus;1.
+    </p>
     <table class="comparison-table">
         <tr>
             <th>Tabela / VD</th>
@@ -1363,7 +1396,9 @@
     <div class="key-finding warning">
         <strong>1. Preços de Referência e Preços Negociados (efeito total): Coeficiente colapsa com PBU FE</strong>
         <p>
-            O manuscrito original reporta prêmios de 50-66% usando OLS com dummies de tipo de gestão.
+            O manuscrito original reporta coeficientes de 0.47&ndash;0.52 log-pontos
+            (equivalentes a prêmios de exp(0.47)&minus;1 = +60% a exp(0.52)&minus;1 = +69%)
+            usando OLS com dummies de tipo de gestão.
             Na V2 e V3, o uso de efeitos fixos absorvidos de PBU elimina completamente o efeito.
             Isso sugere que o prêmio de preço observado no manuscrito era <strong>driven by entre-PBU variation</strong>
             &mdash; PBUs que fazem compras urgentes sistematicamente compram itens mais caros,
@@ -1374,8 +1409,10 @@
     <div class="key-finding warning">
         <strong>2. Preço Negociado (efeito direto): Sinal inverte na V2 e V3</strong>
         <p>
-            O manuscrito reporta urgente = +35.7% (controlando quantidade). Na V2 e V3 com reghdfe + PBU FE,
-            o coeficiente torna-se <strong>negativo</strong> (-44.8% na V2, -19.0% na V3).
+            O manuscrito reporta &beta; = +0.357 log-pontos (exp(0.357)&minus;1 = +42.9%, controlando quantidade).
+            Na V2 e V3 com reghdfe + PBU FE, o coeficiente torna-se <strong>negativo</strong>:
+            V2: &beta; = -0.448 (exp(-0.448)&minus;1 = &minus;36.1%);
+            V3: &beta; = -0.190 (exp(-0.190)&minus;1 = &minus;17.3%).
             Ou seja, controlando quantidade e variação entre PBUs, compras urgentes pagam <em>menos</em> por unidade.
             Possível explicação: pressão por concluir rapidamente a licitação leva a aceitação de preços mais baixos.
         </p>
@@ -1384,7 +1421,8 @@
     <div class="key-finding warning">
         <strong>3. Taxa de Sucesso: Sinal inverte</strong>
         <p>
-            O manuscrito reporta que compras urgentes têm 38-49% <em>menos</em> chance de sucesso (logit com FE de item como dummies).
+            O manuscrito reporta coeficientes logit de -0.49 a -0.67 para compras urgentes
+            (efeitos marginais estimados de 38-49% <em>menos</em> chance de sucesso, logit com FE de item como dummies).
             A V3, usando LPM com efeitos fixos absorvidos, encontra +1.5 pp <em>maior</em> taxa de sucesso.
             A diferença metodológica (logit com dummies vs. LPM com FE absorvidos) e a expansão amostral
             provavelmente explicam esta divergência. Nota: logit com ~2.900 FE de item é computacionalmente
@@ -1489,36 +1527,43 @@
             <li style="margin-bottom:0.8rem;">
                 <strong>Sem prêmio de preço de referência:</strong>
                 Controlando por PBU, não há diferença significativa nos preços de referência entre compras
-                ordinárias e urgentes (&beta; = 0.029, ns). O prêmio observado no manuscrito original
-                era atribuível a variação entre PBUs.
+                ordinárias e urgentes (&beta; = 0.029 log-pontos, exp(0.029)&minus;1 = +2.9%, ns).
+                O prêmio observado no manuscrito original era atribuível a variação entre PBUs.
             </li>
             <li style="margin-bottom:0.8rem;">
                 <strong>Quantidades menores:</strong>
-                Compras urgentes envolvem quantidades ~50% menores (marginalmente significativo, p = 0.09).
+                Compras urgentes envolvem quantidades substancialmente menores
+                (&beta; = -0.665 log-pontos, exp(-0.665)&minus;1 = &minus;48.6%, marginalmente significativo, p = 0.09).
             </li>
             <li style="margin-bottom:0.8rem;">
                 <strong>Sem prêmio de preço negociado (efeito total):</strong>
-                O gasto total por transação não é significativamente diferente para compras urgentes (&beta; = 0.022, ns).
+                O gasto total por transação não é significativamente diferente para compras urgentes
+                (&beta; = 0.022 log-pontos, exp(0.022)&minus;1 = +2.3%, ns).
             </li>
             <li style="margin-bottom:0.8rem;">
                 <strong>Desconto por unidade (efeito direto):</strong>
-                Controlando por quantidade, compras urgentes pagam <strong>17-18% menos por unidade</strong>
-                (&beta; = -0.190***, p = 0.004). Este é o resultado mais robusto do paper.
+                Controlando por quantidade, compras urgentes pagam menos por unidade
+                (&beta; = -0.190 log-pontos, exp(-0.190)&minus;1 = <strong>&minus;17.3%</strong>,
+                p = 0.004). Este é o resultado mais robusto do paper.
             </li>
             <li style="margin-bottom:0.8rem;">
                 <strong>Menor participação de empresas:</strong>
-                Compras urgentes atraem ~11% menos empresas (&beta; = -0.117***, p = 0.009).
+                Compras urgentes atraem menos empresas
+                (&beta; = -0.117 log-pontos, exp(-0.117)&minus;1 = &minus;11.0%***, p = 0.009).
                 Este efeito é mediado pela quantidade (torna-se ns quando quantidade é controlada).
             </li>
             <li style="margin-bottom:0.8rem;">
                 <strong>Maior taxa de sucesso:</strong>
                 Compras urgentes têm +1.5 pp maior taxa de sucesso (+2.5 pp controlando por quantidade).
+                <em>(LPM: coeficientes interpretados diretamente como pontos percentuais.)</em>
             </li>
             <li style="margin-bottom:0.8rem;">
                 <strong>Efeito Under the Gun:</strong>
-                Compras administrativas pagam ~7.5% mais que litigadas (efeito total). Controlando por quantidade,
-                administrativas pagam ~8% <em>menos</em> por unidade. A pressão sancionatória judicial
-                reduz preços totais mas não necessariamente preços unitários.
+                Compras administrativas pagam mais que litigadas no efeito total
+                (&beta; = 0.073 log-pontos, exp(0.073)&minus;1 = +7.5%).
+                Controlando por quantidade, administrativas pagam <em>menos</em> por unidade
+                (&beta; = -0.080 log-pontos, exp(-0.080)&minus;1 = &minus;7.7%).
+                A pressão sancionatória judicial reduz preços totais mas não necessariamente preços unitários.
             </li>
             <li style="margin-bottom:0.8rem;">
                 <strong>Heterogeneidade temporal:</strong>
