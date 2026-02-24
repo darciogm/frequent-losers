@@ -9,25 +9,29 @@ Academic research paper: **"Bitter Pills to Swallow: The Enforcement Costs of He
 ## Tech Stack
 
 - **Stata/SE** for data processing and econometric analysis (requires `reghdfe`, `ftools`)
+- **Python 3** for edital text classification (`v3/classify_editais.py`)
 - **LaTeX** (elsarticle document class, chicago bibliography style) for the manuscript
 - Runs on WSL2 (Linux under Windows)
 
 ## Common Commands
 
-### Stata Analysis (v2 is the current version)
+### Stata Analysis
 
 ```bash
 # Install required Stata packages (one-time setup)
 stata-se -b -q do v2/analysis/install_packages.do
 
-# Run balance table analysis
+# Run individual v2 scripts
 stata-se -b -q do v2/analysis/balance_table.do
-
-# Run descriptive statistics
 stata-se -b -q do v2/analysis/desc_stats_table_v2.do
-
-# Run main regressions (clustered standard errors, multi-way FE)
 stata-se -b -q do v2/analysis/clustered_regressions.do
+
+# Run the full v3 pipeline (serial data prep, then parallel analyses)
+bash v3/analysis/run_all.sh
+
+# Run individual v3 scripts (must run 00_prepare_data.do first)
+stata-se -b -q do v3/analysis/00_prepare_data.do
+stata-se -b -q do v3/analysis/03_main_regressions.do
 
 # Check Stata log output after running (log file name matches .do file name)
 cat clustered_regressions.log
@@ -50,20 +54,39 @@ wslview manuscript/main.pdf
 
 ## Project Structure
 
-- `v2/analysis/` — **Current analysis scripts** (use these, not `analysis/`)
-  - `clustered_regressions.do` — Main econometric analysis (Tables 4-8: reference prices, quantities, negotiated prices, firm participation, success rates)
+### Analysis Versions
+
+Three analysis versions exist. **v2** is the primary manuscript version; **v3** extends to the full sample:
+
+- `v2/analysis/` — **Primary analysis** (subsample: electronic auctions with both litigated and ordinary purchases)
+  - `clustered_regressions.do` — Main regressions (Tables 4-8: reference prices, quantities, negotiated prices, firm participation, success rates)
   - `balance_table.do` — Balance tests between admin vs litigated purchases
   - `desc_stats_table_v2.do` — Descriptive statistics by purchase type
-- `analysis/` — Original/legacy analysis scripts (v1)
-- `datasets/` — Stata .dta data files (large, not tracked in git)
-  - `3_BEC_PAPER_1_JUD_FINAL.dta` — Primary analysis dataset
+  - `fiscal_costs.do` — Aggregate fiscal cost calculations
+  - `heterogeneity.do` — Heterogeneous effects analysis
+  - `underthegun_robustness.do` — "Under the gun" robustness with progressive controls
+  - `winsorization_sensitivity.do` — Sensitivity to winsorization levels (0%, 1%, 5%)
+- `v3/analysis/` — **Extended full-sample analysis** (BEC_JUD.dta, 193K obs, all auction types)
+  - Numbered scripts `00_prepare_data.do` through `07_graphs.do` (must run 00 first)
+  - `run_all.sh` — Orchestration: serial data prep → parallel analyses → error checking → output verification
+- `v3/classify_editais.py` — Python regex classifier for edital text (judicial/administrative/ordinary)
+- `replication/replicate_paper.do` — Exact OLS + xtreg specifications matching the manuscript
+- `analysis/` — Legacy v1 scripts (do not use)
+
+### Data
+
+- `datasets/` — Processed Stata .dta files (not tracked in git)
+  - `3_BEC_PAPER_1_JUD_FINAL.dta` — v2 subsample dataset
   - `3_BEC_PAPER_1_JUD_FINAL_PANEL.dta` — Panel format variant
-- `manuscript/` — LaTeX source files
-  - `main.tex` — Master document (inputs section files)
-  - `EmpiricalStrategy.tex` — Core econometric approach and results
-  - `figures/` — Paper figures (PNG/PDF)
-- `presentations/` — Conference presentation slides
-- `drafts/` — Historical manuscript versions
+  - `BEC_JUD.dta` — Full-sample dataset (v3, 193K obs, all auction types)
+  - `Classif_editais/` — Raw edital classification data (~18GB compressed): regex dummy CSVs, judicial reference data
+
+### Manuscript & Output
+
+- `manuscript/` — LaTeX source (main.tex inputs section files: Introduction, InstitutionalBackground, EmpiricalStrategy, etc.)
+- `v2/analysis/results/` — RTF regression tables from v2
+- `v3/results/` — RTF tables + classification CSV from v3
+- `v3/graphs/` — Generated PDF figures (density plots, coefficient plots, time trends)
 
 ## Key Dataset Variables
 
@@ -79,15 +102,18 @@ wslview manuscript/main.pdf
 
 ## Econometric Approach
 
-The main analysis (`clustered_regressions.do`) uses `reghdfe` with:
+The main analysis uses `reghdfe` with:
 - **Fixed effects:** Item, Year, PBU, Year-Month (in various combinations)
 - **Clustering:** Standard errors clustered at PBU level (primary), item level, and two-way (robustness)
-- **Sample restriction:** Electronic auctions only (`po_proc_code == 3`), items that have both litigated and ordinary purchases
+- **Sample restriction (v2):** Electronic auctions only (`po_proc_code == 3`), items that have both litigated and ordinary purchases
+- **Sample (v3):** All auction types in BEC_JUD.dta (193K observations)
 - **Winsorization:** Applied at 1%/99% percentiles for key outcome variables
+- **Coefficient interpretation:** Use `exp(β)-1` for percentage effects from log-level regressions
 
 ## Conventions
 
 - All Stata scripts use absolute paths to the datasets directory
 - Stata scripts output LaTeX tables (`.tex`) for direct inclusion in the manuscript via `\input{}`
-- Regression tables are exported as RTF to `v2/analysis/results/`
+- Regression tables are exported as RTF to version-specific results directories
 - The manuscript uses `\input{}` to include section files and generated tables
+- v3 scripts are numbered and must run sequentially (00 first), though analyses after 00 can run in parallel
