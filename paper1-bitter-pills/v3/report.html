@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitter Pills — V3 Results Report</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2a4a7f;
+            --accent: #c53030;
+            --accent-green: #276749;
+            --accent-orange: #c05621;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text: #2d3748;
+            --text-light: #718096;
+            --highlight-pos: #fed7d7;
+            --highlight-neg: #c6f6d5;
+            --highlight-ns: #fefcbf;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 0;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        .header .meta {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .toc {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+        .toc h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .toc ol {
+            padding-left: 1.5rem;
+        }
+        .toc li {
+            margin-bottom: 0.4rem;
+        }
+        .toc a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        .toc a:hover { text-decoration: underline; }
+        section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        h2 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+        h3 {
+            font-size: 1.15rem;
+            color: var(--primary-light);
+            margin: 1.5rem 0 0.8rem;
+        }
+        h4 {
+            font-size: 1rem;
+            color: var(--text);
+            margin: 1rem 0 0.5rem;
+        }
+        p { margin-bottom: 0.8rem; }
+        .key-finding {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .key-finding.positive {
+            background: #fff5f5;
+            border-left-color: var(--accent);
+        }
+        .key-finding.negative {
+            background: #f0fff4;
+            border-left-color: var(--accent-green);
+        }
+        .key-finding.warning {
+            background: #fffaf0;
+            border-left-color: var(--accent-orange);
+        }
+        .key-finding strong {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 0.6rem 0.8rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        td:first-child, th:first-child {
+            text-align: left;
+        }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #edf2f7; }
+        .sig3 { color: var(--accent); font-weight: 700; }
+        .sig2 { color: var(--accent-orange); font-weight: 600; }
+        .sig1 { color: #b7791f; font-weight: 500; }
+        .ns { color: var(--text-light); }
+        .coef-positive { background: var(--highlight-pos); }
+        .coef-negative { background: var(--highlight-neg); }
+        .coef-ns { background: var(--highlight-ns); }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .stat-card {
+            background: #f7fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+        }
+        .comparison-table th {
+            background: var(--primary-light);
+        }
+        .comparison-table .version-header {
+            background: var(--primary);
+            text-align: center;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-sig { background: #fed7d7; color: #9b2c2c; }
+        .badge-ns { background: #fefcbf; color: #975a16; }
+        .badge-new { background: #c6f6d5; color: #276749; }
+        .badge-changed { background: #bee3f8; color: #2a4365; }
+        .arrow-up { color: var(--accent); }
+        .arrow-down { color: var(--accent-green); }
+        .arrow-same { color: var(--text-light); }
+        .note {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .two-col { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #ebf8ff, #e9d8fd);
+            border-radius: 8px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+        }
+        .summary-box h3 { color: var(--primary); margin-top: 0; }
+        .summary-box ul { padding-left: 1.5rem; }
+        .summary-box li { margin-bottom: 0.5rem; }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+        sup { font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Bitter Pills to Swallow</h1>
+    <div class="subtitle">The Enforcement Costs of Health Litigation</div>
+    <div class="subtitle" style="margin-top:0.5rem; font-size:0.95rem;">V3 Analysis Report &mdash; Full BEC_JUD Dataset</div>
+    <div class="meta">
+        Darcio Genicolo-Martins &amp; Paulo Furquim de Azevedo (INSPER)<br>
+        Generated: 23 February 2026 &mdash; Dataset: BEC_JUD.dta (192,856 obs)
+    </div>
+</div>
+
+<div class="container">
+
+<!-- Table of Contents -->
+<nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+        <li><a href="#sample">Sample and Data Overview</a></li>
+        <li><a href="#desc">Descriptive Statistics</a></li>
+        <li><a href="#main">Main Regression Results</a></li>
+        <li><a href="#utg">Under the Gun Analysis</a></li>
+        <li><a href="#heterogeneity">Heterogeneity Analysis</a></li>
+        <li><a href="#fiscal">Fiscal Cost Estimates</a></li>
+        <li><a href="#robustness">Robustness Checks</a></li>
+        <li><a href="#comparison">Comparison with Original Manuscript</a></li>
+        <li><a href="#conclusions">Summary and Conclusions</a></li>
+    </ol>
+</nav>
+
+<!-- Section 1: Sample Overview -->
+<section id="sample">
+    <h2>1. Sample and Data Overview</h2>
+    <p>
+        A V3 utiliza o dataset completo <strong>BEC_JUD.dta</strong> (193.092 observações antes de filtros),
+        incluindo todos os tipos de licitação (Convite + Pregão), exceto Dispensa (<code>po_proc_code == 2</code>).
+        Após remoção de dispensas, restam <strong>192.856 observações</strong>.
+    </p>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="number">192,856</div>
+            <div class="label">Observações totais (pós-filtro)</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">2,913</div>
+            <div class="label">Itens únicos</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">92</div>
+            <div class="label">Unidades compradoras (PBUs)</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">2,252</div>
+            <div class="label">Itens com compra ordinária + litigada</div>
+        </div>
+    </div>
+
+    <h3>Distribuição por Tipo de Compra</h3>
+    <table>
+        <tr>
+            <th>Tipo</th>
+            <th>N Observações</th>
+            <th>%</th>
+            <th>Vencedores (winners)</th>
+        </tr>
+        <tr>
+            <td>Ordinária</td>
+            <td>112,174</td>
+            <td>63.1%</td>
+            <td>95,831</td>
+        </tr>
+        <tr>
+            <td>Administrativa</td>
+            <td>4,688</td>
+            <td>2.6%</td>
+            <td>4,005</td>
+        </tr>
+        <tr>
+            <td>Litigada (judicial)</td>
+            <td>61,045</td>
+            <td>34.3%</td>
+            <td>55,109</td>
+        </tr>
+        <tr style="font-weight:700; background:#edf2f7;">
+            <td>Total (amostra de análise)</td>
+            <td>177,907</td>
+            <td>100%</td>
+            <td>154,920</td>
+        </tr>
+    </table>
+    <p class="note">
+        A amostra de análise considera apenas itens que possuem tanto compras ordinárias quanto litigadas (177.907 obs, 2.252 itens).
+        A subamostra "Under the Gun" (UTG) contém 36.005 obs (admin + litigated de itens com ambos os tipos), com 33.004 vencedores.
+    </p>
+</section>
+
+<!-- Section 2: Descriptive Statistics -->
+<section id="desc">
+    <h2>2. Descriptive Statistics</h2>
+
+    <h3>Panel A: Variáveis em Nível</h3>
+    <table>
+        <tr>
+            <th>Variável</th>
+            <th>Ordinária</th>
+            <th>Administrativa</th>
+            <th>Litigada</th>
+            <th>Dif (1)-(3)</th>
+        </tr>
+        <tr>
+            <td>Preço de Referência (R$)</td>
+            <td>53.49</td>
+            <td>306.29</td>
+            <td>130.77</td>
+            <td class="sig3">-77.28***</td>
+        </tr>
+        <tr>
+            <td>Preço Negociado (R$)</td>
+            <td>32.94</td>
+            <td>191.30</td>
+            <td>86.58</td>
+            <td class="sig3">-53.65***</td>
+        </tr>
+        <tr>
+            <td>Quantidade</td>
+            <td>60,521</td>
+            <td>20,398</td>
+            <td>11,701</td>
+            <td class="sig3">48,820***</td>
+        </tr>
+        <tr>
+            <td>N&ordm; Empresas Participantes</td>
+            <td>3.25</td>
+            <td>2.12</td>
+            <td>2.18</td>
+            <td class="sig3">1.06***</td>
+        </tr>
+    </table>
+
+    <h3>Panel B: Variáveis em Log</h3>
+    <table>
+        <tr>
+            <th>Variável</th>
+            <th>Ordinária</th>
+            <th>Administrativa</th>
+            <th>Litigada</th>
+            <th>Dif (1)-(3)</th>
+        </tr>
+        <tr>
+            <td>Log Preço Referência</td>
+            <td>0.308</td>
+            <td>2.426</td>
+            <td>1.311</td>
+            <td class="sig3">-1.003***</td>
+        </tr>
+        <tr>
+            <td>Log Preço Negociado</td>
+            <td>-0.316</td>
+            <td>2.043</td>
+            <td>0.805</td>
+            <td class="sig3">-1.121***</td>
+        </tr>
+        <tr>
+            <td>Log Quantidade</td>
+            <td>7.432</td>
+            <td>5.695</td>
+            <td>6.233</td>
+            <td class="sig3">1.199***</td>
+        </tr>
+        <tr>
+            <td>Log N&ordm; Empresas</td>
+            <td>1.003</td>
+            <td>0.619</td>
+            <td>0.664</td>
+            <td class="sig3">0.339***</td>
+        </tr>
+    </table>
+
+    <h3>Panel C: Características da Licitação</h3>
+    <table>
+        <tr>
+            <th>Variável</th>
+            <th>Ordinária</th>
+            <th>Administrativa</th>
+            <th>Litigada</th>
+        </tr>
+        <tr>
+            <td>Taxa de Sucesso (%)</td>
+            <td>85.4%</td>
+            <td>85.4%</td>
+            <td>90.3%</td>
+        </tr>
+    </table>
+
+    <div class="key-finding">
+        <strong>Padrão descritivo:</strong>
+        Compras urgentes (administrativas e litigadas) envolvem preços unitários mais elevados,
+        quantidades menores, menos empresas participantes e, no caso das litigadas, maior taxa de sucesso.
+    </div>
+</section>
+
+<!-- Section 3: Main Regressions -->
+<section id="main">
+    <h2>3. Main Regression Results</h2>
+    <p>
+        Todas as regressões utilizam <code>reghdfe</code> com efeitos fixos absorvidos e erros-padrão
+        clusterizados ao nível da PBU (especificação primária). A especificação preferida é a
+        <strong>Coluna 3: Item + Ano + PBU FE</strong>.
+    </p>
+
+    <h3>Table 4: Preços de Referência (VD: log preço referência)</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig3">0.3133***</td>
+            <td class="sig3">0.2695***</td>
+            <td class="ns coef-ns">0.0288</td>
+            <td class="ns coef-ns">0.0260</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0623)</td>
+            <td>(0.0603)</td>
+            <td>(0.0519)</td>
+            <td>(0.0496)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>154,929</td>
+            <td>154,929</td>
+            <td>154,927</td>
+            <td>154,927</td>
+        </tr>
+        <tr>
+            <td>R&sup2; adj.</td>
+            <td>0.844</td>
+            <td>0.847</td>
+            <td>0.860</td>
+            <td>0.860</td>
+        </tr>
+    </table>
+    <div class="key-finding">
+        <strong>Resultado:</strong> O prêmio de preço de referência para compras urgentes (31% com Item FE)
+        <strong>desaparece completamente</strong> com a inclusão de efeitos fixos de PBU (&beta; = 0.029, p = 0.58).
+    </div>
+
+    <h3>Table 5: Quantidades (VD: log quantidade)</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig3">-0.8818***</td>
+            <td class="sig3">-1.0283***</td>
+            <td class="sig1">-0.6647*</td>
+            <td class="sig1">-0.6770*</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.1908)</td>
+            <td>(0.2243)</td>
+            <td>(0.3880)</td>
+            <td>(0.3746)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>154,929</td>
+            <td>154,929</td>
+            <td>154,927</td>
+            <td>154,927</td>
+        </tr>
+        <tr>
+            <td>R&sup2; adj.</td>
+            <td>0.458</td>
+            <td>0.464</td>
+            <td>0.623</td>
+            <td>0.625</td>
+        </tr>
+    </table>
+    <div class="key-finding">
+        <strong>Resultado:</strong> Compras urgentes envolvem quantidades significativamente menores
+        (&beta; = -0.66, p = 0.09). Marginalmente significativo na especificação preferida.
+    </div>
+
+    <h3>Table 6A: Preços Negociados &mdash; Efeito Total (sem controle de quantidade)</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig3">0.2782***</td>
+            <td class="sig3">0.2212***</td>
+            <td class="ns coef-ns">0.0224</td>
+            <td class="ns coef-ns">0.0245</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0375)</td>
+            <td>(0.0391)</td>
+            <td>(0.0606)</td>
+            <td>(0.0582)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>154,920</td>
+            <td>154,920</td>
+            <td>154,918</td>
+            <td>154,918</td>
+        </tr>
+        <tr>
+            <td>R&sup2; adj.</td>
+            <td>0.868</td>
+            <td>0.871</td>
+            <td>0.876</td>
+            <td>0.877</td>
+        </tr>
+    </table>
+
+    <h3>Table 6B: Preços Negociados &mdash; Efeito Direto (controlando por quantidade)</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig2">0.0548**</td>
+            <td class="ns">-0.0470</td>
+            <td class="sig3 coef-negative">-0.1898***</td>
+            <td class="sig3 coef-negative">-0.1923***</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0269)</td>
+            <td>(0.0308)</td>
+            <td>(0.0647)</td>
+            <td>(0.0631)</td>
+        </tr>
+        <tr>
+            <td><strong>bid_qty_log</strong></td>
+            <td class="sig3">-0.2533***</td>
+            <td class="sig3">-0.2608***</td>
+            <td class="sig3">-0.3192***</td>
+            <td class="sig3">-0.3200***</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>154,920</td>
+            <td>154,920</td>
+            <td>154,918</td>
+            <td>154,918</td>
+        </tr>
+        <tr>
+            <td>R&sup2; adj.</td>
+            <td>0.900</td>
+            <td>0.905</td>
+            <td>0.912</td>
+            <td>0.913</td>
+        </tr>
+    </table>
+    <div class="key-finding negative">
+        <strong>Resultado-chave:</strong> Controlando por quantidade, compras urgentes pagam
+        <strong>17-18% menos por unidade</strong> (&beta; = -0.190, p = 0.004). O efeito total
+        não-significativo mascara uma combinação de quantidades menores com preços unitários mais baixos.
+    </div>
+
+    <h3>Table 7A: Empresas Participantes &mdash; Efeito Total</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig3">-0.1619***</td>
+            <td class="sig3">-0.1848***</td>
+            <td class="sig3">-0.1170***</td>
+            <td class="sig2">-0.1127**</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0214)</td>
+            <td>(0.0218)</td>
+            <td>(0.0440)</td>
+            <td>(0.0440)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>60,685</td>
+            <td>60,685</td>
+            <td>60,685</td>
+            <td>60,684</td>
+        </tr>
+    </table>
+
+    <h3>Table 7B: Empresas Participantes &mdash; Efeito Direto</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig3">-0.0844***</td>
+            <td class="sig3">-0.1041***</td>
+            <td class="ns coef-ns">-0.0356</td>
+            <td class="ns coef-ns">-0.0297</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0148)</td>
+            <td>(0.0142)</td>
+            <td>(0.0223)</td>
+            <td>(0.0209)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>60,678</td>
+            <td>60,678</td>
+            <td>60,678</td>
+            <td>60,677</td>
+        </tr>
+    </table>
+    <div class="key-finding">
+        <strong>Resultado:</strong> Compras urgentes atraem ~11% menos empresas (efeito total significativo a 1%).
+        Controlando por quantidade, o efeito torna-se não-significativo, sugerindo que a menor participação
+        é mediada pelo canal de quantidade.
+    </div>
+
+    <h3>Table 9: Taxa de Sucesso (LPM)</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th colspan="4">Panel A: Efeito Total</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig1">0.0212*</td>
+            <td class="sig2">0.0285**</td>
+            <td class="sig2">0.0146**</td>
+            <td class="sig2">0.0148**</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0123)</td>
+            <td>(0.0135)</td>
+            <td>(0.0065)</td>
+            <td>(0.0063)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>177,907</td>
+            <td>177,907</td>
+            <td>177,906</td>
+            <td>177,906</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th></th>
+            <th colspan="4">Panel B: Efeito Direto (controlando por quantidade)</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>urgent</strong></td>
+            <td class="sig1">0.0224*</td>
+            <td class="sig2">0.0304**</td>
+            <td class="sig3">0.0246***</td>
+            <td class="sig3">0.0249***</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0124)</td>
+            <td>(0.0138)</td>
+            <td>(0.0069)</td>
+            <td>(0.0071)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>177,889</td>
+            <td>177,889</td>
+            <td>177,888</td>
+            <td>177,888</td>
+        </tr>
+    </table>
+    <div class="key-finding">
+        <strong>Resultado:</strong> Compras urgentes têm taxa de sucesso <strong>+1.5 pp</strong> maior (efeito total),
+        e <strong>+2.5 pp</strong> maior controlando por quantidade (significativo a 1%).
+        <br><em>Nota: V3 utiliza Linear Probability Model (LPM) via reghdfe em vez de logit,
+        devido à inviabilidade computacional do logit com ~2.900 EF de item.</em>
+    </div>
+</section>
+
+<!-- Section 4: Under the Gun -->
+<section id="utg">
+    <h2>4. Under the Gun Analysis</h2>
+    <p>
+        A análise "Under the Gun" compara compras <strong>administrativas</strong> vs. <strong>litigadas</strong>
+        dentro do subgrupo de compras urgentes. O coeficiente positivo em <code>is_admin</code> indica que
+        compras administrativas pagam <em>mais</em> que litigadas, ou equivalentemente, que a pressão
+        judicial/sancionatória sobre compras litigadas leva a preços <em>mais baixos</em>.
+    </p>
+
+    <h3>Table 10A: Under the Gun &mdash; Efeito Total</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>is_admin</strong></td>
+            <td class="sig3">0.0770***</td>
+            <td class="sig3">0.0781***</td>
+            <td class="sig2">0.0725**</td>
+            <td class="sig2">0.0736**</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0275)</td>
+            <td>(0.0272)</td>
+            <td>(0.0321)</td>
+            <td>(0.0325)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>33,004</td>
+            <td>33,004</td>
+            <td>33,004</td>
+            <td>33,004</td>
+        </tr>
+        <tr>
+            <td>R&sup2; adj.</td>
+            <td>0.908</td>
+            <td>0.908</td>
+            <td>0.911</td>
+            <td>0.911</td>
+        </tr>
+    </table>
+
+    <h3>Table 10B: Under the Gun &mdash; Efeito Direto</h3>
+    <table>
+        <tr>
+            <th></th>
+            <th>(1) Item FE</th>
+            <th>(2) Item+Ano</th>
+            <th>(3) Item+Ano+PBU</th>
+            <th>(4) Item+AM+PBU</th>
+        </tr>
+        <tr>
+            <td><strong>is_admin</strong></td>
+            <td class="ns">-0.0639</td>
+            <td class="ns">-0.0608</td>
+            <td class="sig1">-0.0802*</td>
+            <td class="sig2">-0.0818**</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.0452)</td>
+            <td>(0.0426)</td>
+            <td>(0.0391)</td>
+            <td>(0.0352)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>33,004</td>
+            <td>33,004</td>
+            <td>33,004</td>
+            <td>33,004</td>
+        </tr>
+        <tr>
+            <td>R&sup2; adj.</td>
+            <td>0.934</td>
+            <td>0.935</td>
+            <td>0.936</td>
+            <td>0.937</td>
+        </tr>
+    </table>
+
+    <div class="key-finding positive">
+        <strong>Resultado Under the Gun:</strong>
+        <ul style="margin-top:0.5rem; padding-left:1.5rem;">
+            <li><strong>Efeito total:</strong> Compras administrativas pagam ~7.5% mais que litigadas (significativo a 5%).</li>
+            <li><strong>Efeito direto:</strong> Controlando por quantidade, administrativas pagam ~8% <em>menos</em> por unidade (p = 0.051).</li>
+            <li>A pressão sancionatória das decisões judiciais reduz os preços totais, mas o efeito é mediado pela diferença de quantidades.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Section 5: Heterogeneity -->
+<section id="heterogeneity">
+    <h2>5. Heterogeneity Analysis</h2>
+    <p>
+        Análise de heterogeneidade em 4 dimensões. VD = log preço negociado (efeito total),
+        Item+Ano+PBU FE, cluster PBU.
+    </p>
+
+    <table>
+        <tr>
+            <th>Dimensão</th>
+            <th>Grupo 1</th>
+            <th>&beta;</th>
+            <th>EP</th>
+            <th>N</th>
+            <th>Grupo 2</th>
+            <th>&beta;</th>
+            <th>EP</th>
+            <th>N</th>
+        </tr>
+        <tr>
+            <td>SUS (componente)</td>
+            <td>Básico</td>
+            <td class="ns">0.078</td>
+            <td>(0.127)</td>
+            <td>31,905</td>
+            <td>Especializado</td>
+            <td class="ns">0.031</td>
+            <td>(0.049)</td>
+            <td>123,011</td>
+        </tr>
+        <tr>
+            <td>Período</td>
+            <td>Inicial (09-13)</td>
+            <td class="ns">0.027</td>
+            <td>(0.047)</td>
+            <td>64,280</td>
+            <td>Tardio (14-19)</td>
+            <td class="sig1">0.179*</td>
+            <td>(0.061)</td>
+            <td>90,503</td>
+        </tr>
+        <tr>
+            <td>Competição</td>
+            <td>Baixa</td>
+            <td class="ns">-0.014</td>
+            <td>(0.057)</td>
+            <td>102,235</td>
+            <td>Alta</td>
+            <td class="ns">0.119</td>
+            <td>(0.076)</td>
+            <td>52,680</td>
+        </tr>
+        <tr>
+            <td>Porte da PBU</td>
+            <td>Pequena</td>
+            <td class="ns">0.057</td>
+            <td>(0.041)</td>
+            <td>76,063</td>
+            <td>Grande</td>
+            <td class="ns">0.097</td>
+            <td>(0.080)</td>
+            <td>78,600</td>
+        </tr>
+    </table>
+
+    <h3>Modelos com Interação</h3>
+    <table>
+        <tr>
+            <th>Dimensão</th>
+            <th>&beta; base (urgent)</th>
+            <th>Interação</th>
+            <th>&beta; interação</th>
+            <th>EP</th>
+            <th>p-value</th>
+        </tr>
+        <tr>
+            <td>SUS</td>
+            <td class="ns">-0.023</td>
+            <td>urgent &times; básico</td>
+            <td class="sig3">0.435***</td>
+            <td>(0.055)</td>
+            <td>&lt;0.001</td>
+        </tr>
+        <tr>
+            <td>Período</td>
+            <td class="sig3">0.245***</td>
+            <td>urgent &times; tardio</td>
+            <td class="sig3">-0.339***</td>
+            <td>(0.047)</td>
+            <td>&lt;0.001</td>
+        </tr>
+        <tr>
+            <td>Competição</td>
+            <td class="ns">-0.028</td>
+            <td>urgent &times; alta_comp</td>
+            <td class="sig3">0.208***</td>
+            <td>(0.033)</td>
+            <td>&lt;0.001</td>
+        </tr>
+        <tr>
+            <td>Porte PBU</td>
+            <td class="ns">0.119</td>
+            <td>urgent &times; grande</td>
+            <td class="ns">-0.122</td>
+            <td>(0.097)</td>
+            <td>0.213</td>
+        </tr>
+    </table>
+
+    <div class="key-finding">
+        <strong>Heterogeneidade:</strong>
+        <ul style="margin-top:0.5rem; padding-left:1.5rem;">
+            <li><strong>Período:</strong> O efeito concentra-se nos anos mais recentes (2014-2019), com interação altamente significativa.</li>
+            <li><strong>Competição:</strong> O efeito é maior em mercados com alta competição (interação = +0.208***).</li>
+            <li><strong>SUS:</strong> Componentes básicos do SUS mostram maior efeito de urgência (interação = +0.435***).</li>
+            <li><strong>Porte da PBU:</strong> Sem heterogeneidade significativa.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Section 6: Fiscal Costs -->
+<section id="fiscal">
+    <h2>6. Fiscal Cost Estimates</h2>
+    <p>
+        Estimativas back-of-envelope do custo fiscal excedente das compras urgentes,
+        baseadas nos coeficientes da regressão. Gasto total com compras urgentes (vencedores):
+        <strong>R$ 1,196 bilhões</strong> (9.1% do total de R$ 13.1 bilhões).
+    </p>
+
+    <h3>Canal A: Efeito Total (prêmio de urgência sobre preços)</h3>
+    <table>
+        <tr>
+            <th>Especificação FE</th>
+            <th>&beta;</th>
+            <th>Prêmio (%)</th>
+            <th>Custo Excedente (R$)</th>
+            <th>Anual (R$)</th>
+        </tr>
+        <tr>
+            <td>Item+Ano</td>
+            <td class="sig3">0.2212***</td>
+            <td>24.8%</td>
+            <td>237,255,173</td>
+            <td>21,568,652</td>
+        </tr>
+        <tr style="font-weight:700;">
+            <td>Item+Ano+PBU</td>
+            <td class="ns">0.0224</td>
+            <td>2.3%</td>
+            <td>26,497,107</td>
+            <td>2,408,828</td>
+        </tr>
+        <tr>
+            <td>Item+AM+PBU</td>
+            <td class="ns">0.0245</td>
+            <td>2.5%</td>
+            <td>28,886,710</td>
+            <td>2,626,065</td>
+        </tr>
+    </table>
+
+    <h3>Canal B: Efeito Direto (prêmio por unidade, controlando quantidade)</h3>
+    <table>
+        <tr>
+            <th>Especificação FE</th>
+            <th>&beta;</th>
+            <th>Prêmio (%)</th>
+            <th>Custo Excedente (R$)</th>
+            <th>Anual (R$)</th>
+        </tr>
+        <tr>
+            <td>Item+Ano</td>
+            <td class="ns">-0.0470</td>
+            <td>-4.6%</td>
+            <td>-57,505,554</td>
+            <td>-5,227,778</td>
+        </tr>
+        <tr style="font-weight:700;">
+            <td>Item+Ano+PBU</td>
+            <td class="sig3">-0.1898***</td>
+            <td>-17.3%</td>
+            <td>-249,878,321</td>
+            <td>-22,716,211</td>
+        </tr>
+        <tr>
+            <td>Item+AM+PBU</td>
+            <td class="sig3">-0.1923***</td>
+            <td>-17.5%</td>
+            <td>-253,476,888</td>
+            <td>-23,043,353</td>
+        </tr>
+    </table>
+
+    <h3>Canal C: Under the Gun (canal sancionatório)</h3>
+    <table>
+        <tr>
+            <th>Especificação FE</th>
+            <th>&beta; (is_admin)</th>
+            <th>Prêmio litigado (%)</th>
+            <th>Custo sanção (R$)</th>
+            <th>Anual (R$)</th>
+        </tr>
+        <tr style="font-weight:700;">
+            <td>Item+Ano+PBU</td>
+            <td class="sig2">0.0725**</td>
+            <td>-7.0%</td>
+            <td>-46,349,291</td>
+            <td>-4,213,572</td>
+        </tr>
+    </table>
+
+    <div class="key-finding negative">
+        <strong>Custos Fiscais na especificação preferida:</strong>
+        <ul style="margin-top:0.5rem; padding-left:1.5rem;">
+            <li><strong>Efeito total:</strong> R$ 26.5M em 11 anos (R$ 2.4M/ano) &mdash; <em>não-significativo</em></li>
+            <li><strong>Efeito direto:</strong> Compras urgentes <em>economizam</em> R$ 250M (R$ 22.7M/ano) em preço unitário</li>
+            <li><strong>Canal sancionatório:</strong> Pressão judicial economiza R$ 46.3M (R$ 4.2M/ano)</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Section 7: Robustness -->
+<section id="robustness">
+    <h2>7. Robustness Checks</h2>
+
+    <h3>7.1 UTG: Controles Progressivos (Item+Ano+PBU FE)</h3>
+    <table>
+        <tr>
+            <th>Modelo</th>
+            <th>(1) Base</th>
+            <th>(2) +Qtd</th>
+            <th>(3) +Preço Ref</th>
+            <th>(4) +Compet.</th>
+            <th>(5) +AM FE</th>
+        </tr>
+        <tr>
+            <td><strong>is_admin</strong></td>
+            <td class="sig2">0.073**</td>
+            <td class="sig1">-0.080*</td>
+            <td class="ns">-0.015</td>
+            <td class="ns">-0.016</td>
+            <td class="ns">-0.021</td>
+        </tr>
+        <tr>
+            <td>EP</td>
+            <td>(0.032)</td>
+            <td>(0.039)</td>
+            <td>(0.026)</td>
+            <td>(0.030)</td>
+            <td>(0.031)</td>
+        </tr>
+        <tr>
+            <td>N</td>
+            <td>33,004</td>
+            <td>33,004</td>
+            <td>33,004</td>
+            <td>8,619</td>
+            <td>8,618</td>
+        </tr>
+    </table>
+    <p class="note">
+        O efeito positivo (admin &gt; litigado) desaparece e inverte-se ao controlar por quantidade.
+        Ao adicionar preço de referência, o coeficiente torna-se próximo de zero e não-significativo.
+    </p>
+
+    <h3>7.2 Sensibilidade à Winsorização (Especificação preferida, Col. 3)</h3>
+    <table>
+        <tr>
+            <th>Tabela</th>
+            <th>Sem winsor</th>
+            <th>1%/99%</th>
+            <th>5%/95%</th>
+            <th>Estabilidade</th>
+        </tr>
+        <tr>
+            <td>Table 4 (Preço Ref)</td>
+            <td class="ns">0.029</td>
+            <td class="ns">0.032</td>
+            <td class="ns">0.036</td>
+            <td><span class="badge badge-ns">Estável (ns)</span></td>
+        </tr>
+        <tr>
+            <td>Table 5 (Quantidade)</td>
+            <td class="ns">-0.665</td>
+            <td class="ns">-0.624</td>
+            <td class="sig1">-0.504*</td>
+            <td><span class="badge badge-ns">Estável</span></td>
+        </tr>
+        <tr>
+            <td>Table 6A (Preço Neg Total)</td>
+            <td class="ns">0.022</td>
+            <td class="ns">0.023</td>
+            <td class="ns">0.020</td>
+            <td><span class="badge badge-ns">Estável (ns)</span></td>
+        </tr>
+        <tr>
+            <td>Table 6B (Preço Neg Direto)</td>
+            <td class="sig3">-0.190***</td>
+            <td class="sig3">-0.182***</td>
+            <td class="sig3">-0.146***</td>
+            <td><span class="badge badge-sig">Robusto ***</span></td>
+        </tr>
+        <tr>
+            <td>Table 7A (Empresas Total)</td>
+            <td class="sig3">-0.117***</td>
+            <td class="sig1">-0.111*</td>
+            <td class="sig1">-0.109*</td>
+            <td><span class="badge badge-sig">Robusto</span></td>
+        </tr>
+        <tr>
+            <td>Table 10A (UTG Total)</td>
+            <td class="sig2">0.073**</td>
+            <td class="ns">0.066</td>
+            <td class="ns">0.047</td>
+            <td><span class="badge badge-ns">Instável</span></td>
+        </tr>
+        <tr>
+            <td>Table 10B (UTG Direto)</td>
+            <td class="sig1">-0.080*</td>
+            <td class="sig1">-0.086*</td>
+            <td class="sig2">-0.093**</td>
+            <td><span class="badge badge-sig">Robusto */**</span></td>
+        </tr>
+    </table>
+</section>
+
+<!-- Section 8: Comparison -->
+<section id="comparison">
+    <h2>8. Comparison with Original Manuscript</h2>
+    <p>
+        Esta seção compara os resultados da V3 (dataset completo BEC_JUD.dta, ~155K vencedores,
+        todos os tipos de licitação exceto Dispensa, <code>reghdfe</code>) com três fontes:
+    </p>
+    <ul style="margin-bottom:1rem; padding-left:1.5rem;">
+        <li><strong>Manuscrito original:</strong> Tabelas publicadas em <code>EmpiricalStrategy.tex</code> (OLS com dummies explícitas, N&asymp;59.708)</li>
+        <li><strong>V2 (<code>reghdfe</code>):</strong> Análise com <code>3_BEC_PAPER_1_JUD_FINAL.dta</code> (subamostra SUS, pregão-only, N&asymp;26.827 vencedores)</li>
+    </ul>
+
+    <h3>8.1 Comparação de Amostras</h3>
+    <table class="comparison-table">
+        <tr>
+            <th>Aspecto</th>
+            <th>Manuscrito Original</th>
+            <th>V2 (reghdfe)</th>
+            <th>V3 (BEC_JUD completo)</th>
+        </tr>
+        <tr>
+            <td>Dataset</td>
+            <td>Não especificado</td>
+            <td>3_BEC_PAPER_1_JUD_FINAL.dta</td>
+            <td>BEC_JUD.dta</td>
+        </tr>
+        <tr>
+            <td>Observações totais</td>
+            <td>~59,708</td>
+            <td>~31,671</td>
+            <td>177,907</td>
+        </tr>
+        <tr>
+            <td>N vencedores (Tables 4-6)</td>
+            <td>38,440&ndash;59,708</td>
+            <td>26,822&ndash;26,827</td>
+            <td>154,918&ndash;154,929</td>
+        </tr>
+        <tr>
+            <td>Itens únicos</td>
+            <td>~255</td>
+            <td>246</td>
+            <td>2,252</td>
+        </tr>
+        <tr>
+            <td>PBUs</td>
+            <td>N/R</td>
+            <td>80</td>
+            <td>92</td>
+        </tr>
+        <tr>
+            <td>Licitações incluídas</td>
+            <td>Pregão</td>
+            <td>Pregão</td>
+            <td>Convite + Pregão</td>
+        </tr>
+        <tr>
+            <td>Filtro SUS</td>
+            <td>Sim (subamostra)</td>
+            <td>Sim (subamostra)</td>
+            <td>Não (todos os itens)</td>
+        </tr>
+        <tr>
+            <td>Estimador</td>
+            <td>OLS com dummies</td>
+            <td>reghdfe</td>
+            <td>reghdfe</td>
+        </tr>
+        <tr>
+            <td>Clustering</td>
+            <td>N/R</td>
+            <td>PBU</td>
+            <td>PBU (+ item, two-way robustness)</td>
+        </tr>
+        <tr>
+            <td>Table 9 (Sucesso)</td>
+            <td>Logit</td>
+            <td>Logit condicional</td>
+            <td>LPM (reghdfe)</td>
+        </tr>
+        <tr>
+            <td>N UTG (Table 10)</td>
+            <td>51,013</td>
+            <td>2,018&ndash;2,020</td>
+            <td>33,004</td>
+        </tr>
+    </table>
+
+    <h3>8.2 Comparação de Coeficientes &mdash; Especificação Preferida (Item+Ano+PBU FE)</h3>
+    <table class="comparison-table">
+        <tr>
+            <th>Tabela / VD</th>
+            <th>Manuscrito<br>(OLS + dummies)</th>
+            <th>V2<br>(reghdfe, SUS)</th>
+            <th>V3<br>(reghdfe, completo)</th>
+            <th>Tendência</th>
+        </tr>
+        <tr>
+            <td><strong>T4: Preço Referência</strong></td>
+            <td class="sig3">0.497***</td>
+            <td class="ns">0.129</td>
+            <td class="ns">0.029</td>
+            <td><span class="arrow-down">&darr;&darr;</span> Coeficiente cai drasticamente</td>
+        </tr>
+        <tr>
+            <td><strong>T5: Quantidade</strong></td>
+            <td class="sig3">-0.827***</td>
+            <td class="ns">-1.511</td>
+            <td class="sig1">-0.665*</td>
+            <td><span class="arrow-same">&harr;</span> Sinal consistente, magnitude varia</td>
+        </tr>
+        <tr>
+            <td><strong>T6A: Preço Neg (total)</strong></td>
+            <td class="sig3">0.357***<sup>d</sup></td>
+            <td class="ns">0.105</td>
+            <td class="ns">0.022</td>
+            <td><span class="arrow-down">&darr;&darr;</span> Coeficiente cai drasticamente</td>
+        </tr>
+        <tr>
+            <td><strong>T6B: Preço Neg (direto)</strong></td>
+            <td class="sig3">0.357***<sup>d</sup></td>
+            <td class="sig3">-0.448***</td>
+            <td class="sig3">-0.190***</td>
+            <td><span class="badge badge-changed">Sinal inverte!</span> Negativo e significativo</td>
+        </tr>
+        <tr>
+            <td><strong>T7A: Empresas (total)</strong></td>
+            <td class="sig3">-0.381***<sup>d</sup></td>
+            <td class="sig1">-0.158*</td>
+            <td class="sig3">-0.117***</td>
+            <td><span class="arrow-same">&harr;</span> Consistente, menor magnitude</td>
+        </tr>
+        <tr>
+            <td><strong>T7B: Empresas (direto)</strong></td>
+            <td class="sig3">-0.381***<sup>d</sup></td>
+            <td class="ns">-0.031</td>
+            <td class="ns">-0.036</td>
+            <td><span class="arrow-same">&harr;</span> Consistente (ns com PBU FE)</td>
+        </tr>
+        <tr>
+            <td><strong>T9: Sucesso (total)</strong></td>
+            <td class="sig3">-0.667***<sup>L</sup></td>
+            <td class="ns">0.081<sup>L</sup></td>
+            <td class="sig2">0.015**<sup>LPM</sup></td>
+            <td><span class="badge badge-changed">Sinal inverte!</span> Manuscrito: negativo / V3: positivo</td>
+        </tr>
+        <tr>
+            <td><strong>T10A: UTG (total)</strong></td>
+            <td class="sig3">-0.086***<sup>a</sup></td>
+            <td class="ns">0.114</td>
+            <td class="sig2">0.073**</td>
+            <td><span class="badge badge-changed">Sinal inverte!</span> Manuscrito: neg / V2-V3: positivo</td>
+        </tr>
+        <tr>
+            <td><strong>T10B: UTG (direto)</strong></td>
+            <td class="sig3">-0.086***<sup>a,d</sup></td>
+            <td class="ns">0.006</td>
+            <td class="sig1">-0.080*</td>
+            <td><span class="arrow-same">&harr;</span> V3 recupera significância</td>
+        </tr>
+    </table>
+    <p class="note">
+        <sup>d</sup> Manuscrito reporta apenas especificação com controle de quantidade (efeito direto).
+        <sup>L</sup> Logit (manuscrito e V2). <sup>LPM</sup> Linear Probability Model (V3).
+        <sup>a</sup> Manuscrito codifica <code>administrative</code> com sinal oposto a <code>is_admin</code> da V3
+        (manuscrito: coeficiente negativo = admin paga menos; V3: coeficiente positivo em is_admin = admin paga mais).
+    </p>
+
+    <h3>8.3 Análise das Divergências</h3>
+
+    <div class="key-finding warning">
+        <strong>1. Preços de Referência e Preços Negociados (efeito total): Coeficiente colapsa com PBU FE</strong>
+        <p>
+            O manuscrito original reporta prêmios de 50-66% usando OLS com dummies de tipo de gestão.
+            Na V2 e V3, o uso de efeitos fixos absorvidos de PBU elimina completamente o efeito.
+            Isso sugere que o prêmio de preço observado no manuscrito era <strong>driven by entre-PBU variation</strong>
+            &mdash; PBUs que fazem compras urgentes sistematicamente compram itens mais caros,
+            mas <em>dentro da mesma PBU</em>, não há prêmio significativo.
+        </p>
+    </div>
+
+    <div class="key-finding warning">
+        <strong>2. Preço Negociado (efeito direto): Sinal inverte na V2 e V3</strong>
+        <p>
+            O manuscrito reporta urgente = +35.7% (controlando quantidade). Na V2 e V3 com reghdfe + PBU FE,
+            o coeficiente torna-se <strong>negativo</strong> (-44.8% na V2, -19.0% na V3).
+            Ou seja, controlando quantidade e variação entre PBUs, compras urgentes pagam <em>menos</em> por unidade.
+            Possível explicação: pressão por concluir rapidamente a licitação leva a aceitação de preços mais baixos.
+        </p>
+    </div>
+
+    <div class="key-finding warning">
+        <strong>3. Taxa de Sucesso: Sinal inverte</strong>
+        <p>
+            O manuscrito reporta que compras urgentes têm 38-49% <em>menos</em> chance de sucesso (logit com FE de item como dummies).
+            A V3, usando LPM com efeitos fixos absorvidos, encontra +1.5 pp <em>maior</em> taxa de sucesso.
+            A diferença metodológica (logit com dummies vs. LPM com FE absorvidos) e a expansão amostral
+            provavelmente explicam esta divergência. Nota: logit com ~2.900 FE de item é computacionalmente
+            problemático e pode gerar incidental parameters bias.
+        </p>
+    </div>
+
+    <div class="key-finding warning">
+        <strong>4. Under the Gun: Codificação diferente, mas resultado qualitativamente similar</strong>
+        <p>
+            O manuscrito usa <code>administrative</code> (negativo = admin mais barato) enquanto V3 usa
+            <code>is_admin</code> (positivo = admin mais caro que litigado). Os sinais são consistentes:
+            ambos indicam que compras litigadas resultam em preços totais mais baixos.
+            A V3 encontra este efeito <strong>significativo a 5%</strong> (N=33.004), enquanto a V2
+            não encontrava significância (N=2.020). O aumento amostral (16x mais obs na subamostra UTG)
+            é o principal fator.
+        </p>
+    </div>
+
+    <h3>8.4 Comparação V2 vs. V3 (mesma metodologia, dataset diferente)</h3>
+    <table class="comparison-table">
+        <tr>
+            <th>Resultado</th>
+            <th>V2 (SUS, N&asymp;27K winners)</th>
+            <th>V3 (Completo, N&asymp;155K winners)</th>
+            <th>Mudança</th>
+        </tr>
+        <tr>
+            <td>T4: Preço Referência</td>
+            <td class="ns">0.129 (0.159)</td>
+            <td class="ns">0.029 (0.052)</td>
+            <td>Magnitude cai, EP cai 3x, ambos ns</td>
+        </tr>
+        <tr>
+            <td>T5: Quantidade</td>
+            <td class="ns">-1.511 (0.763)</td>
+            <td class="sig1">-0.665* (0.388)</td>
+            <td>Magnitude cai 56%, ganha significância marginal</td>
+        </tr>
+        <tr>
+            <td>T6A: Preço Neg (total)</td>
+            <td class="ns">0.105 (0.156)</td>
+            <td class="ns">0.022 (0.061)</td>
+            <td>Magnitude cai, EP cai 2.5x, ambos ns</td>
+        </tr>
+        <tr>
+            <td>T6B: Preço Neg (direto)</td>
+            <td class="sig3">-0.448*** (0.110)</td>
+            <td class="sig3">-0.190*** (0.065)</td>
+            <td><span class="badge badge-sig">Ambos ***</span> Magnitude cai 58%</td>
+        </tr>
+        <tr>
+            <td>T7A: Empresas (total)</td>
+            <td class="sig1">-0.158* (0.065)</td>
+            <td class="sig3">-0.117*** (0.044)</td>
+            <td><span class="badge badge-new">Ganha significância!</span> V3 *** vs V2 *</td>
+        </tr>
+        <tr>
+            <td>T7B: Empresas (direto)</td>
+            <td class="ns">-0.031 (0.033)</td>
+            <td class="ns">-0.036 (0.022)</td>
+            <td>Consistente, ambos ns</td>
+        </tr>
+        <tr>
+            <td>T9: Sucesso</td>
+            <td class="ns">0.081 (0.107)<sup>L</sup></td>
+            <td class="sig2">0.015** (0.007)<sup>LPM</sup></td>
+            <td><span class="badge badge-new">Ganha significância!</span> (método diferente)</td>
+        </tr>
+        <tr>
+            <td>T10A: UTG (total)</td>
+            <td class="ns">0.114 (0.104)</td>
+            <td class="sig2">0.073** (0.032)</td>
+            <td><span class="badge badge-new">Ganha significância!</span> EP cai 3x</td>
+        </tr>
+        <tr>
+            <td>T10B: UTG (direto)</td>
+            <td class="ns">0.006 (0.060)</td>
+            <td class="sig1">-0.080* (0.039)</td>
+            <td><span class="badge badge-changed">Sinal muda!</span> Positivo &rarr; negativo*</td>
+        </tr>
+    </table>
+
+    <div class="summary-box">
+        <h3>Principais diferenças V2 &rarr; V3</h3>
+        <ul>
+            <li><strong>Erros-padrão menores:</strong> Com 6x mais observações, os EP caem 2-3x em média, tornando alguns efeitos significativos.</li>
+            <li><strong>Magnitudes menores:</strong> Os coeficientes tendem a ser menores na amostra completa, sugerindo que a subamostra SUS tinha efeitos mais extremos.</li>
+            <li><strong>Efeitos novos:</strong> UTG total (Table 10A) e sucesso (Table 9) tornam-se significativos.</li>
+            <li><strong>Resultado-chave preservado:</strong> O efeito direto negativo sobre preços negociados (Table 6B) permanece *** em ambas as versões.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Section 9: Conclusions -->
+<section id="conclusions">
+    <h2>9. Summary and Conclusions</h2>
+
+    <div class="summary-box">
+        <h3>Principais Achados da Análise V3</h3>
+        <ol style="padding-left:1.5rem;">
+            <li style="margin-bottom:0.8rem;">
+                <strong>Sem prêmio de preço de referência:</strong>
+                Controlando por PBU, não há diferença significativa nos preços de referência entre compras
+                ordinárias e urgentes (&beta; = 0.029, ns). O prêmio observado no manuscrito original
+                era atribuível a variação entre PBUs.
+            </li>
+            <li style="margin-bottom:0.8rem;">
+                <strong>Quantidades menores:</strong>
+                Compras urgentes envolvem quantidades ~50% menores (marginalmente significativo, p = 0.09).
+            </li>
+            <li style="margin-bottom:0.8rem;">
+                <strong>Sem prêmio de preço negociado (efeito total):</strong>
+                O gasto total por transação não é significativamente diferente para compras urgentes (&beta; = 0.022, ns).
+            </li>
+            <li style="margin-bottom:0.8rem;">
+                <strong>Desconto por unidade (efeito direto):</strong>
+                Controlando por quantidade, compras urgentes pagam <strong>17-18% menos por unidade</strong>
+                (&beta; = -0.190***, p = 0.004). Este é o resultado mais robusto do paper.
+            </li>
+            <li style="margin-bottom:0.8rem;">
+                <strong>Menor participação de empresas:</strong>
+                Compras urgentes atraem ~11% menos empresas (&beta; = -0.117***, p = 0.009).
+                Este efeito é mediado pela quantidade (torna-se ns quando quantidade é controlada).
+            </li>
+            <li style="margin-bottom:0.8rem;">
+                <strong>Maior taxa de sucesso:</strong>
+                Compras urgentes têm +1.5 pp maior taxa de sucesso (+2.5 pp controlando por quantidade).
+            </li>
+            <li style="margin-bottom:0.8rem;">
+                <strong>Efeito Under the Gun:</strong>
+                Compras administrativas pagam ~7.5% mais que litigadas (efeito total). Controlando por quantidade,
+                administrativas pagam ~8% <em>menos</em> por unidade. A pressão sancionatória judicial
+                reduz preços totais mas não necessariamente preços unitários.
+            </li>
+            <li style="margin-bottom:0.8rem;">
+                <strong>Heterogeneidade temporal:</strong>
+                O efeito de urgência concentra-se no período 2014-2019, com interação altamente significativa.
+            </li>
+        </ol>
+    </div>
+
+    <div class="key-finding warning">
+        <strong>Implicação para o manuscrito:</strong>
+        <p>
+            Os resultados da V3 diferem substancialmente do manuscrito original em vários aspectos-chave.
+            As estimativas com efeitos fixos de PBU absorvidos eliminam o prêmio de preço reportado originalmente,
+            e o efeito direto sobre preços negociados inverte de sinal. O efeito Under the Gun, que era
+            não-significativo na V2 (N&asymp;2.000), torna-se significativo na V3 (N&asymp;33.000).
+            Estas mudanças são atribuíveis a: (1) inclusão de efeitos fixos de PBU absorvidos vs. dummies de tipo de gestão;
+            (2) amostra muito maior e mais representativa; (3) inclusão de licitações tipo Convite além de Pregão.
+        </p>
+    </div>
+
+    <h3>Outputs Produzidos</h3>
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="number">34</div>
+            <div class="label">Tabelas RTF</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">8</div>
+            <div class="label">Gráficos PDF</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">2</div>
+            <div class="label">Tabelas LaTeX</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">8</div>
+            <div class="label">Scripts Stata</div>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<div class="footer">
+    <p>
+        Bitter Pills V3 Analysis Report &mdash; Generated automatically by Claude Code<br>
+        Dataset: BEC_JUD.dta | Stata SE 18 | reghdfe with absorbed FE<br>
+        &copy; 2026 Darcio Genicolo-Martins &amp; Paulo Furquim de Azevedo
+    </p>
+</div>
+
+</body>
+</html>
