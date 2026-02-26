@@ -64,10 +64,22 @@ winsorize_dt <- function(dt, vars, p_lo = 0.01, p_hi = 0.99) {
 
 # --- Regenerate log variables after winsorization ----------------------------
 gen_log_vars <- function(dt) {
-  if ("bid_price"     %in% names(dt)) dt[, bid_price_log     := log(bid_price)]
-  if ("bid_price_ref" %in% names(dt)) dt[, bid_price_ref_log := log(bid_price_ref)]
-  if ("bid_qty"       %in% names(dt)) dt[, bid_qty_log       := log(bid_qty)]
-  if ("n_firms_bids"  %in% names(dt)) dt[, ln_n_firms        := log(n_firms_bids)]
+  if ("bid_price" %in% names(dt)) {
+    dt[, bid_price_log := NA_real_]
+    dt[bid_price > 0, bid_price_log := log(bid_price)]
+  }
+  if ("bid_price_ref" %in% names(dt)) {
+    dt[, bid_price_ref_log := NA_real_]
+    dt[bid_price_ref > 0, bid_price_ref_log := log(bid_price_ref)]
+  }
+  if ("bid_qty" %in% names(dt)) {
+    dt[, bid_qty_log := NA_real_]
+    dt[bid_qty > 0, bid_qty_log := log(bid_qty)]
+  }
+  if ("n_firms_bids" %in% names(dt)) {
+    dt[, ln_n_firms := NA_real_]
+    dt[n_firms_bids > 0, ln_n_firms := log(n_firms_bids)]
+  }
   invisible(dt)
 }
 

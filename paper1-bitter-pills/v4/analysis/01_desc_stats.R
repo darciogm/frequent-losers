@@ -31,9 +31,10 @@ gen_log_vars(dt)
 # --- Helper: compute stats for one variable ----------------------------------
 desc_row <- function(dt, varname, label) {
   # Split by purchase_type: 0=Ordinary, 1=Admin, 2=Litigated
-  ord <- dt[purchase_type == 0 & !is.na(get(varname)), get(varname)]
-  adm <- dt[purchase_type == 1 & !is.na(get(varname)), get(varname)]
-  lit <- dt[purchase_type == 2 & !is.na(get(varname)), get(varname)]
+  # Filter out NA and non-finite values (protects against -Inf from log(0))
+  ord <- dt[purchase_type == 0 & is.finite(get(varname)), get(varname)]
+  adm <- dt[purchase_type == 1 & is.finite(get(varname)), get(varname)]
+  lit <- dt[purchase_type == 2 & is.finite(get(varname)), get(varname)]
 
   # Means and SDs
   m_ord <- mean(ord); s_ord <- sd(ord); n_ord <- length(ord)
