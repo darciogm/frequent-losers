@@ -12,7 +12,8 @@ t_start <- Sys.time()
 
 # --- Check/install packages --------------------------------------------------
 required_pkgs <- c("data.table", "fixest", "modelsummary", "ggplot2",
-                   "arrow", "knitr", "scales")
+                   "arrow", "knitr", "scales",
+                   "haven", "sf", "geobr", "sidrar")
 missing <- required_pkgs[!sapply(required_pkgs, requireNamespace, quietly = TRUE)]
 if (length(missing) > 0) {
   cat("Installing missing packages:", paste(missing, collapse = ", "), "\n")
@@ -42,7 +43,8 @@ scripts <- c(
   "06_robustness.R",
   "07_graphs.R",
   "08_pub_tables.R",
-  "09_pub_figures.R"
+  "09_pub_figures.R",
+  "10_map_litigation.R"
 )
 
 timings <- data.frame(script = scripts, seconds = NA_real_,
