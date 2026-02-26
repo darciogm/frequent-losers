@@ -1,0 +1,46 @@
+\section{Data and Sample}
+\label{sec:data}
+
+\subsection{Data Sources}
+
+We combine three administrative datasets covering January 2009 through December 2019.
+
+\paragraph{Public procurement data.}
+Our primary dataset consists of bid-level records from the BEC electronic procurement platform for all SES/SP purchases of medical supplies classified under BEC Group~65 (``Medical, dental, and hospital equipment and supplies''). Each observation corresponds to a purchase-offer-item (POI)---the combination of a purchase order and a specific item---and includes information on: (i) the internal phase (quantities demanded, reference prices, PBU identifier, auction format); (ii) the external phase (bid prices from all participants, number of bidding firms, tender outcome); and (iii) the winning bid (final negotiated price, firm identifier).
+
+\paragraph{Purchase type classification.}
+We classify each POI as ordinary, administrative, or litigated using a regular expression (REGEX) algorithm applied to the ``Object of the Contract'' field of public tender notices. This text field describes the purchase purpose and, by law, must reference any underlying court order or administrative request.
+
+\paragraph{Health litigation records.}
+Data on individual health claims come from S-CODES, the SES/SP administrative database of all health-related lawsuits against the state of S\~ao Paulo. We derive several variables from this source, including SUS formulary status, whether the claim involves a drug package, and whether the order was enforced through a preliminary injunction.
+
+\subsection{Sample Construction}
+
+The raw dataset comprises 479,330 POI observations across 32,532 distinct items, 94,182 purchase orders, and 100 PBUs. Table~\ref{tab:desc_stats} reports descriptive statistics by purchase type.
+
+\input{../../pub/tables/tab_desc_stats}
+
+The analysis sample is restricted to items for which at least one ordinary and at least one litigated purchase is observed during the sample period, ensuring within-item comparability across procurement regimes. This restriction yields a sample of approximately 226,000 observations covering 3,856 items. For regressions using bid prices and quantities, we further restrict to winning bids (approximately 197,000 observations).
+
+Several features of the data are noteworthy. In levels, ordinary purchases have substantially higher mean reference prices (R\$909) compared to administrative (R\$226) and litigated (R\$370) purchases, reflecting the mix of items across procurement types. However, the composition effect is absorbed by our item fixed effects. In logs---which form the basis of our regressions---litigated purchases show higher mean prices (1.56 for reference price, 1.02 for negotiated price) than ordinary purchases (0.93 and 0.32, respectively), consistent with a price premium for urgent procurement conditional on the item.
+
+Quantities are markedly lower for litigated purchases (mean of 9,646 units vs.\ 31,487 for ordinary), reflecting the inability to aggregate demand under compressed timelines. The number of bidding firms is also lower for urgent purchases (2.2 for litigated vs.\ 3.2 for ordinary), suggesting reduced competition in the external phase.
+
+For the ``under the gun'' analysis, we construct a subsample of urgent purchases (administrative and litigated) for items with both types present, yielding approximately 57,000 observations. Table~\ref{tab:balance} presents balance statistics for this subsample.
+
+\input{../../pub/tables/tab_balance}
+
+\subsection{Variable Definitions}
+
+Our key variables are defined as follows:
+\begin{itemize}
+  \item \textbf{Urgent:} indicator equal to 1 for administrative or litigated purchases (purchase type $\in \{1,2\}$), 0 for ordinary purchases.
+  \item \textbf{Administrative:} indicator equal to 1 for administrative purchases, 0 for litigated. Used in the ``under the gun'' subsample analysis.
+  \item \textbf{Reference price:} the maximum price specified in the tender notice. We use the log transformation.
+  \item \textbf{Negotiated price:} the final price of the winning bid. Log transformation.
+  \item \textbf{Quantity:} the quantity demanded in the tender notice. Log transformation.
+  \item \textbf{Number of firms:} the count of distinct firms submitting bids. Log transformation.
+  \item \textbf{Tender success:} indicator equal to 1 if the tender resulted in a successful purchase.
+\end{itemize}
+
+All continuous variables are winsorized at the 1st and 99th percentiles to limit the influence of outliers. Robustness checks with no winsorization and 5\%/95\% winsorization are reported in the Appendix.
