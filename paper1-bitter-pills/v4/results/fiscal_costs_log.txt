@@ -1,0 +1,99 @@
+=============================================================================
+FISCAL COST ESTIMATES — Bitter Pills v4 (G65 dataset)
+=============================================================================
+
+
+=== SECTION A: TOTAL PRICE EFFECT ===
+DV: bid_price_log ~ urgent | FE
+
+  Section A: Item+Year
+    β = 0.1506 (SE = 0.0377)
+    Price premium: 16.25% [95% CI: 7.98%, 25.16%]
+    Excess factor: 0.1398
+    Total excess cost: R$ 994,818,392
+    Annual average:    R$ 90,438,036
+    As % of urgent spend: 13.98%
+
+  Section A: Item+Year+PBU
+    β = 0.0528 (SE = 0.0161)
+    Price premium: 5.42% [95% CI: 2.14%, 8.81%]
+    Excess factor: 0.0514
+    Total excess cost: R$ 365,939,639
+    Annual average:    R$ 33,267,240
+    As % of urgent spend: 5.14%
+
+  Section A: Item+YM+PBU
+    β = 0.0555 (SE = 0.0164)
+    Price premium: 5.71% [95% CI: 2.36%, 9.17%]
+    Excess factor: 0.0540
+    Total excess cost: R$ 384,319,629
+    Annual average:    R$ 34,938,148
+    As % of urgent spend: 5.40%
+
+
+=== SECTION B: DIRECT PRICE EFFECT (qty control) ===
+DV: bid_price_log ~ urgent + bid_qty_log | FE
+
+  Section B: Item+Year
+    β = 0.0602 (SE = 0.0420)
+    Price premium: 6.21% [95% CI: -2.18%, 15.32%]
+    Excess factor: 0.0585
+    Total excess cost: R$ 415,987,484
+    Annual average:    R$ 37,817,044
+    As % of urgent spend: 5.85%
+
+  Section B: Item+Year+PBU
+    β = 0.0299 (SE = 0.0169)
+    Price premium: 3.04% [95% CI: -0.33%, 6.51%]
+    Excess factor: 0.0295
+    Total excess cost: R$ 209,648,522
+    Annual average:    R$ 19,058,957
+    As % of urgent spend: 2.95%
+
+  Section B: Item+YM+PBU
+    β = 0.0299 (SE = 0.0171)
+    Price premium: 3.04% [95% CI: -0.36%, 6.56%]
+    Excess factor: 0.0295
+    Total excess cost: R$ 209,791,831
+    Annual average:    R$ 19,071,985
+    As % of urgent spend: 2.95%
+
+
+=== SECTION C: UNDER THE GUN (Sanction Channel) ===
+DV: bid_price_log ~ is_admin | FE, urgent subsample
+Litigated spending in UTG sample: R$ 700,866,679 
+
+  Section C: Item+Year
+    β_admin = -0.2052 (SE = 0.0738)
+    Sanction premium on litigated: 22.78% [6.24%, 41.90%]
+    Excess factor: 0.1855
+    Total sanction excess: R$ 130,044,399
+    Annual average: R$ 11,822,218
+
+  Section C: Item+Year+PBU
+    β_admin = -0.2618 (SE = 0.0956)
+    Sanction premium on litigated: 29.93% [7.72%, 56.72%]
+    Excess factor: 0.2304
+    Total sanction excess: R$ 161,457,722
+    Annual average: R$ 14,677,975
+
+  Section C: Item+YM+PBU
+    β_admin = -0.2655 (SE = 0.0944)
+    Sanction premium on litigated: 30.41% [8.38%, 56.92%]
+    Excess factor: 0.2332
+    Total sanction excess: R$ 163,419,585
+    Annual average: R$ 14,856,326
+
+
+=== SUMMARY TABLE ===
+Specification                             Beta   Premium%    Total Excess          Annual
+------------------------------------------------------------------------------------------ 
+Section A: Item+Year                    0.1506     16.25%     994,818,392      90,438,036
+Section A: Item+Year+PBU                0.0528      5.42%     365,939,639      33,267,240
+Section A: Item+YM+PBU                  0.0555      5.71%     384,319,629      34,938,148
+Section B: Item+Year                    0.0602      6.21%     415,987,484      37,817,044
+Section B: Item+Year+PBU                0.0299      3.04%     209,648,522      19,058,957
+Section B: Item+YM+PBU                  0.0299      3.04%     209,791,831      19,071,985
+Section C: Item+Year                   -0.2052     22.78%     130,044,399      11,822,218
+Section C: Item+Year+PBU               -0.2618     29.93%     161,457,722      14,677,975
+Section C: Item+YM+PBU                 -0.2655     30.41%     163,419,585      14,856,326
