@@ -521,7 +521,7 @@ desc_lines <- c(
   "  \\centering",
   "  \\caption{Descriptive Statistics by Purchase Type}",
   "  \\label{tab:desc_stats}",
-  "  \\small",
+  "  \\resizebox{\\textwidth}{!}{%",
   "  \\begin{threeparttable}",
   "  \\begin{tabular}{lcccccccc}",
   "    \\hline\\hline",
@@ -561,6 +561,7 @@ desc_lines <- c(desc_lines,
          "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1."),
   "  \\end{tablenotes}",
   "  \\end{threeparttable}",
+  "  }",
   "\\end{table}"
 )
 
@@ -615,7 +616,7 @@ bal_lines <- c(
   "  \\centering",
   "  \\caption{Balance Table: Administrative vs Litigated (Urgent Purchases)}",
   "  \\label{tab:balance}",
-  "  \\small",
+  "  \\footnotesize",
   "  \\begin{threeparttable}",
   "  \\begin{tabular}{lcccccc}",
   "    \\hline\\hline",

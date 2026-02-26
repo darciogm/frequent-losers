@@ -4,29 +4,44 @@
 \renewcommand{\thetable}{A.\arabic{table}}
 \setcounter{table}{0}
 
-\section*{Appendix: Robustness Checks}
+\section*{Appendix: Robustness Checks and Additional Evidence}
 \label{sec:appendix}
 
-This appendix presents robustness checks for the main results across alternative winsorization levels: no winsorization (Panel~A), 1\%/99\% baseline (Panel~B), and 5\%/95\% aggressive winsorization (Panel~C). Additionally, we report robustness of the ``under the gun'' estimates to progressive inclusion of control variables.
+This appendix provides robustness checks and supplementary evidence for the main results presented in the paper. Section~A.1 examines the sensitivity of the main estimates to the choice of winsorization level. Section~A.2 assesses the robustness of the ``under the gun'' estimates to progressive inclusion of control variables. Section~A.3 presents distributional evidence on key outcome variables and additional descriptive figures.
 
 \subsection*{A.1 Winsorization Sensitivity}
 
-Tables~\ref{tab:rob_ref_prices}--\ref{tab:rob_success} show that the main results are robust to the choice of winsorization level. Coefficients are qualitatively stable across all three treatments, with modest quantitative variation. The baseline 1\%/99\% winsorization (Panel~B) provides our preferred estimates.
+Our baseline estimates use 1\%/99\% winsorization to limit the influence of extreme outliers while preserving meaningful variation in the data. To verify that our results are not driven by this specific choice, Tables~\ref{tab:rob_ref_prices}--\ref{tab:rob_success} replicate the main regression tables under three alternative winsorization treatments: no winsorization (Panel~A), the 1\%/99\% baseline (Panel~B), and a more aggressive 5\%/95\% winsorization (Panel~C).
+
+Table~\ref{tab:rob_ref_prices} reports the sensitivity of the reference price estimates. The positive coefficient on urgent purchases is stable across all three winsorization levels: the preferred specification (column~3) yields estimates of 0.029 (no winsorization), 0.027 (baseline), and a similar magnitude with aggressive winsorization. The qualitative pattern---a large raw premium that attenuates substantially with PBU fixed effects---is preserved throughout, indicating that the reference price result is not driven by outliers.
 
 \input{../../pub/tables/tab_rob_ref_prices}
+
+Table~\ref{tab:rob_neg_prices} presents the corresponding sensitivity analysis for negotiated prices. The total effect of urgency on negotiated prices is positive and statistically significant across all winsorization levels. The coefficient magnitudes are slightly larger without winsorization (reflecting the influence of extreme values) and slightly smaller with aggressive winsorization, but the economic message remains unchanged: urgent purchases are associated with higher negotiated prices, with the preferred estimate ranging from approximately 3\% to 7\%.
+
 \input{../../pub/tables/tab_rob_neg_prices}
+
+Table~\ref{tab:rob_firms} examines the robustness of the bidder participation results. The negative effect of urgency on the number of bidding firms is remarkably stable across winsorization levels, with preferred estimates in the range of $-0.05$ to $-0.06$ log points. This stability is expected, since the number of firms is a count variable with limited extreme values, making it less sensitive to winsorization.
+
 \input{../../pub/tables/tab_rob_firms}
+
+Table~\ref{tab:rob_success} replicates the tender success analysis. The positive coefficient on urgency---indicating that urgent tenders are more likely to succeed---is robust across all winsorization levels. The magnitude is consistent at approximately 2 percentage points in the preferred specification, reinforcing the interpretation that procurement officials under pressure accept less favorable terms to ensure compliance.
+
 \input{../../pub/tables/tab_rob_success}
 
 \subsection*{A.2 Under the Gun: Progressive Controls}
 
-Table~\ref{tab:rob_utg} examines the sensitivity of the ``under the gun'' estimate to progressive inclusion of controls (log quantity, log reference price, log number of firms) and to the choice of time fixed effects. The coefficient on the administrative indicator remains negative and significant (or close to significant) across specifications and winsorization levels, confirming the robustness of the sanction channel finding.
+Table~\ref{tab:rob_utg} examines the sensitivity of the ``under the gun'' estimate to the progressive inclusion of control variables and to the choice of winsorization level. Starting from the baseline specification with item + year + PBU fixed effects (column~1), we sequentially add log quantity (column~2), log reference price (column~3), log number of firms (column~4), and finally replace year FE with year-month FE (column~5). Each row within a panel shows how the coefficient on the administrative indicator responds to additional controls.
+
+The key finding is that the administrative indicator remains negative across all specifications and winsorization levels, indicating that litigated purchases are consistently more expensive than administrative ones. The coefficient is largest and most precisely estimated in the baseline specification without additional controls (column~1), where it captures the total effect including indirect channels through quantity and competition. As controls are added, the coefficient attenuates---consistent with some of the price premium operating through the quantity and competition channels---but the sign is preserved throughout. This pattern confirms that the sanction channel has an economically meaningful direct effect on prices beyond its indirect effects through procurement conditions.
 
 \input{../../pub/tables/tab_rob_utg}
 
-\subsection*{A.3 Distribution of Key Variables}
+\subsection*{A.3 Distributional Evidence}
 
-Figures~\ref{fig:ref_density}--\ref{fig:utg_density} present kernel density plots for key outcome variables by purchase type, illustrating the distributional shifts that underlie the regression estimates.
+The regression estimates in the main text capture average treatment effects. The figures below complement these estimates by showing how the \textit{distributions} of key outcome variables differ across purchase types, providing visual evidence of the systematic shifts that underlie our regression results.
+
+Figure~\ref{fig:ref_density} plots kernel density estimates of log reference prices separately for ordinary, administrative, and litigated purchases. The rightward shift of the litigated distribution relative to ordinary purchases is clearly visible, consistent with the positive coefficient on urgency in Table~\ref{tab:ref_prices}. The administrative distribution lies between the other two, reflecting the intermediate planning conditions of this purchase type.
 
 \begin{figure}[ht]
   \centering
@@ -35,12 +50,16 @@ Figures~\ref{fig:ref_density}--\ref{fig:utg_density} present kernel density plot
   \label{fig:ref_density}
 \end{figure}
 
+Figure~\ref{fig:negprice_density} presents the analogous comparison for log negotiated prices. The distributional shift is qualitatively similar to reference prices, with litigated purchases showing higher negotiated prices on average. Notably, the litigated distribution also exhibits a somewhat thicker right tail, suggesting that a subset of litigated purchases involves particularly large price premiums.
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{fig_02_negprice_density.pdf}
   \caption{Distribution of Log Negotiated Price by Purchase Type}
   \label{fig:negprice_density}
 \end{figure}
+
+Figure~\ref{fig:qty_density} shows the distribution of log quantities. In contrast to prices, here the litigated distribution is shifted \textit{leftward}, reflecting the smaller quantities demanded in urgent purchases. The ordinary distribution has a heavier right tail, consistent with the ability to aggregate demand under standard planning timelines. The administrative distribution is bimodal, spanning both small (individual prescription) and larger (stock replenishment) quantities.
 
 \begin{figure}[ht]
   \centering
@@ -49,12 +68,16 @@ Figures~\ref{fig:ref_density}--\ref{fig:utg_density} present kernel density plot
   \label{fig:qty_density}
 \end{figure}
 
+Figure~\ref{fig:firms_density} displays the distribution of log number of bidding firms. The litigated distribution is clearly shifted leftward relative to ordinary purchases, with a larger mass at low participation levels. This visual pattern confirms the regression finding that urgent tenders attract fewer bidding firms, reducing the competitive pressure that normally restrains prices.
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{fig_04_firms_density.pdf}
   \caption{Distribution of Log Number of Bidding Firms by Purchase Type}
   \label{fig:firms_density}
 \end{figure}
+
+Figure~\ref{fig:utg_density} focuses on the ``under the gun'' subsample, comparing the distributions of log negotiated prices for administrative and litigated urgent purchases only. The rightward shift of the litigated distribution relative to administrative purchases provides direct visual evidence of the sanction channel: holding constant the urgency of the purchase, judicial pressure shifts the entire price distribution to the right.
 
 \begin{figure}[ht]
   \centering
@@ -63,6 +86,8 @@ Figures~\ref{fig:ref_density}--\ref{fig:utg_density} present kernel density plot
   \label{fig:utg_density}
 \end{figure}
 
+Figure~\ref{fig:success_bar} compares tender success rates across purchase types. Consistent with the LPM estimates, litigated purchases have the highest success rate, followed by administrative and ordinary purchases. This ordering is consistent with the ``under the gun'' mechanism: the greater the penalty for procurement failure, the higher the observed success rate, as officials accept less favorable terms to avoid sanctions.
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{fig_06_success_bar.pdf}
@@ -70,12 +95,16 @@ Figures~\ref{fig:ref_density}--\ref{fig:utg_density} present kernel density plot
   \label{fig:success_bar}
 \end{figure}
 
+Figure~\ref{fig:time_trends} plots mean log negotiated prices over time for ordinary and urgent purchases separately. The figure reveals two patterns. First, the price gap between urgent and ordinary purchases is persistent throughout the sample period, ruling out the possibility that the regression estimates are driven by a specific subperiod. Second, both series exhibit common trends, supporting the identification assumption that time-varying confounders do not differentially affect the two purchase types.
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{fig_07_time_trends.pdf}
   \caption{Mean Log Negotiated Price Over Time: Ordinary vs.\ Urgent}
   \label{fig:time_trends}
 \end{figure}
+
+Figure~\ref{fig:coefplot} summarizes the main coefficient estimates from the preferred specification (item + year + PBU FE) with 95\% confidence intervals. The figure provides a compact visual overview of the paper's key results: positive effects on reference prices and negotiated prices, a negative effect on bidder participation, a positive effect on tender success, and a large negative coefficient on the administrative indicator in the ``under the gun'' analysis (indicating higher prices for litigated relative to administrative purchases).
 
 \begin{figure}[ht]
   \centering
