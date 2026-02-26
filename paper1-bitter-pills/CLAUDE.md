@@ -19,12 +19,16 @@ Academic research paper: **"Bitter Pills to Swallow: The Enforcement Costs of He
 ### R Analysis (v4 — primary)
 
 ```bash
-# Run the full v4 pipeline (~3.5 min on 16 cores)
+# Run the full v4 pipeline (~5 min on 16 cores, includes pub-ready outputs)
 Rscript v4/run_all.R
 
 # Run individual v4 scripts (must run 00 first to create /tmp/v4_prepared.rds)
 Rscript v4/analysis/00_prepare_data.R
 Rscript v4/analysis/03_main_regressions.R
+
+# Generate only publication-ready outputs (requires /tmp/v4_prepared.rds)
+Rscript v4/analysis/08_pub_tables.R   # → 17 .tex in v4/pub/tables/
+Rscript v4/analysis/09_pub_figures.R   # → 8 .pdf in v4/pub/figures/
 
 # Install arrow package if missing (requires C++20 compiler)
 # May need: mkdir -p ~/.R && echo 'CXX20 = g++\nCXX20STD = -std=c++20\nCXX20FLAGS = -O2 -fPIC' > ~/.R/Makevars
@@ -84,7 +88,9 @@ Four analysis versions exist. **v4** is the current primary version (R/fixest on
   - `05_fiscal_costs.R` — Fiscal cost estimates (total, direct, UTG channels)
   - `06_robustness.R` — 120+ regressions: UTG progressive controls + all tables × 3 winsorization levels
   - `07_graphs.R` — 8 PDF figures (densities, bar chart, time trends, coefficient plot)
-  - `run_all.R` — Orchestrator: package checks → sequential execution → timing summary
+  - `08_pub_tables.R` — 17 publication-ready LaTeX tables (`threeparttable` + `booktabs`, no `tabularray`/`siunitx`) → `v4/pub/tables/`
+  - `09_pub_figures.R` — 8 publication-ready PDF figures (grayscale, 6.5×4 in, 9pt, `theme_bw`, cairo PDF) → `v4/pub/figures/`
+  - `run_all.R` — Orchestrator: package checks → sequential execution (00–09) → timing summary
 - `v2/analysis/` — Original Stata analysis (subsample: electronic auctions with both litigated and ordinary)
   - `clustered_regressions.do` — Main regressions (Tables 4-8)
   - `balance_table.do`, `desc_stats_table_v2.do`, `fiscal_costs.do`, `heterogeneity.do`
@@ -108,9 +114,11 @@ Four analysis versions exist. **v4** is the current primary version (R/fixest on
 ### Manuscript & Output
 
 - `manuscript/` — LaTeX source (main.tex inputs section files: Introduction, InstitutionalBackground, EmpiricalStrategy, etc.)
-- `v4/manuscript/` — LaTeX tables from v4 (59 `.tex` files)
+- `v4/pub/tables/` — **Publication-ready** LaTeX tables (17 `.tex`, `threeparttable` + `booktabs` format, elsarticle-compatible)
+- `v4/pub/figures/` — **Publication-ready** PDF figures (8 `.pdf`, grayscale, 6.5×4 in, cairo PDF)
+- `v4/manuscript/` — LaTeX tables from v4 via modelsummary (59 `.tex` files, uses `tabularray`/`siunitx`)
 - `v4/results/` — HTML tables + fiscal costs log from v4 (59 `.html` + 1 `.txt`)
-- `v4/graphs/` — PDF figures from v4 (8 figures: densities, bar chart, time trends, coefficient plot)
+- `v4/graphs/` — PDF figures from v4 (8 figures, color version)
 - `v2/analysis/results/` — RTF regression tables from v2
 - `v3/results/` — RTF tables + classification CSV from v3
 - `v3/graphs/` — Generated PDF figures from v3
@@ -160,9 +168,10 @@ The v4 analysis uses `fixest::feols` (equivalent to Stata `reghdfe`):
 ## Conventions
 
 - v4 R scripts use `utils.R` for shared path constants and helpers; sourced automatically via robust `--file=` detection
-- v4 caches prepared data at `/tmp/v4_prepared.rds` (no compression, ~1.2GB); scripts 01-07 read from cache
+- v4 caches prepared data at `/tmp/v4_prepared.rds` (no compression, ~1.2GB); scripts 01-09 read from cache
 - v4 outputs LaTeX (`.tex` in `v4/manuscript/`) and HTML (`.html` in `v4/results/`) for each table via `modelsummary`
 - v4 graphs are saved as PDF in `v4/graphs/`
+- **Publication-ready outputs** go to `v4/pub/`: tables use `threeparttable` + `booktabs` (no `tabularray`/`siunitx`), figures are grayscale cairo PDFs at 6.5×4 in / 9pt — compatible with `elsarticle` and top journals (JHE, AER, QJE)
 - All Stata scripts (v2/v3) use absolute paths to the datasets directory
 - Stata scripts output RTF to version-specific results directories
 - The manuscript uses `\input{}` to include section files and generated tables
