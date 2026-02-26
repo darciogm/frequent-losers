@@ -40,7 +40,9 @@ scripts <- c(
   "04_heterogeneity.R",
   "05_fiscal_costs.R",
   "06_robustness.R",
-  "07_graphs.R"
+  "07_graphs.R",
+  "08_pub_tables.R",
+  "09_pub_figures.R"
 )
 
 timings <- data.frame(script = scripts, seconds = NA_real_,
@@ -92,9 +94,12 @@ n_tex  <- length(list.files(file.path(v4_dir, "manuscript"), pattern = "\\.tex$"
 n_html <- length(list.files(file.path(v4_dir, "results"),    pattern = "\\.html$"))
 n_pdf  <- length(list.files(file.path(v4_dir, "graphs"),     pattern = "\\.pdf$"))
 n_txt  <- length(list.files(file.path(v4_dir, "results"),    pattern = "\\.txt$"))
+n_pub_tex <- length(list.files(file.path(v4_dir, "pub", "tables"),  pattern = "\\.tex$"))
+n_pub_pdf <- length(list.files(file.path(v4_dir, "pub", "figures"), pattern = "\\.pdf$"))
 
 cat(sprintf("\nOutputs: %d .tex, %d .html, %d .pdf, %d .txt\n",
             n_tex, n_html, n_pdf, n_txt))
+cat(sprintf("Pub-ready: %d .tex tables, %d .pdf figures\n", n_pub_tex, n_pub_pdf))
 
 n_errors <- sum(grepl("ERROR", timings$status))
 if (n_errors > 0) {
