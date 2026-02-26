@@ -45,7 +45,8 @@ scripts <- c(
   "08_pub_tables.R",
   "09_pub_figures.R",
   "10_map_litigation.R",
-  "11_map_pbu.R"
+  "11_map_pbu.R",
+  "12_fig_purchase_types.R"
 )
 
 timings <- data.frame(script = scripts, seconds = NA_real_,
