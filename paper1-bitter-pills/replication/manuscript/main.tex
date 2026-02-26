@@ -1,0 +1,112 @@
+\documentclass[12pt]{elsarticle}
+
+% --- Typography & Layout ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage[left=28mm,right=28mm,top=28mm,bottom=28mm]{geometry}
+\linespread{1.5}
+
+% --- Math ---
+\usepackage{amsmath,amssymb}
+
+% --- Tables & Figures ---
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{rotating}
+\usepackage{lscape}
+\usepackage{adjustbox}
+
+% --- Float control (prevent floats from crossing section/subsection boundaries) ---
+\usepackage{placeins}
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
+% --- References ---
+\usepackage{natbib}
+\biboptions{authoryear}
+\setlength{\bibsep}{0pt plus 0.3ex}
+
+% --- Hyperlinks ---
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+\usepackage{url}
+
+% --- Misc ---
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,decorations.pathreplacing}
+\usepackage{caption}
+
+% --- Header/Footer ---
+\makeatletter
+\def\ps@pprintTitle{
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \def\@oddfoot{\reset@font\hfil\thepage\hfil}
+  \let\@evenfoot\@oddfoot
+}
+\makeatother
+
+% --- Custom commands ---
+\newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+% --- Paths ---
+\graphicspath{{figures/}{../output/figures/}}
+
+\begin{document}
+
+\begin{frontmatter}
+\title{Bitter Pills to Swallow:\\ The Enforcement Costs of Health Litigation}
+\tnotetext[tfoot]{\emph{This version: February 2026.}}
+
+\author[INSPER]{Darcio Genicolo-Martins\corref{cor1}}
+\ead{darciogm1@insper.edu.br}
+\author[INSPER]{Paulo Furquim de Azevedo}
+\ead{paulofa1@insper.edu.br}
+\cortext[cor1]{Corresponding author.}
+\address[INSPER]{Insper Institute of Education and Research, S\~ao Paulo, Brazil}
+
+\begin{abstract}
+Public health procurement is shaped not only by administrative decisions but also by judicial interventions that compel urgent purchases. These court-mandated procurements carry substantial fiscal costs because they undermine procurement planning and expose officials to sanctions that incentivize compliance over cost-efficiency---a mechanism we term the ``under the gun'' effect. Using granular bid-level data on pharmaceutical procurement in S\~ao Paulo, Brazil (2009--2019), with item, time, and buyer fixed effects, we estimate that judicial enforcement increases reference prices by 2.7--17.8\%, raises negotiated prices by 3.1--17.2\%, and reduces bidder participation by 4.1--10.7\%. Isolating the sanction channel by comparing litigated and administrative urgent purchases, we find judicial pressure alone raises prices by 23.2--30.2\%. These findings highlight the economic burden of judicial enforcement on public budgets and suggest that legal mandates should weigh procurement efficiency alongside individual rights.
+\end{abstract}
+
+\begin{keyword}
+public procurement \sep health litigation \sep enforcement costs \sep judicial mandates \sep Brazil
+\end{keyword}
+
+\end{frontmatter}
+
+\noindent\textbf{JEL Classification:} D44, D73, H51, H57, I18, K41.
+
+\bigskip
+\clearpage
+\begin{sloppypar}
+
+\input{Introduction}
+\input{LiteratureReview}
+\input{InstitutionalBackground}
+\input{DataAndSample}
+\input{EmpiricalStrategy}
+\input{Results}
+\input{Conclusion}
+
+\clearpage
+\bibliographystyle{chicago}
+\bibliography{References}
+
+\clearpage
+\input{Appendix}
+
+\end{sloppypar}
+\end{document}
