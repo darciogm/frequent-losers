@@ -63,6 +63,10 @@ The positive success coefficient also implies that the higher negotiated prices 
 \subsection{The ``Under the Gun'' Effect}
 \label{sec:utg}
 
+The ``under the gun'' analysis restricts the sample to urgent purchases only---administrative and litigated---and estimates the effect of the administrative indicator (\textit{is\_admin}). Because both purchase types share the same planning urgency but only litigated purchases carry judicial sanctions, a negative coefficient on the administrative indicator implies that litigated purchases are more expensive.
+
+\subsubsection{Negotiated Prices}
+
 Table~\ref{tab:underthegun} presents estimates comparing litigated and administrative urgent purchases---the core test for the sanction channel.
 
 \input{../../pub/tables/tab_underthegun}
@@ -73,7 +77,92 @@ Administrative purchases have significantly lower negotiated prices than litigat
 \paragraph{Direct effect (Panel~B).}
 Controlling for log quantity, the coefficient becomes smaller and statistically insignificant (0.117 in column~3). This suggests that a substantial portion of the ``under the gun'' price premium operates through the quantity channel: litigated purchases involve smaller quantities, which translate into higher per-unit prices through reduced bulk discounts. However, the total effect remains economically and statistically significant, reflecting the combined impact of the sanction regime on all procurement dimensions.
 
-These results demonstrate that the threat of judicial sanctions is a quantitatively important driver of procurement costs, beyond the general disruption caused by urgency. The 23--30\% price premium attributable to the sanction channel represents a substantial and previously unquantified cost of judicial enforcement in health procurement.
+\subsubsection{Reference Prices}
+
+Table~\ref{tab:t1_utg_ref_prices} extends the UTG analysis to reference prices---the maximum price the government is willing to pay, set during the internal planning phase.
+
+\input{../../pub/tables_v7/t1_tab_utg_ref_prices}
+
+The coefficient on the administrative indicator is negative and highly significant across all specifications. In our preferred specification (column~3), administrative purchases carry reference prices that are 27.3\% lower ($e^{-0.319}-1$) than litigated ones. The magnitude is remarkably stable across FE specifications, ranging from $-0.307$ (item FE only) to $-0.321$ (item + year-month + PBU FE). This result demonstrates that the sanction channel operates at the planning stage: procurement officials under judicial pressure set higher price ceilings, weakening the government's bargaining position before negotiations even begin.
+
+\subsubsection{Quantities}
+
+Table~\ref{tab:t1_utg_quantities} reports UTG estimates for quantities demanded.
+
+\input{../../pub/tables_v7/t1_tab_utg_quantities}
+
+The positive coefficient in our preferred specification ($1.115$, $p < 0.10$) indicates that administrative purchases involve larger quantities than litigated ones, consistent with the institutional environment: administrative requests often aggregate demand from multiple prescriptions, while court orders typically mandate procurement for a specific patient's prescription. The large magnitude ($e^{1.115}-1 = 205\%$) underscores the importance of the quantity channel in explaining the UTG price premium documented in Table~\ref{tab:underthegun}.
+
+\subsubsection{Bidder Participation}
+
+Table~\ref{tab:t1_utg_firms} examines whether the sanction channel affects the number of bidding firms.
+
+\input{../../pub/tables_v7/t1_tab_utg_firms}
+
+The point estimates are positive but not statistically significant at conventional levels (column~3: 0.102 in Panel~A, 0.031 in Panel~B). This suggests that, conditional on a purchase being urgent, the distinction between administrative and litigated does not substantially alter the number of competing firms. The competition reduction documented in Table~\ref{tab:firms} appears to be driven primarily by the urgency itself rather than the specific nature of the judicial mandate.
+
+\subsubsection{Tender Success}
+
+Table~\ref{tab:t1_utg_success} reports linear probability model estimates for tender success in the UTG subsample.
+
+\input{../../pub/tables_v7/t1_tab_utg_success}
+
+The coefficients are small and statistically insignificant ($-0.018$ in column~3, Panel~A), indicating no meaningful difference in success rates between administrative and litigated urgent purchases. Both purchase types exhibit similarly high success rates, consistent with the general ``under the gun'' mechanism: procurement officials under urgency---regardless of its specific source---prioritize tender completion.
+
+\subsubsection{Summary of the UTG Mechanism}
+
+The extended UTG analysis reveals that the sanction channel operates primarily through two dimensions: reference prices and quantities. Litigated purchases carry 27\% higher reference price ceilings, reflecting ex ante planning distortions, and involve substantially smaller quantities, forgoing bulk discounts. Together, these channels explain the 23--30\% negotiated price premium documented in Table~\ref{tab:underthegun}. By contrast, bidder participation and tender success rates are not significantly different between administrative and litigated urgent purchases, suggesting that the competition channel is driven by urgency per se rather than judicial pressure specifically. Figure~\ref{fig:utg_coefplot_v7} provides a visual summary of these findings.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_09_utg_coefplot_v7.pdf}
+  \caption{Under the Gun: Coefficient Estimates with 90\% and 95\% Confidence Intervals (Preferred Specification). Each point represents the estimated effect of the administrative indicator (administrative vs.\ litigated) from the Item + Year + PBU FE specification. Negative coefficients indicate that litigated purchases have higher values.}
+  \label{fig:utg_coefplot_v7}
+\end{figure}
+
+\subsection{Litigated vs.\ Ordinary Purchases}
+\label{sec:litigated_only}
+
+The preceding analysis compares \textit{urgent} purchases (administrative + litigated) against ordinary ones, pooling two distinct types of urgency. To isolate the specific effect of \textit{court-mandated} procurement, we replicate the main regressions using only litigated purchases as the treatment group, excluding administrative purchases from the sample entirely. The comparison is thus between litigated and ordinary purchases only.
+
+\subsubsection{Reference Prices and Quantities}
+
+Table~\ref{tab:t2_lit_ref_prices} reports estimates for reference prices. The coefficient on the litigated indicator is positive and statistically significant: litigated purchases carry reference prices that are 7.6\% ($e^{0.073}-1$) higher than ordinary ones in the preferred specification. This premium exceeds the 2.7\% estimate from the pooled urgent analysis (Table~\ref{tab:ref_prices}), suggesting that the reference price distortion is concentrated among court-mandated purchases rather than administrative ones.
+
+\input{../../pub/tables_v7/t2_tab_ref_prices}
+
+Table~\ref{tab:t2_lit_quantities} shows that litigated purchases involve 20.7\% fewer units ($e^{-0.232}-1$) in the preferred specification, a statistically significant reduction ($p < 0.01$). The magnitude is considerably larger than the imprecise $-5.6$\% estimate from the pooled analysis, confirming that court orders---typically for individual patient prescriptions---are the primary driver of reduced quantities among urgent purchases.
+
+\input{../../pub/tables_v7/t2_tab_quantities}
+
+\subsubsection{Negotiated Prices}
+
+Table~\ref{tab:t2_lit_neg_prices} presents the core negotiated price estimates. The total effect (Panel~A) shows that litigated purchases carry negotiated prices 9.1\% higher ($e^{0.087}-1$, $p < 0.001$) in our preferred specification---substantially larger than the 5.4\% pooled estimate. However, controlling for log quantity (Panel~B) reduces the coefficient to an insignificant $-0.008$, indicating that the entire litigated price premium operates through the quantity channel: court orders mandate smaller quantities, which forgo bulk discounts and thus drive up per-unit prices.
+
+\input{../../pub/tables_v7/t2_tab_neg_prices}
+
+\subsubsection{Bidder Participation}
+
+Table~\ref{tab:t2_lit_firms} examines bidder participation. Litigated tenders attract 7.9\% fewer firms ($e^{-0.082}-1$) in the total effect specification (Panel~A) and 5.1\% fewer in the direct effect (Panel~B), both highly significant. These estimates are larger than the pooled urgent estimates (5.5\% and 4.1\%, respectively), indicating that the competition-reducing effect of urgency is driven predominantly by court-mandated purchases.
+
+\input{../../pub/tables_v7/t2_tab_firms}
+
+\subsubsection{Tender Success}
+
+Table~\ref{tab:t2_lit_success} reports that litigated purchases are 2.4 percentage points more likely to succeed (Panel~A, $p < 0.01$), comparable to the 2.1~pp pooled estimate. The effect remains significant after controlling for quantity (Panel~B: 2.8~pp). This confirms that the ``accept worse terms to comply'' mechanism is primarily driven by court orders.
+
+\input{../../pub/tables_v7/t2_tab_success}
+
+\subsubsection{Summary}
+
+Figure~\ref{fig:lit_coefplot_v7} summarizes the litigated-only estimates. The pattern is clear: litigated purchases carry higher reference prices (+7.6\%), lower quantities ($-20.7$\%), higher negotiated prices (+9.1\%), fewer bidding firms ($-7.9$\%), and higher success rates (+2.4~pp). In all cases, the magnitudes exceed the pooled urgent estimates, confirming that the fiscal costs of urgency are concentrated in court-mandated procurement. The near-zero direct effect on negotiated prices after controlling for quantity highlights the central role of the quantity channel in transmitting judicial pressure into higher prices.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_10_litigated_coefplot_v7.pdf}
+  \caption{Litigated vs.\ Ordinary: Coefficient Estimates with 90\% and 95\% Confidence Intervals (Preferred Specification). Each point represents the estimated effect of the litigated indicator from the Item + Year + PBU FE specification. ``Total'' includes only the treatment variable; ``Direct'' additionally controls for log quantity.}
+  \label{fig:lit_coefplot_v7}
+\end{figure}
 
 \subsection{Heterogeneity}
 \label{sec:heterogeneity}
