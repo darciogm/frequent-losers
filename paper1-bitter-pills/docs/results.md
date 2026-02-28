@@ -1,6 +1,6 @@
 # Results
 
-This page presents the main empirical findings from the paper, organized by the key outcomes and mechanisms.
+This page presents the main empirical findings from the paper, organized by the key outcomes and mechanisms. See also: [Administrative vs Ordinary](results_adm_vs_ord.md) | [Maps](maps.md) | [Changelog](changelog.md)
 
 ---
 
