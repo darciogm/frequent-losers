@@ -3,7 +3,7 @@
 <div class="authors-grid">
 
 <div class="author-card">
-  <img src="../assets/autores/darcio-martins.svg"
+  <img src="../assets/autores/darcio-martins.jpg"
        alt="Darcio Genicolo Martins"
        class="author-photo">
   <div class="author-info">
@@ -31,7 +31,7 @@
 </div>
 
 <div class="author-card">
-  <img src="../assets/autores/paulo-furquim.svg"
+  <img src="../assets/autores/paulo-furquim.jpg"
        alt="Paulo Furquim de Azevedo"
        class="author-photo">
   <div class="author-info">
