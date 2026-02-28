@@ -148,7 +148,8 @@ for script in \
     "${CODE_DIR}/12_fig_purchase_types.R" \
     "${CODE_DIR}/13_map_litigation_total.R" \
     "${CODE_DIR}/14_map_litigation_ratio.R" \
-    "${CODE_DIR}/15_admin_figures.R"; do
+    "${CODE_DIR}/15_admin_figures.R" \
+    "${CODE_DIR}/16_v7_extensions.R"; do
     run_r_script "$script"
 done
 
@@ -158,13 +159,13 @@ log_info "===== PHASE 4: Verifying Outputs ====="
 N_TABLES=$(find "${OUTPUT_DIR}/tables" -name "*.tex" 2>/dev/null | wc -l)
 N_FIGURES=$(find "${OUTPUT_DIR}/figures" -name "*.pdf" 2>/dev/null | wc -l)
 
-log_info "Tables generated: ${N_TABLES} (expected: 17)"
-log_info "Figures generated: ${N_FIGURES} (expected: 18)"
+log_info "Tables generated: ${N_TABLES} (expected: 26)"
+log_info "Figures generated: ${N_FIGURES} (expected: 20)"
 
-if [ "$N_TABLES" -lt 17 ]; then
+if [ "$N_TABLES" -lt 26 ]; then
     log_warn "Fewer tables than expected. Check logs for errors."
 fi
-if [ "$N_FIGURES" -lt 18 ]; then
+if [ "$N_FIGURES" -lt 20 ]; then
     log_warn "Fewer figures than expected. Check logs for errors."
 fi
 
@@ -173,17 +174,17 @@ log_info "===== PHASE 5: Compiling Manuscript ====="
 
 cd "${MANUSCRIPT_DIR}"
 log_info "Running pdflatex (pass 1/3)..."
-pdflatex -interaction=nonstopmode -jobname=Bitter-Pills_v6 main.tex > "${LOG_DIR}/pdflatex_1.log" 2>&1 || true
+pdflatex -interaction=nonstopmode -jobname=Bitter-Pills_v7 main.tex > "${LOG_DIR}/pdflatex_1.log" 2>&1 || true
 log_info "Running bibtex..."
-bibtex Bitter-Pills_v6 > "${LOG_DIR}/bibtex.log" 2>&1 || true
+bibtex Bitter-Pills_v7 > "${LOG_DIR}/bibtex.log" 2>&1 || true
 log_info "Running pdflatex (pass 2/3)..."
-pdflatex -interaction=nonstopmode -jobname=Bitter-Pills_v6 main.tex > "${LOG_DIR}/pdflatex_2.log" 2>&1 || true
+pdflatex -interaction=nonstopmode -jobname=Bitter-Pills_v7 main.tex > "${LOG_DIR}/pdflatex_2.log" 2>&1 || true
 log_info "Running pdflatex (pass 3/3)..."
-pdflatex -interaction=nonstopmode -jobname=Bitter-Pills_v6 main.tex > "${LOG_DIR}/pdflatex_3.log" 2>&1 || true
+pdflatex -interaction=nonstopmode -jobname=Bitter-Pills_v7 main.tex > "${LOG_DIR}/pdflatex_3.log" 2>&1 || true
 
-if [ -f "Bitter-Pills_v6.pdf" ]; then
-    PAGES=$(pdfinfo Bitter-Pills_v6.pdf 2>/dev/null | grep "Pages:" | awk '{print $2}' || echo "?")
-    log_ok "Manuscript compiled: Bitter-Pills_v6.pdf (${PAGES} pages)"
+if [ -f "Bitter-Pills_v7.pdf" ]; then
+    PAGES=$(pdfinfo Bitter-Pills_v7.pdf 2>/dev/null | grep "Pages:" | awk '{print $2}' || echo "?")
+    log_ok "Manuscript compiled: Bitter-Pills_v7.pdf (${PAGES} pages)"
 else
     log_error "Manuscript compilation failed. Check ${LOG_DIR}/pdflatex_*.log"
 fi
@@ -201,11 +202,11 @@ echo "============================================================="
 echo "  Total time: ${T_TOTAL}s ($((T_TOTAL / 60))m $((T_TOTAL % 60))s)"
 echo "  Tables:     ${N_TABLES} .tex files in output/tables/"
 echo "  Figures:    ${N_FIGURES} .pdf files in output/figures/"
-echo "  Manuscript: manuscript/Bitter-Pills_v6.pdf"
+echo "  Manuscript: manuscript/Bitter-Pills_v7.pdf"
 echo "============================================================="
 echo ""
 echo "  To view the manuscript:"
-echo "    wslview manuscript/Bitter-Pills_v6.pdf    # WSL"
-echo "    open manuscript/Bitter-Pills_v6.pdf       # macOS"
-echo "    xdg-open manuscript/Bitter-Pills_v6.pdf   # Linux"
+echo "    wslview manuscript/Bitter-Pills_v7.pdf    # WSL"
+echo "    open manuscript/Bitter-Pills_v7.pdf       # macOS"
+echo "    xdg-open manuscript/Bitter-Pills_v7.pdf   # Linux"
 echo ""
