@@ -1,0 +1,80 @@
+\section{Empirical Strategy and Results}
+
+This section is organized into two parts. First, I describe the method I use to estimate the impacts of the SME public procurement policy shift on the selected outcomes. I perform a DiD analysis, but unlike a standard DiD, the control group is always treated instead of always untreated \citep{kim2019}. Then, I discuss the identifying assumptions in the context of the DiDiR I employ. In the second part, I discuss the main results.
+
+\subsection{Main Specification and Identification Strategy}
+The identification strategy exploits the timing of a change in the policy of restricted SME tenders (March 2018) that affect only a specific group of items (group 65). Thus, it is possible to simultaneously use time and cross-sectional variations to estimate the potential effects of this policy shift.
+
+In a standard DiD with treatment $d$ and outcome $y$, there exists a group of units ($q=1$) with its treatment changing from $d=0$ to $d=1$ at some date, and there exists another group ($q=0$) in which $d=0$ always. In this paper, however, the framework is slightly different: the group ``$q=0$'' always has $d=1$ instead of $d=0$, and the group ``$q=1$'', as in DiD, undergoes a switch in the treatment.
+
+This variation of a standard DiD is known as difference-in-differences in reverse (DiDiR), or ``time-reversed DiD'' \citep{kim2019}. This same framework can be found in \citep{kotchen2011, chemin2009, autor2006, shapiro2008, monstad2008}.
+
+As described in Section 3, from August 2015 to February 2018, PBUs faced opt-out costs to avoid tendering for SMEs only, with the exception of group 65 (with mandatory open tenders). From March 2018 to December 2019, PBUs were subject to opt-out costs for all groups of items purchased. Thus, the always treated group here consists of all groups of items but group 65, which comprises the switched group. Table~\ref{tab:groups} summarizes the above description.
+
+\begin{table}[htbp]
+\centering
+\caption{Description of groups in DiDiR}
+\label{tab:groups}
+\begin{tabular}{lcc}
+\toprule
+Groups & $t=1$ (before March 2018) & $t=2$ (after March 2018) \\
+\midrule
+Group 65 (switched group) & Opt-out costs = 0 & Opt-out costs $>$ 0 \\
+Others (always treated group) & Opt-out costs $>$ 0 & Opt-out costs $>$ 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+DiDiR identifies pre-switch-period effects; i.e., it estimates effects for the past \citep{kim2019}. I estimate this pre-switch-period effect on the switched group, comparing the observed outcomes for group 65 before the policy shift and the outcomes that would have occurred for this group if there had been opt-out costs before March 2018 ($t=1$).
+
+Using subindex $p$ to denote purchase offer, $i$ to denote items, $t$ to denote months, and $g$ to denote groups of analysis, I estimate the following DiDiR model:
+\begin{equation}
+y_{pigt} = \eta_i + \gamma\,\text{Pre}_t + \beta\,\bigl(g65_{pgt}\times \text{Pre}_t\bigr) + x\,\delta + \varepsilon_{pigt} \quad
+\end{equation}
+where $y$ is an outcome, $\eta_i$ represents item fixed effects, and \textit{Pre} is a dummy variable with value 1 if it is a month before March 2018 and 0 otherwise. The variable $g65$ is binary with a value of 1 if it belongs to group 65 and 0 otherwise. The covariates are represented by $x$. The error $\varepsilon_{pigt}$ is clustered by item.
+
+The coefficient of interest, $\beta$, captures the pre-switch-period effect of the shift in the SME tender policy on the outcomes for the switched group. The central identifying assumption behind the empirical model is that, in the period after the shift in the tenders policy, the outcomes for group 65 and the set of all other groups of items would have followed a similar trajectory. Thus, it is necessary to check whether the outcome paths of the always treated and switched groups are parallel in the post-switch period.
+
+The validity of this assumption of parallel trends in the post-switch period can be partially assessed by estimating the following nonparametric regression, similar to \citep{Naritomi2019, gallego2020}:
+\begin{equation}
+y_{pgt} = \eta_g + \text{Semester}_t + \sum_{k=-3}^{3} \tau^t \Bigl( \beta\,\bigl(g65_{pgt}\times \text{Semester}_t\bigr) \Bigr) + \mu_{pgt} \quad
+\end{equation}
+where $\eta_g$ is the group fixed effects, and \textit{Semester} is a set of dummies for each semester in this period. The error $\mu_{pgt}$ is clustered by the group of items. Figure~\ref{fig:logprices} plots the coefficients (without a constant) and the 95 percent confidence intervals from estimating equation (2) with log prices as the dependent variable. The graphs for the other outcomes of interest are included in the appendix.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_01_logprices_es.pdf}
+\caption{Log Prices: Difference between the always treated group and the switched group}
+\label{fig:logprices}
+\end{figure}
+
+Although there are few periods observed after the change in the SME purchasing policy, it is possible to observe that the difference between the two groups is relatively constant after the policy shift. The difference between the groups narrows dramatically after the change in the purchasing policy and then stabilizes in subsequent periods. Figures A.1, A.2, and A.3 (appendix) report equivalent results regarding the distance from PBUs to winner firms, the number of participant firms, and the number of valid bids, respectively.
+
+In this context, the validity of the parallel trends assumption in the post-change period might be reinforced by an institutional reason. Over time, PBUs accumulate knowledge and develop expertise on how to buy items from the market. After the policy change, when new restrictions are imposed, PBUs adapt to the new conditions, and the pattern of results in tenders might change. However, in subsequent periods, it is reasonable to expect that prices and other performance indicators in tenders tend to vary little, \emph{ceteris paribus}, given that PBUs have already adapted to the new situation.
+
+\subsection{Results}
+I perform item-level regressions in a two-period DiDiR for which $t$ is collapsed into pre and post periods. The estimations refer to the pre-switch-period effect for four distinct outcomes: negotiated prices, the number of participant firms, the number of valid bids, and the distance from PBUs to winner firms.
+
+For each outcome, I run regressions for three different time windows considering different pre- and post-change periods: (i) a 6-month window where the pre-change period is from September 2017 to February 2018 and the post-change period is from March 2018 to August 2018; (ii) a 12-month window where the pre-change period is from March 2017 to February 2018 and the post-change period is from March 2018 to February 2019; and (iii) an 18-month window where the pre-change period is from September 2016 to February 2018 and the post-change period is from March 2018 to August 2019. The results for log prices are presented in Table~\ref{tab:prices}.
+
+\input{../output/tables/tab_prices.tex}
+
+As observed, the negotiated prices are consistently lower in group 65 tenders that occurred before March 2018. Considering all baseline specification variations, the negotiated prices, on average, are between 4.58\% and 8.08\% lower for group 65 than for other groups before March 2018. This result emerges as expected. PBUs face better trading conditions in open tenders than in SME-restricted tenders. Accordingly, lower prices for group 65 before the shift in the SME tender policy may suggest less competition among firms. There is evidence of a decrease in competition in Table~\ref{tab:participants}, which presents estimations for the difference in the number of participant firms.
+
+\input{../output/tables/tab_participants.tex}
+
+There is a consistent increase in companies participating in group 65 bids when PBUs only used open bids. The number of participant firms was higher for group 65 than for other groups in every time window in the analysis. These effects appear higher for the short term: comparing the six months before the policy change with the six months after this change, the number of participants in group 65 is approximately 22\% higher than that in the other groups of items in the pre-switch period. For instance, in the 18-month time window, this effect is lower (approximately 7\%). PBUs accumulate knowledge and develop expertise on how to buy items from the market. It is possible that after facing initial difficulty in attracting companies to bid, PBUs might adapt to the new situation over time and be better able to handle exclusive bids from SMEs.
+
+A higher number of companies does not necessarily mean more competition. Some market items consist of oligopolies with very competitive dynamics, for instance. Thus, the number of valid bids can be complementary information to the number of participant firms to assess the degree of competition in a tender. Table~\ref{tab:validbids} reports the estimations for the difference in the number of valid bids between groups.
+
+\input{../output/tables/tab_validbids.tex}
+
+The pattern is the same as that for the number of participant firms. In the short term, the effect is more pronounced (almost 25\% greater), while in a longer window of 18 months, for example, the effect drops to approximately 6\%.
+
+In addition to a higher level of competition, a higher number of participants associated with a higher number of valid proposals may indicate that sellers’ screening process is better in open tenders. Depending on the item purchased, more efficient companies with more flexible cost structures may participate in open tenders rather than exclusive tenders for SMEs. These combined factors may set up the primary mechanism that explains the lowest prices in group 65 before March 2018.
+
+One explicit objective of the policy of restricting bids to SMEs is to encourage local and regional development. It is expected to observe purchases from local suppliers closer to the PBUs. Table~\ref{tab:distance} reports the estimations for the difference in the distance from PBUs to winner firms between groups.
+
+\input{../output/tables/tab_distance.tex}
+
+As observed, before the policy change, the companies winning tenders for items in group 65 were more distant from the PBUs. On average, when controlled for PBUs among other variables, the winning suppliers were located approximately 4 km away in open public tenders for group 65. This result may indicate that the policy change has successfully induced more local suppliers to win more bids for this group of items.
