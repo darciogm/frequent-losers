@@ -32,4 +32,18 @@ Interacting the treatment indicator with a direct administration dummy reveals b
 
 ## Fiscal Cost Quantification
 
-A back-of-the-envelope calculation using the estimated price effect and the total procurement volume for group 65 in the pre-period suggests that the policy of restricting tenders to SMEs entails substantial costs for the state of Sao Paulo. These fiscal costs reinforce the conclusion that policymakers should carefully weigh the benefits of SME promotion against the efficiency losses in public procurement.
+A back-of-the-envelope calculation using the estimated price effect and the total procurement volume for group 65 in the pre-period quantifies the fiscal burden of SME-only tenders.
+
+| Component | Baseline spec. | PBU FE spec. |
+|-----------|:--------------:|:------------:|
+| Price coefficient (18m) | -0.1309 | -0.1330 |
+| Implied price effect | -12.27% | -12.45% |
+| G65 pre-period total value | R$ 689.0 million | R$ 689.0 million |
+| **Estimated fiscal saving** | **R$ 84.5 million** | **R$ 85.8 million** |
+
+<div class="key-result" markdown>
+<span class="number">R$ 84.5--85.8 million</span>
+<span class="label">Estimated fiscal cost of restricting tenders to SMEs for group 65 in the pre-period (18-month window)</span>
+</div>
+
+The calculation applies the percentage price effect ($e^{\beta} - 1$) to the total procurement value of group 65 completed items in the pre-period (Sep 2016--Feb 2018). This is a conservative estimate as it considers only one product group; extrapolating to all groups subject to SME restrictions would yield substantially larger figures. These fiscal costs reinforce the conclusion that policymakers should carefully weigh the benefits of SME promotion against the efficiency losses in public procurement.
