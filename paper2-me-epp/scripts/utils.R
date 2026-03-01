@@ -24,8 +24,10 @@ OUT_FIG  <- file.path(BASE, "output", "figures")
 for (d in c(OUT_TAB, OUT_FIG)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
 
 # ---- Thread settings -------------------------------------------------------
-setFixest_nthreads(16)
-setDTthreads(16)
+NCORES <- min(parallel::detectCores(logical = FALSE), 16L)
+cat("  Using", NCORES, "threads\n")
+setFixest_nthreads(NCORES)
+setDTthreads(NCORES)
 
 # Don't store data copies in model objects (saves ~4 GB per model batch)
 setFixest_estimation(lean = TRUE)

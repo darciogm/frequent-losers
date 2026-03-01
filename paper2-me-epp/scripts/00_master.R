@@ -10,14 +10,43 @@ cat("================================================================\n\n")
 
 pipeline_start <- Sys.time()
 
+# ---- Pre-flight checks -----------------------------------------------------
+cat("--- Pre-flight checks ---\n")
+cat("  System:", Sys.info()["sysname"], Sys.info()["release"], "\n")
+cat("  R version:", R.version.string, "\n")
+cat("  Cores:", parallel::detectCores(), "\n")
+
+mem_info <- tryCatch({
+  if (Sys.info()["sysname"] == "Linux") {
+    mi <- system("grep MemTotal /proc/meminfo", intern = TRUE)
+    paste(round(as.numeric(gsub("[^0-9]", "", mi)) / 1024 / 1024, 1), "GB")
+  } else "unknown"
+}, error = function(e) "unknown")
+cat("  RAM:", mem_info, "\n")
+
+if (getRversion() < "4.5") {
+  stop("R >= 4.5 is required. You have ", R.version.string,
+       ".\nPlease update R from https://cran.r-project.org/")
+}
+
 # ---- Check required packages -----------------------------------------------
 required <- c("data.table", "fixest", "ggplot2", "arrow", "scales",
                "grf", "quantreg", "gridExtra")
 missing  <- required[!sapply(required, requireNamespace, quietly = TRUE)]
 if (length(missing) > 0) {
-  cat("Installing missing packages:", paste(missing, collapse = ", "), "\n")
-  install.packages(missing, repos = "https://cloud.r-project.org")
+  stop("Missing packages: ", paste(missing, collapse = ", "),
+       "\nRun: Rscript scripts/setup.R")
 }
+cat("  All", length(required), "required packages found.\n")
+
+# ---- Check data availability -----------------------------------------------
+if (!file.exists("data/raw/Paper2_ME_EPP.csv") &&
+    !file.exists("data/processed/paper2_me_epp.parquet")) {
+  stop("Raw data not found. Place Paper2_ME_EPP.csv in data/raw/.\n",
+       "See data/raw/README_data.md for access instructions.")
+}
+cat("  Data files found.\n")
+cat("--- Pre-flight checks passed ---\n\n")
 
 # ---- Resolve script directory -----------------------------------------------
 script_dir <- NULL

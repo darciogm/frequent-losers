@@ -63,3 +63,7 @@ First run reads the 6.4 GB CSV and converts to parquet (~5 min); subsequent runs
 cd manuscript
 pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
 ```
+
+## Replication
+
+For complete replication instructions following the Social Science Data Editors template (DCAS v1.0), see [README_replication.md](README_replication.md).
