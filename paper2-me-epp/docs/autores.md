@@ -3,7 +3,7 @@
 <div class="authors-grid">
 
 <div class="author-card">
-  <img src="assets/autores/darcio-martins.jpg"
+  <img src="../assets/autores/darcio-martins.jpg"
        alt="Darcio Genicolo Martins"
        class="author-photo">
   <div class="author-info">

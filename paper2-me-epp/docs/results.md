@@ -5,24 +5,24 @@
 The event study plots semester-by-semester differences between group 65 (switched) and other groups (always treated). The parallel trends assumption requires that the difference is stable in the post-period (after March 2018).
 
 <figure>
-  <img src="assets/figures/fig_01_logprices_es.png" alt="Event study: Log prices">
+  <img src="../assets/figures/fig_01_logprices_es.png" alt="Event study: Log prices">
   <figcaption>Figure 1. Log Prices: Difference between the always treated group and the switched group</figcaption>
 </figure>
 
 The difference between the two groups narrows dramatically after the policy change and then stabilizes in subsequent periods, supporting the parallel trends assumption.
 
 <figure>
-  <img src="assets/figures/fig_02_distance_es.png" alt="Event study: Distance">
+  <img src="../assets/figures/fig_02_distance_es.png" alt="Event study: Distance">
   <figcaption>Figure A.1. Distance from PBUs to Winner Firms</figcaption>
 </figure>
 
 <figure>
-  <img src="assets/figures/fig_03_numfirms_es.png" alt="Event study: Number of firms">
+  <img src="../assets/figures/fig_03_numfirms_es.png" alt="Event study: Number of firms">
   <figcaption>Figure A.2. Number of Participant Firms (log)</figcaption>
 </figure>
 
 <figure>
-  <img src="assets/figures/fig_04_numbids_es.png" alt="Event study: Number of bids">
+  <img src="../assets/figures/fig_04_numbids_es.png" alt="Event study: Number of bids">
   <figcaption>Figure A.3. Number of Valid Bids (log)</figcaption>
 </figure>
 
@@ -106,26 +106,26 @@ The price effect is **40% larger for high-value items** (-0.137 vs. -0.098). The
 ## Raw Trends
 
 <figure>
-  <img src="assets/figures/fig_05_trends_prices.png" alt="Raw trends: prices">
+  <img src="../assets/figures/fig_05_trends_prices.png" alt="Raw trends: prices">
   <figcaption>Figure A.4. Raw Trends: Mean Log Price by Month</figcaption>
 </figure>
 
 <figure>
-  <img src="assets/figures/fig_06_trends_firms.png" alt="Raw trends: firms">
+  <img src="../assets/figures/fig_06_trends_firms.png" alt="Raw trends: firms">
   <figcaption>Figure A.5. Raw Trends: Mean Log Number of Firms by Month</figcaption>
 </figure>
 
 <figure>
-  <img src="assets/figures/fig_07_trends_bids.png" alt="Raw trends: bids">
+  <img src="../assets/figures/fig_07_trends_bids.png" alt="Raw trends: bids">
   <figcaption>Figure A.6. Raw Trends: Mean Log Number of Valid Bids by Month</figcaption>
 </figure>
 
 <figure>
-  <img src="assets/figures/fig_08_trends_distance.png" alt="Raw trends: distance">
+  <img src="../assets/figures/fig_08_trends_distance.png" alt="Raw trends: distance">
   <figcaption>Figure A.7. Raw Trends: Mean Distance (km) by Month</figcaption>
 </figure>
 
 <figure>
-  <img src="assets/figures/fig_10_sme_share.png" alt="SME participation share">
+  <img src="../assets/figures/fig_10_sme_share.png" alt="SME participation share">
   <figcaption>Figure A.9. SME Participation Share Among Firms by Month</figcaption>
 </figure>

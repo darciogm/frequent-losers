@@ -23,7 +23,7 @@ The placebo coefficients for **log prices are small and statistically insignific
 A permutation test randomly reassigning the group 65 indicator 500 times confirms that the observed price coefficient is extreme relative to the distribution of permuted coefficients.
 
 <figure>
-  <img src="assets/figures/fig_09_permutation.png" alt="Randomization inference">
+  <img src="../assets/figures/fig_09_permutation.png" alt="Randomization inference">
   <figcaption>Figure A.8. Randomization Inference: Distribution of 500 permuted coefficients with observed value marked</figcaption>
 </figure>
 
