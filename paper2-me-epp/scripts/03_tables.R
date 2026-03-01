@@ -31,8 +31,9 @@ write_didir_table <- function(mlist, caption, label, dv_label,
     "\\centering",
     sprintf("\\caption{%s}", caption),
     sprintf("\\label{%s}", label),
-    "\\small",
+    "\\begin{adjustbox}{max width=\\textwidth}",
     "\\begin{threeparttable}",
+    "\\small",
     "\\begin{tabular}{lcccccc}",
     "\\toprule",
     " & (1) & (2) & (3) & (4) & (5) & (6) \\\\",
@@ -80,6 +81,7 @@ write_didir_table <- function(mlist, caption, label, dv_label,
     "Constant absorbed by fixed effects.",
     "\\end{tablenotes}",
     "\\end{threeparttable}",
+    "\\end{adjustbox}",
     "\\end{table}"
   )
 
@@ -120,8 +122,9 @@ write_desc_stats <- function(dt) {
     "\\centering",
     "\\caption{Descriptive Statistics (18-month window)}",
     "\\label{tab:descstats}",
-    "\\small",
+    "\\begin{adjustbox}{max width=\\textwidth}",
     "\\begin{threeparttable}",
+    "\\small",
     "\\begin{tabular}{lcccccccc}",
     "\\toprule",
     " & \\multicolumn{2}{c}{Group 65, Pre} & \\multicolumn{2}{c}{Group 65, Post} & \\multicolumn{2}{c}{Others, Pre} & \\multicolumn{2}{c}{Others, Post} \\\\",
@@ -170,6 +173,7 @@ write_desc_stats <- function(dt) {
     "Firm and bid statistics computed on all items.",
     "\\end{tablenotes}",
     "\\end{threeparttable}",
+    "\\end{adjustbox}",
     "\\end{table}"
   )
 
