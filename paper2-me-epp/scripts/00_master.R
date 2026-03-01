@@ -11,7 +11,7 @@ cat("================================================================\n\n")
 pipeline_start <- Sys.time()
 
 # ---- Check required packages -----------------------------------------------
-required <- c("data.table", "fixest", "ggplot2", "arrow")
+required <- c("data.table", "fixest", "ggplot2", "arrow", "scales")
 missing  <- required[!sapply(required, requireNamespace, quietly = TRUE)]
 if (length(missing) > 0) {
   cat("Installing missing packages:", paste(missing, collapse = ", "), "\n")
@@ -31,8 +31,9 @@ if (is.null(script_dir) || is.na(script_dir) || script_dir == "" || script_dir =
   script_dir <- file.path(getwd(), "scripts")
 }
 
-# ---- Run scripts sequentially -----------------------------------------------
-scripts <- c("01_clean.R", "02_analysis.R", "03_tables.R", "04_figures.R")
+# ---- Run scripts as separate processes (prevents OOM on 15 GB RAM) ----------
+scripts <- c("01_clean.R", "02_analysis.R", "05_robustness.R",
+             "06_extensions.R", "03_tables.R", "04_figures.R")
 timings <- data.frame(script = character(), seconds = numeric(), status = character(),
                       stringsAsFactors = FALSE)
 
@@ -41,15 +42,14 @@ for (s in scripts) {
   cat("\n--- Running:", s, "---\n")
   t0 <- Sys.time()
 
-  result <- tryCatch({
-    env <- new.env(parent = globalenv())
-    env$.script_dir <- script_dir
-    source(path, local = env)
-    "OK"
-  }, error = function(e) {
-    cat("  ERROR in", s, ":", conditionMessage(e), "\n")
-    paste("FAILED:", conditionMessage(e))
-  })
+  # Run each script as a separate Rscript subprocess so the OS fully
+  # reclaims memory between scripts (15 GB RAM is too tight for in-process)
+  cmd <- sprintf("Rscript -e \".script_dir <- '%s'; source('%s')\"",
+                 script_dir, path)
+  rc <- system(cmd)
+
+  result <- if (rc == 0) "OK" else paste0("FAILED (exit code ", rc, ")")
+  if (rc != 0) cat("  ERROR in", s, "(exit code", rc, ")\n")
 
   elapsed <- as.numeric(difftime(Sys.time(), t0, units = "secs"))
   timings <- rbind(timings, data.frame(script = s, seconds = round(elapsed, 1),

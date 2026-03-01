@@ -15,6 +15,8 @@ suppressPackageStartupMessages({
 BASE     <- normalizePath(file.path(.script_dir, ".."), mustWork = FALSE)
 DATA_RAW <- file.path(BASE, "data", "raw")
 DATA_PARQ <- file.path(BASE, "data", "processed", "paper2_me_epp.parquet")
+DATA_PARQ_VER <- paste0(DATA_PARQ, ".version")
+PARQUET_VERSION <- 2L
 DATA_CACHE <- "/tmp/p2_prepared.rds"
 OUT_TAB  <- file.path(BASE, "output", "tables")
 OUT_FIG  <- file.path(BASE, "output", "figures")
@@ -24,6 +26,9 @@ for (d in c(OUT_TAB, OUT_FIG)) dir.create(d, recursive = TRUE, showWarnings = FA
 # ---- Thread settings -------------------------------------------------------
 setFixest_nthreads(16)
 setDTthreads(16)
+
+# Don't store data copies in model objects (saves ~4 GB per model batch)
+setFixest_estimation(lean = TRUE)
 
 # ---- Window and treatment constants ----------------------------------------
 # Stata monthly dates: months since Jan 1960
@@ -90,6 +95,31 @@ coef_cell <- function(model, var, d = 4) {
 se_cell <- function(model, var, d = 4) {
   se <- sqrt(vcov(model)[var, var])
   paste0("(", pfmt(se, d), ")")
+}
+
+# ---- Winsorize helper ------------------------------------------------------
+winsorize <- function(x, lo = 0.01, hi = 0.99) {
+  q <- quantile(x, c(lo, hi), na.rm = TRUE)
+  pmax(pmin(x, q[2]), q[1])
+}
+
+# ---- Run DiDiR with custom formula ----------------------------------------
+run_didir_custom <- function(fml_str, data, window, completed = FALSE) {
+  dt <- data[data_oc_numb >= window[1] & data_oc_numb <= window[2]]
+  if (completed) dt <- dt[oc_item_status == 1L]
+  fml <- as.formula(fml_str)
+  feols(fml, data = dt, cluster = ~item_alt, fixef.rm = "none")
+}
+
+# ---- Run DiDiR with alternative clustering ---------------------------------
+run_didir_altcluster <- function(dv, data, window, add_pbu = FALSE,
+                                  completed = FALSE, cluster_var) {
+  dt <- data[data_oc_numb >= window[1] & data_oc_numb <= window[2]]
+  if (completed) dt <- dt[oc_item_status == 1L]
+  fe <- if (add_pbu) "item_alt + pbu_alt" else "item_alt"
+  fml <- as.formula(paste0(dv, " ~ g65_pre + convite + lquantidade | ", fe))
+  feols(fml, data = dt, cluster = as.formula(paste0("~", cluster_var)),
+        fixef.rm = "none")
 }
 
 # ---- Publication figure theme and saver ------------------------------------
