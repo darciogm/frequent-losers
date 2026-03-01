@@ -199,4 +199,176 @@ if ("sme_share_ph1" %in% names(dt)) {
   save_pub(p10, "fig_10_sme_share.pdf")
 }
 
+# ============================================================================
+# ADVANCED METHODS FIGURES
+# ============================================================================
+
+adv_path <- "/tmp/p2_advanced.rds"
+if (file.exists(adv_path)) {
+  adv <- readRDS(adv_path)
+  cat("  Loaded advanced models\n")
+
+  # ---- Figure 11: Parallel trends sensitivity (2x2 panel) --------------------
+  if (!is.null(adv$honestdid)) {
+    cat("  Figure 11: Parallel trends sensitivity analysis...\n")
+
+    suppressPackageStartupMessages(library(gridExtra))
+
+    outcome_labels <- c(
+      prices   = "Log Prices",
+      distance = "Distance (km)",
+      numfirms = "Log Number of Firms",
+      numbids  = "Log Number of Valid Bids"
+    )
+
+    hd_plots <- list()
+    for (nm in names(adv$honestdid)) {
+      hd <- adv$honestdid[[nm]]
+      if (is.null(hd$result)) {
+        hd_plots[[nm]] <- ggplot() +
+          annotate("text", x = 0.5, y = 0.5, label = "Sensitivity failed") +
+          labs(title = outcome_labels[nm]) +
+          theme_void()
+        next
+      }
+
+      plot_df <- hd$result  # data.frame with Mbar, lb, ub
+
+      p <- ggplot(plot_df, aes(x = Mbar)) +
+        geom_ribbon(aes(ymin = lb, ymax = ub), alpha = 0.2, fill = "gray50") +
+        geom_line(aes(y = lb), linetype = "dashed", color = "black") +
+        geom_line(aes(y = ub), linetype = "dashed", color = "black") +
+        geom_hline(yintercept = 0, linetype = "dotted", color = "red", linewidth = 0.3) +
+        labs(x = expression(bar(M)), y = "Robust CI for first post-treatment period",
+             title = outcome_labels[nm]) +
+        theme_pub(base_size = 8) +
+        theme(plot.title = element_text(face = "bold", size = 9))
+
+      hd_plots[[nm]] <- p
+    }
+
+    if (length(hd_plots) > 0) {
+      p11 <- arrangeGrob(grobs = hd_plots, ncol = 2)
+      filepath <- file.path(OUT_FIG, "fig_11_honestdid.pdf")
+      ggsave(filepath, p11, width = 6.5, height = 6, device = cairo_pdf)
+      cat("  Saved:", filepath, "\n")
+    }
+  }
+
+  # ---- Figure 12: Causal forest variable importance ---------------------------
+  if (!is.null(adv$causal_forest)) {
+    cat("  Figure 12: Causal forest variable importance...\n")
+
+    vi <- adv$causal_forest$varimp
+    vi$variable <- factor(vi$variable, levels = vi$variable[order(vi$importance)])
+
+    p12 <- ggplot(vi, aes(x = importance, y = variable)) +
+      geom_col(fill = "gray50", width = 0.6) +
+      labs(x = "Variable Importance", y = NULL) +
+      theme_pub() +
+      theme(legend.position = "none")
+
+    save_pub(p12, "fig_12_cforest_varimp.pdf")
+  }
+
+  # ---- Figure 13: Causal forest GATE by quartile -----------------------------
+  if (!is.null(adv$causal_forest)) {
+    cat("  Figure 13: Causal forest GATE by quartile...\n")
+
+    gate <- adv$causal_forest$gate
+    gate$ci_lo <- gate$estimate - 1.96 * gate$se
+    gate$ci_hi <- gate$estimate + 1.96 * gate$se
+
+    ate_val <- adv$causal_forest$ate[1]
+
+    p13 <- ggplot(gate, aes(x = quartile, y = estimate)) +
+      geom_hline(yintercept = ate_val, linetype = "dashed", color = "gray40",
+                 linewidth = 0.5) +
+      geom_hline(yintercept = 0, linetype = "dotted", color = "red", linewidth = 0.3) +
+      geom_errorbar(aes(ymin = ci_lo, ymax = ci_hi), width = 0.15,
+                    linewidth = 0.5, color = "black") +
+      geom_point(size = 3, color = "black") +
+      annotate("text", x = 4.3, y = ate_val,
+               label = paste0("ATE = ", pfmt(ate_val, 3)),
+               size = 2.5, hjust = 0) +
+      labs(x = "CATE Quartile", y = "Group Average Treatment Effect") +
+      theme_pub()
+
+    save_pub(p13, "fig_13_cforest_gate.pdf")
+  }
+
+  # ---- Figure 14: Quantile DiD -----------------------------------------------
+  if (!is.null(adv$quantile_did)) {
+    cat("  Figure 14: Quantile DiD...\n")
+
+    qd <- adv$quantile_did
+    qc <- qd$quantile_coefs
+
+    # OLS band
+    ols_lo <- qd$ols_coef - 1.96 * qd$ols_se
+    ols_hi <- qd$ols_coef + 1.96 * qd$ols_se
+
+    p14 <- ggplot(qc, aes(x = tau, y = estimate)) +
+      # OLS reference band
+      annotate("rect", xmin = min(qc$tau) - 0.05, xmax = max(qc$tau) + 0.05,
+               ymin = ols_lo, ymax = ols_hi,
+               fill = "gray85", alpha = 0.5) +
+      geom_hline(yintercept = qd$ols_coef, linetype = "dashed",
+                 color = "gray40", linewidth = 0.5) +
+      geom_hline(yintercept = 0, linetype = "dotted", color = "red", linewidth = 0.3) +
+      geom_line(linewidth = 0.6, color = "black") +
+      geom_point(size = 2.5, color = "black")
+
+    # Add CIs if available
+    if (any(!is.na(qc$ci_lo))) {
+      p14 <- p14 +
+        geom_errorbar(aes(ymin = ci_lo, ymax = ci_hi), width = 0.02,
+                      linewidth = 0.5, color = "black")
+    }
+
+    p14 <- p14 +
+      scale_x_continuous(breaks = qc$tau) +
+      labs(x = expression(paste("Quantile (", tau, ")")),
+           y = expression(paste("Treatment effect on log price (", g65 %*% Pre, ")"))) +
+      annotate("text", x = max(qc$tau) + 0.02, y = qd$ols_coef,
+               label = "OLS", size = 2.5, hjust = 0) +
+      theme_pub()
+
+    save_pub(p14, "fig_14_quantile_did.pdf")
+  }
+
+  # ---- Figure 15: Gelbach mediation ------------------------------------------
+  if (!is.null(adv$gelbach)) {
+    cat("  Figure 15: Gelbach decomposition...\n")
+
+    gel <- adv$gelbach
+    decomp <- gel$decomposition
+
+    # Build plot data: channels + direct effect
+    plot_df <- data.frame(
+      channel  = c(decomp$label, "Direct effect"),
+      value    = c(decomp$delta, gel$direct_effect),
+      se       = c(decomp$delta_se, gel$se_full),
+      stringsAsFactors = FALSE
+    )
+    plot_df$channel <- factor(plot_df$channel,
+                              levels = rev(plot_df$channel))
+    plot_df$ci_lo <- plot_df$value - 1.96 * plot_df$se
+    plot_df$ci_hi <- plot_df$value + 1.96 * plot_df$se
+    plot_df$type <- c(rep("Channel", nrow(decomp)), "Direct")
+
+    p15 <- ggplot(plot_df, aes(x = value, y = channel)) +
+      geom_vline(xintercept = 0, linetype = "dotted", color = "red", linewidth = 0.3) +
+      geom_errorbar(aes(xmin = ci_lo, xmax = ci_hi), width = 0.2,
+                    linewidth = 0.5, color = "black", orientation = "y") +
+      geom_point(aes(shape = type), size = 3, color = "black") +
+      scale_shape_manual(values = c("Channel" = 16, "Direct" = 17)) +
+      labs(x = "Contribution to price effect", y = NULL) +
+      theme_pub() +
+      theme(legend.position = "none")
+
+    save_pub(p15, "fig_15_mediation.pdf")
+  }
+}
+
 cat("  All figures generated.\n")

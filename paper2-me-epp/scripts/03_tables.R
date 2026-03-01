@@ -731,4 +731,288 @@ if (has_ext && !is.null(ext$heterog_val_prices_high)) {
   cat("  Saved: tab_heterog_value.tex\n")
 }
 
+# ============================================================================
+# ADVANCED METHODS TABLES
+# ============================================================================
+
+adv_path <- "/tmp/p2_advanced.rds"
+has_adv <- file.exists(adv_path)
+
+if (has_adv) {
+  adv <- readRDS(adv_path)
+  cat("  Loaded advanced models\n")
+}
+
+# ---- Table: Lee (2009) Bounds -----------------------------------------------
+if (has_adv && !is.null(adv$lee_bounds)) {
+  cat("  Generating Lee bounds table...\n")
+
+  lb <- adv$lee_bounds
+
+  lines <- c(
+    "\\begin{table}[htbp]",
+    "\\centering",
+    "\\caption{Lee (2009) Bounds: Sample Selection Correction}",
+    "\\label{tab:lee_bounds}",
+    "\\begin{adjustbox}{max width=\\textwidth}",
+    "\\begin{threeparttable}",
+    "\\small",
+    "\\begin{tabular}{lcccc}",
+    "\\toprule",
+    " & \\multicolumn{2}{c}{Log prices} & \\multicolumn{2}{c}{Distance (km)} \\\\",
+    "\\cmidrule(lr){2-3} \\cmidrule(lr){4-5}",
+    " & Lower bound & Upper bound & Lower bound & Upper bound \\\\",
+    "\\midrule"
+  )
+
+  ms_lb <- list(lb$prices_lower, lb$prices_upper, lb$distance_lower, lb$distance_upper)
+
+  vals <- sapply(ms_lb, function(m) if (!is.null(m)) coef_cell(m, "g65_pre", 4) else "--")
+  ses  <- sapply(ms_lb, function(m) if (!is.null(m)) se_cell(m, "g65_pre", 4) else "")
+  obs  <- sapply(ms_lb, function(m) if (!is.null(m)) pfmt_int(m$nobs) else "--")
+  r2v  <- sapply(ms_lb, function(m) if (!is.null(m)) pfmt(fitstat(m, "wr2")[[1]], 4) else "--")
+
+  lines <- c(lines,
+    sprintf("$g65 \\times Pre$ & %s \\\\", paste(vals, collapse = " & ")),
+    sprintf(" & %s \\\\", paste(ses, collapse = " & ")),
+    "\\midrule",
+    sprintf("Observations & %s \\\\", paste(obs, collapse = " & ")),
+    sprintf("R-squared & %s \\\\", paste(r2v, collapse = " & ")),
+    sprintf("Trimming proportion & \\multicolumn{4}{c}{%s} \\\\",
+            pfmt(lb$trimming_proportion, 4)),
+    "Item FE & YES & YES & YES & YES \\\\",
+    "\\bottomrule",
+    "\\end{tabular}",
+    "\\begin{tablenotes}",
+    "\\small",
+    "\\item \\textit{Notes:} Lee (2009) bounds correct for sample selection arising from",
+    "treatment effects on completion rates. 18-month window.",
+    "Lower/upper bounds obtained by trimming the outcome distribution in the excess-selected cell.",
+    sprintf("DiD in completion rate: %s.", pfmt(lb$did_completion, 4)),
+    "Standard errors clustered at the item level.",
+    "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1.",
+    "\\end{tablenotes}",
+    "\\end{threeparttable}",
+    "\\end{adjustbox}",
+    "\\end{table}"
+  )
+
+  writeLines(lines, file.path(OUT_TAB, "tab_lee_bounds.tex"))
+  cat("  Saved: tab_lee_bounds.tex\n")
+}
+
+# ---- Table: Causal Forest GATE ----------------------------------------------
+if (has_adv && !is.null(adv$causal_forest)) {
+  cat("  Generating causal forest GATE table...\n")
+
+  cf <- adv$causal_forest
+
+  lines <- c(
+    "\\begin{table}[htbp]",
+    "\\centering",
+    "\\caption{Causal Forest: Group Average Treatment Effects by CATE Quartile}",
+    "\\label{tab:cforest}",
+    "\\begin{adjustbox}{max width=\\textwidth}",
+    "\\begin{threeparttable}",
+    "\\small",
+    "\\begin{tabular}{lcccc}",
+    "\\toprule",
+    " & Q1 (lowest) & Q2 & Q3 & Q4 (highest) \\\\",
+    "\\midrule"
+  )
+
+  gate <- cf$gate
+  vals <- sapply(1:4, function(i) {
+    b <- gate$estimate[i]
+    se <- gate$se[i]
+    p <- 2 * pnorm(-abs(b / se))
+    paste0(pfmt(b, 4), pstars(p))
+  })
+  ses <- sapply(1:4, function(i) {
+    paste0("(", pfmt(gate$se[i], 4), ")")
+  })
+
+  lines <- c(lines,
+    sprintf("GATE & %s \\\\", paste(vals, collapse = " & ")),
+    sprintf(" & %s \\\\", paste(ses, collapse = " & ")),
+    "\\midrule",
+    sprintf("ATE (full sample) & \\multicolumn{4}{c}{%s (%s)} \\\\",
+            pfmt(cf$ate[1], 4), pfmt(cf$ate[2], 4))
+  )
+
+  # Variable importance (escape underscores for LaTeX)
+  vi <- cf$varimp
+  vi_str <- paste(sapply(1:min(nrow(vi), 4), function(i)
+    paste0(gsub("_", "\\\\_", vi$variable[i]), ": ", pfmt(vi$importance[i], 3))),
+    collapse = ", ")
+
+  lines <- c(lines,
+    "\\bottomrule",
+    "\\end{tabular}",
+    "\\begin{tablenotes}",
+    "\\small",
+    "\\item \\textit{Notes:} Causal forest estimated with 2,000 honest trees on FWL-residualized outcomes.",
+    "CATE quartiles defined by predicted individual treatment effects.",
+    sprintf("Top variable importances: %s.", vi_str),
+    "Standard errors in parentheses.",
+    "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1.",
+    "\\end{tablenotes}",
+    "\\end{threeparttable}",
+    "\\end{adjustbox}",
+    "\\end{table}"
+  )
+
+  writeLines(lines, file.path(OUT_TAB, "tab_cforest.tex"))
+  cat("  Saved: tab_cforest.tex\n")
+}
+
+# ---- Table: Quantile DiD ----------------------------------------------------
+if (has_adv && !is.null(adv$quantile_did)) {
+  cat("  Generating quantile DiD table...\n")
+
+  qd <- adv$quantile_did
+  qc <- qd$quantile_coefs
+
+  ncols <- nrow(qc)
+  tau_headers <- paste(sprintf("$\\tau = %s$", pfmt(qc$tau, 2)), collapse = " & ")
+
+  lines <- c(
+    "\\begin{table}[htbp]",
+    "\\centering",
+    "\\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}",
+    "\\label{tab:quantile_did}",
+    "\\begin{adjustbox}{max width=\\textwidth}",
+    "\\begin{threeparttable}",
+    "\\small",
+    sprintf("\\begin{tabular}{l%s}", paste(rep("c", ncols), collapse = "")),
+    "\\toprule",
+    sprintf(" & %s \\\\", tau_headers),
+    "\\midrule"
+  )
+
+  vals <- sapply(1:ncols, function(i) {
+    b <- qc$estimate[i]
+    se <- qc$se[i]
+    if (!is.na(se) && se > 0) {
+      p <- 2 * pnorm(-abs(b / se))
+      paste0(pfmt(b, 4), pstars(p))
+    } else {
+      pfmt(b, 4)
+    }
+  })
+  ses <- sapply(1:ncols, function(i) {
+    if (!is.na(qc$se[i])) paste0("(", pfmt(qc$se[i], 4), ")") else ""
+  })
+
+  lines <- c(lines,
+    sprintf("$g65 \\times Pre$ & %s \\\\", paste(vals, collapse = " & ")),
+    sprintf(" & %s \\\\", paste(ses, collapse = " & ")),
+    "\\midrule",
+    sprintf("OLS benchmark & \\multicolumn{%d}{c}{%s (%s)} \\\\",
+            ncols, pfmt(qd$ols_coef, 4), pfmt(qd$ols_se, 4)),
+    sprintf("Observations & \\multicolumn{%d}{c}{%s} \\\\",
+            ncols, pfmt_int(qd$n_obs)),
+    sprintf("Group FE & \\multicolumn{%d}{c}{YES} \\\\", ncols),
+    "\\bottomrule",
+    "\\end{tabular}",
+    "\\begin{tablenotes}",
+    "\\small",
+    "\\item \\textit{Notes:} Quantile regression estimated at each $\\tau$ using the Canay (2011)",
+    "two-step estimator with group FE (78 levels). 18-month window, completed items.",
+    "OLS benchmark estimated on identical sample with group FE.",
+    "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1.",
+    "\\end{tablenotes}",
+    "\\end{threeparttable}",
+    "\\end{adjustbox}",
+    "\\end{table}"
+  )
+
+  writeLines(lines, file.path(OUT_TAB, "tab_quantile_did.tex"))
+  cat("  Saved: tab_quantile_did.tex\n")
+}
+
+# ---- Table: Gelbach (2016) Decomposition ------------------------------------
+if (has_adv && !is.null(adv$gelbach)) {
+  cat("  Generating Gelbach decomposition table...\n")
+
+  gel <- adv$gelbach
+  decomp <- gel$decomposition
+
+  lines <- c(
+    "\\begin{table}[htbp]",
+    "\\centering",
+    "\\caption{Gelbach (2016) Decomposition: Channels of Price Effect}",
+    "\\label{tab:mediation}",
+    "\\begin{adjustbox}{max width=\\textwidth}",
+    "\\begin{threeparttable}",
+    "\\small",
+    "\\begin{tabular}{lccc}",
+    "\\toprule",
+    " & Coefficient & SE & \\% of gap \\\\",
+    "\\midrule",
+    "\\multicolumn{4}{l}{\\textit{Panel A: Overall effect}} \\\\"
+  )
+
+  # Short regression
+  p_short <- 2 * pnorm(-abs(gel$beta_short / gel$se_short))
+  lines <- c(lines,
+    sprintf("Short regression ($g65 \\times Pre$) & %s%s & (%s) & \\\\",
+            pfmt(gel$beta_short, 4), pstars(p_short), pfmt(gel$se_short, 4))
+  )
+
+  # Full regression
+  p_full <- 2 * pnorm(-abs(gel$beta_full / gel$se_full))
+  lines <- c(lines,
+    sprintf("Full regression ($g65 \\times Pre$) & %s%s & (%s) & \\\\",
+            pfmt(gel$beta_full, 4), pstars(p_full), pfmt(gel$se_full, 4)),
+    sprintf("Gap (short $-$ full) & %s & & 100.0\\%% \\\\",
+            pfmt(gel$total_gap, 4)),
+    "\\midrule",
+    "\\multicolumn{4}{l}{\\textit{Panel B: Channel decomposition ($\\delta_k = \\gamma_k \\times \\pi_k$)}} \\\\"
+  )
+
+  # Channel contributions
+  for (i in seq_len(nrow(decomp))) {
+    p_delta <- 2 * pnorm(-abs(decomp$delta[i] / decomp$delta_se[i]))
+    pct_str <- if (!is.na(decomp$pct_contrib[i])) {
+      sprintf("%.1f\\%%", decomp$pct_contrib[i])
+    } else ""
+
+    lines <- c(lines,
+      sprintf("%s & %s%s & (%s) & %s \\\\",
+              decomp$label[i],
+              pfmt(decomp$delta[i], 4), pstars(p_delta),
+              pfmt(decomp$delta_se[i], 4),
+              pct_str)
+    )
+  }
+
+  # Direct effect
+  lines <- c(lines,
+    sprintf("Direct effect (unexplained) & %s%s & (%s) & \\\\",
+            pfmt(gel$direct_effect, 4), pstars(p_full), pfmt(gel$se_full, 4)),
+    "\\midrule",
+    sprintf("Observations & \\multicolumn{3}{c}{%s} \\\\",
+            pfmt_int(gel$m_short$nobs)),
+    "Item FE & \\multicolumn{3}{c}{YES} \\\\",
+    "\\bottomrule",
+    "\\end{tabular}",
+    "\\begin{tablenotes}",
+    "\\small",
+    "\\item \\textit{Notes:} Gelbach (2016) decomposition of the price effect into channel contributions.",
+    "Short regression includes only treatment and controls; full regression adds mediators.",
+    "$\\delta_k = \\gamma_k \\times \\pi_k$ where $\\gamma_k$ is the mediator coefficient in the full regression",
+    "and $\\pi_k$ is the treatment coefficient in the auxiliary regression of mediator $k$ on treatment.",
+    "18-month window, completed items. SE via delta method.",
+    "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1.",
+    "\\end{tablenotes}",
+    "\\end{threeparttable}",
+    "\\end{adjustbox}",
+    "\\end{table}"
+  )
+
+  writeLines(lines, file.path(OUT_TAB, "tab_mediation.tex"))
+  cat("  Saved: tab_mediation.tex\n")
+}
+
 cat("  All tables generated.\n")

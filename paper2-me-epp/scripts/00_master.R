@@ -11,7 +11,8 @@ cat("================================================================\n\n")
 pipeline_start <- Sys.time()
 
 # ---- Check required packages -----------------------------------------------
-required <- c("data.table", "fixest", "ggplot2", "arrow", "scales")
+required <- c("data.table", "fixest", "ggplot2", "arrow", "scales",
+               "grf", "quantreg", "gridExtra")
 missing  <- required[!sapply(required, requireNamespace, quietly = TRUE)]
 if (length(missing) > 0) {
   cat("Installing missing packages:", paste(missing, collapse = ", "), "\n")
@@ -33,7 +34,7 @@ if (is.null(script_dir) || is.na(script_dir) || script_dir == "" || script_dir =
 
 # ---- Run scripts as separate processes (prevents OOM on 15 GB RAM) ----------
 scripts <- c("01_clean.R", "02_analysis.R", "05_robustness.R",
-             "06_extensions.R", "03_tables.R", "04_figures.R")
+             "06_extensions.R", "07_advanced.R", "03_tables.R", "04_figures.R")
 timings <- data.frame(script = character(), seconds = numeric(), status = character(),
                       stringsAsFactors = FALSE)
 
