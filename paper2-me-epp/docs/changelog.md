@@ -2,6 +2,7 @@
 
 ## March 2026 (Current Version)
 
+- **Fiscal Cost Quantification**: new subsection in the manuscript with formula, table (R$84.5--85.8 million), and discussion; result integrated into abstract, introduction, and conclusion
 - 5 advanced econometric methods: parallel trends sensitivity (HonestDiD), Lee bounds, causal forest, quantile DiD, Gelbach decomposition
 - 4 new tables + 5 new figures (18 tables / 15 figures total)
 - Expanded appendix with organized subsections and explanatory paragraphs

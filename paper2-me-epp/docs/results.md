@@ -103,6 +103,26 @@ The price effect is **40% larger for high-value items** (-0.137 vs. -0.098). The
 
 ---
 
+## Fiscal Cost Quantification
+
+Translating the estimated price effects into monetary terms provides a concrete measure of the policy's fiscal burden. The calculation applies the implied percentage price effect ($e^{\hat{\beta}} - 1$) to the total procurement value of group 65 completed items in the pre-period (Sep 2016--Feb 2018).
+
+| Component | Baseline spec. | PBU FE spec. |
+|-----------|:--------------:|:------------:|
+| Price coefficient (18m) | -0.1309 | -0.1330 |
+| Implied price effect | -12.27% | -12.45% |
+| G65 pre-period total value | R$ 689.0 million | R$ 689.0 million |
+| **Estimated fiscal saving** | **R$ 84.5 million** | **R$ 85.8 million** |
+
+<div class="key-result" markdown>
+<span class="number">R$ 84.5--85.8 million</span>
+<span class="label">Fiscal cost of restricting tenders to SMEs for group 65 in the pre-period (18-month window, ~US$17 million)</span>
+</div>
+
+This represents about **12% of total procurement value** for group 65. The estimate is conservative: group 65 accounts for only 27% of total BEC procurement, so the aggregate fiscal cost across all product groups subject to SME restrictions is likely several times larger. The heterogeneity results further indicate that these costs are disproportionately concentrated among high-value items.
+
+---
+
 ## Raw Trends
 
 <figure>

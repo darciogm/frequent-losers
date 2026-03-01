@@ -108,3 +108,44 @@ Several extensions deepen the analysis and shed light on the mechanisms driving 
 \noindent\textbf{Heterogeneity by PBU type.} The effects may differ across buyer types if, for example, direct administration entities (state bureaus) face different institutional constraints than indirect administration entities (foundations, municipalities). I test for this by interacting the treatment indicator with a direct administration dummy and find broadly similar effects across buyer types (Table~\ref{tab:heterog_pbu}), suggesting that the competition channel operates consistently across the institutional landscape of public procurement in Sao Paulo.
 
 Raw monthly trends for all four outcomes (Figures~A.4--A.7) visually confirm the parallel trends assumption in the post-treatment period and the divergence in the pre-period for the switched group. The advanced methods figures in the appendix complement these extensions by characterizing the distributional properties of the price effect (Figure~\ref{fig:quantile_did}), identifying the observable sources of treatment effect heterogeneity (Figures~\ref{fig:cforest_varimp} and \ref{fig:cforest_gate}), and quantifying the sensitivity of the results to departures from parallel trends (Figure~\ref{fig:honestdid}).
+
+\subsection{Fiscal Cost Quantification}
+
+The regression estimates above measure the \emph{percentage} price premium attributable to the SME-only tender restriction, but policymakers need to understand these costs in absolute terms. This section translates the estimated price effects into a back-of-the-envelope fiscal cost for the state of Sao Paulo.
+
+The calculation proceeds as follows. Let $\hat{\beta}$ denote the estimated DiDiR coefficient on log prices from the 18-month window specification. Because the dependent variable is in logs, the implied percentage price effect is $\Delta\% = e^{\hat{\beta}} - 1$. Applying this percentage to the total procurement value of group 65 completed items in the pre-period (September 2016 to February 2018) yields the estimated fiscal cost:
+\begin{equation}
+\text{Fiscal cost} = \underbrace{V_{g65,\text{pre}}}_{\text{Total procurement value}} \times \underbrace{\bigl|e^{\hat{\beta}} - 1\bigr|}_{\text{Implied price effect}}
+\end{equation}
+
+Table~\ref{tab:fiscal_cost} presents the results for both the baseline specification (item fixed effects only) and the saturated specification (item and PBU fixed effects).
+
+\begin{table}[htbp]
+\centering
+\caption{Fiscal Cost of SME-only Tender Restrictions: Group 65}
+\label{tab:fiscal_cost}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcc}
+\toprule
+ & Baseline & PBU FE \\
+\midrule
+Price coefficient ($\hat{\beta}$, 18-month) & $-0.1309$ & $-0.1330$ \\
+Implied price effect ($e^{\hat{\beta}} - 1$) & $-12.27\%$ & $-12.45\%$ \\
+G65 pre-period total value (R\$ millions) & $689.0$ & $689.0$ \\
+\midrule
+\textbf{Estimated fiscal saving (R\$ millions)} & \textbf{84.5} & \textbf{85.8} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} The fiscal cost is calculated as the product of the total procurement value of group 65 completed items in the pre-period (Sep 2016--Feb 2018) and the absolute implied price effect. The implied price effect converts the log-point estimate to a percentage using the transformation $e^{\hat{\beta}} - 1$. Both specifications use the 18-month time window.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The estimated fiscal cost of the SME-only tender restriction for group 65 alone ranges from R\$84.5 million to R\$85.8 million (approximately US\$17 million) over the 18-month pre-period. This represents about 12\% of the total procurement value for this product group---a substantial inefficiency arising from a single policy instrument applied to a single set of items.
+
+Several considerations frame the interpretation of this estimate. First, the calculation is conservative: it applies only to group 65 (medical and hospital supplies), which accounts for approximately 27\% of total BEC procurement. Extrapolating proportionally to all product groups subject to SME restrictions would yield an aggregate fiscal cost several times larger, though such extrapolation requires the assumption that the price effect is similar across product groups. Second, the heterogeneity results in Table~\ref{tab:heterog_value} suggest that the fiscal cost is disproportionately concentrated among high-value items, where the per-item price premium is approximately 40\% larger. Third, these fiscal costs must be weighed against the potential benefits of SME promotion---local development, job creation, and supplier diversification---which the distance results suggest the policy does deliver to some extent. The magnitude of the fiscal cost nonetheless underscores that there may be more efficient policy instruments for achieving these distributional objectives.

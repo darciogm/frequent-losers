@@ -14,13 +14,13 @@ hide:
 </div>
 
 <div class="key-result" markdown>
-<span class="number">4.6--8.1%</span>
-<span class="label">Price increase from restricting tenders to SMEs (DiDiR estimates)</span>
+<span class="number">R$ 84.5--85.8 million</span>
+<span class="label">Fiscal cost of SME-only tender restrictions for group 65 alone (18-month pre-period)</span>
 </div>
 
 ## Abstract
 
-While there are numerous examples of policies that benefit small and medium-sized enterprises (SMEs) worldwide, research offers little direct evidence on the benefits of such policies for the economy. Additionally, assessments of the costs of implementing such policies are practically ignored in the literature. This paper exploits a quasi-experimental variation from a program incentivizing the restriction of public tenders to SMEs in Sao Paulo, Brazil, to estimate this policy's costs. Using detailed data on public procurement and a variation of the standard DiD method (difference-in-differences in reverse), I estimate the pre-intervention effects of the policy shift. I find that before the policy shift, for group 65 (the 'switched' group) in comparison with other groups (the 'always treated' group): (i) the negotiated prices were lower (between 4.58% and 8.08%); (ii) the number of participants was approximately 22% higher; and (iii) the number of valid bids was approximately 25% higher. These results suggest that the policy of incentivizing the restriction of public tenders to SMEs may severely undermine the quality and efficiency of the public procurement process.
+While there are numerous examples of policies that benefit small and medium-sized enterprises (SMEs) worldwide, research offers little direct evidence on the benefits of such policies for the economy. Additionally, assessments of the costs of implementing such policies are practically ignored in the literature. This paper exploits a quasi-experimental variation from a program incentivizing the restriction of public tenders to SMEs in Sao Paulo, Brazil, to estimate this policy's costs. Using detailed data on public procurement and a variation of the standard DiD method (difference-in-differences in reverse), I estimate the pre-intervention effects of the policy shift. I find that before the policy shift, for group 65 (the 'switched' group) in comparison with other groups (the 'always treated' group): (i) the negotiated prices were lower (between 4.58% and 8.08%); (ii) the number of participants was approximately 22% higher; and (iii) the number of valid bids was approximately 25% higher. Translating these price effects into monetary terms, the fiscal cost of the SME-only restriction for group 65 alone amounts to R$84.5--85.8 million (approximately US$17 million) over the 18-month pre-period---about 12% of this product group's total procurement value. These results suggest that the policy of incentivizing the restriction of public tenders to SMEs may severely undermine the quality and efficiency of the public procurement process.
 
 **JEL Classification:**
 <span class="badge">H32</span>
@@ -43,6 +43,9 @@ While there are numerous examples of policies that benefit small and medium-size
 
 !!! success "SME restrictions raise procurement prices"
     Open tenders for group 65 yielded **4.6--8.1% lower prices** compared to SME-restricted tenders for other groups, after controlling for item and buyer fixed effects.
+
+!!! danger "R$ 84.5--85.8 million in fiscal costs"
+    The fiscal cost of SME-only restrictions for **group 65 alone** amounts to ~12% of this product group's total procurement value over 18 months (~US$17 million). Extrapolating to all product groups would yield substantially larger figures.
 
 !!! warning "Competition declines under SME restrictions"
     Open tenders attracted **22% more participating firms** and **25% more valid bids** in the short term, with effects attenuating as PBUs learn to manage restricted tenders.
