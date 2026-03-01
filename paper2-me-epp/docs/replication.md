@@ -10,6 +10,9 @@
 | `arrow` | 14+ |
 | `ggplot2` | 3.5+ |
 | `scales` | 1.3+ |
+| `grf` | 2.3+ |
+| `quantreg` | 5.98+ |
+| `gridExtra` | 2.3+ |
 
 ## Data
 
@@ -35,14 +38,15 @@ This executes the following scripts in sequence, each as a separate R subprocess
 | `02_analysis.R` | 24 DiDiR regressions + 4 event studies | ~30 sec |
 | `05_robustness.R` | Placebo, alt. clustering, winsorization, permutation | ~45 sec |
 | `06_extensions.R` | Real prices, extensive margin, efficiency, heterogeneity | ~30 sec |
-| `03_tables.R` | 14 LaTeX tables | ~5 sec |
-| `04_figures.R` | 10 PDF figures | ~10 sec |
+| `07_advanced.R` | HonestDiD, Lee bounds, causal forest, quantile DiD, Gelbach | ~3 min |
+| `03_tables.R` | 18 LaTeX tables | ~5 sec |
+| `04_figures.R` | 15 PDF figures | ~10 sec |
 
 ## Output Structure
 
 ```
 output/
-├── tables/           # 14 .tex files (threeparttable + booktabs)
+├── tables/           # 18 .tex files (threeparttable + booktabs)
 │   ├── tab_desc_stats.tex
 │   ├── tab_prices.tex
 │   ├── tab_participants.tex
@@ -56,8 +60,12 @@ output/
 │   ├── tab_efficiency.tex
 │   ├── tab_sme_winner.tex
 │   ├── tab_heterog_pbu.tex
-│   └── tab_heterog_value.tex
-└── figures/          # 10 .pdf files (grayscale, cairo)
+│   ├── tab_heterog_value.tex
+│   ├── tab_lee_bounds.tex
+│   ├── tab_cforest.tex
+│   ├── tab_quantile_did.tex
+│   └── tab_mediation.tex
+└── figures/          # 15 .pdf files (grayscale, cairo)
     ├── fig_01_logprices_es.pdf
     ├── fig_02_distance_es.pdf
     ├── fig_03_numfirms_es.pdf
@@ -67,7 +75,12 @@ output/
     ├── fig_07_trends_bids.pdf
     ├── fig_08_trends_distance.pdf
     ├── fig_09_permutation.pdf
-    └── fig_10_sme_share.pdf
+    ├── fig_10_sme_share.pdf
+    ├── fig_11_honestdid.pdf
+    ├── fig_12_cforest_varimp.pdf
+    ├── fig_13_cforest_gate.pdf
+    ├── fig_14_quantile_did.pdf
+    └── fig_15_mediation.pdf
 ```
 
 ## Manuscript Compilation

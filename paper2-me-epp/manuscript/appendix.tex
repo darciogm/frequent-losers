@@ -2,7 +2,12 @@
 \renewcommand{\thefigure}{A.\arabic{figure}}
 \setcounter{figure}{0}
 
-%% --- Event Study Figures ---
+%% ====================================================================
+%% A. Event Study Figures
+%% ====================================================================
+\subsection*{A. Event Study Coefficients}
+
+The event study graphs below complement Figure~\ref{fig:logprices} in the main text by plotting the semester-by-semester DiDiR coefficients for the remaining three outcome variables: distance from PBUs to winning firms, number of participant firms, and number of valid bids. In each panel, the coefficients are estimated relative to the last pre-treatment semester, and the vertical dashed line marks the policy change in March 2018. The key pattern is that the difference between group 65 and other groups narrows dramatically after the policy shift and then stabilizes, providing visual support for the parallel trends assumption in the post-period.
 
 \begin{figure}[htbp]
 \centering
@@ -25,7 +30,12 @@
 \label{fig:numbids_es}
 \end{figure}
 
-%% --- Raw Trends (Monthly Means) ---
+%% ====================================================================
+%% B. Raw Monthly Trends
+%% ====================================================================
+\subsection*{B. Raw Monthly Trends}
+
+Figures~A.4 through A.7 display the unconditional monthly means of each outcome variable, separately for group 65 and all other groups. These raw trends serve two purposes: they illustrate the level differences between the groups and allow the reader to visually assess whether the groups move in parallel after March 2018---the key identifying assumption of the DiDiR design. The raw trends are broadly consistent with the event study estimates, showing a narrowing of the gap between the two groups after the policy change.
 
 \begin{figure}[htbp]
 \centering
@@ -55,7 +65,12 @@
 \label{fig:trends_distance}
 \end{figure}
 
-%% --- Randomization Inference ---
+%% ====================================================================
+%% C. Randomization Inference
+%% ====================================================================
+\subsection*{C. Randomization Inference}
+
+Figure~A.8 presents the results of a randomization inference exercise. The treatment assignment (group 65 vs.\ other groups) is randomly permuted 500 times, and the main price regression is re-estimated for each permutation. The histogram displays the distribution of permuted coefficients, with the actual estimate marked by a vertical line. The actual coefficient lies well in the tail of the permutation distribution, confirming that the main result is unlikely to be an artifact of the particular assignment of treatment to group 65. The associated permutation $p$-value is well below conventional significance thresholds.
 
 \begin{figure}[htbp]
 \centering
@@ -64,7 +79,12 @@
 \label{fig:permutation}
 \end{figure}
 
-%% --- SME Share ---
+%% ====================================================================
+%% D. SME Participation Share
+%% ====================================================================
+\subsection*{D. SME Participation Trends}
+
+Figure~A.9 plots the monthly share of firms that are classified as SMEs among all first-phase participants, separately for group 65 and all other groups. This descriptive evidence contextualizes the winner composition results in the main text: before March 2018, the SME share among participating firms was substantially lower for group 65 (which was open to all firms) than for other groups (which were subject to the SME-only restriction). After the policy change, the SME share for group 65 converges toward that of the other groups, consistent with the restriction effectively screening out non-SME participants.
 
 \begin{figure}[htbp]
 \centering
@@ -73,20 +93,40 @@
 \label{fig:sme_share}
 \end{figure}
 
-%% --- Appendix Tables ---
+%% ====================================================================
+%% Appendix Tables
+%% ====================================================================
 
 \renewcommand{\thetable}{B.\arabic{table}}
 \setcounter{table}{0}
 
-%% Tables moved from main text (additional outcome variables)
+%% ====================================================================
+%% E. Additional Outcome Tables
+%% ====================================================================
+\subsection*{E. Additional Outcome Variables}
+
+Tables~B.1 and B.2 report the DiDiR estimates for two outcome variables that complement the main results. Table~B.1 presents the effects on the number of valid bids (in logs), which mirrors the pattern found for the number of participant firms. Table~B.2 reports the effects on the distance between winning firms and PBUs. Together, these tables provide a complete picture of the four-outcome estimation reported in the main text.
+
 \input{../output/tables/tab_validbids.tex}
 \input{../output/tables/tab_distance.tex}
 
-%% Robustness tables
+%% ====================================================================
+%% F. Robustness Tables
+%% ====================================================================
+\subsection*{F. Robustness Checks}
+
+Tables~B.3 and B.4 probe the sensitivity of the main estimates to alternative inference and data-processing choices. Table~B.3 re-estimates the main specifications under alternative clustering strategies: at the item group level, at the PBU level, and with two-way clustering at both the item and PBU levels. The estimates remain statistically significant across all choices, confirming that the results are not sensitive to the clustering structure. Table~B.4 winsorizes the dependent variables at the 1st/99th and 5th/95th percentiles, ruling out the possibility that the results are driven by extreme values in the tails of the distributions.
+
 \input{../output/tables/tab_altcluster.tex}
 \input{../output/tables/tab_winsorize.tex}
 
-%% Extension tables
+%% ====================================================================
+%% G. Extension Tables
+%% ====================================================================
+\subsection*{G. Extension Analyses}
+
+Tables~B.5 through B.10 report extensions that deepen the analysis. IPCA-deflated real prices (Table~B.5) confirm that the price effects reflect real procurement cost differences rather than differential inflation. The extensive margin analysis (Table~B.6) examines completion rates. Procurement efficiency (Table~B.7) measures the ratio of negotiated to reference prices. Winner composition (Table~B.8) shows shifts in the probability of SME winners. Bid spread (Table~B.9, if available) captures the dispersion of bids. Finally, heterogeneity by PBU type (Table~B.10) tests whether the effects differ between direct and indirect administration entities.
+
 \input{../output/tables/tab_prices_real.tex}
 \input{../output/tables/tab_extensive.tex}
 \input{../output/tables/tab_efficiency.tex}
@@ -94,18 +134,41 @@
 \IfFileExists{../output/tables/tab_bid_spread.tex}{\input{../output/tables/tab_bid_spread.tex}}{}
 \input{../output/tables/tab_heterog_pbu.tex}
 
-%% --- Advanced Methods Figures ---
+%% ====================================================================
+%% H. Parallel Trends Sensitivity (HonestDiD)
+%% ====================================================================
+\subsection*{H. Sensitivity to Parallel Trends Violations}
 
 \IfFileExists{../output/figures/fig_11_honestdid.pdf}{
+Figure~A.10 displays the results of the \citet{rambachan2023} sensitivity analysis (HonestDiD). This method constructs robust confidence intervals for the treatment effect under controlled violations of the parallel trends assumption. The parameter $\bar{M}$ governs the maximum amount by which the post-treatment trend may deviate from the pre-treatment path: $\bar{M}=0$ corresponds to the standard parallel trends assumption, while larger values allow progressively more severe violations. The figure shows that the main price effect remains statistically significant even under substantial deviations from strict parallel trends, providing strong evidence that the results are not driven by pre-existing differential trends between group 65 and other groups.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{fig_11_honestdid.pdf}
-\caption{HonestDiD Sensitivity Analysis: Robust Confidence Intervals Under Violations of Parallel Trends (Rambachan and Roth, 2023)}
+\caption{HonestDiD Sensitivity Analysis: Robust Confidence Intervals Under Violations of Parallel Trends \citep{rambachan2023}}
 \label{fig:honestdid}
 \end{figure}
 }{}
 
+%% ====================================================================
+%% I. Sample Selection Correction (Lee Bounds)
+%% ====================================================================
+\subsection*{I. Sample Selection Correction (Lee Bounds)}
+
+\IfFileExists{../output/tables/tab_lee_bounds.tex}{
+The price and distance regressions in the main text condition on item completion (i.e., a winning bid exists), which may introduce sample selection bias if the treatment itself affects completion rates. Table~B.11 applies the \citet{lee2009} bounding procedure to address this concern. The method identifies the direction and magnitude of differential selection (here, a trimming proportion of 8.82\%) and constructs lower and upper bounds on the treatment effect by trimming the outcome distribution in the excess-selected cell. The bounds for log prices range from $-0.131$ to $-0.123$, both highly significant. The tightness of the bounds indicates that sample selection has a negligible impact on the main price estimates, and the core finding of lower prices under open tenders is robust to this correction.
+
+\input{../output/tables/tab_lee_bounds.tex}
+}{}
+
+%% ====================================================================
+%% J. Heterogeneous Treatment Effects (Causal Forest)
+%% ====================================================================
+\subsection*{J. Heterogeneous Treatment Effects (Causal Forest)}
+
 \IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{
+Figures~A.11 and A.12 and Table~B.12 present results from a causal forest analysis \citep{athey2019, wager2018}. This machine learning method estimates individualized treatment effects (CATEs) using an honest, doubly-robust random forest. The analysis uses Frisch--Waugh--Lovell (FWL) residualized outcomes after partialling out item fixed effects. Figure~A.11 shows the variable importance ranking: item quantity (log) is the dominant source of treatment effect heterogeneity (importance = 0.486), followed by the type of tender (convite, 0.183) and whether the winning firm is located in Sao Paulo state (0.156). Figure~A.12 and Table~B.12 report the group average treatment effects (GATEs) by CATE quartile, revealing modest heterogeneity across the distribution of predicted treatment effects. The overall ATE from the causal forest is imprecisely estimated, which is expected given that the forest operates on residualized data and the sample contains substantial within-item variation.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}
@@ -123,7 +186,16 @@
 \end{figure}
 }{}
 
+\IfFileExists{../output/tables/tab_cforest.tex}{\input{../output/tables/tab_cforest.tex}}{}
+
+%% ====================================================================
+%% K. Distributional Effects (Quantile DiD)
+%% ====================================================================
+\subsection*{K. Distributional Effects (Quantile DiD)}
+
 \IfFileExists{../output/figures/fig_14_quantile_did.pdf}{
+Figure~A.13 and Table~B.13 present quantile difference-in-differences estimates using the \citet{canay2011} two-step estimator. While the main OLS specification estimates the average effect on prices, the quantile approach reveals how the treatment effect varies across the price distribution. The results show a striking pattern: the effect is strongly negative at lower quantiles ($\tau=0.10$: $-0.623$; $\tau=0.25$: $-0.543$) and becomes positive at the upper tail ($\tau=0.90$: $+0.445$). The OLS benchmark of $-0.124$ represents a weighted average of these heterogeneous effects. This distributional pattern suggests that the benefits of open competition are concentrated in the left tail of the price distribution, where competitive bidding drives down procurement costs most effectively. At the upper tail, where items may be more specialized or face thinner supplier markets, the policy difference has the opposite sign.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}
@@ -132,7 +204,16 @@
 \end{figure}
 }{}
 
+\IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
+
+%% ====================================================================
+%% L. Mechanism Decomposition (Gelbach)
+%% ====================================================================
+\subsection*{L. Mechanism Decomposition (Gelbach)}
+
 \IfFileExists{../output/figures/fig_15_mediation.pdf}{
+Figure~A.14 and Table~B.14 report the results of a \citet{gelbach2016} decomposition, which partitions the total price effect into contributions from observable channels. The method compares a ``short'' regression (treatment and controls only) with a ``full'' regression that adds mediators (log number of firms and SME winner indicator). The gap between the short and full regression coefficients ($-0.132$ vs.\ $-0.123$, a difference of $-0.009$) is decomposed into channel-specific contributions using the omitted variable bias formula $\delta_k = \gamma_k \times \pi_k$. The competition channel (log firms) accounts for $-85\%$ of the explained gap, while the composition channel (SME winner) contributes $185\%$. The opposing signs reflect the fact that competition and winner composition operate as partially offsetting mechanisms: open tenders increase competition (lowering prices) but also attract non-SME winners that may charge different prices conditional on winning. The large unexplained component ($-0.123$) indicates that most of the price effect operates through channels not captured by these two mediators.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}
@@ -141,9 +222,4 @@
 \end{figure}
 }{}
 
-%% --- Advanced Methods Tables ---
-
-\IfFileExists{../output/tables/tab_lee_bounds.tex}{\input{../output/tables/tab_lee_bounds.tex}}{}
-\IfFileExists{../output/tables/tab_cforest.tex}{\input{../output/tables/tab_cforest.tex}}{}
-\IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
 \IfFileExists{../output/tables/tab_mediation.tex}{\input{../output/tables/tab_mediation.tex}}{}
