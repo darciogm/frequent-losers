@@ -1,0 +1,68 @@
+\section{Theoretical Framework}
+\label{sec:theory}
+
+This section develops a simple theoretical framework that generates testable predictions linking frequent losers to cartel behavior in procurement auctions. The model draws on the canonical first-price auction framework with collusion \citep{pesendorfer2000study, marshall2012economics} and adapts it to the institutional setting of Brazilian public procurement.
+
+\subsection{Setup}
+
+Consider a first-price sealed-bid procurement auction for a homogeneous good. A public buyer unit (PBU) solicits bids from $n$ potential suppliers, each with independently drawn private costs $c_i \sim F[c_L, c_H]$. The lowest bidder wins the contract at its bid price $b_i$, so supplier $i$'s payoff is $(b_i - c_i)$ if $i$ wins, and zero otherwise.
+
+Under competition, the equilibrium bid function is increasing in costs, and the expected winning price decreases in the number of bidders $n$---the standard competitive benchmark.
+
+\subsection{Cartel with Designated Losers}
+
+Now suppose a subset $K \subseteq \{1, \ldots, n\}$ of $k$ firms forms a cartel. Following \citet{asker2010leniency}, the cartel allocates the contract to a designated winner through a pre-auction knock-out mechanism. The remaining $k - 1$ cartel members submit non-competitive bids (i.e., bids above the designated winner's bid). These firms are ``designated losers.''
+
+The cartel's designated winner bids as if facing only $n - k$ independent competitors (the non-cartel firms), rather than $n - 1$. Since the effective competition is reduced from $n - 1$ to $n - k$, the equilibrium winning bid is higher:
+
+\begin{equation}
+  E[b^{\text{cartel}}] > E[b^{\text{competitive}}].
+\end{equation}
+
+The $k - 1$ designated losers must participate to maintain the appearance of competition. Their repeated, predictable losses over multiple auctions generate the ``frequent loser'' pattern observed in the data.
+
+\subsection{Detection Avoidance}
+
+A sophisticated cartel recognizes that abnormally low participation could trigger scrutiny by procurement authorities. To counteract this, the cartel instructs its members---and possibly affiliated shell firms---to submit bids in auctions they are not designated to win \citep{chassang2022robust}. This detection-avoidance strategy generates two observable consequences:
+
+\begin{enumerate}
+  \item The \emph{number of participating firms} in cartelized tenders is inflated relative to the competitive counterfactual, because shell bidders or rotating cartel members enter to simulate competition.
+  \item The \emph{number of bids} is similarly inflated, as each additional participant submits at least one bid.
+\end{enumerate}
+
+Crucially, this inflation of participation and bids does \emph{not} reduce prices, because the additional bidders are not competing genuinely. The cartel's designated winner still faces only $n - k$ true competitors.
+
+\subsection{Bid Dispersion}
+
+When cartel members coordinate their bids around the designated winner's bid, the standard deviation of bids within a tender should be \emph{lower} than in competitive auctions. Under competition, firms with heterogeneous costs submit bids reflecting their true cost draws, generating natural dispersion. Under collusion, bids are artificially clustered to avoid detection while ensuring the designated winner prevails \citep{athey2011comparing}.
+
+\subsection{Testable Predictions}
+
+The model generates five testable predictions:
+
+\begin{prediction}[Prices]
+\label{pred:prices}
+Tenders with frequent losers have higher winning prices than comparable tenders without frequent losers, conditional on item and year fixed effects.
+\end{prediction}
+
+\begin{prediction}[Number of Participants]
+\label{pred:nfirms}
+Tenders with frequent losers have a higher number of participating firms, reflecting the cartel's detection-avoidance strategy.
+\end{prediction}
+
+\begin{prediction}[Number of Bids]
+\label{pred:nbids}
+Tenders with frequent losers have a higher number of bids, as inflated participation mechanically increases bid counts.
+\end{prediction}
+
+\begin{prediction}[Procedure Mode Differential]
+\label{pred:mode}
+The price effect is larger in preg\~{a}o (electronic auction) than in convite (sealed bid), because the real-time interaction in preg\~{a}o provides more room for manipulation and coordination among cartel members.
+\end{prediction}
+
+\begin{prediction}[Bid Dispersion]
+\label{pred:dispersion}
+Bid price dispersion is lower in tenders with frequent losers, consistent with coordinated bidding.
+\end{prediction}
+
+The simultaneous occurrence of higher prices (Prediction~\ref{pred:prices}) and higher participation (Predictions~\ref{pred:nfirms}--\ref{pred:nbids}) is the key distinguishing feature of explicit collusion. Under tacit collusion or competitive models, higher participation would drive prices \emph{down}. Only a cartel with a deliberate detection-avoidance strategy produces the paradoxical combination of higher prices, more participants, and more bids.

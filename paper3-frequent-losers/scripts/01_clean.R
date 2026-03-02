@@ -64,30 +64,39 @@ cat("  Unique item codes:", pfmt_int(uniqueN(bec$item_code)), "\n")
 # LOSERS key_item_oc = item_code + "_" + oc_code
 # Match LOSERS keys at their exact item_code length against BEC true item codes
 
-cat("  Merging LOSERS flags into BEC...\n")
+cat("  Merging LOSERS flags + losers_count into BEC...\n")
 
 losers[, l_item_code := sub("_.*", "", key_item_oc)]
 losers[, l_ic_len := nchar(l_item_code)]
 
+# Build losers_count lookup keyed by key_item_oc
+losers_lkp <- losers[, .(key_item_oc, losers_count)]
+setkey(losers_lkp, key_item_oc)
+
 bec[, has_loser := 0L]
+bec[, losers_count := 0L]
 total_matched <- 0L
 
 for (n in 2:8) {
-  losers_n <- losers[l_ic_len == n, key_item_oc]
-  if (length(losers_n) == 0) next
+  losers_n <- losers[l_ic_len == n]
+  if (nrow(losers_n) == 0) next
 
   # BEC true item code truncated to n chars + "_" + oc_code
-  bec_key_n <- paste0(substr(bec$item_code, 1, n), "_", bec$oc_code)
-  matched <- bec_key_n %in% losers_n & bec$has_loser == 0L
-  n_matched <- sum(matched)
+  bec[, .bec_key := paste0(substr(item_code, 1, n), "_", oc_code)]
+  to_match <- bec[has_loser == 0L & .bec_key %in% losers_n$key_item_oc]
 
-  if (n_matched > 0) {
-    bec[matched, has_loser := 1L]
+  if (nrow(to_match) > 0) {
+    # Look up losers_count
+    lc <- losers_lkp[to_match$.bec_key, losers_count]
+    bec[has_loser == 0L & .bec_key %in% losers_n$key_item_oc,
+        `:=`(has_loser = 1L, losers_count = lc)]
+    n_matched <- nrow(to_match)
     total_matched <- total_matched + n_matched
     cat(sprintf("    LOSERS with %d-digit item code: %s keys -> %s BEC rows\n",
-                n, pfmt_int(length(losers_n)), pfmt_int(n_matched)))
+                n, pfmt_int(nrow(losers_n)), pfmt_int(n_matched)))
   }
 }
+bec[, .bec_key := NULL]
 
 n_with_loser <- sum(bec$has_loser)
 cat("  BEC rows with frequent losers:", pfmt_int(n_with_loser),
@@ -135,6 +144,48 @@ bec[, year_f := factor(year)]
 bec[, losers := has_loser]
 
 # ============================================================================
+# Phase D_ext: Additional variables for extended analysis (scripts 05-09)
+# ============================================================================
+
+cat("  Creating extended analysis variables...\n")
+
+# Continuous treatment: losers_share = losers_count / n_firms
+bec[, losers_share := fifelse(n_firms > 0, losers_count / n_firms, 0)]
+
+# New DVs: bid dispersion, price ratio, procedure duration
+bec[, log_bid_sd := fifelse(
+  !is.na(bid_price_sd) & bid_price_sd > 0, log(bid_price_sd), NA_real_
+)]
+bec[, price_ratio := fifelse(
+  bid_unit_price_negot_min > 0 & !is.na(bid_ref_price_min) & bid_ref_price_min > 0,
+  log(bid_unit_price_negot_min / bid_ref_price_min), NA_real_
+)]
+bec[, log_proc_hours := fifelse(
+  !is.na(proc_length_hours), log(proc_length_hours + 1), NA_real_
+)]
+
+# Item group (first 2 digits of item code) — for heterogeneity analysis
+bec[, item_group := substr(item_code, 1, 2)]
+
+# PBU size quartile (by tender count per PBU)
+pbu_counts <- bec[, .N, by = pbu_code]
+pbu_counts[, pbu_size_q := as.integer(cut(N, quantile(N, 0:4/4), include.lowest = TRUE,
+                                           labels = 1:4))]
+bec <- merge(bec, pbu_counts[, .(pbu_code, pbu_size_q)], by = "pbu_code", all.x = TRUE)
+
+# Tender value quartile (by reference price)
+bec[!is.na(bid_ref_price_min) & bid_ref_price_min > 0,
+    tender_value_q := as.integer(cut(bid_ref_price_min,
+                                      quantile(bid_ref_price_min, 0:4/4, na.rm = TRUE),
+                                      include.lowest = TRUE, labels = 1:4))]
+
+cat("  Extended variables: losers_count, losers_share, log_bid_sd, price_ratio,\n")
+cat("    log_proc_hours, item_group, pbu_size_q, tender_value_q\n")
+cat("  Valid log_bid_sd:", pfmt_int(sum(!is.na(bec$log_bid_sd))), "\n")
+cat("  Valid price_ratio:", pfmt_int(sum(!is.na(bec$price_ratio))), "\n")
+cat("  Valid log_proc_hours:", pfmt_int(sum(!is.na(bec$log_proc_hours))), "\n")
+
+# ============================================================================
 # Phase E: Filter to analysis sample
 # ============================================================================
 # Manuscript uses phases 2 (convite) and 3 (pregão) only, with successful
@@ -179,16 +230,29 @@ keep_cols <- c(
   "po_phase_code", "convite", "pregao",
   "n_firms", "n_bids", "lneg_price", "ln_firms", "ln_bids",
   "has_price", "losers", "has_loser",
+  "losers_count", "losers_share",
+  "log_bid_sd", "price_ratio", "log_proc_hours",
+  "item_group", "pbu_size_q", "tender_value_q",
   "item_f", "pbu_f", "year_f",
   "bid_unit_price_negot_min", "bid_price_min", "bid_ref_price_min",
+  "bid_price_sd", "proc_length_hours",
   "po_winner_max"
 )
 keep_cols <- intersect(keep_cols, names(dt))
 dt <- dt[, ..keep_cols]
 
-cat("\n  Saving analysis cache...\n")
+# First-loser-year per item_code (for DiD temporal design)
+fly <- dt[losers == 1, .(first_loser_year = min(year)), by = item_code]
+dt <- merge(dt, fly, by = "item_code", all.x = TRUE)
+
+cat("\n  Saving analysis caches...\n")
 saveRDS(dt, DATA_CACHE)
 cat("  Saved:", DATA_CACHE, "\n")
+
+# Extended cache path for new scripts
+DATA_CACHE_EXT <- "/tmp/p3_prepared_ext.rds"
+saveRDS(dt, DATA_CACHE_EXT)
+cat("  Saved:", DATA_CACHE_EXT, "\n")
 
 saveRDS(freq_particip, DATA_CACHE_FP)
 saveRDS(firms, DATA_CACHE_FIRMS)

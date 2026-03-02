@@ -1,0 +1,103 @@
+\section{Robustness and Additional Tests}
+\label{sec:robustness}
+
+This section presents a battery of robustness checks and extensions that strengthen the causal interpretation of our main findings. We address concerns about the sensitivity of the frequent loser definition, the identification strategy, and the treatment variable, and provide additional evidence from new dependent variables and matching estimators.
+
+\subsection{Sensitivity to the IQR Threshold}
+
+Our baseline definition of frequent losers uses the standard 1.5$\times$ IQR threshold. Table~\ref{tab:threshold_robustness} shows that the main price result is robust to alternative multipliers (1.0$\times$, 2.0$\times$, 3.0$\times$). Figure~\ref{fig:threshold_stability} plots the coefficient on \textit{losers} across thresholds, demonstrating stability.
+
+\input{../output/tables/tab_threshold_robustness.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{../output/figures/fig_threshold_stability.pdf}
+  \caption{Stability of the Losers Coefficient across IQR Multipliers}
+  \label{fig:threshold_stability}
+\end{figure}
+
+\subsection{Continuous Treatment}
+
+Rather than a binary indicator, we also measure frequent loser intensity using (i) the count of frequent loser participations in a tender (\textit{losers count}) and (ii) the share of frequent losers among all participants (\textit{losers share}). Table~\ref{tab:continuous_treatment} reports the results.
+
+\input{../output/tables/tab_continuous_treatment.tex}
+
+\subsection{Alternative Clustering and Fixed Effects}
+
+Table~\ref{tab:clustering_robustness} shows that inference is robust to multi-way clustering at the item$\times$year and item$\times$PBU levels. We also estimate a more demanding specification with item$\times$year interacted fixed effects, which absorbs all item-specific time trends.
+
+\input{../output/tables/tab_clustering_robustness.tex}
+
+\subsection{Winsorization}
+
+To ensure that outlier prices do not drive the results, we winsorize the log negotiated price at the 1st and 99th percentiles and re-estimate the main specification. The coefficient on \textit{losers} remains virtually unchanged.
+
+\subsection{Coefficient Sensitivity (Sensemakr)}
+
+Following \citet{cinelli2020making}, we assess how strong selection on unobservables would need to be---relative to selection on observables---to explain away our main result. Figure~\ref{fig:sensitivity_contour} plots the sensitivity contour. The robustness value $RV_{q=1}$ indicates the minimum confounding strength needed to reduce the coefficient to zero.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{../output/figures/fig_sensitivity_contour.pdf}
+  \caption{Sensitivity Analysis: Omitted Variable Bias Contour Plot}
+  \label{fig:sensitivity_contour}
+\end{figure}
+
+\subsection{Placebo Test}
+
+As a falsification exercise, we randomly permute the \textit{losers} indicator within item$\times$year cells and re-estimate the main specification. The placebo coefficient is economically small and statistically insignificant, confirming that the baseline result is not an artifact of the sample structure.
+
+\subsection{Staggered Difference-in-Differences}
+\label{sec:did_temporal}
+
+To address concerns about reverse causality, we exploit the staggered entry of frequent losers across item markets. For each item, we define the first year a frequent loser appeared and construct an event study around this entry date. Figure~\ref{fig:event_study_prices} shows the dynamic treatment effects for log prices, with the reference period set to one year before entry.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{../output/figures/fig_event_study_prices.pdf}
+  \caption{Event Study: Log Prices around First Frequent Loser Entry}
+  \label{fig:event_study_prices}
+\end{figure}
+
+The absence of pre-trends in the event study supports the parallel trends assumption. We also implement the \citet{sun2021estimating} estimator to account for heterogeneous treatment effects across cohorts. Table~\ref{tab:did_temporal} summarizes the DiD results for all three outcomes.
+
+\input{../output/tables/tab_did_temporal.tex}
+
+\subsection{Matching Estimators}
+
+To address covariate imbalance between treated and control tenders, we implement two matching strategies: Coarsened Exact Matching (CEM) on year, procedure type, item group, and PBU size; and Inverse Probability Weighting (IPW) based on a logit propensity score model. Table~\ref{tab:matching} compares the baseline estimates with both matching approaches.
+
+\input{../output/tables/tab_matching.tex}
+
+\subsection{Bid Price Dispersion}
+
+Prediction~\ref{pred:dispersion} states that cartel coordination should reduce bid dispersion. Table~\ref{tab:bid_dispersion} tests this prediction using the log of the within-tender bid price standard deviation as the dependent variable.
+
+\input{../output/tables/tab_bid_dispersion.tex}
+
+\subsection{Additional Dependent Variables}
+
+Table~\ref{tab:additional_dvs} extends the analysis to two additional outcomes: the price ratio (log of negotiated price relative to the reference price, a measure of procurement efficiency) and procedure duration (log of hours from tender opening to conclusion).
+
+\input{../output/tables/tab_additional_dvs.tex}
+
+\subsection{Balancing Table}
+
+Table~\ref{tab:balance} compares observable characteristics between tenders with and without frequent losers. The normalized differences provide a measure of covariate balance and inform the interpretation of matching results.
+
+\input{../output/tables/tab_balance.tex}
+
+\subsection{Heterogeneity}
+
+We explore heterogeneity in the frequent loser effect across several dimensions. Table~\ref{tab:heterogeneity_itemgroup} reports results by item group, showing that the price premium varies across product categories. Figure~\ref{fig:year_coefficients} plots year-by-year coefficients, demonstrating the persistence of the effect over the sample period. Table~\ref{tab:heterogeneity} reports interaction effects with PBU size and tender value quartiles.
+
+\input{../output/tables/tab_heterogeneity_itemgroup.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{../output/figures/fig_year_coefficients.pdf}
+  \caption{Year-by-Year Coefficients on Losers}
+  \label{fig:year_coefficients}
+\end{figure}
+
+\input{../output/tables/tab_heterogeneity.tex}

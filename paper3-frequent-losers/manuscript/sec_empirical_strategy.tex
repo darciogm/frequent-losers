@@ -1,0 +1,62 @@
+\section{Empirical Strategy}
+\label{sec:empirical_strategy}
+
+This section describes the econometric approach used to test the predictions developed in Section~\ref{sec:theory}. We describe the main specification, discuss identification challenges, and outline the four specification variants employed.
+
+\subsection{Main Specification}
+
+We estimate the relationship between frequent losers and tender outcomes using the following baseline specification:
+
+\begin{equation}
+  y_{igt} = \beta \, \textit{losers}_{igt} + \alpha_g + \lambda_t + \mathbf{x}'\delta + \varepsilon_{igt},
+  \label{eq:main}
+\end{equation}
+
+\noindent where $y_{igt}$ is the outcome (log negotiated price, log number of firms, or log number of bids) for purchase $i$ of item $g$ in year $t$; $\textit{losers}_{igt}$ is a binary indicator equal to one if at least one frequent loser participated in the tender; $\alpha_g$ represents item fixed effects that absorb time-invariant item characteristics (baseline price level, product complexity, typical market structure); $\lambda_t$ captures year fixed effects for common macroeconomic shocks; and $\mathbf{x}$ includes controls for procedure type (convite vs.\ preg\~{a}o) and, in some specifications, public buyer unit (PBU) fixed effects.
+
+The coefficient of interest is $\beta$, which measures the average difference in outcomes between tenders with and without frequent losers, conditional on comparing the same item across years and controlling for procedure type and buyer identity.
+
+\subsection{Specification Variants}
+
+We estimate four specifications of increasing stringency:
+
+\begin{enumerate}
+  \item \textbf{General:} Item and year fixed effects with a convite dummy.
+    \[ y_{igt} = \beta \, \textit{losers}_{igt} + \gamma \, \textit{convite}_{igt} + \alpha_g + \lambda_t + \varepsilon_{igt} \]
+
+  \item \textbf{General + PBU:} Adds PBU fixed effects to control for systematic differences across buying agencies.
+    \[ y_{igt} = \beta \, \textit{losers}_{igt} + \gamma \, \textit{convite}_{igt} + \alpha_g + \lambda_t + \delta_p + \varepsilon_{igt} \]
+
+  \item \textbf{Preg\~{a}o only:} Restricts the sample to preg\~{a}o (electronic auction) tenders, with item, year, and PBU fixed effects. The convite dummy is excluded.
+
+  \item \textbf{Convite only:} Restricts the sample to convite (sealed-bid) tenders, with item, year, and PBU fixed effects.
+\end{enumerate}
+
+Standard errors are clustered at the item level in all specifications to account for serial correlation within item markets.
+
+\subsection{Identification}
+
+The ideal experiment would randomly assign frequent losers to tenders and compare outcomes. Since frequent loser participation is endogenous, several identification concerns arise:
+
+\paragraph{Selection bias.} Items in markets where cartels operate may differ from items in competitive markets. Item fixed effects address this concern by comparing the \emph{same} item with and without frequent loser participation across different tenders.
+
+\paragraph{Time-varying confounders.} Economic conditions may simultaneously affect cartel activity and tender outcomes. Year fixed effects absorb common aggregate shocks.
+
+\paragraph{Buyer heterogeneity.} Some PBUs may be more susceptible to collusion due to lower monitoring capacity. The General + PBU specification (variant 2) controls for systematic buyer-level differences.
+
+\paragraph{Reverse causality.} One might worry that high-price tenders attract frequent losers, rather than the reverse. We address this concern through a staggered difference-in-differences design (Section~\ref{sec:robustness}) that exploits the timing of frequent losers' \emph{first} entry into an item market. Pre-trends in the event study provide evidence on whether outcomes changed before frequent losers appeared.
+
+\subsection{Joint Interpretation of Results}
+
+A critical feature of our empirical strategy is the \emph{joint interpretation} of results across dependent variables. Under competitive conditions, more participating firms and more bids should reduce the winning price---the standard competitive effect. Observing simultaneously:
+\begin{itemize}
+  \item higher prices (positive $\beta$ for log price), and
+  \item more participants and bids (positive $\beta$ for log firms and log bids)
+\end{itemize}
+is inconsistent with competition or tacit collusion but consistent with an explicit cartel that inflates participation to avoid detection (Predictions~\ref{pred:prices}--\ref{pred:nbids}).
+
+This joint test provides the key identification argument: no single-equation result is sufficient, but the \emph{combination} of higher prices with inflated competition indicators is a signature of explicit collusion with detection avoidance.
+
+\subsection{Sample}
+
+The estimation sample consists of all item-level transactions in the BEC platform from 2009 to 2019, restricted to convite and preg\~{a}o procedures, for item types in which at least one tender involved a frequent loser. This restriction ensures that identification comes from within-item variation. For price regressions, we further restrict to completed tenders with valid negotiated prices. The resulting sample contains approximately 1.67 million observations.

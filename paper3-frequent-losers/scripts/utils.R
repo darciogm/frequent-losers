@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
 BASE      <- normalizePath(file.path(.script_dir, ".."), mustWork = FALSE)
 DATA_PROC <- file.path(BASE, "data", "processed")
 DATA_CACHE     <- "/tmp/p3_prepared.rds"
+DATA_CACHE_EXT <- "/tmp/p3_prepared_ext.rds"
 DATA_CACHE_FP  <- "/tmp/p3_freq_particip.rds"
 DATA_CACHE_FIRMS <- "/tmp/p3_firms.rds"
 OUT_TAB   <- file.path(BASE, "output", "tables")

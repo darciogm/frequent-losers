@@ -30,13 +30,22 @@ if (getRversion() < "4.5") {
 }
 
 # ---- Check required packages -----------------------------------------------
-required <- c("data.table", "fixest", "ggplot2", "arrow", "scales")
+required <- c("data.table", "fixest", "ggplot2", "arrow", "scales",
+               "sensemakr", "MatchIt")
+optional <- c("grf")
+
 missing  <- required[!sapply(required, requireNamespace, quietly = TRUE)]
 if (length(missing) > 0) {
   stop("Missing packages: ", paste(missing, collapse = ", "),
        "\nRun: install.packages(c('", paste(missing, collapse = "', '"), "'))")
 }
 cat("  All", length(required), "required packages found.\n")
+
+missing_opt <- optional[!sapply(optional, requireNamespace, quietly = TRUE)]
+if (length(missing_opt) > 0) {
+  cat("  Optional packages not found (some analyses will be skipped):",
+      paste(missing_opt, collapse = ", "), "\n")
+}
 
 # ---- Check data availability -----------------------------------------------
 data_dir <- file.path("data", "processed")
@@ -64,7 +73,9 @@ if (is.null(script_dir) || is.na(script_dir) || script_dir == "" || script_dir =
 }
 
 # ---- Run scripts as separate processes (prevents OOM on 15 GB RAM) ----------
-scripts <- c("01_clean.R", "02_analysis.R", "03_tables.R", "04_figures.R")
+scripts <- c("01_clean.R", "02_analysis.R", "03_tables.R", "04_figures.R",
+             "05_robustness.R", "06_did_temporal.R", "07_heterogeneity.R",
+             "08_additional_dvs.R", "09_matching.R")
 timings <- data.frame(script = character(), seconds = numeric(), status = character(),
                       stringsAsFactors = FALSE)
 
