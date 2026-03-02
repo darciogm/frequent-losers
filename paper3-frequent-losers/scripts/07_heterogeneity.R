@@ -218,8 +218,8 @@ if (requireNamespace("grf", quietly = TRUE)) {
   Y <- d_cf$lneg_price
   W <- as.numeric(d_cf$losers)
 
-  # Subsample if too large (grf is memory-intensive)
-  max_n <- 500000L
+  # Subsample to avoid OOM on 15 GB RAM (grf is memory-intensive)
+  max_n <- 100000L
   if (length(Y) > max_n) {
     set.seed(42)
     idx <- sample(length(Y), max_n)
@@ -230,7 +230,7 @@ if (requireNamespace("grf", quietly = TRUE)) {
   }
 
   cf_model <- tryCatch({
-    causal_forest(X = X, Y = Y, W = W, num.trees = 2000, seed = 42)
+    causal_forest(X = X, Y = Y, W = W, num.trees = 1000, seed = 42)
   }, error = function(e) {
     cat(sprintf("    Causal forest failed: %s\n", e$message))
     NULL
