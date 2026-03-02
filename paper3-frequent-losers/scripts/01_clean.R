@@ -28,6 +28,33 @@ cat("  Loading Firms_final.parquet...\n")
 firms <- as.data.table(read_parquet(file.path(DATA_PROC, "Firms_final.parquet")))
 cat("  Firms rows:", pfmt_int(nrow(firms)), "\n")
 
+# ---- Bid-level data (partial: 2009-2011, 2015-2016 from LANCES files) ------
+bid_level_file <- file.path(DATA_PROC, "bid_level_partial.parquet")
+ftm_file <- file.path(DATA_PROC, "firm_tender_map.parquet")
+fls_file <- file.path(DATA_PROC, "firm_loss_stats.parquet")
+has_bidlevel <- file.exists(bid_level_file)
+
+if (has_bidlevel) {
+  cat("  Loading bid_level_partial.parquet...\n")
+  bid_level <- as.data.table(read_parquet(bid_level_file))
+  cat("  Bid-level rows:", pfmt_int(nrow(bid_level)), "\n")
+
+  cat("  Loading firm_tender_map.parquet...\n")
+  ftm <- as.data.table(read_parquet(ftm_file))
+  cat("  Firm-tender pairs:", pfmt_int(nrow(ftm)), "\n")
+
+  cat("  Loading firm_loss_stats.parquet...\n")
+  fls <- as.data.table(read_parquet(fls_file))
+  cat("  Unique firms:", pfmt_int(nrow(fls)),
+      "  Always-losers:", pfmt_int(sum(fls$always_loser)), "\n")
+} else {
+  cat("  WARNING: bid_level_partial.parquet not found.\n")
+  cat("  Run: python3 scripts/00_build_bidlevel.py\n")
+  bid_level <- NULL
+  ftm <- NULL
+  fls <- NULL
+}
+
 # ============================================================================
 # Phase B: Extract structural variables from BEC keys
 # ============================================================================
@@ -258,5 +285,15 @@ saveRDS(freq_particip, DATA_CACHE_FP)
 saveRDS(firms, DATA_CACHE_FIRMS)
 cat("  Saved:", DATA_CACHE_FP, "\n")
 cat("  Saved:", DATA_CACHE_FIRMS, "\n")
+
+# Cache bid-level data if available
+if (!is.null(ftm)) {
+  saveRDS(ftm, DATA_CACHE_FTM)
+  saveRDS(fls, DATA_CACHE_FLS)
+  saveRDS(bid_level, DATA_CACHE_BL)
+  cat("  Saved:", DATA_CACHE_FTM, "\n")
+  cat("  Saved:", DATA_CACHE_FLS, "\n")
+  cat("  Saved:", DATA_CACHE_BL, "\n")
+}
 
 cat("  Done.\n")

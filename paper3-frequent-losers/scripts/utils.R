@@ -18,6 +18,9 @@ DATA_CACHE     <- "/tmp/p3_prepared.rds"
 DATA_CACHE_EXT <- "/tmp/p3_prepared_ext.rds"
 DATA_CACHE_FP  <- "/tmp/p3_freq_particip.rds"
 DATA_CACHE_FIRMS <- "/tmp/p3_firms.rds"
+DATA_CACHE_FTM   <- "/tmp/p3_firm_tender_map.rds"
+DATA_CACHE_FLS   <- "/tmp/p3_firm_loss_stats.rds"
+DATA_CACHE_BL    <- "/tmp/p3_bid_level.rds"
 OUT_TAB   <- file.path(BASE, "output", "tables")
 OUT_FIG   <- file.path(BASE, "output", "figures")
 

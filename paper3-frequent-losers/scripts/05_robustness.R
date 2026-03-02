@@ -28,6 +28,7 @@ cat("  Loaded", pfmt_int(nrow(dt)), "rows\n")
 
 fp <- readRDS(DATA_CACHE_FP)
 
+
 # ============================================================================
 # 5.1 Multiple IQR thresholds
 # ============================================================================
@@ -48,26 +49,41 @@ for (mult in thresholds) {
 
   # Re-classify: firms above this threshold are frequent losers
   fl_firms <- fp[tenders_count > thr]
+  fl_cnpjs <- fl_firms$códigofornecedor
   cat(sprintf("    IQR %.1fx: threshold=%.0f, %d firms classified as FL\n",
               mult, thr, n_firms_above))
 
-  # Mark tenders as having FL (approximate: use original losers flag scaled)
-  # For exact re-classification we'd need firm-level merge, but losers_count
+  # Threshold reclassification strategy:
+  # At the 1.5x baseline, LOSERS.parquet provides the exact losers flag.
+  # For other thresholds, we use a proportional approximation:
+  # since FREQ_PARTICIP has the complete distribution of always-loser
+  # tenders_count, we know what fraction of FL firms remain at each threshold.
+  # Tenders with higher losers_count are more likely to retain FL status
+  # at stricter thresholds.
+  #
+  # Specifically: at 1.5x we have N_15 FL firms. At threshold k, we have N_k.
+  # For a tender with losers_count = c at 1.5x, the probability of retaining
+  # at least one FL firm at threshold k is 1 - (1 - N_k/N_15)^c.
+  # We use a deterministic cutoff: tender has FL if losers_count ≥ ceil(N_15/N_k).
 
-  # provides a reasonable proxy. Higher thresholds → fewer FL tenders.
-  # We use the original item-level data where has_loser=1 and check if
-  # losers_count exceeds a proportional cutoff.
-  # Approximate: use original data with losers=1 as baseline
-  if (mult == 1.5) {
-    # Original specification
-    dt_thr <- copy(dt)
-  } else {
-    # Scale the threshold: original threshold identified firms with
-    # tenders_count > Q3+1.5*IQR. For other multipliers, we approximate
-    # by requiring losers_count in the tender to scale proportionally.
-    # Since losers_count counts FL participations per item, we use the
-    # binary losers flag for all thresholds (conservative).
-    dt_thr <- copy(dt)
+  n_fl_baseline <- sum(fp$tenders_count > (q[2] + 1.5 * iqr_val))
+
+  dt_thr <- copy(dt)
+  if (mult != 1.5) {
+    # Minimum losers_count needed: if ratio = N_base / N_k, a tender
+    # needs at least that many FL firms for at least one to survive the
+    # stricter threshold (heuristic).
+    ratio <- n_fl_baseline / max(n_firms_above, 1L)
+    min_lc <- max(1L, ceiling(ratio))
+    cat(sprintf("      Ratio: %.2f → min losers_count=%d for FL flag\n",
+                ratio, min_lc))
+
+    # For stricter thresholds (fewer FL firms), raise the bar
+    dt_thr[, losers := as.integer(losers_count >= min_lc)]
+
+    n_losers_new <- sum(dt_thr$losers)
+    cat(sprintf("      Re-classified: %s tenders with FL (was %s at 1.5x)\n",
+                pfmt_int(n_losers_new), pfmt_int(sum(dt$losers))))
   }
 
   # Run price regression (general + PBU FE spec)
@@ -119,6 +135,7 @@ thr_lines <- c(thr_lines,
   "\\item \\textit{Notes:} Dependent variable: log negotiated price.",
   "All specifications include item, year, and PBU fixed effects.",
   "Standard errors clustered at the item level.",
+  "Reclassification at non-baseline thresholds uses a proportional approximation based on the \\textit{losers\\_count} variable.",
   "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1.",
   "\\end{tablenotes}",
   "\\end{threeparttable}",

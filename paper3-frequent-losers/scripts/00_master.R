@@ -57,6 +57,29 @@ if (length(missing_files) > 0) {
        paste(missing_files, collapse = "\n  "))
 }
 cat("  All", length(required_files), "data files found.\n")
+
+# Check bid-level data (optional but recommended)
+bidlevel_files <- c("bid_level_partial.parquet", "firm_tender_map.parquet",
+                     "firm_loss_stats.parquet")
+missing_bl <- bidlevel_files[!file.exists(file.path(data_dir, bidlevel_files))]
+if (length(missing_bl) > 0) {
+  cat("  Bid-level parquets not found. Running Python extraction...\n")
+  py_script <- file.path("scripts", "00_build_bidlevel.py")
+  if (file.exists(py_script)) {
+    py_rc <- system(paste("python3", py_script))
+    if (py_rc != 0) {
+      cat("  WARNING: Python bid-level extraction failed (exit", py_rc, ").\n")
+      cat("  Some analyses (threshold reclassification, figures 3-8) will be approximate.\n")
+    } else {
+      cat("  Bid-level data extracted successfully.\n")
+    }
+  } else {
+    cat("  WARNING:", py_script, "not found. Skipping bid-level extraction.\n")
+  }
+} else {
+  cat("  Bid-level parquets found:", paste(bidlevel_files, collapse = ", "), "\n")
+}
+
 cat("--- Pre-flight checks passed ---\n\n")
 
 # ---- Resolve script directory -----------------------------------------------
