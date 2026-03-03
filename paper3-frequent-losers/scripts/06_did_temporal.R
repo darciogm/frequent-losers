@@ -122,9 +122,10 @@ if (n_cohorts >= 2) {
     if (nrow(d) < 100) next
 
     tryCatch({
+      # lean=FALSE required: summary(agg="ATT") needs stored data
       m_sa <- feols(
         as.formula(paste0(dv, " ~ sunab(cohort, year) | item_f + year_f")),
-        data = d, cluster = ~item_f, fixef.rm = "none"
+        data = d, cluster = ~item_f, fixef.rm = "none", lean = FALSE
       )
       sa_models[[dv]] <- m_sa
       cat(sprintf("    %s: SA ATT = %.4f\n", dv_labels[di],
