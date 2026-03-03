@@ -50,8 +50,8 @@ cat("  5.1 IQR threshold robustness (exact reclassification)...\n")
 fp_col <- grep("fornecedor", names(fp), value = TRUE, ignore.case = TRUE)
 if (length(fp_col) == 1 && fp_col != "firm_id") setnames(fp, fp_col, "firm_id")
 
-q <- quantile(fp$tenders_count, c(0.25, 0.75))
-iqr_val <- q[2] - q[1]
+q <- quantile(fp$tenders_count, c(0.25, 0.50, 0.75))
+iqr_val <- q[3] - q[1]
 
 thresholds <- c(1.0, 1.5, 2.0, 3.0)
 threshold_results <- list()
@@ -425,8 +425,8 @@ cat("  5.7 Placebo quasi-losers...\n")
 
 # Define quasi-losers: firms in 75th percentile to IQR threshold range
 # (just below the cutoff — should NOT show cartel effects)
-q75 <- quantile(fp$tenders_count, 0.75)
-threshold_15 <- q75 + 1.5 * iqr_val
+q75 <- q[3]  # Q75 from earlier quantile computation
+threshold_15 <- q[2] + 1.5 * iqr_val  # median + 1.5*IQR
 
 quasi_ids <- fp[tenders_count > q75 & tenders_count <= threshold_15, firm_id]
 cat(sprintf("    Quasi-losers: firms with tenders_count in (%.0f, %.0f]: %d firms\n",

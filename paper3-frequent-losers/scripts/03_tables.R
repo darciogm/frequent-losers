@@ -219,4 +219,16 @@ write_losers_table(
   filename    = "tab_nbids.tex"
 )
 
+# Table 5: Number of non-FL firms (mechanical test)
+write_losers_table(
+  mlist       = models$nfirms_excl,
+  caption     = "Number of Non-FL Firms (log): Mechanical Relationship Test",
+  label       = "tab:nfirms_excl",
+  dv_label    = "Log number of non-FL firms",
+  coef_names  = c("losers", "convite"),
+  coef_labels = c("losers", "convite"),
+  d           = 4,
+  filename    = "tab_nfirms_excl.tex"
+)
+
 cat("  All tables generated.\n")

@@ -132,6 +132,10 @@ cat("  Valid price observations:", pfmt_int(neg_valid), "\n")
 bec[, ln_firms := fifelse(n_firms > 0, log(n_firms), NA_real_)]
 bec[, ln_bids  := fifelse(n_bids > 0, log(n_bids), NA_real_)]
 
+# Firms excluding FL: test mechanical relationship
+bec[, n_firms_excl := pmax(n_firms - losers_count, 0L)]
+bec[, ln_firms_excl := fifelse(n_firms_excl > 0, log(n_firms_excl), NA_real_)]
+
 # Winner flag (for price sample)
 bec[, has_price := !is.na(lneg_price) & po_winner_max == 1L]
 
@@ -229,6 +233,7 @@ keep_cols <- c(
   "po_item_merge_key", "pbu_code", "year", "oc_code", "item_code",
   "po_phase_code", "convite", "pregao",
   "n_firms", "n_bids", "lneg_price", "ln_firms", "ln_bids",
+  "n_firms_excl", "ln_firms_excl",
   "has_price", "losers", "has_loser",
   "losers_count", "losers_share",
   "log_bid_sd", "price_ratio", "log_proc_hours",

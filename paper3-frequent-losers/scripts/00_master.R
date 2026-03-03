@@ -98,7 +98,7 @@ if (is.null(script_dir) || is.na(script_dir) || script_dir == "" || script_dir =
 # ---- Run scripts as separate processes (prevents OOM on 15 GB RAM) ----------
 scripts <- c("01_clean.R", "02_analysis.R", "03_tables.R", "04_figures.R",
              "05_robustness.R", "06_did_temporal.R", "07_heterogeneity.R",
-             "08_additional_dvs.R", "09_matching.R")
+             "08_additional_dvs.R", "09_matching.R", "10_fl_characteristics.R")
 timings <- data.frame(script = character(), seconds = numeric(), status = character(),
                       stringsAsFactors = FALSE)
 

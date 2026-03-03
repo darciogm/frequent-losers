@@ -47,10 +47,10 @@ save_pub(p1, "fig_01_losses_distribution.pdf")
 
 cat("  Figure 2: IQR identification...\n")
 
-# Compute IQR threshold (1.5 × IQR above Q3)
-q <- quantile(fp$tenders_count, c(0.25, 0.75))
-iqr_val <- q[2] - q[1]
-threshold <- q[2] + 1.5 * iqr_val
+# Compute IQR threshold (median + 1.5 × IQR, manuscript formula)
+q <- quantile(fp$tenders_count, c(0.25, 0.50, 0.75))
+iqr_val <- q[3] - q[1]
+threshold <- q[2] + 1.5 * iqr_val  # median + 1.5*IQR
 
 p2 <- ggplot(fp, aes(x = tenders_count)) +
   geom_histogram(bins = 50, fill = "gray60", color = "gray30", linewidth = 0.3) +

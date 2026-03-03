@@ -16,10 +16,10 @@ Reads the complete LANCES_Final_Semester.dta (all 22 LANCES files appended,
 
 3. firm_tender_map.parquet — Firm × OC × item mapping for FL reclassification
 
-4. FREQ_PARTICIP_rebuilt.parquet — Frequent participant firms (≥1,000 participations)
-   Columns: códigofornecedor, tenders_count, frequent_particip
+4. FREQ_PARTICIP_rebuilt.parquet — Always-loser firms with FTM-based participation counts
+   Columns: códigofornecedor, tenders_count, always_loser
 
-5. LOSERS_rebuilt.parquet — FL firm counts per (OC, item) using IQR threshold
+5. LOSERS_rebuilt.parquet — FL firm counts per (OC, item) using median + 1.5*IQR threshold
    Columns: numerodaoc, códigoitem, losers_count
 
 Usage:
@@ -127,27 +127,47 @@ def build_firm_tender_map(df: pd.DataFrame) -> pd.DataFrame:
     return ftm
 
 
-def build_freq_particip(ftm: pd.DataFrame, min_participations: int = 1000) -> pd.DataFrame:
-    """Identify frequent participant firms (≥ min_participations unique tender-items)."""
-    firm_counts = ftm.groupby("códigofornecedor").size().reset_index(name="tenders_count")
-    freq = firm_counts[firm_counts["tenders_count"] >= min_participations].copy()
-    freq["frequent_particip"] = 1
-    return freq
+def build_freq_particip(firm_stats: pd.DataFrame, ftm: pd.DataFrame) -> pd.DataFrame:
+    """Identify always-loser firms and compute their FTM-based participation counts.
+
+    Always-losers = firms with win_rate == 0 (never won any tender).
+    Returns ALL always-losers with their tenders_count from FTM, enabling
+    threshold robustness tests in R.
+    """
+    always_loser_ids = set(firm_stats.loc[firm_stats["always_loser"] == 1, "códigofornecedor"])
+    print(f"  Always-loser firms in firm_stats: {len(always_loser_ids):,}")
+
+    # Get participation counts from FTM (firm × OC × item level)
+    ftm_al = ftm[ftm["códigofornecedor"].isin(always_loser_ids)]
+    firm_counts = ftm_al.groupby("códigofornecedor").size().reset_index(name="tenders_count")
+    firm_counts["always_loser"] = 1
+
+    print(f"  Always-losers with FTM participation: {len(firm_counts):,}")
+    print(f"  tenders_count range: {firm_counts['tenders_count'].min():,} – {firm_counts['tenders_count'].max():,}")
+    return firm_counts
 
 
 def build_losers(ftm: pd.DataFrame, freq_particip: pd.DataFrame) -> pd.DataFrame:
-    """Build LOSERS table: count FL firms per (OC, item) using IQR threshold on FREQ_PARTICIP."""
+    """Build LOSERS table: count FL firms per (OC, item) using median + 1.5*IQR threshold.
+
+    FL firms = always-losers whose tenders_count exceeds median + 1.5*IQR
+    (manuscript formula). This differs from the standard boxplot rule (Q3 + 1.5*IQR).
+    """
     tc = freq_particip["tenders_count"]
-    q1, q3 = tc.quantile(0.25), tc.quantile(0.75)
+    q1 = tc.quantile(0.25)
+    median = tc.quantile(0.50)
+    q3 = tc.quantile(0.75)
     iqr = q3 - q1
-    threshold = q3 + 1.5 * iqr
+    threshold = median + 1.5 * iqr
 
     fl_ids = set(freq_particip.loc[freq_particip["tenders_count"] > threshold, "códigofornecedor"])
-    print(f"  IQR threshold: Q3={q3:.0f}, IQR={iqr:.0f}, threshold={threshold:.0f}")
+    print(f"  IQR stats: Q1={q1:.0f}, median={median:.0f}, Q3={q3:.0f}, IQR={iqr:.0f}")
+    print(f"  Threshold (median + 1.5*IQR): {threshold:.0f}")
     print(f"  FL firms (above threshold): {len(fl_ids):,}")
 
     ftm_fl = ftm[ftm["códigofornecedor"].isin(fl_ids)]
     losers = ftm_fl.groupby(["numerodaoc", "códigoitem"]).size().reset_index(name="losers_count")
+    print(f"  (OC, item) pairs with FL presence: {len(losers):,}")
     return losers
 
 
@@ -199,13 +219,12 @@ def main():
     print(f"  {len(ftm):,} firm-tender-item pairs")
     print(f"  Saved: {size_mb:.1f} MB")
 
-    # ---- Phase 5: Frequent participants ----
+    # ---- Phase 5: Always-loser participation counts ----
     print(f"\n--- Phase 5: Building {OUT_FREQ_PARTICIP.name} ---")
-    freq_particip = build_freq_particip(ftm, min_participations=1000)
+    freq_particip = build_freq_particip(firm_stats, ftm)
     freq_particip.to_parquet(OUT_FREQ_PARTICIP, engine="pyarrow", index=False)
     size_mb = OUT_FREQ_PARTICIP.stat().st_size / (1024 * 1024)
-    print(f"  {len(freq_particip):,} frequent participant firms (≥1,000 participations)")
-    print(f"  tenders_count range: {freq_particip['tenders_count'].min():,} – {freq_particip['tenders_count'].max():,}")
+    print(f"  {len(freq_particip):,} always-loser firms with FTM participation counts")
     print(f"  Saved: {size_mb:.1f} MB")
 
     # ---- Phase 6: LOSERS (FL counts per OC × item) ----

@@ -35,10 +35,14 @@ m_nfirms <- run_losers_4("ln_firms", dt, price_only = FALSE)
 cat("  Running n_bids regressions...\n")
 m_nbids <- run_losers_4("ln_bids", dt, price_only = FALSE)
 
+cat("  Running n_firms_excl regressions (excluding FL from count)...\n")
+m_nfirms_excl <- run_losers_4("ln_firms_excl", dt, price_only = FALSE)
+
 # ---- Save all models -------------------------------------------------------
 models <- list(
   prices = m_prices,
   nfirms = m_nfirms,
+  nfirms_excl = m_nfirms_excl,
   nbids  = m_nbids
 )
 
@@ -50,7 +54,7 @@ cat("  Models saved:", models_path, "\n")
 cat("\n  --- Key coefficients (losers) ---\n")
 cat("  Manuscript targets: prices ~0.10-0.13, n_firms ~0.29-0.33, n_bids ~0.23-0.30\n\n")
 
-for (outcome in c("prices", "nfirms", "nbids")) {
+for (outcome in c("prices", "nfirms", "nfirms_excl", "nbids")) {
   mlist <- models[[outcome]]
   cat(sprintf("  %s:\n", toupper(outcome)))
   for (mname in names(mlist)) {
