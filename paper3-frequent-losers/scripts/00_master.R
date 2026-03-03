@@ -59,7 +59,7 @@ if (length(missing_files) > 0) {
 cat("  All", length(required_files), "data files found.\n")
 
 # Check bid-level data (optional but recommended)
-bidlevel_files <- c("bid_level_partial.parquet", "firm_tender_map.parquet",
+bidlevel_files <- c("bid_level_full.parquet", "firm_tender_map.parquet",
                      "firm_loss_stats.parquet")
 missing_bl <- bidlevel_files[!file.exists(file.path(data_dir, bidlevel_files))]
 if (length(missing_bl) > 0) {

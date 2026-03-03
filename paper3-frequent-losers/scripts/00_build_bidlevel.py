@@ -1,12 +1,12 @@
 """
-00_build_bidlevel.py — Extract firm-tender participation from LANCES .dta files.
+00_build_bidlevel.py — Extract firm-tender participation from LANCES data.
 
 Paper 3: Frequent Losers in Public Procurement
 
-This script reads the available LANCES bid-level .dta files (partially corrupted),
-extracts firm participation records with error recovery, and produces two outputs:
+Reads the complete LANCES_Final_Semester.dta (all 22 LANCES files appended,
+~40M bid-level rows, Jan/2009–Dec/2019) and produces three outputs:
 
-1. bid_level_partial.parquet — Firm × item × OC participation table
+1. bid_level_full.parquet — Firm × item × OC participation table
    Columns: códigofornecedor, numerodaoc, códigoitem, flagvencedor,
             mêsanoencerramento, códigounidadecompradora, descriçãoprocedimentocompra
 
@@ -14,20 +14,17 @@ extracts firm participation records with error recovery, and produces two output
    Columns: códigofornecedor, total_participations, total_wins, total_losses,
             win_rate, always_loser
 
-Available LANCES files cover: 2009-05 to 2011-06 + 2015-09 to 2016-06
-(~36% of the 2009-2019 study period, ~9.6M bid-level rows).
+3. firm_tender_map.parquet — Firm × OC × item mapping for FL reclassification
 
 Usage:
     python3 scripts/00_build_bidlevel.py
 """
 
-import os
 import sys
 import time
 from pathlib import Path
 
 import pandas as pd
-import pyarrow as pa
 import pyarrow.parquet as pq
 
 # ---- Paths -------------------------------------------------------------------
@@ -36,15 +33,8 @@ PROJECT_DIR = SCRIPT_DIR.parent
 DATA_PROC = PROJECT_DIR / "data" / "processed"
 BEC_RAW = Path("/home/darciogm1/projetos/bitter-pills/data/raw/bec-procurement")
 
-LANCES_FILES = [
-    BEC_RAW / "FINAL/UPDATED/Final_Semester_2020 - 9/LANCES_1.dta",
-    BEC_RAW / "FINAL/UPDATED/Final_Semester_2020 - 9/LANCES_2.dta",
-    BEC_RAW / "FINAL/UPDATED/Final_Semester_2020 - 9/LANCES_3.dta",
-    BEC_RAW / "FINAL/UPDATED/Final_Semester_2020 - 9/LANCES_4.dta",
-    BEC_RAW / "FINAL/UPDATED/Final_Semester_2020 - 9/LANCES_5.dta",
-    BEC_RAW / "FINAL/UPDATED/Final_Semester_2020 - 7/LANCES_14.dta",
-    BEC_RAW / "FINAL/UPDATED/Final_Semester_2020 - 7/LANCES_15.dta",
-]
+# Complete LANCES file: all 22 semesters appended by Stata
+LANCES_FULL = BEC_RAW / "ai-procurement/Discontinuity/LANCES_Final_Semester.dta"
 
 COLS_NEEDED = [
     "mêsanoencerramento",
@@ -56,20 +46,17 @@ COLS_NEEDED = [
     "descriçãoprocedimentocompra",
 ]
 
-OUT_BIDLEVEL = DATA_PROC / "bid_level_partial.parquet"
+OUT_BIDLEVEL = DATA_PROC / "bid_level_full.parquet"
 OUT_FIRMSTATS = DATA_PROC / "firm_loss_stats.parquet"
-
-# Also build a firm-tender mapping for FL identification
 OUT_FIRM_TENDER = DATA_PROC / "firm_tender_map.parquet"
 
-CHUNK_SIZE = 50_000
+CHUNK_SIZE = 500_000
 
 
-def read_lances_safe(path: Path) -> pd.DataFrame:
-    """Read a LANCES .dta file with error recovery for truncated files."""
-    name = path.name
+def read_lances_chunked(path: Path) -> pd.DataFrame:
+    """Read the full LANCES .dta in chunks to manage memory."""
     size_gb = path.stat().st_size / 1e9
-    print(f"  Reading {name} ({size_gb:.1f} GB)...", flush=True)
+    print(f"  Reading {path.name} ({size_gb:.1f} GB)...", flush=True)
 
     reader = pd.read_stata(path, iterator=True, columns=COLS_NEEDED)
     chunks = []
@@ -82,18 +69,18 @@ def read_lances_safe(path: Path) -> pd.DataFrame:
                 break
             chunks.append(chunk)
             total_rows += len(chunk)
-            if total_rows % 500_000 == 0:
-                print(f"    {total_rows:>10,} rows read...", flush=True)
+            if total_rows % 5_000_000 == 0:
+                print(f"    {total_rows:>12,} rows read...", flush=True)
     except Exception as e:
-        print(f"    Stopped at {total_rows:,} rows (truncated file: {e})")
+        print(f"    Stopped at {total_rows:,} rows ({e})")
 
     if not chunks:
-        print(f"    WARNING: No data read from {name}")
+        print("    ERROR: No data read")
         return pd.DataFrame(columns=COLS_NEEDED)
 
     df = pd.concat(chunks, ignore_index=True)
-    dates = sorted(df["mêsanoencerramento"].unique())
-    print(f"    {name}: {len(df):,} rows, {dates[0]} – {dates[-1]}")
+    dates = sorted(df["mêsanoencerramento"].dropna().unique())
+    print(f"    {len(df):,} rows, {dates[0]} – {dates[-1]}")
     return df
 
 
@@ -138,31 +125,18 @@ def main():
     print("00_build_bidlevel.py: Extracting bid-level firm participation")
     print("=" * 72)
 
-    # Check which files exist
-    available = [f for f in LANCES_FILES if f.exists()]
-    missing = [f for f in LANCES_FILES if not f.exists()]
-    print(f"\nAvailable LANCES files: {len(available)}/{len(LANCES_FILES)}")
-    for f in missing:
-        print(f"  MISSING: {f.name}")
-
-    if not available:
-        print("ERROR: No LANCES files found. Cannot build bid-level data.")
+    if not LANCES_FULL.exists():
+        print(f"ERROR: {LANCES_FULL} not found.")
         sys.exit(1)
 
-    # Read all available files
-    print("\n--- Phase 1: Reading LANCES files ---")
-    all_chunks = []
-    for path in available:
-        df = read_lances_safe(path)
-        if len(df) > 0:
-            all_chunks.append(df)
+    # Read the complete file
+    print("\n--- Phase 1: Reading LANCES_Final_Semester.dta ---")
+    bid_data = read_lances_chunked(LANCES_FULL)
 
-    if not all_chunks:
-        print("ERROR: No data extracted from any LANCES file.")
+    if len(bid_data) == 0:
+        print("ERROR: No data extracted.")
         sys.exit(1)
 
-    bid_data = pd.concat(all_chunks, ignore_index=True)
-    del all_chunks  # Free memory
     print(f"\nTotal bid-level rows: {len(bid_data):,}")
     print(f"Unique firms: {bid_data['códigofornecedor'].nunique():,}")
     print(f"Date range: {bid_data['mêsanoencerramento'].min()} – {bid_data['mêsanoencerramento'].max()}")

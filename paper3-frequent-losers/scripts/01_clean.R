@@ -29,13 +29,13 @@ firms <- as.data.table(read_parquet(file.path(DATA_PROC, "Firms_final.parquet"))
 cat("  Firms rows:", pfmt_int(nrow(firms)), "\n")
 
 # ---- Bid-level data (partial: 2009-2011, 2015-2016 from LANCES files) ------
-bid_level_file <- file.path(DATA_PROC, "bid_level_partial.parquet")
+bid_level_file <- file.path(DATA_PROC, "bid_level_full.parquet")
 ftm_file <- file.path(DATA_PROC, "firm_tender_map.parquet")
 fls_file <- file.path(DATA_PROC, "firm_loss_stats.parquet")
 has_bidlevel <- file.exists(bid_level_file)
 
 if (has_bidlevel) {
-  cat("  Loading bid_level_partial.parquet...\n")
+  cat("  Loading bid_level_full.parquet...\n")
   bid_level <- as.data.table(read_parquet(bid_level_file))
   cat("  Bid-level rows:", pfmt_int(nrow(bid_level)), "\n")
 
@@ -48,7 +48,7 @@ if (has_bidlevel) {
   cat("  Unique firms:", pfmt_int(nrow(fls)),
       "  Always-losers:", pfmt_int(sum(fls$always_loser)), "\n")
 } else {
-  cat("  WARNING: bid_level_partial.parquet not found.\n")
+  cat("  WARNING: bid_level_full.parquet not found.\n")
   cat("  Run: python3 scripts/00_build_bidlevel.py\n")
   bid_level <- NULL
   ftm <- NULL
