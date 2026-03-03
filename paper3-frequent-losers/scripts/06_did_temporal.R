@@ -109,9 +109,14 @@ for (di in seq_along(dvs)) {
 
 # ---- Sun & Abraham (2021) estimator ----------------------------------------
 
+# Free main dataset before memory-intensive sunab — dt (2.8M rows) is no
+# longer needed; did_dt (155K rows) is sufficient for the SA estimator.
+rm(dt)
+gc(verbose = FALSE)
+
 cat("  Sun & Abraham estimator...\n")
 
-sa_models <- list()
+sa_results <- list()
 n_cohorts <- uniqueN(did_dt$cohort)
 
 if (n_cohorts >= 2) {
@@ -127,9 +132,12 @@ if (n_cohorts >= 2) {
         as.formula(paste0(dv, " ~ sunab(cohort, year) | item_f + year_f")),
         data = d, cluster = ~item_f, fixef.rm = "none", lean = FALSE
       )
-      sa_models[[dv]] <- m_sa
-      cat(sprintf("    %s: SA ATT = %.4f\n", dv_labels[di],
-                  summary(m_sa, agg = "ATT")$coeftable[1, 1]))
+      # Extract ATT immediately — each sunab model is ~84 MB with lean=FALSE,
+      # storing all 3 simultaneously causes heap corruption on 15 GB RAM
+      sa_tab <- summary(m_sa, agg = "ATT")$coeftable
+      sa_results[[dv]] <- list(att = sa_tab[1, 1], se = sa_tab[1, 2])
+      cat(sprintf("    %s: SA ATT = %.4f\n", dv_labels[di], sa_tab[1, 1]))
+      rm(m_sa); gc(verbose = FALSE)
     }, error = function(e) {
       cat(sprintf("    %s: Sun & Abraham failed: %s\n", dv_labels[di], e$message))
     })
@@ -175,10 +183,9 @@ for (di in seq_along(dvs)) {
   }
 
   # Sun & Abraham ATT
-  if (dv %in% names(sa_models)) {
-    sa_sum <- summary(sa_models[[dv]], agg = "ATT")$coeftable
-    sa_att <- pfmt(sa_sum[1, 1], 4)
-    sa_se  <- paste0("(", pfmt(sa_sum[1, 2], 4), ")")
+  if (dv %in% names(sa_results)) {
+    sa_att <- pfmt(sa_results[[dv]]$att, 4)
+    sa_se  <- paste0("(", pfmt(sa_results[[dv]]$se, 4), ")")
   } else {
     sa_att <- "---"
     sa_se  <- ""
@@ -216,7 +223,7 @@ did_lines <- c(did_lines,
 writeLines(did_lines, file.path(OUT_TAB, "tab_did_temporal.tex"))
 
 # ---- Save models -----------------------------------------------------------
-saveRDS(list(es = es_models, sa = sa_models, coefs = es_coefs),
+saveRDS(list(es = es_models, sa = sa_results, coefs = es_coefs),
         "/tmp/p3_did_temporal.rds")
 cat("  DiD temporal models saved: /tmp/p3_did_temporal.rds\n")
 cat("  Done.\n")
