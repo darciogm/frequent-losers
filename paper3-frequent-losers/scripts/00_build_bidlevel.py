@@ -16,6 +16,12 @@ Reads the complete LANCES_Final_Semester.dta (all 22 LANCES files appended,
 
 3. firm_tender_map.parquet — Firm × OC × item mapping for FL reclassification
 
+4. FREQ_PARTICIP_rebuilt.parquet — Frequent participant firms (≥1,000 participations)
+   Columns: códigofornecedor, tenders_count, frequent_particip
+
+5. LOSERS_rebuilt.parquet — FL firm counts per (OC, item) using IQR threshold
+   Columns: numerodaoc, códigoitem, losers_count
+
 Usage:
     python3 scripts/00_build_bidlevel.py
 """
@@ -49,6 +55,8 @@ COLS_NEEDED = [
 OUT_BIDLEVEL = DATA_PROC / "bid_level_full.parquet"
 OUT_FIRMSTATS = DATA_PROC / "firm_loss_stats.parquet"
 OUT_FIRM_TENDER = DATA_PROC / "firm_tender_map.parquet"
+OUT_FREQ_PARTICIP = DATA_PROC / "FREQ_PARTICIP_rebuilt.parquet"
+OUT_LOSERS = DATA_PROC / "LOSERS_rebuilt.parquet"
 
 CHUNK_SIZE = 500_000
 
@@ -119,6 +127,30 @@ def build_firm_tender_map(df: pd.DataFrame) -> pd.DataFrame:
     return ftm
 
 
+def build_freq_particip(ftm: pd.DataFrame, min_participations: int = 1000) -> pd.DataFrame:
+    """Identify frequent participant firms (≥ min_participations unique tender-items)."""
+    firm_counts = ftm.groupby("códigofornecedor").size().reset_index(name="tenders_count")
+    freq = firm_counts[firm_counts["tenders_count"] >= min_participations].copy()
+    freq["frequent_particip"] = 1
+    return freq
+
+
+def build_losers(ftm: pd.DataFrame, freq_particip: pd.DataFrame) -> pd.DataFrame:
+    """Build LOSERS table: count FL firms per (OC, item) using IQR threshold on FREQ_PARTICIP."""
+    tc = freq_particip["tenders_count"]
+    q1, q3 = tc.quantile(0.25), tc.quantile(0.75)
+    iqr = q3 - q1
+    threshold = q3 + 1.5 * iqr
+
+    fl_ids = set(freq_particip.loc[freq_particip["tenders_count"] > threshold, "códigofornecedor"])
+    print(f"  IQR threshold: Q3={q3:.0f}, IQR={iqr:.0f}, threshold={threshold:.0f}")
+    print(f"  FL firms (above threshold): {len(fl_ids):,}")
+
+    ftm_fl = ftm[ftm["códigofornecedor"].isin(fl_ids)]
+    losers = ftm_fl.groupby(["numerodaoc", "códigoitem"]).size().reset_index(name="losers_count")
+    return losers
+
+
 def main():
     t0 = time.time()
     print("=" * 72)
@@ -167,6 +199,25 @@ def main():
     print(f"  {len(ftm):,} firm-tender-item pairs")
     print(f"  Saved: {size_mb:.1f} MB")
 
+    # ---- Phase 5: Frequent participants ----
+    print(f"\n--- Phase 5: Building {OUT_FREQ_PARTICIP.name} ---")
+    freq_particip = build_freq_particip(ftm, min_participations=1000)
+    freq_particip.to_parquet(OUT_FREQ_PARTICIP, engine="pyarrow", index=False)
+    size_mb = OUT_FREQ_PARTICIP.stat().st_size / (1024 * 1024)
+    print(f"  {len(freq_particip):,} frequent participant firms (≥1,000 participations)")
+    print(f"  tenders_count range: {freq_particip['tenders_count'].min():,} – {freq_particip['tenders_count'].max():,}")
+    print(f"  Saved: {size_mb:.1f} MB")
+
+    # ---- Phase 6: LOSERS (FL counts per OC × item) ----
+    print(f"\n--- Phase 6: Building {OUT_LOSERS.name} ---")
+    losers = build_losers(ftm, freq_particip)
+    del ftm  # Free memory
+    losers.to_parquet(OUT_LOSERS, engine="pyarrow", index=False)
+    size_mb = OUT_LOSERS.stat().st_size / (1024 * 1024)
+    print(f"  {len(losers):,} (OC, item) pairs with FL presence")
+    print(f"  losers_count range: {losers['losers_count'].min()} – {losers['losers_count'].max()}")
+    print(f"  Saved: {size_mb:.1f} MB")
+
     elapsed = time.time() - t0
     print(f"\n{'=' * 72}")
     print(f"Done in {elapsed:.0f}s")
@@ -174,6 +225,8 @@ def main():
     print(f"  {OUT_BIDLEVEL}")
     print(f"  {OUT_FIRMSTATS}")
     print(f"  {OUT_FIRM_TENDER}")
+    print(f"  {OUT_FREQ_PARTICIP}")
+    print(f"  {OUT_LOSERS}")
     print(f"{'=' * 72}")
 
 

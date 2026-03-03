@@ -28,15 +28,28 @@ cat("  Loaded", pfmt_int(nrow(dt)), "rows\n")
 
 fp <- readRDS(DATA_CACHE_FP)
 
+# Load firm-tender map for exact reclassification
+if (!file.exists(DATA_CACHE_FTM)) stop("Run 01_clean.R first (with bid-level data)")
+ftm <- readRDS(DATA_CACHE_FTM)
+cat("  Loaded FTM:", pfmt_int(nrow(ftm)), "rows\n")
+
+# Normalize FTM column names to match BEC keys
+ftm_col <- grep("fornecedor", names(ftm), value = TRUE, ignore.case = TRUE)
+if (length(ftm_col) == 1) setnames(ftm, ftm_col, "firm_id")
+setnames(ftm, "numerodaoc", "oc_code", skip_absent = TRUE)
+setnames(ftm, "códigoitem", "item_code", skip_absent = TRUE)
+
 
 # ============================================================================
-# 5.1 Multiple IQR thresholds
+# 5.1 Multiple IQR thresholds (exact firm-level reclassification)
 # ============================================================================
 
-cat("  5.1 IQR threshold robustness...\n")
+cat("  5.1 IQR threshold robustness (exact reclassification)...\n")
 
-# Original threshold uses 1.5x IQR. Test 1.0x, 2.0x, 3.0x as well.
-# FREQ_PARTICIP has tenders_count for always-losers.
+# FREQ_PARTICIP_rebuilt has tenders_count for frequent participants.
+fp_col <- grep("fornecedor", names(fp), value = TRUE, ignore.case = TRUE)
+if (length(fp_col) == 1 && fp_col != "firm_id") setnames(fp, fp_col, "firm_id")
+
 q <- quantile(fp$tenders_count, c(0.25, 0.75))
 iqr_val <- q[2] - q[1]
 
@@ -45,46 +58,26 @@ threshold_results <- list()
 
 for (mult in thresholds) {
   thr <- q[2] + mult * iqr_val
-  n_firms_above <- sum(fp$tenders_count > thr)
-
-  # Re-classify: firms above this threshold are frequent losers
-  fl_firms <- fp[tenders_count > thr]
-  fl_cnpjs <- fl_firms$códigofornecedor
+  fl_ids <- fp[tenders_count > thr, firm_id]
+  n_fl <- length(fl_ids)
   cat(sprintf("    IQR %.1fx: threshold=%.0f, %d firms classified as FL\n",
-              mult, thr, n_firms_above))
+              mult, thr, n_fl))
 
-  # Threshold reclassification strategy:
-  # At the 1.5x baseline, LOSERS.parquet provides the exact losers flag.
-  # For other thresholds, we use a proportional approximation:
-  # since FREQ_PARTICIP has the complete distribution of always-loser
-  # tenders_count, we know what fraction of FL firms remain at each threshold.
-  # Tenders with higher losers_count are more likely to retain FL status
-  # at stricter thresholds.
-  #
-  # Specifically: at 1.5x we have N_15 FL firms. At threshold k, we have N_k.
-  # For a tender with losers_count = c at 1.5x, the probability of retaining
-  # at least one FL firm at threshold k is 1 - (1 - N_k/N_15)^c.
-  # We use a deterministic cutoff: tender has FL if losers_count ≥ ceil(N_15/N_k).
+  # Exact reclassification: filter FTM to FL firms, count per (oc, item)
+  ftm_fl <- ftm[firm_id %chin% fl_ids]
+  new_losers <- ftm_fl[, .(losers_count_new = .N), by = .(oc_code, item_code)]
+  cat(sprintf("      FTM rows for FL firms: %s → %s (OC, item) pairs\n",
+              pfmt_int(nrow(ftm_fl)), pfmt_int(nrow(new_losers))))
 
-  n_fl_baseline <- sum(fp$tenders_count > (q[2] + 1.5 * iqr_val))
-
+  # Merge into dt copy
   dt_thr <- copy(dt)
-  if (mult != 1.5) {
-    # Minimum losers_count needed: if ratio = N_base / N_k, a tender
-    # needs at least that many FL firms for at least one to survive the
-    # stricter threshold (heuristic).
-    ratio <- n_fl_baseline / max(n_firms_above, 1L)
-    min_lc <- max(1L, ceiling(ratio))
-    cat(sprintf("      Ratio: %.2f → min losers_count=%d for FL flag\n",
-                ratio, min_lc))
+  dt_thr <- merge(dt_thr, new_losers, by = c("oc_code", "item_code"), all.x = TRUE)
+  dt_thr[is.na(losers_count_new), losers_count_new := 0L]
+  dt_thr[, losers := as.integer(losers_count_new > 0L)]
 
-    # For stricter thresholds (fewer FL firms), raise the bar
-    dt_thr[, losers := as.integer(losers_count >= min_lc)]
-
-    n_losers_new <- sum(dt_thr$losers)
-    cat(sprintf("      Re-classified: %s tenders with FL (was %s at 1.5x)\n",
-                pfmt_int(n_losers_new), pfmt_int(sum(dt$losers))))
-  }
+  n_losers_new <- sum(dt_thr$losers)
+  cat(sprintf("      Tenders with FL: %s (was %s at baseline)\n",
+              pfmt_int(n_losers_new), pfmt_int(sum(dt$losers))))
 
   # Run price regression (general + PBU FE spec)
   m <- feols(lneg_price ~ losers + convite | item_f + year_f + pbu_f,
@@ -94,7 +87,7 @@ for (mult in thresholds) {
   threshold_results[[as.character(mult)]] <- list(
     multiplier = mult,
     threshold = thr,
-    n_fl_firms = n_firms_above,
+    n_fl_firms = n_fl,
     coef = coef(m)["losers"],
     se = sqrt(vcov(m)["losers", "losers"]),
     n = m$nobs,
@@ -135,7 +128,7 @@ thr_lines <- c(thr_lines,
   "\\item \\textit{Notes:} Dependent variable: log negotiated price.",
   "All specifications include item, year, and PBU fixed effects.",
   "Standard errors clustered at the item level.",
-  "Reclassification at non-baseline thresholds uses a proportional approximation based on the \\textit{losers\\_count} variable.",
+  "Reclassification at each threshold uses the exact firm-level bid data from FTM to identify FL firms and recompute tender-level losers flags.",
   "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1.",
   "\\end{tablenotes}",
   "\\end{threeparttable}",
@@ -425,7 +418,7 @@ dev.off()
 cat("  Saved:", fig_path, "\n")
 
 # ============================================================================
-# 5.7 Placebo quasi-losers
+# 5.7 Placebo quasi-losers (exact reclassification via FTM)
 # ============================================================================
 
 cat("  5.7 Placebo quasi-losers...\n")
@@ -435,16 +428,21 @@ cat("  5.7 Placebo quasi-losers...\n")
 q75 <- quantile(fp$tenders_count, 0.75)
 threshold_15 <- q75 + 1.5 * iqr_val
 
-quasi_fp <- fp[tenders_count > q75 & tenders_count <= threshold_15]
+quasi_ids <- fp[tenders_count > q75 & tenders_count <= threshold_15, firm_id]
 cat(sprintf("    Quasi-losers: firms with tenders_count in (%.0f, %.0f]: %d firms\n",
-            q75, threshold_15, nrow(quasi_fp)))
+            q75, threshold_15, length(quasi_ids)))
 
-# For placebo test, we use the original data but treat quasi-losers region
-# Since we can't directly re-merge at firm level from this dataset,
-# we create a placebo by shuffling the losers flag within item-year cells
-set.seed(42)
+# Exact reclassification: build placebo losers flag from quasi-loser firms in FTM
+ftm_quasi <- ftm[firm_id %chin% quasi_ids]
+quasi_losers <- ftm_quasi[, .(quasi_losers_count = .N), by = .(oc_code, item_code)]
+cat(sprintf("    Quasi-loser (OC, item) pairs: %s\n", pfmt_int(nrow(quasi_losers))))
+
 dt_placebo <- copy(dt[!is.na(lneg_price)])
-dt_placebo[, placebo_losers := sample(losers), by = .(item_code, year)]
+dt_placebo <- merge(dt_placebo, quasi_losers, by = c("oc_code", "item_code"), all.x = TRUE)
+dt_placebo[is.na(quasi_losers_count), quasi_losers_count := 0L]
+dt_placebo[, placebo_losers := as.integer(quasi_losers_count > 0L)]
+
+cat(sprintf("    Tenders with quasi-losers: %s\n", pfmt_int(sum(dt_placebo$placebo_losers))))
 
 m_placebo <- feols(lneg_price ~ placebo_losers + convite | item_f + year_f + pbu_f,
                    data = dt_placebo, cluster = ~item_f, fixef.rm = "none")

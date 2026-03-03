@@ -49,8 +49,8 @@ if (length(missing_opt) > 0) {
 
 # ---- Check data availability -----------------------------------------------
 data_dir <- file.path("data", "processed")
-required_files <- c("BEC_collapse_final.parquet", "LOSERS.parquet",
-                     "FREQ_PARTICIP.parquet", "Firms_final.parquet")
+required_files <- c("BEC_collapse_final.parquet", "LOSERS_rebuilt.parquet",
+                     "FREQ_PARTICIP_rebuilt.parquet", "Firms_final.parquet")
 missing_files <- required_files[!file.exists(file.path(data_dir, required_files))]
 if (length(missing_files) > 0) {
   stop("Missing data files in ", data_dir, ":\n  ",

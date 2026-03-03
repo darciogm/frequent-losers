@@ -67,7 +67,7 @@ save_pub(p2, "fig_02_iqr_identification.pdf")
 
 # ============================================================================
 # Figures 3-8: Descriptive characteristics of frequent losers
-# Uses bid-level data from LANCES files (partial: 2009-2011, 2015-2016)
+# Uses bid-level data (full: 2009-2019 from LANCES_Final_Semester.dta)
 # ============================================================================
 
 has_bidlevel <- file.exists(DATA_CACHE_BL)

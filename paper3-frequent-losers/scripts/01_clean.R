@@ -16,19 +16,19 @@ cat("  Loading BEC_collapse_final.parquet...\n")
 bec <- as.data.table(read_parquet(file.path(DATA_PROC, "BEC_collapse_final.parquet")))
 cat("  BEC rows:", pfmt_int(nrow(bec)), " cols:", ncol(bec), "\n")
 
-cat("  Loading LOSERS.parquet...\n")
-losers <- as.data.table(read_parquet(file.path(DATA_PROC, "LOSERS.parquet")))
+cat("  Loading LOSERS_rebuilt.parquet...\n")
+losers <- as.data.table(read_parquet(file.path(DATA_PROC, "LOSERS_rebuilt.parquet")))
 cat("  LOSERS rows:", pfmt_int(nrow(losers)), "\n")
 
-cat("  Loading FREQ_PARTICIP.parquet...\n")
-freq_particip <- as.data.table(read_parquet(file.path(DATA_PROC, "FREQ_PARTICIP.parquet")))
+cat("  Loading FREQ_PARTICIP_rebuilt.parquet...\n")
+freq_particip <- as.data.table(read_parquet(file.path(DATA_PROC, "FREQ_PARTICIP_rebuilt.parquet")))
 cat("  FREQ_PARTICIP rows:", pfmt_int(nrow(freq_particip)), "\n")
 
 cat("  Loading Firms_final.parquet...\n")
 firms <- as.data.table(read_parquet(file.path(DATA_PROC, "Firms_final.parquet")))
 cat("  Firms rows:", pfmt_int(nrow(firms)), "\n")
 
-# ---- Bid-level data (partial: 2009-2011, 2015-2016 from LANCES files) ------
+# ---- Bid-level data (full: 2009-2019 from LANCES_Final_Semester.dta) -------
 bid_level_file <- file.path(DATA_PROC, "bid_level_full.parquet")
 ftm_file <- file.path(DATA_PROC, "firm_tender_map.parquet")
 fls_file <- file.path(DATA_PROC, "firm_loss_stats.parquet")
@@ -88,48 +88,21 @@ cat("  Unique item codes:", pfmt_int(uniqueN(bec$item_code)), "\n")
 # ============================================================================
 # Phase C: Merge LOSERS with BEC
 # ============================================================================
-# LOSERS key_item_oc = item_code + "_" + oc_code
-# Match LOSERS keys at their exact item_code length against BEC true item codes
+# LOSERS_rebuilt has (numerodaoc, códigoitem, losers_count) — direct join on
+# (oc_code, item_code), no iterative variable-length matching needed.
 
 cat("  Merging LOSERS flags + losers_count into BEC...\n")
 
-losers[, l_item_code := sub("_.*", "", key_item_oc)]
-losers[, l_ic_len := nchar(l_item_code)]
-
-# Build losers_count lookup keyed by key_item_oc
-losers_lkp <- losers[, .(key_item_oc, losers_count)]
-setkey(losers_lkp, key_item_oc)
-
-bec[, has_loser := 0L]
-bec[, losers_count := 0L]
-total_matched <- 0L
-
-for (n in 2:8) {
-  losers_n <- losers[l_ic_len == n]
-  if (nrow(losers_n) == 0) next
-
-  # BEC true item code truncated to n chars + "_" + oc_code
-  bec[, .bec_key := paste0(substr(item_code, 1, n), "_", oc_code)]
-  to_match <- bec[has_loser == 0L & .bec_key %in% losers_n$key_item_oc]
-
-  if (nrow(to_match) > 0) {
-    # Look up losers_count
-    lc <- losers_lkp[to_match$.bec_key, losers_count]
-    bec[has_loser == 0L & .bec_key %in% losers_n$key_item_oc,
-        `:=`(has_loser = 1L, losers_count = lc)]
-    n_matched <- nrow(to_match)
-    total_matched <- total_matched + n_matched
-    cat(sprintf("    LOSERS with %d-digit item code: %s keys -> %s BEC rows\n",
-                n, pfmt_int(nrow(losers_n)), pfmt_int(n_matched)))
-  }
-}
-bec[, .bec_key := NULL]
+setnames(losers, c("numerodaoc", "códigoitem"), c("oc_code", "item_code"),
+         skip_absent = TRUE)
+bec <- merge(bec, losers[, .(oc_code, item_code, losers_count)],
+             by = c("oc_code", "item_code"), all.x = TRUE)
+bec[is.na(losers_count), losers_count := 0L]
+bec[, has_loser := as.integer(losers_count > 0L)]
 
 n_with_loser <- sum(bec$has_loser)
 cat("  BEC rows with frequent losers:", pfmt_int(n_with_loser),
     sprintf("(%.2f%%)\n", 100 * n_with_loser / nrow(bec)))
-
-losers[, c("l_item_code", "l_ic_len") := NULL]
 
 # ============================================================================
 # Phase D: Create analysis variables
@@ -253,7 +226,7 @@ cat(sprintf("  Actual: total=%s; pregão=%s; convite=%s; valid_price=%s\n",
 # ============================================================================
 
 keep_cols <- c(
-  "po_item_merge_key", "pbu_code", "year", "item_code",
+  "po_item_merge_key", "pbu_code", "year", "oc_code", "item_code",
   "po_phase_code", "convite", "pregao",
   "n_firms", "n_bids", "lneg_price", "ln_firms", "ln_bids",
   "has_price", "losers", "has_loser",
