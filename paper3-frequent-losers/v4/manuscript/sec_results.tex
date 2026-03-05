@@ -42,58 +42,64 @@ estimation methods. OLS estimates in gray; IV estimates in red.}
 Table~\ref{tab:iv_first_stage} reports the first-stage diagnostics of
 the leave-one-out instrument (Equation~\ref{eq:iv}). The instrument is a
 strong predictor of FL presence, with $F$-statistics well above the
-conventional threshold of 10. Our preferred specification (Panel~A)
-includes item, year, and PBU fixed effects, balancing instrument strength
-($F = 396$) against adequate control for confounders.
+conventional threshold of 10. We treat Column~(1) of Panel~A---with item, year, and PBU fixed % CO-AUTHOR EDIT: strengthened preferred spec declaration
+effects---as our preferred specification. It delivers an $F$-statistic of
+396 and a plausible exclusion restriction, while avoiding the
+weak-instrument amplification that arises under the more saturated
+fixed-effects structures of Panel~C.
 Table~\ref{tab:iv_main} presents the second-stage 2SLS estimates.
+Panel~B replicates the analysis on the preg\~ao subsample and serves as
+a consistency check.
 
 \input{../output/tables/tab_iv_first_stage}
 
 \input{../output/tables/tab_iv_main}
 
 The preferred IV price estimate (Panel~A: 0.194, $p = 0.01$) exceeds
-the OLS estimate (0.064) by a factor of three. Under classical
-measurement error,
-$\hat{\beta}_{\text{OLS}} = \lambda \cdot \hat{\beta}_{\text{IV}}$,
-where $\lambda$ is the signal-to-total-variance ratio in the binary
-treatment indicator. The observed
-$\lambda = 0.064 / 0.194 \approx 0.33$ implies that approximately
-67\% of the variation in the FL indicator is noise---consistent with the
-IQR threshold being a statistical screen rather than a diagnostic tool,
-and with the threshold sensitivity exercises
-(Section~\ref{sec:robustness}) showing the coefficient increases
-monotonically with stricter thresholds. The implied markup of 21\% falls
+the OLS estimate (0.064) by a factor of three. The implied
+signal-to-total-variance ratio is % CO-AUTHOR EDIT: expanded λ interpretation with plausibility + bounds
+$\hat{\lambda} = \hat{\beta}_{\text{OLS}} / \hat{\beta}_{\text{IV}}
+= 0.064 / 0.194 \approx 0.33$.
+Given that the FL dummy is a deliberately coarse screen defined by a
+distributional threshold, a signal-to-noise ratio of one-third is
+entirely plausible: the threshold sensitivity exercises
+(Section~\ref{sec:robustness}) show that the coefficient increases
+monotonically with stricter thresholds, consistent with a finer screen
+recovering more of the true effect. The implied markup of 21\% falls
 within the 10--50\% range typically found in cartel overcharge studies
 \citep{connor2007price}.
 
+Moreover, if treatment effects are heterogeneous and concentrated in
+markets where FL supply variation is most consequential, the
+IV---which identifies a LATE---will exceed OLS even absent measurement
+error. We cannot fully disentangle attenuation from LATE heterogeneity.
+Accordingly, we treat the OLS estimate as a conservative lower bound and
+the IV estimate as an upper bound on the average price effect, consistent
+with the welfare calculations in Section~\ref{sec:welfare}.
+
 \paragraph{LATE interpretation.}
-However, $\lambda < 1$ can also reflect treatment effect heterogeneity:
-if the IV identifies complier tenders with larger-than-average treatment
-effects ($\text{LATE} > \text{ATE}$), the IV would exceed OLS even
-without measurement error. We cannot fully disentangle these two
-channels. The IV estimate represents a Local Average Treatment Effect
+The IV estimate represents a Local Average Treatment Effect
 (LATE) for tenders whose FL participation is driven by supply-side
 availability rather than demand-side selection. Comparing the IV
-estimate (0.194) to the network-based low-suspicion coefficient (0.126)
-yields a ratio of 1.54, consistent with the IV identifying complier
-tenders where FL supply shifts are most consequential.
+estimate (0.194) to the network-based competitive-market coefficient
+(0.126) yields a ratio of 1.54, consistent with the IV identifying
+complier tenders where FL supply shifts are most consequential.
 
 \paragraph{IV robustness.}
-Adding item-group $\times$ year fixed effects
-(Table~\ref{tab:iv_panelc} in Appendix~\ref{app:robustness}) absorbs
-product-market-year shocks,
-restricting identification to cross-PBU variation within narrow
-product-year cells. The IV estimate is substantially larger, consistent
-with weak-instrument amplification as the more demanding FE structure
-reduces the first-stage $F$-statistic. We therefore retain Panel~A as
-the preferred specification. Balance tests (Table~\ref{tab:iv_balance}
+Table~\ref{tab:iv_panelc} in Appendix~\ref{app:robustness} reports the % CO-AUTHOR EDIT: reframed Panel C as "for completeness"
+specification with item-group $\times$ year fixed effects for
+completeness; the heavier FE structure increases the risk of
+weak-instrument bias and we do not use it for inference. The IV estimate
+is substantially larger, consistent with weak-instrument amplification as
+the more demanding FE structure reduces the first-stage $F$-statistic.
+We retain Panel~A as the preferred specification. Balance tests (Table~\ref{tab:iv_balance}
 in Appendix~\ref{app:robustness}) regress pre-determined observables on
-the LOO instrument with item, year, and PBU FE. The point estimates are
-statistically significant but economically negligible (all $< 0.001$),
-reflecting the very large sample size ($N > 1.5$ million) rather than
-meaningful imbalance. In standardized terms, a one-SD increase in the
-instrument shifts each observable by less than 0.03~SD, well below
-conventional thresholds for meaningful covariate imbalance.
+the LOO instrument with item, year, and PBU FE. Even with $N > 1.5$ % CO-AUTHOR EDIT: added economic-grounds framing for balance
+million observations, all standardized differences are below
+0.03$\sigma$---well inside what is typically considered negligible
+covariate imbalance. We therefore evaluate balance on economic grounds
+rather than statistical significance, which is uninformative at this
+sample size.
 
 A placebo IV exercise replaces FL firms with sub-threshold always-losers
 (firms that never win but participate in fewer than 14 tenders). As
@@ -117,22 +123,27 @@ an instrument ventile.}
 \subsection{Network-Split Results}
 \label{sec:results_network}
 
-Table~\ref{tab:network_split} splits FL firms into high-suspicion and
-low-suspicion subgroups based on the co-bidding network metrics described
-in Section~\ref{sec:empirical_network}. The results reveal an
-informative pattern of heterogeneity. FL firms classified as
-low-suspicion---those operating in markets with \emph{diversified}
-winner patterns (low winner HHI)---drive the entire price effect, with a
-coefficient of 0.126 ($p < 0.01$) in the PBU FE specification.
-High-suspicion FL firms, operating in \emph{concentrated} markets with
+Table~\ref{tab:network_split} splits FL firms into % CO-AUTHOR EDIT: relabeled high/low-suspicion → market-structure labels
+concentrated-market and competitive-market subgroups based on the
+co-bidding network metrics described in
+Section~\ref{sec:empirical_network}.\footnote{We label these groups by
+market structure rather than suspicion level: high-HHI markets with
+repeated winners may reflect natural monopoly or structural concentration
+rather than cartel behavior, precisely the environments where cover
+bidding yields less competitive benefit.}
+The results reveal an informative pattern of heterogeneity.
+Competitive-market FL firms---those operating in markets with
+\emph{diversified} winner patterns (low winner HHI)---drive the entire
+price effect, with a coefficient of 0.126 ($p < 0.01$) in the PBU FE
+specification. Concentrated-market FL firms, operating in markets with
 repeated winners, show no significant price effect ($-0.018$, $p > 0.3$).
 
-This pattern is consistent with the economics of cover bidding: the
-marginal value of a cover bidder is highest in competitive markets where
-genuine competition threatens the cartel's preferred outcome. In
-concentrated markets where one firm dominates regardless, cover bidding
-is redundant---the dominant firm already controls pricing through market
-power. The finding also speaks to the optimal deployment of the FL
+The absence of a price effect among FL firms in highly concentrated
+markets is itself informative: cover bidding is most valuable where
+genuine competitive threat exists. In markets already dominated by one or
+two firms, the marginal value of manufacturing the appearance of
+competition is lower---the dominant firm already controls pricing through
+market power. The finding speaks to the optimal deployment of the FL
 screen: it is most informative in competitive markets, precisely where
 procurement agencies have the greatest scope for intervention.
 
@@ -214,8 +225,20 @@ conditions) that induces residual correlation, while cover bidders
 submit bids without such shared cost signals. The key finding is that FL
 residual correlation remains significantly positive after absorbing all
 tender-level confounds, suggesting a common signal among cover bids
-beyond the tender-level mean---though the magnitude comparison should be
-interpreted with caution given the different group compositions.
+beyond the tender-level mean. We interpret this contrast with caution: % CO-AUTHOR EDIT: added explicit hedge on FL vs non-FL magnitude
+non-FL bidders operating in the same markets may share cost information
+or face correlated signals, which would mechanically generate positive
+residual correlation even absent coordination. The relevant diagnostic is
+not the magnitude ranking but the failure of exchangeability and
+conditional independence for FL bidders specifically.
+
+Taken together, the Bajari--Ye diagnostics indicate that FL bids are % CO-AUTHOR EDIT: added closing paragraph linking to cover-bidding interpretation
+generated by a process that violates both exchangeability and conditional
+independence, even after absorbing tender-level shocks. We do not rely on
+the magnitude comparison between groups as a standalone argument. Rather,
+we treat the Bajari--Ye results as non-structural evidence that is
+consistent with, and reinforces, the cover-bidding interpretation
+developed in Section~\ref{sec:results_iv}.
 
 \subsection{Regime Test}
 \label{sec:results_regime}

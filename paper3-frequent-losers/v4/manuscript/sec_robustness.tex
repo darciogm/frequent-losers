@@ -1,9 +1,18 @@
 \section{Robustness and Extensions}
 \label{sec:robustness}
 
-We subject our findings to extensive robustness checks spanning the FL
-definition, sample construction, estimation method, and welfare
-calculation.
+We subject our findings to extensive robustness checks organized in six % CO-AUTHOR EDIT: added robustness roadmap
+groups. Section~\ref{sec:robustness}.1 varies the FL definition
+threshold, win-rate cutoff, and temporal window.
+Section~\ref{sec:robustness}.2 checks sample restrictions and
+specification variants (unrestricted sample, homogeneous subsamples,
+tighter controls, matching, clustering).
+Section~\ref{sec:robustness}.3 runs sensitivity analysis on unobservable
+confounders. Section~\ref{sec:robustness}.4 reports the staggered DiD
+(complementary, underpowered). Section~\ref{sec:robustness}.5 computes
+welfare bounds under OLS, IV, and cross-fit estimates.
+Section~\ref{sec:robustness}.6 examines procurement oversight and
+compliance channels.
 
 \subsection{FL Definition Robustness}
 
@@ -40,7 +49,7 @@ FL screen capturing a genuine signal.
 Instead of classifying FL firms over the full 2009--2019 period, we use
 rolling 3-year windows: a firm is FL in year $t$ if it is an
 always-loser with above-threshold participation in years $[t-2, t]$.
-Table~\ref{tab:fl_temporal} in Appendix~\ref{app:robustness} confirms
+Table~\ref{tab:fl_temporal} in Appendix~\ref{app:robustness} shows % CO-AUTHOR EDIT: "confirms" → "shows"
 that time-varying FL status produces a similar coefficient of 0.070
 ($p < 0.01$, $N = 1{,}255{,}998$), close to the baseline 0.064.
 
@@ -51,7 +60,7 @@ Our baseline restricts to item types with at least one FL-present
 tender. Removing this restriction yields a coefficient of 0.063 ($N =
 2{,}875{,}653$), virtually identical to the baseline 0.064
 (Table~\ref{tab:unrestricted_sample} in Appendix~\ref{app:robustness}),
-confirming that restriction (iii) does not bias the results.
+suggesting that restriction (iii) does not bias the results. % CO-AUTHOR EDIT: "confirming" → "suggesting"
 
 \paragraph{Homogeneous sub-samples.}
 Identifying \emph{ex ante} homogeneous goods from item descriptions is
@@ -109,38 +118,20 @@ effects structure.
 
 \subsection{Staggered Difference-in-Differences}
 
-We construct a market-level panel (item $\times$ PBU $\times$ year) and
-estimate a staggered DiD using \citet{callaway2021difference}. The
-sample is restricted to markets with at least three pre- and three
-post-treatment observations, yielding 144,168 market-year observations
-across 19,777 markets (1,511 treated, 18,266 never-treated). The C\&S
-estimator yields an overall ATT of 0.014 (SE~=~0.039) for log
-prices---positive but insignificant. We apply \cites{rambachan2023more}
-honest DiD bounds under smoothness restrictions; the resulting confidence
-sets are wide, reflecting the difficulty of identifying dynamic effects
-when FL entry is gradual and few markets have clean treatment timing.
-The minimum detectable effect (MDE) at the 5\% significance level is
-$1.96 \times 0.039 = 0.076$, exceeding the OLS estimate of 0.064,
-confirming that the DiD design is underpowered for OLS-magnitude effects.
-With 80\% power, the MDE rises to $(1.96 + 0.84) \times 0.039 = 0.109$.
-We apply \cites{rambachan2023more} sensitivity analysis with specific
-$\bar{M}$ values: at $\bar{M} = 0$ (parallel trends hold exactly), the
-confidence interval is narrow; as $\bar{M}$ increases to allow for
-trend deviations, the interval widens rapidly, reflecting the difficulty
-of ruling out pre-trend violations in this setting
-(Table~\ref{tab:did_revised}, Panel~C). As a further check, we restrict
-the treated sample to markets with ``sharp'' FL entry---those where FL
-goes from zero to positive presence in a single year. This cleaner
-treatment timing yields a C\&S ATT reported in Panel~D.
+We report the staggered DiD as a complementary exercise only. Using % CO-AUTHOR EDIT: shrunk DiD to 2 paragraphs; details moved to Appendix
+\citet{callaway2021difference}, we construct a market-level panel (item
+$\times$ PBU $\times$ year) with 144,168 market-year observations across
+19,777 markets (1,511 treated, 18,266 never-treated). The C\&S estimator
+yields an overall ATT of 0.014 (SE~=~0.039) for log prices---positive
+but insignificant. The minimum detectable effect is
+$1.96 \times 0.039 = 0.076$, exceeding the OLS estimate of 0.064.
+Given limited treatment timing variation, the design is underpowered for
+detecting effects of the magnitude we estimate via OLS and IV, and we do
+not rely on it for identification.
 
-We interpret the DiD as supplementary evidence: the null result does not
-contradict the cross-sectional findings but reflects limited statistical
-power in the panel design, not absence of an effect. Given the MDE of
-0.076 exceeding the OLS point estimate of 0.064, we caution against
-drawing conclusions from the DiD alone; the design lacks the power to
-detect effects of the magnitude suggested by the cross-sectional analysis.
-Table~\ref{tab:did_revised} and Figure~\ref{fig:event_study} in
-Appendix~\ref{app:did} report details.
+\cites{rambachan2023more} sensitivity analysis, sharp-entry subsamples,
+and event-study plots are reported in Appendix~\ref{app:did}
+(Table~\ref{tab:did_revised} and Figure~\ref{fig:event_study}).
 
 \subsection{Welfare Analysis}
 \label{sec:welfare}
