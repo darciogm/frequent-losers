@@ -42,59 +42,58 @@ estimation methods. OLS estimates in gray; IV estimates in red.}
 Table~\ref{tab:iv_first_stage} reports the first-stage diagnostics of
 the leave-one-out instrument (Equation~\ref{eq:iv}). The instrument is a
 strong predictor of FL presence, with $F$-statistics well above the
-conventional threshold of 10. Table~\ref{tab:iv_main} presents the
-second-stage 2SLS estimates.
+conventional threshold of 10. Our preferred specification (Panel~A)
+includes item, year, and PBU fixed effects, balancing instrument strength
+($F = 396$) against adequate control for confounders.
+Table~\ref{tab:iv_main} presents the second-stage 2SLS estimates.
 
 \input{../output/tables/tab_iv_first_stage}
 
 \input{../output/tables/tab_iv_main}
 
-The IV price estimate (0.194, $p = 0.01$) exceeds the OLS estimate % CO-AUTHOR EDIT: t=2.56, p≈0.01 is more precise than p<0.05
-(0.064) by a factor of three, consistent with measurement-error
-attenuation: the binary FL indicator misclassifies some cover bidders
-below the IQR threshold (attenuation bias) and potentially some
-non-cover-bidder FL firms above it (contamination). The IV corrects for
-this by exploiting exogenous variation in FL availability. The implied
-markup of 21\% falls within the 10--50\% range typically found in cartel
-overcharge studies \citep{connor2007price}.
+The preferred IV price estimate (Panel~A: 0.194, $p = 0.01$) exceeds
+the OLS estimate (0.064) by a factor of three. Under classical
+measurement error,
+$\hat{\beta}_{\text{OLS}} = \lambda \cdot \hat{\beta}_{\text{IV}}$,
+where $\lambda$ is the signal-to-total-variance ratio in the binary
+treatment indicator. The observed
+$\lambda = 0.064 / 0.194 \approx 0.33$ implies that approximately
+67\% of the variation in the FL indicator is noise---consistent with the
+IQR threshold being a statistical screen rather than a diagnostic tool,
+and with the threshold sensitivity exercises
+(Section~\ref{sec:robustness}) showing the coefficient increases
+monotonically with stricter thresholds. The implied markup of 21\% falls
+within the 10--50\% range typically found in cartel overcharge studies
+\citep{connor2007price}.
 
-Adding item-group $\times$ year fixed effects (Panel~C) absorbs
-product-market-year shocks, restricting identification to cross-PBU
-variation within narrow product-year cells. The IV estimate in this
-specification is substantially larger, suggesting that the more demanding
-FE structure weakens the instrument (the first-stage $F$-statistic
-declines), leading to weak-instrument amplification of the second-stage
-coefficient. The preferred specification with item + year + PBU FE
-(Panel~A) balances instrument strength with adequate control for
-confounds. Balance tests (Table~\ref{tab:iv_balance} in
-Appendix~\ref{app:robustness}) regress pre-determined observables on the
-LOO instrument with item, year, and PBU FE. The point estimates are
+\paragraph{LATE interpretation.}
+However, $\lambda < 1$ can also reflect treatment effect heterogeneity:
+if the IV identifies complier tenders with larger-than-average treatment
+effects ($\text{LATE} > \text{ATE}$), the IV would exceed OLS even
+without measurement error. We cannot fully disentangle these two
+channels. The IV estimate represents a Local Average Treatment Effect
+(LATE) for tenders whose FL participation is driven by supply-side
+availability rather than demand-side selection. Comparing the IV
+estimate (0.194) to the network-based low-suspicion coefficient (0.126)
+yields a ratio of 1.54, consistent with the IV identifying complier
+tenders where FL supply shifts are most consequential.
+
+\paragraph{IV robustness.}
+Adding item-group $\times$ year fixed effects
+(Table~\ref{tab:iv_panelc} in Appendix~\ref{app:robustness}) absorbs
+product-market-year shocks,
+restricting identification to cross-PBU variation within narrow
+product-year cells. The IV estimate is substantially larger, consistent
+with weak-instrument amplification as the more demanding FE structure
+reduces the first-stage $F$-statistic. We therefore retain Panel~A as
+the preferred specification. Balance tests (Table~\ref{tab:iv_balance}
+in Appendix~\ref{app:robustness}) regress pre-determined observables on
+the LOO instrument with item, year, and PBU FE. The point estimates are
 statistically significant but economically negligible (all $< 0.001$),
 reflecting the very large sample size ($N > 1.5$ million) rather than
 meaningful imbalance. In standardized terms, a one-SD increase in the
 instrument shifts each observable by less than 0.03~SD, well below
 conventional thresholds for meaningful covariate imbalance.
-
-\paragraph{IV magnitude interpretation.}
-The ratio $\lambda = \hat{\beta}_{\text{OLS}} / \hat{\beta}_{\text{IV}} % CO-AUTHOR EDIT: added LATE/heterogeneity caveat
-\approx 0.33$ implies that approximately 67\% of the variation in the
-binary FL indicator is noise---i.e., the threshold-based screen
-misclassifies roughly two-thirds of its assignments. This degree of
-misclassification is plausible: the IQR threshold is a statistical
-screen, not a diagnostic tool, and the threshold sensitivity exercises
-(Section~\ref{sec:robustness}) confirm that the coefficient increases
-monotonically with stricter thresholds. However, $\lambda < 1$ can also
-reflect treatment effect heterogeneity: if the IV identifies complier
-tenders with larger-than-average treatment effects
-($\text{LATE} > \text{ATE}$), the IV would exceed OLS even without
-measurement error. We cannot disentangle these two channels, but note
-that both are consistent with the data. The IV estimate represents a
-Local Average Treatment Effect (LATE) for tenders whose FL participation
-is driven by supply-side availability rather than demand-side selection.
-Comparing the IV estimate (0.194) to the network-based low-suspicion
-coefficient (0.126) yields a ratio of 1.54, consistent with the IV
-identifying an even more extreme subpopulation of complier tenders where
-FL supply shifts are most consequential.
 
 A placebo IV exercise replaces FL firms with sub-threshold always-losers
 (firms that never win but participate in fewer than 14 tenders). As
@@ -140,7 +139,7 @@ procurement agencies have the greatest scope for intervention.
 We formalize this intuition using continuous market concentration.
 Table~\ref{tab:network_interactions} in Appendix~\ref{app:robustness}
 reports two interaction specifications. Column~(1) interacts FL presence
-with winner HHI at the item-group $\times$ PBU $\times$ year level. The % CO-AUTHOR EDIT: "confirms" → directionally consistent; coef is insignificant (t=-0.36)
+with winner HHI at the item-group $\times$ PBU $\times$ year level. The
 interaction coefficient is negative ($-0.024$) but not statistically
 significant (SE~$= 0.067$), directionally consistent with the
 network-split finding that the FL price effect is smaller in concentrated
@@ -163,22 +162,26 @@ the network metrics, showing substantial heterogeneity among FL firms.
 \subsection{Bajari--Ye Tests}
 \label{sec:results_bajari}
 
-Table~\ref{tab:bajari_ye} reports the Bajari--Ye test results.
+We apply the \citet{bajari2003deciding} framework to test three
+sequential claims: (i) FL bid residuals violate exchangeability,
+(ii) FL bid residuals violate conditional independence, and
+(iii) these violations survive absorption of tender-level confounds.
+Table~\ref{tab:bajari_ye} reports the results.
 
 \input{../output/tables/tab_bajari_ye}
 
-\paragraph{Exchangeability (Panel~A).}
-The Kolmogorov--Smirnov test strongly rejects the null that FL and
+\paragraph{Claim 1: Exchangeability fails (Panel~A).}
+The Kolmogorov--Smirnov test rejects the null that FL and
 non-FL bid residuals are drawn from the same distribution
 ($D = 0.15$, $p < 0.001$), violating the exchangeability condition
 required under competitive bidding (Prediction~\ref{pred:exchange}).
 
-\paragraph{Conditional independence (Panel~B).}
+\paragraph{Claim 2: Conditional independence fails (Panel~B).}
 The mean product of pairwise FL residuals is 5.16 ($t = 157.4$),
-substantially larger than the non-FL pairwise product of 2.21
-($t = 71.5$). The bootstrap difference of 2.95 has a 95\% confidence
-interval that excludes zero, confirming that FL bid residuals exhibit
-significantly stronger within-tender correlation than non-FL residuals
+larger than the non-FL pairwise product of 2.21 ($t = 71.5$). The
+bootstrap difference of 2.95 (95\% CI: $[2.57, 5.21]$) excludes zero,
+indicating that FL bid residuals exhibit stronger within-tender
+correlation than non-FL residuals
 (Prediction~\ref{pred:independence}).
 
 \paragraph{Fake-groups placebo (Panel~C).}
@@ -189,32 +192,30 @@ PBU-specific factors) that induce positive residual correlations among
 \emph{all} bidders in the same tender, regardless of FL status. The
 relevant comparison is therefore not whether the pairwise product differs
 from zero, but whether FL pairs exhibit \emph{stronger} correlation than
-non-FL pairs. The FL pairwise product (5.16) is significantly smaller
-than the fake-group product (5.80), while both exceed the non-FL product
-(2.21). The bootstrap difference between FL and non-FL products (2.95,
-95\% CI: $[2.57, 5.21]$) confirms that FL bid residuals are
-significantly more correlated than non-FL residuals, net of common
-tender-level shocks.
+non-FL pairs. The bootstrap difference between FL and non-FL products
+(2.95, 95\% CI: $[2.57, 5.21]$) indicates that FL bid residuals are
+more correlated than non-FL residuals, net of common tender-level shocks.
 
-\paragraph{Tender fixed effects refinement.}
-As an additional check, we re-estimate the first-stage bid equation with
-tender $\times$ item fixed effects, which absorb \emph{all} tender-level
-shocks (reference price, commodity prices, PBU-specific factors). Only
-within-tender, cross-firm variation in residuals remains.
+\paragraph{Claim 3: Tender FE do not absorb the signal.}
+As a more demanding check, we re-estimate the first-stage bid equation
+with tender $\times$ item fixed effects, which absorb \emph{all}
+tender-level shocks (reference price, commodity prices, PBU-specific
+factors). Only within-tender, cross-firm variation in residuals remains.
 Table~\ref{tab:bajari_ye_tender_fe} in Appendix~\ref{app:robustness}
 compares the baseline (item + year FE) and tender-FE pairwise products.
-Under tender FE, the fake-groups product drops from 5.80 to 0.51 and % CO-AUTHOR EDIT: expanded tender-FE discussion to address FL < non-FL reversal
-the non-FL product from 2.21 to 0.86, confirming that most of the
+Under tender FE, the fake-groups product drops from 5.80 to 0.51 and
+the non-FL product from 2.21 to 0.86, indicating that most of the
 baseline correlation reflects common tender-level shocks. The FL pairwise
 product drops from 5.16 to 0.38---significantly positive ($p < 0.001$),
-but smaller in magnitude than the non-FL product (0.86). This reversal
-likely reflects the fact that genuine bidders in the same tender share
-cost information (input prices, local market conditions) that induces
-residual correlation, while cover bidders submit bids without such
-shared cost signals. The relevant finding is that FL residual correlation
-remains significantly positive after absorbing all tender-level confounds,
-indicating a common signal among cover bids (the designated winning bid)
-beyond the tender-level mean.
+but smaller in magnitude than the non-FL product (0.86). This ordering
+is not inconsistent with the cover bidding hypothesis: genuine bidders
+in the same tender share cost information (input prices, local market
+conditions) that induces residual correlation, while cover bidders
+submit bids without such shared cost signals. The key finding is that FL
+residual correlation remains significantly positive after absorbing all
+tender-level confounds, suggesting a common signal among cover bids
+beyond the tender-level mean---though the magnitude comparison should be
+interpreted with caution given the different group compositions.
 
 \subsection{Regime Test}
 \label{sec:results_regime}
