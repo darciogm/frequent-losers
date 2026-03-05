@@ -1,0 +1,443 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\linespread{1.3}
+
+\title{Referee Report\\[6pt]
+\large ``Frequent Losers as Cover Bidders in Public Procurement''\\
+\large Genicolo-Martins \& Furquim de Azevedo}
+\author{Simulated Referee Report (V4 Self-Assessment)}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Summary}
+
+This paper proposes ``frequent losers'' (FL)---firms that never win yet
+participate in abnormally many procurement tenders---as a screening
+marker for cover bidding. Using 4.5 million tender-items from S\~ao
+Paulo's BEC platform (2009--2019), the authors identify 2,735 FL firms
+via an IQR-based threshold and document that FL-present tenders have
+6--9\% higher prices (OLS). External validation against CADE convictions,
+a leave-one-out IV, Bajari--Ye bid-coordination tests, and a rich set of
+robustness checks round out the analysis.
+
+The V4 revision represents a substantial improvement over V3: the H1/H2
+framing clarifies what the paper claims, the LOO IV provides a credible
+(if imperfect) causal strategy, the CADE permutation test strengthens
+external validation, and the FL definition robustness exercises are
+welcome. Nevertheless, several issues warrant attention before
+publication. I organize my comments into major, medium, and minor
+categories.
+
+% =========================================================================
+\section*{Major Issues}
+
+\subsection*{1. IV Exclusion Restriction Needs Stronger Defense}
+
+The LOO instrument counts FL firms active at \emph{other} PBUs in the
+same product group and year. The exclusion restriction assumes that FL
+supply at distant PBUs affects focal-PBU prices \emph{only} through FL
+presence. This is plausible but not airtight. At least two threats
+deserve discussion:
+
+\begin{enumerate}[]
+  \item \textbf{Correlated demand shocks within product-group--year cells.}
+    If a statewide pharmaceutical shortage simultaneously raises prices
+    across all PBUs and attracts FL firms (who specialize in specific
+    product groups), the instrument would be correlated with unobserved
+    price shocks. The item $\times$ year FE absorb aggregate item-level
+    shocks, but the instrument varies at the item-group $\times$ PBU
+    $\times$ year level, so within-item-type geographic shocks could
+    violate exclusion.
+
+  \item \textbf{Common supply-side shocks.}
+    If a new FL firm enters a product market across multiple PBUs
+    simultaneously (e.g., a newly created shell company bidding
+    statewide), the instrument captures this firm's entry at other PBUs,
+    but the \emph{same firm} may also enter the focal PBU for the same
+    unobserved reason that affects prices.
+\end{enumerate}
+
+\noindent\textbf{Suggestion:} Add a paragraph explicitly discussing
+these threats and why item + year + PBU FE mitigate them. Consider
+testing robustness to narrower geographic definitions of the LOO set
+(e.g., only PBUs in \emph{different} municipalities). If the IV estimate
+is stable across geographic radii, this strengthens the exclusion
+restriction. Also discuss the Goldsmith-Pinkham et al.\ (2020)
+Bartik-style decomposition more concretely---which ``shares'' drive the
+instrument, and are they plausibly exogenous?
+
+\subsection*{2. The Network Split Tells a Different Story Than Originally Hypothesized}
+
+The paper classifies FL firms by winner HHI and repeat-partner counts,
+labeling them ``high-concentration'' and ``low-concentration.'' The
+original design (evident from the variable names \texttt{has\_high\_susp\_fl}
+and \texttt{has\_low\_susp\_fl}) was to separate genuine cover bidders
+(``high-suspicion'') from incompetent firms (``low-suspicion''). The
+expectation was that high-suspicion FL firms would drive the price effect.
+
+The results are the \emph{opposite}: low-concentration (originally
+``low-suspicion'') FL firms drive the entire effect (0.126, $p < 0.01$),
+while high-concentration FL firms show no significant effect ($-0.018$).
+The paper reframes this as ``cover bidding is most profitable in
+competitive markets,'' which is economically sensible but represents a
+post-hoc rationalization.
+
+\noindent\textbf{Concerns:}
+\begin{enumerate}[]
+  \item The classification was designed to identify cover bidders, not to
+    test market-structure heterogeneity. If the goal is market-structure
+    heterogeneity, why not simply interact FL presence with market HHI
+    directly? The current classification conflates firm-level network
+    characteristics with market-level concentration.
+
+  \item The negative (though insignificant) coefficient on
+    high-concentration FL firms undermines the claim that FL firms are
+    cover bidders. If 1,356 of 2,735 FL firms show no price effect, are
+    they genuinely incompetent firms that should not be flagged by the
+    screen? This has direct implications for the welfare calculation.
+
+  \item The renaming from ``high-suspicion'' to ``high-concentration''
+    without changing the underlying analysis is cosmetic. The reader
+    should be told that the original hypothesis was not confirmed and
+    that the reinterpretation, while plausible, was arrived at ex post.
+\end{enumerate}
+
+\noindent\textbf{Suggestion:} (i) Present a direct interaction of FL
+presence with market-level HHI (continuous), independent of the network
+classification. (ii) Acknowledge transparently that the network
+classification did not perform as originally designed. (iii) Recalculate
+welfare losses using only the low-concentration FL subset, as these are
+the firms driving the price effect.
+
+\subsection*{3. Bajari--Ye Fake-Groups Placebo Failure}
+
+The fake-groups placebo is designed to validate the Bajari--Ye
+methodology: randomly splitting non-FL firms into two groups should
+yield null results. Instead, the placebo pairwise product is 5.80
+(\emph{larger} than the FL product of 5.16) and statistically
+significant.
+
+The paper argues that this reflects ``common tender-level shocks'' and
+that the FL vs.\ non-FL comparison is the relevant test. However:
+
+\begin{enumerate}[]
+  \item The FL pairwise product (5.16) is \emph{lower} than the
+    fake-group product (5.80). Under the cover bidding hypothesis, FL
+    pairs should exhibit \emph{stronger} correlation than random
+    non-FL pairs, not weaker. The paper's argument that the FL--non-FL
+    difference (2.95) is what matters does not address why FL pairs are
+    \emph{less} correlated than random non-FL pairs.
+
+  \item The magnitude ordering (non-FL: 2.21 $<$ FL: 5.16 $<$
+    fake-groups: 5.80) is puzzling. If common tender-level shocks drive
+    positive pairwise products, one would expect FL and non-FL products
+    to be similar (both affected by shocks), with the FL product
+    \emph{additionally} elevated by coordination. Instead, the non-FL
+    product is much lower, suggesting that the FL/non-FL partition itself
+    captures some feature of the tender environment (e.g., FL-present
+    tenders are in more volatile markets), not necessarily bid
+    coordination.
+
+  \item The ``fake groups'' placebo was designed by the authors as a
+    validity check. Its failure should be discussed more honestly as a
+    limitation of the Bajari--Ye implementation, rather than reframed as
+    confirmation.
+\end{enumerate}
+
+\noindent\textbf{Suggestion:} (i) Compute the fake-groups placebo
+separately for FL-present and FL-absent tenders. If common shocks are
+the explanation, both subsamples should produce similar placebo products.
+(ii) Report the within-tender variance of bid residuals for FL vs.\
+non-FL tenders to diagnose whether FL-present tenders are systematically
+noisier. (iii) Consider alternative residualization strategies (e.g.,
+tender FE in the first-stage bid equation) that absorb common shocks
+before computing pairwise products.
+
+
+\subsection*{4. Null DiD Result and Causal Inference}
+
+The Callaway \& Sant'Anna estimator yields ATT = 0.014 (SE = 0.039),
+statistically insignificant. This is the one design that exploits
+within-market temporal variation---arguably the cleanest identification
+strategy---and it produces a null result. The paper acknowledges this
+and frames DiD as ``supplementary evidence,'' arguing that limited power
+from gradual FL entry prevents detection.
+
+While the power argument has merit, a skeptical reader could note:
+
+\begin{enumerate}[]
+  \item The null DiD is also consistent with no causal effect: FL firms
+    select into expensive markets, and the cross-sectional association
+    reflects this selection rather than a causal mechanism.
+
+  \item The sample (19,777 markets, 1,511 treated) is not trivially
+    small. The standard error (0.039) would detect an effect of 0.077 or
+    larger at the 5\% level. Since the OLS estimate is 0.064, the DiD
+    does have \emph{some} power to detect effects of the claimed
+    magnitude.
+
+  \item The Rambachan--Roth bounds are described as ``wide'' but no
+    specific numbers are reported in the main text. What are the honest
+    confidence sets under $\bar{M} = 0$, 0.01, and 0.02?
+\end{enumerate}
+
+\noindent\textbf{Suggestion:} (i) Report the minimum detectable effect
+(MDE) for the DiD design explicitly, so readers can assess power. (ii)
+Report the Rambachan--Roth honest confidence sets for specific values of
+$\bar{M}$ in the robustness table. (iii) Discuss more candidly that the
+null DiD weakens the causal claim in H2, rather than treating it as
+uninformative.
+
+
+% =========================================================================
+\section*{Medium Issues}
+
+\subsection*{5. CADE Validation: Modest Unconditional Effect}
+
+The unconditional co-participation odds ratio is 1.21 ($p = 0.017$).
+This is statistically significant but economically modest: FL firms are
+only 21\% more likely than non-FL firms to co-participate with CADE
+cartelists. The 3.5$\times$ figure comes from the permutation test,
+which controls for participation intensity by matching on participation
+quartiles.
+
+The permutation-adjusted comparison is more compelling, but the paper
+leads with the 3.5$\times$ figure (abstract, introduction) without
+making clear that the unconditional OR is only 1.21. This creates an
+impression of stronger external validation than the raw data support.
+
+\noindent\textbf{Suggestion:} Report both figures prominently---the
+unconditional OR (1.21) and the participation-adjusted ratio
+(3.5$\times$)---in the abstract and introduction, so the reader can
+judge the strength of validation.
+
+\subsection*{6. Cross-Fitting Attenuation}
+
+The cross-fitting exercise yields an average coefficient of 0.036,
+attenuated 44\% relative to the full-sample OLS (0.064). One fold is
+significant (0.053, $p < 0.05$), the other is not (0.019, $p > 0.10$).
+The paper attributes the attenuation to ``lower statistical power from
+fewer FL firms identified in even years.''
+
+However, cross-fitting is designed precisely to detect overfitting---the
+attenuation could reflect the full-sample estimate being inflated by
+in-sample FL definition. If the ``true'' effect is closer to 0.036 than
+0.064, the welfare estimates should be adjusted accordingly.
+
+\noindent\textbf{Suggestion:} (i) Report the cross-fit coefficient in
+the welfare analysis as a third bound (between OLS and IV). (ii)
+Discuss why one fold is significant and the other is not beyond ``power
+differences''---are there structural differences between odd and even
+years (e.g., election cycles, policy changes)?
+
+\subsection*{7. Homogeneous Sub-Samples Infeasible}
+
+Table B.5 reports ``Analysis infeasible'' for the homogeneous sub-sample
+analysis (fuel, A4 paper, generic medicines). The explanation is that
+BEC item codes do not map to product-level descriptions. This is a
+notable gap: the homogeneous-goods test was specifically requested to
+rule out quality-selection stories, and the inability to conduct it
+leaves this alternative explanation partially unaddressed.
+
+\noindent\textbf{Suggestion:} (i) Even without perfect product labels,
+some BEC item codes likely correspond to clearly homogeneous goods.
+Consider a manual inspection of the top-50 most common item codes to
+identify commodities. (ii) As a partial substitute, report the FL
+coefficient separately for item groups with low vs.\ high price
+dispersion (within-item-group CV of prices), on the logic that
+low-dispersion items are more homogeneous.
+
+\subsection*{8. Welfare Range Too Wide}
+
+The welfare estimates span R\$734 million (OLS) to R\$2.4 billion (IV),
+a 3.3$\times$ range. This is driven entirely by the OLS--IV coefficient
+gap (0.064 vs.\ 0.194). While wide bounds are honest, they limit policy
+relevance. Moreover, if the exclusion restriction is imperfect (Issue
+\#1), the IV upper bound may be inflated.
+
+\noindent\textbf{Suggestion:} (i) Add a ``preferred'' welfare estimate
+using the cross-fit coefficient (0.036) or the network-split coefficient
+for low-concentration FL firms (0.126). (ii) Compute the welfare loss
+attributable to FL firms in low-concentration markets only, since these
+drive the price effect. (iii) Conduct a bounding exercise: if the IV is
+biased upward by $X$\%, what is the implied welfare loss?
+
+\subsection*{9. Convite vs.\ Preg\~ao Tension with Oversight Hypothesis}
+
+The oversight heterogeneity analysis shows the FL coefficient is larger
+for smaller PBUs (less oversight $\rightarrow$ more cover bidding),
+supporting Prediction~5. However, the main results show that preg\~ao
+(electronic, more transparent, typically larger PBUs) has a \emph{larger}
+FL coefficient (9.3\%) than convite (sealed-bid, less transparent, 3.8\%).
+
+The paper explains this as preg\~ao's real-time bid observation
+facilitating Regime~1 cover bidding. While plausible, this tension
+between the oversight hypothesis (more oversight $\rightarrow$ smaller
+effect) and the modality result (more transparent modality
+$\rightarrow$ larger effect) should be discussed more explicitly. The
+two results pull in opposite directions regarding the role of
+transparency.
+
+\noindent\textbf{Suggestion:} Add a paragraph in Section~8 or
+Section~9 explicitly acknowledging this tension and discussing whether
+``oversight'' and ``transparency'' operate through different channels.
+
+\subsection*{10. Placebo IV Interpretation}
+
+The placebo IV uses sub-threshold always-losers as the instrument source
+and yields a coefficient of 5.24 with a very weak first stage (coef =
+0.00004). The paper correctly identifies this as a weak-instrument
+artifact. However:
+
+\begin{enumerate}[]
+  \item A true placebo should produce a \emph{null} result, not a
+    wild artifact. The fact that the sub-threshold instrument has
+    \emph{any} first-stage correlation (even tiny) with FL presence
+    raises questions about whether the main instrument's first stage
+    captures FL-specific variation or broader always-loser market
+    dynamics.
+
+  \item The correct placebo IV test would instrument FL presence with
+    sub-threshold always-loser supply and check whether the 2SLS
+    estimate is zero. Instead, the enormous coefficient signals
+    near-zero relevance, which is uninformative about the exclusion
+    restriction.
+\end{enumerate}
+
+\noindent\textbf{Suggestion:} (i) Consider a more informative placebo:
+instrument FL presence with the supply of firms that \emph{do} win
+(win rate $> 0$) at other PBUs. These firms should not affect prices
+through FL mechanisms. (ii) Report Anderson--Rubin confidence sets for
+the placebo IV, which are robust to weak instruments.
+
+
+% =========================================================================
+\section*{Minor Issues}
+
+\subsection*{11. Abstract Length}
+
+The abstract is approximately 140 words, which is appropriate. However,
+the welfare figures (R\$734M to R\$2.4B) take up space without adding
+much in an abstract. Consider replacing with a qualitative statement
+(``substantial welfare losses'') to save space for the IV result and
+CADE validation, which are more novel.
+
+\subsection*{12. Prediction~3 (Regime Identification) Lacks Clear Test}
+
+Prediction~3 states that Regime~1 predicts higher FL dispersion and
+Regime~2 predicts lower FL dispersion. The paper concludes ``the
+empirical pattern most closely resembles Regime~1.'' However, no formal
+test is reported. What is the dispersion ratio? Is the difference
+statistically significant? The regime density comparison (Figure~7) is
+visual only.
+
+\noindent\textbf{Suggestion:} Add a formal variance-ratio test or
+Kolmogorov--Smirnov test comparing FL and non-FL bid spread
+distributions, with a p-value.
+
+\subsection*{13. Table Formatting Inconsistencies}
+
+Several appendix tables use different formatting conventions (some have
+\texttt{adjustbox}, some don't; some include \texttt{threeparttable}
+notes, some use captions only). Standardize across all tables for
+consistency.
+
+\subsection*{14. Missing Figures in Appendix}
+
+Several figures referenced in the plan are absent from the appendix
+(e.g., bootstrap histogram, HonestDiD overlay, cover bid spread
+density). While the paper notes some are ``omitted,'' the reader would
+benefit from knowing which figures were attempted and why they were
+dropped. Add brief comments.
+
+\subsection*{15. ``Conceptual Framework'' vs.\ Formal Model}
+
+The conceptual framework introduces formal notation (FOC, definitions,
+predictions) but stops short of deriving equilibrium. This is fine given
+the paper's empirical focus, but the comparative statics (``$m^*$
+increasing in $n$ and decreasing in $\theta$'') are stated without
+proof. Since the model is simple enough, either show the derivation in
+a short appendix or cite a paper that does.
+
+\subsection*{16. Temporal FL Definition}
+
+The temporal FL (3-year rolling windows) produces a coefficient of 0.070,
+\emph{larger} than the full-sample 0.064. This is unexpected---if
+anything, temporal FL should introduce noise (shorter windows, fewer
+observations per firm) and attenuate the coefficient. The result
+deserves brief discussion: does the temporal definition capture different
+firms at different times? How much overlap is there between the
+full-sample and temporal FL sets?
+
+\subsection*{17. Notation}
+
+Equation~(1) uses $\alpha_g$, $\lambda_t$, $\gamma_k$ for item, year,
+and PBU FE, but the subscripts $g$, $t$, $k$ are not consistently
+defined in the surrounding text. Clarify that $g$ indexes item groups
+(not individual items), $t$ indexes years, and $k$ indexes PBUs.
+
+\subsection*{18. BEC Representativeness}
+
+The paper analyzes only S\~ao Paulo's BEC platform. How representative
+is BEC of Brazilian procurement more broadly? If BEC has above-average
+transparency (it is electronic), the FL screen's performance may differ
+in less transparent states. A brief discussion of external validity
+would strengthen the conclusion.
+
+
+% =========================================================================
+\section*{Overall Assessment}
+
+\paragraph{Strengths.}
+\begin{itemize}[]
+  \item The H1/H2 framing is clear and honest about what the paper
+    establishes (H1) vs.\ what it suggests (H2).
+  \item The FL screen is operationally practical---it requires only
+    participation and outcome data, making it deployable in
+    data-poor environments.
+  \item The robustness portfolio is extensive: threshold sensitivity,
+    low-win-rate variants, cross-fitting, temporal FL, matching,
+    sensitivity analysis, and alternative clustering.
+  \item The LOO IV strategy is well-motivated and the first stage is
+    strong ($F = 396$).
+  \item The CADE permutation test with stratified resampling is a
+    thoughtful validation exercise.
+  \item The paper is clearly written, well-organized, and the 50-page
+    length is appropriate for the scope.
+\end{itemize}
+
+\paragraph{Weaknesses.}
+\begin{itemize}[]
+  \item The IV exclusion restriction is not airtight and deserves more
+    thorough discussion of threats.
+  \item The network split results contradict the original hypothesis
+    and the reinterpretation, while plausible, is post hoc.
+  \item The Bajari--Ye fake-groups placebo fails, undermining
+    the bid-coordination evidence.
+  \item The null DiD result weakens the causal claim, and the power
+    argument should be quantified.
+  \item The unconditional CADE OR of 1.21 is modest; the 3.5$\times$
+    figure requires participation adjustment that should be made
+    more transparent.
+  \item The cross-fitting attenuation (0.036 vs.\ 0.064) is
+    substantial and may indicate some overfitting in the FL definition.
+  \item The welfare range (R\$734M--R\$2.4B) is too wide for actionable
+    policy guidance.
+\end{itemize}
+
+\paragraph{Recommendation.}
+The paper makes a genuine contribution by proposing a practical cartel
+screening tool and providing multi-pronged evidence for its validity.
+The V4 revision substantially strengthens the analysis relative to V3.
+However, the issues above---particularly the IV exclusion restriction
+defense, the honest treatment of the network split and Bajari--Ye
+placebo results, and the null DiD---should be addressed before
+publication. I recommend \textbf{major revision} with the understanding
+that the revisions are primarily about \emph{presentation and
+interpretation} rather than new analyses, and should be achievable in
+a single round.
+
+\end{document}

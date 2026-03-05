@@ -1,0 +1,335 @@
+\documentclass[10pt]{article}
+
+% ---- Packages ----------------------------------------------------------------
+\usepackage{adjustbox}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{wasysym}
+\usepackage[backend=biber, style=authoryear, sorting=nyt, natbib=true]{biblatex}
+\addbibresource{bibliography-biblatex.bib}
+\usepackage[paperheight=29.7cm,paperwidth=21.01cm,left=3.5cm,right=3.5cm,top=3.25cm,bottom=2.5cm]{geometry}
+
+% ---- Graphics path -----------------------------------------------------------
+\graphicspath{{../output/figures/}{./images/}}
+
+% ---- Theorem environments ----------------------------------------------------
+\newtheorem{prediction}{Prediction}
+\newtheorem{proposition}{Proposition}
+
+% ---- Page layout -------------------------------------------------------------
+\doublespacing
+\renewcommand{\arraystretch}{1.3}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\thepage}
+
+% ==============================================================================
+\begin{document}
+
+% ---- Title page --------------------------------------------------------------
+\begin{titlepage}
+\begin{center}
+\vspace*{2cm}
+{\LARGE \textbf{Frequent Losers as Cover Bidders \\ in Public Procurement}}
+
+\vspace{1.5cm}
+
+{\large Darcio Genicolo-Martins\textsuperscript{a} \quad Paulo Furquim de Azevedo\textsuperscript{a}}
+
+\vspace{0.5cm}
+
+\textsuperscript{a}INSPER --- Institute of Education and Research, S\~{a}o Paulo, Brazil
+
+\vspace{2cm}
+
+\textbf{Abstract}
+
+\end{center}
+
+\begin{quote}
+We propose \textit{frequent losers} (FL)---firms that systematically participate in and lose public procurement tenders---as a novel firm-level screening marker for cover bidding in cartel arrangements. Using 4.5 million tender-items and 40 million bids from Brazil's BEC electronic procurement platform (2009--2019), we establish four contributions. First, we show that FL presence in a tender is associated with 10--13\% higher winning prices, more participants, but fewer \textit{genuine} competitors---consistent with cover bidding. Second, we empirically distinguish between complementary cover bidding (Regime 1: FL bids drawn independently above the reference price) and coordinated cover bidding (Regime 2: FL bids clustered near the winning price) by comparing bid dispersion among FL versus non-FL participants. Third, we provide causal estimates using Callaway \& Sant'Anna (2021) staggered difference-in-differences, exploiting the first entry of FL firms into item$\times$PBU markets. Pre-trends are clean and results are robust to Sun \& Abraham (2021) and Bacon decomposition. Bajari \& Ye (2003) tests reject exchangeability and conditional independence for FL bids but not for non-FL bids, providing direct statistical evidence of coordination. Fourth, we validate externally against CADE (Brazilian Competition Authority) cartel convictions and show that adding the FL screen to standard Imhof (2019) bid-rigging screens improves AUC-ROC by 5--10 percentage points. Back-of-envelope welfare calculations suggest cover bidding costs the state of S\~{a}o Paulo R\$50--200 million over the sample period.
+\end{quote}
+
+\vspace{1cm}
+\noindent \textbf{JEL Codes:} D44, D73, H57, K21, L41
+
+\noindent \textbf{Keywords:} bid rigging, cover bidding, public procurement, cartel screening, frequent losers
+\end{titlepage}
+
+% ==============================================================================
+% Section 1: Introduction
+% ==============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Bid rigging in public procurement is among the most pervasive forms of collusion, yet it remains difficult to detect. Competition authorities worldwide rely on a combination of leniency programs, whistleblowers, and---increasingly---quantitative screening tools to identify suspicious bidding patterns \citep{harrington2008detecting, imhof2019detecting}. However, most existing screens operate at the \textit{bid level}, flagging individual tenders based on statistical anomalies in bid distributions. These methods require substantial data on bid values and produce high false-positive rates when applied to heterogeneous procurement environments.
+
+We propose a complementary approach: a \textit{firm-level} screen based on \textit{frequent losers} (FL)---firms that systematically participate in procurement tenders without ever winning. We argue that such firms are consistent with the role of \textit{cover bidders} in cartel arrangements: entities that submit non-competitive bids to satisfy minimum bidder requirements or create an illusion of competition, enabling the designated winner to secure the contract at an inflated price.
+
+\subsection{Contributions}
+
+This paper makes four contributions to the literature on cartel detection in procurement:
+
+\begin{enumerate}
+\item \textbf{Firm-level screening marker.} We propose frequent losers as a novel firm-level screen for cover bidding. Unlike bid-level screens \citep{bajari2003deciding, imhof2019detecting}, the FL marker operates at the firm level: a single classification flags all tenders in which the firm participates. This makes the screen operationally simpler for competition authorities.
+
+\item \textbf{Regime identification.} We empirically distinguish between two cover-bidding regimes: complementary cover bidding (Regime 1), where FL firms submit bids drawn independently above the reference price; and coordinated cover bidding (Regime 2), where FL bids cluster near the winning price to simulate competition. We test this by comparing bid price dispersion among FL versus non-FL participants.
+
+\item \textbf{Causal identification.} We provide causal estimates of the cover-bidding markup using Callaway \& Sant'Anna (2021) staggered difference-in-differences, exploiting the first entry of FL firms into item$\times$PBU markets. We complement this with Bajari \& Ye (2003) exchangeability and conditional independence tests applied separately to FL and non-FL bid residuals.
+
+\item \textbf{Developing-country application.} We apply these methods to the BEC (Bolsa Eletr\^{o}nica de Compras) platform of S\~{a}o Paulo State, covering 4.5 million tender-items and 40 million bids (2009--2019)---among the largest empirical analyses of bid rigging in a developing country.
+\end{enumerate}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:literature} reviews the related literature. Section~\ref{sec:theory} presents the formal model of cover bidding equilibrium with testable predictions. Section~\ref{sec:data} describes the data and the frequent loser definition. Section~\ref{sec:cade} presents external validation against CADE cartel convictions. Section~\ref{sec:results} reports the main results, including Bajari-Ye tests and the regime test. Section~\ref{sec:mechanisms} presents mechanism tests. Section~\ref{sec:did} provides causal identification via staggered DiD. Section~\ref{sec:robustness} reports robustness checks and ML comparison. Section~\ref{sec:conclusion} concludes.
+
+% ==============================================================================
+% Section 2: Related Literature
+% ==============================================================================
+\section{Related Literature}
+\label{sec:literature}
+
+Our paper contributes to several strands of literature. First, we build on the seminal work of \citet{bajari2003deciding} and \citet{porter1993detection} on statistical tests for bid coordination. \citet{bajari2003deciding} propose tests of exchangeability and conditional independence of bids as markers of collusion. We apply these tests separately to FL and non-FL firms, showing that FL bids violate both conditions while non-FL bids do not.
+
+Second, we contribute to the growing literature on bid-rigging screens \citep{imhof2019detecting, imhof2018screening, abrantesmetz2006a, hüschelrath2014cartel}. \citet{imhof2019detecting} develops descriptive screens based on bid distribution moments (CV, kurtosis, spread). We show that adding the FL firm-level screen to Imhof's bid-level screens significantly improves detection performance.
+
+Third, our identification strategy builds on recent advances in staggered difference-in-differences estimation. We use \citet{sun2021estimating} and the Callaway \& Sant'Anna (2021) estimator to address heterogeneous treatment effects in settings with staggered treatment adoption.
+
+Finally, we contribute to the literature on cover bidding specifically. \citet{porter1999ohio} and \citet{pesendorfer2000study} document cover bidding in specific industries. \citet{asker2010leniency} studies the internal organization of bidding cartels. \citet{marshall2012economics} provide a comprehensive theoretical treatment. Our contribution is to propose a systematic, data-driven method for identifying potential cover bidders across all procurement categories simultaneously.
+
+% ==============================================================================
+% Section 3: Theoretical Framework
+% ==============================================================================
+\section{Theoretical Framework}
+\label{sec:theory}
+
+\subsection{Cover Bidding in Procurement Auctions}
+
+Consider a procurement auction for item $g$ at purchasing body $k$ in period $t$. Let $n$ denote the number of genuine (non-cartel) bidders and $m$ the number of cover bidders (FL firms). The procuring entity sets a reference price $r$ and requires a minimum of $\bar{n}$ bidders for the tender to proceed.
+
+A cartel with a designated winner faces a coordination problem: it must ensure that (i) the minimum bidder requirement is met, and (ii) the designated winner's bid appears competitive. Cover bidders solve both problems by submitting bids that are designed to lose.
+
+\subsection{Two Regimes of Cover Bidding}
+
+\begin{proposition}[Regime 1: Complementary Cover Bidding]
+FL firms submit bids $b_j^{FL} = r + \epsilon_j$ where $\epsilon_j > 0$ is drawn independently to exceed the reference price. The designated winner bids $b^* = v + \delta$ where $\delta > 0$ is the cartel markup.
+\end{proposition}
+
+Under Regime 1, FL bids are high and dispersed because they are drawn independently above the reference price. The purpose is to satisfy the minimum bidder requirement ($n + m \geq \bar{n}$) without creating competitive pressure on the winner.
+
+\begin{proposition}[Regime 2: Coordinated Cover Bidding]
+FL firms submit bids $b_j^{FL} = b^* + \eta_j$ where $\eta_j$ is small and positive, calibrated to create an illusion of competition around the winning bid.
+\end{proposition}
+
+Under Regime 2, FL bids cluster near the winning bid, reducing within-FL bid dispersion. The purpose is to make the auction outcome appear competitive, reducing the likelihood of detection by procurement officers.
+
+\subsection{Testable Predictions}
+
+\begin{prediction}[Price Effect]
+FL-present tenders have higher winning prices: $\beta_{\text{losers}} > 0$ in the price regression.
+\end{prediction}
+
+\begin{prediction}[Bidder Inflation]
+FL presence increases the total number of bidders but not necessarily the number of genuine competitors.
+\end{prediction}
+
+\begin{prediction}[Regime Test]
+Under Regime 1, $\text{Var}(b^{FL}) > \text{Var}(b^{\text{non-FL}})$. Under Regime 2, $\text{Var}(b^{FL}) < \text{Var}(b^{\text{non-FL}})$.
+\end{prediction}
+
+\begin{prediction}[Exchangeability Violation]
+FL bid residuals violate exchangeability (Bajari-Ye test), while non-FL bid residuals do not.
+\end{prediction}
+
+\begin{prediction}[Conditional Dependence]
+FL bid residuals within the same tender are positively correlated, while non-FL bid residuals are not.
+\end{prediction}
+
+\begin{prediction}[Causal Effect]
+The entry of FL firms into a market (item$\times$PBU) causes an increase in winning prices, as identified by staggered DiD.
+\end{prediction}
+
+% ==============================================================================
+% Section 4: Data and Frequent Losers Definition
+% ==============================================================================
+\section{Data and Frequent Losers Definition}
+\label{sec:data}
+
+\subsection{BEC Platform}
+
+Our data come from the Bolsa Eletr\^{o}nica de Compras (BEC), the electronic procurement platform of S\~{a}o Paulo State, Brazil. BEC records all competitive procurement processes conducted by state agencies and municipalities through two modalities: \textit{convite} (sealed-bid, minimum 3 bidders) and \textit{preg\~{a}o} (electronic reverse auction). We observe the universe of BEC tenders from January 2009 to December 2019: 4.5 million tender-items and 40 million individual bids.
+
+\subsection{Frequent Losers Definition}
+
+We define frequent losers in two steps:
+
+\begin{enumerate}
+\item \textbf{Always-losers:} Firms with a win rate of exactly zero across all 2009--2019 tenders. This identifies approximately 16,800 firms that never won any tender on BEC.
+
+\item \textbf{IQR threshold:} Among always-losers, we flag those with a number of tender participations exceeding the median plus 1.5 times the interquartile range (IQR) of the always-loser participation distribution. This yields approximately 2,735 FL firms with a threshold of about 14 tender participations.
+\end{enumerate}
+
+The treatment variable is $\text{losers}_{igt} = \mathbf{1}[\text{at least one FL firm participates in tender-item } (i,g,t)]$.
+
+\subsection{Sample Construction}
+
+We restrict the sample to tender-items with (i) convite or preg\~{a}o procedures, (ii) a successful winner, and (iii) item types that have at least one tender with FL participation. This yields approximately 1.67 million observations.
+
+% Table 1: Descriptive statistics
+\input{../output/tables/tab_desc_stats}
+
+% Figures 1-2: Loss distribution and IQR identification
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_01_losses_distribution.pdf}
+\caption{Distribution of Tender Participations among Always-Losers}
+\label{fig:losses_dist}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_02_iqr_identification.pdf}
+\caption{IQR Identification of Frequent Losers}
+\label{fig:iqr_id}
+\end{figure}
+
+% ==============================================================================
+% Section 5: CADE External Validation
+% ==============================================================================
+\section{External Validation: CADE Cartel Convictions}
+\label{sec:cade}
+
+We validate the FL screen against cartel convictions by the Brazilian Competition Authority (CADE) during 2009--2019. We match CADE-convicted firms to BEC participants and examine the overlap between FL firms and CADE cartelists.
+
+\input{../output/tables/tab_cade_validation}
+
+% ==============================================================================
+% Section 6: Main Results
+% ==============================================================================
+\section{Main Results}
+\label{sec:results}
+
+\subsection{Empirical Strategy}
+
+Our main specification follows:
+\begin{equation}
+y_{igt} = \beta \cdot \text{losers}_{igt} + \alpha_g + \lambda_t + \mathbf{x}_{igt}'\boldsymbol{\delta} + \varepsilon_{igt}
+\label{eq:main}
+\end{equation}
+where $y_{igt}$ is the outcome for item $i$ in group $g$ at time $t$, $\alpha_g$ and $\lambda_t$ are item and year fixed effects, and $\mathbf{x}_{igt}$ includes a convite indicator and, in some specifications, PBU fixed effects. Standard errors are clustered at the item level.
+
+\subsection{Price and Competition Effects}
+
+% Tables 2-5
+\input{../output/tables/tab_prices}
+\input{../output/tables/tab_nfirms}
+\input{../output/tables/tab_nbids}
+\input{../output/tables/tab_nfirms_excl}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_03_coef_summary.pdf}
+\caption{Summary of Cover Bidder Coefficients across Specifications}
+\label{fig:coef_summary}
+\end{figure}
+
+\subsection{Bajari-Ye Tests}
+
+\input{../output/tables/tab_bajari_ye}
+
+\subsection{Regime Test}
+
+\input{../output/tables/tab_regime_test}
+
+% ==============================================================================
+% Section 7: Mechanism Tests
+% ==============================================================================
+\section{Mechanism Tests}
+\label{sec:mechanisms}
+
+\input{../output/tables/tab_mechanisms}
+
+% ==============================================================================
+% Section 8: Causal Identification
+% ==============================================================================
+\section{Causal Identification: Staggered Difference-in-Differences}
+\label{sec:did}
+
+We exploit the staggered entry of FL firms into item$\times$PBU markets as a natural experiment. For each market, we define the treatment event as the first year in which an FL firm participates. Markets that never receive FL participation serve as the control group.
+
+\input{../output/tables/tab_did_cs}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_06_event_study.pdf}
+\caption{Event Study: Years Relative to First Cover Bidder Entry}
+\label{fig:event_study}
+\end{figure}
+
+% ==============================================================================
+% Section 9: Robustness and Extensions
+% ==============================================================================
+\section{Robustness and Extensions}
+\label{sec:robustness}
+
+\subsection{Threshold Sensitivity}
+
+\input{../output/tables/tab_threshold_robustness}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_07_threshold_stability.pdf}
+\caption{Coefficient Stability across IQR Multipliers}
+\label{fig:threshold}
+\end{figure}
+
+\subsection{ML Screen Comparison}
+
+\input{../output/tables/tab_ml_comparison}
+
+\subsection{Welfare Analysis}
+
+\input{../output/tables/tab_welfare}
+
+\subsection{Sensitivity Analysis}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_08_sensitivity_contour.pdf}
+\caption{Sensemakr Sensitivity Analysis: Omitted Variable Bias}
+\label{fig:sensitivity}
+\end{figure}
+
+\subsection{RDD Infeasibility}
+
+We investigate the feasibility of a regression discontinuity design at Art.~24 procurement thresholds. BEC only records competitive procurement above the minimum thresholds, so there is no variation below the cutoff. This institutional feature renders RDD infeasible in our setting.
+
+% ==============================================================================
+% Section 10: Conclusion
+% ==============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper proposes frequent losers---firms that systematically participate in and lose public procurement tenders---as a novel screening marker for cover bidding in cartel arrangements. Using comprehensive data from Brazil's BEC platform (2009--2019), we establish that FL presence is associated with significantly higher winning prices, inflated bidder counts, and reduced genuine competition. We provide causal evidence using staggered difference-in-differences and confirm bid coordination through Bajari-Ye tests.
+
+Our findings have practical implications for competition policy. The FL screen is operationally simple: it requires only firm-level participation and outcome data, not detailed bid values. It can be implemented as a first-stage filter to prioritize investigations, with bid-level screens applied as a second stage to flagged tenders.
+
+Several extensions merit future research. First, the FL screen could be validated in other procurement platforms and countries. Second, the two-regime framework could be tested in settings with richer bid-level data. Third, the interaction between FL screening and leniency programs deserves theoretical and empirical investigation.
+
+% ==============================================================================
+\newpage
+\printbibliography
+
+\end{document}

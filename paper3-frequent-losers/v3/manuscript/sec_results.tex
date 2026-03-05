@@ -1,0 +1,75 @@
+% ==============================================================================
+% Section 6: Main Results
+% ==============================================================================
+\section{Main Results}
+\label{sec:results}
+
+\subsection{Empirical Strategy}
+
+Our main specification follows:
+\begin{equation}
+y_{igt} = \beta \cdot \text{losers}_{igt} + \alpha_g + \lambda_t + \mathbf{x}_{igt}'\boldsymbol{\delta} + \varepsilon_{igt}
+\label{eq:main}
+\end{equation}
+where $y_{igt}$ is the outcome for item $i$ in group $g$ at time $t$, $\alpha_g$ and $\lambda_t$ are item and year fixed effects, and $\mathbf{x}_{igt}$ includes a convite indicator and, in some specifications, PBU fixed effects. Standard errors are clustered at the item level. The item fixed effects absorb all time-invariant heterogeneity across product categories---including inherent price levels, market structure, and technological characteristics. Year fixed effects absorb common macroeconomic shocks. PBU fixed effects, included in the second specification, additionally control for time-invariant purchasing body characteristics (e.g., geographic location, institutional capacity, procurement volume).
+
+We estimate four specifications for each dependent variable: (1) general (item + year FE), (2) general with PBU FE, (3) preg\~{a}o only, and (4) convite only. The preg\~{a}o/convite split tests whether the FL-price association differs across auction formats with different information structures. The coefficient of interest is $\beta$, interpreted as the average log-point difference in the outcome between FL-present and FL-absent tenders for the same item in the same year (and, in specification 2, at the same purchasing body).
+
+\subsection{Price and Competition Effects}
+
+Table~\ref{tab:prices} reports price regressions. The FL coefficient is positive and significant across all specifications: 6.8\% (general), 6.4\% (with PBU FE), 9.3\% (preg\~{a}o only), and 3.8\% (convite only). These magnitudes are economically meaningful: the 6.4\% estimate from the preferred specification (with PBU FE) implies that, within the same item category and purchasing body, tenders with at least one FL participant have winning prices that are 6.4 log points higher than tenders without FL participants. For context, this is below the median cartel overcharge documented by \citet{connor2007price} (approximately 20--25\%) but consistent with cover bidding being a less extreme form of bid manipulation than full-cartel price coordination.
+
+The larger effect in preg\~{a}o tenders (9.3\%) compared with convite (3.8\%) is consistent with the mechanics of cover bidding across auction formats. In preg\~{a}o (electronic reverse auctions), bids are publicly visible in real time, allowing cover bidders to observe the designated winner's bid and calibrate their own bids to remain above it---ensuring they lose while maintaining the appearance of competition. In sealed-bid convites, bidders cannot observe competing bids before submission, making coordination more constrained and the price effect correspondingly smaller.
+
+Table~\ref{tab:nfirms_excl} reveals a pattern consistent with Prediction~\ref{pred:selection}: FL-present tenders have more \textit{genuine} competitors (excluding FL firms). The coefficient on log genuine competitors is 0.24 (general) and 0.14 (with PBU FE). This does not mean that FL presence \textit{causes} more genuine entry. Rather, it is consistent with strategic selection: cartels deploy cover bidders in tenders where legitimate competition is already higher, precisely because more covers are needed to maintain the designated winner's advantage. We report results for total participants and total bids---which are partly mechanical since FL firms inflate these counts---in Appendix~\ref{app:competition} (Tables~\ref{tab:nfirms}--\ref{tab:nbids}).
+
+Figure~\ref{fig:coef_summary} summarizes the coefficients across all four dependent variables and four specifications. The price effect is consistently positive. The genuine competitor effect is consistently positive. The visual pattern confirms that the results are qualitatively robust across specifications.
+
+% Main body tables
+\input{../output/tables/tab_prices}
+\input{../output/tables/tab_nfirms_excl}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_03_coef_summary.pdf}
+\caption{Summary of Cover Bidder Coefficients across Specifications. Each panel shows the FL coefficient ($\beta$) and 95\% confidence interval for one dependent variable across four specifications: (1) General, (2) General + PBU FE, (3) Preg\~{a}o only, (4) Convite only.}
+\label{fig:coef_summary}
+\end{figure}
+
+\subsection{Bajari-Ye Tests}
+
+We apply the \citet{bajari2003deciding} framework to test whether FL bids exhibit patterns consistent with coordination. The framework rests on two implications of competitive bidding: (i) exchangeability---all bidders' costs (and hence bids) are drawn from the same distribution conditional on observable cost drivers; and (ii) conditional independence---bid residuals within the same auction are uncorrelated after conditioning on observables. Violation of either condition is consistent with collusion.
+
+The first stage regresses log bid prices on firm size fixed effects, item fixed effects, and year fixed effects ($R^2 = 0.77$, $N = 27.9$ million losing bids) and extracts residuals. We then apply the two tests separately to FL and non-FL bid residuals.
+
+\textbf{Test A (Exchangeability).} A Kolmogorov-Smirnov test rejects the null that FL and non-FL bid residuals are drawn from the same distribution (KS = 0.15, $p < 0.001$). FL bid residuals are systematically different from non-FL residuals, violating the exchangeability condition that \citet{bajari2003deciding} associate with competitive bidding. The direction of the difference is informative: FL bid residuals are shifted upward relative to non-FL residuals, meaning FL bids are systematically higher than what their observable characteristics would predict---consistent with deliberately non-competitive bidding.
+
+\textbf{Test B (Conditional Independence).} Among 29,636 tenders with two or more FL losing bids, the mean pairwise product of FL bid residuals is 5.16 (SE = 0.033, $t = 157.4$), strongly rejecting conditional independence. FL bids within the same tender are positively correlated after controlling for observable cost factors. The positive correlation means that when one FL firm bids high (relative to predicted), other FL firms in the same tender also bid high---consistent with common direction from the cartel leadership regarding the bid level.
+
+\textbf{Placebo.} The same test applied to non-FL pairs yields a mean pairwise product of 2.21 ($t = 71.5$), which is also statistically significant. This is expected: common cost shocks (e.g., commodity prices, regulatory changes) introduce baseline correlation among \textit{all} bidders within a tender. The key finding is that FL bid correlation (5.16) is 2.3 times stronger than the non-FL baseline (2.21), consistent with an additional coordination component specific to FL firms that goes beyond common cost exposure.
+
+\input{../output/tables/tab_bajari_ye}
+
+\subsection{Regime Test}
+
+We test Prediction~\ref{pred:regime} by comparing bid price dispersion (IQR/median) between FL and non-FL participants within the same tender. Table~\ref{tab:regime_test} reports regressions of log bid dispersion on the cover bidder indicator, controlling for item and year fixed effects.
+
+FL bid dispersion is significantly higher than non-FL dispersion, consistent with Regime~1 (complementary cover bidding). This means FL firms submit bids that are independently drawn above the reference price, creating high and dispersed bids rather than coordinated bids near the winning price. Figure~\ref{fig:cover_spread} illustrates this directly: the distribution of FL bid spreads relative to the winning price is wide, right-skewed, and centered well above zero, with 91\% of FL bids exceeding the winning price and a median spread of 55\%.
+
+This finding is the less sophisticated form of cover bidding, consistent with the institutional setting: BEC serves many small purchasing bodies where procurement oversight is limited, reducing the need for more elaborate coordination. In a setting with stronger oversight---for example, large federal contracts subject to audit court scrutiny---we might expect Regime 2 (coordinated bids near the winning price) to be more common, as cartels would need to disguise their manipulation more carefully.
+
+\input{../output/tables/tab_regime_test}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_04_cover_bid_spread.pdf}
+\caption{Distribution of Cover Bid Spread: (FL Bid $-$ Winning Bid) / Winning Bid. The distribution shows that 91\% of FL bids exceed the winning price, with a median spread of 55\%. This pattern is consistent with Regime 1 (complementary cover bidding), where FL firms submit bids independently drawn above the reference price.}
+\label{fig:cover_spread}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_05_regime_boxplot.pdf}
+\caption{Bid Dispersion: FL vs. Non-FL Participants. FL bid dispersion (IQR/median) is significantly higher than non-FL dispersion within the same tenders, rejecting Regime 2 in favor of Regime 1.}
+\label{fig:regime_box}
+\end{figure}

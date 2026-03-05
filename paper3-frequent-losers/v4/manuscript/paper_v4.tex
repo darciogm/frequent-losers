@@ -1,0 +1,92 @@
+\documentclass[12pt,authoryear]{elsarticle}
+
+% ---- Packages ----------------------------------------------------------------
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage[left=28mm,right=30mm,top=28mm,bottom=28mm]{geometry}
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{url,xurl}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\pdfstringdefDisableCommands{%
+  \def\corref#1{}%
+  \def\fnref#1{}%
+  \def\cortext#1{}%
+  \def\ead#1{}%
+}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{wasysym}
+\usepackage{lscape}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{natbib}
+
+% ---- Custom macros -----------------------------------------------------------
+\newcommand{\cites}[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+% Fix elsarticle page style
+\makeatletter
+\def\ps@pprintTitle{%
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \def\@oddfoot{\centerline{\thepage}}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+
+\renewcommand\theaffn{\arabic{affn}}
+
+% Theorem-like environments
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}[definition]{Hypothesis}
+\newtheorem{prediction}[definition]{Prediction}
+
+% ---- Formatting --------------------------------------------------------------
+\linespread{1.3}
+\doublespacing
+\biboptions{authoryear}
+\setcounter{MaxMatrixCols}{10}
+\setlength{\bibsep}{0pt plus 0.3ex}
+\interfootnotelinepenalty=50000
+\renewcommand{\arraystretch}{1.3}
+
+% ---- Hyphenation -------------------------------------------------------------
+\hyphenation{eco-no-me-tric re-gres-sion dif-fer-ence-in-dif-fer-ences
+  en-do-ge-nei-ty het-e-ro-sce-das-tic-i-ty pro-cure-ment}
+
+% ---- Graphics path -----------------------------------------------------------
+\graphicspath{{../output/figures/}{./images/}}
+
+% ==============================================================================
+\begin{document}
+% ==============================================================================
+
+\input{sec_frontmatter}
+
+\input{sec_introduction}
+\input{sec_literature}
+\input{sec_conceptual}
+\input{sec_data}
+\input{sec_cade}
+\input{sec_empirical_strategy}
+\input{sec_results}
+\input{sec_mechanisms}
+\input{sec_robustness}
+\input{sec_conclusion}
+
+\bibliographystyle{chicago}
+\bibliography{references}
+
+\appendix
+\input{sec_appendix}
+
+\end{document}

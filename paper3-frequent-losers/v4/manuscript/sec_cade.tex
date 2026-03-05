@@ -1,0 +1,75 @@
+\section{External Validation: CADE Cartel Convictions}
+\label{sec:cade}
+
+Before presenting the main empirical strategy and results, we validate
+the FL screen against an external benchmark: firms convicted of
+bid-rigging by CADE (Conselho Administrativo de Defesa Econ\^omica),
+Brazil's competition authority. If FL firms are disproportionately
+associated with known cartel participants, this establishes the screen's
+credibility as a detection tool (H1) regardless of the causal mechanism.
+
+\subsection{CADE--BEC Cross-Match}
+
+We match CADE cartel conviction records (2009--2019) to BEC firm
+identifiers using CNPJ (the Brazilian federal tax identifier). Of 65
+CADE cartel cases involving procurement, 47 convicted firms are matched % CO-AUTHOR EDIT: was 49, corrected to match tab_cade_permutation
+to BEC, collectively participating in approximately 12,500 tender-items. % CO-AUTHOR EDIT: rounded from 12,514 in tab_excl_cade
+
+\subsection{FL--CADE Co-Participation}
+
+We define ``co-participation'' as an FL firm and a CADE-convicted firm
+both submitting bids in the same tender-item. Among 2,735 FL firms, 193
+(7.1\%) co-participate with at least one CADE-convicted firm. Among
+38,709 non-FL firms, the unconditional co-participation rate is 5.9\%
+($\chi^2 = 5.7$, $p = 0.017$, odds ratio $= 1.21$).
+
+Table~\ref{tab:cade_permutation} reports the full contingency table with
+chi-squared test, odds ratio, and a permutation-based $p$-value.
+
+\input{../output/tables/tab_cade_permutation}
+
+\paragraph{Permutation test.}
+To assess whether the 7.1\% co-participation rate could arise by chance,
+we conduct 1,000 permutations: in each iteration, we randomly select
+2,735 firms from the pool of always-losers, matching the participation
+count distribution of FL firms via stratified resampling by
+participation quartile. We compute the co-participation rate with
+CADE-convicted firms for each random draw. The observed 7.1\% exceeds
+all 1,000 permutation draws ($p < 0.001$), confirming that FL--CADE
+overlap is not driven by high participation counts alone.
+
+\paragraph{Permutation-adjusted comparison.}
+The unconditional odds ratio of 1.21 understates the FL--CADE
+association because FL firms participate in many more tenders than
+typical firms, mechanically increasing their co-participation
+opportunity. The permutation test controls for this by drawing 2,735
+random firms from the always-loser pool, \emph{stratified by
+participation quartile}, and computing their co-participation rate. The
+permutation mean is 2.0\% (SD~=~0.3\%), implying that the observed
+7.1\% FL rate is 3.5 times higher than expected after controlling for
+participation intensity ($p < 0.001$).
+
+\paragraph{Addressing the 92.9\% non-overlap.}
+That 92.9\% of FL firms have no CADE overlap should not be interpreted
+as evidence against the FL screen. CADE prosecutes only a small fraction
+of actual cartels---estimates suggest 1--5\% of cartel activity
+results in prosecution \citep{connor2007price}. The relevant comparison
+is the \emph{participation-adjusted} rate: FL firms are 3.5 times more
+likely than comparable always-losers to co-participate with known
+cartelists, against a very low base rate of detection. If CADE captures
+only $\sim$2\% of actual cartels, the observed 7.1\% FL overlap is
+consistent with a much larger fraction of FL firms being involved in
+undetected collusion.
+
+\subsection{Regressions Excluding CADE Markets}
+
+A concern is that the FL--price association in Section~\ref{sec:results}
+might be driven entirely by the known cartel cases. To address this, we
+drop all 31,447 tender-items involving any CADE-convicted firm and % CO-AUTHOR EDIT: corrected from 31,453 to match N difference
+re-estimate the baseline price regression on the remaining 1,622,954 % CO-AUTHOR EDIT: corrected from 1,622,994 to match tab_excl_cade
+observations. Table~\ref{tab:excl_cade} shows that the FL coefficient
+(0.062) remains significant and virtually identical to the full-sample
+estimate (0.064), demonstrating that FL detects price anomalies
+\emph{beyond} known cartels.
+
+\input{../output/tables/tab_excl_cade}

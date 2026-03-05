@@ -1,0 +1,176 @@
+% ==============================================================================
+% Appendix
+% ==============================================================================
+
+% ------------------------------------------------------------------------------
+% Appendix A: Additional Competition Outcomes
+% ------------------------------------------------------------------------------
+\section{Additional Competition Outcomes}
+\label{app:competition}
+
+This appendix reports regression results for two additional dependent variables---total number of participating firms and total number of bids---that complement the genuine competitor results in the main text (Table~\ref{tab:nfirms_excl}). These outcomes include FL firms in the count and are therefore partly mechanical: since the treatment is defined by FL presence, the positive coefficient on total firms reflects the direct contribution of FL bidders to headcount. We include them for completeness and to document the magnitude of the mechanical inflation, which provides a useful benchmark for the genuine competitor results that exclude FL firms from the count.
+
+Table~\ref{tab:nfirms} reports regressions of log total firms on the FL indicator. The coefficient is 0.43 in the general specification, indicating that FL-present tenders have 43\% more total participants. This is substantially larger than the genuine competitor coefficient (0.24), confirming that a large portion of the total-firms effect is mechanical. Table~\ref{tab:nbids} reports regressions of log total bids, which show a similar pattern: FL-present tenders have 35\% more bids in the general specification. The gap between total bids and total firms suggests that FL firms submit slightly fewer bids per firm than genuine competitors on average, consistent with cover bidders submitting a single token bid rather than actively competing through multiple rounds.
+
+\input{../output/tables/tab_nfirms}
+\input{../output/tables/tab_nbids}
+
+% ------------------------------------------------------------------------------
+% Appendix B: Robustness Checks
+% ------------------------------------------------------------------------------
+\section{Robustness Checks}
+\label{app:robustness}
+
+\subsection{Threshold Sensitivity}
+
+We vary the IQR multiplier used to define FL firms from 1.0 to 3.0 in increments of 0.25. Table~\ref{tab:threshold_robustness} reports the FL price coefficient, standard error, number of FL firms, and sample size for each threshold. As the multiplier increases, fewer firms are classified as FL (ranging from approximately 5,200 at multiplier 1.0 to 890 at multiplier 3.0), but the price coefficient increases monotonically---from 0.048 to 0.112---and remains statistically significant at the 1\% level throughout. Figure~\ref{fig:threshold} plots these coefficients with 95\% confidence intervals. The monotonic increase is consistent with more extreme always-losers (those with the highest participation counts) being more strongly associated with cover bidding behavior. Importantly, our baseline threshold of 1.5 lies in the middle of this range, producing neither the smallest nor the largest estimated effect.
+
+\input{../output/tables/tab_threshold_robustness}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_07_threshold_stability.pdf}
+\caption{Coefficient Stability across IQR Multipliers. Each point represents the FL price coefficient from the baseline specification using a different IQR multiplier to define the FL threshold. Whiskers show 95\% confidence intervals. The baseline multiplier (1.5) is marked.}
+\label{fig:threshold}
+\end{figure}
+
+\subsection{Matching Estimators}
+
+To address concerns that selection on observables drives the FL-price association, we implement two matching strategies. Coarsened exact matching (CEM) creates matched strata of FL-present and FL-absent tenders within item$\times$year$\times$procedure-type cells, ensuring exact balance on these covariates. The matched sample retains 970,000 observations and yields a price coefficient of 0.077 (SE = 0.024). Inverse probability weighting (IPW) uses propensity scores from a logit model of FL presence on item, year, PBU, and procedure type indicators to reweight the sample, yielding a coefficient of 0.055 (SE = 0.018) on 830,000 observations. A third panel reports the OLS benchmark (0.064) for comparison. All three estimates are of similar magnitude and statistically significant, indicating that the FL-price association is not an artifact of observable differences between FL-present and FL-absent tenders.
+
+\input{../../output/tables/tab_matching}
+
+\subsection{Continuous Treatment}
+
+The main specification uses a binary treatment indicator (FL present/absent). Here we test whether the \textit{intensity} of FL presence matters by replacing the binary indicator with (i) the count of FL firms in the tender and (ii) the share of FL firms among all bidders. Table~\ref{tab:continuous_treatment} reports results. Both continuous measures are positive and significant. The count specification implies that each additional FL firm in a tender is associated with a 1.2\% increase in the winning price. The share specification implies that a 10 percentage point increase in the FL share is associated with a 1.8\% price increase. The dose-response pattern is consistent with the cover bidding hypothesis: more cover bidders in a tender reflect more intensive cartel activity, which is associated with proportionally higher price distortion.
+
+\input{../../output/tables/tab_continuous_treatment}
+
+\subsection{Alternative Clustering}
+
+Our baseline specification clusters standard errors at the item level to account for within-item correlation in the error term. Table~\ref{tab:clustering_robustness} reports the FL price coefficient under four alternative clustering choices: item level (baseline), PBU level, item$\times$year level, and two-way clustering at item and year levels. The coefficient is identical across all panels (clustering affects only standard errors, not point estimates), and the statistical significance at the 5\% level is maintained throughout. Standard errors range from 0.015 (item clustering) to 0.024 (two-way clustering), confirming that the main result is robust to the choice of clustering dimension.
+
+\input{../../output/tables/tab_clustering_robustness}
+
+\subsection{Covariate Balance}
+
+Table~\ref{tab:balance} reports standardized mean differences between FL-present and FL-absent tenders before and after CEM matching. Before matching, FL-present tenders differ substantially from FL-absent tenders in item composition, year distribution, and procedure type (all standardized differences exceed 0.10). After matching, all standardized differences fall below 0.05, well within the 0.25 threshold recommended by \citet{imbens2015causal} for adequate balance. This confirms that the CEM procedure successfully eliminates observable differences between the treatment and control groups.
+
+\input{../../output/tables/tab_balance}
+
+\subsection{Sensitivity Analysis}
+
+Figure~\ref{fig:sensitivity} presents the \citet{cinelli2020making} sensitivity contour plot for the FL price coefficient. The plot shows combinations of confounder strength (partial $R^2$ with treatment and outcome) that would reduce the coefficient to zero. The robustness value (RV) of 17.5\% means a confounder would need to explain at least 17.5\% of the residual variation in both the FL indicator and log prices---after conditioning on item, year, and PBU fixed effects---to eliminate the estimated effect. Given that the fixed effects already absorb 68\% of the variation in log prices, a confounder of this strength would need to be comparable in explanatory power to the entire set of item fixed effects, which seems implausible for an unobserved variable.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_08_sensitivity_contour.pdf}
+\caption{Sensemakr Sensitivity Analysis: Omitted Variable Bias. The contour plot shows combinations of confounder partial $R^2$ with the treatment (horizontal axis) and outcome (vertical axis) that would reduce the FL coefficient to zero. The red diamond marks the robustness value (RV = 17.5\%).}
+\label{fig:sensitivity}
+\end{figure}
+
+% ------------------------------------------------------------------------------
+% Appendix C: Staggered Difference-in-Differences
+% ------------------------------------------------------------------------------
+\section{Staggered Difference-in-Differences}
+\label{app:did}
+
+We exploit the staggered entry of FL firms into item$\times$PBU markets to estimate a difference-in-differences specification. For each market, the treatment event is defined as the first year in which an FL firm participates. Markets that never receive FL participation over the 2009--2019 period serve as the never-treated control group. We implement the \citet{sun2021estimating} interaction-weighted estimator (which addresses heterogeneous treatment effects across cohorts) and the Callaway \& Sant'Anna (2021) doubly-robust estimator (which combines outcome regression with inverse probability weighting for robustness to model misspecification).
+
+Table~\ref{tab:did_cs} reports the overall ATT estimates. The ATT for log price is $-0.014$ (SE = 0.051), which is not statistically significant. The ATT for log genuine competitors is also insignificant. These null results reflect the limitations of the staggered DiD design in our setting rather than the absence of an FL-price association: the market-level panel is sparse (the median market is observed in only 4 of 11 years), treatment timing is concentrated in 2010--2012 (reducing post-treatment variation), and the never-treated markets may differ systematically from treated markets in unobservable ways.
+
+Figures~\ref{fig:event_study}--\ref{fig:cs_event_study_nfirms_excl} present event study plots. The TWFE event study (Figure~\ref{fig:event_study}) shows pre-trend coefficients that are not uniformly close to zero, with average absolute pre-trend magnitudes of 0.075 for prices and 0.065 for genuine competitors. The Callaway \& Sant'Anna event studies (Figures~\ref{fig:cs_event_study_price}--\ref{fig:cs_event_study_nfirms_excl}) show a similar pattern. These pre-trend violations raise concerns about the parallel trends assumption, and we therefore do not rely on the DiD results for the paper's main conclusions.
+
+\input{../output/tables/tab_did_cs}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_06_event_study.pdf}
+\caption{TWFE Event Study: Years Relative to First Cover Bidder Entry. Pre-trend coefficients are not uniformly close to zero, raising concerns about the parallel trends assumption.}
+\label{fig:event_study}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_06_cs_event_study_price.pdf}
+\caption{Callaway \& Sant'Anna Event Study: Log Winning Price. The doubly-robust estimator yields qualitatively similar pre-trend violations as the TWFE specification.}
+\label{fig:cs_event_study_price}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_06_cs_event_study_nfirms_excl.pdf}
+\caption{Callaway \& Sant'Anna Event Study: Log Genuine Competitors. Pre-trend coefficients for the competition outcome also show non-trivial magnitudes in pre-treatment periods.}
+\label{fig:cs_event_study_nfirms_excl}
+\end{figure}
+
+% ------------------------------------------------------------------------------
+% Appendix D: Extensions
+% ------------------------------------------------------------------------------
+\section{Extensions}
+\label{app:extensions}
+
+\subsection{ML Screen Comparison}
+
+We compare the FL screen against standard \citet{imhof2019detecting} bid-level screens using three machine learning classifiers: Random Forest, Gradient Boosting, and Logistic Lasso. Using FL presence as the outcome, we train each model on Imhof's six bid-distribution features (coefficient of variation, kurtosis, skewness, spread, relative spread, number of bidders) using 10-fold cross-validation. Table~\ref{tab:ml_comparison} reports the results. The Imhof-only feature set achieves AUC-ROC of 0.77 (Random Forest), 0.77 (Gradient Boosting), and 0.73 (Logistic Lasso). This moderately high predictive performance indicates that FL-present tenders exhibit the kind of bid-distribution anomalies that bid-level screens are designed to detect---validating the FL screen against an independent methodological tradition. Conversely, the AUC below 0.80 indicates that the FL screen captures information beyond what bid-level features alone provide, justifying its use as a complementary tool.
+
+\begin{table}[htbp]
+\centering
+\caption{ML Screen Comparison: AUC-ROC for Predicting FL Presence}
+\label{tab:ml_comparison}
+\input{../output/tables/tab_ml_comparison}
+\end{table}
+
+\subsection{Welfare Analysis}
+
+Using the preferred specification (general with PBU FE, $\hat{\beta} = 0.064$), the implied FL-associated markup is approximately $e^{0.064} - 1 = 6.6\%$ (95\% CI: 2.2\%--11.2\%). We compute aggregate welfare losses by applying this markup to the sum of winning prices in FL-present tenders over the sample period. Table~\ref{tab:welfare} presents the calculations. The total winning value of FL-present tenders is R\$11.2 billion (2009--2019). Applying the point estimate yields a total welfare loss of R\$734 million (95\% CI: R\$243 million--R\$1,246 million), or approximately US\$147 million at average exchange rates. Figure~\ref{fig:welfare} plots the year-by-year welfare estimates. This represents approximately 0.4\% of S\~{a}o Paulo State's annual procurement expenditure. The estimate is conservative in that it attributes the full price effect to cover bidding and does not account for potential welfare losses from reduced innovation or dynamic inefficiency in cartel-affected markets.
+
+\input{../output/tables/tab_welfare}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_09_welfare_markup.pdf}
+\caption{Welfare Markup Estimates. Year-by-year estimates of the FL-associated welfare loss, computed by applying the specification-2 coefficient to aggregate winning prices in FL-present tenders.}
+\label{fig:welfare}
+\end{figure}
+
+\subsection{Additional Dependent Variables}
+
+Table~\ref{tab:additional_dvs} examines three additional dependent variables that provide further evidence on the cover bidding mechanism. Panel A reports regressions of bid dispersion (IQR/median of all bids in the tender) on the FL indicator: FL-present tenders exhibit 18\% higher overall bid dispersion, consistent with cover bids introducing noise into the bid distribution. Panel B reports the winning-to-reference price ratio: FL-present tenders have a ratio 4.1 percentage points closer to 1.0, consistent with the designated winner calibrating bids to appear reasonable relative to the reference price. Panel C reports procedure duration (days from tender announcement to award): FL-present tenders take 2.3\% longer to complete, possibly reflecting the additional coordination costs of managing cover bidders in the auction process.
+
+\input{../../output/tables/tab_additional_dvs}
+
+\subsection{Year-by-Year Coefficients}
+
+Figure~\ref{fig:year_coefs} reports year-by-year estimates of the FL price coefficient from separate cross-sectional regressions for each year (2009--2019). The coefficient is positive in all 11 years, ranging from 0.03 (2014) to 0.12 (2011), with no obvious time trend. This stability suggests that the FL-price association is a persistent structural feature of BEC procurement rather than being driven by a particular macroeconomic episode or regulatory change during the sample period.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_10_year_coefficients.pdf}
+\caption{Year-by-Year FL Price Coefficients. Each point represents the FL coefficient from a separate cross-sectional regression for that year. The dashed horizontal line marks the pooled estimate (0.064). The shaded band shows the 95\% confidence interval of the pooled estimate.}
+\label{fig:year_coefs}
+\end{figure}
+
+% ------------------------------------------------------------------------------
+% Appendix E: Heterogeneity and FL Characteristics
+% ------------------------------------------------------------------------------
+\section{Heterogeneity and FL Characteristics}
+\label{app:heterogeneity}
+
+\subsection{Heterogeneity by PBU Size and Tender Value}
+
+We examine whether the FL-price association varies with the size of the purchasing body and the value of the procurement. Table~\ref{tab:heterogeneity} reports interaction models. The FL coefficient is larger for tenders at PBUs in the top quartile of annual procurement volume (0.089) compared with bottom-quartile PBUs (0.042), and the difference is statistically significant at the 5\% level. This pattern is consistent with cover bidders targeting higher-value procurement environments where the rents from collusion are larger and the cartel's organizational costs can be amortized over more transactions. The interaction with tender value (log reference price) is positive but marginally significant, suggesting that the FL-price association does not depend strongly on the value of the individual tender within a given PBU.
+
+\input{../../output/tables/tab_heterogeneity}
+
+\subsection{Heterogeneity by Item Group}
+
+Table~\ref{tab:heterogeneity_itemgroup} reports the FL price coefficient separately for major item groups on the BEC platform. The association is strongest in product categories with multiple potential suppliers and standardized goods---office supplies (0.092), medical and laboratory materials (0.081), and cleaning products (0.078)---where cover bidding is operationally simple because many firms are registered to supply these items. The association is weaker or insignificant for specialized categories (IT equipment, vehicles) where the pool of potential bidders is smaller and cover bidders would be more conspicuous. This heterogeneity pattern is consistent with the cover bidding hypothesis: cartels find it easier to recruit and deploy cover bidders in markets where firm entry and exit are common and small firms are abundant.
+
+\input{../../output/tables/tab_heterogeneity_itemgroup}
+
+\subsection{FL Firm Characteristics}
+
+Table~\ref{tab:fl_characteristics} characterizes FL firms along observable dimensions. FL firms are overwhelmingly micro-enterprises: 83\% have fewer than 10 employees (compared with 62\% of non-FL firms). They are younger than the median non-FL firm (median age: 7 years vs. 12 years). Their CNAE (economic activity classification) codes are concentrated in retail trade (47\%), wholesale trade (23\%), and other services (14\%)---sectors with low barriers to entry and minimal fixed capital requirements. Geographically, FL firms are concentrated in S\~{a}o Paulo's metropolitan area (68\%), consistent with proximity to the state capital where many PBUs are located. This demographic profile---small, young, trade-oriented firms located near procurement centers---is consistent with the hypothesis that FL firms are shell companies or marginal enterprises that serve as vehicles for cover bidding rather than genuine competitors with operational capacity to fulfill procurement contracts.
+
+\input{../../output/tables/tab_fl_characteristics}

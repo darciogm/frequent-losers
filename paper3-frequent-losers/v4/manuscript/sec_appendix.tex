@@ -1,0 +1,220 @@
+% ============================================================================
+% Appendix
+% ============================================================================
+
+\section{Additional Competition Outcomes}
+\label{app:competition}
+
+Tables~\ref{tab:nfirms} and~\ref{tab:nbids} report the full regression
+results for $\log$ number of firms and $\log$ number of bids. FL-present
+tenders have mechanically more total participants (by construction,
+since FL firms are counted among participants) and approximately 35\%
+more total bids. The economically meaningful comparison is the number of
+\emph{genuine} (non-FL) firms, reported in Table~\ref{tab:nfirms_excl}
+in the main text.
+
+\input{../output/tables/tab_nfirms}
+
+\input{../output/tables/tab_nbids}
+
+% ============================================================================
+\section{Robustness Checks}
+\label{app:robustness}
+
+\subsection{Threshold Sensitivity}
+
+\begin{table}[htbp]
+\centering
+\caption{Price Coefficient Across IQR Multiplier Thresholds}
+\label{tab:threshold}
+\input{../output/tables/tab_threshold_robustness}
+\end{table}
+
+\subsection{FL Definition Variants}
+
+\input{../output/tables/tab_fl_lowwinrate}
+
+\input{../output/tables/tab_fl_crossfit}
+
+\input{../output/tables/tab_fl_temporal}
+
+\subsection{Unrestricted Sample}
+
+\input{../output/tables/tab_unrestricted_sample}
+
+\subsection{Homogeneous Sub-Samples}
+
+\input{../output/tables/tab_homogeneous_cv}
+
+\subsection{Tighter Controls}
+
+\input{../output/tables/tab_tighter_controls}
+
+\subsection{Matching Estimators}
+
+\begin{table}[htbp]
+\centering
+\caption{Matching Estimators: CEM and IPW}
+\label{tab:matching}
+\input{../output/tables/tab_matching}
+\end{table}
+
+\subsection{Alternative Clustering}
+
+\begin{table}[htbp]
+\centering
+\caption{Alternative Clustering of Standard Errors}
+\label{tab:clustering}
+\input{../output/tables/tab_clustering_robustness}
+\end{table}
+
+\subsection{Sensitivity Analysis}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_08_sensitivity_contour.pdf}
+\caption{Sensitivity contour plot (\citealt{cinelli2020making}).
+The point estimate and confidence interval are robust to confounders
+explaining up to $RV_{q=1}$\% of residual variation.}
+\label{fig:sensitivity}
+\end{figure}
+
+\subsection{IV Balance Tests}
+
+\input{../output/tables/tab_iv_balance}
+
+\subsection{Placebo IV}
+
+\input{../output/tables/tab_iv_placebo}
+
+\subsection{Network-Split IV}
+
+\begin{table}[htbp]
+\centering
+\input{../output/tables/tab_iv_network_split}
+\end{table}
+
+\subsection{Oversight Heterogeneity}
+
+\input{../output/tables/tab_regime_oversight}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_14_oversight_heterogeneity.pdf}
+\caption{FL price coefficient by oversight proxy (PBU size quartile
+and procedure type).}
+\label{fig:oversight}
+\end{figure}
+
+\subsection{Bajari--Ye First Stage and Placebo}
+
+\input{../output/tables/tab_bajari_ye_firststage}
+
+\input{../output/tables/tab_bajari_ye_placebo}
+
+\subsection{Bajari--Ye Tender Fixed Effects}
+
+\input{../output/tables/tab_bajari_ye_tender_fe}
+
+\subsection{Network Interactions}
+
+\input{../output/tables/tab_network_interactions}
+
+% Bootstrap histogram omitted; the 95\% CI for the FL vs.\ non-FL
+% pairwise product difference is $[2.57, 5.21]$ (1,000 iterations),
+% reported in Table~\ref{tab:bajari_ye}.
+
+% ============================================================================
+\section{Staggered Difference-in-Differences}
+\label{app:did}
+
+We construct a market-level panel (item $\times$ PBU $\times$ year)
+where treatment is first FL entry. The sample is restricted to markets
+with at least three pre- and three post-treatment observations.
+
+\input{../output/tables/tab_did_revised}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_06_event_study.pdf}
+\caption{TWFE event study: coefficients on years relative to first FL
+entry, by outcome variable.}
+\label{fig:event_study}
+\end{figure}
+
+% HonestDiD figure omitted due to numerical issues in the variance
+% matrix. Rambachan \& Roth bounds are reported in Table~\ref{tab:did_revised}.
+
+% ============================================================================
+\section{Extensions}
+\label{app:extensions}
+
+\subsection{Welfare Analysis}
+
+\input{../output/tables/tab_welfare_bounds}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_09_welfare_markup.pdf}
+\caption{Implied markup from cover bidding: OLS (lower bound) and IV
+(upper bound). OECD benchmark range for cartel overcharges shown as
+dashed lines.}
+\label{fig:welfare}
+\end{figure}
+
+\subsection{Year-by-Year Coefficients}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_10_year_coefficients.pdf}
+\caption{Year-by-year FL coefficients. The coefficient is stable across
+years for log prices and log firms.}
+\label{fig:year_coefs}
+\end{figure}
+
+\subsection{Regime Test}
+
+\input{../output/tables/tab_regime_test}
+
+% fig_04_cover_bid_spread.pdf requires fl_cover_bid_spread.parquet
+% which is not generated in the current pipeline. The regime boxplot
+% (fig_05_regime_boxplot.pdf) provides equivalent information.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_network_hhi.pdf}
+\caption{Distribution of winner HHI across FL firms. Higher HHI
+indicates that the FL firm consistently loses to the same winners.}
+\label{fig:network_hhi}
+\end{figure}
+
+\subsection{FL Definition Robustness}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_12_fl_definition_robustness.pdf}
+\caption{FL price coefficient under alternative FL definitions:
+baseline (win rate = 0), low-win-rate variants, and cross-fitting.}
+\label{fig:fl_robustness}
+\end{figure}
+
+\subsection{CADE Permutation}
+
+% Permutation histogram omitted; results are fully reported in
+% Table~\ref{tab:cade_permutation} (observed 7.1\% vs.\ permutation
+% mean 2.0\%, $p < 0.001$).
+
+% ============================================================================
+\section{Heterogeneity and FL Characteristics}
+\label{app:heterogeneity}
+
+% tab_fl_network_summary already included in sec_results.tex (Table 7)
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_11_network_split.pdf}
+\caption{FL price coefficient by market concentration level (network-based
+classification). The price effect is concentrated among FL firms
+operating in competitive markets (low winner HHI).}
+\label{fig:network_split}
+\end{figure}

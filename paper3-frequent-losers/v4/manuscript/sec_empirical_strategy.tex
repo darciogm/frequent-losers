@@ -1,0 +1,150 @@
+\section{Empirical Strategy}
+\label{sec:empirical}
+
+\subsection{OLS Baseline (H1)}
+\label{sec:empirical_ols}
+
+Our baseline specification estimates the association between FL presence
+and tender outcomes:
+\begin{equation}
+  y_{igt} = \beta \cdot \text{losers}_{igt} + \mathbf{x}_{igt}'
+  \boldsymbol{\delta} + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt}
+  \label{eq:main}
+\end{equation}
+where $y_{igt}$ is the outcome for tender-item $i$ in item group $g$ at
+time $t$ and purchasing unit $k$; $\text{losers}_{igt} \in \{0,1\}$
+indicates FL presence; $\mathbf{x}_{igt}$ includes a convite indicator;
+$\alpha_g$, $\lambda_t$, and $\gamma_k$ are item, year, and PBU fixed
+effects; and $\varepsilon_{igt}$ is the error term clustered at the item
+level.
+
+We estimate four dependent variables: (i) $\log$ negotiated price, (ii)
+$\log$ number of firms, (iii) $\log$ number of bids, and (iv) $\log$
+number of non-FL (``genuine'') firms. For each DV we report four
+specifications: (1) item + year FE, (2) item + year + PBU FE, (3)
+preg\~ao only with all FE, (4) convite only with all FE.
+
+The OLS coefficient $\hat{\beta}$ identifies a conditional
+association---the average difference in outcomes between FL-present and
+FL-absent tenders within the same item type, year, and (in
+specifications 2--4) purchasing unit. Under H1, $\hat{\beta} > 0$ for
+prices establishes the FL screen's empirical validity without requiring a
+causal interpretation.
+
+\subsection{Instrumental Variable Strategy (H2)}
+\label{sec:empirical_iv}
+
+To move beyond association toward causation (H2), we instrument FL
+presence with a \emph{leave-one-out} measure of FL supply:
+\begin{equation}
+  Z_{kgt} = \sum_{j \neq k} \mathbf{1}[\text{FL firm active at PBU } j
+  \text{ in group } g, \text{ year } t]
+  \label{eq:iv}
+\end{equation}
+For each tender-item at PBU $k$ in item group $g$ and year $t$, the
+instrument counts FL firms that are active at \emph{other} PBUs in the
+same product market and year. The identifying assumption is that FL
+activity at distant PBUs affects PBU $k$'s outcomes only through the
+probability of FL participation at $k$ itself---a supply-side exclusion
+restriction in the spirit of \citet{goldsmithpinkham2020bartik}.
+
+The first stage is:
+\begin{equation}
+  \text{losers}_{igt} = \pi \cdot Z_{kgt} + \mathbf{x}_{igt}'
+  \boldsymbol{\phi} + \tilde{\alpha}_g + \tilde{\lambda}_t +
+  \tilde{\gamma}_k + u_{igt}
+  \label{eq:first_stage}
+\end{equation}
+We report the first-stage $F$-statistic and partial $R^2$ to assess
+instrument strength. We also report a \emph{placebo IV} using
+sub-threshold always-losers (firms that never win but participate below
+the IQR threshold) as the instrument source; under H2, these firms
+should not drive the same price effects.
+
+\paragraph{Threats to the exclusion restriction.}
+The identifying assumption requires that FL activity at other PBUs
+affects PBU $k$'s outcomes \emph{only} through FL participation at $k$.
+Three threats merit discussion. First, \emph{correlated demand shocks}:
+if the same item-group experiences price shocks statewide, FL supply at
+other PBUs may correlate with prices at PBU $k$ directly. The item,
+year, and PBU fixed effects absorb time-invariant item characteristics,
+aggregate trends, and PBU-specific price levels. As a further test, we
+estimate the 2SLS specification with item-group $\times$ year fixed
+effects, which absorb product-market-year shocks and restrict
+identification to within-cell variation across PBUs
+(Table~\ref{tab:iv_main}, Panel~C). Second, \emph{statewide cartel
+organization}: if a cartel coordinates FL deployment across PBUs
+simultaneously, the LOO instrument captures coordinated entry rather than
+independent supply variation. We address this by testing balance:
+Table~\ref{tab:iv_balance} regresses pre-determined observables on the
+instrument and finds no significant associations, consistent with
+quasi-random FL supply. Third, \emph{enforcement variation}: if
+enforcement intensity varies across PBUs and correlates with both FL
+supply and prices, the instrument would be invalid. The PBU fixed effects
+absorb time-invariant enforcement differences, and the item-group
+$\times$ year specification further absorbs any enforcement changes that
+are product-market specific.
+
+\subsection{Network-Based FL Classification}
+\label{sec:empirical_network}
+
+Not all 2,735 FL firms need be cover bidders. Some may be genuinely
+incompetent firms that persistently bid too high. To explore
+heterogeneity, we analyze co-bidding networks using the firm--tender map
+(16.8 million rows):
+
+\begin{enumerate}
+  \item For each FL firm, we identify all non-FL co-bidders and
+    co-winners across all tenders.
+  \item We compute four metrics:
+    \begin{itemize}
+      \item \emph{Winner HHI}: concentration of firms that win tenders
+        where this FL firm bids. High HHI indicates the FL firm operates
+        in concentrated markets with few distinct winners.
+      \item \emph{Repeat partners}: number of non-FL firms that co-bid
+        with this FL firm in $\geq 3$ tenders.
+      \item \emph{Top partner share}: fraction of the FL firm's tenders
+        shared with its most frequent co-bidder.
+      \item \emph{Bid spread CV}: coefficient of variation of the FL
+        firm's bid-to-winning-bid ratio.
+    \end{itemize}
+  \item We classify FL firms as \emph{high-concentration} if winner HHI
+    exceeds the median (0.133) and repeat partners $\geq 2$, yielding
+    1,356 high-concentration and 1,379 low-concentration FL firms.
+\end{enumerate}
+
+We then split the treatment into two
+indicators---$\text{has\_high\_susp\_fl}$ and
+$\text{has\_low\_susp\_fl}$---and test whether the price effect varies
+by market structure.
+
+\subsection{Bajari--Ye Test Design}
+\label{sec:empirical_bajari}
+
+We implement the \citet{bajari2003deciding} tests for bid coordination.
+The first stage regresses $\log$ bid values on observable cost shifters
+(reference price, firm size, item and year fixed effects) to obtain bid
+residuals. We report the first-stage $R^2$ and coefficient estimates in
+Appendix~\ref{app:robustness}.
+
+Using these residuals, we conduct three tests:
+
+\begin{enumerate}
+  \item \textbf{Exchangeability}: Kolmogorov--Smirnov test comparing the
+    distributions of FL and non-FL bid residuals. Under competitive
+    bidding with symmetric information, all bidders' residuals should
+    come from the same distribution.
+  \item \textbf{Conditional independence}: for each tender with $\geq 2$
+    FL bids, compute the mean product of pairwise FL residuals. Under
+    independence, this product should be zero in expectation. We compare
+    the FL pairwise product with the non-FL pairwise product using a
+    tender-level bootstrap (1,000 iterations).
+  \item \textbf{Fake-groups placebo}: randomly assign non-FL firms into
+    two groups within each tender and repeat both tests. If the
+    methodology is valid, the placebo should yield null results.
+\end{enumerate}
+
+The pairwise product statistic has a natural interpretation: a value of
+$\bar{r}_i \cdot \bar{r}_j = 5.16$ means that when one FL bid is R\$1
+above its predicted value, the paired FL bid is on average R\$5.16 above
+its prediction, indicating systematic co-movement.

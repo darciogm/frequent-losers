@@ -1,0 +1,53 @@
+% ==============================================================================
+% Section 4: Data and Frequent Losers Definition
+% ==============================================================================
+\section{Data and Frequent Losers Definition}
+\label{sec:data}
+
+\subsection{BEC Platform}
+
+Our data come from the Bolsa Eletr\^{o}nica de Compras (BEC), the electronic procurement platform of S\~{a}o Paulo State, Brazil. Established in 2000, BEC is the mandatory platform for competitive procurement by all state agencies and participating municipalities. BEC records the universe of competitive procurement processes conducted through two modalities defined by Lei 8.666/1993 and subsequent regulations:
+
+\begin{itemize}
+\item \textit{Convite} (sealed-bid invitation): The purchasing body invites at least three firms to submit sealed bids. Bids are opened simultaneously, and the lowest bid wins. This modality is used for lower-value purchases (up to R\$80,000 for goods and services, as of 2010). The sealed-bid format constrains coordination because bidders cannot observe competing bids before submission.
+
+\item \textit{Preg\~{a}o} (electronic reverse auction): All registered firms may participate. Bidding proceeds in real time through an online platform, with bidders submitting successively lower bids until a timer expires. The lowest bid at expiration wins. Preg\~{a}o is the default modality for standard goods and common services, and accounts for the large majority of BEC transactions. The open-auction format allows bidders to observe and react to competing bids in real time.
+\end{itemize}
+
+We observe all BEC tenders from January 2009 to December 2019: 4.5 million tender-items and 40 million individual bids submitted by approximately 41,000 unique firms across 1,308 purchasing bodies (PBUs). Each observation in the collapsed dataset represents a tender-item: a specific product (identified by a standardized item code) within a specific procurement process (identified by the OC number). Outcome variables include the winning bid price, the number of participating firms, and individual bid values.
+
+\subsection{Frequent Losers Definition}
+
+We define frequent losers in two steps:
+
+\begin{enumerate}
+\item \textbf{Always-losers:} Firms with a win rate of exactly zero across all 2009--2019 tenders. This identifies approximately 16,800 firms that never won any tender on BEC during the entire sample period. These firms may include inactive registrants, firms that occasionally bid outside their competence, or---as we hypothesize---cover bidders whose role is to participate without winning.
+
+\item \textbf{IQR threshold:} Among always-losers, we flag those with a number of tender participations exceeding the median plus 1.5 times the interquartile range (IQR) of the always-loser participation distribution. The median number of tender participations among always-losers is 3, the IQR is 7, and the resulting threshold is approximately 14 participations.\footnote{We use the median $+$ 1.5 $\times$ IQR criterion rather than the standard Tukey fence (Q3 $+$ 1.5 $\times$ IQR) because the participation distribution is heavily right-skewed: using the Tukey fence would capture too many moderately active firms. Our threshold focuses on the extreme right tail---firms with participation counts far above the typical always-loser.} This yields approximately 2,735 FL firms---firms that never won a single tender yet participated in 14 or more tenders over the sample period. The choice of 1.5 as the IQR multiplier is validated through sensitivity analysis (Section~\ref{sec:robustness}, Table~\ref{tab:threshold_robustness}).
+\end{enumerate}
+
+The treatment variable is $\text{losers}_{igt} = \mathbf{1}[\text{at least one FL firm participates in tender-item } (i,g,t)]$.
+
+\subsection{Sample Construction}
+
+We restrict the sample to tender-items with (i) convite or preg\~{a}o procedures, (ii) a successful winner, and (iii) item types that have at least one tender with FL participation. The third restriction ensures that comparison (FL-absent) tenders are drawn from the same product markets where FL firms operate, avoiding comparisons across fundamentally different procurement categories. This yields approximately 1.65 million observations across 18,441 items, 1,308 purchasing bodies, and 430,014 item$\times$PBU markets. FL-present tenders represent 4.8\% of the sample.
+
+Table~\ref{tab:descstats} reports descriptive statistics separately for FL-present and FL-absent tenders. FL-present tenders have substantially higher winning prices (mean log price: 4.81 vs. 3.96), more participating firms (5.2 vs. 2.8), and are disproportionately concentrated in preg\~{a}o rather than convite procedures. These raw differences motivate the regression framework with item and year fixed effects to compare tenders for the same product in the same year.
+
+% Table 1: Descriptive statistics
+\input{../output/tables/tab_desc_stats}
+
+% Figures 1-2: Loss distribution and IQR identification
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_01_losses_distribution.pdf}
+\caption{Distribution of Tender Participations among Always-Losers. The distribution is heavily right-skewed, with most always-losers participating in only 1--3 tenders. The vertical dashed line marks the IQR threshold (median $+$ 1.5 $\times$ IQR $\approx$ 14), above which firms are classified as frequent losers.}
+\label{fig:losses_dist}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_02_iqr_identification.pdf}
+\caption{IQR Identification of Frequent Losers. The box-and-whisker plot shows the distribution of tender participations among always-losers. FL firms (red dots) lie beyond the upper fence, representing extreme outliers in participation intensity among firms that never win.}
+\label{fig:iqr_id}
+\end{figure}

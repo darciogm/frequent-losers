@@ -1,0 +1,51 @@
+% ==============================================================================
+% Section 8: Robustness and Extensions
+% ==============================================================================
+\section{Robustness and Extensions}
+\label{sec:robustness}
+
+We subject the main results to an extensive battery of robustness checks and extensions, summarized here with full details in the Appendix. The FL-price association is robust across all tests.
+
+\subsection{Threshold Sensitivity}
+
+We vary the IQR multiplier used to define FL firms from 1.0 to 3.0 (Appendix Table~\ref{tab:threshold_robustness}, Figure~\ref{fig:threshold}). The price coefficient is positive and significant across all thresholds, ranging from 0.048 at the most inclusive threshold (multiplier = 1.0, capturing 5,200 FL firms) to 0.112 at the most restrictive (multiplier = 3.0, capturing 890 FL firms). Higher thresholds select more extreme FL firms---those with the most tender participations despite never winning---and the monotonically increasing coefficient is consistent with the hypothesis that more extreme FL firms are more strongly associated with cover bidding. Critically, the direction and statistical significance of the main result is not sensitive to the specific threshold choice.
+
+\subsection{Matching Estimators}
+
+To address selection on observables, we implement coarsened exact matching (CEM) and inverse probability weighting (IPW) (Appendix Table~\ref{tab:matching}). CEM matches FL-present and FL-absent tenders within item$\times$year$\times$procedure-type cells, yielding a matched sample of 970,000 observations and a coefficient of 0.077 (SE = 0.024). IPW, using propensity scores from a logit model of FL presence on item, year, PBU, and procedure type, yields a coefficient of 0.055 (SE = 0.018) on 830,000 observations. Both are consistent with the OLS estimate of 0.064, reducing concerns about selection on observables driving the result. Covariate balance in the matched samples is documented in Appendix Table~\ref{tab:balance}: all standardized mean differences fall below the 0.25 threshold recommended by \citet{imbens2015causal}.
+
+\subsection{Continuous Treatment}
+
+Instead of the binary FL indicator, we test whether the \textit{number} of FL firms in a tender and the \textit{share} of FL firms among all bidders predict higher prices (Appendix Table~\ref{tab:continuous_treatment}). Both continuous treatment measures are positive and significant, with the share specification suggesting that each 10 percentage point increase in the FL share is associated with a 1.8\% increase in the winning price. The dose-response pattern supports the interpretation that FL presence reflects a continuous intensity of cartel activity rather than a simple threshold effect.
+
+\subsection{Sensitivity Analysis}
+
+We implement the \citet{oster2019unobservable} and \citet{cinelli2020making} sensitivity frameworks (Appendix Figure~\ref{fig:sensitivity}). The sensemakr robustness value (RV) is 17.5\%: an omitted confounder would need to explain at least 17.5\% of the residual variation in both the treatment and the outcome to reduce the FL coefficient to zero. While not definitive, this provides moderate reassurance against omitted variable bias. For comparison, the item fixed effects already explain 61\% of the variation in log prices, and adding PBU fixed effects increases this to 68\%, leaving a relatively narrow residual space for confounders.
+
+\subsection{Alternative Clustering and Standard Errors}
+
+Our main specification clusters standard errors at the item level. We test robustness to clustering at the PBU level, the item$\times$year level, and two-way clustering at item and year levels (Appendix Table~\ref{tab:clustering_robustness}). The FL coefficient remains statistically significant at the 5\% level under all clustering choices, with standard errors ranging from 0.015 (item clustering) to 0.024 (two-way clustering). The main result is not driven by the specific clustering choice.
+
+\subsection{Staggered Difference-in-Differences}
+
+As a supplementary exercise, we exploit the staggered entry of FL firms into item$\times$PBU markets (Appendix~\ref{app:did}). We implement the Callaway \& Sant'Anna (2021) doubly-robust estimator. The overall ATT for log price is $-0.014$ (SE = 0.051), which is not statistically significant. Pre-trend coefficients are not uniformly close to zero, raising concerns about the parallel trends assumption. We report the DiD results for transparency but do not rely on them for the paper's main conclusions. The market-level panel is sparse (many markets observed in only a few years), treatment timing is concentrated in early years, and the ``never-treated'' control group may differ systematically from treated markets.
+
+\subsection{ML Screen Comparison}
+
+We compare the FL screen against standard Imhof (2019) bid-level screens using machine learning classifiers (Appendix Table~\ref{tab:ml_comparison}). The Imhof-only feature set achieves AUC-ROC of 0.77 (Random Forest and Gradient Boosting), indicating that FL-present tenders exhibit the bid-distribution anomalies that screens are designed to detect. Conversely, the FL screen can serve as a computationally simpler proxy for bid-level screening when detailed bid data are unavailable.
+
+\subsection{Welfare Analysis}
+
+Using the preferred specification ($\hat{\beta} = 0.064$), the implied FL-associated markup is approximately 6.6\% (95\% CI: 2.2\%--11.2\%). Applying this to the aggregate winning prices of FL-present tenders (R\$11.2 billion over 2009--2019) yields a total estimated welfare loss of R\$734 million (95\% CI: R\$243 million--R\$1,246 million), or approximately US\$147 million (Appendix Table~\ref{tab:welfare}, Figure~\ref{fig:welfare}). This estimate is below the median cartel overcharge documented by \citet{connor2007price} (approximately 25\%), consistent with cover bidding being a less severe form of bid rigging than full-cartel price coordination.
+
+\subsection{Heterogeneity Analysis}
+
+We examine heterogeneity along three dimensions (Appendix~\ref{app:heterogeneity}). First, the FL-price association is stronger among larger PBUs, consistent with cover bidders targeting higher-value procurement environments where the rents from collusion are larger (Table~\ref{tab:heterogeneity}). Second, heterogeneity across item groups reveals that the association is concentrated in product categories with multiple suppliers (e.g., office supplies, medical materials) rather than specialized goods (Table~\ref{tab:heterogeneity_itemgroup}). Third, FL firm characteristics (Table~\ref{tab:fl_characteristics}) show that FL firms are disproportionately micro-enterprises (83\%), younger than the median non-FL firm, and concentrated in retail and wholesale trade CNAE sectors---a profile consistent with shell companies or small firms serving as vehicles for cover bidding.
+
+\subsection{RDD Infeasibility}
+
+We investigate the feasibility of a regression discontinuity design at Art.~24 procurement thresholds (Lei 8.666/93). BEC only records competitive procurement above the minimum thresholds, so there is no variation below the cutoff at the procurement-method level. While unit-level reference prices do span the threshold values, these are item prices (not total procurement values) and do not correspond to the legal thresholds that determine procurement modality. This institutional feature renders RDD infeasible in our setting.
+
+\subsection{Additional Checks}
+
+Year-by-year estimates of the FL coefficient (Appendix Figure~\ref{fig:year_coefs}) show that the effect is positive in all years and ranges from 0.03 to 0.12, with no obvious trend, suggesting that the FL-price association is stable over the sample period rather than being driven by a particular subperiod. Additional dependent variables---bid dispersion, price-to-reference ratio, and procedure duration---are examined in Appendix Table~\ref{tab:additional_dvs} and further support the cover bidding interpretation.
