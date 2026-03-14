@@ -1,0 +1,105 @@
+\section{Introduction}
+\label{sec:intro}
+
+Public procurement accounts for 12--15\% of GDP in OECD countries and a
+substantially larger share in developing economies
+\citep{oecd2019government}. Bid rigging---coordinated non-competitive
+bidding among ostensible competitors---inflates procurement costs by an
+estimated 10--50\%, with a median overcharge around 20\%
+\citep{connor2007price}. Existing detection approaches rely either on
+\emph{reactive} methods (leniency programs, whistleblowers) that depend
+on cartel insiders coming forward, or on \emph{proactive} statistical
+screens (variance tests, bid-rotation indices, coefficient-of-variation
+thresholds) that typically require granular bid-level data
+\citep{harrington2008detecting, imhof2019detecting}. In many developing
+countries, however, bid-level data are unavailable or unreliable, leaving
+procurement agencies with limited screening tools.
+
+We propose a firm-level screening marker based on
+\emph{frequent losers} (FL): firms that never win a single tender yet
+participate in an abnormally large number of procurement processes. Under
+the cover bidding hypothesis, these firms serve as ``shill bidders''
+deployed by cartels to inflate the apparent number of competitors, create
+the illusion of competition, and satisfy minimum-bidder requirements. The
+FL screen has two practical advantages over bid-level screens: (i) it
+requires only participation and outcome data, not bid values; and (ii)
+it produces firm-level flags that implicate all tenders in which a
+flagged firm participates, enabling targeted investigation.
+
+This paper advances two hypotheses of increasing strength:
+
+\begin{description}
+  \item[H1 (Screening marker):] FL presence is a useful \emph{screening
+    marker} for potential collusion---it correlates with price anomalies
+    and overlap with known cartel participants, regardless of whether
+    every FL firm is itself a cover bidder.
+  \item[H2 (Causal mechanism):] FL firms are \emph{themselves} cover
+    bidders deployed by cartels to inflate bidder counts---implying a
+    direct causal link between FL presence and price inflation.
+\end{description}
+
+\noindent Our primary contribution is to show that FL presence is a % REVISION-V5: reframed H2 as suggestive per referee condition 1
+robust and implementable screening marker for bid rigging (H1). We then
+present evidence from multiple empirical strategies---instrumental
+variables, co-bidding network analysis, and bid-level
+diagnostics---that is \emph{consistent with} a cover-bidding
+mechanism (H2), while acknowledging that no single strategy
+conclusively establishes the causal link. We do not claim to identify
+all cartels in the sample, estimate structural overcharges, or measure
+aggregate collusion welfare losses. The FL screen complements existing
+tender-level forensic tools \citep{imhof2019detecting,
+wallimann2023wild} with a \emph{firm-level} criterion that is
+operable with minimal data---participation records and outcome
+flags---making it particularly relevant for competition authorities in
+developing countries where bid-level data are unavailable.
+
+\subsection{Contributions}
+
+Using 4.5 million tender-items and 40 million bids from S\~ao Paulo's
+Bolsa Eletr\^onica de Compras (BEC) platform (2009--2019), we make three
+contributions.
+
+\emph{First}, we show that FL presence is a reliable empirical marker
+for procurement anomalies (H1). FL-present tenders exhibit 4--9\%
+higher negotiated prices in OLS specifications with item, year, and
+purchasing-unit fixed effects. External validation against CADE
+(Brazil's competition authority) convictions shows that 7.1\% of FL
+firms co-participate with convicted cartelists---3.5 times the rate
+expected by chance after controlling for participation intensity
+($p < 0.001$, permutation test). The FL--price association persists
+after excluding all CADE-involved markets, indicating that the screen
+detects anomalies beyond known cartels.
+
+\emph{Second}, we present suggestive evidence for the causal mechanism % REVISION-V5: reframed IV + network as suggestive per referee M1/M4
+(H2) using a leave-one-out instrumental variable (IV) strategy. The
+instrument exploits supply-side variation in FL firms' availability: for
+each purchasing unit, we measure FL activity at \emph{other} purchasing
+units in the same product market and year. The first stage is strong
+($F = 396$) and the IV estimate of a 21\% price markup (LATE) exceeds
+the OLS estimate, though the IV is sensitive to the fixed-effects
+structure and should be interpreted with caution. Co-bidding
+network analysis reveals that the FL--price effect is concentrated in
+competitive markets (low winner concentration), consistent with cover
+bidding being most profitable where genuine competition exists, though
+alternative explanations involving selection cannot be fully excluded.
+
+\emph{Third}, we apply \cites{bajari2003deciding} framework to test % REVISION-V5: honest Bajari-Ye framing per referee M2
+for bid coordination using the FL classification as a natural partition.
+FL bid residuals violate exchangeability (Kolmogorov--Smirnov
+$D = 0.15$, $p < 0.001$). The conditional independence test yields
+a larger pairwise product for FL (5.16) than non-FL (2.21) under
+baseline fixed effects; however, under tender fixed effects that absorb
+all tender-level confounds, the FL pairwise product (0.38) falls below
+the non-FL product (0.86). We interpret the Bajari--Ye results as
+evidence of systematic heterogeneity between FL and non-FL bidders,
+consistent with---but not conclusive proof of---cover bidding.
+
+The remainder of this paper is organized as follows.
+Section~\ref{sec:literature} reviews related literature.
+Section~\ref{sec:conceptual} presents the conceptual framework with
+testable predictions. Section~\ref{sec:data} describes the data and FL
+definition. Section~\ref{sec:cade} provides external validation against
+CADE convictions. Section~\ref{sec:empirical} details the empirical
+strategy. Sections~\ref{sec:results} and~\ref{sec:mechanisms} present
+results and mechanism tests. Section~\ref{sec:robustness} reports
+robustness checks. Section~\ref{sec:conclusion} concludes.

@@ -1,0 +1,110 @@
+\section{Data and Frequent Losers Definition}
+\label{sec:data}
+
+\subsection{BEC Platform}
+
+Our data come from the Bolsa Eletr\^onica de Compras (BEC), S\~ao
+Paulo's centralized electronic procurement platform serving 1,308
+purchasing units (PBUs) across state agencies, universities, hospitals,
+and municipal bodies. BEC handles two modalities:
+
+\begin{itemize}
+  \item \textbf{Convite} (sealed-bid): used for purchases up to
+    R\$80,000, requires a minimum of three bidders (Lei~8.666/93,
+    Art.~22, \S7). Bids are submitted simultaneously and opened together.
+  \item \textbf{Preg\~ao} (electronic reverse auction): the default
+    modality for standard goods and services. Bidders submit descending
+    bids in real time; there is no minimum-bidder requirement.
+\end{itemize}
+
+The minimum-bidder rule for convite creates a direct incentive for cover
+bidding: if a cartel controls one genuine bidder, it needs at least two
+cover bidders to meet the threshold. Under preg\~ao, cover bidders serve
+primarily to inflate apparent competition and discourage genuine entry.
+
+Our sample spans 2009--2019 and contains approximately 4.5 million
+tender-items, 40 million bids, 41,000 unique firms, and 1,308 PBUs.
+Table~\ref{tab:modality_year} shows the evolution of procurement volume
+by modality over time.
+
+\input{tables/tab_modality_by_year}
+
+\subsection{Frequent Losers Definition}
+
+We define frequent losers (FL) in two steps:
+
+\begin{enumerate}
+  \item \textbf{Always-losers}: firms with a zero win rate across all
+    2009--2019 tenders. 16,843 firms ($\sim$41\% of all
+    BEC participants) never win a single tender.
+  \item \textbf{IQR threshold}: among always-losers, we identify those
+    with abnormally high participation counts using a median + 1.5
+    $\times$ IQR threshold on the distribution of tender participations.%
+    \footnote{We use median + 1.5 $\times$ IQR rather than the standard % REVISION-V5: economic justification for threshold per referee minor 4
+    Tukey rule (Q3 + 1.5 $\times$ IQR). The economic rationale is that
+    the median better captures the ``typical'' always-loser firm: since
+    we seek firms whose participation frequency is abnormally high
+    \emph{relative to the typical non-winner}, the median anchors the
+    threshold at the center of mass of the always-loser distribution
+    rather than at the 75th percentile (Q3), which is already elevated
+    in this heavily right-skewed distribution. The resulting cutoff is
+    approximately 14 participations, identifying 2,735 FL firms.
+    Robustness to the multiplier choice (1.0--3.0$\times$) is reported in
+    Section~\ref{sec:robustness}.}
+    This yields approximately 2,735 FL firms.
+\end{enumerate}
+
+The treatment variable $\text{losers}_{igt}$ equals one if tender-item
+$i$ in item group $g$ at time $t$ has at least one FL firm among its
+participants, and zero otherwise.
+
+Figures~\ref{fig:losses} and~\ref{fig:iqr} show the participation
+distribution of always-losers, with the IQR threshold indicated. The
+distribution is heavily right-skewed: most always-losers participate in
+fewer than 10 tenders, while FL firms participate in 15 to over 400.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_01_losses_distribution.pdf}
+\caption{Distribution of tender participations among always-loser firms.
+The dashed line indicates the IQR threshold separating FL firms (right)
+from non-FL always-losers (left).}
+\label{fig:losses}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_02_iqr_identification.pdf}
+\caption{IQR identification of frequent losers. The threshold at
+median + 1.5 $\times$ IQR classifies firms to the right as FL.}
+\label{fig:iqr}
+\end{figure}
+
+\subsection{Sample Construction}
+
+We restrict the analysis sample as follows: (i) convite and preg\~ao
+modalities only (phases 2 and 3); (ii) tender-items with a recorded
+winner; (iii) item types that have at least one tender with FL
+participation.%
+\footnote{Restriction (iii) ensures that control tenders come from item
+markets where FL firms could plausibly participate. We report results
+without this restriction in Section~\ref{sec:robustness} and
+Appendix~\ref{app:robustness}.}
+The resulting sample contains 1,654,447 tender-items across 18,783
+item types and 1,308 PBUs. FL firms participate in 4.8\% of
+tender-items (79,456 tender-items).
+
+Table~\ref{tab:descstats} reports descriptive statistics for tenders
+with and without FL presence. The unconditional price gap between % REVISION-V5: conditional desc stats per referee M7
+FL-present and FL-absent tenders is large (R\$140,673 vs.\ R\$12,465
+in levels; 4.92 vs.\ 2.49 in logs). However, after residualizing on
+item, year, and PBU fixed effects, the gap shrinks to 0.050 log
+points---indicating that nearly all of the unconditional difference
+reflects item composition, not the FL treatment. The distributions
+overlap substantially (overlap coefficient = 0.978), confirming that
+the regressions exploit within-item variation where FL-present and
+FL-absent tenders are comparable
+(Table~\ref{tab:conditional_descstats} in
+Appendix~\ref{app:heterogeneity}).
+
+\input{tables/tab_desc_stats}

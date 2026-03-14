@@ -1,0 +1,195 @@
+\section{Robustness and Extensions}
+\label{sec:robustness}
+
+We subject our findings to extensive robustness checks organized in six
+groups. Section~\ref{sec:robustness}.1 varies the FL definition
+threshold, win-rate cutoff, and temporal window.
+Section~\ref{sec:robustness}.2 checks sample restrictions and
+specification variants (unrestricted sample, homogeneous subsamples,
+tighter controls, matching, clustering).
+Section~\ref{sec:robustness}.3 runs sensitivity analysis on unobservable
+confounders. Section~\ref{sec:robustness}.4 reports the staggered DiD
+(complementary, underpowered). Section~\ref{sec:robustness}.5 computes
+welfare bounds under OLS, IV, and cross-fit estimates.
+Section~\ref{sec:robustness}.6 examines procurement oversight and
+compliance channels.
+
+\subsection{FL Definition Robustness}
+
+\paragraph{IQR threshold sensitivity.}
+We vary the IQR multiplier from 1.0 to 3.0, which changes both the
+threshold and the number of FL firms (from 3,442 at 1.0$\times$ to 1,456
+at 3.0$\times$). The price coefficient increases monotonically with the % REVISION-V5: dual interpretation per referee minor 10
+multiplier. This pattern is consistent with a stricter threshold
+selecting more extreme cover bidders, but also with progressively more
+extreme firms participating in more unusual (higher-priced) markets for
+non-collusive reasons. We cannot distinguish between these
+interpretations from the threshold sensitivity exercise alone.
+Figure~\ref{fig:threshold_stability} and Table~\ref{tab:threshold} in
+Appendix~\ref{app:robustness} report details.
+
+\paragraph{Low-win-rate FL variants.}
+Instead of requiring a zero win rate, we define FL using win rate
+$< 1\%$ and $< 2\%$. These variants capture firms that win trivially
+(1--2 wins in hundreds of participations) but otherwise behave as cover
+bidders. Table~\ref{tab:fl_lowwinrate} in Appendix~\ref{app:robustness}
+shows that coefficients are stable across these definitions.
+
+\paragraph{Cross-fitting.}
+We define FL firms using only odd years (2009, 2011, \ldots, 2019) and
+estimate regressions on even years, and vice versa. This breaks any
+mechanical link between FL classification and outcomes.
+Table~\ref{tab:fl_crossfit} in Appendix~\ref{app:robustness} shows that
+the odd-year-trained fold yields a significant coefficient of 0.053
+($p < 0.05$); the even-year-trained fold yields 0.019, which is
+positive but not individually significant, likely reflecting lower
+statistical power from fewer FL firms identified in even years (1,885
+vs.\ 2,153). The cross-fold average of 0.036 is attenuated relative to
+the full-sample OLS (0.064) but remains positive, consistent with the
+FL screen capturing a genuine signal.
+
+\paragraph{Temporal FL definition.}
+Instead of classifying FL firms over the full 2009--2019 period, we use
+rolling 3-year windows: a firm is FL in year $t$ if it is an
+always-loser with above-threshold participation in years $[t-2, t]$.
+Table~\ref{tab:fl_temporal} in Appendix~\ref{app:robustness} shows
+that time-varying FL status produces a similar coefficient of 0.070
+($p < 0.01$, $N = 1{,}255{,}998$), close to the baseline 0.064.
+
+\subsection{Sample and Specification Robustness}
+
+\paragraph{Unrestricted sample.}
+Our baseline restricts to item types with at least one FL-present
+tender. Removing this restriction yields a coefficient of 0.063 ($N =
+2{,}875{,}653$), virtually identical to the baseline 0.064
+(Table~\ref{tab:unrestricted_sample} in Appendix~\ref{app:robustness}),
+suggesting that restriction (iii) does not bias the results.
+
+\paragraph{Homogeneous sub-samples.}
+Identifying \emph{ex ante} homogeneous goods from item descriptions is
+infeasible given BEC's coding structure. Instead, we use a data-driven
+approach: for each item group (first two digits of the item code), we
+compute the within-group coefficient of variation (CV) of log negotiated
+prices. Groups with low CV contain items with similar prices across
+tenders---a proxy for product homogeneity. We split item groups at the
+median CV and run FL regressions on each subsample.
+Table~\ref{tab:homogeneous_cv} in Appendix~\ref{app:robustness} reports
+the results. If the FL effect is driven by quality differences rather
+than cover bidding, we would expect it to vanish in low-CV (homogeneous)
+groups where quality-based selection stories are implausible. Item fixed
+effects already absorb much cross-item heterogeneity, so the CV split
+provides an additional dimension of variation.
+
+\paragraph{Tighter controls.}
+We add controls beyond item/year/PBU FE.
+Table~\ref{tab:tighter_controls} in Appendix~\ref{app:robustness}
+reports four specifications. Adding the number of genuine bidders
+increases the coefficient to 0.094 (column~2), consistent with FL
+presence being positively selected into competitive tenders.
+Item $\times$ year FE (column~4) yield 0.074, close to the baseline.
+Column~(3) adds log reference price, which absorbs most cross-tender
+price variation ($R^2$ rises from 0.886 to 0.973); the FL coefficient
+becomes $-0.031$. This sign reversal is consistent with a bad-control
+problem: if cover bidding inflates reference prices---e.g., through
+prior-tender manipulation---then conditioning on reference price removes
+the treatment effect and may induce collider bias. We therefore treat
+column~(3) as a mechanical decomposition of the price level rather than
+a robustness check.
+
+\paragraph{Matching estimators.}
+Coarsened exact matching (CEM) on year, procedure type, item group, and
+PBU size quartile yields a coefficient of 0.077 ($N = 969{,}751$).
+Inverse probability weighting (IPW) yields 0.055 ($N = 830{,}194$).
+Both bracket the OLS estimate of 0.064 from the general+PBU
+specification.
+
+\paragraph{Alternative clustering.}
+Standard errors clustered at the item level (baseline: 0.022), PBU level
+(0.014), and two-way item + PBU level (0.024) all leave inference
+unchanged, with the coefficient significant at the 1\% level under all
+clustering schemes.
+
+\subsection{Benchmarking Against Bid-Level Screens} % REVISION-V5: new subsection per referee M8
+
+To assess whether the FL screen adds value relative to existing % REVISION-V5: horse-race regression per referee M8/condition 2
+bid-level screens, we compute an Imhof-style indicator based on the
+within-item-group coefficient of variation (CV) of bid prices
+\citep{imhof2019detecting}. In a horse-race regression controlling for
+both FL presence and the Imhof flag, the FL coefficient remains
+significant and increases slightly (0.090, SE = 0.022) relative to the
+baseline (0.064), while the Imhof flag captures a different dimension of
+tender characteristics ($-0.267$, SE = 0.007). The correlation between
+the two screens is low (0.071), confirming that FL and bid-level screens
+capture different signals: FL identifies suspicious \emph{firms}, while
+CV-based screens identify suspicious \emph{tender patterns}. Details are
+in Appendix~\ref{app:heterogeneity}
+(Table~\ref{tab:screen_horserace}).
+
+\subsection{Sensitivity to Unobservables}
+
+\cites{cinelli2020making} sensitivity framework quantifies how strong
+omitted variable bias would need to be to explain away the FL
+coefficient. The robustness value $RV_{q=1} = 17.5\%$ means that an
+unobserved confounder would need to explain at least 17.5\% of the
+residual variation in both FL presence and log prices to reduce the
+coefficient to zero---a stringent requirement given the rich fixed
+effects structure.
+
+\subsection{Staggered Difference-in-Differences}
+
+A staggered DiD using \citet{callaway2021difference} is underpowered % REVISION-V5: DiD moved to appendix per referee M6
+for effects of the magnitude we estimate via OLS (MDE~$= 0.076 >$~OLS
+of 0.064) and is reported in Appendix~\ref{app:did} for completeness.
+
+\subsection{Welfare Analysis}
+\label{sec:welfare}
+
+We compute back-of-the-envelope welfare loss estimates from cover % REVISION-V5: reframed as back-of-envelope per referee M5
+bidding using the formula
+$\text{Welfare loss} = (\exp(\hat{\beta}) - 1) \times
+\sum_{i: \text{FL}_i = 1} p_i$.
+
+We report four estimates using different coefficients. The OLS
+coefficient (0.064) may be attenuated by measurement error in the binary
+treatment indicator, but could also be inflated by positive selection
+bias if FL firms participate in more expensive tenders within item
+groups. The cross-fit coefficient (0.036) breaks any mechanical link
+between FL classification and outcomes. The IV coefficient (0.194)
+identifies a LATE for complier tenders, not an ATE.
+
+Table~\ref{tab:welfare_bounds} in Appendix~\ref{app:extensions} reports
+the results. The OLS-based estimate is R\$734 million (95\% CI:
+R\$243M--R\$1,246M). The cross-fit estimate is R\$410 million. The
+IV-based estimate is R\$2.4 billion, though the IV's fragility across
+fixed-effects structures (Section~\ref{sec:results_iv}) warrants caution.
+The concentrated-market FL coefficient ($-0.018$) produces a % REVISION-V5: discussed negative welfare per referee M5/minor 12
+\emph{negative} welfare estimate (R\$$-88$M), consistent with the
+finding that FL firms in concentrated markets show no price-inflating
+effect---this subgroup does not contribute to the welfare cost of cover
+bidding.
+
+As a share of total procurement spending (R\$30.8 billion), the OLS
+estimate represents approximately 2.4\% of total BEC procurement
+value over 2009--2019 and the cross-fit estimate 1.3\%.
+These figures exclude general equilibrium effects (deadweight loss,
+allocative inefficiency, entry deterrence) and should be interpreted
+as illustrative magnitudes rather than precise welfare bounds.
+
+\subsection{Oversight Heterogeneity}
+
+Table~\ref{tab:regime_oversight} in Appendix~\ref{app:robustness}
+reports the FL price coefficient by PBU size quartile. The coefficient
+is largest for the smallest PBUs (Q1: 0.214, imprecisely estimated) and
+smallest for the largest PBUs (Q4: 0.017, not individually significant),
+broadly consistent with the conceptual framework's prediction that
+detection probability $\theta$ constrains cover bidding. Only Q3 (0.066)
+is individually significant ($p < 0.05$). The pattern across quartiles
+is noisy, reflecting limited variation in FL presence within small PBUs.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_07_threshold_stability.pdf}
+\caption{FL price coefficient across IQR multiplier thresholds.
+Error bars show 95\% confidence intervals.}
+\label{fig:threshold_stability}
+\end{figure}
