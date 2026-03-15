@@ -306,13 +306,16 @@ FL bidders in tender $t$, respectively. The FL classification provides
 the mixture labels, so no EM algorithm is required---the model is a
 supervised mixture with known group membership.
 
-\paragraph{Estimation.} We estimate $(\boldsymbol{\alpha},
-\boldsymbol{\gamma})$ by maximum likelihood using the 40 million
-bid-level observations. Standard errors are computed via parametric
-bootstrap (500 replications, parallelized across 16 CPU cores). The
-genuine-bid parameters $(\boldsymbol{\beta}, \sigma_g^2)$ are estimated
-from the 37.5 million non-FL bids; the cover-bid parameters
-$(\delta \text{ or } \sigma_c)$ are estimated from the 2.5 million FL
+\paragraph{Estimation.} We estimate $(\boldsymbol{\alpha}, % R1-FIX: sample sizes corrected
+\boldsymbol{\gamma})$ by maximum likelihood using the bid-level data
+(approximately 40 million bids total; 23.2 million non-FL losing bids
+and 189,381 FL losing bids after restricting to observations with valid
+prices and item-year fixed-effect coverage). Standard errors are
+computed via parametric bootstrap (500 replications, parallelized
+across 16 CPU cores). The genuine-bid parameters
+$(\boldsymbol{\beta}, \sigma_g^2)$ are estimated from the non-FL
+losing bids; the cover-bid parameters
+$(\delta \text{ or } \sigma_c)$ are estimated from the FL losing
 bids, conditional on the winning bid $b^*_t$ in each tender.
 
 \paragraph{Model selection.} We select between Regime~1 and Regime~2

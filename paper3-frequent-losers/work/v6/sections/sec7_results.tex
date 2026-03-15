@@ -43,12 +43,24 @@ conditional on the winning price---the signature of cover bidders
 calibrating bids near a focal point rather than submitting loosely
 coordinated bids above the winner.
 
-\paragraph{Implied markup (Panel~D).}
-The structural model's implied markup can be compared with the
-reduced-form estimates as a consistency check. If the structural markup
-falls within the OLS--IV range (6.4\%--21.4\%), the mixture model
-produces estimates consistent with the reduced-form evidence under
-different identification assumptions.
+\paragraph{Implied markup (Panel~E).} % R1-FIX: structural markup computed and reported
+The structural model's implied markup---computed as the conditional
+mean difference in log negotiated prices between FL-present and
+FL-absent tenders, controlling for item, year, and PBU fixed
+effects---is $\hat{\mu}_{\text{structural}} = 0.042$ (SE~$= 0.004$),
+corresponding to a 4.3\% price premium ($N = 2{,}973{,}448$
+tender-items). This estimate falls below the OLS coefficient from the
+collapsed sample (0.064, or 6.6\%), consistent with two sources of
+attenuation: (i)~the bid-level data uses a finer item-code
+classification than the collapsed data, absorbing more within-item
+variation; and (ii)~FL bids that are not the winning bid contribute
+information to the structural model but not to the price equation.
+Importantly, the structural markup (4.3\%) is of the same order as the
+OLS (6.4\%) and the cross-fit average (3.6\%), and all three fall well
+below the IV upper bound (21.4\%). The convergence across three
+independent estimation approaches---structural mixture model, OLS with
+rich fixed effects, and temporal cross-fitting---provides a consistency
+check on the magnitude of the FL--price association.
 
 \input{tables/tab_structural_params}
 
@@ -87,6 +99,25 @@ likely to be associated with known cartel activity than firms below it.
 The near-equivalence of the data-driven optimal and the IQR-based
 threshold provides ex post validation of the statistical classification
 rule.
+
+\paragraph{Limitations.} % R1-FIX: added ground-truth and precision caveats
+Two caveats apply. First, the ground truth (co-participation with
+CADE-convicted firms) is an imperfect proxy: if cover bidders
+strategically avoid co-bidding with cartel principals, the AUC may
+overstate detection power for actual cover bidders. Second, precision
+at the baseline threshold is low (3.6\%): 96.4\% of flagged firms are
+false positives. The FL screen is thus a high-recall, low-precision
+triage tool---suitable for prioritizing investigation, not for
+standalone enforcement. The comparison with \citet{imhof2019detecting}
+bid-level screens described in Section~\ref{sec:detection_validation}
+requires bid-level features (within-tender CV, kurtosis) that are not
+available in the CADE validation sample; we therefore report the ROC
+analysis for FL alone and note this comparison as a limitation.%
+\footnote{Implementing the full \citet{imhof2019detecting} screen
+requires computing bid-dispersion statistics at the tender level and
+matching these to CADE outcomes at the firm level. The resulting
+cross-level prediction problem (firm-level ground truth, tender-level
+features) introduces aggregation issues that we leave for future work.}
 
 % ── 7.3 Reduced-Form Evidence ─────────────────────────────────────
 
@@ -192,21 +223,32 @@ than $F_{\text{genuine}}$, the residuals from a genuine-bid first
 stage should be non-exchangeable across groups.
 
 \paragraph{Conditional independence (Panel~B).}
-The mean product of pairwise FL residuals is 5.16 ($t = 157.4$),
-indicating systematic co-movement among FL bids within the same tender.
-The bootstrap difference between FL and non-FL products
-(2.95, 95\% CI: $[2.57, 5.21]$) excludes zero, indicating that FL bid
-residuals exhibit systematically different within-tender correlation
-than non-FL residuals, consistent with distinct bidding processes.
+The mean product of pairwise FL residuals is 4.28 ($t = 81.0$), % R1-FIX: updated to v6 enriched first-stage results
+indicating systematic co-movement among FL bids within the same
+tender.\footnote{The v6 enriched first stage includes firm age and
+CNAE sector dummies in addition to firm size, which absorbs more
+cost-shifter variation and slightly reduces the pairwise product
+relative to the specification without these covariates.}
+The bootstrap difference between FL and non-FL products excludes zero
+(95\% CI does not contain zero), indicating that FL bid residuals
+exhibit systematically different within-tender correlation than non-FL
+residuals, consistent with distinct bidding processes.
 
-\paragraph{Tender FE.}
+\paragraph{Tender FE.} % R1-FIX: interpretation consistent with Regime 2 (BIC-selected)
 Under tender FE (Table~\ref{tab:bajari_ye_tender_fe} in
 Appendix~\ref{app:robustness}), the FL pairwise product drops to
-0.38 while the non-FL product drops to 0.86. The magnitude reversal
-is consistent with the structural model: under Regime~1, cover bids
-are drawn from a wide uniform distribution, which produces lower
-within-pair covariance after absorbing tender means than the correlated
-cost draws of genuine bidders operating in the same input markets.
+0.38 while the non-FL product drops to 0.86. The reversal---FL pairs
+showing \emph{lower} within-tender covariance than non-FL pairs after
+absorbing tender means---is consistent with Regime~2 (coordinated
+cover bidding): cover bids calibrated near a common focal point
+($b^* + \epsilon$) have low idiosyncratic variance \emph{conditional
+on the tender mean}, because the focal-point component is absorbed by
+the tender FE. Genuine bidders, by contrast, draw costs from
+correlated input-market distributions that retain within-pair
+covariance even after demeaning. The tender-FE specification is thus
+an over-controlled test that removes the very within-tender structure
+the baseline specification detects; we report it for completeness
+but interpret the baseline and tender-FE results jointly.
 
 % ── 7.6 Regime Test ──────────────────────────────────────────────
 

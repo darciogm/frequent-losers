@@ -25,13 +25,19 @@ bid-coordination tests (Section~\ref{sec:bajari_ye}).
 \subsection{Structural Likelihood Estimation}
 \label{sec:structural_estimation}
 
-We estimate the mixture model specified in
-Section~\ref{sec:likelihood} using the 40 million bid-level
-observations. The estimation proceeds in two stages.
+We estimate the mixture model specified in % R1-FIX: sample-size pipeline clarified
+Section~\ref{sec:likelihood} using the bid-level data. The full
+dataset contains approximately 40 million bids from 41,000 firms.
+Of these, 39.7 million are non-FL bids and 0.2 million are FL bids.
+After restricting to \emph{losing} bids with valid prices and
+item-year fixed-effect coverage, the estimation sample comprises
+23.2 million genuine (non-FL) losing bids and 189,381 FL losing bids
+(Table~\ref{tab:structural_params}). The estimation proceeds in two
+stages.
 
 \paragraph{Stage 1: Genuine bid distribution.}
 We estimate the genuine bid parameters $(\boldsymbol{\beta},
-\sigma_g^2)$ from the 37.5 million non-FL bids using maximum
+\sigma_g^2)$ from the 23.2 million non-FL losing bids using maximum
 likelihood under the log-normal specification~\eqref{eq:genuine_dist}:
 \begin{equation}
   (\hat{\boldsymbol{\beta}}, \hat{\sigma}_g^2) =
@@ -278,10 +284,45 @@ relative to the baseline specification. We report both variants and
 interpret the tender-FE results as the most conservative test of
 within-tender FL bid coordination.
 
+% ── 5.5 Network-Split Heterogeneity ──────────────────────────────
+
+\subsection{Network-Split Heterogeneity Test} % R1-FIX: added missing subsection (referee Major #4)
+\label{sec:empirical_network}
+
+To test Proposition~\ref{prop:market_selection}---that cover bidding
+concentrates in competitive markets---we split FL firms into two
+subgroups based on co-bidding network characteristics.
+
+\paragraph{Winner HHI.}
+For each FL firm $j$, we compute the Herfindahl--Hirschman Index of
+winning firms across all tenders in which $j$ participates:
+\begin{equation}
+  \text{HHI}_j = \sum_{w=1}^{W_j} s_{wj}^2
+  \label{eq:winner_hhi}
+\end{equation}
+where $s_{wj}$ is the share of firm $j$'s tenders won by winner $w$,
+and $W_j$ is the number of distinct winners. A high $\text{HHI}_j$
+indicates that $j$ operates in markets dominated by a single or few
+winners (concentrated markets); a low $\text{HHI}_j$ indicates
+diversified winner patterns (competitive markets).
+
+\paragraph{Classification.}
+We classify FL firms as \emph{concentrated-market} if
+$\text{HHI}_j$ exceeds the sample median, and
+\emph{competitive-market} otherwise. The median split avoids ad hoc
+threshold selection while maintaining approximate sample balance.
+We then estimate the baseline price regression
+(Equation~\ref{eq:ols_main}) separately for each subgroup,
+interacting $\text{losers}_{igt}$ with the market-structure
+indicator.
+
+\paragraph{Interpretation.}
+Under Proposition~\ref{prop:market_selection}, the FL--price effect
+should be concentrated in competitive-market FL firms (low HHI), where
+the marginal return to manufactured competition is highest, and absent
+in concentrated-market FL firms, where the cartel can sustain prices
+through market power alone.
+
 % REVISION-V6: RDD removed. Aggregating unit prices × quantities to
 % contract-level totals reveals that convite assignment does not exhibit
-% a discontinuity at R$80K: the convite rate is ~100% on both sides of
-% the threshold in the relevant value range, because modality choice in
-% BEC depends on procurement type (goods vs. services), not solely on
-% contract value. Without a first-stage discontinuity in modality
-% assignment, the RDD is not feasible with BEC data.
+% a discontinuity at R$80K.
