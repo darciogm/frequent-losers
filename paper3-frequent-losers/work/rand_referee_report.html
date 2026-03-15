@@ -3,201 +3,392 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAND Referee Report — Frequent Losers</title>
+<title>Referee Report &mdash; RAND Journal of Economics</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Georgia,'Times New Roman',serif;line-height:1.7;color:#222;background:#f5f5f5}
-.wrap{max-width:860px;margin:0 auto;background:#fff;padding:2.5rem 3rem;box-shadow:0 1px 4px rgba(0,0,0,.1)}
-nav.sticky{position:sticky;top:0;background:#263238;padding:.6rem 1rem;z-index:10;display:flex;flex-wrap:wrap;gap:.4rem .8rem;font-size:.82rem;font-family:system-ui,sans-serif}
-nav.sticky a{color:#b0bec5;text-decoration:none}
-nav.sticky a:hover{color:#fff}
-h1{font-size:1.6rem;margin:1.2rem 0 .3rem;border-bottom:2px solid #263238;padding-bottom:.3rem}
-h2{font-size:1.25rem;margin:1.5rem 0 .5rem}
-h3{font-size:1.05rem;margin:1rem 0 .3rem}
-p,li{margin-bottom:.6rem}
-.badge{display:inline-block;padding:.45rem 1.4rem;border-radius:6px;font-weight:700;font-size:1rem;color:#fff;text-align:center;margin:1rem auto;letter-spacing:.5px}
-.badge-rr{background:#e65100}
-.sec{padding:1.2rem 1.5rem;margin:1rem -1.5rem;border-radius:6px}
-.sec-major{background:#fff0f0}
-.sec-minor{background:#fffde7}
-.sec-id{background:#e8f4fd}
-.sec-theory{background:#f3e5f5}
-.sec-lit{background:#e8f5e9}
-.sec-conclusion{background:#fce4ec}
-table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.92rem}
-th,td{border:1px solid #ccc;padding:.4rem .6rem;text-align:left}
-th{background:#f0f0f0}
-strong{font-weight:700}
-em{font-style:italic}
-.comment-block{margin:1rem 0;padding:.8rem 1rem;border-left:3px solid #c62828;background:#fff8f8}
-.comment-block h3{color:#b71c1c;margin-top:0}
-hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.7;
+    color: #222;
+    background: #f7f7f7;
+  }
+  nav.sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #263238;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  nav.sticky-nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0;
+  }
+  nav.sticky-nav li a {
+    display: block;
+    color: #eceff1;
+    text-decoration: none;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-family: -apple-system, Helvetica, Arial, sans-serif;
+    transition: background 0.2s;
+  }
+  nav.sticky-nav li a:hover {
+    background: #37474f;
+  }
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+    background: #fff;
+    min-height: 100vh;
+  }
+  .badge-wrapper {
+    text-align: center;
+    padding: 32px 0 8px;
+  }
+  .badge {
+    display: inline-block;
+    background: #e65100;
+    color: #fff;
+    font-family: -apple-system, Helvetica, Arial, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 8px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .header-meta {
+    text-align: center;
+    padding: 18px 0 10px;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 28px;
+  }
+  .header-meta h1 {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+    color: #263238;
+  }
+  .header-meta p {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 3px 0;
+  }
+  section {
+    margin-bottom: 32px;
+    padding: 22px 26px;
+    border-radius: 6px;
+  }
+  section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    color: #263238;
+  }
+  section h3 {
+    font-size: 1.08rem;
+    margin: 20px 0 8px;
+    color: #37474f;
+  }
+  .major-comment-heading {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 24px 0 6px;
+    color: #b71c1c;
+    border-left: 4px solid #e53935;
+    padding-left: 12px;
+  }
+  p { margin: 8px 0; }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+  ol, ul { margin: 8px 0 8px 28px; }
+  li { margin-bottom: 6px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  th {
+    background: rgba(0,0,0,0.06);
+    font-weight: 700;
+  }
+  .sec-summary { background: #fff; }
+  .sec-overall { background: #fff; }
+  .sec-major { background: #fff0f0; }
+  .sec-minor { background: #fffde7; }
+  .sec-identification { background: #e8f4fd; }
+  .sec-theory { background: #f3e5f5; }
+  .sec-literature { background: #e8f5e9; }
+  .sec-conclusion { background: #fce4ec; }
+  .sub-block {
+    margin: 16px 0;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 4px;
+    border-left: 3px solid rgba(0,0,0,0.12);
+  }
+  .sub-block p:first-child { margin-top: 0; }
+  code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.88em;
+  }
 </style>
 </head>
 <body>
-<nav class="sticky">
-<a href="#s1">1. Summary</a>
-<a href="#s2">2. Assessment</a>
-<a href="#s3">3. Major</a>
-<a href="#s4">4. Minor</a>
-<a href="#s5">5. Identification</a>
-<a href="#s6">6. Theory</a>
-<a href="#s7">7. Literature</a>
-<a href="#s8">8. Conclusion</a>
+
+<nav class="sticky-nav">
+  <ul>
+    <li><a href="#sec1">1. Summary</a></li>
+    <li><a href="#sec2">2. Overall</a></li>
+    <li><a href="#sec3">3. Major</a></li>
+    <li><a href="#sec4">4. Minor</a></li>
+    <li><a href="#sec5">5. Identification</a></li>
+    <li><a href="#sec6">6. Theory</a></li>
+    <li><a href="#sec7">7. Literature</a></li>
+    <li><a href="#sec8">8. Conclusion</a></li>
+  </ul>
 </nav>
-<div class="wrap">
 
-<h1>Referee Report &mdash; RAND Journal of Economics</h1>
-<p><strong>Paper:</strong> Frequent Losers as Cover Bidders in Public Procurement<br>
-<strong>Authors:</strong> Genicolo-Martins &amp; Furquim de Azevedo<br>
-<strong>Date:</strong> 2026-03-15</p>
-<div style="text-align:center"><span class="badge badge-rr">Reject with invitation to resubmit</span></div>
+<div class="container">
 
-<hr>
+  <div class="badge-wrapper">
+    <span class="badge">Reject with invitation to resubmit</span>
+  </div>
 
-<h2 id="s1">1. Summary</h2>
-<p>This paper proposes "frequent losers" (FL)&mdash;firms that never win yet participate in an abnormally large number of public procurement tenders&mdash;as a screening marker for cover bidding. Using 4.5 million tender-items and 40 million bids from S&atilde;o Paulo's BEC platform (2009&ndash;2019), the authors identify 2,735 FL firms via a median + 1.5 &times; IQR threshold on the participation distribution of always-losers. The main findings are: (1) FL-present tenders exhibit 4&ndash;9% higher negotiated prices in OLS with item, year, and purchasing-unit fixed effects; (2) a leave-one-out IV yields a 21% LATE (F = 396); (3) 7.1% of FL firms co-participate with CADE-convicted cartelists, 3.5&times; the participation-adjusted rate; (4) Bajari&ndash;Ye tests reject exchangeability and conditional independence for FL bid residuals, though with important caveats under tender FE; (5) a network-based classification shows the price effect concentrates in competitive markets. The paper advances two hypotheses: H1 (FL as screening marker) and H2 (FL as causal cover bidding mechanism).</p>
+  <div class="header-meta">
+    <h1>Referee Report &mdash; RAND Journal of Economics</h1>
+    <p><strong>Paper:</strong> Frequent Losers as Cover Bidders in Public Procurement</p>
+    <p><strong>Authors:</strong> Genicolo-Martins &amp; Furquim de Azevedo</p>
+    <p><strong>Date:</strong> 2026-03-15</p>
+  </div>
 
-<hr>
+  <!-- Section 1 -->
+  <section id="sec1" class="sec-summary">
+    <h2>1. Summary</h2>
+    <p>This paper proposes &ldquo;frequent losers&rdquo; (FL)&mdash;firms that never win yet participate in an abnormally large number of public procurement tenders&mdash;as a screening marker for cover bidding. Using 4.5 million tender-items and 40 million bids from Sao Paulo&rsquo;s BEC platform (2009&ndash;2019), the authors identify 2,735 FL firms via a median + 1.5 &times; IQR threshold on the participation distribution of always-losers. The main empirical findings are: (1) FL-present tenders exhibit 4&ndash;9% higher negotiated prices in OLS with item, year, and purchasing-unit fixed effects; (2) a leave-one-out IV yields a 21% LATE (F = 396); (3) 7.1% of FL firms co-participate with CADE-convicted cartelists, 3.5&times; the participation-adjusted rate; (4) Bajari&ndash;Ye tests reject exchangeability and conditional independence for FL bid residuals, though with important caveats under tender FE; (5) a network-based classification shows the price effect concentrates in competitive markets. The paper advances two hypotheses: H1 (FL as screening marker) and H2 (FL as causal cover bidding mechanism).</p>
+  </section>
 
-<h2 id="s2">2. Overall Assessment</h2>
-<p>The paper does not currently meet RAND's identification standard for its central causal claim. The leave-one-out IV&mdash;the only strategy that moves beyond conditional correlation&mdash;fails balance on all four observable characteristics (Table B.8), produces an implausibly large estimate under a more saturated FE structure (3.64 in Panel C), and rests on an exclusion restriction that the authors themselves acknowledge is "more concerning" than originally presented. The Bajari&ndash;Ye tests produce internally inconsistent results: the fake-groups placebo (Panel C of Table 11) yields a pairwise product of 5.80 that <em>exceeds</em> the FL product of 5.16, and the tender-FE specification reverses the magnitude ordering (FL: 0.38 &lt; non-FL: 0.86). The DiD is null (ATT = 0.014, SE = 0.039). RAND publishes papers where the primary identification strategy is credible; here, the primary strategy (IV) is supplementary by the authors' own admission, and the supplementary evidence (Bajari&ndash;Ye, DiD) is either contradictory or uninformative. The H1 contribution&mdash;FL as a practical screening tool&mdash;is genuine and empirically supported, but it is a policy contribution rather than the identification or structural contribution RAND typically requires.</p>
+  <!-- Section 2 -->
+  <section id="sec2" class="sec-overall">
+    <h2>2. Overall Assessment</h2>
+    <p>The paper does not currently meet RAND&rsquo;s identification standard for its central causal claim. The leave-one-out IV&mdash;the only strategy that moves beyond conditional correlation&mdash;fails balance on all four observable characteristics (Table B.8), produces an implausibly large estimate under a more saturated FE structure (3.64 in Panel C), and rests on an exclusion restriction that the authors themselves acknowledge is &ldquo;more concerning&rdquo; than originally presented. The Bajari&ndash;Ye tests, intended to provide non-structural corroboration, produce internally inconsistent results: the fake-groups placebo (Panel C of Table 11) yields a pairwise product of 5.80 that <em>exceeds</em> the FL product of 5.16, and the tender-FE specification reverses the magnitude ordering (FL: 0.38 &lt; non-FL: 0.86). The DiD is null (ATT = 0.014, SE = 0.039). RAND publishes papers where the primary identification strategy is credible; here, the primary strategy (IV) is supplementary by the authors&rsquo; own admission, and the supplementary evidence (Bajari&ndash;Ye, DiD) is either contradictory or uninformative. The H1 contribution&mdash;FL as a practical screening tool&mdash;is genuine and empirically supported, but it is a policy contribution rather than the identification or structural contribution RAND typically requires.</p>
+  </section>
 
-<hr>
+  <!-- Section 3: Major Comments -->
+  <section id="sec3" class="sec-major">
+    <h2>3. Major Comments</h2>
 
-<div class="sec sec-major">
-<h2 id="s3">3. Major Comments</h2>
+    <h3 class="major-comment-heading">[M1] The IV fails RAND&rsquo;s identification standard</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> The LOO instrument (Equation 3) counts FL firms active at <em>other</em> PBUs in the same product group and year. Table B.8 (balance tests) shows that the instrument significantly predicts all four observable characteristics&mdash;number of firms, number of bids, convite indicator, and reference price&mdash;after absorbing item, year, and PBU fixed effects. The authors report standardized differences below 0.03 sigma and frame this as &ldquo;economically negligible.&rdquo; With N = 1.65 million, 0.03 sigma corresponds to t-statistics well above conventional thresholds. The authors now acknowledge in Section 6.2 that &ldquo;the pattern of statistically significant imbalance across all four observables is more concerning than any single coefficient.&rdquo; This is correct, and it is fatal for a causal claim at RAND.</p>
+      <p><strong>Location:</strong> Section 6.2, Section 7.2, Table B.8.</p>
+      <p><strong>Why it matters for RAND:</strong> RAND&rsquo;s standard for IV identification requires (a) a plausible exclusion restriction, (b) balance on pre-determined observables, and (c) robustness to specification choices. This paper fails (b) on its own terms and fails (c) because Panel C (item-group &times; year FE) produces an estimate of 3.64, an order of magnitude larger than Panel A (0.194). The paper correctly dismisses Panel C as weak-instrument amplification, but this is evidence that the IV estimate is specification-sensitive, not robust.</p>
+      <p><strong>What would resolve it:</strong> Either (i) provide Conley&ndash;Hansen&ndash;Rossi (2012) bounds on the 2SLS estimate allowing for violations of the exclusion restriction proportional to the observed imbalance, or (ii) find a different source of exogenous variation in FL exposure&mdash;an institutional change, a geographic discontinuity, or a policy shock that plausibly shifts FL supply without directly affecting prices.</p>
+    </div>
 
-<div class="comment-block"><h3>[M1] The IV fails RAND's identification standard</h3>
-<p><strong>Problem:</strong> The LOO instrument (Equation 3) counts FL firms active at <em>other</em> PBUs in the same product group and year. Table B.8 (balance tests) shows that the instrument significantly predicts all four observable characteristics after absorbing item, year, and PBU fixed effects. The authors report standardized differences below 0.03&sigma; and frame this as "economically negligible." With N = 1.65 million, 0.03&sigma; corresponds to t-statistics well above conventional thresholds. The authors now acknowledge that "the pattern of statistically significant imbalance across all four observables is more concerning than any single coefficient." This is correct, and it is fatal for a causal claim at RAND.</p>
-<p><strong>Location:</strong> Section 6.2, Section 7.2, Table B.8.</p>
-<p><strong>What would resolve it:</strong> Conley-Hansen-Rossi (2012) bounds allowing for exclusion restriction violations, or a different source of exogenous variation (institutional change, geographic discontinuity, policy shock).</p></div>
+    <h3 class="major-comment-heading">[M2] The Bajari&ndash;Ye tests are internally inconsistent</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> Three results undermine the Bajari&ndash;Ye evidence:</p>
+      <p><strong>(a) Fake-groups placebo failure.</strong> The fake-groups placebo (Panel C of Table 11) randomly splits non-FL firms into two groups and computes pairwise residual products. The placebo product is 5.80&mdash;<em>larger</em> than the FL product of 5.16. Under the cover-bidding hypothesis, FL pairs should exhibit <em>stronger</em> correlation than random non-FL pairs, not weaker. The paper argues that the FL vs. non-FL difference (5.16 vs. 2.21 = 2.95) is the relevant comparison, not the FL vs. fake-groups comparison. But the fact that random non-FL pairs exhibit even stronger within-tender correlation than FL pairs raises the possibility that what the test detects is tender-level heterogeneity, not bid coordination.</p>
+      <p><strong>(b) Tender-FE reversal.</strong> Under tender FE (Table B.17), which absorb all tender-level confounds, the FL pairwise product drops from 5.16 to 0.38 while the non-FL product drops from 2.21 to 0.86. The magnitude ordering reverses: FL (0.38) &lt; non-FL (0.86). The paper interprets this as &ldquo;genuine bidders share cost information that induces residual correlation,&rdquo; which is plausible but untested. The key issue is that Prediction 5 (Section 3.3) now predicts FL residuals &ldquo;differ systematically&rdquo; without a magnitude claim, but the original Bajari&ndash;Ye (2003) conditional-independence test is specifically designed to detect <em>stronger</em> within-group correlation as evidence of coordination. The FL group failing this relative comparison undermines the test&rsquo;s evidentiary value.</p>
+      <p><strong>(c) First-stage endogeneity concern.</strong> Section 6.4 describes the Bajari&ndash;Ye first stage as including &ldquo;firm size, firm age, CNAE sector dummies, number of bids, and item and year fixed effects.&rdquo; The inclusion of <em>number of bids</em> is potentially problematic: if FL presence mechanically increases the number of bids in a tender (Table 6 shows this), and number of bids is included as a regressor in the first-stage bid equation, the residuals are mechanically correlated with FL status through the prediction error on this endogenous variable. Bajari and Ye (2003, p. 978) explicitly note that their test requires the first-stage regressors to be cost shifters, not endogenous market outcomes. The number of bids in a tender is an equilibrium outcome, not a cost shifter.</p>
+      <p><strong>Location:</strong> Table 11 (Panels A&ndash;C), Table B.17, Section 7.4.</p>
+      <p><strong>Why it matters for RAND:</strong> The Bajari&ndash;Ye tests are presented as the third leg of the evidentiary tripod (alongside OLS and IV). If the tests are internally inconsistent and the first stage includes an endogenous variable, the non-structural corroboration falls apart.</p>
+      <p><strong>What would resolve it:</strong> (i) Remove number of bids from the Bajari&ndash;Ye first stage and re-estimate. (ii) Run the fake-groups placebo separately within FL-present and FL-absent tenders to diagnose whether tender-level heterogeneity drives the result. (iii) Provide a formal test of whether the magnitude reversal under tender FE is statistically significant (bootstrap the FL &minus; non-FL difference under tender FE).</p>
+    </div>
 
-<div class="comment-block"><h3>[M2] The Bajari&ndash;Ye tests are internally inconsistent</h3>
-<p><strong>Problem:</strong> (a) The fake-groups placebo product is 5.80&mdash;<em>larger</em> than the FL product of 5.16. (b) Under tender FE, FL (0.38) &lt; non-FL (0.86)&mdash;a reversal. (c) The first stage includes number of bids, which is an equilibrium outcome endogenous to FL presence (Bajari &amp; Ye 2003, p.978 require cost shifters, not market outcomes).</p>
-<p><strong>Location:</strong> Table 11 (Panels A&ndash;C), Table B.17, Section 7.4.</p>
-<p><strong>What would resolve it:</strong> Remove n_bids from Bajari&ndash;Ye first stage. Run fake-groups placebo within FL-present and FL-absent tenders separately. Bootstrap test the magnitude reversal under tender FE.</p></div>
+    <h3 class="major-comment-heading">[M3] The theoretical framework is a descriptive taxonomy, not a model</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> Section 3 presents a &ldquo;conceptual framework&rdquo; with a cartel profit maximization problem (Equation 1), two regime definitions, and five predictions. However: (i) the first-order condition is stated but not derived&mdash;the paper asserts that m* is increasing in n and decreasing in theta without showing the derivation; (ii) Regimes 1 and 2 are defined by distributional assumptions on cover bids (uniform vs. normal), not by equilibrium conditions&mdash;there is no strategic interaction among bidders, no game tree, no equilibrium concept; (iii) Predictions 1&ndash;5 are assertions about observables under cover bidding, not derived comparative statics from a model.</p>
+      <p>This matters because several predictions are not actually tested in the paper. Specifically:</p>
+      <table>
+        <thead><tr><th>Prediction</th><th>Claimed test</th><th>Assessment</th></tr></thead>
+        <tbody>
+          <tr><td>1 (Price effect)</td><td>Table 5 OLS</td><td>Tested</td></tr>
+          <tr><td>2 (Strategic selection)</td><td>Table 6</td><td>Tested</td></tr>
+          <tr><td>3 (Regime identification)</td><td>Section 7.5, Figure 7</td><td>Visual only; no formal test</td></tr>
+          <tr><td>4 (Exchangeability)</td><td>Table 11, Panel A</td><td>Tested (KS test)</td></tr>
+          <tr><td>5 (Bid heterogeneity)</td><td>Table 11, Panel B</td><td>Tested but contradicted under tender FE</td></tr>
+        </tbody>
+      </table>
+      <p>Prediction 3 has no formal statistical test&mdash;the regime comparison is based on a visual comparison of density plots (Figure 7). There is no variance-ratio test, no formal model selection, and no likelihood comparison.</p>
+      <p><strong>Location:</strong> Section 3, Section 7.5.</p>
+      <p><strong>Why it matters for RAND:</strong> RAND expects theoretical frameworks that generate precise, falsifiable predictions derived from strategic interaction. A taxonomy of cover-bidding regimes is useful for organizing the empirical analysis but does not meet RAND&rsquo;s theory standard. If the theory section remains as is, the paper should explicitly label it as a &ldquo;descriptive framework&rdquo; or &ldquo;empirical classification&rdquo; rather than using the language of predictions and comparative statics.</p>
+      <p><strong>What would resolve it:</strong> Either (i) develop a simple game-theoretic model of cover bidding that derives the optimal cover-bid distribution as a function of the number of genuine bidders, detection probability, and auction format, generating the regimes as equilibrium outcomes; or (ii) honestly relabel Section 3 as a descriptive taxonomy and strengthen the empirical contribution to compensate (e.g., the Detection Tool reframe).</p>
+    </div>
 
-<div class="comment-block"><h3>[M3] The theoretical framework is a descriptive taxonomy, not a model</h3>
-<p><strong>Problem:</strong> Section 3 presents two regimes defined by distributional assumptions (uniform vs. normal) rather than equilibrium conditions. The FOC is stated without derivation. Prediction 3 (Regime identification) has no formal statistical test&mdash;only a visual density comparison (Figure 7).</p>
-<p><strong>Location:</strong> Section 3, Section 7.5.</p>
-<p><strong>What would resolve it:</strong> Derive the regimes as equilibrium outcomes from a game-theoretic model, or relabel Section 3 as a descriptive taxonomy.</p></div>
+    <h3 class="major-comment-heading">[M4] The network split contradicts the cover-bidding hypothesis</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> Table 9 splits FL firms into &ldquo;concentrated-market&rdquo; (winner HHI above median, repeat partners &ge; 2) and &ldquo;competitive-market&rdquo; subgroups. The results are striking: competitive-market FL firms show a price effect of 0.126 (p &lt; 0.01); concentrated-market FL firms show &minus;0.018 (p &gt; 0.3). The paper interprets this as &ldquo;cover bidding is most valuable where genuine competitive threat exists.&rdquo;</p>
+      <p>This interpretation has three problems. First, the classification was originally designed to identify high-suspicion cover bidders (the code variables are named <code>has_high_susp_fl</code> and <code>has_low_susp_fl</code>). The reframing as &ldquo;market structure&rdquo; is post-hoc. Second, under the cover-bidding hypothesis, firms operating in concentrated markets with repeated winners (high HHI, repeated co-bidders) have exactly the network characteristics most consistent with organized collusion&mdash;they lose repeatedly to the same few winners, which is the classic bid-rotation pattern. The null result for these firms directly undermines H2. Third, the network classification conflates firm-level network characteristics with market-level concentration. A firm&rsquo;s winner HHI reflects the markets it <em>chooses to enter</em>, not the structural concentration of those markets. This is an endogenous selection problem.</p>
+      <p><strong>Location:</strong> Table 9, Section 7.3, Section 6.3.</p>
+      <p><strong>Why it matters for RAND:</strong> A paper claiming that FL firms are cover bidders must explain why half of them (1,356 of 2,735) show no price effect. If 49.5% of flagged firms are false positives, the welfare calculation, which uses all FL firms, is inflated. More fundamentally, the cover-bidding theory does not predict that cover bidding should be <em>absent</em> in concentrated markets&mdash;if anything, concentrated markets with fewer genuine bidders should make cover bidding more necessary (to meet minimum-bidder requirements) and more profitable (less competition to discipline prices).</p>
+      <p><strong>What would resolve it:</strong> (i) Interact FL presence with continuous market-level HHI (computed at the item-group &times; PBU &times; year level, not from the network classification) to provide a direct test of the market-structure heterogeneity hypothesis. (ii) Acknowledge that the original network classification did not perform as designed. (iii) Recalculate welfare bounds using only competitive-market FL firms, since concentrated-market FL firms contribute zero price effect. (iv) Provide a theoretical reason why cover bidding should be <em>absent</em> in concentrated markets.</p>
+    </div>
 
-<div class="comment-block"><h3>[M4] The network split contradicts the cover-bidding hypothesis</h3>
-<p><strong>Problem:</strong> Concentrated-market FL firms (HHI &gt; median, repeat partners &ge; 2) show -0.018 (p &gt; 0.3), while competitive-market FL firms show 0.126 (p &lt; 0.01). Under cover-bidding theory, firms in concentrated markets with repeated co-bidders have the network characteristics most consistent with organized collusion. The null result for these 1,356 firms directly undermines H2.</p>
-<p><strong>Location:</strong> Table 9, Section 7.3.</p>
-<p><strong>What would resolve it:</strong> Interact FL with continuous market-level HHI. Acknowledge the original classification failed. Recalculate welfare using only competitive-market FL firms.</p></div>
+    <h3 class="major-comment-heading">[M5] The null DiD undermines the causal narrative</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> The Callaway &amp; Sant&rsquo;Anna estimator (Section 9.4) yields ATT = 0.014 (SE = 0.039), statistically insignificant. The paper frames this as &ldquo;underpowered&rdquo; and computes an MDE of 0.076, exceeding the OLS estimate of 0.064. However:</p>
+      <p>(a) The design uses within-market temporal variation&mdash;arguably the cleanest identification strategy in the paper&mdash;and produces a null result. A skeptical reader will note that this is also consistent with no causal effect: FL firms select into expensive markets, and the cross-sectional OLS captures this selection.</p>
+      <p>(b) The sample is not trivially small: 19,777 markets, 1,511 treated, 18,266 never-treated. The null is informative.</p>
+      <p>(c) The paper includes the DiD in the robustness section, which implicitly presents it as supporting evidence. A null result from the cleanest design should be discussed as a limitation, not packaged as robustness.</p>
+      <p><strong>Location:</strong> Section 9.4, Table C.1, Appendix C.</p>
+      <p><strong>Why it matters for RAND:</strong> RAND weighs the DiD heavily because it exploits temporal variation that the cross-sectional OLS cannot. A null DiD with an MDE close to the OLS estimate means the paper cannot rule out a zero causal effect using its best quasi-experimental design.</p>
+      <p><strong>What would resolve it:</strong> (i) Move the DiD from &ldquo;Robustness&rdquo; to a standalone section titled &ldquo;Causal Evidence: Limitations&rdquo; or integrate it into the IV discussion. (ii) Discuss candidly that the null DiD is consistent with both low power and no causal effect. (iii) Consider whether an alternative panel design (e.g., within-firm or within-PBU variation) could provide more statistical power.</p>
+    </div>
 
-<div class="comment-block"><h3>[M5] The null DiD undermines the causal narrative</h3>
-<p><strong>Problem:</strong> C&amp;S ATT = 0.014, SE = 0.039, insignificant. MDE = 0.076 exceeds OLS (0.064). The cleanest quasi-experimental design produces a null result.</p>
-<p><strong>Location:</strong> Section 9.4, Table C.1.</p>
-<p><strong>What would resolve it:</strong> Move DiD to a "Causal Evidence: Limitations" section. Discuss candidly that the null is consistent with both low power and no causal effect.</p></div>
+    <h3 class="major-comment-heading">[M6] The welfare analysis is accounting, not structural</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> The welfare bounds (Section 9.5, Table D.1) compute welfare loss as (exp(beta) &minus; 1) &times; sum of FL-present tender values. The range is R$734M (OLS) to R$2.4B (IV), or 2.4% to 7.8% of total BEC procurement. This is a back-of-the-envelope calculation that assumes: (i) the entire FL coefficient represents cartel overcharge, (ii) there are no offsetting efficiency effects, (iii) the partial equilibrium counterfactual (remove FL, prices fall by beta) is valid. None of these assumptions are tested or defended.</p>
+      <p>For a paper claiming a 21% cartel markup (IV), RAND will expect either a structural welfare analysis that accounts for equilibrium effects (entry/exit of genuine bidders, reallocation across markets, dynamic effects on cartel stability) or an explicit statement that the welfare figures are illustrative only.</p>
+      <p><strong>Location:</strong> Section 9.5, Table D.1.</p>
+      <p><strong>Why it matters for RAND:</strong> A 3.3&times; range (R$734M to R$2.4B) driven entirely by OLS vs. IV coefficient choice provides limited policy guidance. The cross-fit coefficient (0.036) produces an intermediate estimate that the paper now reports, but the structural interpretation remains shallow.</p>
+      <p><strong>What would resolve it:</strong> Either (i) build a simple structural model of procurement competition with cover bidding that allows counterfactual welfare computation, or (ii) dramatically compress the welfare section and frame it explicitly as &ldquo;illustrative&rdquo; or &ldquo;back-of-the-envelope&rdquo; without claiming these are welfare bounds.</p>
+    </div>
 
-<div class="comment-block"><h3>[M6] The welfare analysis is accounting, not structural</h3>
-<p><strong>Problem:</strong> R$734M to R$2.4B (3.3&times; range) computed as (exp(&beta;)-1) &times; total FL-present procurement. No equilibrium effects, no entry/exit, no structural counterfactual.</p>
-<p><strong>Location:</strong> Section 9.5, Table D.1.</p>
-<p><strong>What would resolve it:</strong> Build a structural welfare model or compress to "illustrative back-of-the-envelope."</p></div>
+    <h3 class="major-comment-heading">[M7] FL novelty relative to Conley&ndash;Decarolis (2016, AEJ:Micro)</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> Conley and Decarolis (2016) detect bidder groups from co-bidding patterns in Italian procurement, without requiring bid values. Their method identifies coordinated groups and estimates the competitive effect of group structure. The FL screen similarly identifies suspicious firms from participation data alone. The paper cites Conley&ndash;Decarolis in the literature review (Section 2) but does not provide a direct comparison of what FL does that Conley&ndash;Decarolis cannot.</p>
+      <p>The paper&rsquo;s claimed advantage&mdash;&ldquo;FL provides a natural partition of bidders into suspected cover bidders and genuine competitors&rdquo;&mdash;is precisely what Conley&ndash;Decarolis&rsquo;s group detection algorithm also produces, and the latter does so without requiring a threshold on a loss distribution. The paper must articulate clearly what the incremental contribution is. Operational simplicity (FL requires only participation counts, not co-bidding matrices) is a legitimate advantage but should be stated explicitly and benchmarked.</p>
+      <p><strong>Location:</strong> Section 2, Section 1.</p>
+      <p><strong>Why it matters for RAND:</strong> RAND scrutinizes incremental contribution relative to the existing IO literature. &ldquo;New data, similar question&rdquo; is not sufficient.</p>
+      <p><strong>What would resolve it:</strong> Add a direct comparison paragraph: what data does FL require vs. Conley&ndash;Decarolis? What does each method detect? Can the methods be combined? Ideally, implement the Conley&ndash;Decarolis algorithm on BEC data and compare the flagged firms/tenders with FL flags.</p>
+    </div>
 
-<div class="comment-block"><h3>[M7] FL novelty relative to Conley-Decarolis (2016, AEJ:Micro)</h3>
-<p><strong>Problem:</strong> Conley &amp; Decarolis detect bidder groups from co-bidding patterns without bid values. The FL screen's claimed advantage&mdash;a "natural partition" of bidders&mdash;is what their algorithm also produces, without requiring an IQR threshold.</p>
-<p><strong>Location:</strong> Section 2, Section 1.</p>
-<p><strong>What would resolve it:</strong> Direct feature-by-feature comparison. Implement Conley-Decarolis on BEC data and compare flagged firms.</p></div>
+    <h3 class="major-comment-heading">[M8] The bid dispersion test is ambiguous</h3>
+    <div class="sub-block">
+      <p><strong>Problem:</strong> The paper finds FL-present tenders have higher log bid standard deviation (0.47&ndash;0.55 log points), interpreted as evidence for Regime 1 (complementary cover bidding). However, Table 6 also shows FL-present tenders have more genuine (non-FL) bidders (0.19 log points). More diverse genuine competition could independently increase bid dispersion through heterogeneous valuations.</p>
+      <p>The critical question is: is the dispersion test computed on FL firms&rsquo; <em>own bids</em> or on <em>all bids</em> in FL-present tenders? Section 7.5 describes a regression of log bid SD on FL presence at the tender-item level. If the dependent variable is the SD of all bids in the tender, the higher dispersion could reflect compositional effects (FL bids are high, genuine bids are competitive, so mixing them increases variance) rather than Regime 1 behavior. Only the SD of FL bids <em>conditional on genuine bid dispersion</em> would isolate the regime effect.</p>
+      <p><strong>Location:</strong> Section 7.5, Table D.2.</p>
+      <p><strong>Why it matters for RAND:</strong> This is the only direct test of Regime 1 vs. Regime 2. If the test cannot distinguish regime-specific cover-bid dispersion from compositional effects, the regime classification is not empirically supported.</p>
+      <p><strong>What would resolve it:</strong> Decompose bid dispersion into (i) within-FL dispersion, (ii) within-non-FL dispersion, and (iii) between-group dispersion. Test whether within-FL dispersion exceeds within-non-FL dispersion controlling for the number of genuine bidders. This directly tests Regime 1.</p>
+    </div>
+  </section>
 
-<div class="comment-block"><h3>[M8] The bid dispersion test is ambiguous</h3>
-<p><strong>Problem:</strong> FL-present tenders show higher log bid SD (0.47&ndash;0.55), interpreted as Regime 1. But FL-present tenders also have more genuine bidders (+0.19 log), which independently increases bid dispersion. Is the SD computed on FL firms' <em>own</em> bids or <em>all</em> bids?</p>
-<p><strong>Location:</strong> Section 7.5, Table D.2.</p>
-<p><strong>What would resolve it:</strong> Decompose dispersion into within-FL, within-non-FL, and between-group components.</p></div>
+  <!-- Section 4: Minor Comments -->
+  <section id="sec4" class="sec-minor">
+    <h2>4. Minor Comments</h2>
+    <ol>
+      <li><strong>Missing citations.</strong> The paper does not cite Kawai, Nakabayashi, and Ortner (2022, &ldquo;Detecting Collusion Through Bidding Patterns,&rdquo; working paper / in progress for RAND), which develops a structural approach to detecting coordinated bidding using bid-level data. It does not cite Decarolis (2014, AER), which studies entry deterrence in Italian procurement. It does not cite Decarolis and Giuffrida (2017), which examines procurement corruption in developing countries. These are close substitutes that RAND referees will know.</li>
+      <li><strong>Sample restriction.</strong> Restriction (iii)&mdash;limiting to item types with at least one FL-present tender&mdash;is non-standard and potentially endogenous. The unrestricted-sample robustness check (coefficient 0.063 vs. 0.064) is reassuring but should be the default specification, not a robustness check.</li>
+      <li><strong>IQR threshold arbitrariness.</strong> The median + 1.5 &times; IQR threshold is acknowledged as non-standard (not the Tukey rule). The economic framing in the footnote (Section 4.2) is an improvement but remains assertion. The threshold sensitivity exercise (Section 9.1) shows coefficients increasing monotonically with stricter thresholds, which is evidence for the screen&rsquo;s validity but also suggests the specific threshold is not &ldquo;optimal&rdquo; in any formal sense.</li>
+      <li><strong>Cross-fitting attenuation.</strong> The cross-fit coefficient (0.036) is 44% smaller than the full-sample OLS (0.064). One fold is significant (0.053), the other is not (0.019). The paper attributes this to power differences between odd and even years, but does not rule out in-sample overfitting of the FL definition. This should be discussed more carefully.</li>
+      <li><strong>Abstract and introduction overstate CADE validation.</strong> The abstract and introduction lead with &ldquo;3.5 times the rate expected by chance&rdquo; without immediately noting that the unconditional odds ratio is only 1.21. The permutation test adjusts for participation intensity, which is appropriate, but the raw OR should be stated prominently for transparency.</li>
+      <li><strong>Table formatting.</strong> Several appendix tables use inconsistent formatting (some with adjustbox, some without; some with threeparttable notes, some with captions only). Standardize across all tables.</li>
+      <li><strong>Convite coefficient interpretation.</strong> The convite coefficient (3.8%) is lower than pregao (9.3%), which is counterintuitive if convite&rsquo;s minimum-bidder requirement creates the strongest incentive for cover bidding. The paper&rsquo;s explanation (Section 8.4) invokes multiple offsetting channels (less scope for calibration + compositional effect of minimum-bidder rule). This is plausible but hand-waving. A formal decomposition would strengthen the argument.</li>
+      <li><strong>Temporal FL definition.</strong> The temporal FL (3-year rolling window) produces a coefficient of 0.070, <em>larger</em> than the full-sample 0.064. This is unexpected&mdash;shorter windows should introduce noise and attenuate. The paper does not explain this.</li>
+      <li><strong>Notation inconsistency.</strong> Equation 1 uses &alpha;<sub>g</sub>, &lambda;<sub>t</sub>, &gamma;<sub>k</sub> for item, year, and PBU FE, but g is described as &ldquo;item group&rdquo; in some places and &ldquo;item type&rdquo; in others. Clarify whether g indexes groups (first two digits) or individual items (full code).</li>
+      <li><strong>BEC representativeness.</strong> The paper analyzes only Sao Paulo&rsquo;s BEC platform. How representative is BEC of Brazilian procurement? BEC is electronic and relatively transparent; the FL screen&rsquo;s performance may differ in less transparent states. A brief discussion of external validity is warranted.</li>
+    </ol>
+  </section>
+
+  <!-- Section 5: Identification Deep-Dive -->
+  <section id="sec5" class="sec-identification">
+    <h2>5. Identification Deep-Dive</h2>
+
+    <h3>5.1 OLS Interpretation</h3>
+    <p>The OLS baseline (Table 5) is the paper&rsquo;s strongest result. The coefficient of 0.064 with item + year + PBU FE represents a conditional correlation: within the same item type, year, and purchasing unit, tenders with FL presence have 6.4% higher negotiated prices. The inclusion of 18,783 item FE, 11 year FE, and 1,308 PBU FE absorbs substantial heterogeneity. The FE-residualized gap of 0.050 log points (now reported in the introduction) shows the conditional comparison is economically meaningful.</p>
+    <p>The OLS cannot be interpreted causally because FL presence is endogenous: cartels choose where to deploy cover bidders, and this choice may be correlated with unobserved tender characteristics (e.g., procurement complexity, product specificity, enforcement intensity). The paper is honest about this limitation. For H1 (FL as screening marker), a conditional correlation with appropriate sensitivity analysis is sufficient.</p>
+    <p>The sensitivity analysis (Cinelli&ndash;Hazlett, RV = 17.5%) is useful: an unobserved confounder would need to explain 17.5% of residual variation in both FL presence and log prices to reduce the coefficient to zero. This is a high bar given the rich FE structure. However, the Cinelli&ndash;Hazlett framework assumes linear confounding and does not account for potentially non-linear selection mechanisms.</p>
+
+    <h3>5.2 Leave-One-Out IV</h3>
+    <p>The LOO instrument (Equation 3) is a supply-side shift instrument in the spirit of Goldsmith-Pinkham et al. (2020). The identifying assumption is that FL activity at other PBUs in the same product-group &times; year cell affects focal-PBU prices only through the probability of FL participation at the focal PBU.</p>
+    <p><strong>Instrument relevance:</strong> The first-stage F-statistic of 396 (Panel A) indicates strong relevance. However, the partial R-squared is extremely low (0.0002), meaning the instrument explains essentially zero variation in FL presence after absorbing fixed effects. This raises the concern that the F-statistic is inflated by the massive sample size rather than reflecting genuine predictive power.</p>
+    <p><strong>Exclusion restriction:</strong> Three threats are discussed in Section 6.2:</p>
+    <ol>
+      <li><em>Correlated demand shocks:</em> If the same product-group experiences price shocks statewide, FL supply at other PBUs correlates with prices at the focal PBU. Item + year + PBU FE mitigate this, but the instrument varies within item-group &times; PBU &times; year cells, so within-cell geographic shocks could still violate exclusion.</li>
+      <li><em>Statewide cartel organization:</em> If cartels coordinate FL deployment across PBUs simultaneously, the LOO instrument captures coordinated entry rather than independent supply variation. The balance tests (Table B.8) are the diagnostic here, and they fail: all four observables are significantly predicted by the instrument.</li>
+      <li><em>Enforcement variation:</em> If enforcement intensity varies across PBUs and correlates with both FL supply and prices, the instrument is invalid. PBU FE absorb time-invariant enforcement differences but not time-varying enforcement changes.</li>
+    </ol>
+    <p><strong>Specification sensitivity:</strong> The Panel A estimate (0.194) rises to 3.64 in Panel C (item-group &times; year FE). The paper correctly identifies this as weak-instrument amplification, but the magnitude sensitivity (19&times; increase from Panel A to Panel C) is extreme and suggests the IV estimate is fragile.</p>
+    <p><strong>LATE interpretation:</strong> The compressed LATE paragraph (Section 7.2) now states the IV identifies a LATE for complier tenders. This is appropriate, but the paper should note that the complier population&mdash;tenders whose FL status is shifted by supply-side availability at other PBUs&mdash;may not be representative of all FL-present tenders.</p>
+
+    <h3>5.3 Bajari&ndash;Ye Implementation</h3>
+    <p>The paper implements the Bajari and Ye (2003) tests for exchangeability and conditional independence. The first stage regresses log bid values on firm size, firm age, CNAE sector dummies, number of bids, and item and year fixed effects.</p>
+    <p><strong>Critical concern:</strong> The inclusion of <em>number of bids</em> in the first-stage bid equation is problematic. The number of bids in a tender is an equilibrium outcome jointly determined with bid levels. FL presence mechanically increases the number of bids (the paper shows this in Table 6). If n_bids is included as a regressor, the first-stage residuals capture (in part) the prediction error from an endogenous variable, which mechanically correlates with FL status. Bajari and Ye (2003, p. 978) specify that first-stage regressors should be &ldquo;cost variables&rdquo;&mdash;factors that shift bidders&rsquo; costs, not equilibrium market outcomes. Firm size and CNAE sector are legitimate cost shifters; number of bids is not.</p>
+    <p>To assess whether this drives the exchangeability violation, the paper should re-estimate the first stage excluding n_bids and re-compute the KS statistic and pairwise products.</p>
+
+    <h3>5.4 Callaway&ndash;Sant&rsquo;Anna DiD</h3>
+    <p>The staggered DiD uses market-level panels (item &times; PBU &times; year) with treatment defined as first FL entry. The C&amp;S ATT of 0.014 (SE = 0.039) is null. The paper&rsquo;s power analysis (MDE = 0.076) is correct: the design cannot detect effects of the magnitude estimated by OLS (0.064) at the 5% level.</p>
+    <p>The key question is whether the &ldquo;treatment&rdquo;&mdash;first FL entry into a market&mdash;is plausibly exogenous. If cartels form and then deploy FL firms into markets they intend to rig, the treatment timing is endogenous to cartel formation, which precedes FL entry. The DiD design would then suffer from the same endogeneity as the cross-sectional OLS. The paper does not discuss the exogeneity of treatment timing.</p>
+  </section>
+
+  <!-- Section 6: Theory Evaluation -->
+  <section id="sec6" class="sec-theory">
+    <h2>6. Theory Evaluation</h2>
+
+    <h3>6.1 Framework Assessment</h3>
+    <p>Section 3 presents a cartel profit maximization problem (Equation 1) and two cover-bidding regimes. The FOC asserts that the optimal number of cover bidders m* is increasing in n (genuine competitors) and decreasing in theta (detection probability). These comparative statics are stated without derivation.</p>
+    <p>The two regimes are defined by distributional assumptions:</p>
+    <ul>
+      <li>Regime 1: cover bids ~ U[b&#772;, b&#772; + &delta;], b&#772; &gt; b*</li>
+      <li>Regime 2: cover bids ~ N(&mu;<sub>c</sub>, &sigma;<sub>c</sub>&sup2;), &mu;<sub>c</sub> close to b*, &sigma;<sub>c</sub> &lt; &sigma;<sub>genuine</sub></li>
+    </ul>
+    <p>These are not equilibrium outcomes&mdash;they are assumed bid distributions. A proper model would derive the cover-bid distribution as a best response given the cartel&rsquo;s information structure and the genuine bidders&rsquo; strategies. For example, under Regime 1, why do cover bidders submit bids from a uniform distribution? Is this optimal given a procurement scoring rule? Under Regime 2, why is &sigma;<sub>c</sub> &lt; &sigma;<sub>genuine</sub>? Is this a result of information sharing within the cartel?</p>
+
+    <h3>6.2 Untested Predictions</h3>
+    <p>Prediction 3 (Regime identification) is tested only visually (Figure 7). There is no formal variance-ratio test comparing FL and non-FL bid dispersions, no likelihood ratio test between the two regime specifications, and no model selection criterion. A visual comparison of density plots does not meet RAND&rsquo;s evidentiary standard.</p>
+
+    <h3>6.3 Missing Theoretical Prediction</h3>
+    <p>The network-split result&mdash;that the price effect concentrates in competitive markets&mdash;is one of the paper&rsquo;s most interesting findings, but it lacks theoretical grounding. The conceptual framework predicts that cover bidding is more profitable when detection probability theta is low (Section 3.4), which the paper associates with small PBUs. But it does not predict that cover bidding should be absent in concentrated markets. In fact, concentrated markets with few genuine bidders are precisely where minimum-bidder requirements (convite) create the strongest incentive for cover bidding. The paper needs a theoretical explanation for why concentrated-market FL firms show zero price effect.</p>
+  </section>
+
+  <!-- Section 7: Literature Positioning -->
+  <section id="sec7" class="sec-literature">
+    <h2>7. Literature Positioning</h2>
+
+    <h3>7.1 Conley&ndash;Decarolis (2016, AEJ:Micro)</h3>
+    <p>This is the closest antecedent. Conley and Decarolis detect bidder groups from co-bidding patterns in Italian procurement without requiring bid values. The FL screen is operationally simpler (participation counts vs. co-bidding matrices) but less general (it identifies a specific firm type rather than detecting arbitrary group structures). The paper should provide a direct feature-by-feature comparison and ideally implement Conley&ndash;Decarolis on BEC data.</p>
+
+    <h3>7.2 Chassang&ndash;Ortner (2022, Econometrica)</h3>
+    <p>Chassang and Ortner develop <em>robust screens</em> for non-competitive bidding that are valid under minimal assumptions. The FL screen is not robust in the Chassang&ndash;Ortner sense&mdash;it relies on a specific threshold and distributional assumption. The paper should discuss where FL sits relative to robust screening methods.</p>
+
+    <h3>7.3 Missing Citations</h3>
+    <p>The paper should cite:</p>
+    <ul>
+      <li>Kawai, Nakabayashi, and Ortner (working paper): structural detection of coordinated bidding</li>
+      <li>Decarolis (2014, AER): entry deterrence in Italian procurement</li>
+      <li>Decarolis and Giuffrida (2017): procurement corruption in developing countries</li>
+      <li>Kawai and Nakabayashi (2014): detecting collusion through close bids</li>
+    </ul>
+
+    <h3>7.4 Developing-Country Contribution</h3>
+    <p>The paper argues that the FL screen is valuable for developing countries where bid-level data are unavailable. This is a genuine practical contribution but is not an IO contribution. RAND distinguishes between policy relevance and intellectual novelty. The developing-country context provides a useful laboratory (large sample, institutional variation between convite and pregao, minimum-bidder rules) but does not by itself advance the IO frontier.</p>
+  </section>
+
+  <!-- Section 8: Conclusion -->
+  <section id="sec8" class="sec-conclusion">
+    <h2>8. Conclusion and Conditions</h2>
+    <p>This paper presents a genuinely useful cartel screening tool (FL) with strong descriptive evidence for its empirical validity (H1). The OLS evidence&mdash;6.4% higher prices in FL-present tenders after absorbing item, year, and PBU fixed effects, with a robustness value of 17.5% and external validation against CADE convictions&mdash;is compelling for a screening-marker paper. However, the paper&rsquo;s causal claims (H2) rest on an IV that fails balance, Bajari&ndash;Ye tests with internal inconsistencies, and a null DiD. RAND requires either clean causal identification or a structural contribution, and this paper currently provides neither.</p>
+    <p>I recommend <strong>Reject with invitation to resubmit</strong> with three conditions:</p>
+    <ol>
+      <li><strong>Resolve the identification problem.</strong> Either find clean exogenous variation in FL exposure (institutional change, geographic discontinuity, policy shock) or drop the causal claim entirely and reframe as a detection methodology paper with the OLS evidence as the empirical backbone.</li>
+      <li><strong>Fix the Bajari&ndash;Ye implementation.</strong> Remove number of bids from the first-stage bid equation (it is an equilibrium outcome, not a cost shifter). Re-estimate exchangeability and conditional-independence tests. Separately test the fake-groups placebo within FL-present and FL-absent tenders.</li>
+      <li><strong>Provide a theoretical account of the network-split result.</strong> Explain why concentrated-market FL firms show zero price effect despite having the network characteristics most consistent with organized collusion. This is either a fundamental challenge to H2 or an important insight about cover-bidding equilibria&mdash;but it cannot be left unexplained.</li>
+    </ol>
+    <p><strong>Is RAND the right journal?</strong> If the authors can deliver on condition (1)&mdash;finding clean exogenous variation or developing a structural model&mdash;then yes. If the paper remains an applied screening paper with OLS evidence and suggestive causal tests, it is better suited to the <em>International Journal of Industrial Organization</em> or the <em>Journal of Law, Economics, &amp; Organization</em>, where the policy contribution and CADE validation would be more valued. The honest assessment is that RAND requires either a clean quasi-experiment or a structural model; the current paper has neither.</p>
+    <hr>
+    <p><em>Word count: approximately 4,200 words.</em></p>
+  </section>
+
 </div>
 
-<hr>
-
-<div class="sec sec-minor">
-<h2 id="s4">4. Minor Comments</h2>
-<ol>
-<li><strong>Missing citations:</strong> Kawai-Nakabayashi-Ortner (working paper), Decarolis (2014 AER), Decarolis-Giuffrida (2017), Kawai-Nakabayashi (2014).</li>
-<li><strong>Sample restriction:</strong> Restricting to items with &ge;1 FL tender is non-standard. The unrestricted check (0.063 vs 0.064) should be the default.</li>
-<li><strong>IQR threshold:</strong> Monotonically increasing coefficients with stricter thresholds suggests no "optimal" threshold.</li>
-<li><strong>Cross-fitting attenuation:</strong> 0.036 vs 0.064 (44% smaller). One fold insignificant. Overfitting of FL definition not ruled out.</li>
-<li><strong>CADE overstatement:</strong> Abstract leads with 3.5&times; without noting unconditional OR = 1.21.</li>
-<li><strong>Table formatting:</strong> Inconsistent across appendix tables (adjustbox, threeparttable usage).</li>
-<li><strong>Convite coefficient:</strong> 3.8% &lt; 9.3% pregao is counterintuitive given minimum-bidder incentive. Explanation is plausible but informal.</li>
-<li><strong>Temporal FL:</strong> Coefficient 0.070 &gt; baseline 0.064 unexplained. Shorter windows should attenuate.</li>
-<li><strong>Notation:</strong> &alpha;<sub>g</sub> indexes "item group" or "item type"? Inconsistent usage.</li>
-<li><strong>BEC representativeness:</strong> No discussion of external validity beyond S&atilde;o Paulo.</li>
-</ol>
-</div>
-
-<hr>
-
-<div class="sec sec-id">
-<h2 id="s5">5. Identification Deep-Dive</h2>
-<h3>5.1 OLS Interpretation</h3>
-<p>The OLS baseline (Table 5) is the paper's strongest result. The 0.064 coefficient with item + year + PBU FE represents a conditional correlation within the same item type, year, and purchasing unit. The FE-residualized gap of 0.050 log points shows the conditional comparison is meaningful. The Cinelli&ndash;Hazlett sensitivity (RV = 17.5%) provides a high bar for confounders. For H1 (screening marker), this is sufficient. It cannot be interpreted causally because FL presence is endogenous.</p>
-
-<h3>5.2 Leave-One-Out IV</h3>
-<p>The F-statistic of 396 (Panel A) indicates strong relevance, but the partial R&sup2; is extremely low (0.0002). The balance tests (Table B.8) fail on all four observables. Panel C produces 3.64 (19&times; Panel A), indicating extreme specification sensitivity. The LATE interpretation is compressed but appropriate; the complier population may not be representative.</p>
-
-<h3>5.3 Bajari&ndash;Ye Implementation</h3>
-<p><strong>Critical concern:</strong> Number of bids is included in the first-stage bid equation. This is an equilibrium outcome, not a cost shifter. Bajari &amp; Ye (2003, p.978) require cost variables. If n_bids is correlated with FL status (it is, per Table 6), the residuals mechanically correlate with FL classification, potentially generating the exchangeability violation.</p>
-
-<h3>5.4 Callaway&ndash;Sant'Anna DiD</h3>
-<p>ATT = 0.014 (SE = 0.039), null. MDE = 0.076 exceeds OLS (0.064). Treatment timing (first FL entry) may be endogenous to cartel formation. The design cannot distinguish low power from no causal effect.</p>
-</div>
-
-<hr>
-
-<div class="sec sec-theory">
-<h2 id="s6">6. Theory Evaluation</h2>
-<h3>6.1 Framework Assessment</h3>
-<p>The two regimes are defined by distributional assumptions (U[b&#773;, b&#773;+&delta;] vs N(&mu;<sub>c</sub>, &sigma;<sub>c</sub>&sup2;)), not derived from equilibrium conditions. The FOC for m* is asserted without derivation. No game tree, no strategic interaction, no equilibrium concept.</p>
-
-<h3>6.2 Untested Predictions</h3>
-<table>
-<tr><th>Prediction</th><th>Test</th><th>Assessment</th></tr>
-<tr><td>1 (Price)</td><td>Table 5</td><td>Tested</td></tr>
-<tr><td>2 (Selection)</td><td>Table 6</td><td>Tested</td></tr>
-<tr><td>3 (Regime ID)</td><td>Figure 7</td><td>Visual only; no formal test</td></tr>
-<tr><td>4 (Exchangeability)</td><td>Table 11-A</td><td>Tested (KS)</td></tr>
-<tr><td>5 (Bid heterogeneity)</td><td>Table 11-B</td><td>Contradicted under tender FE</td></tr>
-</table>
-
-<h3>6.3 Missing Theoretical Prediction</h3>
-<p>The network-split result&mdash;price effect in competitive markets only&mdash;is the paper's most interesting finding but has no theoretical grounding. The framework predicts cover bidding decreases with detection probability &theta;, not with market concentration.</p>
-</div>
-
-<hr>
-
-<div class="sec sec-lit">
-<h2 id="s7">7. Literature Positioning</h2>
-<h3>7.1 Conley-Decarolis (2016, AEJ:Micro)</h3>
-<p>The closest antecedent. Detects bidder groups from co-bidding patterns without bid values. FL is operationally simpler but less general. Direct comparison needed.</p>
-
-<h3>7.2 Chassang-Ortner (2022, Econometrica)</h3>
-<p>Develops <em>robust</em> screens valid under minimal assumptions. FL is not robust in the Chassang-Ortner sense&mdash;it relies on a specific threshold and distributional assumption.</p>
-
-<h3>7.3 Missing Citations</h3>
-<p>Kawai-Nakabayashi-Ortner (working paper), Decarolis (2014 AER), Decarolis-Giuffrida (2017), Kawai-Nakabayashi (2014).</p>
-
-<h3>7.4 Developing-Country Contribution</h3>
-<p>Genuine practical contribution but not an IO contribution. RAND distinguishes policy relevance from intellectual novelty.</p>
-</div>
-
-<hr>
-
-<div class="sec sec-conclusion">
-<h2 id="s8">8. Conclusion and Conditions</h2>
-<p>The H1 contribution&mdash;FL as a practical screening tool&mdash;is genuine and empirically well-supported. However, the causal claims (H2) rest on an IV that fails balance, Bajari&ndash;Ye tests with internal inconsistencies, and a null DiD. RAND requires either clean causal identification or a structural contribution.</p>
-
-<p><strong>Three conditions for R&amp;R at RAND:</strong></p>
-<ol>
-<li><strong>Resolve identification.</strong> Find clean exogenous variation or drop the causal claim and reframe as a detection methodology paper.</li>
-<li><strong>Fix Bajari&ndash;Ye.</strong> Remove n_bids from first stage. Re-test fake-groups placebo within FL-present/absent tenders separately.</li>
-<li><strong>Explain network-split result.</strong> Why do concentrated-market FL firms show zero price effect despite having the strongest cover-bidding network signatures?</li>
-</ol>
-
-<p><strong>Is RAND the right journal?</strong> If the authors deliver on condition (1), yes. Otherwise, IJIO or JLEO would be more appropriate, where the policy contribution and CADE validation are more valued.</p>
-</div>
-
-</div>
 </body>
 </html>
