@@ -1,5 +1,6 @@
 # ==========================================================================
 # structural_estimation.R — M1: Structural parameter estimation (FIXED)
+# Uses full 40M bid-level dataset from v3/data/processed/bid_level_analysis.parquet
 # ==========================================================================
 cat("=== Structural Estimation (M1) ===\n")
 suppressPackageStartupMessages({library(data.table);library(arrow);library(fixest)})
@@ -82,12 +83,12 @@ cv_ratio <- (sd(fl_pos$log_spread)/abs(mean(fl_pos$log_spread))) /
 cat("  Markup:", round(pct_mk, 1), "%\n")
 cat("  CV ratio:", round(cv_ratio, 3), "\n")
 
-# Bootstrap (100 reps)
-cat("\n--- Bootstrap (100 reps) ---\n")
+# Bootstrap (500 reps)
+cat("\n--- Bootstrap (500 reps) ---\n")
 set.seed(42)
 tids <- unique(fl_pos[, .(oc_code, item_code)])
-b_d <- b_e <- b_s <- numeric(100)
-for(b in 1:100) {
+b_d <- b_e <- b_s <- numeric(500)
+for(b in 1:500) {
   bt <- tids[sample(.N, .N, replace=TRUE)]
   bfl <- fl_pos[bt, on=.(oc_code, item_code), nomatch=NULL, allow.cartesian=TRUE]
   if(nrow(bfl) > 50) {

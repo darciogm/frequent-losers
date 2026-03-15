@@ -6,7 +6,7 @@
 #          convictions using staggered DiD on market-level panel.
 #
 # Design:
-#   Unit:      market = item_2digit × pbu (11-char purchasing unit)
+#   Unit:      market = pbu (11-char purchasing unit)
 #   Period:    year (2009–2019)
 #   Treatment: market ever had a CADE-convicted firm participating
 #   Timing:    first conviction year for any convicted firm in that market
@@ -49,6 +49,9 @@ NCORES <- min(parallel::detectCores(logical = FALSE), 16L)
 setDTthreads(NCORES)
 setFixest_nthreads(NCORES)
 setFixest_estimation(lean = TRUE)
+
+# Null-coalescing operator (base R 4.4+ has %||%; define here for compatibility)
+`%||%` <- function(a, b) if (!is.null(a)) a else b
 
 # ---- Helper: write flag and exit --------------------------------------------
 write_flag <- function(msg) {
@@ -179,26 +182,23 @@ cat("  BEC rows loaded:", formatC(nrow(bec), big.mark = ","), "\n")
 #   chars 12-15 : year
 #   chars 16-17 : "OC"
 #   chars 18-22 : OC sequence number
-#   chars 23+   : item_code + phase + description
-bec[, pbu        := substr(po_item_merge_key, 1, 11)]
-bec[, year_chr   := substr(po_item_merge_key, 12, 15)]
-bec[, year       := suppressWarnings(as.integer(year_chr))]
+#   chars 23+   : item_code + phase_digit + description (not cleanly parseable)
+# Full 22-char OC code (numerodaoc) = chars 1-22 of po_item_merge_key.
+bec[, pbu      := substr(po_item_merge_key, 1, 11)]
+bec[, year_chr := substr(po_item_merge_key, 12, 15)]
+bec[, year     := suppressWarnings(as.integer(year_chr))]
 
-# item_code: use códigoitem if available, else parse from key
-if ("códigoitem" %in% names(bec)) {
-  bec[, item_code := as.character(códigoitem)]
+# OC code: chars 1-22 of po_item_merge_key, or direct column if present
+if ("numerodaoc" %in% names(bec)) {
+  bec[, oc_code := as.character(numerodaoc)]
 } else {
-  bec[, item_code := substr(po_item_merge_key, 23, nchar(po_item_merge_key))]
+  bec[, oc_code := substr(po_item_merge_key, 1, 22)]
 }
-
-# 2-digit item category
-bec[, item_2digit := substr(item_code, 1, 2)]
 
 # Price: preconegociado (negotiated price per unit)
 if ("preconegociado" %in% names(bec)) {
   bec[, price := suppressWarnings(as.numeric(preconegociado))]
 } else {
-  # fallback: no price column available
   bec[, price := NA_real_]
 }
 
@@ -207,17 +207,15 @@ if ("po_phase_code" %in% names(bec)) {
   bec <- bec[po_phase_code %in% c(2, 3)]
 }
 
-# Keep valid years
-bec <- bec[!is.na(year) & year >= 2009 & year <= 2019]
-bec <- bec[nchar(pbu) == 11 & nchar(item_2digit) >= 1]
+# Keep valid years and valid PBU length (11 chars)
+bec <- bec[!is.na(year) & year >= 2009 & year <= 2019 & nchar(pbu) == 11]
 cat("  BEC rows after filters:", formatC(nrow(bec), big.mark = ","), "\n")
+cat("  Sample oc_code from BEC:", head(bec$oc_code, 3), "\n")
 
-# OC identifier for joining with firm-tender map
-if ("numerodaoc" %in% names(bec)) {
-  bec[, oc_code := as.character(numerodaoc)]
-} else {
-  bec[, oc_code := substr(po_item_merge_key, 18, 22)]
-}
+# NOTE: Market definition uses pbu × year (not item_2digit × pbu × year).
+# item_2digit cannot be reliably extracted from BEC chars 23+ (contains description
+# text), and a BEC×FTM join on oc_code alone would introduce many-to-many duplication.
+# pbu × year provides more power and avoids the item_code parsing problem.
 
 # ============================================================================
 # 3. LOAD FIRM-TENDER MAP — identify which CADE firms participated where
@@ -233,10 +231,10 @@ ftm_schema <- schema(read_parquet(FTM_PARQUET, as_data_frame = FALSE))
 ftm_cols_avail <- names(ftm_schema)
 cat("  firm_tender_map columns:", paste(ftm_cols_avail, collapse = ", "), "\n")
 
-# We need: firm CNPJ, OC identifier, item identifier
-# Typical columns: códigofornecedor, numerodaoc, códigoitem (or oc_code, item_code)
-need_ftm <- c("códigofornecedor", "numerodaoc", "códigoitem")
-alt_ftm  <- c("firm_cnpj", "oc_code", "item_code")
+# We need: firm CNPJ, OC identifier (to derive pbu and year)
+# Confirmed columns: códigofornecedor, numerodaoc, códigoitem
+need_ftm <- c("códigofornecedor", "numerodaoc")
+alt_ftm  <- c("firm_cnpj", "oc_code")
 use_ftm  <- if (all(need_ftm %in% ftm_cols_avail)) need_ftm else
             if (all(alt_ftm  %in% ftm_cols_avail)) alt_ftm  else
             intersect(c(need_ftm, alt_ftm), ftm_cols_avail)
@@ -249,16 +247,23 @@ cat("  FTM rows:", formatC(nrow(ftm), big.mark = ","), "\n")
 # Standardise column names
 if ("códigofornecedor" %in% names(ftm)) setnames(ftm, "códigofornecedor", "firm_cnpj_raw")
 if ("firm_cnpj"        %in% names(ftm)) setnames(ftm, "firm_cnpj",        "firm_cnpj_raw")
-if ("numerodaoc"  %in% names(ftm)) setnames(ftm, "numerodaoc",  "oc_code")
-if ("códigoitem"  %in% names(ftm)) setnames(ftm, "códigoitem",  "item_code_ftm")
+if ("numerodaoc"       %in% names(ftm)) setnames(ftm, "numerodaoc",       "oc_code")
 
 ftm[, cnpj_clean := clean_cnpj(firm_cnpj_raw)]
 ftm[, oc_code    := as.character(oc_code)]
-ftm[, item_code_ftm := as.character(item_code_ftm)]
+
+# Derive pbu and year from numerodaoc (= oc_code):
+#   pbu  = chars 1-11 of oc_code (códigounidadecompradora)
+#   year = chars 12-15 of oc_code
+ftm[, pbu  := substr(oc_code, 1, 11)]
+ftm[, year := suppressWarnings(as.integer(substr(oc_code, 12, 15)))]
+
+cat("  Sample oc_code from FTM:", head(ftm$oc_code, 3), "\n")
 
 # Keep only CADE firms
 cade_cnpjs <- unique(firm_conv$cnpj_clean)
-ftm_cade <- ftm[cnpj_clean %in% cade_cnpjs]
+ftm_cade <- ftm[cnpj_clean %in% cade_cnpjs & nchar(pbu) == 11 &
+                !is.na(year) & year >= 2009 & year <= 2019]
 cat("  FTM rows for CADE firms:", formatC(nrow(ftm_cade), big.mark = ","), "\n")
 rm(ftm); gc(verbose = FALSE)
 
@@ -324,32 +329,37 @@ if (has_fp) {
 # 5. CONSTRUCT MARKET × YEAR PANEL
 # ============================================================================
 cat("\n--- 5. Constructing market-year panel ---\n")
+#
+# Market unit: pbu (11-char purchasing unit) × year
+# Using pbu×year rather than item_2digit×pbu×year because:
+#   (a) item_2digit cannot be reliably parsed from BEC chars 23+ (contains text)
+#   (b) pbu×year gives more observations per market, improving DiD power
+# CADE firm participation is identified directly from firm_tender_map (oc_code
+# encodes pbu in chars 1-11 and year in chars 12-15), avoiding any BEC join.
 
-# 5a. Market-year price aggregate from BEC collapse
+# 5a. Market-year price aggregate from BEC collapse (pbu × year)
 bec[, log_price := log(price)]
 bec[is.infinite(log_price) | is.nan(log_price), log_price := NA_real_]
 
-# Market = item_2digit × pbu
 market_price <- bec[
   !is.na(log_price) & is.finite(log_price),
   .(log_price = mean(log_price, na.rm = TRUE),
     n_tenders  = .N),
-  by = .(item_2digit, pbu, year)
+  by = .(pbu, year)
 ]
-cat("  Market-year cells:", formatC(nrow(market_price), big.mark = ","), "\n")
+cat("  Market-year cells (pbu×year):", formatC(nrow(market_price), big.mark = ","), "\n")
 
 # 5b. Merge FL count into market-year if available
+# LOSERS_rebuilt has numerodaoc + códigoitem + losers_count.
+# Join losers to BEC via oc_code (= numerodaoc), then aggregate to pbu×year.
 if (!is.null(fl_count_per_oc) && nrow(fl_count_per_oc) > 0) {
-  # Join FL counts via BEC key (oc_code + item_code → pbu + year via bec)
-  bec_keys <- unique(bec[, .(oc_code, pbu, year, item_2digit,
-                              item_code = item_code)])
-  fl_join <- merge(fl_count_per_oc,
-                   bec_keys[, .(oc_code, pbu, year, item_2digit)],
-                   by = "oc_code", all.x = FALSE)
+  # bec already has oc_code and pbu, year from po_item_merge_key extraction
+  bec_oc_pbu <- unique(bec[, .(oc_code, pbu, year)])
+  fl_join <- merge(fl_count_per_oc, bec_oc_pbu, by = "oc_code", all.x = FALSE)
   market_fl <- fl_join[, .(fl_count = sum(fl_count, na.rm = TRUE)),
-                       by = .(item_2digit, pbu, year)]
+                       by = .(pbu, year)]
   market_price <- merge(market_price, market_fl,
-                        by = c("item_2digit", "pbu", "year"), all.x = TRUE)
+                        by = c("pbu", "year"), all.x = TRUE)
   market_price[is.na(fl_count), fl_count := 0L]
   cat("  FL count merged into panel\n")
 } else {
@@ -357,38 +367,33 @@ if (!is.null(fl_count_per_oc) && nrow(fl_count_per_oc) > 0) {
 }
 
 # 5c. Identify treated markets via CADE firm participation
-# Join CADE FTM with BEC to get (item_2digit, pbu) for each CADE participation
-bec_mkt <- unique(bec[, .(oc_code, pbu, item_2digit)])
-ftm_cade[, oc_code := as.character(oc_code)]
-cade_mkt <- merge(
-  ftm_cade[, .(cnpj_clean, oc_code)],
-  bec_mkt,
-  by = "oc_code",
-  all.x = FALSE
-)
+# ftm_cade already has pbu (= substr(oc_code, 1, 11)) and year derived in section 3.
+# We identify which pbu markets ever had a CADE firm participating.
+cade_mkt <- unique(ftm_cade[, .(cnpj_clean, pbu, year)])
 cade_mkt <- merge(cade_mkt, firm_conv, by = "cnpj_clean", all.x = TRUE)
 cade_mkt <- cade_mkt[!is.na(conviction_year)]
 
-cat("  CADE market-participations matched:", nrow(cade_mkt), "\n")
+cat("  CADE pbu×year participations:", nrow(cade_mkt), "\n")
 
 if (nrow(cade_mkt) == 0) {
   write_flag(paste(
-    "CADE firm participations could not be matched to BEC markets.",
-    "OC-level join between firm_tender_map and BEC_collapse yielded zero rows.",
-    "Possible cause: oc_code formatting mismatch between datasets."
+    "No CADE firm participations matched to valid pbu×year cells.",
+    "Check that conviction_year merge produced non-NA rows.",
+    "firm_conv rows:", nrow(firm_conv),
+    "ftm_cade rows:", nrow(ftm_cade)
   ))
   quit(save = "no", status = 0)
 }
 
-# Treatment timing: first conviction year of any CADE firm per market
+# Treatment timing: earliest conviction year of any CADE firm in each pbu
 treat_timing <- cade_mkt[, .(first_treat_year = min(conviction_year, na.rm = TRUE)),
-                          by = .(item_2digit, pbu)]
+                          by = pbu]
 n_treated <- nrow(treat_timing)
-cat("  Treated markets:", n_treated, "\n")
+cat("  Treated PBU markets:", n_treated, "\n")
 
 if (n_treated < 5) {
   write_flag(paste(
-    "Only", n_treated, "treated markets identified — insufficient for DiD.",
+    "Only", n_treated, "treated PBU markets identified — insufficient for DiD.",
     "Minimum requirement: 5 treated markets.",
     "Check CNPJ matching between CADE crossmatch and firm_tender_map."
   ))
@@ -396,16 +401,14 @@ if (n_treated < 5) {
 }
 
 # Merge treatment timing into market panel
-panel <- merge(market_price, treat_timing,
-               by = c("item_2digit", "pbu"), all.x = TRUE)
+panel <- merge(market_price, treat_timing, by = "pbu", all.x = TRUE)
 
-# Never-treated markets: first_treat_year = 0 (convention for did package)
-# In fixest/staggered: NA = never treated, which we keep as NA
+# Treated indicator and post indicator
 panel[, treated := as.integer(!is.na(first_treat_year))]
 panel[, post    := as.integer(!is.na(first_treat_year) & year >= first_treat_year)]
 
-# Unit identifier (market_id)
-panel[, market_id := .GRP, by = .(item_2digit, pbu)]
+# Unit identifier (market_id = one integer per pbu)
+panel[, market_id := .GRP, by = pbu]
 setkey(panel, market_id, year)
 
 n_control   <- uniqueN(panel[treated == 0, market_id])
@@ -743,7 +746,7 @@ if (!is.null(es_dt) && nrow(es_dt) > 0) {
                         " | Never-treated: ", n_control),
       x        = "Years relative to first conviction",
       y        = "ATT (log price)",
-      caption  = paste0("Unit: item_2digit × PBU. Period: 2009–2019.\n",
+      caption  = paste0("Unit: PBU (purchasing unit). Period: 2009–2019.\n",
                          "Shaded band = 95% CI. Vertical dotted line = event time 0.")
     ) +
     theme_bw(base_size = 11) +

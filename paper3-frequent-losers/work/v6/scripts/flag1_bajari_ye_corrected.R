@@ -61,7 +61,9 @@ if (has_cache) {
 }
 
 # ---- Check bid-level data ---------------------------------------------------
+# bid_level_full.parquet has NO price data; use v3 bid_level_analysis.parquet instead
 BID_CACHE <- "/tmp/p3_bid_level.rds"
+BID_PARQUET_V3 <- file.path(BASE_DIR, "v3", "data", "processed", "bid_level_analysis.parquet")
 BID_PARQUET <- file.path(DATA_DIR, "bid_level_full.parquet")
 FP_PARQUET  <- file.path(DATA_DIR, "FREQ_PARTICIP_rebuilt.parquet")
 FIRMS_PARQUET <- file.path(DATA_DIR, "Firms_final.parquet")
@@ -83,7 +85,48 @@ if (has_bid_cache) {
   cat("  Loading bid-level from RDS cache...\n")
   bl <- readRDS(BID_CACHE)
   if (!is.data.table(bl)) bl <- as.data.table(bl)
-} else if (has_bid_parquet) {
+
+  # Standardize column names from RDS cache (may use Portuguese originals)
+  if ("códigofornecedor" %in% names(bl) && !"firm_id" %in% names(bl)) {
+    setnames(bl, "códigofornecedor", "firm_id")
+  } else {
+    bl_col <- grep("fornecedor", names(bl), value = TRUE, ignore.case = TRUE)
+    if (length(bl_col) == 1 && bl_col != "firm_id") setnames(bl, bl_col, "firm_id")
+  }
+  setnames(bl, "numerodaoc", "oc_code", skip_absent = TRUE)
+  setnames(bl, "códigoitem", "item_code", skip_absent = TRUE)
+
+  # Won flag
+  if ("flagvencedor" %in% names(bl) && !"won" %in% names(bl)) {
+    setnames(bl, "flagvencedor", "won")
+  } else {
+    won_col <- grep("vencedor|won|winner", names(bl), value = TRUE, ignore.case = TRUE)
+    if (length(won_col) > 0 && !"won" %in% names(bl)) setnames(bl, won_col[1], "won")
+  }
+
+  # Bid price
+  if (!"bid_price" %in% names(bl)) {
+    price_col <- grep("valor|preco|price|lance", names(bl), value = TRUE, ignore.case = TRUE)
+    if (length(price_col) > 0) setnames(bl, price_col[1], "bid_price")
+  }
+
+  cat(sprintf("  Loaded %s rows, %d cols from RDS cache\n", pfmt_int(nrow(bl)), ncol(bl)))
+  cat(sprintf("  Columns: %s\n", paste(names(bl), collapse = ", ")))
+
+  # Check if bid_price exists; if not, this cache has no prices — fall back to v3
+  if (!"bid_price" %in% names(bl)) {
+    cat("  WARNING: RDS cache has no bid_price column. Trying v3 data...\n")
+    bl <- NULL
+  }
+}
+
+if (is.null(bl) && file.exists(BID_PARQUET_V3)) {
+  cat("  Loading v3/bid_level_analysis.parquet (40M rows with prices)...\n")
+  bl <- as.data.table(read_parquet(BID_PARQUET_V3))
+  # v3 data already has: firm_id, oc_code, item_code, won, bid_price, is_fl
+  cat(sprintf("  Loaded %s rows, %d cols from v3\n", pfmt_int(nrow(bl)), ncol(bl)))
+  cat(sprintf("  Columns: %s\n", paste(names(bl), collapse = ", ")))
+} else if (is.null(bl) && has_bid_parquet) {
   cat("  Loading bid_level_full.parquet (40M rows, may take a moment)...\n")
   bl <- as.data.table(read_parquet(BID_PARQUET))
 
@@ -185,8 +228,12 @@ firm_cnae_available <- FALSE
 
 if (has_firms) {
   firms <- as.data.table(read_parquet(FIRMS_PARQUET))
-  firms_col <- grep("fornecedor", names(firms), value = TRUE, ignore.case = TRUE)
-  if (length(firms_col) == 1) setnames(firms, firms_col, "firm_id")
+  if ("códigofornecedor" %in% names(firms)) {
+    setnames(firms, "códigofornecedor", "firm_id")
+  } else {
+    firms_col <- grep("^codigo.*fornecedor$|^firm_id$", names(firms), value = TRUE, ignore.case = TRUE)
+    if (length(firms_col) >= 1) setnames(firms, firms_col[1], "firm_id")
+  }
 
   cat(sprintf("  Firms columns: %s\n", paste(names(firms), collapse = ", ")))
 
@@ -203,7 +250,7 @@ if (has_firms) {
   }
 
   # CNAE sector (2-digit)
-  cnae_col <- grep("cnae|atividade", names(firms), value = TRUE, ignore.case = TRUE)
+  cnae_col <- grep("cnae_fiscal|cnae$", names(firms), value = TRUE, ignore.case = TRUE)
   if (length(cnae_col) > 0) {
     firms[, cnae_raw := as.character(firms[[cnae_col[1]]])]
     firms[, cnae_2d := substr(cnae_raw, 1, 2)]
@@ -214,7 +261,7 @@ if (has_firms) {
   }
 
   # Firm age proxy: use data_abertura if available
-  age_col <- grep("abertura|fundacao|age|data.*constituicao", names(firms), value = TRUE, ignore.case = TRUE)
+  age_col <- grep("abertura|fundacao|age|data.*constituicao|data_inicio_atividade", names(firms), value = TRUE, ignore.case = TRUE)
   if (length(age_col) > 0) {
     firms[, firm_age_raw := as.character(firms[[age_col[1]]])]
     firms[, firm_age := tryCatch({

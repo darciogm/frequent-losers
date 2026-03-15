@@ -158,7 +158,7 @@ if (need_fresh) {
   dt <- as.data.table(read_parquet(BEC_PARQUET))
   cat(sprintf("  BEC rows: %s, cols: %s\n", pfmt_int(nrow(dt)), paste(names(dt), collapse = ", ")))
 
-  # Standardize column names
+  # Standardize column names (BEC parquet uses po_item_merge_key, not numerodaoc/códigoitem)
   setnames(dt, "numerodaoc", "oc_code", skip_absent = TRUE)
   setnames(dt, "códigoitem", "item_code", skip_absent = TRUE)
 
@@ -166,9 +166,15 @@ if (need_fresh) {
   if ("po_item_merge_key" %in% names(dt)) {
     dt[, pbu_code := substr(po_item_merge_key, 1, 11)]
     dt[, year := as.integer(substr(po_item_merge_key, 12, 15))]
-    dt[, oc_code_full := substr(po_item_merge_key, 1, 22)]
+    # oc_code = first 22 chars of po_item_merge_key (BEC has no numerodaoc column)
+    if (!"oc_code" %in% names(dt)) {
+      dt[, oc_code := substr(po_item_merge_key, 1, 22)]
+    }
     dt[, item_rest := substr(po_item_merge_key, 23, nchar(po_item_merge_key))]
-    dt[, po_phase_code := as.integer(substr(item_rest, nchar(item_rest), nchar(item_rest)))]
+    # Do NOT overwrite po_phase_code if it already exists as a proper column
+    if (!"po_phase_code" %in% names(dt) || all(is.na(dt$po_phase_code))) {
+      dt[, po_phase_code := as.integer(substr(item_rest, nchar(item_rest), nchar(item_rest)))]
+    }
   }
 
   # Filter to phases 2 and 3
@@ -194,8 +200,15 @@ if (need_fresh) {
         if (losers_col[1] != "losers_count") setnames(losers_dt, losers_col[1], "losers_count")
       }
 
-      dt <- merge(dt, losers_dt[, .(oc_code, item_code, losers_count)],
-                  by = c("oc_code", "item_code"), all.x = TRUE)
+      # BEC data uses po_item_merge_key and has no item_code column; merge on oc_code only
+      # by aggregating losers_count to the OC level
+      if (!"item_code" %in% names(dt)) {
+        losers_agg <- losers_dt[, .(losers_count = sum(losers_count, na.rm = TRUE)), by = oc_code]
+        dt <- merge(dt, losers_agg, by = "oc_code", all.x = TRUE)
+      } else {
+        dt <- merge(dt, losers_dt[, .(oc_code, item_code, losers_count)],
+                    by = c("oc_code", "item_code"), all.x = TRUE)
+      }
       dt[is.na(losers_count), losers_count := 0L]
       dt[, losers := as.integer(losers_count > 0L)]
     } else if (file.exists(FP_PARQUET) && file.exists(FTM_PARQUET)) {
@@ -237,23 +250,26 @@ if (need_fresh) {
               pfmt_int(nrow(dt))))
 
   # Create DV: log negotiated price
-  price_col <- grep("preco.*neg|neg.*price|lneg|valornega", names(dt), value = TRUE, ignore.case = TRUE)
-  if ("lneg_price" %in% names(dt)) {
-    # already exists
-  } else if (length(price_col) > 0) {
-    dt[, lneg_price := as.numeric(dt[[price_col[1]]])]
+  if ("bid_unit_price_negot_min" %in% names(dt)) {
+    dt[bid_unit_price_negot_min > 0, lneg_price := log(bid_unit_price_negot_min)]
   } else {
-    # Try to compute from raw price
-    raw_price_col <- grep("valor|price|preco", names(dt), value = TRUE, ignore.case = TRUE)
-    if (length(raw_price_col) > 0) {
-      dt[, price_raw := as.numeric(dt[[raw_price_col[1]]])]
+    price_col <- grep("preco.*neg|neg.*price|lneg|valornega|unit_price_negot", names(dt), value = TRUE, ignore.case = TRUE)
+    if (length(price_col) > 0) {
+      dt[, price_raw := as.numeric(dt[[price_col[1]]])]
       dt[price_raw > 0, lneg_price := log(price_raw)]
     }
   }
 
-  # Create fixed effects
+  # Create fixed effects — use po_item_merge_key as item-level FE
+  # (each unique po_item_merge_key = one tender-item)
   if (!"item_f" %in% names(dt)) {
-    dt[, item_f := as.factor(item_code)]
+    if ("po_item_merge_key" %in% names(dt)) {
+      # Extract item group from item_rest (first few digits = item code)
+      dt[, item_group := substr(item_rest, 1, 4)]
+      dt[, item_f := as.factor(item_group)]
+    } else if ("item_code" %in% names(dt)) {
+      dt[, item_f := as.factor(item_code)]
+    }
   }
   if (!"year_f" %in% names(dt)) {
     if ("year" %in% names(dt)) dt[, year_f := as.factor(year)]
