@@ -1,0 +1,59 @@
+% REVISION-V6: Structural parameter estimates from mixture model
+\begin{table}[htbp]
+\centering
+\caption{Structural Parameter Estimates: Cover-Bid Mixture Model}
+\label{tab:structural_params}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+Parameter & Estimate & Bootstrap SE & 95\% CI \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel A: Genuine Bid Distribution}} \\[3pt]
+$\hat{\mu}_g$ (mean log bid) & 4.059 & --- & --- \\
+$\hat{\sigma}_g$ (residual SD) & 1.642 & --- & --- \\
+First-stage $R^2$ & 0.772 & --- & --- \\
+$N$ (genuine losing bids) & \multicolumn{3}{c}{23,177,905} \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel B: Regime 1 --- Complementary Cover Bidding (Uniform)}} \\[3pt]
+$\hat{\delta}$ (99th-pctile log-spread) & 6.397 & 0.098 & [6.193, 6.572] \\
+$\tilde{\delta}$ (median log-spread) & 0.499 & --- & --- \\
+Log-likelihood & $-320,273$ & --- & --- \\
+BIC & 640,559 & --- & --- \\
+KS distance & 0.640 & --- & --- \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel C: Regime 2 --- Coordinated Cover Bidding (Log-Normal)}} \\[3pt]
+$\hat{\epsilon}$ (mean log-spread) & 0.831 & 0.005 & [0.823, 0.841] \\
+$\hat{\sigma}_c$ (cover-bid SD) & 1.187 & 0.012 & [1.167, 1.206] \\
+Log-likelihood & $-274,531$ & --- & --- \\
+BIC & 549,086 & --- & --- \\
+KS distance & 0.242 & --- & --- \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel D: Model Selection}} \\[3pt]
+Selected regime & \multicolumn{3}{c}{Regime 2 (Coordinated)} \\
+$\Delta$BIC (R2 $-$ R1) & \multicolumn{3}{c}{$-91,473$} \\
+$\hat{\sigma}_c / \hat{\sigma}_g$ & \multicolumn{3}{c}{0.723} \\
+$N$ (FL losing bids) & \multicolumn{3}{c}{189,381} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Two-stage maximum likelihood estimation of the cover-bid
+mixture model (Section~\ref{sec:structural_estimation}). Panel~A reports the
+genuine bid distribution estimated from non-FL losing bids with item and year
+fixed effects. Panels~B--C report the cover-bid parameters under each regime,
+estimated from FL bids conditional on the winning price. The 99th-percentile
+log-spread $\hat{\delta}$ in Panel~B bounds the Regime~1 uniform support;
+the median log-spread $\tilde{\delta} = 0.50$ indicates that the typical FL
+bid exceeds the winning price by approximately 65\%
+($e^{0.50} - 1 \approx 0.65$). Panel~D reports BIC model selection: Regime~2
+(coordinated cover bidding) is strongly preferred ($\Delta\text{BIC} =
+-91{,}473$). The ratio $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$ indicates
+that cover bids are less dispersed than genuine bids, consistent with
+coordinated bid calibration near a focal point (Proposition~\ref{prop:regime2}).
+Bootstrap standard errors from 100 tender-level replications.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

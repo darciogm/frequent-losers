@@ -1,65 +1,103 @@
-# Revision Notes --- v6
+# Revision Notes — v6
 **Date:** 2026-03-15
 **Target journal:** RAND Journal of Economics
 **Reframe strategy:** Option B+C (Structural + Detection Tool)
 **Based on:** work/rand_reframe_memo.html
 
-## Summary of changes from v4
+## Summary of changes from v4/v5
 
-### New Section 3: Structural Model of Cover-Bidder Deployment
-- Full game-theoretic model with cartel optimization (Equation 6)
-- Three formal propositions with proofs:
-  - P1: Optimal number of cover bidders (comparative statics)
-  - P2/P3: Equilibrium cover-bid distributions under Regime 1 (uniform) and Regime 2 (normal)
-  - P4: Market-selection prediction (cover bidding concentrates in competitive markets)
-- Structural likelihood: supervised mixture model (known FL labels)
-- Two-stage MLE: genuine bids (log-normal) + cover bids (regime-specific)
-- BIC model selection between regimes
-- Identification discussion mapping each parameter to data variation
-- Six testable predictions mapped to empirical tests
+### New Section 3: Framework for Cover-Bidder Deployment
+- Full structural model of cover-bidder deployment (replaces taxonomic "Conceptual Framework")
+- Cartel's optimization problem with formal objective function and constraints
+- 3 propositions with arguments: optimal m*, Regime 1 (uniform), Regime 2 (normal)
+- Market selection proposition: cover bidding concentrates in competitive markets
+- Structural likelihood: supervised mixture model (genuine vs. cover bids)
+- Identification discussion for each structural parameter
+- 5 testable predictions mapped to empirical tests
 
 ### Rewritten Section 4: Data and FL Definition
-- Kept: BEC platform, FL definition, sample construction
-- Added 4.4: Structural estimation sample (40M bids description)
-- Added 4.5: CADE validation sample (temporal split 2009-2014 / 2015-2019)
-- Updated IQR footnote with ROC-derived optimal threshold connection
+- Added: Structural estimation sample description (bid-level data)
+- Added: CADE validation sample (temporal split 2009-2014 / 2015-2019)
+- Added: Forward reference to optimal IQR threshold from ROC analysis (AUC=0.94)
+- Updated: bid dispersion discussion to match structural estimation results
 
-### Rewritten Section 5: Empirical Strategy (RAND standard)
-- 5.1 Structural likelihood estimation (primary)
-- 5.2 Reduced-form identification (OLS + IV reframed as bracketing)
-- 5.3 Detection performance validation (ROC analysis)
-- 5.4 Bajari-Ye corrected (n_bids excluded, placebo reframed)
-- 5.5 Convite minimum-bidder RDD at R$80,000
+### Rewritten Section 5: Empirical Strategy
+- Three-tier structure: structural estimation → reduced-form → detection validation
+- Structural MLE estimation procedure (two-stage, bootstrap SEs)
+- IV reframed as bracketing device (upper bound), not primary identification
+- Detection validation with ROC analysis and Imhof comparison
+- Corrected Bajari-Ye: n_bids excluded from first stage, placebo reframed
+- RDD at R$80K removed (no first-stage discontinuity in BEC data)
 
-### Abstract rewritten for RAND
-- Leads with cover bidding as market failure
-- States structural model in sentence 2
-- References CADE validation
-- Ends with welfare-maximizing threshold
+### New Section 7: Restructured Results
+- 7.1 Structural estimation results (Regime 2 selected, sigma_c/sigma_g = 0.72)
+- 7.2 Detection performance (AUC = 0.94, Youden's J = 0.84 at 1.45x)
+- 7.3 OLS and IV results (OLS=0.064, IV=0.194)
+- 7.4 Network-split heterogeneity (competitive-market FL: 0.126)
+- 7.5 Bajari-Ye tests (KS D=0.15, pairwise product=5.16)
+- 7.6 Regime test (BIC selects Regime 2, ΔB IC = -91,473)
 
-### Network relabeling (FLAG 4)
-- All "high-suspicion" → "concentrated-market"
-- All "low-suspicion" → "competitive-market"
-- Applied to all .tex files via sed
+### Abstract
+- Rewritten to lead with structural model contribution
+- AUC = 0.94 cited explicitly
+- Detection threshold framed as welfare-maximizing
+
+### Introduction
+- Section roadmap updated to match new structure
+
+## Structural Estimation Results (structural_params.csv)
+
+| Parameter | Estimate | Bootstrap SE | 95% CI |
+|-----------|----------|-------------|--------|
+| mu_g (genuine mean) | 4.059 | — | — |
+| sigma_g (genuine SD) | 1.642 | — | — |
+| R² (genuine FE regression) | 0.772 | — | — |
+| N genuine | 23,177,905 | — | — |
+| N FL | 189,381 | — | — |
+| delta_hat (R1: max spread) | 6.397 | 0.098 | [6.193, 6.572] |
+| epsilon_hat (R2: mean spread) | 0.831 | 0.005 | [0.823, 0.841] |
+| sigma_c (R2: cover SD) | 1.187 | 0.012 | [1.167, 1.206] |
+| BIC Regime 1 | 640,559 | — | — |
+| BIC Regime 2 | 549,086 | — | — |
+| **Selected** | **Regime 2** | — | — |
+| sigma_c / sigma_g | 0.72 | — | — |
+
+## ROC Detection Results (roc_detection_full.csv)
+
+| Metric | Value |
+|--------|-------|
+| AUC | 0.937 |
+| Optimal multiplier (Youden's J) | 1.45x |
+| Youden's J at optimum | 0.843 |
+| Baseline (1.5x) TPR | 1.000 |
+| Baseline (1.5x) FPR | 0.157 |
 
 ## Critical flags addressed
 
 | Flag | Issue | Resolution |
 |------|-------|------------|
-| 1 | n_bids in BY first stage | Confirmed NOT in actual R code (only in manuscript text). sec5 explicitly excludes it with justification citing Bajari-Ye (2003, p.978) |
-| 2 | CADE enforcement DiD | Script written; requires CADE conviction dates in data |
-| 3 | Cross-fit attenuation | Script written; checking cache availability |
-| 4 | Network split mislabeling | sed replacement applied to all v6 .tex files |
-
-## Compilation
-- paper_v6.pdf: 70 pages, 784K
-- 0 LaTeX errors, 0 warnings
-- Full compile with bibtex successful
+| 1 | n_bids in BY first stage | Script: flag1_bajari_ye_corrected.R (excludes n_bids) |
+| 2 | CADE enforcement DiD | Script: flag2_cade_enforcement_did.R |
+| 3 | Cross-fit attenuation | Script: flag3_crossfit_check.R |
+| 4 | Network split mislabeling | Already resolved (no high/low-suspicion labels in v6) |
 
 ## Items requiring author decision before submission
-1. **Structural model parameters:** Run structural estimation on bid-level data. Fill [ESTIMATE] placeholders in sec4_data_fl.tex
-2. **ROC analysis:** Run roc_detection.py and fill AUC/optimal threshold values
-3. **RDD feasibility:** Check sample density near R$80,000 threshold
-4. **CADE DiD:** If ATT(price) not significant, remove from primary narrative
-5. **Abstract [X] and [Y]:** Fill markup and AUC from estimation output
-6. **Missing bib entries:** Add Calonico-Cattaneo-Titiunik (2014), Cattaneo (2020) to references.bib
+
+### CRITICAL: Structural estimation
+1. **Regime selection**: BIC selects Regime 2 (coordinated cover bidding).
+   - sigma_c = 1.19 < sigma_g = 1.64 → FL bids LESS dispersed than genuine
+   - This is consistent with cover bidders calibrating near a focal point
+   - Manuscript text updated to reflect Regime 2 selection
+   - **Decision**: Verify this is economically plausible for BEC context
+
+2. **Estimation sample**: Used v3/bid_level_analysis.parquet (23.2M genuine, 189K FL).
+   Re-estimation on full bid_level_full.parquet (40M rows) may refine estimates.
+
+3. **Raw markup implausible**: The unconditional price gap (1328%) is not meaningful.
+   The controlled OLS estimate (6.4%) is the appropriate comparison for the structural markup.
+
+### Other decisions
+4. **CADE enforcement DiD**: Review for statistical significance
+5. **Cross-fit attenuation**: Review fold-level stability
+6. **Bootstrap replications**: Currently 100 reps; increase to 500 for submission
+7. **Missing bib entries**: Add Calonico-Cattaneo-Titiunik (2014) if RDD analysis added later

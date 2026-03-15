@@ -1,0 +1,237 @@
+% ============================================================================
+% sec7_results.tex — REVISION-V6: M2 — Results restructured for RAND
+% Ordering follows Section 5 empirical strategy:
+%   7.1 Structural estimation → 7.2 Detection → 7.3 Reduced-form →
+%   7.4 Network heterogeneity → 7.5 Bajari-Ye → 7.6 Regime test
+% ============================================================================
+
+\section{Results}
+\label{sec:results}
+
+% ── 7.1 Structural Estimation Results ─────────────────────────────
+
+\subsection{Structural Estimation Results} % REVISION-V6: M2 — new subsection
+\label{sec:results_structural}
+
+Table~\ref{tab:structural_params} reports the structural parameter
+estimates from the two-stage mixture model described in
+Section~\ref{sec:structural_estimation}.
+
+\paragraph{Genuine bid distribution (Panel~A).}
+The genuine bid distribution, estimated from non-FL losing bids with
+item and year fixed effects, yields a residual standard deviation
+$\hat{\sigma}_g$ that captures within-item-year bid heterogeneity
+among genuine competitors. The first-stage $R^2$ indicates that item
+and year fixed effects absorb a substantial share of bid-level
+variation, with residual dispersion reflecting firm-level cost
+heterogeneity.
+
+\paragraph{Regime selection (Panels B--C).} % REVISION-V6: updated to match estimation results
+The BIC selects Regime~2 (coordinated cover bidding) over Regime~1
+(complementary cover bidding), with a $\Delta$BIC of $-91{,}473$.
+Under Regime~2, FL bids are drawn from a log-normal distribution
+centered at $\hat{\epsilon} = 0.83$ log points above the winning bid,
+with standard deviation $\hat{\sigma}_c = 1.19$ (bootstrap
+SE $= 0.012$). The Kolmogorov--Smirnov goodness-of-fit test yields a
+KS distance of 0.24 under Regime~2 versus 0.64 under Regime~1,
+confirming that the parametric normal model provides a substantially
+better fit to the empirical FL bid distribution.
+The selection of Regime~2 is consistent with coordinated cover bidding:
+$\hat{\sigma}_c = 1.19 < \hat{\sigma}_g = 1.64$, indicating that
+FL bid spreads are \emph{less} dispersed than genuine bid spreads
+conditional on the winning price---the signature of cover bidders
+calibrating bids near a focal point rather than submitting loosely
+coordinated bids above the winner.
+
+\paragraph{Implied markup (Panel~D).}
+The structural model's implied markup can be compared with the
+reduced-form estimates as a consistency check. If the structural markup
+falls within the OLS--IV range (6.4\%--21.4\%), the mixture model
+produces estimates consistent with the reduced-form evidence under
+different identification assumptions.
+
+\input{tables/tab_structural_params}
+
+% ── 7.2 Detection Performance ─────────────────────────────────────
+
+\subsection{Detection Performance} % REVISION-V6: M2 — new subsection
+\label{sec:results_detection}
+
+Figure~\ref{fig:roc} presents the ROC curve for the FL detection screen,
+evaluated against CADE cartel co-participation as ground truth.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig_roc_fl_screen.pdf}
+\caption{ROC curve for the FL detection screen. Ground truth:
+co-participation with CADE-convicted cartelists. Each point represents a
+different IQR multiplier threshold. The baseline threshold
+(1.5$\times$IQR) and the optimal threshold (Youden's $J$) are marked.}
+\label{fig:roc}
+\end{figure}
+
+The FL screen achieves an AUC of 0.94, indicating strong discrimination
+between FL firms that co-participate with convicted cartelists and those
+that do not. The data-driven optimal threshold (Youden's $J = 0.84$)
+corresponds to a multiplier of 1.45$\times$IQR---nearly identical to
+the 1.5$\times$ rule used for FL classification
+(Section~\ref{sec:fl_definition}). At the baseline threshold, the screen
+achieves a true positive rate of 1.00 (all CADE-overlap firms are
+captured) with a false positive rate of 0.16.
+
+\input{tables/tab_roc_detection}
+
+The high AUC demonstrates that the FL screen's classification boundary
+is well-calibrated: firms above the threshold are substantially more
+likely to be associated with known cartel activity than firms below it.
+The near-equivalence of the data-driven optimal and the IQR-based
+threshold provides ex post validation of the statistical classification
+rule.
+
+% ── 7.3 Reduced-Form Evidence ─────────────────────────────────────
+
+\subsection{OLS and IV Results}
+\label{sec:results_ols}
+
+Table~\ref{tab:prices} reports the baseline OLS estimates of
+Equation~\eqref{eq:ols_main} for log negotiated prices
+(Prediction~\ref{pred:price_v6}). Across all four
+specifications, FL presence is associated with significantly higher
+prices: 6.8\% in the general specification (column~1), 6.4\% with PBU
+fixed effects (column~2), 9.3\% for preg\~ao (column~3), and 3.8\% for
+convite (column~4). The inclusion of PBU fixed effects in column~2
+absorbs purchasing-unit-specific price levels yet barely changes the
+coefficient, suggesting that FL presence does not simply proxy for
+high-cost PBUs.
+
+\input{./output/tables/tab_prices}
+
+Table~\ref{tab:nfirms_excl} examines genuine competition
+(Prediction~\ref{pred:selection_v6}): FL-present
+tenders have 0.19 log points more non-FL firms (PBU FE specification),
+contradicting the hypothesis that FL firms crowd out genuine competitors.
+This positive coefficient is consistent with \emph{strategic selection}:
+cartels deploy cover bidders in tenders that already attract genuine
+competition.
+
+\input{./output/tables/tab_nfirms_excl}
+
+\paragraph{Instrumental variable.}
+The preferred IV price estimate (Panel~A: 0.194, $p = 0.01$) exceeds
+the OLS estimate (0.064) by a factor of three, consistent with
+measurement-error attenuation in the binary FL indicator. We treat the
+IV as a bracketing device (Section~\ref{sec:reduced_form}): the
+structural, OLS, and IV estimates provide three independent assessments
+of the FL--price association under different identification assumptions.
+
+\input{./output/tables/tab_iv_main}
+
+\paragraph{LATE interpretation.}
+The IV estimate of 21\% ($F = 396$) identifies a LATE for complier
+tenders; exclusion restriction concerns are discussed in
+Section~\ref{sec:reduced_form}. We treat the IV as supplementary
+evidence that brackets the OLS estimate from above.
+
+% ── 7.4 Network-Split Heterogeneity ──────────────────────────────
+
+\subsection{Network-Split Results}
+\label{sec:results_network}
+
+Table~\ref{tab:network_split} splits FL firms into
+concentrated-market and competitive-market subgroups based on the
+co-bidding network metrics described in
+Section~\ref{sec:empirical_network}, directly testing
+Proposition~\ref{prop:market_selection} (cover bidding concentrates in
+competitive markets).\footnote{We label these groups by
+market structure rather than cover-bidding likelihood: high-HHI markets
+with repeated winners may reflect natural monopoly or structural
+concentration rather than cartel behavior, precisely the environments
+where cover bidding yields less competitive benefit.
+Markets above the HHI sample median are classified as concentrated;
+the median is used to avoid ad hoc threshold selection while maintaining
+sample balance. Firms appearing together in at least two distinct
+tenders are classified as having established repeat relationships;
+this threshold minimizes classification error for rare pairings while
+capturing sustained co-participation.}
+The results reveal an informative pattern of heterogeneity.
+Competitive-market FL firms---those operating in markets with
+\emph{diversified} winner patterns (low winner HHI)---drive the entire
+price effect, with a coefficient of 0.126 ($p < 0.01$) in the PBU FE
+specification. Concentrated-market FL firms, operating in markets with
+repeated winners, show no significant price effect ($-0.018$, $p > 0.3$).
+
+This finding directly confirms Proposition~\ref{prop:market_selection}:
+the structural model predicts that cover bidding is most profitable in
+competitive markets where the marginal return to manufactured
+competition is highest, and absent in concentrated markets where the
+cartel can sustain prices through market power alone.
+
+\input{./output/tables/tab_network_split}
+
+% ── 7.5 Bajari-Ye Tests ──────────────────────────────────────────
+
+\subsection{Bajari--Ye Tests}
+\label{sec:results_bajari}
+
+We apply the \citet{bajari2003deciding} framework to test
+Prediction~\ref{pred:exchange_v6}: FL bid residuals violate
+exchangeability with non-FL bid residuals.
+Table~\ref{tab:bajari_ye} reports the results using the corrected
+first stage (Section~\ref{sec:bajari_ye}), which excludes the
+endogenous number-of-bids variable.
+
+\input{./output/tables/tab_bajari_ye}
+
+\paragraph{Exchangeability (Panel~A).}
+The Kolmogorov--Smirnov test rejects the null that FL and
+non-FL bid residuals are drawn from the same distribution
+($D = 0.15$, $p < 0.001$), confirming
+Prediction~\ref{pred:exchange_v6}. This is the structural model's
+key diagnostic: if FL bids are drawn from $G_{\text{cover}}$ rather
+than $F_{\text{genuine}}$, the residuals from a genuine-bid first
+stage should be non-exchangeable across groups.
+
+\paragraph{Conditional independence (Panel~B).}
+The mean product of pairwise FL residuals is 5.16 ($t = 157.4$),
+indicating systematic co-movement among FL bids within the same tender.
+The bootstrap difference between FL and non-FL products
+(2.95, 95\% CI: $[2.57, 5.21]$) excludes zero, indicating that FL bid
+residuals exhibit systematically different within-tender correlation
+than non-FL residuals, consistent with distinct bidding processes.
+
+\paragraph{Tender FE.}
+Under tender FE (Table~\ref{tab:bajari_ye_tender_fe} in
+Appendix~\ref{app:robustness}), the FL pairwise product drops to
+0.38 while the non-FL product drops to 0.86. The magnitude reversal
+is consistent with the structural model: under Regime~1, cover bids
+are drawn from a wide uniform distribution, which produces lower
+within-pair covariance after absorbing tender means than the correlated
+cost draws of genuine bidders operating in the same input markets.
+
+% ── 7.6 Regime Test ──────────────────────────────────────────────
+
+\subsection{Regime Test}
+\label{sec:results_regime}
+
+The structural estimation's BIC comparison (Table~\ref{tab:structural_params}, % REVISION-V6: updated to match estimation results
+Panel~D) selects Regime~2 (coordinated cover bidding) over Regime~1,
+with $\Delta\text{BIC} = -91{,}473$ strongly favoring the log-normal
+cover-bid specification. The estimated cover-bid standard deviation
+$\hat{\sigma}_c = 1.19$ is smaller than the genuine-bid standard
+deviation $\hat{\sigma}_g = 1.64$ ($\hat{\sigma}_c / \hat{\sigma}_g =
+0.72$), consistent with Regime~2's prediction that coordinated cover
+bidders submit bids with less dispersion than genuine competitors.
+The median FL bid log-spread above the winning price is 0.50,
+with the distribution tightly centered relative to the Regime~1
+uniform specification.
+
+Figure~\ref{fig:coef_summary} summarizes coefficients across all four
+DVs and specifications, including IV estimates.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_03_coef_summary.pdf}
+\caption{Coefficient on FL presence across outcomes, specifications, and
+estimation methods. OLS estimates in gray; IV estimates in red.}
+\label{fig:coef_summary}
+\end{figure}
