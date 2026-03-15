@@ -1,0 +1,95 @@
+R1 Edit Map — IJIO Revision
+Date: 2026-03-15
+Branch: ijio-r1-response
+Working directory: v4/manuscript/
+
+COMPILED SECTION NUMBERING (paper_v4.tex input order):
+  1. Introduction              → sec_introduction.tex
+  2. Related Literature         → sec_literature.tex
+  3. Conceptual Framework       → sec_conceptual.tex
+     3.1 Setup, 3.2 Two Regimes, 3.3 Testable Predictions, 3.4 Comparative Statics
+  4. Data and FL Definition     → sec_data.tex
+     4.1 BEC Platform, 4.2 FL Definition, 4.3 Sample Construction
+  5. External Validation: CADE  → sec_cade.tex
+     5.1 CADE-BEC Cross-Match, 5.2 FL-CADE Co-Participation, 5.3 Excl CADE
+  6. Empirical Strategy         → sec_empirical_strategy.tex
+     6.1 OLS Baseline, 6.2 IV Strategy (threats at line 64), 6.3 Network, 6.4 Bajari-Ye
+  7. Results                    → sec_results.tex
+     7.1 OLS, 7.2 IV Results (LATE at line 80), 7.3 Network-Split, 7.4 Bajari-Ye, 7.5 Regime
+  8. Mechanisms                 → sec_mechanisms.tex
+     8.1 Strategic Selection, 8.2 Reference Price, 8.3 Reverse Causality, 8.4 Convite-Pregao, 8.5 Summary
+  9. Robustness and Extensions  → sec_robustness.tex
+     9.1 FL Definition, 9.2 Sample/Spec, 9.3 Sensitivity, 9.4 DiD, 9.5 Welfare, 9.6 Oversight
+ 10. Conclusion                 → sec_conclusion.tex
+ Appendix A: Competition Outcomes
+ Appendix B: Robustness Checks
+ Appendix C: Staggered DiD
+ Appendix D: Extensions (welfare figure = Figure D.2 = fig:welfare at sec_appendix.tex:169)
+ Appendix E: Heterogeneity
+
+EDIT TARGETS:
+
+M1 — Prediction 5 (Conditional dependence)
+  FILE: sec_conceptual.tex, lines 93-100
+  LABEL: \label{pred:independence}
+  ISSUE: Prediction says "magnitude larger than for non-FL residuals"
+         Section 7.4 reports FL=0.38 < non-FL=0.86 under tender FE
+  ACTION: Option A — revise prediction to target exchangeability violation
+          without magnitude claim
+
+M2 — Balance test harmonization
+  FILE 1: sec_results.tex, lines 95-102 (IV robustness paragraph)
+    PHRASE: "well inside what is typically considered negligible covariate imbalance"
+    ACTION: Replace with honest acknowledgment + cross-reference to threats
+  FILE 2: sec_empirical_strategy.tex, lines 78-80 (Threat 2 discussion)
+    PHRASE: "finds no significant associations, consistent with quasi-random FL supply"
+    ACTION: Acknowledge significant imbalance, add honest assessment
+
+M3a — Enriched BY first stage paragraph
+  FILE: sec_results.tex, after line 242 (after closing BY paragraph)
+  ACTION: Add 3-5 sentence paragraph on enriched first stage (R² 0.776→0.803, KS unchanged)
+
+M3b — Section 6.4 first stage description
+  FILE: sec_empirical_strategy.tex, line 124-125
+  PHRASE: "reference price, firm size, item and year fixed effects"
+  ACTION: Remove "reference price", explain it's absorbed by FE
+
+M4 — Figure D.2 caption
+  FILE: sec_appendix.tex, lines 172-174
+  PHRASE: "OLS (lower bound) and IV (upper bound)"
+  ACTION: Replace with back-of-the-envelope framing
+
+minor-1 — Remove CO-AUTHOR EDIT tags
+  FILES: All 14 .tex files in v4/manuscript/
+  PATTERN: % CO-AUTHOR EDIT: ...
+  COUNT: ~25 occurrences
+  ACTION: Remove inline comments (preserve the code they annotate)
+
+minor-2 — Already addressed by M3b
+
+minor-3 — Learning/age caveat
+  FILE: sec_mechanisms.tex (add after M3: Reverse Causality, before Convite-Pregao subsection)
+  ACTION: Add sentence about entry timing vs learning
+  NOTE: Current manuscript has no explicit "learning" discussion or firm age comparison.
+        Need to add brief content contextualizing FL firm age.
+
+minor-4 — Table cutoff rationale (network_split table)
+  FILE: sec_results.tex, near line 130 (network classification footnote)
+  or sec_empirical_strategy.tex, lines 111-113 (classification criteria)
+  ACTION: Add economic rationale for HHI median and repeat-partners ≥2 cutoffs
+
+minor-5 — Imhof proxy caveat
+  FILE: sec_literature.tex, lines 20-31 (bid-rigging screens paragraph)
+  ACTION: Add footnote/parenthetical about CV median split being coarser than full Imhof
+
+minor-6 — IQR footnote economic framing
+  FILE: sec_data.tex, lines 43-48 (existing IQR footnote)
+  ACTION: Augment with economic interpretation
+
+minor-7 — FE-residualized gap in Introduction
+  FILE: sec_introduction.tex, around line 61-62 (first contribution paragraph)
+  ACTION: Add 0.050 log points residualized gap sentence
+
+minor-8 — Compress LATE paragraph
+  FILE: sec_results.tex, lines 80-86 (LATE interpretation paragraph)
+  ACTION: Compress to 2-3 sentences
