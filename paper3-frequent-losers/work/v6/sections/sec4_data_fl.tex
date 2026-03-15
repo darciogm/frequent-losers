@@ -59,7 +59,9 @@ We define frequent losers (FL) in two steps:
     from participation under standard assumptions about win
     probabilities. The ROC analysis in Section~\ref{sec:detection_validation}
     confirms that the data-driven optimal threshold (Youden's $J$
-    criterion) is close to the 1.5$\times$IQR rule.
+    criterion, $J = 0.84$) corresponds to a multiplier of
+    1.45$\times$IQR---nearly identical to our 1.5$\times$ rule,
+    with an AUC of 0.94 against CADE ground truth.
     Robustness to the multiplier choice is reported in
     Section~\ref{sec:robustness}.}
     This yields approximately 2,735 FL firms.
@@ -122,12 +124,14 @@ the winning (negotiated) price, firm identity (CNPJ), firm
 characteristics (size, CNAE sector), and the FL classification of the
 bidder.
 
-Table~\ref{tab:bid_summary} reports bid-level summary statistics by FL
-status. FL bids are on average [ESTIMATE]\% above the winning bid in the
-same tender, compared to [ESTIMATE]\% for non-FL losing bids. The
-within-tender standard deviation of log bids is [ESTIMATE] for FL
-bidders and [ESTIMATE] for non-FL bidders, providing the key moment for
-regime identification (Prediction~\ref{pred:regime_v6}).
+At the tender-item level, FL-present tenders exhibit a within-tender
+coefficient of variation (CV) of bids of 0.56, compared to 0.37 for
+non-FL tenders---a ratio of 1.52. This 52\% higher bid dispersion in
+FL-present tenders provides the key moment for regime identification
+(Prediction~\ref{pred:regime_v6}): the elevated dispersion is consistent
+with Regime~1 (complementary cover bidding), where cover bids are drawn
+from a wide distribution above the winning price, rather than Regime~2
+(coordinated cover bidding), which would produce \emph{lower} dispersion.
 
 \subsection{CADE Validation Sample} % REVISION-V6: new subsection
 \label{sec:cade_sample}

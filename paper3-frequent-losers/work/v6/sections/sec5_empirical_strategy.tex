@@ -18,9 +18,7 @@ instrumental variable (Section~\ref{sec:reduced_form}). \emph{Third}, we
 validate the FL screen's detection performance against CADE cartel
 convictions using ROC analysis (Section~\ref{sec:detection_validation}).
 Non-structural corroboration is provided by corrected Bajari--Ye
-bid-coordination tests (Section~\ref{sec:bajari_ye}) and an RDD
-exploiting the convite minimum-bidder threshold
-(Section~\ref{sec:rdd_convite}).
+bid-coordination tests (Section~\ref{sec:bajari_ye}).
 
 % ── 5.1 Structural Estimation ────────────────────────────────────
 
@@ -280,48 +278,8 @@ relative to the baseline specification. We report both variants and
 interpret the tender-FE results as the most conservative test of
 within-tender FL bid coordination.
 
-% ── 5.5 Convite Minimum-Bidder RDD ───────────────────────────────
-
-\subsection{Convite Minimum-Bidder RDD}
-\label{sec:rdd_convite}
-
-Prediction~\ref{pred:minbidder_v6} implies a discontinuous increase in
-cover-bidding incentives at the R\$80,000 threshold where procurement
-modality switches from preg\~ao (no minimum-bidder requirement) to
-convite (minimum three bidders). We exploit this threshold using a
-regression discontinuity design.
-
-\paragraph{Specification.}
-The running variable is the estimated procurement value $V_t$. The
-treatment is convite modality ($D_t = \mathbf{1}[V_t \leq 80{,}000]$).
-We estimate:
-\begin{equation}
-  y_t = \alpha + \tau \cdot D_t + f(V_t) + \beta \cdot \text{FL}_t
-  + \delta \cdot (D_t \times \text{FL}_t) + \varepsilon_t
-  \label{eq:rdd}
-\end{equation}
-where $f(V_t)$ is a local-linear polynomial in the running variable,
-fitted separately on each side of the cutoff, and $\delta$ captures the
-differential FL--price effect under convite's minimum-bidder constraint.
-Under Prediction~\ref{pred:minbidder_v6}, $\delta > 0$: the FL--price
-association should be discontinuously larger just below R\$80,000 where
-the minimum-bidder rule binds.
-
-\paragraph{Bandwidth.}
-We select the bandwidth using the \citet{calonico2014robust} MSE-optimal
-procedure, implemented via the \texttt{rdrobust} package in R. We report
-results at the optimal bandwidth and at half and double the optimal as
-sensitivity checks.
-
-\paragraph{Density test.}
-A manipulation test \citep{cattaneo2020simple} checks whether the
-running variable exhibits bunching at R\$80,000, which would indicate
-strategic manipulation of procurement values to select modality. If the
-density is smooth at the cutoff, the RDD provides locally valid causal
-identification of the minimum-bidder effect on cover bidding.
-
-\paragraph{Limitations.}
-The RDD identifies a local treatment effect at the R\$80,000 boundary.
-The reference price (which determines procurement value) may be
-imprecisely measured, introducing fuzzy-RDD considerations. We report
-both the sharp and fuzzy specifications.
+% REVISION-V6: RDD removed — BEC records unit prices, not total contract
+% values. The R$80K modality threshold applies to total procurement value,
+% which is not directly observable in the data. A valid RDD would require
+% total contract value, which future work with complementary administrative
+% data could provide.
