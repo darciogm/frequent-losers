@@ -1,42 +1,33 @@
 \begin{table}[htbp]
 \centering
-\caption{Enriched Bajari-Ye First Stage and Tests}
+\caption{Bajari--Ye Tests: Baseline vs.\ Enriched First Stage}
 \label{tab:bajari_ye_enriched}
 \begin{adjustbox}{max width=\textwidth}
 \begin{threeparttable}
 \small
 \begin{tabular}{lcc}
 \toprule
- & (1) Baseline & (2) Enriched \\
+ & Baseline & Enriched \\
+ & (porte + item/year FE) & (+age, CNAE sector) \\
 \midrule
-\textit{Panel A: First Stage (DV: $\log$ bid)} & & \\
-Firm size (porte) & --- & --- \\
- &  &  \\
-\midrule
-R-squared & --- & --- \\
-Observations & --- & --- \\
-CNAE sector dummies & NO & YES \\
-Item + Year FE & YES & YES \\
-\midrule
+\textit{Panel A: First-Stage $R^2$} & & \\
+\quad $R^2$ & 0.8019 & 0.8029 \\
+\quad $R^2$ (no FE) & --- & 0.2311 \\
+\quad Observations & 4,359,674 & 4,359,674 \\
+[6pt]
 \textit{Panel B: Exchangeability (KS test)} & & \\
-KS statistic & --- & --- \\
-KS $p$-value & --- & --- \\
-\midrule
+\quad $D$ statistic & 0.1408 & 0.1442 \\
+\quad $p$-value & $<$0.001 & $<$0.001 \\
+[6pt]
 \textit{Panel C: Conditional Independence} & & \\
-FL mean pairwise product & --- & --- \\
-FL $p$-value & --- & --- \\
-Non-FL mean pairwise product & --- & --- \\
-Non-FL $p$-value & --- & --- \\
+\quad FL pairwise product & 3.2979 & 3.2305 \\
+\quad Non-FL pairwise product & 1.4367 & 1.4233 \\
+\quad Difference (FL $-$ non-FL) & 1.8613 & 1.8071 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item \textit{Notes:} Panel A reports first-stage auxiliary regressions on losing bids.
-Column (1): baseline with firm size and reference price. Column (2): enriched with
-firm age and CNAE sector dummies. Panel B: Kolmogorov-Smirnov test of exchangeability
-between FL and non-FL residual distributions. Panel C: mean pairwise product of
-residuals within tenders (Bajari \& Ye, 2003). Under competitive bidding,
-the mean product should equal zero.
+\item \textit{Notes:} Panel A: auxiliary bid regression of $\log(\text{bid})$ on cost shifters. Baseline includes firm size (porte) and item + year FE. Enriched adds firm age and CNAE sector (2-digit). Reference price is a tender-level variable (only 3.2\% coverage at bid level) and is absorbed by item FE. Panel B: KS test on FL vs.\ non-FL residuals. Panel C: mean product of pairwise within-tender residuals (sampled up to 50K tenders for tractability). Sample: losing bids only.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
