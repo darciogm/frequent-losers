@@ -1,0 +1,327 @@
+% ============================================================================
+% sec5_empirical_strategy.tex — REVISION-V6: Empirical strategy (RAND reframe)
+% Paper: Frequent Losers as Cover Bidders in Public Procurement
+% Target: RAND Journal of Economics
+% ============================================================================
+
+\section{Empirical Strategy}
+\label{sec:empirical}
+
+Our empirical strategy has three tiers, ordered by the strength of causal
+claims. \emph{First}, we estimate the structural model of cover-bidder
+deployment from Section~\ref{sec:structural}, which identifies the
+cover-bid distribution and implied markup directly from the bid-level
+data (Section~\ref{sec:structural_estimation}). \emph{Second}, we
+provide reduced-form evidence using high-dimensional OLS with item, year,
+and purchasing-unit fixed effects, supplemented by a leave-one-out
+instrumental variable (Section~\ref{sec:reduced_form}). \emph{Third}, we
+validate the FL screen's detection performance against CADE cartel
+convictions using ROC analysis (Section~\ref{sec:detection_validation}).
+Non-structural corroboration is provided by corrected Bajari--Ye
+bid-coordination tests (Section~\ref{sec:bajari_ye}) and an RDD
+exploiting the convite minimum-bidder threshold
+(Section~\ref{sec:rdd_convite}).
+
+% ── 5.1 Structural Estimation ────────────────────────────────────
+
+\subsection{Structural Likelihood Estimation}
+\label{sec:structural_estimation}
+
+We estimate the mixture model specified in
+Section~\ref{sec:likelihood} using the 40 million bid-level
+observations. The estimation proceeds in two stages.
+
+\paragraph{Stage 1: Genuine bid distribution.}
+We estimate the genuine bid parameters $(\boldsymbol{\beta},
+\sigma_g^2)$ from the 37.5 million non-FL bids using maximum
+likelihood under the log-normal specification~\eqref{eq:genuine_dist}:
+\begin{equation}
+  (\hat{\boldsymbol{\beta}}, \hat{\sigma}_g^2) =
+  \operatorname*{arg\,max}_{\boldsymbol{\beta}, \sigma_g^2}
+  \sum_{t=1}^{T} \sum_{j \in \mathcal{G}_t}
+  \log \phi\!\left(
+    \frac{\log b_{jt} - \mathbf{x}_j'\boldsymbol{\beta}
+    - \hat{\alpha}_i - \hat{\lambda}_t}{\sigma_g}
+  \right)
+  \label{eq:mle_genuine}
+\end{equation}
+where $\phi(\cdot)$ is the standard normal density and
+$\hat{\alpha}_i$, $\hat{\lambda}_t$ are absorbed as fixed effects.
+In practice, this reduces to an OLS regression of $\log b_{jt}$ on
+$\mathbf{x}_j$ with item and year fixed effects, from which we obtain
+$\hat{\sigma}_g^2$ as the residual variance.
+
+\paragraph{Stage 2: Cover bid distribution.}
+Conditional on the winning bid $b^*_t$ in each tender, we estimate
+the cover-bid parameters from the 2.5 million FL bids. Under
+Regime~1:
+\begin{equation}
+  \hat{\delta} = \max_{j \in \mathcal{F}_t, t}
+  (b_{jt} - b^*_t) \quad \text{(maximum spread)}
+  \label{eq:mle_delta}
+\end{equation}
+Under Regime~2:
+\begin{equation}
+  \hat{\sigma}_c^2 = \frac{1}{|\mathcal{F}|}
+  \sum_{t=1}^{T} \sum_{j \in \mathcal{F}_t}
+  \left(\log b_{jt} - \log b^*_t - \hat{\epsilon}\right)^2
+  \label{eq:mle_sigma_c}
+\end{equation}
+where $\hat{\epsilon} = \overline{\log b_{jt} - \log b^*_t}$ is the
+mean log-spread of FL bids above the winning bid.
+
+\paragraph{Model selection.}
+We select between regimes using the Bayesian Information Criterion
+(BIC) and a Kolmogorov--Smirnov goodness-of-fit test:
+\begin{equation}
+  \text{BIC}_r = -2\ell_r + k_r \log N, \quad r \in \{1, 2\}
+  \label{eq:bic}
+\end{equation}
+where $\ell_r$ is the maximized log-likelihood under regime $r$,
+$k_r$ is the number of parameters, and $N$ is the number of FL bids.
+The regime with lower BIC is selected. Additionally, we compute the KS
+distance between the fitted cover-bid CDF and the empirical FL bid
+distribution; the regime with smaller KS distance provides a better
+fit to the data.
+
+\paragraph{Implied markup.}
+The structural markup is computed as:
+\begin{equation}
+  \hat{\mu}_{\text{structural}} =
+  \frac{E[b^*_t \mid \text{FL present}] -
+        E[b^*_t \mid \text{FL absent}]}{E[b^*_t \mid \text{FL absent}]}
+  \label{eq:structural_markup}
+\end{equation}
+where the expectations are taken over the estimated model. This provides
+a structural counterpart to the reduced-form OLS coefficient
+($\hat{\beta} = 0.064$) and the IV estimate ($\hat{\beta}_{\text{IV}} =
+0.194$). If the structural model is correctly specified, the implied
+markup should fall within the OLS--IV range.
+
+\paragraph{Standard errors.}
+We compute standard errors via parametric bootstrap with 500
+replications, resampling tenders (not individual bids) to preserve the
+within-tender correlation structure. Each bootstrap iteration
+re-estimates both stages of the model. With 16 CPU cores, the bootstrap
+completes in approximately [ESTIMATE] hours.
+
+% ── 5.2 Reduced-Form Identification ──────────────────────────────
+
+\subsection{Reduced-Form Identification}
+\label{sec:reduced_form}
+
+\paragraph{OLS baseline.}
+Our baseline specification estimates the conditional association between
+FL presence and tender outcomes:
+\begin{equation}
+  y_{igt} = \beta \cdot \text{losers}_{igt} + \mathbf{x}_{igt}'
+  \boldsymbol{\delta} + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt}
+  \label{eq:ols_main}
+\end{equation}
+where $y_{igt}$ is the outcome for tender-item $i$ in item group $g$ at
+time $t$ and purchasing unit $k$; $\text{losers}_{igt} \in \{0,1\}$
+indicates FL presence; $\mathbf{x}_{igt}$ includes a convite indicator;
+$\alpha_g$, $\lambda_t$, and $\gamma_k$ are item, year, and PBU fixed
+effects; and $\varepsilon_{igt}$ is the error term clustered at the item
+level.
+
+The OLS coefficient $\hat{\beta}$ identifies a conditional
+association---the average difference in outcomes between FL-present and
+FL-absent tenders within the same item type, year, and purchasing unit.
+Under Prediction~\ref{pred:price_v6}, $\hat{\beta} > 0$ for prices. The
+OLS estimate of 0.064 (6.4\%) represents a lower bound on the causal
+effect if the FL indicator contains measurement error (binary treatment
+misclassification). We assess the sensitivity of $\hat{\beta}$ to
+unobserved confounders using the \citet{cinelli2020making} framework,
+which yields a robustness value of $RV_{q=1} = 17.5\%$: an unobserved
+confounder would need to explain at least 17.5\% of the residual
+variation in both FL presence and log prices to reduce $\hat{\beta}$ to
+zero.
+
+\paragraph{Instrumental variable.}
+To bracket the OLS estimate from above, we instrument FL presence with % REVISION-V6: IV reframed as upper bound, not primary
+a leave-one-out measure of FL supply:
+\begin{equation}
+  Z_{kgt} = \sum_{j \neq k} \mathbf{1}[\text{FL firm active at PBU } j
+  \text{ in group } g, \text{ year } t]
+  \label{eq:iv_v6}
+\end{equation}
+The identifying assumption is that FL activity at other PBUs in the same
+product market and year affects focal-PBU prices only through the
+probability of FL participation---a supply-side exclusion restriction in
+the spirit of \citet{goldsmithpinkham2020bartik}. We treat the IV
+estimate as a Local Average Treatment Effect for complier tenders: an
+upper bound on the average price effect that corrects for
+measurement-error attenuation in the FL indicator. The IV is not our
+primary identification strategy; we report it to bracket the OLS
+estimate and verify that the structural model's implied markup falls
+within the OLS--IV range.
+
+\paragraph{Balance and specification sensitivity.}
+Balance tests (Table~\ref{tab:iv_balance} in
+Appendix~\ref{app:robustness}) reveal statistically significant
+differences across all four observable characteristics, a pattern that
+is more concerning than any single coefficient. While the economic
+magnitudes are modest (all standardized differences below
+$0.03\sigma$), we do not dismiss this imbalance. The sensitivity
+analysis and matching estimates
+(Section~\ref{sec:robustness}) bound the extent to which unobserved
+selection could explain the price effect. We report the IV for
+completeness and as a bracketing device, not as the basis for our
+causal claims.
+
+% ── 5.3 Detection Validation ─────────────────────────────────────
+
+\subsection{Detection Performance Validation}
+\label{sec:detection_validation}
+
+We evaluate the FL screen as a detection tool using CADE cartel
+convictions as ground truth. The validation uses the temporal split
+described in Section~\ref{sec:cade_sample}: FL status is defined using
+2009--2014 data and evaluated against 2015--2019 CADE outcomes.
+
+\paragraph{ROC analysis.}
+We vary the IQR multiplier from 0.5 to 5.0 in steps of 0.1, producing
+46 different FL thresholds. For each threshold, we compute:
+\begin{align}
+  \text{TPR}(m) &= \frac{|\{j : \text{FL}_m(j)=1\} \cap
+    \{j : \text{CADE}(j)=1\}|}{|\{j : \text{CADE}(j)=1\}|}
+  \label{eq:tpr} \\
+  \text{FPR}(m) &= \frac{|\{j : \text{FL}_m(j)=1\} \cap
+    \{j : \text{CADE}(j)=0\}|}{|\{j : \text{CADE}(j)=0\}|}
+  \label{eq:fpr}
+\end{align}
+where $\text{FL}_m(j)$ indicates whether firm $j$ is classified as FL
+under multiplier $m$, and $\text{CADE}(j)$ indicates whether firm $j$
+co-participates with a CADE-convicted cartelists. The area under the ROC
+curve (AUC) measures the FL screen's overall discrimination ability; AUC
+= 0.5 corresponds to random classification and AUC = 1.0 to perfect
+discrimination.
+
+\paragraph{Optimal threshold.}
+We determine the welfare-maximizing IQR multiplier using Youden's $J$
+statistic:
+\begin{equation}
+  m^*_{\text{optimal}} = \operatorname*{arg\,max}_m \;
+  \left[\text{TPR}(m) - \text{FPR}(m)\right]
+  \label{eq:youden}
+\end{equation}
+which balances true-positive and false-positive rates. The optimal
+threshold provides a data-driven calibration of the statistical cutoff
+introduced in Section~\ref{sec:fl_definition}, connecting the ad-hoc
+IQR rule to a formal detection-theoretic criterion.
+
+\paragraph{Comparison with Imhof screens.}
+We compare the FL screen with a proxy for the \citet{imhof2019detecting}
+bid-level screen, implemented as a within-item-group coefficient of
+variation (CV) median split. For each feature set---FL indicators only,
+Imhof-style bid-level features only, and the combination---we train a
+random forest classifier using 5-fold stratified cross-validation and
+report the mean AUC. The incremental AUC of combining FL with bid-level
+features measures the complementarity of the two screening approaches.
+
+% ── 5.4 Bajari-Ye Tests ──────────────────────────────────────────
+
+\subsection{Bajari--Ye Bid Coordination Tests}
+\label{sec:bajari_ye}
+
+We implement the \citet{bajari2003deciding} tests for exchangeability
+and conditional independence using corrected first-stage residuals.
+
+\paragraph{First stage (corrected).} % REVISION-V6: n_bids excluded, noted explicitly
+The first stage regresses $\log$ bid values on observable cost shifters
+only:
+\begin{equation}
+  \log b_{jt} = \mathbf{x}_j'\boldsymbol{\phi} + \alpha_i + \lambda_t
+  + u_{jt}
+  \label{eq:by_first_stage}
+\end{equation}
+where $\mathbf{x}_j$ includes firm size (porte), firm age, and CNAE
+sector dummies. Critically, we exclude the number of bids in the
+tender ($n_{\text{bids}}$) from the first stage. As
+\citet{bajari2003deciding} note (p.~978), the first-stage regressors
+must be cost shifters, not equilibrium market outcomes. The number of
+bids is jointly determined with bid levels and is mechanically increased
+by FL presence (Table~\ref{tab:nfirms_excl}); including it would
+generate spurious correlation between the residuals and FL status.
+
+\paragraph{Exchangeability test.}
+Using the first-stage residuals $\hat{u}_{jt}$, we conduct a
+Kolmogorov--Smirnov test comparing the distributions of FL and non-FL
+residuals. Under competitive bidding with symmetric information, all
+bidders' residuals should come from the same distribution
+(Prediction~\ref{pred:exchange_v6}).
+
+\paragraph{Conditional independence test.}
+For each tender with $\geq 2$ FL bids, we compute the mean product of
+pairwise FL residuals:
+$\bar{r}_t = \binom{m_t}{2}^{-1} \sum_{j < k}
+\hat{u}_{jt} \hat{u}_{kt}$.
+Under conditional independence, $E[\bar{r}_t] = 0$. We compare the FL
+pairwise product with the non-FL pairwise product using a tender-level
+bootstrap (1,000 iterations).
+
+\paragraph{Reframing the fake-groups placebo.}
+The fake-groups placebo randomly splits non-FL firms into two groups
+within each tender and computes within-group pairwise products. This
+test does \emph{not} establish a zero null: common tender-level shocks
+(reference price, commodity prices, PBU-specific factors) induce
+positive residual correlations among \emph{all} bidders in the same
+tender, regardless of FL status. The economically meaningful comparison
+is the FL-vs-non-FL pairwise \emph{difference} (bootstrap 95\% CI
+excludes zero), which isolates the within-tender excess correlation of
+FL bids above and beyond common shocks.
+
+\paragraph{Tender fixed effects.}
+As a more demanding specification, we re-estimate the first-stage bid
+equation with tender $\times$ item fixed effects, which absorb all
+tender-level shocks. Under tender FE, the FL pairwise product drops
+relative to the baseline specification. We report both variants and
+interpret the tender-FE results as the most conservative test of
+within-tender FL bid coordination.
+
+% ── 5.5 Convite Minimum-Bidder RDD ───────────────────────────────
+
+\subsection{Convite Minimum-Bidder RDD}
+\label{sec:rdd_convite}
+
+Prediction~\ref{pred:minbidder_v6} implies a discontinuous increase in
+cover-bidding incentives at the R\$80,000 threshold where procurement
+modality switches from preg\~ao (no minimum-bidder requirement) to
+convite (minimum three bidders). We exploit this threshold using a
+regression discontinuity design.
+
+\paragraph{Specification.}
+The running variable is the estimated procurement value $V_t$. The
+treatment is convite modality ($D_t = \mathbf{1}[V_t \leq 80{,}000]$).
+We estimate:
+\begin{equation}
+  y_t = \alpha + \tau \cdot D_t + f(V_t) + \beta \cdot \text{FL}_t
+  + \delta \cdot (D_t \times \text{FL}_t) + \varepsilon_t
+  \label{eq:rdd}
+\end{equation}
+where $f(V_t)$ is a local-linear polynomial in the running variable,
+fitted separately on each side of the cutoff, and $\delta$ captures the
+differential FL--price effect under convite's minimum-bidder constraint.
+Under Prediction~\ref{pred:minbidder_v6}, $\delta > 0$: the FL--price
+association should be discontinuously larger just below R\$80,000 where
+the minimum-bidder rule binds.
+
+\paragraph{Bandwidth.}
+We select the bandwidth using the \citet{calonico2014robust} MSE-optimal
+procedure, implemented via the \texttt{rdrobust} package in R. We report
+results at the optimal bandwidth and at half and double the optimal as
+sensitivity checks.
+
+\paragraph{Density test.}
+A manipulation test \citep{cattaneo2020simple} checks whether the
+running variable exhibits bunching at R\$80,000, which would indicate
+strategic manipulation of procurement values to select modality. If the
+density is smooth at the cutoff, the RDD provides locally valid causal
+identification of the minimum-bidder effect on cover bidding.
+
+\paragraph{Limitations.}
+The RDD identifies a local treatment effect at the R\$80,000 boundary.
+The reference price (which determines procurement value) may be
+imprecisely measured, introducing fuzzy-RDD considerations. We report
+both the sharp and fuzzy specifications.

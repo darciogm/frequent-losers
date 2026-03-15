@@ -1,0 +1,159 @@
+% ============================================================================
+% sec4_data_fl.tex — REVISION-V6: Data, FL definition, estimation samples
+% Paper: Frequent Losers as Cover Bidders in Public Procurement
+% Target: RAND Journal of Economics
+% ============================================================================
+
+\section{Data and Frequent Losers Definition}
+\label{sec:data}
+
+\subsection{BEC Platform}
+\label{sec:bec}
+
+Our data come from the Bolsa Eletr\^onica de Compras (BEC), S\~ao
+Paulo's centralized electronic procurement platform serving 1,308
+purchasing units (PBUs) across state agencies, universities, hospitals,
+and municipal bodies. BEC handles two modalities:
+
+\begin{itemize}
+  \item \textbf{Convite} (sealed-bid): used for purchases up to
+    R\$80,000, requires a minimum of three bidders (Lei~8.666/93,
+    Art.~22, \S7). Bids are submitted simultaneously and opened together.
+  \item \textbf{Preg\~ao} (electronic reverse auction): the default
+    modality for standard goods and services. Bidders submit descending
+    bids in real time; there is no minimum-bidder requirement.
+\end{itemize}
+
+The minimum-bidder rule for convite creates a direct incentive for cover
+bidding: if a cartel controls one genuine bidder, it needs at least two
+cover bidders to meet the threshold. Under preg\~ao, cover bidders serve
+primarily to inflate apparent competition and discourage genuine entry.
+
+Our sample spans 2009--2019 and contains approximately 4.5 million
+tender-items, 40 million bids, 41,000 unique firms, and 1,308 PBUs.
+Table~\ref{tab:modality_year} shows the evolution of procurement volume
+by modality over time.
+
+\input{./output/tables/tab_modality_by_year}
+
+\subsection{Frequent Losers Definition}
+\label{sec:fl_definition}
+
+We define frequent losers (FL) in two steps:
+
+\begin{enumerate}
+  \item \textbf{Always-losers}: firms with a zero win rate across all
+    2009--2019 tenders. 16,843 firms ($\sim$41\% of all
+    BEC participants) never win a single tender.
+  \item \textbf{IQR threshold}: among always-losers, we identify those
+    with abnormally high participation counts using a median + 1.5
+    $\times$ IQR threshold on the distribution of tender participations.%
+    \footnote{We use median + 1.5 $\times$ IQR rather than the standard % REVISION-V6: IQR footnote with structural connection
+    Tukey rule (Q3 + 1.5 $\times$ IQR) because the participation
+    distribution is highly right-skewed. The median-based threshold
+    yields a cutoff of approximately 14 participations and identifies
+    2,735 FL firms. Economically, this cutoff identifies firms with
+    participation frequency so extreme as to be difficult to rationalize
+    as competitive optimization: at this threshold, the marginal cost
+    of bid preparation would exceed any plausible expected return
+    from participation under standard assumptions about win
+    probabilities. The ROC analysis in Section~\ref{sec:detection_validation}
+    confirms that the data-driven optimal threshold (Youden's $J$
+    criterion) is close to the 1.5$\times$IQR rule.
+    Robustness to the multiplier choice is reported in
+    Section~\ref{sec:robustness}.}
+    This yields approximately 2,735 FL firms.
+\end{enumerate}
+
+The treatment variable $\text{losers}_{igt}$ equals one if tender-item
+$i$ in item group $g$ at time $t$ has at least one FL firm among its
+participants, and zero otherwise.
+
+Figures~\ref{fig:losses} and~\ref{fig:iqr} show the participation
+distribution of always-losers, with the IQR threshold indicated. The
+distribution is heavily right-skewed: most always-losers participate in
+fewer than 10 tenders, while FL firms participate in 15 to over 400.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_01_losses_distribution.pdf}
+\caption{Distribution of tender participations among always-loser firms.
+The dashed line indicates the IQR threshold separating FL firms (right)
+from non-FL always-losers (left).}
+\label{fig:losses}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_02_iqr_identification.pdf}
+\caption{IQR identification of frequent losers. The threshold at
+median + 1.5 $\times$ IQR classifies firms to the right as FL.}
+\label{fig:iqr}
+\end{figure}
+
+\subsection{Sample Construction}
+\label{sec:sample}
+
+We restrict the analysis sample as follows: (i) convite and preg\~ao
+modalities only (phases 2 and 3); (ii) tender-items with a recorded
+winner; (iii) item types that have at least one tender with FL
+participation.%
+\footnote{Restriction (iii) ensures that control tenders come from item
+markets where FL firms could plausibly participate. We report results
+without this restriction in Section~\ref{sec:robustness} and
+Appendix~\ref{app:robustness}.}
+The resulting sample contains 1,654,447 tender-items across 18,783
+item types and 1,308 PBUs. FL firms participate in 4.8\% of
+tender-items (79,456 tender-items).
+
+Table~\ref{tab:descstats} reports descriptive statistics for tenders
+with and without FL presence.
+
+\input{./output/tables/tab_desc_stats}
+
+\subsection{Structural Estimation Sample} % REVISION-V6: new subsection
+\label{sec:structural_sample}
+
+The structural model (Section~\ref{sec:structural}) requires bid-level
+data with firm-level covariates. The estimation sample comprises
+approximately 40 million individual bids from 41,000 unique firms across
+all 2009--2019 tender-items. For each bid, we observe the bid amount,
+the winning (negotiated) price, firm identity (CNPJ), firm
+characteristics (size, CNAE sector), and the FL classification of the
+bidder.
+
+Table~\ref{tab:bid_summary} reports bid-level summary statistics by FL
+status. FL bids are on average [ESTIMATE]\% above the winning bid in the
+same tender, compared to [ESTIMATE]\% for non-FL losing bids. The
+within-tender standard deviation of log bids is [ESTIMATE] for FL
+bidders and [ESTIMATE] for non-FL bidders, providing the key moment for
+regime identification (Prediction~\ref{pred:regime_v6}).
+
+\subsection{CADE Validation Sample} % REVISION-V6: new subsection
+\label{sec:cade_sample}
+
+To validate the FL screen against actual enforcement outcomes, we
+construct a temporal cross-validation sample using CADE (Conselho
+Administrativo de Defesa Econ\^omica) cartel conviction records:
+
+\begin{itemize}
+  \item \textbf{Training period (FL definition):} 2009--2014. FL firms
+    are classified using participation and win-rate data from this
+    period only. This ensures that FL status is determined
+    \emph{before} the validation outcomes are observed.
+  \item \textbf{Validation period (CADE outcomes):} 2015--2019. We
+    assess whether FL-flagged firms co-participate with CADE-convicted
+    cartelists during this period.
+\end{itemize}
+
+The CADE validation data comprise 65 cartel cases involving procurement
+(2009--2019), of which 47 convicted firms match to BEC identifiers. Among
+2,735 FL firms, 193 (7.1\%) co-participate with at least one
+CADE-convicted firm in at least one tender-item. The permutation test
+(Section~\ref{sec:cade}) shows this rate is 3.5 times higher than
+expected after controlling for participation intensity ($p < 0.001$).
+
+The temporal split prevents information leakage: the FL screen's
+performance is evaluated on \emph{future} enforcement outcomes not used
+in defining FL status. This out-of-sample design is critical for the
+ROC analysis in Section~\ref{sec:detection_validation}.
