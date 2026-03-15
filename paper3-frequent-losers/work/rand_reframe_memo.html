@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reframe Strategy Memo &mdash; RAND Journal of Economics</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f5f5f5;
+    color: #222;
+    line-height: 1.7;
+    padding: 40px 20px;
+  }
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 48px 52px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  h1 {
+    font-size: 2em;
+    margin-bottom: 4px;
+    color: #1a1a1a;
+  }
+  .subtitle {
+    font-size: 1.05em;
+    color: #555;
+    margin-bottom: 6px;
+  }
+  .meta {
+    font-size: 0.92em;
+    color: #888;
+    margin-bottom: 32px;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 36px 0;
+  }
+  h2 {
+    font-size: 1.4em;
+    color: #333;
+    margin-bottom: 16px;
+    margin-top: 8px;
+  }
+  h3 {
+    font-size: 1.15em;
+    color: #444;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+  p { margin-bottom: 14px; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 0.72em;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    color: #fff;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    vertical-align: middle;
+    letter-spacing: 0.02em;
+  }
+  .badge-green   { background: #4caf50; }
+  .badge-amber   { background: #ff9800; }
+  .badge-red     { background: #f44336; }
+  .badge-orange  { background: #ff5722; }
+  .badge-teal    { background: #009688; }
+  .badge-gray    { background: #78909c; }
+  .badge-blue    { background: #1976d2; }
+
+  /* Option cards */
+  .option-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    background: #fafafa;
+  }
+  .option-card h3 {
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #222;
+  }
+  .option-card .badges {
+    margin-bottom: 14px;
+  }
+  .option-card p:last-child { margin-bottom: 0; }
+
+  .option-card.recommended {
+    border-left: 4px solid #1976d2;
+    background: #e3f2fd;
+    border-color: #e3f2fd;
+    border-left-color: #1976d2;
+    border-top: 1px solid #bbdefb;
+    border-right: 1px solid #bbdefb;
+    border-bottom: 1px solid #bbdefb;
+  }
+  .option-card.recommended h3 { color: #0d47a1; }
+
+  .option-card ul, .option-card ol {
+    margin: 10px 0 14px 22px;
+  }
+  .option-card li { margin-bottom: 6px; }
+
+  /* Assessment table inside cards */
+  .assess-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 4px;
+    font-size: 0.95em;
+  }
+  .assess-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+  }
+  .assess-table td:first-child {
+    font-weight: bold;
+    width: 130px;
+    color: #555;
+  }
+
+  /* Analysis list */
+  .analysis-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    background: #fafafa;
+  }
+  .analysis-item h4 {
+    font-size: 1.05em;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  .analysis-item .badges { margin-bottom: 10px; }
+  .analysis-item p { font-size: 0.95em; }
+  .analysis-item p:last-child { margin-bottom: 0; }
+
+  /* Abstract blockquote */
+  .abstract-box {
+    border-left: 4px solid #9e9e9e;
+    background: #f5f5f5;
+    padding: 20px 24px;
+    margin: 16px 0;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    font-size: 0.97em;
+    line-height: 1.75;
+  }
+  .abstract-box .word-count {
+    font-style: normal;
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 10px;
+  }
+
+  /* Critical flags */
+  .critical-flags {
+    border-left: 4px solid #ff9800;
+    background: #fff3e0;
+    padding: 20px 24px;
+    margin: 16px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .critical-flags h2 {
+    color: #e65100;
+    margin-bottom: 14px;
+  }
+  .critical-flags ol {
+    margin-left: 20px;
+  }
+  .critical-flags li {
+    margin-bottom: 12px;
+    line-height: 1.65;
+  }
+
+  /* Section labels */
+  .section-num {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 0.75em;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* Fallback journal table */
+  .journal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.93em;
+  }
+  .journal-table th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid #bbb;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #666;
+  }
+  .journal-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+
+  strong { color: #1a1a1a; }
+  em { color: #555; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Reframe Strategy Memo</h1>
+<p class="subtitle"><strong>Target:</strong> RAND Journal of Economics</p>
+<p class="subtitle"><strong>Paper:</strong> Frequent Losers as Cover Bidders in Public Procurement</p>
+<p class="meta">2026-03-15</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 1 -->
+<!-- ============================================================ -->
+
+<span class="section-num">Section 1</span>
+<h2>Honest Diagnosis</h2>
+
+<h3>1a. What the paper currently IS</h3>
+<p>The paper is an applied empirical IO paper that proposes a new firm-level screening tool (frequent losers) for detecting cover bidding in procurement auctions. Its empirical backbone is a high-dimensional OLS regression showing a robust 4&ndash;9% price association between FL presence and negotiated prices, validated against CADE cartel convictions and a battery of robustness checks. The paper attempts to move beyond association toward causation using three supplementary strategies&mdash;a leave-one-out IV, Bajari-Ye bid-coordination tests, and a staggered DiD&mdash;but none of these delivers clean causal identification. The paper&rsquo;s genuine strength is the practical screening contribution (H1): a simple, data-parsimonious tool that works with participation data alone, demonstrated at scale (4.5M tender-items) in a developing-country context. The causal claim (H2) is suggestive but not established.</p>
+
+<h3>1b. What RAND wants</h3>
+<p>RAND would publish a paper on this topic if it offered one of: (a) clean causal identification of the price effect of cover bidding, using a quasi-experiment or institutional discontinuity that provides exogenous variation in FL exposure; (b) a structural model of cover bidding that estimates the cartel&rsquo;s optimization problem, delivers counterfactual predictions (e.g., optimal screening threshold, welfare under alternative procurement rules), and fits the data; (c) a methodological contribution that advances the detection toolkit&mdash;a new algorithm with formal properties (consistency, power, false-discovery rate) that demonstrably outperforms existing methods on held-out validation data; or (d) strong reduced-form evidence that disciplines auction theory, such as cleanly identified effects of cover bidding on entry, bid distributions, or auction outcomes that map onto structural parameters. RAND values precise identification and theoretical novelty over breadth of robustness checks.</p>
+
+<h3>1c. The gap</h3>
+<p>The gap is in identification and theoretical grounding. The paper has <em>breadth</em> (16 tables, 14 figures, 6 robustness groups) but lacks <em>depth</em> on any single identification strategy. The IV fails balance; the Bajari-Ye tests are internally inconsistent; the DiD is null; the theoretical framework is taxonomic rather than equilibrium-based. RAND papers typically do one thing excellently rather than six things adequately. The paper needs to either (i) find a single clean identification strategy and build the paper around it, or (ii) reframe away from causal identification toward methodological or policy contribution. The CADE validation&mdash;currently a five-page section&mdash;is actually the paper&rsquo;s most RAND-relevant contribution but is underexploited: it connects the statistical screen to real enforcement outcomes.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 2 -->
+<!-- ============================================================ -->
+
+<span class="section-num">Section 2</span>
+<h2>Reframe Options</h2>
+
+<!-- Option A -->
+<div class="option-card">
+  <h3>Option A &mdash; &ldquo;The Identification Paper&rdquo;</h3>
+  <div class="badges">
+    <span class="badge badge-amber">Feasibility: Medium</span>
+    <span class="badge badge-amber">RAND: 30&ndash;40%</span>
+    <span class="badge badge-gray">2&ndash;3 months</span>
+  </div>
+  <p><strong>Strategy:</strong> Reframe around clean causal identification of the cover-bidding price effect. Drop the LOO IV as the primary strategy. Identify a natural experiment or institutional discontinuity in BEC data.</p>
+  <p><strong>Candidates to investigate:</strong></p>
+  <ol>
+    <li><strong>Minimum-bidder regulation change.</strong> Did any Brazilian procurement regulation during 2009&ndash;2019 change the minimum number of bidders required for convite modality? If so, this creates a difference-in-differences design where cover bidding incentives shift discontinuously.</li>
+    <li><strong>BEC geographic expansion.</strong> If BEC expanded to cover new municipalities or agencies during the sample period, newly covered PBUs provide a clean treatment group for FL entry effects.</li>
+    <li><strong>Value threshold for modality switching.</strong> Convite applies below R$80,000 and preg&atilde;o above. Bunching at this threshold could support an RDD using procurement value as the running variable.</li>
+    <li><strong>CADE enforcement shocks.</strong> Post-conviction exit of FL firms from affected markets provides a quasi-experiment: do prices fall when FL firms exit?</li>
+    <li><strong>FL firm deaths/exits.</strong> Shell companies deregistered for tax non-compliance provide exogenous FL exits driven by tax enforcement, not procurement outcomes.</li>
+  </ol>
+  <table class="assess-table">
+    <tr><td>Feasibility</td><td>Medium. Requires investigation of institutional details and data availability. The value-threshold RDD and CADE enforcement shocks are most promising with existing data.</td></tr>
+    <tr><td>Required work</td><td>2&ndash;3 months to investigate candidates, implement the cleanest one, and restructure the paper.</td></tr>
+    <tr><td>RAND probability</td><td><strong>Medium (30&ndash;40%)</strong> if a clean quasi-experiment is found. The paper becomes &ldquo;clean ID + BEC data&rdquo; which is publishable but not guaranteed at RAND if the natural experiment is small or local.</td></tr>
+  </table>
+</div>
+
+<!-- Option B -->
+<div class="option-card">
+  <h3>Option B &mdash; &ldquo;The Structural Screening Paper&rdquo;</h3>
+  <div class="badges">
+    <span class="badge badge-orange">Feasibility: Low-Medium</span>
+    <span class="badge badge-teal">RAND: 40&ndash;50%</span>
+    <span class="badge badge-gray">4&ndash;6 months</span>
+  </div>
+  <p><strong>Strategy:</strong> Build a structural model of cover bidding that:</p>
+  <ul>
+    <li>Models the cartel&rsquo;s cover-bidder deployment decision as a function of <em>n</em> genuine bidders, reference price, detection probability, and auction format</li>
+    <li>Derives the equilibrium cover-bid distribution under each regime as a best response</li>
+    <li>Generates a structural likelihood function over observed bid data</li>
+    <li>Estimates structural parameters (detection probability, cover-bidding cost, cartel markup)</li>
+    <li>Computes counterfactual welfare under alternative procurement rules (e.g., removing minimum-bidder requirements, introducing FL screening)</li>
+  </ul>
+  <p>This would transform the paper from &ldquo;here is a screen&rdquo; to &ldquo;here is a model of cover bidding that rationalizes the screen, estimates its parameters, and delivers policy counterfactuals.&rdquo;</p>
+  <table class="assess-table">
+    <tr><td>Feasibility</td><td>Low-Medium. Requires structural auction modeling expertise. The 40M bid-level dataset provides sufficient data for estimation, but the model must handle the two-modality structure (convite vs. preg&atilde;o) and the endogenous number of cover bidders.</td></tr>
+    <tr><td>Required work</td><td>4&ndash;6 months minimum. Model development, estimation, counterfactual computation.</td></tr>
+    <tr><td>RAND probability</td><td><strong>Medium-High (40&ndash;50%)</strong> if executed well. Structural auction models are RAND&rsquo;s bread and butter, and this would be the first structural model of cover bidding with parameter estimates. The risk is that the model may not fit the data well or may produce implausible parameter estimates.</td></tr>
+  </table>
+</div>
+
+<!-- Option C -->
+<div class="option-card">
+  <h3>Option C &mdash; &ldquo;The Detection Tool Paper&rdquo;</h3>
+  <div class="badges">
+    <span class="badge badge-green">Feasibility: High</span>
+    <span class="badge badge-orange">RAND: 20&ndash;30%</span>
+    <span class="badge badge-gray">1&ndash;2 months</span>
+  </div>
+  <p><strong>Strategy:</strong> Reframe around the methodological contribution of FL as a detection algorithm. Drop the causal claim (H2) entirely. Make H1 the entire paper. The CADE validation becomes the centerpiece.</p>
+  <p><strong>Key elements:</strong></p>
+  <ol>
+    <li><strong>Formal detection framework.</strong> Define FL screening as a classification problem: FL = 1 vs. FL = 0 for each firm, with CADE convictions as ground truth. Compute precision, recall, F1-score, and false-discovery rate.</li>
+    <li><strong>ROC curve.</strong> Vary the IQR threshold and compute the receiver operating characteristic curve. Find the optimal threshold that maximizes expected enforcement value.</li>
+    <li><strong>Head-to-head comparison.</strong> Implement Imhof et al. (2018) and Conley-Decarolis (2016) on BEC data. Compare FL with these established methods on the same held-out CADE validation set.</li>
+    <li><strong>Policy design.</strong> Given a competition authority with a fixed investigation budget, what is the optimal allocation between FL screening and bid-level screening? A statistical decision theory problem.</li>
+    <li><strong>Out-of-sample validation.</strong> Use temporal cross-validation: define FL using 2009&ndash;2014 data, validate against CADE convictions during 2015&ndash;2019.</li>
+  </ol>
+  <table class="assess-table">
+    <tr><td>Feasibility</td><td>High. All components are implementable with existing BEC data and CADE validation data. The Conley-Decarolis implementation requires constructing the co-bidding matrix (16.8M rows), computationally intensive but feasible.</td></tr>
+    <tr><td>Required work</td><td>1&ndash;2 months. ROC curve, formal comparison, policy design framework.</td></tr>
+    <tr><td>RAND probability</td><td><strong>Low-Medium (20&ndash;30%)</strong>. RAND has published methodological papers (Chassang-Ortner 2022) but they typically require theoretical foundations. A purely empirical comparison may be better suited to J. Econometrics. However, if the comparison demonstrates dramatic incremental value and the policy design component is rigorous, RAND could be interested.</td></tr>
+  </table>
+</div>
+
+<!-- Option D -->
+<div class="option-card">
+  <h3>Option D &mdash; &ldquo;The Market Design Paper&rdquo;</h3>
+  <div class="badges">
+    <span class="badge badge-amber">Feasibility: Medium</span>
+    <span class="badge badge-amber">RAND: 25&ndash;35%</span>
+    <span class="badge badge-gray">3&ndash;4 months</span>
+  </div>
+  <p><strong>Strategy:</strong> Reframe around the institutional design question: Why do cover bidders exist in Brazilian procurement but not (as visibly) elsewhere? What features of BEC&rsquo;s rules create the FL equilibrium?</p>
+  <p><strong>Key elements:</strong></p>
+  <ol>
+    <li><strong>Institutional analysis.</strong> Compare BEC&rsquo;s rules with procurement systems where cover bidding is less prevalent (e.g., EU e-procurement, US federal procurement). Identify which BEC features create the cover-bidding opportunity.</li>
+    <li><strong>Counterfactual rule changes.</strong> Analyze what happens if: (a) the minimum-bidder requirement is removed; (b) reference prices are sealed; (c) FL screening is implemented with automatic investigation triggers.</li>
+    <li><strong>Mechanism design.</strong> Can the procurement mechanism be redesigned to make cover bidding unprofitable? Connects to the Chassang-Ortner (2022) robust screening framework.</li>
+    <li><strong>Dynamic effects.</strong> What happens when FL firms are screened out? Do cartels adapt (rotate cover bidders, allow occasional wins)?</li>
+  </ol>
+  <table class="assess-table">
+    <tr><td>Feasibility</td><td>Medium. The institutional analysis is feasible but requires knowledge of comparative procurement regulation. The counterfactual analysis requires assumptions about cartel behavior under alternative rules.</td></tr>
+    <tr><td>Required work</td><td>3&ndash;4 months. Institutional comparison, counterfactual calibration, mechanism design component.</td></tr>
+    <tr><td>RAND probability</td><td><strong>Medium (25&ndash;35%)</strong>. The most &ldquo;RAND-style&rdquo; framing but requires the most new work. If the mechanism design component is rigorous (proving that a specific rule change eliminates the cover-bidding equilibrium), this could be very strong.</td></tr>
+  </table>
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 3 -->
+<!-- ============================================================ -->
+
+<span class="section-num">Section 3</span>
+<h2>Recommended Path</h2>
+
+<div class="option-card recommended">
+  <h3>Primary Recommendation: Option B + C Combination</h3>
+  <div class="badges">
+    <span class="badge badge-blue">Recommended</span>
+    <span class="badge badge-teal">RAND: 35&ndash;45%</span>
+    <span class="badge badge-gray">4&ndash;6 months</span>
+  </div>
+  <p>The highest-probability path to RAND is a structural model of cover bidding estimated on BEC data, combined with a rigorous detection comparison. Specifically:</p>
+  <ol>
+    <li><strong>Build a simple model</strong> of cartel cover-bidder deployment (extending Section 3 from taxonomy to equilibrium). The model should predict: how many cover bidders to deploy, what bids they submit, and which tenders to target. Estimate the structural parameters using maximum likelihood on the 40M bid-level dataset.</li>
+    <li><strong>Use the structural model to derive the optimal detection threshold.</strong> This replaces the ad-hoc IQR threshold with a model-implied threshold that maximizes expected social welfare given prosecution costs and detection rates.</li>
+    <li><strong>Validate against CADE</strong> convictions using the structural model&rsquo;s predictions. Compute the model-implied probability of cover bidding for each tender and compare with CADE conviction data.</li>
+  </ol>
+  <p>This combination delivers what RAND wants: a structural contribution (model + estimation) with empirical validation (CADE) and policy relevance (optimal detection design).</p>
+  <p><strong>Honest probability at RAND: 35&ndash;45%</strong> with 4&ndash;6 months of additional work.</p>
+</div>
+
+<h3>If RAND is not achievable</h3>
+
+<p>If the structural path is infeasible (due to timeline, expertise, or model fit issues), the recommended fallback sequence is:</p>
+
+<table class="journal-table">
+  <thead>
+    <tr><th>Journal</th><th>Strategy</th><th>Probability</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>IJIO</strong></td>
+      <td>Current target. Already accepted for minor revision. Complete R1 and publish.</td>
+      <td><span class="badge badge-green">90%+</span></td>
+    </tr>
+    <tr>
+      <td><strong>JLEO</strong></td>
+      <td>Reframe around policy/enforcement contribution. CADE validation, implementation blueprint, and developing-country context are strong.</td>
+      <td><span class="badge badge-teal">60&ndash;70%</span></td>
+    </tr>
+    <tr>
+      <td><strong>ReStat</strong></td>
+      <td>Only viable if a clean quasi-experiment is found (Option A). ReStat values clean ID over structural models.</td>
+      <td><span class="badge badge-amber">25&ndash;35%</span></td>
+    </tr>
+    <tr>
+      <td><strong>JEEA</strong></td>
+      <td>Similar to ReStat but more open to applied IO without structural estimation.</td>
+      <td><span class="badge badge-amber">30&ndash;40%</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Bottom line</h3>
+<p>RAND is achievable but requires 4&ndash;6 months of structural modeling work that may not succeed. The expected-value calculation favors publishing at IJIO now (90%+ probability) and developing the structural extension as a separate paper. If the authors want to pursue RAND, Option B is the path, but they should only commit if they have structural auction modeling expertise on the team or can bring in a co-author.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 4 -->
+<!-- ============================================================ -->
+
+<span class="section-num">Section 4</span>
+<h2>Additional Analyses &mdash; Short List</h2>
+
+<!-- Analysis 1 -->
+<div class="analysis-item">
+  <h4>Analysis 1: Bajari-Ye first stage without n_bids</h4>
+  <div class="badges">
+    <span class="badge badge-green">Impact: High</span>
+    <span class="badge badge-green">Feasibility: High</span>
+    <span class="badge badge-gray">1 week</span>
+  </div>
+  <p><strong>What it tests:</strong> Whether the exchangeability and conditional-independence violations survive when the potentially endogenous variable (number of bids) is removed from the Bajari-Ye first stage.</p>
+  <p><strong>Implementation:</strong> Re-estimate the first-stage bid equation excluding n_bids. Keep firm size, firm age, CNAE sector, and item + year FE. Re-compute KS statistic (exchangeability), pairwise products (conditional independence), and tender-FE variants.</p>
+  <p><strong>Strengthening result:</strong> KS and pairwise products remain significant and similar in magnitude. <strong>Weakening result:</strong> Exchangeability violation disappears or is substantially reduced.</p>
+  <p><em>Supports all reframe options. This is a fix, not a reframe-specific analysis.</em></p>
+</div>
+
+<!-- Analysis 2 -->
+<div class="analysis-item">
+  <h4>Analysis 2: CADE enforcement shock DiD</h4>
+  <div class="badges">
+    <span class="badge badge-green">Impact: Very High</span>
+    <span class="badge badge-amber">Feasibility: Medium</span>
+    <span class="badge badge-gray">1 month</span>
+  </div>
+  <p><strong>What it tests:</strong> Whether prices in markets with FL presence decline after CADE convicts cartelists in related markets, and whether FL firms exit after CADE enforcement.</p>
+  <p><strong>Implementation:</strong> Identify the 47 CADE-convicted firms matched to BEC. Define &ldquo;treated markets&rdquo; as item-group &times; PBU cells where convicted firms participate. Use conviction dates as treatment timing. Estimate a staggered DiD (Callaway-Sant&rsquo;Anna) on log prices in treated vs. never-treated markets, with FL exit as a mediator.</p>
+  <p><strong>Strengthening result:</strong> Prices decline in treated markets after conviction, and FL firms exit those markets. <strong>Weakening result:</strong> No price change or FL firms persist after conviction.</p>
+  <p><em>Supports Option A (clean identification). Could be the clean quasi-experiment the paper needs.</em></p>
+</div>
+
+<!-- Analysis 3 -->
+<div class="analysis-item">
+  <h4>Analysis 3: ROC curve and formal detection comparison</h4>
+  <div class="badges">
+    <span class="badge badge-green">Impact: High</span>
+    <span class="badge badge-green">Feasibility: High</span>
+    <span class="badge badge-gray">2 weeks</span>
+  </div>
+  <p><strong>What it tests:</strong> The FL screen&rsquo;s classification performance relative to Imhof-style bid-level screens and random classification, using CADE convictions as ground truth.</p>
+  <p><strong>Implementation:</strong> Vary the IQR multiplier from 0.5 to 5.0 in steps of 0.1. For each threshold, classify firms as FL or non-FL. Compute true positive rate (FL firms that co-participate with CADE cartelists) and false positive rate (FL firms that do not). Plot the ROC curve. Compute AUC. Repeat for an Imhof-style screen (CV median split on bid-level data). Compare AUC.</p>
+  <p><strong>Strengthening result:</strong> FL achieves AUC &gt; 0.7 and outperforms Imhof on this validation set. <strong>Weakening result:</strong> FL is no better than random classification (AUC &sim; 0.5) or Imhof dominates FL.</p>
+  <p><em>Supports Option C (Detection Tool Paper). Also strengthens H1 for any reframe.</em></p>
+</div>
+
+<!-- Analysis 4 -->
+<div class="analysis-item">
+  <h4>Analysis 4: Value-threshold RDD for convite minimum-bidder effect</h4>
+  <div class="badges">
+    <span class="badge badge-green">Impact: Very High</span>
+    <span class="badge badge-amber">Feasibility: Medium</span>
+    <span class="badge badge-gray">1 month</span>
+  </div>
+  <p><strong>What it tests:</strong> Whether the cover-bidding price effect is discontinuously larger just below the R$80,000 convite threshold (where minimum-bidder requirements bind) relative to just above (preg&atilde;o, no minimum).</p>
+  <p><strong>Implementation:</strong> Restrict sample to tenders with estimated values near R$80,000. Use procurement value as the running variable. Estimate a local-linear RD of log negotiated price on FL presence, interacted with an indicator for being below the threshold. Bandwidth selection via Calonico-Cattaneo-Titiunik (2014).</p>
+  <p><strong>Strengthening result:</strong> The FL &times; below-threshold interaction is positive and significant. <strong>Weakening result:</strong> No discontinuity, suggesting cover bidding is not driven by the minimum-bidder requirement.</p>
+  <p><em>Supports Option A (clean identification) and Option D (market design).</em></p>
+</div>
+
+<!-- Analysis 5 -->
+<div class="analysis-item">
+  <h4>Analysis 5: Structural cover-bid distribution estimation</h4>
+  <div class="badges">
+    <span class="badge badge-green">Impact: Very High</span>
+    <span class="badge badge-orange">Feasibility: Medium-Low</span>
+    <span class="badge badge-gray">2&ndash;3 months</span>
+  </div>
+  <p><strong>What it tests:</strong> Whether FL bids are generated by a distribution consistent with cover bidding (Regime 1 or 2) and whether the structural parameters (cartel markup, cover-bidding cost, detection probability) are economically plausible.</p>
+  <p><strong>Implementation:</strong> Specify a mixture model: each bidder is either genuine (draws from F<sub>genuine</sub>) or cover (draws from F<sub>cover</sub>). Use the FL classification as a prior on bidder type. Estimate F<sub>genuine</sub> and F<sub>cover</sub> nonparametrically (kernel density) or parametrically (log-normal for genuine, uniform or normal for cover). Use the bid-level data (40M bids) for estimation. Compute the implied cartel markup under the structural model.</p>
+  <p><strong>Strengthening result:</strong> The structural markup estimate is consistent with the reduced-form OLS (6&ndash;9%) and the estimated cover-bid distribution matches Regime 1 (uniform above winning bid). <strong>Weakening result:</strong> The mixture model cannot distinguish cover from genuine bids, or the implied markup is economically implausible.</p>
+  <p><em>Supports Option B (Structural Paper). This is the core analysis for the structural reframe.</em></p>
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 5 -->
+<!-- ============================================================ -->
+
+<span class="section-num">Section 5</span>
+<h2>Abstract Rewrite</h2>
+<p><em>For the recommended Option B + C combination:</em></p>
+
+<div class="abstract-box">
+  Cover bidding&mdash;the deployment of sham bidders to simulate competition in rigged procurement auctions&mdash;is a widespread but difficult-to-detect cartel practice. We develop a structural model of cover-bidder deployment that predicts the optimal number, bid distribution, and market selection of cover bidders as a function of genuine competition, reference prices, and detection probability. Estimating the model on 40 million bids from Brazilian public procurement (2009&ndash;2019), we identify 2,735 cover-bidder candidates (&ldquo;frequent losers&rdquo;: firms that never win yet participate abnormally often). The structural estimates imply a cartel markup of [X]% in cover-bid-present tenders, consistent with OLS (6.4%) and within the range of cartel overcharge estimates in the literature. Validation against competition authority convictions shows the model-implied detection probability significantly predicts actual enforcement outcomes (AUC = [Y]). We derive the welfare-maximizing detection threshold as a function of enforcement capacity, providing a practical screening tool for competition authorities.
+  <div class="word-count">(141 words &mdash; adjust X, Y with actual estimates)</div>
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 6 -->
+<!-- ============================================================ -->
+
+<div class="critical-flags">
+  <span class="section-num">Section 6</span>
+  <h2>Critical Flags</h2>
+  <ol>
+    <li><strong>The n_bids variable in Bajari-Ye first stage must be investigated immediately.</strong> If removing it changes the results, the entire Bajari-Ye evidence base collapses. This should be checked before any submission or reframe decision.</li>
+    <li><strong>The CADE enforcement shock analysis (Analysis 2) should be scoped before committing to any reframe.</strong> If conviction dates are available and the DiD produces a significant result, this changes the calculus dramatically&mdash;Option A becomes the highest-probability path to RAND.</li>
+    <li><strong>The cross-fit attenuation (0.036 vs. 0.064) should be addressed in any version of the paper.</strong> A 44% attenuation from cross-fitting is large and may indicate in-sample overfitting of the FL definition. This is the most common RAND referee concern for screening papers.</li>
+    <li><strong>The network-split labeling must be resolved.</strong> The variable names (has_high_susp_fl) contradict the paper&rsquo;s current interpretation. Either the variables are mislabeled or the original hypothesis failed. Either way, the current presentation is misleading.</li>
+  </ol>
+</div>
+
+</div>
+</body>
+</html>
