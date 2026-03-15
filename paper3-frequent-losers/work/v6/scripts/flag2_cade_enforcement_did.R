@@ -166,8 +166,8 @@ if (!file.exists(BEC_PARQUET)) {
 
 # Read only needed columns from BEC collapse
 cat("  Reading BEC_collapse_final.parquet ...\n")
-bec_cols <- c("po_item_merge_key", "preconegociado", "quantidadeentregue",
-              "po_phase_code", "numerodaoc", "códigoitem")
+bec_cols <- c("po_item_merge_key", "bid_unit_price_negot_min", "preconegociado",
+              "quantidadeentregue", "po_phase_code", "numerodaoc", "códigoitem")
 bec_schema <- schema(read_parquet(BEC_PARQUET, as_data_frame = FALSE))
 avail_cols <- names(bec_schema)
 cat("  Available columns:", paste(avail_cols, collapse = ", "), "\n")
@@ -195,11 +195,15 @@ if ("numerodaoc" %in% names(bec)) {
   bec[, oc_code := substr(po_item_merge_key, 1, 22)]
 }
 
-# Price: preconegociado (negotiated price per unit)
-if ("preconegociado" %in% names(bec)) {
-  bec[, price := suppressWarnings(as.numeric(preconegociado))]
+# Price: bid_unit_price_negot_min (negotiated price per unit)
+price_candidates <- c("bid_unit_price_negot_min", "preconegociado", "bid_price_min")
+price_col_found <- intersect(price_candidates, names(bec))
+if (length(price_col_found) > 0) {
+  bec[, price := suppressWarnings(as.numeric(bec[[price_col_found[1]]]))]
+  cat("  Price column used:", price_col_found[1], "\n")
 } else {
   bec[, price := NA_real_]
+  cat("  WARNING: No price column found\n")
 }
 
 # Phase filter: keep phases 2 (Convite) and 3 (Pregão)
