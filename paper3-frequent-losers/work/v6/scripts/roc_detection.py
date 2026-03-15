@@ -187,7 +187,11 @@ if roc_unique["fpr"].iloc[0] > 0:
 if roc_unique["fpr"].iloc[-1] < 1:
     roc_unique = pd.concat([roc_unique, pd.DataFrame({"fpr": [1], "tpr": [1]})], ignore_index=True)
 
-auc = np.trapz(roc_unique["tpr"], roc_unique["fpr"])
+try:
+    auc = np.trapezoid(roc_unique["tpr"], roc_unique["fpr"])
+except AttributeError:
+    from scipy.integrate import trapezoid
+    auc = trapezoid(roc_unique["tpr"].values, roc_unique["fpr"].values)
 print(f"  AUC: {auc:.4f}")
 
 # ---- Find optimal threshold (Youden's J) ------------------------------------
