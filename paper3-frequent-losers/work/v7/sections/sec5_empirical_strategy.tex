@@ -142,8 +142,18 @@ confounder would need to explain at least 17.5\% of the residual
 variation in both FL presence and log prices to reduce $\hat{\beta}$ to
 zero.
 
-\paragraph{Instrumental variable.}
-To bracket the OLS estimate from above, we instrument FL presence with % REVISION-V6: IV reframed as upper bound, not primary
+\paragraph{Matching estimators.} % V7-T2: CEM/IPW promoted to main strategy
+To address potential selection on observables, we estimate the
+FL--price effect using two matching approaches: coarsened exact
+matching (CEM) on year, procedure type, item group, and PBU size
+quartile ($\hat{\beta}_{\text{CEM}} = 0.077$, $N = 969{,}751$), and
+inverse probability weighting (IPW, $\hat{\beta}_{\text{IPW}} = 0.055$,
+$N = 830{,}194$). These estimates bracket the OLS baseline (0.064)
+and the cross-fit average (0.036), providing a non-parametric check
+that the FL--price association survives reweighting on observables.
+
+\paragraph{Instrumental variable (supplementary).} % V7-T2: IV explicitly supplementary
+As a supplementary bracketing exercise, we instrument FL presence with
 a leave-one-out measure of FL supply:
 \begin{equation}
   Z_{kgt} = \sum_{j \neq k} \mathbf{1}[\text{FL firm active at PBU } j
@@ -156,23 +166,30 @@ probability of FL participation---a supply-side exclusion restriction in
 the spirit of \citet{goldsmithpinkham2020bartik}. We treat the IV
 estimate as a Local Average Treatment Effect for complier tenders: an
 upper bound on the average price effect that corrects for
-measurement-error attenuation in the FL indicator. The IV is not our
-primary identification strategy; we report it to bracket the OLS
-estimate and verify that the structural model's implied markup falls
-within the OLS--IV range.
+measurement-error attenuation in the FL indicator.
 
-\paragraph{Balance and specification sensitivity.}
+\paragraph{IV validity concerns.} % V7-T2: balance concerns elevated
 Balance tests (Table~\ref{tab:iv_balance} in
 Appendix~\ref{app:robustness}) reveal statistically significant
 differences across all four observable characteristics, a pattern that
 is more concerning than any single coefficient. While the economic
 magnitudes are modest (all standardized differences below
-$0.03\sigma$), we do not dismiss this imbalance. The sensitivity
-analysis and matching estimates
-(Section~\ref{sec:robustness}) bound the extent to which unobserved
-selection could explain the price effect. We report the IV for
-completeness and as a bracketing device, not as the basis for our
-causal claims.
+$0.03\sigma$), systematic imbalance raises exclusion-restriction
+concerns. The \citet{goldsmithpinkham2020bartik} decomposition
+requires computing Rotemberg weights for each product-market--year
+share, which is infeasible in our setting with 18,783 item types and
+11 years ($> 200{,}000$ shares).\footnote{The LOO instrument is a
+sum over PBUs, not a Bartik-style interaction of shares and aggregate
+shocks. The Rotemberg decomposition applies to Bartik instruments
+with a finite number of shares; our instrument aggregates over
+$\sim$1,300 PBUs per item-year cell, making the diagnostic
+computationally intractable and conceptually distinct from the
+shift-share framework.} We therefore rely on matching (CEM, IPW) and
+sensitivity analysis (\citealt{cinelli2020making}, $RV = 17.5\%$) to
+bound the IV's validity. We report the IV for completeness and as an
+upper bound, not as the basis for our causal claims; the primary
+estimates are OLS with rich FE (0.064), cross-fit (0.036), and
+matching (0.055--0.077).
 
 % ── 5.3 Detection Validation ─────────────────────────────────────
 
