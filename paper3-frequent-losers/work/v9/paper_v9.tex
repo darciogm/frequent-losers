@@ -1,0 +1,133 @@
+\documentclass[12pt,authoryear]{elsarticle}
+
+% ---- Packages ----------------------------------------------------------------
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage[left=28mm,right=30mm,top=28mm,bottom=28mm]{geometry}
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{url,xurl}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\pdfstringdefDisableCommands{%
+  \def\corref#1{}%
+  \def\fnref#1{}%
+  \def\cortext#1{}%
+  \def\ead#1{}%
+}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{wasysym}
+\usepackage{lscape}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{natbib}
+
+% ---- Suppress PDF page-group warnings when multiple figures on same page ----
+\pdfsuppresswarningpagegroup=1
+
+% ---- Allow slightly looser line breaking to eliminate Overfull hbox ---------
+\tolerance=600
+\emergencystretch=1em
+
+% ---- Custom macros -----------------------------------------------------------
+\newcommand{\cites}[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+% Fix elsarticle page style
+\makeatletter
+\def\ps@pprintTitle{%
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \def\@oddfoot{\centerline{\thepage}}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+
+\renewcommand\theaffn{\arabic{affn}}
+
+% Theorem-like environments
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}[definition]{Hypothesis}
+\newtheorem{prediction}[definition]{Prediction}
+\newtheorem{proposition}[definition]{Proposition} % REVISION-V6: added for structural model
+
+% Proof environment (amsthm not loaded with elsarticle)
+\newenvironment{proof}[1][Proof]{\noindent\textit{#1.} }{\hfill$\square$\par\medskip}
+
+% ---- Formatting --------------------------------------------------------------
+% V9: calibrated spacing for 65-page target
+% 1.55 gives effective 1.86× baselineskip at 12pt ≈ generous 1.5-spacing
+\renewcommand{\baselinestretch}{1.48}
+
+% V9: tighten displayed equation spacing (CUT E)
+\setlength{\abovedisplayskip}{8pt plus 2pt minus 4pt}
+\setlength{\belowdisplayskip}{8pt plus 2pt minus 4pt}
+\setlength{\abovedisplayshortskip}{4pt plus 2pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt}
+
+% V9: tighten table/figure float spacing (CUT F)
+\setlength{\textfloatsep}{10pt plus 2pt minus 4pt}
+\setlength{\floatsep}{8pt plus 2pt minus 4pt}
+\setlength{\intextsep}{8pt plus 2pt minus 4pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+\biboptions{authoryear}
+\setcounter{MaxMatrixCols}{10}
+\setlength{\bibsep}{0pt}
+% V9: compact bibliography
+\renewcommand{\bibfont}{\small}
+\interfootnotelinepenalty=50000
+\renewcommand{\arraystretch}{1.3}
+
+% ---- Hyphenation -------------------------------------------------------------
+\hyphenation{eco-no-me-tric re-gres-sion dif-fer-ence-in-dif-fer-ences
+  en-do-ge-nei-ty het-e-ro-sce-das-tic-i-ty pro-cure-ment}
+
+% ---- Graphics path -----------------------------------------------------------
+\graphicspath{{./output/figures/}{./images/}} % REVISION-V6: updated path for v6 directory
+
+% ==============================================================================
+\begin{document}
+% ==============================================================================
+
+\input{sec_frontmatter}
+
+\input{sec_introduction}
+\input{sec_literature}
+\input{sections/sec3_structural_model}   % REVISION-V6: replaces sec_conceptual
+\input{sections/sec4_data_fl}            % REVISION-V6: replaces sec_data
+\input{sec_cade}
+\input{sections/sec5_empirical_strategy} % REVISION-V6: replaces sec_empirical_strategy
+\input{sections/sec7_results}             % REVISION-V6: M2 — restructured Results
+\input{sec_mechanisms}
+\input{sec_robustness}
+\input{sections/sec_counterfactual}   % CO-AUTHOR EDIT: SECTION REORDER [T3.4] — promoted from Results §7.8
+\input{sec_conclusion}
+
+\bibliographystyle{chicago}
+\bibliography{references}
+
+\appendix
+% V9: compact appendix formatting
+\singlespacing
+\small
+\setlength{\parskip}{2pt plus 1pt}
+% Reset float counters and auto-reset at each appendix section boundary
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\makeatletter
+\@addtoreset{table}{section}
+\@addtoreset{figure}{section}
+\makeatother
+\input{sec_appendix}
+
+\end{document}
