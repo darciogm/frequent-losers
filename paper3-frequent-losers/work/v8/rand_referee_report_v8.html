@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAND Referee Report — Frequent Losers v8</title>
+<style>
+  body { font-family: 'Georgia', serif; max-width: 800px; margin: 40px auto;
+         padding: 0 20px; line-height: 1.7; color: #1a1a1a; }
+  h1 { font-size: 1.8em; border-bottom: 3px solid #1565C0; padding-bottom: 10px; }
+  h2 { font-size: 1.4em; color: #1565C0; margin-top: 2em; border-bottom: 1px solid #ccc; }
+  h3 { font-size: 1.15em; color: #333; }
+  hr { border: none; border-top: 2px solid #1565C0; margin: 2em 0; }
+  table { border-collapse: collapse; width: 100%%; margin: 1em 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+  th { background: #f5f5f5; font-weight: bold; }
+  strong { color: #1565C0; }
+  em { color: #555; }
+  blockquote { border-left: 4px solid #1565C0; margin: 1em 0; padding: 0.5em 1em;
+               background: #f8f9fa; }
+  code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-size: 0.9em; }
+  .recommendation { background: #e8f5e9; border: 2px solid #4CAF50; padding: 15px;
+                     border-radius: 8px; margin: 1em 0; font-size: 1.1em; }
+</style>
+</head>
+<body>
+<h1>REFEREE REPORT</h1>
+<p><strong>Manuscript:</strong> "Frequent Losers as Cover Bidders in Public Procurement"
+<strong>Authors:</strong> Genicolo-Martins &amp; Furquim de Azevedo (INSPER)
+<strong>Journal:</strong> RAND Journal of Economics
+<strong>Version:</strong> v8 (March 2026)
+<strong>Recommendation:</strong> Accept with Minor Revisions</p>
+<hr />
+<h2>I. Summary</h2>
+<p>This paper proposes a firm-level screening tool for bid-rigging cartels in procurement auctions. "Frequent losers" (FL) are firms that never win a single tender yet participate abnormally often --- a behavioral pattern consistent with cover bidding, in which cartels deploy sham bidders to simulate competition. Using 4.5 million tender-items and 40 million bids from Sao Paulo's BEC electronic procurement platform (2009--2019), the authors:</p>
+<ol>
+<li>Develop a structural framework for cover-bidder deployment with explicit assumptions, formal proofs, and five testable predictions (Section 3);</li>
+<li>Identify 2,735 FL firms using a statistical threshold (median + 1.5 x IQR on participation among always-losers);</li>
+<li>Estimate the structural mixture model, selecting Regime 2 (coordinated cover bidding, sigma_c/sigma_g = 0.72) by BIC;</li>
+<li>Show that FL-present tenders exhibit 3.6--6.6% higher prices across six independent estimators (OLS, cross-fit, matching, structural n-conditional, IV);</li>
+<li>Validate the FL screen against CADE cartel convictions (AUC = 0.94), outperforming Imhof-style bid-level screens (AUC = 0.79);</li>
+<li>Compute three policy counterfactuals: removing the minimum-bidder rule (R$74M savings), optimal screening threshold (1.6x IQR at R$100K/investigation), and detection probability calibration.</li>
+</ol>
+<p>The paper has improved substantially through revision. The formalized structural model, honest treatment of identification limitations, and novel counterfactual analysis represent genuine contributions to the cartel-detection literature.</p>
+<hr />
+<h2>II. Overall Assessment</h2>
+<p>This is a strong empirical paper that makes three contributions meriting publication at RAND:</p>
+<p><strong>First</strong>, the FL screen is a practical, data-parsimonious detection tool that dominates existing bid-level screens on the same ground truth while requiring <em>less data</em> (participation records only, no bid values). This has immediate policy relevance for competition authorities in developing countries where bid-level data are unavailable.</p>
+<p><strong>Second</strong>, the structural framework provides formal economic foundations for the screening rule. The five testable predictions --- price effect, strategic selection, regime identification, market selection, and exchangeability violation --- are all empirically confirmed, with the market-selection heterogeneity (12.6% effect in competitive markets vs. -1.8% in concentrated markets) being the most striking result.</p>
+<p><strong>Third</strong>, the counterfactual welfare analysis demonstrates that the structural model delivers policy-relevant predictions beyond what the reduced form alone provides: the optimal screening threshold, the welfare gain from removing the minimum-bidder rule, and the marginal value of increased detection.</p>
+<p>The paper's identification strategy is necessarily multi-pronged rather than relying on a single clean quasi-experiment. The honest framing --- presenting six estimators as a convergence band rather than privileging any single one, demoting the IV to supplementary status, and elevating the cross-fit as the conservative preferred estimate --- is appropriate and credible.</p>
+<hr />
+<h2>III. Major Comments</h2>
+<h3>1. The structural model's Assumption A1 needs stronger economic foundations</h3>
+<p>Assumption A1 states that the cartel's surplus pi is weakly increasing in the number of cover bidders m. This is the foundation of the entire model, yet it is asserted without formal derivation. The intuition --- that cover bidders help sustain higher prices by creating the appearance of competition --- is plausible but needs microfoundations.</p>
+<p>In a standard first-price sealed-bid auction, adding bidders who never win does not mechanically increase the winner's surplus. The mechanism must operate through one of: (a) satisfying the minimum-bidder constraint (formalized in the corner solution); (b) deterring genuine entry by inflating apparent competition; (c) contaminating forensic screens with noise.</p>
+<p>Channel (a) is already captured in the constraint. Channels (b) and (c) would require explicit modeling of genuine bidders' entry decisions and detection algorithms. I encourage the authors to either (i) formally model one of these channels, or (ii) state more precisely that A1 is an assumption about the <em>reduced-form</em> relationship, supported empirically by the positive FL-price coefficient but not derived from auction theory.</p>
+<p>This is a revision item, not a rejection concern. The empirical results stand regardless of the theoretical foundations.</p>
+<h3>2. The "convergence" of six estimators overstates precision</h3>
+<p>The paper presents six markup estimates (cross-fit 3.6%, structural 6.4%, IPW 5.7%, OLS 6.6%, CEM 8.0%, IV 21.4%) and frames their convergence as evidence of robustness. The five non-IV estimates span 3.6--8.0% --- a factor of 2.2.</p>
+<p>This framing has two problems. First, each estimator uses different identifying assumptions; variation across estimators reflects assumption sensitivity, not sampling uncertainty. The 3.6% cross-fit and 8.0% CEM answer somewhat different questions (out-of-sample prediction vs. matched treatment effect). Second, the ordering CEM &gt; OLS &gt; IPW is somewhat unusual --- CEM typically yields lower estimates than OLS when matching improves balance --- and deserves brief discussion.</p>
+<p>I suggest the authors present the estimates more transparently as a <em>sensitivity analysis</em> rather than <em>convergence evidence</em>. The cross-fit (3.6%) is the most conservative and arguably most credible; the OLS (6.4%) is the standard benchmark; the CEM/IPW bracket the OLS. This is strong evidence of robustness, but calling it "convergence" implies more precision than warranted.</p>
+<h3>3. Counterfactual welfare depends on unobserved deterrence rate</h3>
+<p>The optimal-screening-threshold counterfactual (CF2) depends critically on the deterrence rate delta --- the fraction of detected cartels that cease cover bidding after investigation. The paper uses delta = 0.50 as the baseline, yielding R$135M net welfare, but does not present sensitivity analysis across delta.</p>
+<p>At delta = 0.10 (investigations mostly ignored), welfare drops dramatically; at delta = 0.90, it rises proportionally. Since delta is the key unobserved parameter driving the policy recommendation, the figure showing optimal threshold as a function of investigation cost should also show the sensitivity to delta. This appears to have been computed (the script includes multiple deterrence rates) but the presentation in the text focuses only on delta = 0.50.</p>
+<hr />
+<h2>IV. Significant Comments</h2>
+<h3>4. The Regime 2 parametric specification is untested against flexible alternatives</h3>
+<p>The BIC comparison selects Regime 2 (log-normal) over Regime 1 (uniform) with overwhelming margin (Delta-BIC = -91,473). This is strong evidence that log-normal fits better than uniform, but it is not evidence that log-normal is the <em>correct</em> specification. A non-parametric alternative (kernel density estimation of the FL bid spread distribution) would provide a model-free benchmark. If the non-parametric distribution is multimodal or heavy-tailed, the log-normal assumption may be misleading despite its lower BIC.</p>
+<h3>5. Alternative explanation: quality heterogeneity</h3>
+<p>The paper discusses learning (FL firms are ~1 year younger) and reverse causality (elasticity ~ 0.004) as alternative explanations, but does not formally test quality heterogeneity. If FL firms are persistently low-quality or high-cost, they would lose every tender by competitive forces, not by cartel design. The key test would be: do FL firms' <em>bids</em> look like cost-competitive bids that happen to lose, or like strategically inflated bids designed to lose? The structural estimation partially addresses this (cover bids have different dispersion than genuine bids), but a direct quality test --- e.g., comparing FL firms' bid-to-reference-price ratios with non-FL losers --- would strengthen the argument.</p>
+<h3>6. CADE ground truth limitations deserve a formal caveat paragraph</h3>
+<p>The paper uses CADE co-participation as ground truth for the ROC analysis, with appropriate caveats scattered throughout. However, there is no single consolidated discussion of the three key limitations of this ground truth: (a) CADE convictions are not a random sample of true cartels (enforcement-determined); (b) co-participation is not proof of cartel membership (FL firms may co-bid with convicted firms coincidentally); (c) the low base rate (0.58%) means precision is necessarily low at all thresholds. A consolidated paragraph early in Section 7.2 would help the reader evaluate the ROC results.</p>
+<h3>7. External validity</h3>
+<p>The paper is entirely based on BEC data from Sao Paulo (2009--2019). The FL definition and screening rule may not transfer to other procurement systems where: (a) minimum-bidder requirements differ; (b) electronic auction formats vary; (c) cartel behavior adapts to different legal frameworks. The conclusion mentions external validation as future research (item (i)), but a brief discussion of <em>which features of BEC</em> make FL screening effective would help readers assess transferability.</p>
+<hr />
+<h2>V. Minor Comments</h2>
+<ol>
+<li>
+<p><strong>Abstract precision</strong>: "3.6--6.6%" is the appropriate range for the headline estimate. Good.</p>
+</li>
+<li>
+<p><strong>Proposition 4 proof</strong>: The cross-derivative condition (Equation 24) is correctly stated as an assumption with economic content. The proof via IFT is clean. No issues.</p>
+</li>
+<li>
+<p><strong>Precision-recall figure</strong>: Excellent addition. The low precision at all thresholds (3.6% at 1.5x) is clearly communicated. The connection to the counterfactual screening-threshold analysis is well-drawn.</p>
+</li>
+<li>
+<p><strong>Imhof comparison</strong>: The FL screen (AUC = 0.94) convincingly outperforms the Imhof composite (AUC = 0.79, DeLong p &lt; 0.001). The caveat that Imhof is implemented as a CV/kurtosis/spread proxy rather than the full ML classifier is appropriately stated.</p>
+</li>
+<li>
+<p><strong>Bajari-Ye tender-FE resolution</strong>: The three-point explanation (common shocks, focal-point absorption under Regime 2, mechanical conservatism of tender FE) is well-argued and internally consistent. The footnote clarifying that the tender-FE table uses the baseline first-stage while the main table uses the enriched first-stage is helpful.</p>
+</li>
+<li>
+<p><strong>Robustness summary table</strong>: Excellent compression. The tabular format with Check/Coefficient/SE/N/Note columns is much more efficient than the previous prose format while preserving all information.</p>
+</li>
+<li>
+<p><strong>Welfare bounds</strong>: The three-level presentation (cross-fit R$400M, OLS R$734M, IV R$2.4B) with clear labeling of lower bound / baseline / upper bound is well-done. The cross-fit as "preferred conservative" welfare figure is appropriate.</p>
+</li>
+<li>
+<p><strong>Reference price institutional detail</strong>: The footnote in Section 3.1 explaining BEC reference-price formation (median of three quotations) and the connection to the bad-control concern in robustness is a valuable addition.</p>
+</li>
+</ol>
+<hr />
+<h2>VI. Questions for the Authors</h2>
+<ol>
+<li>
+<p>Can you provide a formal model of how cover bidders increase cartel surplus beyond the minimum-bidder constraint? Specifically, does the marginal return to cover bidding come from (a) deterring genuine entry, (b) contaminating forensic screens, or (c) manipulating reference prices?</p>
+</li>
+<li>
+<p>How does the cross-fit attenuation (44%) compare to what you would expect from pure measurement-error attenuation in a binary treatment variable? Is there a way to decompose the attenuation into classification noise vs. temporal instability vs. broken mechanical correlation?</p>
+</li>
+<li>
+<p>Have you considered fitting a non-parametric (kernel density) model for the cover-bid distribution as a robustness check on Regime 2's log-normal specification?</p>
+</li>
+<li>
+<p>What is the expected number of always-losers (win_rate = 0, participation &gt; 14) under a null hypothesis of random competitive bidding with the observed number of firms and tenders? This would quantify how many FL firms could arise by chance.</p>
+</li>
+<li>
+<p>The counterfactual welfare analysis assumes the OLS markup (0.064) applies uniformly to all FL-present tenders. Is the markup heterogeneous across the distribution of FL intensity (m = 1 vs. m = 5)?</p>
+</li>
+</ol>
+<hr />
+<h2>VII. Recommendation</h2>
+<p><strong>Accept with Minor Revisions.</strong></p>
+<p>The paper makes a genuine contribution to the cartel-detection literature. The FL screen is practical, well-validated, and addresses a real policy need. The structural framework provides economic foundations, and the counterfactual analysis demonstrates policy relevance. The identification strategy is multi-pronged and honestly presented.</p>
+<p>The remaining issues are minor revisions:</p>
+<ol>
+<li>Strengthen the economic foundations of Assumption A1 (one paragraph of discussion, not a new model);</li>
+<li>Reframe the "convergence" of six estimators as sensitivity analysis;</li>
+<li>Add deterrence-rate sensitivity to the counterfactual welfare analysis;</li>
+<li>Consolidate the CADE ground-truth caveats;</li>
+<li>Add a brief external-validity discussion.</li>
+</ol>
+<p>None of these require new estimation or fundamental changes to the paper's structure. The paper is well-written, appropriately scoped, and makes claims that are supported by the evidence. I recommend publication after these minor revisions.</p>
+<hr />
+<p><strong>Referee credentials:</strong> Expert in industrial organization, antitrust economics, and cartel detection. Familiar with Bajari-Ye, Imhof, Porter, and the structural auction estimation literature.</p>
+</body>
+</html>
