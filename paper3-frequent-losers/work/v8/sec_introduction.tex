@@ -1,0 +1,103 @@
+\section{Introduction}
+\label{sec:intro}
+
+Public procurement accounts for 12--15\% of GDP in OECD countries and a
+substantially larger share in developing economies
+\citep{oecd2019government}. Bid rigging---coordinated non-competitive
+bidding among ostensible competitors---inflates procurement costs by an
+estimated 10--50\%, with a median overcharge around 20\%
+\citep{connor2007price}. Existing detection approaches rely either on
+\emph{reactive} methods (leniency programs, whistleblowers) that depend
+on cartel insiders coming forward, or on \emph{proactive} statistical
+screens (variance tests, bid-rotation indices, coefficient-of-variation
+thresholds) that typically require granular bid-level data
+\citep{harrington2008detecting, imhof2019detecting}. In many developing
+countries, however, bid-level data are unavailable or unreliable, leaving
+procurement agencies with limited screening tools.
+
+We propose a firm-level screening marker based on
+\emph{frequent losers} (FL): firms that never win a single tender yet
+participate in an abnormally large number of procurement processes. Under
+the cover bidding hypothesis, these firms serve as ``shill bidders''
+deployed by cartels to inflate the apparent number of competitors, create
+the illusion of competition, and satisfy minimum-bidder requirements. The
+FL screen has two practical advantages over bid-level screens: (i) it
+requires only participation and outcome data, not bid values; and (ii)
+it produces firm-level flags that implicate all tenders in which a
+flagged firm participates, enabling targeted investigation.
+
+This paper advances two hypotheses of increasing strength:
+
+\begin{description}
+  \item[H1 (Screening marker):] FL presence is a useful
+    \emph{screening marker} for potential collusion---it correlates
+    with price anomalies and overlap with known cartel participants,
+    regardless of whether every FL firm is itself a cover bidder.
+  \item[H2 (Causal mechanism):] FL firms are \emph{themselves} cover
+    bidders deployed by cartels to inflate bidder counts---implying a
+    direct causal link between FL presence and price inflation.
+\end{description}
+
+\noindent Our primary contribution is to show that FL presence is a
+robust and implementable screening marker for bid rigging (H1). We then
+show that a range of independent empirical tests---instrumental
+variables, co-bidding network analysis, and bid-level
+diagnostics---converge in a manner most consistent with a cover-bidding
+mechanism (H2). We do not claim to identify all cartels in the sample,
+estimate structural overcharges, or measure aggregate collusion welfare
+losses. The FL screen complements existing tender-level forensic tools
+\citep{imhof2019detecting} with a \emph{firm-level} criterion that is
+operable with minimal data---participation records and outcome
+flags---making it particularly relevant for competition authorities in
+developing countries where bid-level data are unavailable.
+
+\subsection{Contributions}
+
+Using 4.5 million tender-items and 40 million bids from S\~ao Paulo's
+Bolsa Eletr\^onica de Compras (BEC) platform (2009--2019), we make three
+contributions.
+
+\emph{First}, we show that FL presence is a reliable empirical marker % V7-T2: cross-fit elevated
+for procurement anomalies (H1). FL-present tenders exhibit 4--9\%
+higher negotiated prices in OLS specifications with item, year, and
+purchasing-unit fixed effects (preferred specification: 6.6\%).
+Temporal cross-fitting---defining FL on odd years and estimating on
+even years, and vice versa---breaks any mechanical link between
+classification and outcomes and yields a conservative estimate of
+3.6\%, confirming that the FL--price association is not an artifact
+of within-sample classification. External validation against CADE
+(Brazil's competition authority) convictions shows that 7.1\% of FL
+firms co-participate with convicted cartelists---3.5 times the rate
+expected by chance after controlling for participation intensity
+($p < 0.001$, permutation test). The FL--price association persists
+after excluding all CADE-involved markets, indicating that the screen
+detects anomalies beyond known cartels.
+
+\emph{Second}, we provide evidence consistent with the causal mechanism
+(H2) using a leave-one-out instrumental variable (IV) strategy. The
+instrument exploits supply-side variation in FL firms' availability: for
+each purchasing unit, we measure FL activity at \emph{other} purchasing
+units in the same product market and year. The first stage is strong
+($F = 396$) and the IV estimate of a 21\% price markup exceeds the OLS
+estimate, consistent with measurement-error attenuation. Co-bidding
+network analysis reveals that the FL--price effect is concentrated in
+competitive markets (low winner concentration), where cover bidding is
+most profitable, rather than in concentrated markets where a dominant
+firm already controls pricing.
+
+\emph{Third}, we provide statistical evidence of bid coordination using
+\cites{bajari2003deciding} framework. FL bid residuals violate both
+exchangeability (Kolmogorov--Smirnov $D = 0.15$, $p < 0.001$) and
+conditional independence (pairwise product = 4.28 for FL, $t = 81.0$, % R1-FIX: updated to v6 enriched first-stage results
+$p < 0.001$; bootstrap 95\% CI for the FL--non-FL difference excludes
+zero).
+
+The remainder of this paper is organized as follows.
+Section~\ref{sec:structural} develops a framework for cover-bidder % R1-FIX: removed duplicate sec:literature reference
+deployment with testable predictions. Section~\ref{sec:data} describes
+the data and FL definition. Section~\ref{sec:cade} provides external
+validation against CADE convictions. Section~\ref{sec:empirical} details
+the empirical strategy. Sections~\ref{sec:results}
+and~\ref{sec:mechanisms} present results and mechanism tests.
+Section~\ref{sec:robustness} reports robustness checks.
+Section~\ref{sec:conclusion} concludes.

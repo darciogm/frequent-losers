@@ -1,0 +1,38 @@
+\begin{table}[htbp]
+\centering
+\caption{ROC Analysis: FL Screening Performance by IQR Multiplier}
+\label{tab:roc_detection}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccccccc}
+\toprule
+IQR & Threshold & Flagged & TP & FP & TPR & FPR & Precision & Youden's $J$ \\
+Multiplier & & Firms & & & (Sensitivity) & (1-Specificity) & & \\
+\midrule
+0.5 & 6 & 5,098 & 98 & 5,000 & 1.000 & 0.299 & 0.019 & 0.701 \\
+1.0 & 10 & 3,442 & 98 & 3,344 & 1.000 & 0.200 & 0.028 & 0.800 \\
+1.5$^{\dagger}$ & 14 & 2,735 & 98 & 2,637 & 1.000 & 0.157 & 0.036 & 0.843 \\
+2.0 & 17 & 2,093 & 79 & 2,014 & 0.806 & 0.120 & 0.038 & 0.686 \\
+2.5 & 20 & 1,778 & 75 & 1,703 & 0.765 & 0.102 & 0.042 & 0.664 \\
+3.0 & 24 & 1,456 & 64 & 1,392 & 0.653 & 0.083 & 0.044 & 0.570 \\
+3.5 & 28 & 1,258 & 59 & 1,199 & 0.602 & 0.072 & 0.047 & 0.530 \\
+4.0 & 31 & 1,077 & 55 & 1,022 & 0.561 & 0.061 & 0.051 & 0.500 \\
+5.0 & 38 & 819 & 47 & 772 & 0.480 & 0.046 & 0.057 & 0.433 \\
+\midrule
+AUC & \multicolumn{8}{c}{0.9368} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} ROC analysis varying the IQR multiplier for the FL
+threshold (median + multiplier $\times$ IQR of participation counts among
+always-losers). Ground truth: 193 FL firms that co-bid with CADE-convicted
+cartelists. Total always-losers: 16,843 (positives: 98,
+negatives: 16,745).
+$^{\dagger}$ = baseline threshold used in the paper;
+$^{\ddagger}$ = Youden's $J$-optimal threshold.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

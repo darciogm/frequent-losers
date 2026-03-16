@@ -1,0 +1,142 @@
+% ============================================================================
+% sec_counterfactual.tex — V7: Counterfactual welfare analysis
+% Paper: Frequent Losers as Cover Bidders in Public Procurement
+% Target: RAND Journal of Economics
+% ============================================================================
+
+\subsection{Counterfactual Welfare Analysis} % V7: structural counterfactuals
+\label{sec:counterfactual}
+
+The structural model (Section~\ref{sec:structural}) generates
+counterfactual predictions about how procurement outcomes change under
+alternative policy regimes. We compute three counterfactuals, each
+corresponding to a distinct policy lever: (i)~eliminating the
+minimum-bidder requirement, (ii)~calibrating the optimal screening
+threshold, and (iii)~increasing the detection probability.
+
+% ── CF1: Minimum-bidder rule ─────────────────────────────────────
+
+\paragraph{Counterfactual 1: Removing the minimum-bidder requirement.}
+Under convite procurement (Lei~8.666/93, Art.~22, \S7), the procuring
+agency must receive at least three bids. Proposition~\ref{prop:optimal_m}
+implies that when a cartel controls the designated winner $j^*$ and
+$n < 3$ genuine bidders participate, the cartel \emph{must} deploy
+$m \geq 3 - n$ cover bidders---a corner solution driven entirely by
+the institutional constraint rather than strategic optimization. In the
+data, 41.3\% of convite FL-present tenders have fewer than three genuine
+bidders, and 25.2\% have \emph{zero} genuine bidders (the cartel is the
+sole real participant).
+
+If the minimum-bidder rule were removed (setting $\underline{n}(\tau) =
+0$ for all modalities), Proposition~\ref{prop:optimal_m} implies that
+$m^*$ drops to the interior solution for these constrained tenders. For
+tenders with $n = 0$ genuine bidders, the cartel faces no genuine
+competition and the marginal return to cover bidding $\partial \pi /
+\partial m$ approaches zero---the interior solution is $m^* = 0$. For
+tenders with $n \in \{1, 2\}$, the cartel may still deploy cover
+bidders for strategic reasons (noise creation, reference-price
+manipulation), but the \emph{mandatory} component is eliminated.
+
+We compute the welfare gain from removing the rule under two
+assumptions. Under the \emph{full-elimination} scenario (all
+constraint-binding cover bidding ceases), the price reduction for
+the 47,611 affected tenders is $\exp(\hat{\beta}) - 1 = 6.6\%$,
+yielding total savings of R\$74 million over 2009--2019 (R\$6.7
+million per year). Under the \emph{partial-elimination} scenario
+(only $n = 0$ tenders---28,561 pure cover-bidding tenders---lose all
+cover bidders), savings are R\$41 million. Using the IV coefficient as
+an upper bound, the full-elimination welfare gain rises to R\$211
+million. These figures represent lower bounds: they assume cartels
+do not strategically adapt by redeploying cover bidders to preg\~ao
+tenders.
+
+Table~\ref{tab:counterfactual_welfare} reports the full results. The welfare
+gain requires no enforcement expenditure---it is a pure institutional
+reform that removes the cartel's regulatory incentive for cover
+bidding.
+
+% ── CF2: Optimal screening threshold ─────────────────────────────
+
+\paragraph{Counterfactual 2: Welfare-maximizing screening threshold.}
+The FL screen's ROC curve (Table~\ref{tab:roc_detection}) maps each
+IQR multiplier $t$ to a detection rate $\text{TPR}(t)$ and a
+false-positive rate $\text{FPR}(t)$. We embed this ROC curve in a
+welfare function that trades off detection benefits against enforcement
+costs:
+\begin{equation}
+  W(t) = \underbrace{\delta \cdot \hat{\beta} \cdot
+  S_{\text{FL}}(t)}_{\text{deterrence benefit}}
+  - \underbrace{c_{\text{inv}} \cdot N_{\text{flagged}}(t)
+  }_{\text{investigation cost}}
+  \label{eq:welfare_screening}
+\end{equation}
+where $\delta \in [0,1]$ is the deterrence rate (fraction of cartels
+that cease cover bidding after investigation), $\hat{\beta} = 0.064$
+is the OLS price effect, $S_{\text{FL}}(t)$ is total spending in
+tenders involving firms flagged under threshold $t$,
+$c_{\text{inv}}$ is the per-firm investigation cost, and
+$N_{\text{flagged}}(t)$ is the number of flagged firms.
+
+The optimal threshold $t^*$ solves $\partial W / \partial t = 0$,
+balancing the marginal detection benefit (higher $t$ reduces
+$N_{\text{flagged}}$ and $S_{\text{FL}}$, lowering both benefit and
+cost) against the marginal investigation cost. We vary the
+investigation cost $c_{\text{inv}}$ from R\$10,000 to R\$1,000,000
+per firm, spanning the range from automated screening (desk review)
+to full forensic investigation (document subpoena, economic expert).
+
+Figure~\ref{fig:counterfactual_screening} plots $t^*$ as a function
+of $c_{\text{inv}}$ for deterrence rates $\delta \in \{0.25, 0.50,
+0.75, 1.0\}$. At intermediate investigation costs typical of
+competition-authority preliminary reviews (R\$100,000 per firm),
+the optimal threshold is $t^* = 1.6\times$IQR with a deterrence rate
+of $\delta = 0.50$, yielding net welfare of R\$135 million over
+2009--2019 (2,537 flagged firms). This is close to the paper's
+baseline of 1.5$\times$ and the Youden-optimal 1.45$\times$.
+At high investigation costs ($c_{\text{inv}} > \text{R\$500,000}$),
+screening becomes welfare-negative: the cost of investigating false
+positives exceeds the deterrence benefit. The screening threshold
+used in this paper (1.5$\times$IQR) is approximately
+welfare-maximizing for investigation costs in the R\$100,000 range,
+consistent with the per-case cost of preliminary CADE investigations
+in Brazil.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{images/fig_counterfactual_screening.pdf}
+\caption{Optimal FL screening threshold as a function of per-firm
+investigation cost. Each curve represents a different deterrence rate
+$\delta$ (fraction of cover-bidding cartels that cease activity after
+investigation). At intermediate investigation costs
+(R\$100,000--R\$300,000), the optimal threshold is
+$1.0$--$2.0\times$IQR, consistent with the baseline 1.5$\times$ rule.}
+\label{fig:counterfactual_screening}
+\end{figure}
+
+% ── CF3: Detection probability ───────────────────────────────────
+
+\paragraph{Counterfactual 3: Increasing detection probability.}
+Proposition~\ref{prop:optimal_m} predicts that $m^*$ is decreasing
+in $\theta_k$: higher detection probability raises the marginal cost
+of cover bidding ($c_1 + \theta_k \phi_0$), reducing the optimal
+number of cover bidders. We calibrate this comparative static using
+cross-PBU variation in oversight intensity.
+
+We proxy $\theta_k$ with PBU size (number of annual procurements),
+under the assumption that larger PBUs have more procurement staff and
+more standardized oversight procedures. Dividing PBUs into quartiles
+by annual procurement volume, we compute the mean FL count per tender
+within each quartile. If the model is correct, the mean FL count
+should decrease with PBU size.
+
+Table~\ref{tab:counterfactual_welfare}, Panel~C reports the results. The mean
+FL count decreases from the smallest (Q1) to the largest (Q4) PBU
+quartile, consistent with Proposition~\ref{prop:optimal_m}: cartels
+deploy fewer cover bidders when facing more intense oversight. The
+implied semi-elasticity of $m$ with respect to $\theta$ suggests that
+a 10\% increase in detection probability (achievable through
+systematic FL screening) would eliminate approximately one cover
+bidder per tender in the median FL-present market, with an associated
+annual price saving computed from the structural markup.
+
+\input{tables/tab_counterfactual_welfare}

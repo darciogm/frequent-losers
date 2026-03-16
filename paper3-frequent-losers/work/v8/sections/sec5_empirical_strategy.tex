@@ -1,0 +1,309 @@
+% ============================================================================
+% sec5_empirical_strategy.tex — REVISION-V6: Empirical strategy (RAND reframe)
+% Paper: Frequent Losers as Cover Bidders in Public Procurement
+% Target: RAND Journal of Economics
+% ============================================================================
+
+\section{Empirical Strategy}
+\label{sec:empirical}
+
+Our empirical strategy has three tiers, ordered by the strength of causal
+claims. \emph{First}, we estimate the structural model of cover-bidder
+deployment from Section~\ref{sec:structural}, which identifies the
+cover-bid distribution and implied markup directly from the bid-level
+data (Section~\ref{sec:structural_estimation}). \emph{Second}, we
+provide reduced-form evidence using high-dimensional OLS with item, year,
+and purchasing-unit fixed effects, supplemented by a leave-one-out
+instrumental variable (Section~\ref{sec:reduced_form}). \emph{Third}, we
+validate the FL screen's detection performance against CADE cartel
+convictions using ROC analysis (Section~\ref{sec:detection_validation}).
+Non-structural corroboration is provided by corrected Bajari--Ye
+bid-coordination tests (Section~\ref{sec:bajari_ye}).
+
+% ── 5.1 Structural Estimation ────────────────────────────────────
+
+\subsection{Structural Likelihood Estimation}
+\label{sec:structural_estimation}
+
+We estimate the mixture model specified in % R1-FIX: sample-size pipeline clarified
+Section~\ref{sec:likelihood} using the bid-level data. The full
+dataset contains approximately 40 million bids from 41,000 firms.
+Of these, 39.7 million are non-FL bids and 0.2 million are FL bids.
+After restricting to \emph{losing} bids with valid prices and
+item-year fixed-effect coverage, the estimation sample comprises
+23.2 million genuine (non-FL) losing bids and 189,381 FL losing bids
+(Table~\ref{tab:structural_params}). The estimation proceeds in two
+stages.
+
+\paragraph{Stage 1: Genuine bid distribution.}
+We estimate the genuine bid parameters $(\boldsymbol{\beta},
+\sigma_g^2)$ from the 23.2 million non-FL losing bids using maximum
+likelihood under the log-normal specification~\eqref{eq:genuine_dist}:
+\begin{equation}
+  (\hat{\boldsymbol{\beta}}, \hat{\sigma}_g^2) =
+  \operatorname*{arg\,max}_{\boldsymbol{\beta}, \sigma_g^2}
+  \sum_{t=1}^{T} \sum_{j \in \mathcal{G}_t}
+  \log \phi\!\left(
+    \frac{\log b_{jt} - \mathbf{x}_j'\boldsymbol{\beta}
+    - \hat{\alpha}_i - \hat{\lambda}_t}{\sigma_g}
+  \right)
+  \label{eq:mle_genuine}
+\end{equation}
+where $\phi(\cdot)$ is the standard normal density and
+$\hat{\alpha}_i$, $\hat{\lambda}_t$ are absorbed as fixed effects.
+In practice, this reduces to an OLS regression of $\log b_{jt}$ on
+$\mathbf{x}_j$ with item and year fixed effects, from which we obtain
+$\hat{\sigma}_g^2$ as the residual variance.
+
+\paragraph{Stage 2: Cover bid distribution.}
+Conditional on the winning bid $b^*_t$ in each tender, we estimate
+the cover-bid parameters from the 2.5 million FL bids. Under
+Regime~1:
+\begin{equation}
+  \hat{\delta} = \max_{j \in \mathcal{F}_t, t}
+  (b_{jt} - b^*_t) \quad \text{(maximum spread)}
+  \label{eq:mle_delta}
+\end{equation}
+Under Regime~2:
+\begin{equation}
+  \hat{\sigma}_c^2 = \frac{1}{|\mathcal{F}|}
+  \sum_{t=1}^{T} \sum_{j \in \mathcal{F}_t}
+  \left(\log b_{jt} - \log b^*_t - \hat{\epsilon}\right)^2
+  \label{eq:mle_sigma_c}
+\end{equation}
+where $\hat{\epsilon} = \overline{\log b_{jt} - \log b^*_t}$ is the
+mean log-spread of FL bids above the winning bid.
+
+\paragraph{Model selection.}
+We select between regimes using the Bayesian Information Criterion
+(BIC) and a Kolmogorov--Smirnov goodness-of-fit test:
+\begin{equation}
+  \text{BIC}_r = -2\ell_r + k_r \log N, \quad r \in \{1, 2\}
+  \label{eq:bic}
+\end{equation}
+where $\ell_r$ is the maximized log-likelihood under regime $r$,
+$k_r$ is the number of parameters, and $N$ is the number of FL bids.
+The regime with lower BIC is selected. Additionally, we compute the KS
+distance between the fitted cover-bid CDF and the empirical FL bid
+distribution; the regime with smaller KS distance provides a better
+fit to the data.
+
+\paragraph{Implied markup.}
+The structural markup is computed as:
+\begin{equation}
+  \hat{\mu}_{\text{structural}} =
+  \frac{E[b^*_t \mid \text{FL present}] -
+        E[b^*_t \mid \text{FL absent}]}{E[b^*_t \mid \text{FL absent}]}
+  \label{eq:structural_markup}
+\end{equation}
+where the expectations are taken over the estimated model. This provides
+a structural counterpart to the reduced-form OLS coefficient
+($\hat{\beta} = 0.064$) and the IV estimate ($\hat{\beta}_{\text{IV}} =
+0.194$). If the structural model is correctly specified, the implied
+markup should fall within the OLS--IV range.
+
+\paragraph{Standard errors.}
+We compute standard errors via parametric bootstrap with 500
+replications, resampling tenders (not individual bids) to preserve the
+within-tender correlation structure. Each bootstrap iteration
+re-estimates both stages of the model. With 16 CPU cores, the bootstrap
+completes in approximately 4--8 hours. % REVISION-V6: 500 replications
+
+% ── 5.2 Reduced-Form Identification ──────────────────────────────
+
+\subsection{Reduced-Form Identification}
+\label{sec:reduced_form}
+
+\paragraph{OLS baseline.}
+Our baseline specification estimates the conditional association between
+FL presence and tender outcomes:
+\begin{equation}
+  y_{igt} = \beta \cdot \text{losers}_{igt} + \mathbf{x}_{igt}'
+  \boldsymbol{\delta} + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt}
+  \label{eq:ols_main}
+\end{equation}
+where $y_{igt}$ is the outcome for tender-item $i$ in item group $g$ at
+time $t$ and purchasing unit $k$; $\text{losers}_{igt} \in \{0,1\}$
+indicates FL presence; $\mathbf{x}_{igt}$ includes a convite indicator;
+$\alpha_g$, $\lambda_t$, and $\gamma_k$ are item, year, and PBU fixed
+effects; and $\varepsilon_{igt}$ is the error term clustered at the item
+level.
+
+The OLS coefficient $\hat{\beta}$ identifies a conditional
+association---the average difference in outcomes between FL-present and
+FL-absent tenders within the same item type, year, and purchasing unit.
+Under Prediction~\ref{pred:price_v6}, $\hat{\beta} > 0$ for prices. The
+OLS estimate of 0.064 (6.4\%) represents a lower bound on the causal
+effect if the FL indicator contains measurement error (binary treatment
+misclassification). We assess the sensitivity of $\hat{\beta}$ to
+unobserved confounders using the \citet{cinelli2020making} framework,
+which yields a robustness value of $RV_{q=1} = 17.5\%$: an unobserved
+confounder would need to explain at least 17.5\% of the residual
+variation in both FL presence and log prices to reduce $\hat{\beta}$ to
+zero.
+
+\paragraph{Matching estimators.} % V7-T2: CEM/IPW promoted to main strategy
+To address potential selection on observables, we estimate the
+FL--price effect using two matching approaches: coarsened exact
+matching (CEM) on year, procedure type, item group, and PBU size
+quartile ($\hat{\beta}_{\text{CEM}} = 0.077$, $N = 969{,}751$), and
+inverse probability weighting (IPW, $\hat{\beta}_{\text{IPW}} = 0.055$,
+$N = 830{,}194$). These estimates bracket the OLS baseline (0.064)
+and the cross-fit average (0.036), providing a non-parametric check
+that the FL--price association survives reweighting on observables.
+
+\paragraph{Instrumental variable (supplementary).} % V7-T2: IV explicitly supplementary
+As a supplementary bracketing exercise, we instrument FL presence with
+a leave-one-out measure of FL supply:
+\begin{equation}
+  Z_{kgt} = \sum_{j \neq k} \mathbf{1}[\text{FL firm active at PBU } j
+  \text{ in group } g, \text{ year } t]
+  \label{eq:iv_v6}
+\end{equation}
+The identifying assumption is that FL activity at other PBUs in the same
+product market and year affects focal-PBU prices only through the
+probability of FL participation---a supply-side exclusion restriction in
+the spirit of \citet{goldsmithpinkham2020bartik}. We treat the IV
+estimate as a Local Average Treatment Effect for complier tenders: an
+upper bound on the average price effect that corrects for
+measurement-error attenuation in the FL indicator.
+
+\paragraph{IV validity concerns.} % V7-T2: balance concerns elevated
+Balance tests (Table~\ref{tab:iv_balance} in
+Appendix~\ref{app:robustness}) reveal statistically significant
+differences across all four observable characteristics, a pattern that
+is more concerning than any single coefficient. While the economic
+magnitudes are modest (all standardized differences below
+$0.03\sigma$), systematic imbalance raises exclusion-restriction
+concerns. The \citet{goldsmithpinkham2020bartik} decomposition
+requires computing Rotemberg weights for each product-market--year
+share, which is infeasible in our setting with 18,783 item types and
+11 years ($> 200{,}000$ shares).\footnote{The LOO instrument is a
+sum over PBUs, not a Bartik-style interaction of shares and aggregate
+shocks. The Rotemberg decomposition applies to Bartik instruments
+with a finite number of shares; our instrument aggregates over
+$\sim$1,300 PBUs per item-year cell, making the diagnostic
+computationally intractable and conceptually distinct from the
+shift-share framework.} We therefore rely on matching (CEM, IPW) and
+sensitivity analysis (\citealt{cinelli2020making}, $RV = 17.5\%$) to
+bound the IV's validity. We report the IV for completeness and as an
+upper bound, not as the basis for our causal claims; the primary
+estimates are OLS with rich FE (0.064), cross-fit (0.036), and
+matching (0.055--0.077).
+
+% ── 5.3 Detection Validation ─────────────────────────────────────
+
+\subsection{Detection Performance Validation}
+\label{sec:detection_validation}
+
+We evaluate the FL screen as a detection tool using CADE cartel
+convictions as ground truth. The validation uses the temporal split
+described in Section~\ref{sec:cade_sample}: FL status is defined using
+2009--2014 data and evaluated against 2015--2019 CADE outcomes.
+
+\paragraph{ROC analysis.}
+We vary the IQR multiplier from 0.5 to 5.0 in steps of 0.1, producing
+46 different FL thresholds. For each threshold, we compute:
+\begin{align}
+  \text{TPR}(m) &= \frac{|\{j : \text{FL}_m(j)=1\} \cap
+    \{j : \text{CADE}(j)=1\}|}{|\{j : \text{CADE}(j)=1\}|}
+  \label{eq:tpr} \\
+  \text{FPR}(m) &= \frac{|\{j : \text{FL}_m(j)=1\} \cap
+    \{j : \text{CADE}(j)=0\}|}{|\{j : \text{CADE}(j)=0\}|}
+  \label{eq:fpr}
+\end{align}
+where $\text{FL}_m(j)$ indicates whether firm $j$ is classified as FL
+under multiplier $m$, and $\text{CADE}(j)$ indicates whether firm $j$
+co-participates with a CADE-convicted cartelists. The area under the ROC
+curve (AUC) measures the FL screen's overall discrimination ability; AUC
+= 0.5 corresponds to random classification and AUC = 1.0 to perfect
+discrimination.
+
+\paragraph{Optimal threshold.}
+We determine the welfare-maximizing IQR multiplier using Youden's $J$
+statistic:
+\begin{equation}
+  m^*_{\text{optimal}} = \operatorname*{arg\,max}_m \;
+  \left[\text{TPR}(m) - \text{FPR}(m)\right]
+  \label{eq:youden}
+\end{equation}
+which balances true-positive and false-positive rates. The optimal
+threshold provides a data-driven calibration of the statistical cutoff
+introduced in Section~\ref{sec:fl_definition}, connecting the ad-hoc
+IQR rule to a formal detection-theoretic criterion.
+
+\paragraph{Comparison with Imhof screens.} % V8: compressed
+We compare the FL screen with \citet{imhof2019detecting}-style
+bid-level features (within-tender CV, kurtosis, skewness, normalized
+spread) on the same CADE ground truth (Section~\ref{sec:results_detection}).
+
+% ── 5.4 Bajari-Ye Tests ──────────────────────────────────────────
+
+\subsection{Bajari--Ye Bid Coordination Tests} % V8: compressed
+\label{sec:bajari_ye}
+
+We implement the \citet{bajari2003deciding} tests using corrected
+first-stage residuals from the bid equation:
+\begin{equation}
+  \log b_{jt} = \mathbf{x}_j'\boldsymbol{\phi} + \alpha_i + \lambda_t
+  + u_{jt}
+  \label{eq:by_first_stage}
+\end{equation}
+where $\mathbf{x}_j$ includes firm size, firm age, and CNAE sector
+dummies. We exclude $n_{\text{bids}}$ from the first stage: it is
+jointly determined with bid levels and mechanically increased by FL
+presence \citep[p.~978]{bajari2003deciding}.
+
+Using the residuals $\hat{u}_{jt}$, we test (i)~\emph{exchangeability}
+(KS test comparing FL and non-FL residual distributions;
+Prediction~\ref{pred:exchange_v6}) and (ii)~\emph{conditional
+independence} (mean pairwise product of FL residuals within tenders;
+bootstrap with 1,000 iterations). A fake-groups placebo splits non-FL
+firms randomly within each tender; the economically relevant statistic
+is the FL--non-FL pairwise \emph{difference}, which isolates excess
+FL correlation beyond common tender-level shocks. We also report a
+tender-FE variant as a conservative specification absorbing all
+tender-level variation.
+
+% ── 5.5 Network-Split Heterogeneity ──────────────────────────────
+
+\subsection{Network-Split Heterogeneity Test} % R1-FIX: added missing subsection (referee Major #4)
+\label{sec:empirical_network}
+
+To test Proposition~\ref{prop:market_selection}---that cover bidding
+concentrates in competitive markets---we split FL firms into two
+subgroups based on co-bidding network characteristics.
+
+\paragraph{Winner HHI.}
+For each FL firm $j$, we compute the Herfindahl--Hirschman Index of
+winning firms across all tenders in which $j$ participates:
+\begin{equation}
+  \text{HHI}_j = \sum_{w=1}^{W_j} s_{wj}^2
+  \label{eq:winner_hhi}
+\end{equation}
+where $s_{wj}$ is the share of firm $j$'s tenders won by winner $w$,
+and $W_j$ is the number of distinct winners. A high $\text{HHI}_j$
+indicates that $j$ operates in markets dominated by a single or few
+winners (concentrated markets); a low $\text{HHI}_j$ indicates
+diversified winner patterns (competitive markets).
+
+\paragraph{Classification.}
+We classify FL firms as \emph{concentrated-market} if
+$\text{HHI}_j$ exceeds the sample median, and
+\emph{competitive-market} otherwise. The median split avoids ad hoc
+threshold selection while maintaining approximate sample balance.
+We then estimate the baseline price regression
+(Equation~\ref{eq:ols_main}) separately for each subgroup,
+interacting $\text{losers}_{igt}$ with the market-structure
+indicator.
+
+\paragraph{Interpretation.}
+Under Proposition~\ref{prop:market_selection}, the FL--price effect
+should be concentrated in competitive-market FL firms (low HHI), where
+the marginal return to manufactured competition is highest, and absent
+in concentrated-market FL firms, where the cartel can sustain prices
+through market power alone.
+
+% REVISION-V6: RDD removed. Aggregating unit prices × quantities to
+% contract-level totals reveals that convite assignment does not exhibit
+% a discontinuity at R$80K.

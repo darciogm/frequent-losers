@@ -1,0 +1,109 @@
+% V8: length calibration — rewritten for compactness (~600 words)
+\section{Robustness and Extensions}
+\label{sec:robustness}
+
+% V8: length calibration — opening paragraph replaces six subsection intros
+Six groups of checks confirm the baseline result. (i)~FL-definition
+variants: IQR multiplier, win-rate cutoff, temporal window.
+(ii)~Sample and specification variants: unrestricted sample,
+homogeneous subsamples, item$\times$year FE, matching.
+(iii)~Alternative clustering. (iv)~Sensitivity to unobservables
+(Cinelli--Hazlett). (v)~Staggered DiD. (vi)~Welfare bounds.
+Table~\ref{tab:robustness_summary} summarises all point estimates.
+
+% V8: length calibration — single summary table replaces six paragraphs of prose
+\begin{table}[htbp]
+\centering
+\caption{Robustness summary: FL price coefficient across checks}
+\label{tab:robustness_summary}
+\small
+\begin{tabular}{lcccc}
+\hline\hline
+Check & Coeff.\ & SE & $N$ & Note \\
+\hline
+\multicolumn{5}{l}{\textit{FL definition variants}} \\
+IQR 1.0$\times$ & 0.044 & 0.019 & 1{,}673{,}837 & 3{,}442 FL firms \\
+IQR 2.0$\times$ & 0.071 & 0.021 & 1{,}673{,}837 & 2{,}235 FL firms \\
+IQR 3.0$\times$ & 0.091 & 0.025 & 1{,}673{,}837 & 1{,}456 FL firms \\
+Low win-rate ($<1\%$) & 0.062 & 0.021 & 1{,}673{,}837 & Table~\ref{tab:fl_lowwinrate} \\
+Temporal FL (3-yr rolling) & 0.070 & 0.022 & 1{,}255{,}998 & Table~\ref{tab:fl_temporal} \\
+Cross-fit average & 0.036 & — & — & avg.\ of two folds; Table~\ref{tab:fl_crossfit} \\
+\hline
+\multicolumn{5}{l}{\textit{Sample and specification}} \\
+Unrestricted sample & 0.063 & 0.020 & 2{,}875{,}653 & no FL-item restriction \\
+Homogeneous (low CV) & 0.058 & 0.023 & 836{,}918 & below-median price CV \\
+Homogeneous (high CV) & 0.069 & 0.027 & 836{,}919 & above-median price CV \\
+Item$\times$year FE & 0.074 & 0.022 & 1{,}673{,}837 & tighter controls \\
+CEM & 0.077 & 0.024 & — & primary result (Sec.~\ref{sec:results_ols}) \\
+IPW & 0.055 & 0.021 & — & primary result (Sec.~\ref{sec:results_ols}) \\
+\hline
+\multicolumn{5}{l}{\textit{Alternative clustering}} \\
+Item clustering (baseline) & 0.064 & 0.022 & 1{,}673{,}837 & \\
+PBU clustering & 0.064 & 0.014 & 1{,}673{,}837 & \\
+Two-way (item + PBU) & 0.064 & 0.024 & 1{,}673{,}837 & \\
+\hline\hline
+\end{tabular}
+\end{table}
+
+% V8: length calibration — Cinelli-Hazlett compressed to one paragraph
+\paragraph{Sensitivity to unobservables.}
+\citet{cinelli2020making} sensitivity analysis yields a robustness
+value $RV_{q=1} = 17.5\%$: an unobserved confounder would need to
+explain at least 17.5\% of residual variation in \emph{both} FL
+presence and log prices to nullify the coefficient---a stringent
+benchmark given the rich item, year, and PBU fixed-effects structure.
+Full sensitivity plots are in Appendix~\ref{app:robustness}.
+
+% V8: length calibration — staggered DiD compressed to one paragraph
+\paragraph{Staggered difference-in-differences.}
+We report the \citet{callaway2021difference} staggered DiD as a
+complementary, underpowered exercise. The panel comprises 144,168
+market-year observations (1,511 treated, 18,266 never-treated
+markets). The overall ATT is 0.014 (SE~=~0.039), positive but
+insignificant. The minimum detectable effect is
+$1.96\times 0.039 = 0.076$, which exceeds our OLS estimate of 0.064;
+the design therefore lacks power to detect effects of the magnitude
+estimated by OLS and IV. \citet{rambachan2023more} sensitivity
+analysis, sharp-entry subsamples, and event-study plots are in
+Appendix~\ref{app:did} (Table~\ref{tab:did_revised},
+Figure~\ref{fig:event_study}).
+
+% V8: length calibration — welfare paragraph shortened; detail stays in Sec 7.3
+\subsection{Welfare Bounds}
+\label{sec:welfare}
+
+Welfare loss is computed as $(\exp(\hat{\beta})-1)\times\sum_{i:\,\text{FL}_i=1}p_i$.
+The OLS-based lower bound is R\$734M (95\%~CI: R\$243M--R\$1,246M),
+representing 2.4\% of total BEC procurement over 2009--2019. The
+cross-fit average (0.036) yields a conservative intermediate estimate
+of R\$400M (1.3\% of spending), breaking any mechanical link between
+FL classification and outcomes. The IV-based upper bound is
+R\$2.4B (7.8\%), reflecting the instrumented LATE for complier
+tenders. Full derivation and bounds table are in
+Table~\ref{tab:welfare_bounds}, Appendix~\ref{app:extensions}.
+
+% V8: length calibration — oversight section retained as in v7 (already compact)
+\subsection{Oversight Heterogeneity} % V7-T2: honest power discussion
+
+Proposition~\ref{prop:optimal_m} predicts that $m^*$ is decreasing in
+detection probability $\theta_k$, implying a larger FL--price effect
+at PBUs with weaker oversight. Table~\ref{tab:regime_oversight} in
+Appendix~\ref{app:robustness} reports the FL price coefficient by PBU
+size quartile (proxying oversight intensity with annual procurement
+volume). The point estimates decrease monotonically from Q1 (0.214)
+to Q4 (0.017), consistent with the prediction, but only Q3 (0.066)
+is individually significant ($p < 0.05$). We interpret this pattern
+as \emph{suggestive but underpowered}: the wide confidence intervals
+for Q1 and Q2 preclude strong inference from the quartile split. The
+counterfactual analysis (Section~\ref{sec:counterfactual}, Panel~C)
+provides a complementary test using the semi-elasticity of FL count
+with respect to PBU size as a continuous proxy for
+$\partial m^*/\partial\theta$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_07_threshold_stability.pdf}
+\caption{FL price coefficient across IQR multiplier thresholds.
+Error bars show 95\% confidence intervals.}
+\label{fig:threshold_stability}
+\end{figure}
