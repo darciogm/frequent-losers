@@ -43,24 +43,51 @@ conditional on the winning price---the signature of cover bidders
 calibrating bids near a focal point rather than submitting loosely
 coordinated bids above the winner.
 
-\paragraph{Implied markup (Panel~E).} % R1-FIX: structural markup computed and reported
-The structural model's implied markup---computed as the conditional
-mean difference in log negotiated prices between FL-present and
-FL-absent tenders, controlling for item, year, and PBU fixed
-effects---is $\hat{\mu}_{\text{structural}} = 0.042$ (SE~$= 0.004$),
-corresponding to a 4.3\% price premium ($N = 2{,}973{,}448$
-tender-items). This estimate falls below the OLS coefficient from the
-collapsed sample (0.064, or 6.6\%), consistent with two sources of
-attenuation: (i)~the bid-level data uses a finer item-code
-classification than the collapsed data, absorbing more within-item
-variation; and (ii)~FL bids that are not the winning bid contribute
-information to the structural model but not to the price equation.
-Importantly, the structural markup (4.3\%) is of the same order as the
-OLS (6.4\%) and the cross-fit average (3.6\%), and all three fall well
-below the IV upper bound (21.4\%). The convergence across three
-independent estimation approaches---structural mixture model, OLS with
-rich fixed effects, and temporal cross-fitting---provides a consistency
-check on the magnitude of the FL--price association.
+\paragraph{Implied markup and structural consistency (Panel~E).} % V7: structurally honest framing
+The distributional parameters in Panels~A--D characterize the
+cover-bid \emph{mechanism}---how cover bids relate to the winning
+price---but do not independently identify the cartel
+\emph{markup}.\footnote{Under the model, cover bids satisfy
+$b_\ell > b^*$ with probability one (Equation~\ref{eq:cover_above}),
+so the cover-bid distribution parameters $(\hat{\epsilon},
+\hat{\sigma}_c)$ describe bids \emph{above} the winning price and
+do not mechanically affect the winning price itself. The markup
+arises from the cartel's strategic price-setting decision---choosing
+$b^*$ above the competitive level---which is identified from the
+reduced-form comparison of FL-present and FL-absent tenders, not
+from the cover-bid distribution alone.}
+The markup is instead a reduced-form quantity that the structural
+model \emph{disciplines}: the model specifies that FL presence should
+be associated with higher prices
+(Prediction~\ref{pred:price_v6}) through strategic deployment in
+competitive markets (Prediction~\ref{pred:market_v6}), and the
+distributional parameters provide the diagnostic evidence that FL
+bids are structurally distinct from genuine bids
+(Prediction~\ref{pred:exchange_v6}).
+
+To estimate the markup, we regress log negotiated prices on FL
+presence controlling for the number of genuine bidders
+$n_{\text{genuine}}$ (saturated dummies), item, year, and PBU fixed
+effects. The $n$-conditional specification is motivated by
+Proposition~\ref{prop:optimal_m}: since $m^*$ depends on $n$,
+comparing FL-present and FL-absent tenders \emph{at the same level of
+genuine competition} isolates the cartel's price-setting from the
+strategic-selection channel. The estimated markup is $\hat{\mu} =
+0.062$ (SE~$= 0.019$), or 6.4\%, virtually identical to the baseline
+OLS (0.064), confirming that the FL--price association is not driven
+by differential genuine competition in FL-present tenders.
+
+Panel~E reports the convergence of four independent markup estimates:
+the $n$-conditional structural estimate (6.4\%), the baseline OLS
+(6.6\%), the cross-fit average (3.6\%, a conservative lower bound
+after breaking the FL-classification--outcome link), and the IV upper
+bound (21.4\%). The structural parameters provide the economic
+interpretation: the cover-bid spread $\hat{\epsilon} = 0.83$
+(130\% above the winner) indicates substantial bid manipulation, and
+the regime selection ($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$)
+confirms coordinated calibration near a focal point. Together, the
+distributional evidence and the reduced-form markup form a coherent
+picture of cover bidding with a moderate price effect.
 
 \input{tables/tab_structural_params}
 
