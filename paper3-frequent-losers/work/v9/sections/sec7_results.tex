@@ -62,14 +62,14 @@ probability weighting (IPW: 0.055, $N = 830{,}194$) bracket the OLS
 and cross-fit estimates, confirming that the FL--price association
 survives non-parametric reweighting on observables.
 
-\paragraph{Instrumental variable (supplementary).}
-The IV price estimate (0.194, $p = 0.01$, $F = 396$) exceeds OLS
-by a factor of three, consistent with measurement-error attenuation
-in the binary FL indicator. Balance tests reveal systematic but
-economically negligible imbalance ($< 0.03\sigma$;
-Table~\ref{tab:iv_balance} in Appendix~\ref{app:robustness}). We
-treat the IV as an upper bound, not as the primary identification
-strategy (Table~\ref{tab:iv_main} in Appendix~\ref{app:robustness}).
+\paragraph{Instrumental variable (measurement-error correction).} % CO-AUTHOR EDIT [TASK-3]: consistent IV framing in results
+The IV estimate (0.194, $p = 0.01$, $F = 396$) exceeds OLS by a
+factor of three, consistent with measurement-error attenuation in the
+binary FL indicator (Section~\ref{sec:reduced_form}). We use the IV
+as an upper bound on the ATE, correcting for misclassification noise,
+not as the primary identification strategy
+(Table~\ref{tab:iv_balance}, Table~\ref{tab:iv_main} in
+Appendix~\ref{app:robustness}).
 
 \paragraph{Summary.}
 Six independent approaches yield markup estimates in a narrow range:
@@ -108,8 +108,21 @@ ground truth (Imhof composite AUC~$= 0.79$; DeLong $p < 0.001$).
 The FL screen requires only participation and outcome data, making
 it feasible where bid-level records are unavailable
 (Table~\ref{tab:imhof_comparison}, Figure~\ref{fig:roc_comparison}
-in Appendix~\ref{app:robustness}). Precision is low (3.6\%) given
-the 0.58\% base rate; the FL screen is a high-recall triage tool.
+in Appendix~\ref{app:robustness}).
+
+This comparison is indicative rather than definitive: the FL screen % CO-AUTHOR EDIT [TASK-6]: AUC caveat — pre-empt referee concern
+operates at the firm level using participation data, while
+Imhof-style screens operate at the tender level using bid values, so
+the AUC advantage partly reflects different task structures. The
+ground truth---co-participation with CADE-convicted firms---is
+constructed from participation records; firms with higher
+participation counts (FL firms by definition) mechanically have more
+opportunities to co-participate, which may inflate TPR at
+high-participation thresholds. The FL screen's operational advantage
+is \emph{data requirements}: it functions where bid-level records are
+unavailable, not that it is categorically superior when bid data
+exist. Precision is low (3.6\%) given the 0.58\% base rate; the FL
+screen is a high-recall triage tool.
 
 \input{sections/sec_ground_truth}
 
@@ -183,6 +196,7 @@ $\hat{\sigma}_c = 1.19$ (SE~$= 0.012$). The KS distance is 0.24
 $\hat{\sigma}_c / \hat{\sigma}_g = 1.19/1.64 = 0.72$ confirms that
 cover bids are \emph{less} dispersed than genuine bids---the signature
 of coordinated calibration near a focal point.
+(Total tender dispersion increases mechanically with FL count because cover bids widen the pooled distribution; see Appendix~\ref{app:extensions} for reconciliation with the pooled-dispersion result.) % CO-AUTHOR EDIT [TASK-1]: forward ref to pooled-dispersion reconciliation
 
 \paragraph{Structural markup.}
 Controlling for genuine bidder count $n$ (saturated dummies), item,

@@ -97,21 +97,28 @@ $N = 830{,}194$). These estimates bracket the OLS baseline (0.064)
 and the cross-fit average (0.036), providing a non-parametric check
 that the FL--price association survives reweighting on observables.
 
-\paragraph{Instrumental variable (supplementary).}
-As a supplementary bracketing exercise, we instrument FL presence with
-a leave-one-out measure of FL supply:
+\paragraph{Instrumental variable (measurement-error correction).} % CO-AUTHOR EDIT [TASK-3]: reframe IV as measurement-error correction
+The binary FL indicator contains misclassification noise: firms near
+the IQR threshold may not be cover bidders, and some cover bidders
+escape the threshold. Classical binary measurement error attenuates
+the OLS coefficient toward zero. We use a leave-one-out FL supply
+instrument primarily to correct for this attenuation:
 \begin{equation}
   Z_{kgt} = \sum_{j \neq k} \mathbf{1}[\text{FL firm active at PBU } j
   \text{ in group } g, \text{ year } t]
   \label{eq:iv_v6}
 \end{equation}
-The identifying assumption is that FL activity at other PBUs in the same
-product market and year affects focal-PBU prices only through the
-probability of FL participation---a supply-side exclusion restriction in
-the spirit of \citet{goldsmithpinkham2020bartik}. We treat the IV
-estimate as a Local Average Treatment Effect for complier tenders: an
-upper bound on the average price effect that corrects for
-measurement-error attenuation in the FL indicator.
+The instrument integrates over firm-level misclassification by
+exploiting aggregate FL supply variation at other purchasing units in
+the same product market and year---a supply-side exclusion restriction
+in the spirit of \citet{goldsmithpinkham2020bartik}. We treat
+$\hat{\beta}_{\text{IV}}$ as an upper bound on the ATE, not as a
+clean causal estimate, for two reasons: (i)~balance tests reveal
+systematic imbalance across observables (all standardized differences
+$< 0.03\sigma$), which is negligible for measurement-error correction
+but would matter for clean causal inference; and (ii)~the LATE
+interpretation restricts the estimate to complier tenders whose FL
+status switches in response to aggregate supply variation.
 
 \paragraph{IV validity concerns.}
 Balance tests (Table~\ref{tab:iv_balance} in Appendix~\ref{app:robustness}) reveal systematic but economically negligible imbalance across all four observables (all standardized differences $< 0.03\sigma$). The \citet{goldsmithpinkham2020bartik} Rotemberg decomposition is infeasible in our setting ($> 200{,}000$ item-year shares). We therefore rely on matching (CEM, IPW) and sensitivity analysis (\citealt{cinelli2020making}, $RV = 17.5\%$) to bound IV validity. The IV is supplementary; our primary estimates are OLS (0.064), cross-fit (0.036), and matching (0.055--0.077).
