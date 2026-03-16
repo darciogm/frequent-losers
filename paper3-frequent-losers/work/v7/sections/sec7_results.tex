@@ -127,24 +127,52 @@ The near-equivalence of the data-driven optimal and the IQR-based
 threshold provides ex post validation of the statistical classification
 rule.
 
-\paragraph{Limitations.} % R1-FIX: added ground-truth and precision caveats
-Two caveats apply. First, the ground truth (co-participation with
-CADE-convicted firms) is an imperfect proxy: if cover bidders
-strategically avoid co-bidding with cartel principals, the AUC may
-overstate detection power for actual cover bidders. Second, precision
-at the baseline threshold is low (3.6\%): 96.4\% of flagged firms are
-false positives. The FL screen is thus a high-recall, low-precision
-triage tool---suitable for prioritizing investigation, not for
-standalone enforcement. The comparison with \citet{imhof2019detecting}
-bid-level screens described in Section~\ref{sec:detection_validation}
-requires bid-level features (within-tender CV, kurtosis) that are not
-available in the CADE validation sample; we therefore report the ROC
-analysis for FL alone and note this comparison as a limitation.%
-\footnote{Implementing the full \citet{imhof2019detecting} screen
-requires computing bid-dispersion statistics at the tender level and
-matching these to CADE outcomes at the firm level. The resulting
-cross-level prediction problem (firm-level ground truth, tender-level
-features) introduces aggregation issues that we leave for future work.}
+\paragraph{Comparison with Imhof-style screens.} % V7: Imhof comparison implemented
+Table~\ref{tab:imhof_comparison} compares the FL screen with
+\citet{imhof2019detecting}-style bid-level screens on the same
+ground truth (CADE co-participation among 16,692 always-losers with
+valid bid-level data). For each always-loser firm, we compute the
+mean within-tender coefficient of variation (CV), excess kurtosis,
+skewness, and normalized bid spread across all tenders in which the
+firm participates, then form a composite Imhof score as the
+standardized average of these four features.
+
+The FL screen (AUC~$= 0.94$) substantially outperforms the Imhof
+composite (AUC~$= 0.79$; DeLong $p < 0.001$) and each individual
+Imhof feature (CV: $0.76$; spread: $0.79$).
+Figure~\ref{fig:roc_comparison} overlays the three ROC curves. The
+FL screen's superior performance is consistent with its design: it
+exploits the \emph{participation} anomaly (never winning yet
+participating excessively) rather than within-tender bid patterns,
+capturing a different dimension of cover-bidding behavior.
+
+Importantly, the FL screen requires \emph{only participation and
+outcome data}---not bid values---making it deployable in procurement
+systems where bid-level data are unavailable. The Imhof screen, by
+contrast, requires granular bid values for each tender. The two
+approaches are thus complements for agencies with full data access and
+the FL screen is the only feasible option for agencies with limited
+data infrastructure.
+
+\input{tables/tab_imhof_comparison}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{images/fig_roc_comparison.pdf}
+\caption{ROC curves: FL screen vs.\ Imhof-style bid-level screens.
+Ground truth: co-participation with CADE-convicted cartelists among
+always-loser firms. The FL screen (AUC~$= 0.94$) dominates the
+Imhof composite (AUC~$= 0.79$; DeLong $p < 0.001$).}
+\label{fig:roc_comparison}
+\end{figure}
+
+\paragraph{Caveats.}
+Two caveats apply. First, the ground truth (CADE co-participation)
+is an imperfect proxy: if cover bidders strategically avoid
+co-bidding with cartel principals, the AUC may overstate detection
+power. Second, precision at the baseline threshold is low (3.6\%):
+the FL screen is a high-recall, low-precision triage tool suitable
+for prioritizing investigation, not standalone enforcement.
 
 % ── 7.3 Reduced-Form Evidence ─────────────────────────────────────
 
