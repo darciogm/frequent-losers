@@ -6,6 +6,16 @@
 # Key test: Under competitive conditions, FL participation is
 # irrational (expected profit < 0) for any positive bidding cost.
 # FL firms have win_rate = 0, so E[π] = -bidding_cost × N_tenders.
+#
+# Bidding cost calibration:
+#   BEC is an electronic platform; unit prices are per-item (median
+#   R$9.90). Bidding cost is modeled as a FIXED cost per participation
+#   (staff time, documentation, opportunity cost), not a fraction of
+#   unit price. Range R$50–R$500 per bid based on:
+#   - BEC electronic participation: ~1–2h analyst time at R$25–50/h
+#   - Documentation/compliance overhead
+#   - Opportunity cost of monitoring auctions
+#   References: Bajari & Hortaçsu (2003), Krasnokutskaya & Seim (2011)
 # ═══════════════════════════════════════════════════════════════════
 cat("=== FL PARTICIPATION RATIONALITY TEST ===\n\n")
 suppressPackageStartupMessages({
@@ -26,11 +36,10 @@ setnames(ftm, c("códigofornecedor","numerodaoc","códigoitem","n_bids","won"),
          c("firm_id","oc_code","item_code","n_bids","won"))
 ftm[, firm_id := as.character(firm_id)]
 
-# BEC collapse: prices
+# BEC collapse: prices (bid_price_min = total bid value for the item line)
 bec <- as.data.table(read_parquet(file.path(BASE, "data/processed/BEC_collapse_final.parquet"),
-  col_select=c("po_item_merge_key","bid_unit_price_negot_min","bid_ref_price_min","n_firms")))
+  col_select=c("po_item_merge_key","bid_price_min","bid_unit_price_negot_min","n_firms")))
 bec[, oc_code := substr(po_item_merge_key, 1, 22)]
-bec[, item_code := substr(po_item_merge_key, 23, nchar(po_item_merge_key))]
 
 # FL classification
 fp <- as.data.table(read_parquet(file.path(BASE, "data/processed/FREQ_PARTICIP_rebuilt.parquet")))
@@ -50,30 +59,36 @@ cat("FL firms:", length(fl_ids), "\n")
 cat("Total firms:", nrow(fls), "\n\n")
 
 # ═══════════════════════════════════════════════════════════════════
-# 1. EXPECTED PROFIT COMPUTATION
+# 1. FIRM-LEVEL AGGREGATES
 # ═══════════════════════════════════════════════════════════════════
-cat("=== 1. Expected Profit Analysis ===\n")
+cat("=== 1. Firm-level aggregates ===\n")
 
-# Merge winning prices to participation data
-win_prices <- bec[bid_unit_price_negot_min > 0,
-                  .(win_price = bid_unit_price_negot_min[1]),
-                  by=oc_code]
+# Aggregate winning bid value per OC (sum across items in the OC)
+# This gives contract-level revenue for winners
+oc_value <- bec[bid_price_min > 0,
+                .(oc_total_value = sum(bid_price_min, na.rm=TRUE)),
+                by=oc_code]
 
-ftm_prices <- merge(ftm, win_prices, by="oc_code", all.x=FALSE)
+cat("OC-level values:\n")
+cat("  N OCs:", formatC(nrow(oc_value), big.mark=","), "\n")
+cat("  Median OC value: R$", formatC(median(oc_value$oc_total_value), big.mark=",", format="f", digits=0), "\n")
+cat("  Mean OC value:   R$", formatC(mean(oc_value$oc_total_value), big.mark=",", format="f", digits=0), "\n")
+cat("  P25 OC value:    R$", formatC(quantile(oc_value$oc_total_value, 0.25), big.mark=",", format="f", digits=0), "\n")
+cat("  P75 OC value:    R$", formatC(quantile(oc_value$oc_total_value, 0.75), big.mark=",", format="f", digits=0), "\n\n")
 
-# Classify firms
-ftm_prices[, is_fl := as.integer(firm_id %in% fl_ids)]
-ftm_prices[, is_always_loser := as.integer(firm_id %in% fp$firm_id)]
+# Merge OC value to firm participation
+ftm_val <- merge(ftm, oc_value, by="oc_code", all.x=FALSE)
+ftm_val[, is_fl := as.integer(firm_id %in% fl_ids)]
 
-# Firm-level aggregates
-firm_stats <- ftm_prices[, .(
+# Firm-level statistics
+firm_stats <- ftm_val[, .(
   n_participations = .N,
+  n_distinct_ocs = uniqueN(oc_code),
   n_wins = sum(won, na.rm=TRUE),
   win_rate = mean(won, na.rm=TRUE),
-  mean_contract_value = mean(win_price[won == 1], na.rm=TRUE),
-  total_contract_value = sum(win_price[won == 1], na.rm=TRUE),
-  median_tender_value = median(win_price, na.rm=TRUE),
-  mean_tender_value = mean(win_price, na.rm=TRUE),
+  total_won_value = sum(oc_total_value * won, na.rm=TRUE),
+  mean_oc_value = mean(oc_total_value, na.rm=TRUE),
+  median_oc_value = median(oc_total_value, na.rm=TRUE),
   is_fl = max(is_fl)
 ), by=firm_id]
 
@@ -83,28 +98,44 @@ firm_stats[, group := fifelse(is_fl == 1, "FL",
                     fifelse(win_rate < 0.1, "Low win-rate (<10%)",
                     "Regular competitor")))]
 
-# Expected profit per participation under different bidding cost assumptions
-# bidding_cost = fraction of median tender value
-bidding_costs <- c(0.005, 0.01, 0.02, 0.05)  # 0.5%, 1%, 2%, 5%
+cat("Groups:\n")
+print(firm_stats[, .N, by=group][order(group)])
+cat("\n")
 
-for (bc in bidding_costs) {
-  col_name <- paste0("eprofit_bc", bc*100)
-  firm_stats[, (col_name) := win_rate * mean_tender_value * 0.10 -  # 10% margin on wins
-                              bc * median_tender_value]
+# ═══════════════════════════════════════════════════════════════════
+# 2. EXPECTED PROFIT WITH FIXED BIDDING COSTS
+# ═══════════════════════════════════════════════════════════════════
+cat("=== 2. Expected Profit Analysis (fixed bidding costs) ===\n")
+
+# Fixed bidding costs per participation (R$)
+# Calibration: BEC is electronic, but requires bid preparation,
+# documentation, monitoring. Range based on:
+#   - 1-2h analyst time at R$25-50/h → R$25-100 (preparation)
+#   - Document compliance, opportunity cost → R$25-100 (overhead)
+#   - Lower bound R$50 (minimal electronic), upper R$500 (complex items)
+fixed_costs <- c(50, 100, 200, 500)
+
+# For firms that win: expected surplus per win
+# Assume 10% gross margin on contract value (conservative)
+MARGIN <- 0.10
+
+for (fc in fixed_costs) {
+  col_name <- paste0("eprofit_fc", fc)
+  # E[π] = win_rate × mean_contract_value × margin - fixed_cost
+  firm_stats[, (col_name) := win_rate * mean_oc_value * MARGIN - fc]
 }
 
-# Summary by group
-cat("\n--- Expected Profit per Participation ---\n")
+cat("\n--- Expected Profit per Participation (R$/bid) ---\n")
 cat("(Assuming 10% gross margin on wins)\n\n")
 
-for (bc in bidding_costs) {
-  col_name <- paste0("eprofit_bc", bc*100)
-  cat(sprintf("Bidding cost = %.1f%% of tender value:\n", bc*100))
+for (fc in fixed_costs) {
+  col_name <- paste0("eprofit_fc", fc)
+  cat(sprintf("Fixed bidding cost = R$%d/participation:\n", fc))
   summary_dt <- firm_stats[, .(
     N = .N,
     mean_win_rate = round(mean(win_rate, na.rm=TRUE), 4),
-    mean_eprofit = round(mean(get(col_name), na.rm=TRUE), 2),
-    median_eprofit = round(median(get(col_name), na.rm=TRUE), 2),
+    mean_eprofit = round(mean(get(col_name), na.rm=TRUE), 0),
+    median_eprofit = round(median(get(col_name), na.rm=TRUE), 0),
     pct_negative = round(100 * mean(get(col_name) < 0, na.rm=TRUE), 1)
   ), by=group]
   setorder(summary_dt, group)
@@ -113,96 +144,72 @@ for (bc in bidding_costs) {
 }
 
 # ═══════════════════════════════════════════════════════════════════
-# 2. TOTAL CAREER EXPECTED LOSS
+# 3. CAREER LOSS
 # ═══════════════════════════════════════════════════════════════════
-cat("=== 2. Total Career Expected Loss ===\n")
+cat("=== 3. Total Career Loss ===\n")
 
-# For FL firms: total loss = bidding_cost × n_participations × median_tender_value
-# (since win_rate = 0, ALL participations are pure cost)
-firm_stats[, career_loss_1pct := 0.01 * median_tender_value * n_participations]
+# Career loss = fixed_cost × n_participations (for always-losers)
+# Career net = total_won_value × margin - fixed_cost × n_participations (for winners)
+for (fc in fixed_costs) {
+  cl_name <- paste0("career_net_fc", fc)
+  firm_stats[, (cl_name) := total_won_value * MARGIN - fc * n_participations]
+}
 
+cat("Career net profit at R$200/bid:\n")
 career_summary <- firm_stats[, .(
   N = .N,
   mean_participations = round(mean(n_participations), 1),
-  mean_career_loss = round(mean(career_loss_1pct, na.rm=TRUE), 0),
-  median_career_loss = round(median(career_loss_1pct, na.rm=TRUE), 0),
-  total_career_loss = round(sum(career_loss_1pct, na.rm=TRUE), 0),
-  mean_total_won = round(mean(total_contract_value, na.rm=TRUE), 0)
+  mean_career_net = round(mean(career_net_fc200, na.rm=TRUE), 0),
+  median_career_net = round(median(career_net_fc200, na.rm=TRUE), 0),
+  pct_negative = round(100 * mean(career_net_fc200 < 0, na.rm=TRUE), 1),
+  mean_total_won_R = round(mean(total_won_value, na.rm=TRUE), 0)
 ), by=group]
 setorder(career_summary, group)
-cat("Career loss at 1% bidding cost:\n")
 print(career_summary)
 
-# ═══════════════════════════════════════════════════════════════════
-# 3. COMPARISON: FL vs NON-FL ALWAYS-LOSERS
-# ═══════════════════════════════════════════════════════════════════
-cat("\n=== 3. FL vs Non-FL Always-Losers ===\n")
-
-al_stats <- firm_stats[win_rate == 0]
-al_stats[, is_fl_flag := as.integer(is_fl == 1)]
-
-cat("Always-losers total:", nrow(al_stats), "\n")
-cat("  FL:", sum(al_stats$is_fl_flag), "\n")
-cat("  Non-FL:", sum(!al_stats$is_fl_flag), "\n")
-
-cat("\nMean participations (FL):", round(mean(al_stats[is_fl_flag==1, n_participations]), 1), "\n")
-cat("Mean participations (non-FL):", round(mean(al_stats[is_fl_flag==0, n_participations]), 1), "\n")
-cat("Ratio:", round(mean(al_stats[is_fl_flag==1, n_participations]) /
-                    mean(al_stats[is_fl_flag==0, n_participations]), 1), "x\n")
-
-# Wilcoxon test on number of participations
-w_test <- wilcox.test(al_stats[is_fl_flag==1, n_participations],
-                      al_stats[is_fl_flag==0, n_participations])
-cat("Wilcoxon p-value:", format(w_test$p.value, digits=4), "\n")
-
-# FL participation is irrational by construction (win_rate=0)
-# The question is: HOW irrational? (magnitude of losses)
-cat("\nAt 1% bidding cost:\n")
-cat("  FL mean career loss:     R$", formatC(mean(al_stats[is_fl_flag==1, career_loss_1pct], na.rm=TRUE),
+cat("\nFL vs Non-FL always-losers:\n")
+cat("  FL mean participations:     ", round(mean(firm_stats[group=="FL", n_participations]), 1), "\n")
+cat("  Non-FL AL mean particip.:   ", round(mean(firm_stats[group=="Non-FL always-loser", n_participations]), 1), "\n")
+cat("  FL mean career loss @R$200: R$", formatC(
+    -mean(firm_stats[group=="FL", career_net_fc200], na.rm=TRUE),
     big.mark=",", format="f", digits=0), "\n")
-cat("  Non-FL mean career loss: R$", formatC(mean(al_stats[is_fl_flag==0, career_loss_1pct], na.rm=TRUE),
+cat("  Non-FL AL career loss @R$200: R$", formatC(
+    -mean(firm_stats[group=="Non-FL always-loser", career_net_fc200], na.rm=TRUE),
     big.mark=",", format="f", digits=0), "\n")
-cat("  FL total loss:           R$", formatC(sum(al_stats[is_fl_flag==1, career_loss_1pct], na.rm=TRUE),
-    big.mark=",", format="f", digits=0), "\n")
+
+# Wilcoxon test
+w_test <- wilcox.test(
+  firm_stats[group=="FL", n_participations],
+  firm_stats[group=="Non-FL always-loser", n_participations])
+cat("  Wilcoxon p:", format(w_test$p.value, digits=4), "\n")
 
 # ═══════════════════════════════════════════════════════════════════
 # 4. LaTeX TABLE
 # ═══════════════════════════════════════════════════════════════════
 cat("\n=== 4. Writing LaTeX table ===\n")
 
-# Compute numbers for table
-fl_n <- nrow(firm_stats[group == "FL"])
-nonfl_al_n <- nrow(firm_stats[group == "Non-FL always-loser"])
-low_wr_n <- nrow(firm_stats[group == "Low win-rate (<10%)"])
-reg_n <- nrow(firm_stats[group == "Regular competitor"])
-
-fl_part <- round(mean(firm_stats[group == "FL", n_participations]), 1)
-nonfl_al_part <- round(mean(firm_stats[group == "Non-FL always-loser", n_participations]), 1)
-low_wr_part <- round(mean(firm_stats[group == "Low win-rate (<10%)", n_participations]), 1)
-reg_part <- round(mean(firm_stats[group == "Regular competitor", n_participations]), 1)
-
-fl_wr <- "0.000"
-nonfl_al_wr <- "0.000"
-low_wr_wr <- round(mean(firm_stats[group == "Low win-rate (<10%)", win_rate]), 3)
-reg_wr <- round(mean(firm_stats[group == "Regular competitor", win_rate]), 3)
-
-# Expected profit at 1% bidding cost
-fl_ep <- round(mean(firm_stats[group == "FL", eprofit_bc1], na.rm=TRUE), 0)
-nonfl_al_ep <- round(mean(firm_stats[group == "Non-FL always-loser", eprofit_bc1], na.rm=TRUE), 0)
-low_wr_ep <- round(mean(firm_stats[group == "Low win-rate (<10%)", eprofit_bc1], na.rm=TRUE), 0)
-reg_ep <- round(mean(firm_stats[group == "Regular competitor", eprofit_bc1], na.rm=TRUE), 0)
-
-# Percentage with negative expected profit
-fl_neg <- round(100 * mean(firm_stats[group == "FL", eprofit_bc1] < 0, na.rm=TRUE), 1)
-nonfl_al_neg <- round(100 * mean(firm_stats[group == "Non-FL always-loser", eprofit_bc1] < 0, na.rm=TRUE), 1)
-low_wr_neg <- round(100 * mean(firm_stats[group == "Low win-rate (<10%)", eprofit_bc1] < 0, na.rm=TRUE), 1)
-reg_neg <- round(100 * mean(firm_stats[group == "Regular competitor", eprofit_bc1] < 0, na.rm=TRUE), 1)
-
-# Career loss at 1%
-fl_cl <- round(mean(firm_stats[group == "FL", career_loss_1pct], na.rm=TRUE) / 1000, 1)
-nonfl_al_cl <- round(mean(firm_stats[group == "Non-FL always-loser", career_loss_1pct], na.rm=TRUE) / 1000, 1)
-
 fmt <- function(x) formatC(x, big.mark=",", format="d")
+
+# Compute table values at the central R$200/bid
+gs <- firm_stats[, .(
+  n = .N,
+  part = round(mean(n_participations), 1),
+  wr = round(mean(win_rate), 3),
+  ep50 = round(mean(eprofit_fc50, na.rm=TRUE), 0),
+  ep200 = round(mean(eprofit_fc200, na.rm=TRUE), 0),
+  ep500 = round(mean(eprofit_fc500, na.rm=TRUE), 0),
+  neg50 = round(100 * mean(eprofit_fc50 < 0, na.rm=TRUE), 1),
+  neg200 = round(100 * mean(eprofit_fc200 < 0, na.rm=TRUE), 1),
+  neg500 = round(100 * mean(eprofit_fc500 < 0, na.rm=TRUE), 1),
+  cl200 = round(mean(career_net_fc200, na.rm=TRUE) / 1000, 1)
+), by=group]
+setorder(gs, group)
+
+# Extract rows
+fl <- gs[group == "FL"]
+al <- gs[group == "Non-FL always-loser"]
+lw <- gs[group == "Low win-rate (<10%)"]
+rc <- gs[group == "Regular competitor"]
 
 tex <- c(
   "% CO-AUTHOR EDIT: INSERT RATIONALITY TEST [T2.1]",
@@ -212,29 +219,40 @@ tex <- c(
   "\\label{tab:rationality}",
   "\\begin{threeparttable}",
   "\\small",
-  "\\begin{tabular}{lcccccc}",
+  "\\begin{tabular}{lccccccc}",
   "\\toprule",
-  " & $N$ & Mean & Win & $E[\\pi]$ & $\\%$ negative & Career \\\\",
-  " & firms & particip. & rate & per bid & $E[\\pi]$ & loss (R\\$K) \\\\",
+  " & & Mean & Win & \\multicolumn{3}{c}{$E[\\pi]$ per bid (R\\$)} & Career net \\\\",
+  "\\cmidrule(lr){5-7}",
+  " & $N$ & particip. & rate & $c=50$ & $c=200$ & $c=500$ & at $c=200$ (R\\$K) \\\\",
   "\\midrule",
-  sprintf("FL firms & %s & %.1f & %s & %s & %.1f\\%% & %.1f \\\\",
-          fmt(fl_n), fl_part, fl_wr, fmt(fl_ep), fl_neg, fl_cl),
-  sprintf("Non-FL always-losers & %s & %.1f & %s & %s & %.1f\\%% & %.1f \\\\",
-          fmt(nonfl_al_n), nonfl_al_part, nonfl_al_wr, fmt(nonfl_al_ep), nonfl_al_neg, nonfl_al_cl),
-  sprintf("Low win-rate ($<$10\\%%) & %s & %.1f & %.3f & %s & %.1f\\%% & --- \\\\",
-          fmt(low_wr_n), low_wr_part, low_wr_wr, fmt(low_wr_ep), low_wr_neg),
-  sprintf("Regular competitors & %s & %.1f & %.3f & %s & %.1f\\%% & --- \\\\",
-          fmt(reg_n), reg_part, reg_wr, fmt(reg_ep), reg_neg),
+  sprintf("FL firms & %s & %.1f & %s & $%s$ & $%s$ & $%s$ & $%s$ \\\\",
+    fmt(fl$n), fl$part, "0.000", fmt(fl$ep50), fmt(fl$ep200), fmt(fl$ep500), sprintf("%.1f", fl$cl200)),
+  sprintf("Non-FL always-losers & %s & %.1f & %s & $%s$ & $%s$ & $%s$ & $%s$ \\\\",
+    fmt(al$n), al$part, "0.000", fmt(al$ep50), fmt(al$ep200), fmt(al$ep500), sprintf("%.1f", al$cl200)),
+  sprintf("Low win-rate ($<$10\\%%) & %s & %.1f & %.3f & %s & %s & %s & %s \\\\",
+    fmt(lw$n), lw$part, lw$wr, fmt(lw$ep50), fmt(lw$ep200), fmt(lw$ep500), sprintf("%.1f", lw$cl200)),
+  sprintf("Regular competitors & %s & %.1f & %.3f & %s & %s & %s & %s \\\\",
+    fmt(rc$n), rc$part, rc$wr, fmt(rc$ep50), fmt(rc$ep200), fmt(rc$ep500), sprintf("%.1f", rc$cl200)),
+  "\\addlinespace[3pt]",
+  " & & & & \\multicolumn{3}{c}{\\% with $E[\\pi] < 0$} & \\\\",
+  "\\cmidrule(lr){5-7}",
+  sprintf("FL firms & & & & %.1f\\%% & %.1f\\%% & %.1f\\%% & \\\\",
+    fl$neg50, fl$neg200, fl$neg500),
+  sprintf("Regular competitors & & & & %.1f\\%% & %.1f\\%% & %.1f\\%% & \\\\",
+    rc$neg50, rc$neg200, rc$neg500),
   "\\bottomrule",
   "\\end{tabular}",
   "\\begin{tablenotes}",
   "\\small",
-  "\\item \\textit{Notes:} Expected profit per bid assumes 10\\% gross margin on wins",
-  "and 1\\% of median tender value as bidding cost.",
-  "$E[\\pi] = \\text{win\\_rate} \\times \\text{mean\\_value} \\times 0.10 - 0.01 \\times \\text{median\\_value}$.",
-  "Career loss = bidding cost $\\times$ total participations.",
-  "FL firms have zero wins by construction; under competitive bidding,",
-  "their participation generates guaranteed losses for any positive bidding cost.",
+  "\\item \\textit{Notes:} $c$ denotes fixed bidding cost per participation (R\\$).",
+  "BEC is an electronic platform; $c$ captures staff time for bid preparation",
+  "(1--2 hours at R\\$25--50/hour), documentation compliance, and opportunity cost.",
+  "Expected profit: $E[\\pi] = \\text{win\\_rate} \\times \\overline{V} \\times 0.10 - c$,",
+  "where $\\overline{V}$ is the mean procurement-order value across the firm's",
+  "participations and 0.10 is a conservative gross margin.",
+  "Career net = total winnings $\\times$ 0.10 $-$ $c \\times$ total participations.",
+  "FL firms have zero wins by construction; participation generates",
+  "guaranteed losses of $c$ per bid for any $c > 0$.",
   "\\end{tablenotes}",
   "\\end{threeparttable}",
   "\\end{table}"
@@ -245,10 +263,14 @@ cat("Table saved.\n")
 # ── Save CSV ──────────────────────────────────────────────────────
 results <- data.frame(
   group = c("FL", "NonFL_AL", "LowWR", "Regular"),
-  n_firms = c(fl_n, nonfl_al_n, low_wr_n, reg_n),
-  mean_participations = c(fl_part, nonfl_al_part, low_wr_part, reg_part),
-  mean_eprofit_1pct = c(fl_ep, nonfl_al_ep, low_wr_ep, reg_ep),
-  pct_negative_eprofit = c(fl_neg, nonfl_al_neg, low_wr_neg, reg_neg)
+  n_firms = c(fl$n, al$n, lw$n, rc$n),
+  mean_participations = c(fl$part, al$part, lw$part, rc$part),
+  win_rate = c(0, 0, lw$wr, rc$wr),
+  eprofit_fc50 = c(fl$ep50, al$ep50, lw$ep50, rc$ep50),
+  eprofit_fc200 = c(fl$ep200, al$ep200, lw$ep200, rc$ep200),
+  eprofit_fc500 = c(fl$ep500, al$ep500, lw$ep500, rc$ep500),
+  pct_neg_fc200 = c(fl$neg200, al$neg200, lw$neg200, rc$neg200),
+  career_net_fc200_K = c(fl$cl200, al$cl200, lw$cl200, rc$cl200)
 )
 write.csv(results, file.path(OUT_T, "rationality_results.csv"), row.names=FALSE)
 cat("CSV saved.\n")
