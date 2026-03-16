@@ -1,0 +1,83 @@
+% ============================================================================
+% sec_identification.tex — V8: Additional identification evidence
+% Addresses external referee Concern 1: causal identification
+% ============================================================================
+
+\subsection{Additional Identification Evidence} % V8: addresses Concern 1
+\label{sec:additional_id}
+
+We present three additional tests that address the concern that FL
+presence may be endogenous to market characteristics rather than
+causing price inflation.
+
+\paragraph{1. FL entry event study.}
+For each PBU, we identify the first year in which any FL firm
+participates and estimate a within-PBU event study with PBU and year
+fixed effects (window: $t \in [-4, +4]$ relative to first FL entry).
+Figure~\ref{fig:fl_entry_es} shows the results. Pre-event coefficients
+at $t = -2$ and $t = -3$ are positive and marginally significant,
+indicating that PBUs receiving FL entry \emph{already had higher
+prices} before FL firms appeared. This pattern is consistent with
+strategic selection (Prediction~\ref{pred:selection_v6}): cartels
+deploy cover bidders into PBUs where high prices are sustainable,
+rather than FL entry \emph{causing} the price increase.
+
+This pre-trend pattern does not invalidate the FL--price association
+but it reframes its interpretation: FL presence is a \emph{marker} of
+markets where cover bidding is profitable (H1), not necessarily the
+proximate \emph{cause} of higher prices (H2). The FL screen remains
+valuable for detection precisely because it identifies these markets.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{images/fig_fl_entry_event_study.pdf}
+\caption{Event study: log prices around first FL entry in PBU. PBU and
+year fixed effects; 95\% confidence intervals clustered at PBU level.
+Pre-event coefficients (positive at $t = -2, -3$) indicate strategic
+selection into high-price PBUs.}
+\label{fig:fl_entry_es}
+\end{figure}
+
+\paragraph{2. Minimum-bidder constraint variation.}
+Under convite, the minimum-bidder rule ($n + m \geq 3$) creates
+exogenous variation in the \emph{necessity} of cover bidding: when
+$n_{\text{genuine}} < 3$, the cartel must deploy cover bidders to
+satisfy the rule (corner solution in
+Proposition~\ref{prop:optimal_m}); when $n_{\text{genuine}} \geq 3$,
+cover bidding is voluntary. We interact FL presence with a
+constraint-binding indicator ($n_{\text{genuine}} < 3$):
+\[
+  y_{igt} = \beta_1 \cdot \text{FL}_{igt} + \beta_2 \cdot
+  \text{FL}_{igt} \times \mathbf{1}[n < 3]
+  + \gamma \cdot \mathbf{1}[n < 3] + \alpha_g + \lambda_t +
+  \varepsilon_{igt}
+\]
+Within the convite subsample, the FL coefficient when the constraint
+does not bind ($n \geq 3$) is $\hat{\beta}_1 = 0.076$ (SE~$= 0.021$,
+$p < 0.001$)---a 7.6\% price premium attributable to \emph{voluntary}
+cover bidding, close to the baseline OLS (6.4\%). The interaction
+$\hat{\beta}_2 = -0.160$ (SE~$= 0.045$, $p < 0.001$) indicates that
+the FL--price effect is 16 percentage points \emph{lower} when the
+constraint binds. The total FL effect under constraint
+($\hat{\beta}_1 + \hat{\beta}_2 = -0.084$) is negative, reflecting
+that tenders with few genuine bidders are intrinsically less
+competitive and cheaper.
+
+This decomposition supports the model's distinction between mandatory
+and strategic cover bidding: the price effect concentrates in
+\emph{voluntary} deployments (where cartels choose to operate), not
+in constraint-driven deployments (where cover bidding is a mechanical
+requirement).
+
+\paragraph{3. CADE enforcement shock.}
+As reported in
+Appendix~\ref{app:did}, the Callaway--Sant'Anna staggered DiD
+using CADE conviction timing as an enforcement shock shows that FL
+presence \emph{declines significantly} in treated PBU markets after
+conviction (ATT~$= -0.275$, SE~$= 0.059$, $p < 0.001$), consistent
+with cover bidders exiting markets where cartel principals are
+prosecuted. The price ATT is positive but imprecise (0.145,
+SE~$= 0.110$), reflecting limited statistical power at the
+PBU--year level. The significant FL exit response constitutes
+quasi-experimental evidence that FL presence is connected to
+cartel activity, not to time-invariant market characteristics.
