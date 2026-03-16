@@ -33,17 +33,43 @@ fraction of bids above the winner, and bid-level CV. The
 cross-validated AUC is $0.90$---strong, but \emph{below} the IQR
 rule's $0.94$ (DeLong $p = 0.04$).
 
+% CO-AUTHOR EDIT: INSERT LATENT CLASS VALIDATION [T1.2]
+\paragraph{Unsupervised latent class analysis.}
+To verify that the FL classification has structural content beyond an
+ad hoc threshold, we estimate a two-component Gaussian mixture model
+on 8,275 always-loser firms with $\geq 3$ tenders, using five
+firm-level features: mean bid distance from winner, SD of bid distance,
+fraction of bids above the winner, winner HHI (co-bidding
+concentration), and participation count. The model discovers two
+latent classes without using FL labels. The ``cover bidder'' class
+(identified by higher mean participation: 45.2 vs.\ 9.0 tenders)
+contains 71.2\% FL firms, compared with 20.0\% in the ``genuine''
+class (Table~\ref{tab:lca_validation}). The mean posterior probability
+$\Pr(\text{cover} \mid \text{FL}) = 0.56$ falls below the 0.75
+benchmark, with precision 0.71 and recall 0.55 ($F_1 = 0.62$). The
+partial overlap reflects the multivariate LCA distributing weight
+across correlated features, whereas the IQR rule concentrates on the
+single most discriminative dimension---participation intensity. The
+key result is that the unsupervised model independently recovers a
+class whose defining characteristic (abnormally high participation
+with zero wins) aligns with the FL definition, providing structural
+support for the IQR rule even when the overlap is imperfect.
+
+\input{tables/tab_lca_validation}
+
 \paragraph{Interpretation.}
 Table~\ref{tab:classification_comparison} and
-Figure~\ref{fig:classification_comparison} summarize the comparison.
-The IQR rule dominates both the structural classifier and the random
-forest. This result has two implications. First, the threshold rule
-is not merely convenient; it captures the most discriminative feature
-of cover bidding---\emph{abnormally high participation despite zero
-wins}---which ML cannot improve upon by adding bid-level features.
-Second, the structural model's bid-level parameters are complementary
-(they identify the \emph{mechanism}) but not substitutes (they do not
-improve \emph{detection}) for the participation-based screen.
+Figure~\ref{fig:classification_comparison} summarize the supervised
+comparison. The IQR rule dominates both the structural classifier and
+the random forest. Combined with the LCA's independent recovery of a
+cover-bidder class, this result has two implications. First, the
+threshold rule is not merely convenient; it captures the most
+discriminative feature of cover bidding---\emph{abnormally high
+participation despite zero wins}---which neither ML nor unsupervised
+methods can improve upon. Second, the structural model's bid-level
+parameters are complementary (they identify the \emph{mechanism}) but
+not substitutes (they do not improve \emph{detection}) for the
+participation-based screen.
 
 \input{tables/tab_classification_comparison}
 
