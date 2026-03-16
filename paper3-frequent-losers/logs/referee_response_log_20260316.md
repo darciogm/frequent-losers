@@ -137,7 +137,7 @@
 - Tag: % CO-AUTHOR EDIT: CONTRIBUTION TABLE [T3.3]
 
 ### T3.4 Section Order Assessment
-- **Status: COMPLETE (assessment only)**
+- **Status: COMPLETE (assessment + counterfactual promotion implemented)**
 
 Current v8 order vs. referee recommended order:
 
@@ -165,12 +165,12 @@ The v8 structure follows a "model → data → estimation → results" narrative
 
 4. **Mechanisms section after Results** (v8): The referee suggests mechanism evidence before structural. V8's ordering (results → mechanisms) is conventional. **Recommendation: KEEP, but the mechanisms are partially embedded in Results (sec7) already.**
 
-5. **Counterfactual welfare inside Results** (v8 sec7.8) vs **separate Optimal Enforcement section** (referee): The counterfactual subsection could be promoted to a standalone section. **Recommendation: CONSIDER promoting to Section 9, before Robustness.** Low risk (no cross-reference dependencies beyond section labels).
+5. **Counterfactual welfare inside Results** (v8 sec7.8) vs **separate Optimal Enforcement section** (referee): **IMPLEMENTED** — promoted `\subsection` to `\section{Policy Counterfactuals}` and moved `\input` from sec7_results.tex to paper_v8.tex (after Robustness, before Conclusion). All 4 cross-references (`\ref{sec:counterfactual}`) remain valid since `\label` is unchanged.
 
-**Decision for authors:**
-- The v8 structure is well-suited for RAND/IJIO. The referee's ordering is more suitable for a policy journal.
-- Only candidate for restructuring: promote counterfactual welfare to standalone section.
-- All other moves carry high risk of breaking cross-references with low marginal benefit.
+**Decision implemented:**
+- Counterfactual welfare promoted to standalone section (between Robustness and Conclusion).
+- All other sections kept in current v8 order (standard for structural IO journals).
+- Introduction roadmap paragraph updated to include the new section.
 
 ---
 
@@ -187,7 +187,7 @@ The v8 structure follows a "model → data → estimation → results" narrative
 
 ## Pendências para os autores
 
-1. **Section order**: Consider promoting counterfactual welfare (currently Results §7.8) to a standalone section. No other reordering recommended.
+1. ~~**Section order**~~: RESOLVED — counterfactual welfare promoted to standalone section "Policy Counterfactuals" between Robustness and Conclusion.
 2. **T3.1 opening paragraph**: V8 intro already leads with mechanism — verify if referee's specific phrasing preferences differ.
 3. **AUC forward reference**: V8 intro mentions CADE validation but does not explicitly say "AUC = 0.94" in the introduction abstract/contributions. Consider adding the number explicitly if the referee specifically requested it.
 4. **Rationality test (T2.1)**: Review table numbers and ensure bidding-cost assumptions (0.5–5%) are defensible for BEC context.
