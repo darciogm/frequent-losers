@@ -166,13 +166,38 @@ Imhof composite (AUC~$= 0.79$; DeLong $p < 0.001$).}
 \label{fig:roc_comparison}
 \end{figure}
 
+\paragraph{Precision--recall trade-off.} % V7-T2: PR curve added
+Figure~\ref{fig:pr} presents the precision--recall curve, which
+is more informative than the ROC for practitioners operating under
+a low base rate (0.58\% of always-losers are CADE co-bidders).
+At the baseline threshold (1.5$\times$IQR), the screen achieves
+100\% recall (all CADE co-bidders captured) but only 3.6\% precision
+(1 true positive per 28 flagged firms). The $F_1$-optimal threshold
+(5.0$\times$IQR) improves precision to 5.7\% at the cost of recall
+dropping to 48\%. For operational deployment, the baseline threshold
+is appropriate when investigation costs are low (automated desk
+review); tighter thresholds are preferred when each investigation
+is expensive (Section~\ref{sec:counterfactual}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{images/fig_precision_recall.pdf}
+\caption{Precision--recall curve for the FL detection screen.
+Ground truth: co-participation with CADE-convicted cartelists among
+always-losers (base rate $= 0.58\%$). At the baseline 1.5$\times$IQR
+threshold, recall $= 100\%$ and precision $= 3.6\%$. The
+$F_1$-optimal threshold (5.0$\times$) achieves $F_1 = 0.10$.}
+\label{fig:pr}
+\end{figure}
+
 \paragraph{Caveats.}
 Two caveats apply. First, the ground truth (CADE co-participation)
 is an imperfect proxy: if cover bidders strategically avoid
 co-bidding with cartel principals, the AUC may overstate detection
-power. Second, precision at the baseline threshold is low (3.6\%):
-the FL screen is a high-recall, low-precision triage tool suitable
-for prioritizing investigation, not standalone enforcement.
+power. Second, precision is low at all thresholds, reflecting the
+low base rate of detected cartel involvement (0.58\%). The FL
+screen is a high-recall triage tool suitable for prioritizing
+investigation, not standalone enforcement.
 
 % ── 7.3 Reduced-Form Evidence ─────────────────────────────────────
 
