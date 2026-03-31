@@ -52,7 +52,12 @@ We select between regimes using BIC; the implied markup is:
         E[b^*_t \mid \text{FL absent}]}{E[b^*_t \mid \text{FL absent}]}
   \label{eq:structural_markup}
 \end{equation}
-If the structural model is correctly specified, this markup should fall within the OLS--IV range, providing a structural consistency check. Standard errors are computed via parametric bootstrap (500 replications, tender-level resampling).
+This markup is a calibration exercise---it computes the implied price
+difference from the estimated distributions---rather than an
+independently identified structural parameter. We report it alongside
+the reduced-form estimates for completeness. Standard errors are
+computed via parametric bootstrap (500 replications, tender-level
+resampling).
 
 % ── 5.2 Reduced-Form Identification ──────────────────────────────
 
@@ -111,16 +116,20 @@ The instrument integrates over firm-level misclassification by
 exploiting aggregate FL supply variation at other purchasing units in
 the same product market and year---a supply-side exclusion restriction
 in the spirit of \citet{goldsmithpinkham2020bartik}. We treat
-$\hat{\beta}_{\text{IV}}$ as an upper bound on the ATE, not as a
-clean causal estimate, for two reasons: (i)~balance tests reveal
+$\hat{\beta}_{\text{IV}}$ as a measurement-error diagnostic rather
+than a primary estimator, for three reasons: (i)~balance tests reveal
 systematic imbalance across observables (all standardized differences
 $< 0.03\sigma$), which is negligible for measurement-error correction
-but would matter for clean causal inference; and (ii)~the LATE
+but would matter for clean causal inference; (ii)~the LATE
 interpretation restricts the estimate to complier tenders whose FL
-status switches in response to aggregate supply variation.
+status switches in response to aggregate supply variation; and
+(iii)~if cartels operate across PBUs within the same product market,
+the instrument may capture cartel intensity rather than
+misclassification alone, biasing the IV upward beyond
+measurement-error correction.
 
 \paragraph{IV validity concerns.}
-Balance tests (Table~\ref{tab:iv_balance} in Appendix~\ref{app:robustness}) show that all four observables are significantly predicted by the instrument. Standardized differences are individually small ($< 0.03\sigma$), but the pattern of systematic imbalance across all observables is consistent with---though does not prove---violation of the exclusion restriction. The \citet{goldsmithpinkham2020bartik} Rotemberg decomposition is infeasible in our setting ($> 200{,}000$ item-year shares). We therefore triangulate IV validity through matching (CEM, IPW) and sensitivity analysis (\citealt{cinelli2020making}, $RV = 17.5\%$). Given this residual concern, the IV is supplementary; our primary estimates are OLS (0.064), cross-fit (0.036), and matching (0.055--0.077).
+Balance tests (Table~\ref{tab:iv_balance} in Appendix~\ref{app:robustness}) show that all four observables are significantly predicted by the instrument. Standardized differences are individually small ($< 0.03\sigma$), but the pattern of systematic imbalance across all observables is consistent with---though does not prove---violation of the exclusion restriction. The \citet{goldsmithpinkham2020bartik} Rotemberg decomposition is infeasible in our setting ($> 200{,}000$ item-year shares). We therefore triangulate through matching (CEM, IPW) and sensitivity analysis (\citealt{cinelli2020making}, $RV = 17.5\%$). The IV is a diagnostic: it indicates that the OLS is conservative, but we do not include it in the headline range. Our primary estimates are OLS (0.064), cross-fit (0.036), and matching (0.055--0.077).
 
 % ── 5.3 Detection Validation ─────────────────────────────────────
 

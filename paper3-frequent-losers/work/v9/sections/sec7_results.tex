@@ -62,8 +62,10 @@ split eliminates any within-sample mechanical correlation between
 the FL classification rule and the price outcome. Because factor
 (iii) removes a potential source of upward bias in the full-sample
 OLS, we regard the cross-fit estimate as potentially the more
-credible of the two. The headline range is 3.6--6.4\%, with 3.6\%
-as the out-of-sample estimate and 6.4\% as the full-sample baseline.
+credible of the two. The OLS--cross-fit range is 3.6--6.4\%, with
+3.6\% as the out-of-sample estimate and 6.4\% as the full-sample
+baseline; matching estimators (below) widen the five-estimator range
+to 3.6--8.0\%.
 
 \paragraph{Matching estimators.}
 Coarsened exact matching (CEM: 0.077, $N = 969{,}751$) and inverse
@@ -71,22 +73,28 @@ probability weighting (IPW: 0.055, $N = 830{,}194$) bracket the OLS
 and cross-fit estimates, confirming that the FL--price association
 survives non-parametric reweighting on observables.
 
-\paragraph{Instrumental variable (measurement-error correction).}The IV estimate (0.194, $p = 0.01$, $F = 396$) exceeds OLS by a
-factor of three, consistent with measurement-error attenuation in the
-binary FL indicator (Section~\ref{sec:reduced_form}). We use the IV
-as an upper bound on the ATE, correcting for misclassification noise,
-not as the primary identification strategy
+\paragraph{Measurement-error diagnostic (IV).}
+The leave-one-out IV estimate (0.194, $p = 0.01$, $F = 396$) exceeds
+OLS by a factor of three, consistent with measurement-error
+attenuation in the binary FL indicator
+(Section~\ref{sec:reduced_form}). However, if cartels operate across
+PBUs within the same product market, the instrument may capture cartel
+intensity rather than misclassification alone, biasing the IV upward.
+We therefore treat the IV as a diagnostic indicating that the OLS is
+conservative, not as a primary estimator
 (Table~\ref{tab:iv_balance}, Table~\ref{tab:iv_main} in
 Appendix~\ref{app:robustness}).
 
 \paragraph{Summary.}
-Six independent approaches yield markup estimates in a narrow range:
+Five independent approaches yield markup estimates in a narrow range:
 cross-fit (3.6\%), IPW (5.7\%), structural $n$-conditional (6.4\%),
-OLS (6.6\%), CEM (8.0\%), and IV upper bound (21.4\%). The five
-non-IV estimates span 3.6--8.0\%, a factor of 2.2. This convergence
+OLS (6.6\%), and CEM (8.0\%)---a factor of 2.2. This convergence
 across distinct identification strategies---each with different
 assumptions and potential biases---indicates a genuine FL--price
-association rather than an artifact of any single method.
+association rather than an artifact of any single method. The IV
+diagnostic (21.4\%) suggests the true effect may be larger if
+measurement error is severe, but we do not include it in the
+headline range due to exclusion-restriction concerns.
 
 \begin{figure}[htbp]
 \centering
@@ -107,7 +115,14 @@ truth. The FL screen achieves an AUC of 0.94
 (Table~\ref{tab:roc_detection} in Appendix~\ref{app:robustness}).
 The data-driven optimal threshold (Youden's $J = 0.84$) corresponds
 to 1.45$\times$IQR---nearly identical to the 1.5$\times$ baseline
-rule---achieving TPR~$= 1.00$ with FPR~$= 0.16$.
+rule---achieving TPR~$= 1.00$ with FPR~$= 0.16$. The AUC may
+overstate detection performance because the ROC varies the
+participation-count threshold, and higher counts mechanically
+increase co-participation opportunities with any firm, including
+CADE cartelists. The permutation test
+(Section~\ref{sec:cade}), which controls for this by stratifying on
+participation quartile, provides an independent confirmation of the
+FL--cartel association (3.5$\times$, $p < 0.001$).
 
 \paragraph{Comparison with Imhof-style screens.}
 The FL screen (AUC~$= 0.94$) substantially outperforms
@@ -219,15 +234,22 @@ $\hat{\sigma}_c = 1.19$ (SE~$= 0.012$). The KS distance is 0.24
 (Regime~2) versus 0.64 (Regime~1). The ratio
 $\hat{\sigma}_c / \hat{\sigma}_g = 1.19/1.64 = 0.72$ confirms that
 cover bids are \emph{less} dispersed than genuine bids---the signature
-of coordinated calibration near a focal point.
+of coordinated calibration near a focal point. The ratio is
+substantially below one but not near zero, indicating that cartels
+coordinate cover-bid placement imperfectly: cover bidders receive
+general instructions (``bid above $b^*$'') rather than precise bid
+levels, producing less dispersion than genuine competition but more
+than a perfectly controlled mechanism would generate.
 (Total tender dispersion increases mechanically with FL count because cover bids widen the pooled distribution; see Appendix~\ref{app:extensions} for reconciliation with the pooled-dispersion result.)
-\paragraph{Structural markup.}
+\paragraph{Structural markup (calibration).}
 Controlling for genuine bidder count $n$ (saturated dummies), item,
 year, and PBU FE, the $n$-conditional markup is 6.4\%
-(SE~$= 0.019$)---virtually identical to baseline OLS. The structural
-parameters characterize the cover-bid \emph{mechanism}; the markup is
-identified by the reduced-form comparison, disciplined by the model's
-predictions.
+(SE~$= 0.019$)---virtually identical to baseline OLS. This is a
+calibration, not an independently identified parameter: the markup
+is computed from the same data as the OLS. The structural model's
+contribution is characterizing the cover-bid \emph{mechanism}
+(regime identification, distributional parameters, and market-selection
+prediction), not providing an independent price estimate.
 
 \input{tables/tab_structural_params}
 
