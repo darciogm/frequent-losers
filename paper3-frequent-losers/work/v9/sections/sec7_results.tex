@@ -71,8 +71,7 @@ probability weighting (IPW: 0.055, $N = 830{,}194$) bracket the OLS
 and cross-fit estimates, confirming that the FL--price association
 survives non-parametric reweighting on observables.
 
-\paragraph{Instrumental variable (measurement-error correction).} % CO-AUTHOR EDIT [TASK-3]: consistent IV framing in results
-The IV estimate (0.194, $p = 0.01$, $F = 396$) exceeds OLS by a
+\paragraph{Instrumental variable (measurement-error correction).}The IV estimate (0.194, $p = 0.01$, $F = 396$) exceeds OLS by a
 factor of three, consistent with measurement-error attenuation in the
 binary FL indicator (Section~\ref{sec:reduced_form}). We use the IV
 as an upper bound on the ATE, correcting for misclassification noise,
@@ -119,7 +118,10 @@ it feasible where bid-level records are unavailable
 (Table~\ref{tab:imhof_comparison}, Figure~\ref{fig:roc_comparison}
 in Appendix~\ref{app:robustness}).
 
-This comparison is indicative rather than definitive: the FL screen % CO-AUTHOR EDIT [TASK-6]: AUC caveat — pre-empt referee concern
+This comparison is indicative rather than definitive. First, our
+Imhof proxy uses a CV median split, which is coarser than the full
+\citet{imhof2019detecting} implementation that combines CV, kurtosis,
+spread, and a trained classifier. Second, the FL screen
 operates at the firm level using participation data, while
 Imhof-style screens operate at the tender level using bid values, so
 the AUC advantage partly reflects different task structures. The
@@ -177,11 +179,14 @@ from a distinct process, as the structural model predicts.
 
 \paragraph{Conditional independence.}
 The mean pairwise product of FL residuals is 4.28 ($t = 81.0$,
-$p < 0.001$),\footnote{The enriched first stage includes firm age
-and CNAE sector dummies alongside firm size, absorbing additional
-cost-shifter variation.} with the bootstrap FL--non-FL difference
+$p < 0.001$), with the bootstrap FL--non-FL difference
 excluding zero, indicating systematically different within-tender
-correlation consistent with coordinated bidding.
+correlation consistent with coordinated bidding. Enriching the
+first stage with firm age and CNAE sector dummies alongside firm
+size barely changes R-squared (0.770 to 0.803) or the KS and
+pairwise-product results, ruling out the concern that the
+exchangeability violation is driven by omitted firm-level cost
+shifters (Table~\ref{tab:bajari_ye_corrected}).
 
 \paragraph{Tender FE.}
 Under tender FE (Table~\ref{tab:bajari_ye_tender_fe} in
@@ -212,8 +217,7 @@ $\hat{\sigma}_c = 1.19$ (SE~$= 0.012$). The KS distance is 0.24
 $\hat{\sigma}_c / \hat{\sigma}_g = 1.19/1.64 = 0.72$ confirms that
 cover bids are \emph{less} dispersed than genuine bids---the signature
 of coordinated calibration near a focal point.
-(Total tender dispersion increases mechanically with FL count because cover bids widen the pooled distribution; see Appendix~\ref{app:extensions} for reconciliation with the pooled-dispersion result.) % CO-AUTHOR EDIT [TASK-1]: forward ref to pooled-dispersion reconciliation
-
+(Total tender dispersion increases mechanically with FL count because cover bids widen the pooled distribution; see Appendix~\ref{app:extensions} for reconciliation with the pooled-dispersion result.)
 \paragraph{Structural markup.}
 Controlling for genuine bidder count $n$ (saturated dummies), item,
 year, and PBU FE, the $n$-conditional markup is 6.4\%
