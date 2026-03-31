@@ -1,52 +1,66 @@
 \section{Related Literature}
 \label{sec:literature}
 
-Our paper connects to four strands of the literature on bid rigging and
+Our paper addresses four gaps in the literature on bid rigging and
 procurement design.
 
-\paragraph{Statistical tests for bid coordination.}
-\citet{bajari2003deciding} develop two tests---exchangeability of bid
-functions and conditional independence of bid residuals---to distinguish
-competitive from collusive bidding. \citet{porter1993detection} and
-\citet{porter1999ohio} detect bid rotation and market allocation in Ohio
-school milk markets using structural estimation.
-Notably, \citet{porter1993detection} show that bid-rigging cartels strategically self-select into competitive markets---a pattern we confirm in our network-split analysis (Section~\ref{sec:results_network}) and event study (Section~\ref{sec:additional_id}).\citet{conley2016detecting} detect bidder groups from co-bidding
-patterns without bid values. Our FL classification provides a natural
-partition into ``suspected cover bidders'' and ``genuine competitors''
-for the Bajari--Ye framework, replacing the \emph{ad hoc} groupings
-typically required.
+\paragraph{Gap 1: Coordination tests require \emph{ad hoc} bidder
+groupings.}
+\citet{bajari2003deciding} develop powerful tests---exchangeability of
+bid functions and conditional independence of bid residuals---but
+require the researcher to partition bidders into ``suspected
+colluders'' and ``competitive fringe'' before estimation.
+\citet{porter1993detection} and \citet{porter1999ohio} detect bid
+rotation in Ohio school milk markets; \citet{conley2016detecting}
+detect bidder groups from co-bidding patterns without bid values.
+In each case, the partition is constructed \emph{ex post} or by
+assumption. Our FL classification provides a data-driven,
+\emph{ex ante} partition into suspected cover bidders and genuine
+competitors, grounded in a participation anomaly that is difficult
+to rationalize as competitive behavior.
+Notably, \citet{porter1993detection} show that bid-rigging cartels
+strategically self-select into competitive markets---a pattern we
+confirm in our network-split analysis
+(Section~\ref{sec:results_network}) and event study
+(Section~\ref{sec:additional_id}).
 
-\paragraph{Bid-rigging screens.}
+\paragraph{Gap 2: Existing screens require bid-level data.}
 \citet{imhof2019detecting} and \citet{imhof2018screening} develop
 machine-learning screens using tender-level features (bid variance,
 coefficient of variation, kurtosis) that achieve high accuracy against
 known cartels. \citet{abrantesmetz2006a} propose variance screens;
-\citet{hüschelrath2014cartel} review detection in procurement;
+\citet{hüschelrath2014cartel} review detection methods;
 \citet{chassang2022robust} design robust screens for non-competitive
-bidding. These approaches operate at the \emph{tender} level and require bid
-values. Our FL screen operates at the \emph{firm} level using only
-participation data, enabling a two-stage workflow: FL screening first,
-then bid-level analysis of flagged tenders.%
-\footnote{Our Imhof comparison uses a CV median split as a coarserapproximation of the full \citet{imhof2019detecting} implementation;
+bidding. These approaches all operate at the \emph{tender} level and
+require granular bid values---data that are unavailable or unreliable
+in many procurement systems. Our FL screen operates at the \emph{firm}
+level using only participation and outcome records, enabling a
+two-stage workflow: FL screening first, then bid-level analysis of
+flagged tenders.%
+\footnote{Our Imhof comparison uses a CV median split as a coarser
+approximation of the full \citet{imhof2019detecting} implementation;
 see Section~\ref{sec:results_detection} for caveats on this
 comparison.}
 
-\paragraph{Cover bidding.}
-\citet{porter1999ohio} document complementary bidding where cartel
-members submit deliberately high bids to create the appearance of
-competition. \citet{pesendorfer2000study} analyzes school milk auctions
-where incumbents coordinated bids. \citet{asker2010leniency} describes
-the internal organization of a philatelic stamp cartel where members
-rotated the role of cover bidder. \citet{marshall2012economics} provide a comprehensive treatment of
-cover bidding role allocation. We identify cover bidders systematically
-from participation data rather than \emph{ex post} from prosecuted
-cases.
+\paragraph{Gap 3: Cover bidding is documented \emph{ex post}, not
+detected \emph{ex ante}.}
+\citet{porter1999ohio} document complementary bidding;
+\citet{pesendorfer2000study} analyzes coordinated bids in school milk
+auctions; \citet{asker2010leniency} describes internal role allocation
+in a stamp cartel; \citet{marshall2012economics} provide a
+comprehensive treatment of cover-bidding organization. In all cases,
+cover bidders are identified from prosecuted cases---after the cartel
+has been discovered by other means. We identify cover bidders
+systematically from participation data, turning a \emph{post hoc}
+observation into a \emph{proactive} detection tool.
 
-\paragraph{Developing-country procurement.}
-The bid-rigging literature focuses predominantly on developed economies,
-yet enforcement is most challenging where competition authorities have
-limited resources and procurement data systems are nascent
-\citep{sanchezgraells2019screening}. Brazil's BEC platform---4.5 million
-tender-items, 40 million bids, 41,000 firms over 11 years, with both
-sealed-bid (convite) and electronic auction (preg\~ao)
-modalities---enables analyses infeasible in smaller datasets.
+\paragraph{Gap 4: Limited evidence from developing economies.}
+The bid-rigging literature focuses predominantly on developed
+economies, yet enforcement is most challenging where competition
+authorities have limited resources and procurement data systems are
+nascent \citep{sanchezgraells2019screening}. Brazil's BEC
+platform---4.5 million tender-items, 40 million bids, 41,000 firms
+over 11 years, with both sealed-bid (convite) and electronic auction
+(preg\~ao) modalities---enables analyses infeasible in smaller
+datasets and provides a test bed for screens designed to work with
+minimal data infrastructure.
