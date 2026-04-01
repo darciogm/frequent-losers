@@ -1,0 +1,106 @@
+
+\section{Robustness and Extensions}
+\label{sec:robustness}
+
+
+We subject the baseline to five groups of checks:
+(i)~FL-definition variants (IQR multiplier, win-rate cutoff, temporal
+window); (ii)~sample and specification variants (unrestricted sample,
+homogeneous subsamples, item$\times$year FE, matching);
+(iii)~alternative clustering; (iv)~sensitivity to unobservables
+(Cinelli--Hazlett); and (v)~staggered DiD.
+Table~\ref{tab:robustness_summary} collects the point estimates, with
+an extra column spelling out what each estimator assumes.
+
+
+\begin{table}[htbp]
+\centering
+\caption{Robustness summary: FL price coefficient across checks}
+\label{tab:robustness_summary}
+\small
+\begin{tabular}{lcccll}
+\hline\hline
+Check & Coeff.\ & SE & $N$ & Assumption & Note \\
+\hline
+\multicolumn{6}{l}{\textit{Baseline and matching}} \\
+OLS (item + year + PBU FE) & 0.064 & 0.020 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Baseline \\
+CEM & 0.077 & 0.024 & 969{,}751 & Sel.\ on obs. & Sec.~\ref{sec:results_ols} \\
+IPW & 0.055 & 0.021 & 830{,}194 & Sel.\ on obs. & Sec.~\ref{sec:results_ols} \\
+Cross-fit average & 0.036 & --- & --- & Sel.\ on obs.\ + FE; no mech.\ link & Out-of-sample \\
+\hline
+\multicolumn{6}{l}{\textit{FL definition variants}} \\
+IQR 1.0$\times$ & 0.079 & 0.023 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 3{,}442 FL firms \\
+IQR 1.5$\times$ & \multicolumn{5}{l}{\textit{(= OLS baseline above)}} \\
+IQR 2.0$\times$ & 0.060 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 2{,}093 FL firms \\
+IQR 3.0$\times$ & 0.050 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 1{,}456 FL firms \\
+\hline
+\multicolumn{6}{l}{\textit{Specification variants}} \\
+Item$\times$year FE & 0.074 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Tighter controls \\
+Two-way clustering & 0.064 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Item + PBU \\
+\hline
+\multicolumn{6}{l}{\textit{Alternative treatments and diagnostics}} \\
+Continuous (log max AL) & 0.022 & 0.005 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Per log-point \\
+Decomposition (odd-yr FL, full sample) & 0.043 & 0.019 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Intermediate \\
+Horse-race (FL + Imhof CV) & 0.084 & 0.023 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Suppression \\
+IV (leave-one-out) & 0.194 & 0.077 & 1{,}654{,}401 & Excl.\ restriction & Measurement error \\
+\hline\hline
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} ``Sel.\ on obs.\ + FE'' = selection on observables absorbed by item, year, and PBU fixed effects. Cross-fit further removes any mechanical link between the FL rule and the price outcome. The IV is a measurement-error diagnostic; exclusion-restriction concerns (Section~\ref{sec:results_ols}) keep it off the headline range.
+\end{tablenotes}
+\end{table}
+
+
+\paragraph{Threshold sensitivity.}
+The FL coefficient decreases monotonically with stricter thresholds:
+0.079 (IQR 1.0$\times$), 0.064 (baseline), 0.060 (2.0$\times$),
+0.050 (3.0$\times$). The most likely explanation is classification noise: stricter
+thresholds shrink the treated group, leaving fewer FL-present tenders
+and more tenders misclassified as untreated. One could also read this
+as evidence that the marginal FL firms (10--14 tenders) sit in markets
+with larger cartel markups, while tail firms face more detection
+pressure. The noise story is simpler and sufficient.
+
+\paragraph{Sensitivity to unobservables.}
+\citet{cinelli2020making} sensitivity analysis yields $RV_{q=1} =
+17.5\%$: an unobserved confounder would need to explain 17.5\% of
+residual variation in \emph{both} FL presence and log prices to nullify
+the coefficient---stringent given the item, year, and PBU fixed-effects
+structure. Full sensitivity plots are in
+Appendix~\ref{app:robustness}.
+
+
+\paragraph{Staggered difference-in-differences.}
+A \citet{callaway2021difference} staggered DiD yields a positive but
+insignificant ATT of 0.014 (SE~$= 0.039$, MDE~$= 0.076$); the design
+is underpowered for effects of the estimated magnitude. Full results,
+including \citet{rambachan2023more} sensitivity analysis and
+event-study plots, are in Appendix~\ref{app:did}.
+
+
+\paragraph{Illustrative welfare.}
+Appendix~\ref{app:extensions} reports back-of-the-envelope welfare
+calculations that mechanically apply the price coefficients to
+FL-present spending. These figures assume full causality, which the
+paper does not establish, and should be read as rough benchmarks
+rather than policy estimates.
+
+
+\paragraph{Oversight heterogeneity.}
+The FL price effect varies steeply with PBU size: 0.214 in the
+smallest quartile, 0.098 in Q2, 0.045 in Q3, and 0.017 in Q4
+(Table~\ref{tab:regime_oversight}, Appendix~\ref{app:robustness}).
+The 12.5$\times$ gradient between Q1 and Q4 is the single largest
+source of heterogeneity in the data---far larger than the
+preg\~ao--convite gap---and runs in the direction the structural
+model implies ($\partial m^*/\partial \theta_k < 0$): smaller PBUs
+with less oversight capacity see more FL activity and higher
+associated price gaps. An alternative reading is that smaller PBUs
+have thinner item--PBU cells, so item FE absorb less within-market
+variation and the coefficient picks up residual heterogeneity. The
+gradient is monotonic across all four quartiles, which is hard to
+generate from pure FE noise, but we cannot fully rule it out.
+Threshold stability across IQR multipliers and a comparison between
+the IQR rule and model-based classifiers are in
+Appendix~\ref{app:robustness}.
