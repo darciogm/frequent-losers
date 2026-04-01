@@ -1,0 +1,50 @@
+\section{Related Literature}
+\label{sec:literature}
+
+This paper sits at the intersection of four literatures.
+
+\paragraph{Bid-coordination tests and bidder classification.}
+\citet{bajari2003deciding} develop powerful tests for
+collusion---exchangeability of bid functions and conditional
+independence of bid residuals---but the researcher must first partition
+bidders into ``suspected colluders'' and a ``competitive fringe.''
+Subsequent work detects bid rotation
+\citep{porter1993detection, porter1999ohio}, collusion in timber
+auctions \citep{baldwin1997bidder}, bidder groups from co-bidding
+patterns \citep{conley2016detecting}, and collusion dynamics in
+long-lived cartels \citep{clark2021collusion,
+schurter2020identification}. \citet{conley2016detecting} are the
+closest precedent in data requirements, though they detect group
+structure rather than flag individual firms. In each case the
+partition is constructed \emph{ex post} or by assumption; the FL
+classification provides a data-driven, \emph{ex ante} partition
+grounded in a participation anomaly.
+
+\paragraph{Proactive screens for bid rigging.}
+\citet{imhof2019detecting} and \citet{imhof2018screening} train ML
+classifiers on tender-level features and achieve high accuracy against
+known cartels; see also \citet{abrantesmetz2006a},
+\citet{harrington2008detecting}, \citet{chassang2022robust}, and
+\citet{wallimann2023machine}. All operate at the \emph{tender} level
+and require granular bid values. The FL screen operates at the
+\emph{firm} level using only participation and outcome records,
+enabling a two-stage workflow: FL flags triage firms, bid-level
+analysis follows on flagged tenders.%
+\footnote{Our Imhof comparison uses a CV median split, a coarser proxy
+for the full implementation; see Section~\ref{sec:results_detection}.}
+
+\paragraph{Cover bidding.}
+Cover bidders have been documented in prosecuted cartels
+\citep{porter1999ohio, pesendorfer2000study, asker2010leniency,
+marshall2012economics} and in theoretical comparisons of auction
+formats \citep{athey2011comparing}. In every case, identification is
+\emph{ex post}. We identify suspected cover bidders systematically
+from participation data, turning a retrospective observation into a
+prospective screening tool.
+
+\paragraph{Procurement in developing economies.}
+The bid-rigging literature focuses on developed economies, yet
+enforcement is hardest where resources are scarce
+\citep{sanchezgraells2019screening}. BEC's scale---4.5 million
+tender-items, 40 million bids, 11 years, two auction formats---provides a test bed for screens designed to work with minimal data
+infrastructure.

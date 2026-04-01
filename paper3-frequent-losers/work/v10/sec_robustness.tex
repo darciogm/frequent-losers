@@ -1,0 +1,92 @@
+
+\section{Robustness and Extensions}
+\label{sec:robustness}
+
+
+Six groups of checks confirm the baseline result. (i)~FL-definition
+variants: IQR multiplier, win-rate cutoff, temporal window.
+(ii)~Sample and specification variants: unrestricted sample,
+homogeneous subsamples, item$\times$year FE, matching.
+(iii)~Alternative clustering. (iv)~Sensitivity to unobservables
+(Cinelli--Hazlett). (v)~Staggered DiD.
+Table~\ref{tab:robustness_summary} summarises all point estimates;
+an additional column reports the identification assumption maintained
+by each estimator.
+
+
+\begin{table}[htbp]
+\centering
+\caption{Robustness summary: FL price coefficient across checks}
+\label{tab:robustness_summary}
+\small
+\begin{tabular}{lcccll}
+\hline\hline
+Check & Coeff.\ & SE & $N$ & Assumption & Note \\
+\hline
+\multicolumn{6}{l}{\textit{Baseline and matching}} \\
+OLS (item + year + PBU FE) & 0.064 & 0.020 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Baseline \\
+CEM & 0.077 & 0.024 & 969{,}751 & Sel.\ on obs. & Sec.~\ref{sec:results_ols} \\
+IPW & 0.055 & 0.021 & 830{,}194 & Sel.\ on obs. & Sec.~\ref{sec:results_ols} \\
+Cross-fit average & 0.036 & --- & --- & Sel.\ on obs.\ + FE & No mechanical link \\
+\hline
+\multicolumn{6}{l}{\textit{FL definition variants}} \\
+IQR 1.0$\times$ & 0.079 & 0.023 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 3{,}442 FL firms \\
+IQR 1.5$\times$ (baseline) & 0.064 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 2{,}735 FL firms \\
+IQR 2.0$\times$ & 0.060 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 2{,}093 FL firms \\
+IQR 3.0$\times$ & 0.050 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 1{,}456 FL firms \\
+\hline
+\multicolumn{6}{l}{\textit{Specification variants}} \\
+Item$\times$year FE & 0.074 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Tighter controls \\
+Two-way clustering & 0.064 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Item + PBU \\
+\hline
+\multicolumn{6}{l}{\textit{Diagnostics (not primary estimates)}} \\
+IV (leave-one-out) & 0.194 & 0.077 & 1{,}654{,}401 & Excl.\ restriction & Measurement error \\
+\hline\hline
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} ``Sel.\ on obs.\ + FE'' indicates that identification relies on selection on observables absorbed by item, year, and PBU fixed effects. Cross-fit further removes any mechanical link between the FL classification rule and the price outcome. The IV row is a measurement-error diagnostic; exclusion-restriction concerns preclude treating it as a primary estimate (Section~\ref{sec:results_ols}).
+\end{tablenotes}
+\end{table}
+
+
+\paragraph{Threshold sensitivity.}
+The FL coefficient decreases monotonically with stricter thresholds:
+0.079 (IQR 1.0$\times$), 0.064 (baseline), 0.060 (2.0$\times$),
+0.050 (3.0$\times$). This pattern likely reflects attenuation by
+classification noise: stricter thresholds produce fewer FL firms and
+fewer treated tenders, reducing statistical precision and increasing
+the share of tenders misclassified as untreated. An alternative
+interpretation---that marginal FL firms (near the threshold) operate
+in markets with larger price effects while extreme-tail firms face
+detection pressure that constrains cartel markups---cannot be excluded
+but is less parsimonious.
+
+\paragraph{Sensitivity to unobservables.}
+\citet{cinelli2020making} sensitivity analysis yields $RV_{q=1} =
+17.5\%$: an unobserved confounder would need to explain 17.5\% of
+residual variation in \emph{both} FL presence and log prices to nullify
+the coefficient---stringent given the item, year, and PBU fixed-effects
+structure. Full sensitivity plots are in
+Appendix~\ref{app:robustness}.
+
+
+\paragraph{Staggered difference-in-differences.}
+A \citet{callaway2021difference} staggered DiD yields a positive but
+insignificant ATT of 0.014 (SE~$= 0.039$, MDE~$= 0.076$); the design
+is underpowered for effects of the estimated magnitude. Full results,
+including \citet{rambachan2023more} sensitivity analysis and
+event-study plots, are in Appendix~\ref{app:did}.
+
+
+\paragraph{Illustrative welfare estimates.}
+Applying the price coefficients to FL-present procurement spending
+as an order-of-magnitude exercise yields R\$734M (OLS, 2.4\% of BEC
+spending) and R\$400M (cross-fit, 1.3\%) over 2009--2019. These
+figures are upper bounds conditional on the causal interpretation of
+the FL--price association; because our estimates capture a conditional
+association, the true welfare impact may be smaller. Full derivation
+and policy counterfactuals in Appendix~\ref{app:extensions}.
+
+
+Oversight heterogeneity (Table~\ref{tab:regime_oversight}, Appendix~\ref{app:robustness}) shows FL price effects decreasing monotonically from small to large PBUs (Q1: 0.214 to Q4: 0.017), suggestive but underpowered. The threshold stability figure (Figure~\ref{fig:threshold_stability}) and IQR-vs-model-based classifier comparison are in Appendix~\ref{app:robustness}.

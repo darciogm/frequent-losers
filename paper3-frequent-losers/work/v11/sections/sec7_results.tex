@@ -1,0 +1,321 @@
+% ============================================================================
+% Results — ordered to match H1-first narrative:
+%   7.1 Reduced-form (H1 core) → 7.2 Detection (H1 validation) →
+%   7.3 Mechanism tests (H2 evidence) → 7.4 Structural estimation (H2 model) →
+%   7.5 Specification tests
+% ============================================================================
+
+\section{Results}
+\label{sec:results}
+
+We begin with the reduced-form price evidence (H1), then turn to
+mechanism diagnostics (H2). One interpretive point at the outset:
+$\hat{\beta}$ measures the within-item, within-year, within-PBU price
+gap between tenders with and without FL participation. If FL firms
+are indeed cover bidders, they do not set the winning price---the
+cartel does (Equation~\ref{eq:cover_above})---so the coefficient
+captures the environment of cartel operations rather than a marginal
+firm effect. But the gap could also reflect selection: markets that
+attract FL firms may have higher prices for reasons unrelated to
+collusion. We bound this through sensitivity analysis and mechanism
+tests without claiming to resolve it. The possibility that FL firms
+are merely persistent but unsuccessful competitors is taken up in
+Section~\ref{sec:rationality} ($E[\pi] < 0$ for any positive bidding
+cost).
+
+% ── 7.0 Classification Diagnostics ──────────────────────────────
+
+\subsection{Classification Diagnostics}
+\label{sec:class_diagnostics}
+
+Before turning to the price regressions, we assess whether the binary
+FL classification captures something real or is an artifact of the
+threshold. The zero-win condition is strict: relaxing it to include
+firms with win rates below 1\% or 2\% attenuates the price coefficient
+substantially (Table~\ref{tab:fl_lowwinrate},
+Appendix~\ref{app:online_robustness}), so the bright line at zero is
+doing real work. A continuous measure---the log of the most active
+always-loser's participation count---yields a coefficient of 0.022
+(SE = 0.005, $p < 0.01$) per log-point.%
+\footnote{The continuous measure correlates moderately with the number
+of always-losers in the tender ($r = 0.33$), so part of the
+coefficient may capture always-loser count rather than individual-firm
+intensity. Using the mean (not max) participation count reduces the
+correlation to 0.15 and yields qualitatively similar results.}
+At the FL threshold ($\log 14 \approx 2.64$), the continuous prediction
+is $2.64 \times 0.022 \approx 5.8\%$---close to the binary OLS of
+6.4\%, indicating that the binary coefficient reflects the underlying
+continuous relationship evaluated at the threshold rather than an
+artifact of the cutoff. A permutation placebo that randomly reassigns
+the FL indicator across tenders (preserving the 4.8\% treatment rate)
+produces coefficients centered at zero (mean 0.001, SD 0.003 over 20
+replications), with no permutation reaching 0.064. The FL--price
+association reflects the specific allocation of treatment across
+tenders, not chance.
+
+% ── 7.1 Reduced-Form Evidence (H1 core) ─────────────────────────
+
+\subsection{OLS and Matching Results}
+\label{sec:results_ols}
+
+Table~\ref{tab:prices} reports the baseline OLS estimates of
+Equation~\eqref{eq:ols_main} for log negotiated prices
+(Prediction~\ref{pred:price_v6}). Across all four
+specifications, FL presence is associated with significantly higher
+prices: 6.8\% in the general specification (column~1), 6.4\% with PBU
+fixed effects (column~2), 9.3\% for preg\~ao (column~3), and 3.8\% for
+convite (column~4). Adding PBU fixed effects barely changes the
+coefficient, indicating that FL presence does not proxy for high-cost
+purchasing units.
+
+\input{./output/tables/tab_prices}
+
+FL-present tenders also have 0.19 log points more non-FL firms
+(Prediction~\ref{pred:selection_v6}; PBU FE specification). This
+contradicts crowding-out and is consistent with \emph{strategic
+selection}---though it could also reflect FL firms gravitating toward
+inherently competitive tenders for non-collusive reasons
+(Table~\ref{tab:nfirms_excl} in Appendix~\ref{app:competition}).
+
+\paragraph{Cross-fit estimate.}
+FL status is defined using the same 2009--2019 data on which the price
+regression is estimated, potentially creating a mechanical link between
+classification and outcomes. To address this, we define FL using only odd years and estimate on
+even years, and vice versa (FL incidence is similar across odd and
+even years---5.1\% vs.\ 4.5\%---so the temporal split is
+approximately exchangeable). The cross-fit
+average is $\hat{\beta}_{\text{CF}} = 0.036$ (3.6\%), attenuated by
+44\% relative to full-sample OLS. The attenuation reflects a
+combination of fewer FL firms per subsample
+(1,885--2,153 vs.\ 2,735), classification noise near the threshold,
+and---most importantly---the elimination of any within-sample
+mechanical correlation between the FL rule and prices.
+
+\paragraph{Cross-fit decomposition.}
+Because this last factor removes a potential source of upward bias, the
+cross-fit deserves weight. But how much? To decompose the attenuation,
+we apply the odd-year FL list to the \emph{full} sample (all years):
+the coefficient is 0.043 (SE = 0.019), roughly midway between the
+full-sample OLS (0.064) and the cross-fit (0.036). About two-thirds of
+the drop from 0.064 to 0.036 reflects classification noise (the
+odd-year list has fewer firms and is noisier near the threshold); the
+remaining third comes from restricting estimation to the half-sample.
+The decomposition coefficient (0.043, SE = 0.019) is not
+statistically distinguishable from the baseline OLS
+($p \approx 0.45$ for the difference),\footnote{The difference
+$0.064 - 0.043 = 0.021$ has approximate SE
+$\sqrt{0.019^2 + 0.020^2} \approx 0.028$, yielding $t \approx 0.75$.}
+so the attenuation is largely noise. We do not elevate the
+decomposition to a preferred estimate: it clarifies the source of the
+OLS--cross-fit gap but does not resolve the within-market selection
+that affects both. The robust range remains 3.6--6.4\%, with the
+cross-fit removing the mechanical link and the OLS providing the
+full-sample baseline; matching estimators (below) offer a further
+non-parametric check.
+
+\paragraph{Matching estimators.}
+Coarsened exact matching (CEM: 0.077, $N = 969{,}751$) and inverse
+probability weighting (IPW: 0.055, $N = 830{,}194$) bracket the OLS
+and cross-fit estimates: the price gap holds up under non-parametric
+reweighting.
+
+\paragraph{Measurement-error diagnostic (IV).}
+The leave-one-out IV estimate (0.194, $p = 0.01$, $F = 396$) exceeds
+OLS by a factor of three, as one would expect under measurement-error
+attenuation in the binary FL indicator
+(Section~\ref{sec:reduced_form}). However, if cartels operate across
+PBUs within the same product market, the instrument may capture cartel
+intensity rather than misclassification alone, biasing the IV upward.
+We therefore treat the IV as a diagnostic indicating that the OLS is
+conservative, not as a primary estimator
+(Table~\ref{tab:iv_balance}, Table~\ref{tab:iv_main} in
+Appendix~\ref{app:robustness}).
+
+\paragraph{Summary.}
+Across four approaches---cross-fit (3.6\%), IPW (5.5\%), OLS (6.4\%),
+CEM (7.7\%)---the FL--price association falls in a 3.6--7.7\% range.
+All four rest on selection on observables plus fixed effects; they
+differ in weighting and functional form, and the cross-fit additionally
+eliminates any mechanical link between the FL rule and the price
+outcome. That the estimates cluster rather than scatter is reassuring:
+the association does not hinge on a particular specification. The IV
+(19.4\%) points to measurement-error attenuation in the binary FL
+indicator, but we keep it off the headline range because the
+exclusion restriction is suspect. \citet{cinelli2020making} sensitivity
+analysis ($RV = 17.5\%$) shows that an omitted confounder would need
+to explain a large share of residual variation in both FL presence and
+prices to drive the coefficient to zero---a high bar given the
+fixed-effects structure.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_03_coef_summary.pdf}
+\caption{Coefficient on FL presence across outcomes, specifications, and
+estimation methods. OLS estimates in gray; IV estimates in red.}
+\label{fig:coef_summary}
+\end{figure}
+
+% ── 7.2 Detection Performance (H1 validation) ───────────────────
+
+\subsection{Detection Performance}
+\label{sec:results_detection}
+
+Figure~\ref{fig:roc} (Appendix~\ref{app:robustness}) presents the
+FL ROC curve, evaluated against CADE cartel co-participation as ground
+truth. The FL screen achieves an AUC of 0.94
+(Table~\ref{tab:roc_detection} in Appendix~\ref{app:robustness}).
+The data-driven optimal threshold (Youden's $J = 0.84$) corresponds
+to 1.45$\times$IQR---nearly identical to the 1.5$\times$ baseline
+rule---achieving TPR~$= 1.00$ with FPR~$= 0.16$. Despite the small number of CADE positives (98), the bootstrapped 95\%
+percentile CI is $[0.91, 0.94]$ (1,000 replications); the point
+estimate of 0.94 falls at the CI upper bound, reflecting slight upward
+skew in the bootstrap distribution. The AUC may
+overstate detection performance because the ROC varies the
+participation-count threshold, and higher counts mechanically
+increase co-participation opportunities with any firm, including
+CADE cartelists. The permutation test
+(Section~\ref{sec:cade}), which controls for this by stratifying on
+participation quartile, provides an independent check on the
+FL--cartel association (3.5$\times$, $p < 0.001$).
+
+\paragraph{Complementarity with Imhof-style screens.}
+Against the same CADE ground truth, the FL screen achieves
+AUC~$= 0.94$ versus 0.79 for a \citet{imhof2019detecting}-style
+bid-level proxy (CV median split; DeLong $p < 0.001$;
+Table~\ref{tab:imhof_comparison},
+Figure~\ref{fig:roc_comparison} in Appendix~\ref{app:robustness}).
+The comparison is indicative: our Imhof proxy is coarser than the
+full implementation (which combines CV, kurtosis, spread, and a
+trained classifier), the two screens operate at different levels
+(firm vs.\ tender), and the ground truth mechanically favors
+participation-based screens. What FL adds is reach: it works where
+bid-level records are unavailable and produces firm-level flags that
+can triage investigations before detailed bid analysis begins.
+Precision is low (3.6\%) at a 0.58\% base rate---FL is a
+high-recall triage tool, not a standalone classifier.
+
+\paragraph{Horse-race regression.}
+To test whether FL adds incremental information beyond bid-level
+screens, we include both FL presence and an Imhof-style CV flag
+(within-item-group median split) as regressors in
+Equation~\eqref{eq:ols_main}. The FL coefficient rises from 0.064 to 0.084
+($p < 0.01$) when the Imhof flag is added---a suppression effect,
+since Imhof-flagged tenders have lower FL incidence on average,
+creating a negative omitted-variable bias in the FL-only regression.
+The Imhof flag itself enters at 0.021 ($p < 0.01$), and the
+correlation between the two indicators is only 0.060. The suppression
+pattern is predicted by Regime~2: coordinated cover bidding produces
+low within-tender dispersion (evading CV-based screens) while
+maintaining FL participation (detected by the participation-based
+screen). The two screens are complementary, not redundant
+(Table~\ref{tab:horse_race}, Appendix~\ref{app:robustness}).
+
+\input{sections/sec_ground_truth}
+
+% ── 7.3 Mechanism and Network Evidence (H2) ─────────────────────
+
+\medskip
+\noindent\textit{The evidence above establishes that FL presence marks
+suspicious procurement environments (H1). The next three subsections
+assess whether cover bidding is the mechanism (H2).}
+\medskip
+
+\subsection{Network-Split Heterogeneity}
+\label{sec:results_network}
+
+Table~\ref{tab:network_split} splits FL firms into
+concentrated-market and competitive-market subgroups based on
+co-bidding network metrics (Section~\ref{sec:empirical_network}).\footnote{Markets
+above the winner-HHI sample median are classified as concentrated;
+firms sharing at least two tenders are classified as repeat
+co-participants.}
+Competitive-market FL firms---operating in markets with diversified
+winner patterns (low HHI)---drive the entire price effect: 0.126
+($p < 0.01$, PBU FE). Concentrated-market FL firms show no significant
+effect ($-0.018$, $p > 0.3$).
+
+The pattern is consistent with Proposition~\ref{prop:market_selection}---cover bidding is most profitable in
+competitive markets---but it is not the only reading. Cartels in
+concentrated markets may already sustain high prices through market
+power, making cover bidders redundant insurance rather than active
+price inflators. Or the FL label may be noisier in concentrated
+markets, where some flagged firms are genuinely unsuccessful entrants.
+Or thin cells in concentrated item markets may simply absorb the
+effect into the fixed effects. With cross-sectional data we cannot
+tell these stories apart, and we regard the concentrated-market null as
+an open puzzle. What is clear is that the FL marker bites hardest in
+competitive markets---which, from a detection standpoint, is where it
+is needed most.
+
+\input{./output/tables/tab_network_split}
+
+\subsection{Bajari--Ye Tests}
+\label{sec:results_bajari}
+
+The price effect concentrates in competitive markets; the next
+question is whether FL bids look like they come from a different
+data-generating process. The \citet{bajari2003deciding} framework
+provides two tests
+(Prediction~\ref{pred:exchange_v6};
+Table~\ref{tab:bajari_ye_corrected} in Appendix~\ref{app:robustness}).
+
+\paragraph{Exchangeability.}
+The KS test rejects the null that FL and non-FL bid residuals share
+the same distribution ($D = 0.15$, $p < 0.001$): FL bids are drawn
+from a distinct process.
+
+\paragraph{Conditional independence.}
+The mean pairwise product of FL residuals is 4.28 ($t = 81.0$,
+$p < 0.001$), with the bootstrap FL--non-FL difference
+excluding zero, indicating systematically different within-tender
+correlation that fits coordinated bidding. Enriching the
+first stage with firm age and CNAE sector dummies alongside firm
+size leaves R-squared virtually unchanged (0.770) and does not
+alter the KS or pairwise-product results, ruling out the concern
+that the exchangeability violation is driven by omitted firm-level
+cost shifters (Table~\ref{tab:bajari_ye_corrected}).
+
+\paragraph{Tender FE.}
+Under tender FE (Table~\ref{tab:bajari_ye_tender_fe} in
+Appendix~\ref{app:robustness}), both products drop substantially
+(FL: $5.16 \to 0.38$; non-FL: $2.21 \to 0.86$), with the FL product
+falling below non-FL---a reversal predicted by Regime~2. Cover bids
+cluster near $b^* + \epsilon$ with low variance; removing the tender
+mean eliminates the shared focal-point component. In short, the tender-FE specification absorbs the very
+variation that cover bidding generates, so the reversal is
+mechanically expected but limits the test's power to discriminate
+between cover bidding and common cost shocks.
+
+\input{sections/sec_identification}
+
+% ── 7.4 Structural Estimation (H2 model) ────────────────────────
+
+\subsection{Structural Estimation Results}
+\label{sec:results_structural}
+
+BIC selects Regime~2 (coordinated cover bidding) over Regime~1
+($\Delta$BIC~$= -91{,}473$;
+Table~\ref{tab:structural_params} in
+Appendix~\ref{app:structural_id}). Under Regime~2,
+$\hat{\sigma}_c / \hat{\sigma}_g = 1.19/1.64 = 0.72$: cover bids are
+\emph{less} dispersed than genuine bids---the signature of coordinated
+calibration near a focal point above $b^*$. The ratio is below one but
+not near zero, indicating imperfect coordination---cover bidders receive
+general instructions rather than precise bid levels. The $n$-conditional markup (6.4\%) is virtually identical to baseline
+OLS; this is a calibration, not an independently identified parameter.
+The structural model pins down the cover-bid mechanism---regime
+identification and distributional parameters---but does not
+independently identify the price effect. The practical payoff of
+knowing the regime is concrete: under Regime~2, cover bids cluster
+tightly above the winning bid, so within-tender dispersion screens
+(e.g., \citealt{imhof2019detecting}) will underperform precisely in
+the markets where cover bidding is most coordinated. This reinforces
+the case for a participation-based screen like FL that does not depend
+on bid dispersion. Its empirical bite comes from
+out-of-sample predictions on moments not used in estimation. The
+sharpest is the corner-vs-interior test: mean FL count is 10.7 when
+$n_{\text{genuine}} = 0$ (the minimum-bidder constraint forces $m
+\geq 3$) and drops to $\approx 2$ when $n \geq 2$---exactly as
+Proposition~\ref{prop:optimal_m} predicts. The within-tender
+dispersion test and $m$--$\theta$ comparative static are reported in
+Appendix~\ref{app:structural_id}.

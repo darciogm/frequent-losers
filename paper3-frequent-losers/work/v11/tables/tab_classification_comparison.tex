@@ -1,0 +1,31 @@
+\begin{table}[htbp]
+\centering
+\caption{FL Classification: IQR Rule vs.\ Model-Based Alternatives}
+\label{tab:classification_comparison}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+Classifier & AUC & Data required & DeLong $p$ \\
+\midrule
+IQR rule (this paper) & 0.937 & Participation count & --- \\
+Structural score & 0.562 & Bid values & 0.0000 \\
+Random Forest (7 features) & 0.904 & Bid values + firm chars & 0.0416 \\
+Combined (IQR + structural) & 0.894 & Both & \\
+Random classifier & 0.500 & None & --- \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} AUC computed on always-loser firms with valid
+bid-level features. Ground truth: co-participation with CADE-convicted
+cartelists. IQR rule: participation count (higher $=$ more suspicious).
+Structural score: log-likelihood ratio of mean bid spread under Regime~2
+cover-bid distribution ($\hat{\epsilon} = 0.83$, $\hat{\sigma}_c = 1.19$)
+vs.\ genuine-loser spread distribution.
+Random Forest: 500 trees trained on 7 firm-level features (participations,
+mean/SD/median spread, \% above winner, bid CV).
+DeLong $p$-value: null that AUC difference from IQR rule equals zero.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
