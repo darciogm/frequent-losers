@@ -195,25 +195,12 @@ below at $b^*$:
   \text{TruncNormal}(\mu_c,\, \sigma_c^2,\, b^*,\, \infty)
   \label{eq:regime2}
 \end{equation}
-with $\mu_c = b^* + \epsilon$, $\epsilon > 0$. The truncation
-ensures $b_\ell > b^*$ with probability one (satisfying
-constraint~\eqref{eq:cover_above}). If the cartel seeks to mimic
-the dispersion of genuine bids---to evade a dispersion screen that
-flags anomalous within-tender bid variance---the effective standard
-deviation of the truncated distribution is strictly less than
-$\sigma_{\text{genuine}}$, because left-truncation at $b^*$
-compresses the observed distribution. Formally, for a
-$\text{TruncNormal}(\mu_c, \sigma_c^2, b^*, \infty)$ with
-$\alpha = (b^* - \mu_c)/\sigma_c < 0$:
-\begin{equation}
-  \text{Var}(b_\ell \mid b_\ell > b^*) = \sigma_c^2
-  \left[1 - \frac{\alpha \phi(\alpha)}{1 - \Phi(\alpha)}
-  - \left(\frac{\phi(\alpha)}{1 - \Phi(\alpha)}\right)^{\!2}
-  \right] < \sigma_c^2
-  \label{eq:regime2_var}
-\end{equation}
-so the observed cover-bid dispersion is below $\sigma_c$ even before
-the cartel optimizes $\sigma_c$.
+with $\mu_c = b^* + \epsilon$, $\epsilon > 0$. Truncation at $b^*$
+ensures $b_\ell > b^*$ with probability one. Because left-truncation
+compresses the distribution, the observed cover-bid dispersion is
+strictly less than $\sigma_{\text{genuine}}$ even before the cartel
+optimizes $\sigma_c$ (formal variance expression in
+Appendix~\ref{app:proofs}).
 \end{proposition}
 
 \noindent The parametric choice of truncated normal is motivated by
@@ -247,22 +234,12 @@ competition---then $m^*$ is decreasing in HHI. Cover bidding
 concentrates in competitive markets.
 \end{proposition}
 
-\noindent Condition~\eqref{eq:cross_deriv} has a natural economic
-foundation. Suppose the cartel's expected surplus takes the form
-$\pi(b^*, m, n) = (b^* - c_{j^*}) \cdot p(m, n)$, where $p(m, n)$
-is the probability that the designated winner prevails against $n$
-genuine competitors given $m$ cover bidders who create noise in the
-procurement process. If $p$ is increasing and concave in $m$ (more
-cover bidders help but with diminishing returns) and decreasing in
-$n$ (more genuine competition reduces winning probability), then
-$\partial^2 \pi / \partial m \, \partial n < 0$: the marginal value
-of cover bidders falls as genuine competition intensifies the margin
-at which the cartel already operates. Since HHI is decreasing in $n$,
-$\partial^2 \pi / \partial m \, \partial \text{HHI} < 0$ follows. In
-concentrated markets (high HHI, low $n$), the cartel wins easily
-without cover bidders; in competitive markets (low HHI, high $n$),
-cover bidders are essential to sustain the designated winner's
-advantage.
+\noindent The economic content is straightforward: in concentrated
+markets the cartel wins easily without cover bidders; in competitive
+markets, cover bidders are essential. Formally, if the marginal return
+to cover bidding is increasing in the number of genuine competitors
+and decreasing in HHI, condition~\eqref{eq:cross_deriv} follows
+(proof in Appendix~\ref{app:proofs}).
 
 \begin{proof}
 See Appendix~\ref{app:proofs}.
@@ -332,54 +309,24 @@ Appendix~\ref{app:structural_id}.
 \subsection{Testable Predictions}
 \label{sec:predictions}
 
-The model generates five testable predictions, each mapped to a specific
-empirical test in Section~\ref{sec:empirical}:
+The model generates five predictions, summarized in
+Table~\ref{tab:predictions} and tested in
+Sections~\ref{sec:results}--\ref{sec:mechanisms}.
 
-\begin{prediction}[Price effect]
-\label{pred:price_v6}
-FL-present tenders have higher winning prices than comparable tenders
-without FL, controlling for item type, year, and PBU.
-\emph{Test:} OLS regression (Section~\ref{sec:reduced_form}).
-\end{prediction}
-
-\begin{prediction}[Strategic selection]
-\label{pred:selection_v6}
-FL-present tenders have at least as many genuine (non-FL) competitors as
-FL-absent tenders. Cover bidders are deployed on top of genuine
-competition, not as substitutes.
-\emph{Test:} Non-FL firm count regression (Section~\ref{sec:reduced_form}).
-\end{prediction}
-
-\begin{prediction}[Regime identification]
-\label{pred:regime_v6}
-Under Regime~1, FL bid dispersion exceeds genuine bid dispersion
-($\sigma_{\text{cover}} > \sigma_{\text{genuine}}$). Under Regime~2,
-FL bid dispersion is lower ($\sigma_{\text{cover}} <
-\sigma_{\text{genuine}}$). BIC model selection determines the
-empirically dominant regime.
-\emph{Test:} Structural likelihood comparison and bid-dispersion
-regression (Section~\ref{sec:structural_estimation}).
-\end{prediction}
-
-\begin{prediction}[Market selection]
-\label{pred:market_v6}
-The FL--price effect is decreasing in market concentration (HHI).
-Cover bidding concentrates in competitive markets where the marginal
-return to manufactured competition is highest.
-\emph{Test:} Network-split regression and FL $\times$ HHI interaction
-(Section~\ref{sec:empirical_network}).
-\end{prediction}
-
-\begin{prediction}[Exchangeability and conditional-independence violation]
-\label{pred:exchange_v6}
-FL bid residuals are non-exchangeable with non-FL bid residuals
-conditional on observables, and FL residuals within the same tender
-exhibit significantly positive pairwise correlation. The structural
-model implies that FL bids are drawn from $G_{\text{cover}}$ rather
-than $F_{\text{genuine}}$, producing distinguishable residual
-distributions and within-tender dependence. Under tender FE, which
-absorb the shared focal-point component inflated by cover bidding,
-the relative magnitude of FL versus non-FL correlation is ambiguous.
-\emph{Tests:} Kolmogorov--Smirnov test and pairwise-product test on
-Bajari--Ye first-stage residuals (Section~\ref{sec:bajari_ye}).
-\end{prediction}
+\begin{table}[htbp]
+\centering
+\caption{Testable predictions from the cover-bidding framework}
+\label{tab:predictions}
+\small
+\begin{tabular}{llll}
+\toprule
+\# & Prediction & Test & Section \\
+\midrule
+P1\label{pred:price_v6} & FL $\Rightarrow$ higher prices & OLS with FE & \ref{sec:reduced_form} \\
+P2\label{pred:selection_v6} & FL adds to, not displaces, genuine bidders & Non-FL count & \ref{sec:reduced_form} \\
+P3\label{pred:regime_v6} & Regime~2: $\sigma_c < \sigma_g$ & BIC model selection & \ref{sec:structural_estimation} \\
+P4\label{pred:market_v6} & FL effect $\downarrow$ in HHI & Network split & \ref{sec:empirical_network} \\
+P5\label{pred:exchange_v6} & FL residuals non-exchangeable & Bajari--Ye KS + pairwise & \ref{sec:bajari_ye} \\
+\bottomrule
+\end{tabular}
+\end{table}
