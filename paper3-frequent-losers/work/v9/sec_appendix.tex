@@ -1,5 +1,5 @@
 % ============================================================================
-% Appendix
+% Appendix — Print (submitted with manuscript)
 % ============================================================================
 
 \section{Proofs of Propositions}\label{app:proofs}
@@ -48,18 +48,21 @@ the minimum is attained at $G_1 = U[b^*, b^* + \delta]$.
 \end{proof}
 
 \begin{proof}[\textbf{Proof of Proposition~\ref{prop:regime2} (Regime~2: Coordinated cover bidding)}]
-The cartel seeks $\sigma_c$ as close to $\sigma_{\text{genuine}}$ as
-possible (to mimic genuine bids) while ensuring $\Pr(b_\ell > b^*) = 1$.
-For a normal distribution with mean $\mu_c$ and standard deviation
-$\sigma_c$, the constraint $\Pr(b_\ell > b^*) = 1$ requires
-$\mu_c - b^* \gg \sigma_c$ (the entire distribution lies above $b^*$).
-In practice, this is satisfied by setting $\mu_c = b^* + \epsilon$
-with $\epsilon > 0$ and truncating at $b^*$. The truncation compresses
-the effective standard deviation of the observed bids below $\sigma_c$,
-so the dispersion-minimizing solution has $\sigma_c$ set to match
-$\sigma_{\text{genuine}}$ from below. The constraint $\mu_c > b^*$
-(cover bids must exceed the winning price) prevents exact matching,
-yielding $\sigma_c < \sigma_{\text{genuine}}$.
+Cover bids are modeled as $b_\ell \sim
+\text{TruncNormal}(\mu_c, \sigma_c^2, b^*, \infty)$ with
+$\mu_c = b^* + \epsilon$, $\epsilon > 0$. Truncation at $b^*$
+ensures $\Pr(b_\ell > b^*) = 1$ by construction. Let
+$\alpha \equiv (b^* - \mu_c)/\sigma_c = -\epsilon/\sigma_c < 0$.
+The variance of the truncated distribution is
+$\sigma_c^2[1 - \delta(\alpha)]$, where
+$\delta(\alpha) = \alpha\lambda(\alpha) + \lambda(\alpha)^2 > 0$
+and $\lambda(\alpha) = \phi(\alpha)/(1 - \Phi(\alpha))$ is the
+inverse Mills ratio. Since $\delta(\alpha) > 0$ for all finite
+$\alpha$, the observed variance is strictly less than $\sigma_c^2$.
+If the cartel sets $\sigma_c = \sigma_{\text{genuine}}$ to mimic
+genuine bid dispersion, the left-truncation compresses the effective
+standard deviation below $\sigma_{\text{genuine}}$, yielding
+$\text{sd}(b_\ell \mid b_\ell > b^*) < \sigma_{\text{genuine}}$.
 \end{proof}
 
 \begin{proof}[\textbf{Proof of Proposition~\ref{prop:market_selection} (Market-selection prediction)}]
@@ -90,35 +93,98 @@ sustain prices through market power alone, reducing the marginal return
 to manufactured competition.
 \end{proof}
 
-\paragraph{Remark on Assumption A4.} The more general specification $\Phi(m, b^*) =
-\phi_0 m + \phi_1 (b^* - c_{j^*})$ nests markup-dependent penalties.
-Under this specification, the FOC for $b^*$ yields
-$1 - \theta_k \phi_1 = 0$, implying $b^* = c_{j^*} + 1/\phi_1$
-when $\theta_k \phi_1 < 1$ (interior solution) or $b^* = r$ when
-the reference-price constraint binds. This does not affect the
-optimal $m^*$ conditional on $b^*$, so the comparative statics in
-Proposition~\ref{prop:optimal_m} hold under the more general
-penalty.
-
 % ============================================================================
 
-\section{Additional Tables and Competition Outcomes}
+\section{Core Supporting Tables and Figures}
 \label{app:competition}
 
 Table~\ref{tab:conditional_descstats} reports conditional descriptive
 statistics comparing FL-present and FL-absent tenders before and after
 absorbing item, year, and PBU fixed effects.
-Table~\ref{tab:nfirms_excl} reports the full regression results for
-the number of genuine (non-FL) competitors.
-Table~\ref{tab:modality_year} reports procurement volume by modality
-over time. Tables~\ref{tab:nfirms} and~\ref{tab:nbids} report the
-full regression results for $\log$ number of firms and $\log$ number
-of bids. Table~\ref{tab:cade_permutation} reports the CADE
-cross-match contingency table with permutation test.
-Table~\ref{tab:excl_cade} reports FL regressions excluding CADE
-markets.
 
 \input{tables/tab_conditional_descstats}
+
+\input{./output/tables/tab_cade_permutation}
+
+\input{./output/tables/tab_excl_cade}
+
+% ============================================================================
+\section{Key Robustness Results}
+\label{app:robustness}
+
+\subsection{IV Results}
+
+\input{./output/tables/tab_iv_main}
+
+\subsection{Bajari--Ye Corrected Results}
+
+\input{tables/tab_bajari_ye_corrected}
+
+\subsection{Threshold Sensitivity}
+
+\begin{table}[htbp]
+\centering
+\caption{Price Coefficient Across IQR Multiplier Thresholds}
+\label{tab:threshold}
+\input{./output/tables/tab_threshold_robustness}
+\end{table}
+
+\subsection{Regime Test}
+
+\input{./output/tables/tab_regime_test}
+
+\paragraph{Reconciling pooled and individual bid dispersion.}
+Table~\ref{tab:regime_test} shows that FL presence raises total within-tender bid dispersion (coefficient 0.47--0.55 on log bid SD). This is \emph{not} inconsistent with the Regime~2 finding that individual FL bids have lower dispersion than genuine bids ($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$, Table~\ref{tab:structural_params}). The two statistics measure different objects: Table~\ref{tab:regime_test} captures the pooled distribution of all bids in a tender, while $\hat{\sigma}_c / \hat{\sigma}_g$ compares individual-bid distributions conditional on the winning price. When FL firms enter a tender, they add bids clustered near $b^* + \epsilon$ but above the winning bid, mechanically widening the pooled distribution even though each FL bid individually exhibits lower variance.
+
+\subsection{Imhof Comparison}
+
+\input{tables/tab_imhof_comparison}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{images/fig_roc_comparison.pdf}
+\caption{ROC curves: FL screen vs.\ Imhof-style bid-level screens.
+Ground truth: co-participation with CADE-convicted cartelists among
+always-loser firms. The FL screen (AUC~$= 0.94$) dominates the
+Imhof composite (AUC~$= 0.79$; DeLong $p < 0.001$).}
+\label{fig:roc_comparison}
+\end{figure}
+
+% ============================================================================
+\section{Staggered Difference-in-Differences}
+\label{app:did}
+
+We construct a market-level panel (item $\times$ PBU $\times$ year)
+where treatment is first FL entry. The sample is restricted to markets
+with at least three pre- and three post-treatment observations, yielding
+144,168 market-year observations across 19,777 markets (1,511 treated,
+18,266 never-treated).
+
+\input{./output/tables/tab_did_revised}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_06_event_study.pdf}
+\caption{TWFE event study: coefficients on years relative to first FL
+entry, by outcome variable.}
+\label{fig:event_study}
+\end{figure}
+
+% ============================================================================
+% ============================================================================
+% ONLINE APPENDIX — to be submitted as separate supplementary file
+% ============================================================================
+% ============================================================================
+
+\clearpage
+\begin{center}
+\Large\bfseries Online Appendix\\[6pt]
+\large\itshape Not for print --- available as supplementary material
+\end{center}
+\bigskip
+
+\section{Additional Competition Outcomes}
+\label{app:online_competition}
 
 \input{./output/tables/tab_nfirms_excl}
 
@@ -128,13 +194,9 @@ markets.
 
 \input{./output/tables/tab_nbids}
 
-\input{./output/tables/tab_cade_permutation}
-
-\input{./output/tables/tab_excl_cade}
-
 % ============================================================================
-\section{Robustness Checks}
-\label{app:robustness}
+\section{Additional Robustness Checks}
+\label{app:online_robustness}
 
 \subsection{Detection Performance}
 
@@ -147,14 +209,6 @@ co-participation with CADE-convicted cartelists.}
 \end{figure}
 
 \input{tables/tab_roc_detection}
-
-\subsection{IV Results}
-
-\input{./output/tables/tab_iv_main}
-
-\subsection{Bajari--Ye Corrected Results}
-
-\input{tables/tab_bajari_ye_corrected}
 
 \subsection{Mechanism Summary}
 
@@ -180,15 +234,6 @@ Pre-event coefficients indicate strategic selection into high-price
 PBUs.}
 \label{fig:fl_entry_es}
 \end{figure}
-
-\subsection{Threshold Sensitivity}
-
-\begin{table}[htbp]
-\centering
-\caption{Price Coefficient Across IQR Multiplier Thresholds}
-\label{tab:threshold}
-\input{./output/tables/tab_threshold_robustness}
-\end{table}
 
 \subsection{FL Definition Variants}
 
@@ -303,20 +348,6 @@ and procedure type).}
 \label{fig:iqr}
 \end{figure}
 
-\subsection{Imhof Comparison}
-
-\input{tables/tab_imhof_comparison}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.78\textwidth]{images/fig_roc_comparison.pdf}
-\caption{ROC curves: FL screen vs.\ Imhof-style bid-level screens.
-Ground truth: co-participation with CADE-convicted cartelists among
-always-loser firms. The FL screen (AUC~$= 0.94$) dominates the
-Imhof composite (AUC~$= 0.79$; DeLong $p < 0.001$).}
-\label{fig:roc_comparison}
-\end{figure}
-
 \subsection{Threshold Stability}
 
 \begin{figure}[htbp]
@@ -330,7 +361,6 @@ Error bars show 95\% confidence intervals.}
 \subsection{Classification Robustness}
 
 \input{sections/sec_classification}
-
 
 \input{tables/tab_lca_validation}
 
@@ -346,44 +376,8 @@ co-participation with CADE-convicted cartelists.}
 \end{figure}
 
 % ============================================================================
-\section{Staggered Difference-in-Differences}
-\label{app:did}
-
-We construct a market-level panel (item $\times$ PBU $\times$ year)
-where treatment is first FL entry. The sample is restricted to markets
-with at least three pre- and three post-treatment observations, yielding
-144,168 market-year observations across 19,777 markets (1,511 treated,
-18,266 never-treated).
-
-\paragraph{Rambachan--Roth sensitivity.}
-We apply \cites{rambachan2023more} honest DiD bounds under smoothness
-restrictions. At $\bar{M} = 0$ (parallel trends hold exactly), the
-confidence interval is narrow; as $\bar{M}$ increases to allow for trend
-deviations, the interval widens rapidly (Table~\ref{tab:did_revised},
-Panel~C). With 80\% power, the MDE rises to
-$(1.96 + 0.84) \times 0.039 = 0.109$.
-
-\paragraph{Sharp-entry subsample.}
-Restricting the treated sample to markets with ``sharp'' FL
-entry---those where FL goes from zero to positive presence in a single
-year---provides cleaner treatment timing. The C\&S ATT for this
-subsample is reported in Panel~D.
-
-\input{./output/tables/tab_did_revised}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.9\textwidth]{fig_06_event_study.pdf}
-\caption{TWFE event study: coefficients on years relative to first FL
-entry, by outcome variable.}
-\label{fig:event_study}
-\end{figure}
-
-% ============================================================================
-\section{Extensions}
+\section{Welfare Analysis}
 \label{app:extensions}
-
-\subsection{Welfare Analysis}
 
 \input{./output/tables/tab_welfare_bounds}
 
@@ -398,7 +392,6 @@ OECD benchmark range for cartel overcharges shown as dashed lines.}
 \label{fig:welfare}
 \end{figure}
 
-\clearpage
 \subsection{Year-by-Year Coefficients}
 
 \begin{figure}[htbp]
@@ -407,21 +400,6 @@ OECD benchmark range for cartel overcharges shown as dashed lines.}
 \caption{Year-by-year FL coefficients. The coefficient is stable across
 years for log prices and log firms.}
 \label{fig:year_coefs}
-\end{figure}
-
-\subsection{Regime Test}
-
-\input{./output/tables/tab_regime_test}
-
-\paragraph{Reconciling pooled and individual bid dispersion.}
-Table~\ref{tab:regime_test} shows that FL presence raises total within-tender bid dispersion (coefficient 0.47--0.55 on log bid SD). This is \emph{not} inconsistent with the Regime~2 finding that individual FL bids have lower dispersion than genuine bids ($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$, Table~\ref{tab:structural_params}). The two statistics measure different objects: Table~\ref{tab:regime_test} captures the pooled distribution of all bids in a tender, while $\hat{\sigma}_c / \hat{\sigma}_g$ compares individual-bid distributions conditional on the winning price. When FL firms enter a tender, they add bids clustered near $b^* + \epsilon$ but above the winning bid, mechanically widening the pooled distribution even though each FL bid individually exhibits lower variance. The regime-identification comparison---$\sigma_c$ vs.\ $\sigma_g$ at the individual-bid level---unambiguously selects Regime~2 (coordinated cover bidding).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.85\textwidth]{fig_network_hhi.pdf}
-\caption{Distribution of winner HHI across FL firms. Higher HHI
-indicates that the FL firm consistently loses to the same winners.}
-\label{fig:network_hhi}
 \end{figure}
 
 \subsection{FL Definition Robustness}
@@ -452,4 +430,12 @@ reported in Table~\ref{tab:fl_network_summary}.
 classification). The price effect is concentrated among FL firms
 operating in competitive markets (low winner HHI).}
 \label{fig:network_split}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_network_hhi.pdf}
+\caption{Distribution of winner HHI across FL firms. Higher HHI
+indicates that the FL firm consistently loses to the same winners.}
+\label{fig:network_hhi}
 \end{figure}
