@@ -139,10 +139,10 @@ orthogonal to bid-level screens
 \subsection{Structural Likelihood Estimation}
 \label{sec:structural_estimation}
 
-The mixture model from Section~\ref{sec:likelihood} is estimated in two stages on bid-level data. After restricting to losing bids with valid prices and item-year fixed-effect coverage, the estimation sample comprises 23.2 million genuine (non-FL) losing bids and 189,381 FL losing bids (Table~\ref{tab:structural_params}).
+The mixture model (Appendix~\ref{app:structural_id}) is estimated in two stages on bid-level data. After restricting to losing bids with valid prices and item-year fixed-effect coverage, the estimation sample comprises 23.2 million genuine (non-FL) losing bids and 189,381 FL losing bids (Table~\ref{tab:structural_params}).
 
 \paragraph{Stage 1: Genuine bid distribution.}
-We estimate $(\boldsymbol{\beta}, \sigma_g^2)$ from the 23.2 million non-FL losing bids by maximum likelihood under the log-normal specification~\eqref{eq:genuine_dist}:
+We estimate $(\boldsymbol{\beta}, \sigma_g^2)$ from the 23.2 million non-FL losing bids by maximum likelihood under a log-normal specification:
 \begin{equation}
   (\hat{\boldsymbol{\beta}}, \hat{\sigma}_g^2) =
   \operatorname*{arg\,max}_{\boldsymbol{\beta}, \sigma_g^2}
@@ -156,7 +156,7 @@ We estimate $(\boldsymbol{\beta}, \sigma_g^2)$ from the 23.2 million non-FL losi
 where $\phi(\cdot)$ is the standard normal density and $\hat{\alpha}_i$, $\hat{\lambda}_t$ are absorbed item and year fixed effects. In practice, this reduces to OLS of $\log b_{jt}$ on $\mathbf{x}_j$ with fixed effects, yielding $\hat{\sigma}_g^2$ as the residual variance.
 
 \paragraph{Stage 2: Cover bid distribution.}
-Conditional on the winning bid $b^*_t$, we estimate cover-bid parameters from FL bids under each regime specification (Equations~\ref{eq:cover_dist_r1}--\ref{eq:cover_dist_r2}).
+Conditional on the winning bid $b^*_t$, we estimate cover-bid parameters from FL bids under each regime specification (Appendix~\ref{app:structural_id}).
 
 \paragraph{Model selection.}
 We select between regimes using BIC; the implied markup is:
