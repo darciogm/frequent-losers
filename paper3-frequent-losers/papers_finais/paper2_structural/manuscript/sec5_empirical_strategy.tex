@@ -105,19 +105,23 @@ implies:
   \label{eq:foc_m}
 \end{equation}
 where $\pi'(n) \equiv \partial \pi / \partial m$ is the marginal
-return to cover bidding, decreasing in $n$ by A2. Taking logs:
+return to cover bidding (A2 ensures concavity in $m$; the sign
+of $\partial \pi' / \partial n$ is an empirical question---see
+Proposition~\ref{prop:market_selection}). Taking logs:
 \begin{equation}
   \log m^*_{kt} = \log \pi'(n_{kt}) - \log(c_1 + \theta_k \phi_0)
   \label{eq:log_foc}
 \end{equation}
 
-We parameterize $\pi'(n) = \pi_0 \cdot n^{-\gamma}$ (diminishing
-returns to cover bidding as genuine competition increases) and
+We parameterize $\pi'(n) = \pi_0 \cdot n^{\gamma}$ and
 $\theta_k = \bar{\theta} \cdot \text{PBUsize}_k^{\psi}$ (detection
-probability increasing in oversight capacity). This yields a
-log-linear specification:
+probability increasing in oversight capacity). The sign of $\gamma$
+is unrestricted: $\gamma > 0$ implies strategic complementarity
+between cover bidding and genuine competition
+(Proposition~\ref{prop:market_selection}), while $\gamma < 0$ implies
+substitution. This yields a log-linear specification:
 \begin{equation}
-  \log \bar{m}_k = a_0 - \gamma \log \bar{n}_k
+  \log \bar{m}_k = a_0 + \gamma \log \bar{n}_k
   - \log\!\left(c_1 + \bar{\theta} \cdot \text{PBUsize}_k^{\psi}
   \cdot \phi_0\right) + \nu_k
   \label{eq:calibration_moment}
@@ -146,16 +150,23 @@ interior-solution model should predict lower FL counts than observed
 in these tenders, confirming that the constraint binds.
 
 \paragraph{Identification.}
-$\gamma$ is identified from the cross-PBU covariation of $\bar{m}$
-with $\bar{n}$ (holding PBU size fixed) and is the best-determined
-parameter ($R^2 = 0.585$ from the log-linear first stage alone).
+$\gamma$ is identified from the covariation of $\bar{m}$ with
+$\bar{n}$ across PBUs (holding PBU size fixed) and is the
+best-determined parameter ($R^2 = 0.585$ from the log-linear first
+stage). Its sign is positive, consistent with the strategic
+complementarity predicted by Proposition~\ref{prop:market_selection}:
+cartels deploy more cover bidders in tenders with more genuine
+competition. This relationship holds within PBU (PBU fixed effects:
+$+0.29$) as well as between PBUs ($+0.45$), ruling out pure
+cross-sectional confounding.
 The level of $c_1$ is pinned down by the unconditional mean of $m^*$.
 The ratio $\phi_0 / c_1$ is identified from the cross-PBU gradient of
 $\bar{m}$ with PBU size (holding $\bar{n}$ fixed): larger PBUs with
 higher detection probability should attract fewer cover bidders. In
 practice, this gradient is economically small ($-0.018$, $p = 0.024$),
-limiting the precision of $\phi_0$ while leaving $\gamma$ and $c_1$
-well identified.
+and we cannot reject that enforcement has zero effect on cover-bidder
+deployment. This is itself a substantive finding: cartel cover-bidding
+intensity responds to competitive pressure, not to oversight.
 
 % ── 5.3 Reduced-Form Tests ──────────────────────────────────────
 

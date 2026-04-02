@@ -125,23 +125,26 @@ pbu_moments[, log_n := log(n_bar)]
 pbu_moments[, log_pbu := log(pbu_size)]
 
 # ── NLS Calibration ────────────────────────────────────────────────
-# From eq (calibration_moment):
-# log(m_bar) = a0 - gamma*log(n_bar) - log(c1 + theta_bar * pbu_size^psi * phi0) + nu
+# From eq (calibration_moment) — updated parametrization:
+# log(m_bar) = a0 + gamma*log(n_bar) - log(c1 + theta_bar * pbu_size^psi * phi0) + nu
+#
+# gamma > 0 implies strategic complementarity (Proposition 3):
+# cartels deploy more cover bidders in more competitive tenders.
 #
 # Two-step approach:
 # Step 1: OLS of log(m_bar) on log(n_bar) and log(pbu_size) to get gamma
 #         and the PBU-size gradient
-# Step 2: NLS on the full nonlinear model
+# Step 2: Profile NLS concentrating out psi
 
 cat("\n--- Step 1: Log-linear approximation ---\n")
 step1 <- lm(log_m ~ log_n + log_pbu, data = pbu_moments,
             weights = n_tenders)
-cat("  gamma (from log n):", round(-coef(step1)["log_n"], 4), "\n")
+cat("  gamma (from log n):", round(coef(step1)["log_n"], 4), "\n")
 cat("  pbu gradient:", round(coef(step1)["log_pbu"], 4), "\n")
 cat("  R-squared:", round(summary(step1)$r.squared, 4), "\n")
 print(summary(step1))
 
-gamma_start <- -coef(step1)["log_n"]  # preserve sign from Step 1
+gamma_start <- coef(step1)["log_n"]  # positive = complementarity
 
 # ══════════════════════════════════════════════════════════════════
 # Step 2: Profile likelihood over psi
@@ -161,7 +164,7 @@ for (i in seq_along(psi_grid)) {
   pbu_moments[, pbu_psi := pbu_size^psi_fix]
 
   fit_i <- tryCatch(
-    nls(log_m ~ log_pi0 - gamma * log_n - log(c1 + phi0 * pbu_psi),
+    nls(log_m ~ log_pi0 + gamma * log_n - log(c1 + phi0 * pbu_psi),
         data = pbu_moments,
         start = list(log_pi0 = coef(step1)["(Intercept)"],
                      gamma = unname(gamma_start),
@@ -218,7 +221,7 @@ if (n_converged_profile > 0 && !profile_is_flat) {
   pbu_moments[, pbu_psi_star := pbu_size^psi_star]
 
   nls_fit <- tryCatch(
-    nls(log_m ~ log_pi0 - gamma * log_n - log(c1 + phi0 * pbu_psi_star),
+    nls(log_m ~ log_pi0 + gamma * log_n - log(c1 + phi0 * pbu_psi_star),
         data = pbu_moments,
         start = list(log_pi0 = profile$log_pi0[best_idx],
                      gamma = profile$gamma[best_idx],
@@ -293,7 +296,7 @@ if (nls_converged || params_from_profile) {
     idx <- sample(nrow(pbu_moments), nrow(pbu_moments), replace = TRUE)
     bdat <- pbu_moments[idx]
     fit_b <- tryCatch(
-      nls(log_m ~ log_pi0 - gamma * log_n - log(c1 + phi0 * pbu_psi_star),
+      nls(log_m ~ log_pi0 + gamma * log_n - log(c1 + phi0 * pbu_psi_star),
           data = bdat,
           start = boot_start,
           lower = c(log_pi0 = -Inf, gamma = -Inf, c1 = 1e-6, phi0 = 1e-8),
@@ -319,7 +322,7 @@ if (nls_converged || params_from_profile) {
     bdat <- pbu_moments[idx]
     fit_b <- lm(log_m ~ log_n + log_pbu, data = bdat, weights = n_tenders)
     boot_params[b, ] <- c(exp(coef(fit_b)["(Intercept)"]),
-                           -coef(fit_b)["log_n"])
+                           coef(fit_b)["log_n"])
     if (b %% 100 == 0) cat("  Bootstrap rep", b, "/", B, "\n")
   }
 }
@@ -355,7 +358,7 @@ if (nrow(corner) > 0 && !is.na(params["c1"])) {
   corner_pbu <- corner_pbu[n_bar > 0]  # need positive n for prediction
 
   # Predict m* from interior-solution model
-  corner_pbu[, m_pred := params["pi0"] * n_bar^(-params["gamma"]) /
+  corner_pbu[, m_pred := params["pi0"] * n_bar^(params["gamma"]) /
              (params["c1"] + params["phi0"] * pbu_size^params["psi"])]
   corner_pbu[, excess := m_corner - m_pred]
 
@@ -398,7 +401,7 @@ results <- data.frame(
   value = c(params,
             boot_se,
             nrow(pbu_moments), nrow(interior), nrow(corner),
-            abs(coef(step1)["log_n"]),
+            coef(step1)["log_n"],
             coef(step1)["log_pbu"],
             summary(step1)$r.squared,
             as.integer(nls_converged),
