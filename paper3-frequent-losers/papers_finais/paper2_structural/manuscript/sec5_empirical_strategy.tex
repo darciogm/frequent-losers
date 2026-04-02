@@ -153,26 +153,34 @@ We assess out-of-sample fit via repeated split-sample validation:
 the model is estimated on two-thirds of PBUs and tested on the
 holdout third (100 random splits).
 
-\paragraph{Identification.}
-$\gamma$ is identified from the covariation of $\bar{m}$ with
-$\bar{n}$ across PBUs (holding PBU size fixed) and is the
-best-determined parameter ($R^2 = 0.585$ from the log-linear first
-stage). Its sign is positive, consistent with the strategic
-complementarity predicted by Proposition~\ref{prop:market_selection}:
-cartels deploy more cover bidders in tenders with more genuine
-competition. This relationship holds within PBU (PBU fixed effects:
-$+0.29$) as well as between PBUs ($+0.45$), which is inconsistent
-with the association arising solely from cross-sectional selection.
-The level of $c_1$ is pinned down by the unconditional mean of $m^*$.
-The ratio $\phi_0 / c_1$ is identified from the cross-PBU gradient of
-$\bar{m}$ with PBU size (holding $\bar{n}$ fixed): larger PBUs with
-higher detection probability should attract fewer cover bidders. In
-practice, this gradient is small and only marginally significant
-($-0.018$, $p = 0.024$), indicating that $\phi_0$ is weakly
-identified. We cannot reject that enforcement has zero effect on
-cover-bidder deployment. This is itself a substantive finding: cartel
-cover-bidding intensity responds to competitive pressure, not to
-oversight---though we acknowledge limited precision on $\phi_0 / c_1$.
+\paragraph{Identification and its limits.}
+All structural parameters are identified \emph{conditional on the FL
+partition}: the mixture model estimates the bid-generating process of
+FL-labeled firms, not of true cover bidders. Classification error
+attenuates the estimated contrast between groups---the uncorrected
+$\hat{\epsilon}$ and $\hat{\sigma}_c$ are conservative
+(Section~\ref{sec:robustness}). This is distributional
+identification of a mixture component, not causal identification of
+a treatment effect. In particular:
+
+\emph{Distributional parameters} ($\hat{\epsilon}$,
+$\hat{\sigma}_c$, $\hat{\sigma}_g$): identified from the FL/non-FL
+bid distributions. The regime selection (BIC) identifies which
+distributional family fits FL-labeled bids better, not which regime
+``truly'' governs cartel behavior.
+
+\emph{Calibration parameters} ($\hat{\gamma}$, $\hat{c}_1$,
+$\hat{\phi}_0$): identified from cross-PBU covariation of FL counts
+with genuine-bidder counts and PBU size. $\gamma$ is the
+best-determined parameter ($R^2 = 0.585$); the within-PBU estimate
+($+0.29$) is consistent with the between-PBU estimate ($+0.45$).
+$\hat{\phi}_0$ is weakly identified (gradient $-0.018$,
+$p = 0.024$); we cannot reject zero enforcement effect.
+
+\emph{Price association} ($\hat{\beta}$): estimated by reduced-form
+regressions. The structural model does not identify the causal
+price effect; $\hat{\beta}$ reflects both treatment and selection,
+and the welfare counterfactuals inherit this ambiguity.
 
 % ── 5.3 Reduced-Form Tests ──────────────────────────────────────
 
