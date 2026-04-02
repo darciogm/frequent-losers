@@ -7,11 +7,14 @@ operational mechanism of bid-rigging cartels
 structure remains poorly understood. How do cartels calibrate cover
 bids? Does coordination tighten or widen the bid distribution? And
 what does the answer imply for the screens that competition authorities
-use to detect collusion? This paper develops and estimates a structural
-model of cover-bidder deployment that answers these questions and
-uncovers a \emph{dispersion paradox}: coordinated cover bidding
-produces \emph{lower}, not higher, within-tender bid dispersion---the
-opposite of what the dominant detection screens assume.
+use to detect collusion? This paper develops a structural model of cover-bidder deployment
+and estimates it using an externally constructed frequent-loser (FL)
+partition. The model documents a \emph{dispersion paradox}:
+conditional on the FL labels, a coordinated cover-bidding regime
+fits the bid data much better than the complementary alternative,
+and under that regime, FL-labeled bids are \emph{less}, not more,
+dispersed than genuine bids---the opposite of what the dominant
+detection screens assume.
 
 The model specifies two regimes that differ in coordination capacity.
 Under \emph{complementary} cover bidding (Regime~1), cover bidders
@@ -33,112 +36,115 @@ $\Delta$BIC~$= -91{,}473$). Cover bids cluster 0.83 log points above the winning
 ($\hat{\epsilon} = 0.83$, approximately $e^{0.83} - 1 \approx 129\%$
 in levels), high enough to guarantee losing yet calibrated to
 simulate competitive bidding. The
-structural estimates are identified from the distribution of 189,381
-losing bids submitted by 2,735 \emph{frequent losers}
-(FL)---firms that never win a single tender yet participate in
-abnormally many procurement processes---benchmarked against 23.2
-million genuine losing bids. The FL classification, validated against
-Brazil's competition authority (CADE) convictions in a temporal
-holdout (AUC~$= 0.94$; 98 confirmed co-bidders among 16,843
-always-losers), is developed in a companion paper
-\citep{genicolomartins2026screening}; here we take it as given and
-focus on the structural mechanism it reveals.
+structural estimates are conditional on a partition of firms into
+\emph{frequent losers} (FL)---2,735 firms that never win a single
+tender yet participate in abnormally many procurement
+processes---and genuine bidders. The FL classification is developed
+and validated in a companion paper
+\citep{genicolomartins2026screening}, where it achieves
+AUC~$= 0.94$ against CADE convictions in a temporal holdout (98
+confirmed co-bidders among 16,843 always-losers). Here we take the
+FL partition as given and estimate a structural mixture model on
+189,381 FL-labeled losing bids benchmarked against 23.2~million
+genuine losing bids. The structural results inherit the noise and
+scope of the FL classification: the model characterizes the
+bid-generating process conditional on this partition, not the
+identity of true cartel members.
 
 \subsection{The dispersion paradox and its implications}
 
-The central finding---that coordinated cover bidding reduces
-within-tender bid dispersion---has three implications for our
-understanding of how cartels operate and how they can be detected.
+The dispersion pattern---that a coordinated regime fits FL-labeled
+bids better and implies lower dispersion---has three implications.
 
-\emph{First}, it provides a structural explanation for a puzzle in
+\emph{First}, it provides one structural interpretation of a gap in
 the detection literature. Variance-based screens
 \citep{imhof2019detecting} achieve AUC~$= 0.79$ against CADE
 convictions, while the participation-based FL screen achieves
-AUC~$= 0.94$. The model explains the gap: variance screens are
-designed for Regime~1 (complementary) cartels but are structurally
-misaligned with Regime~2 (coordinated) cartels, whose bid patterns
-resemble competitive tenders. The participation footprint of cover
-bidding---never winning yet bidding repeatedly---is invariant to the
-bid distribution, making it robust to both regimes.
+AUC~$= 0.94$. Under the model, variance screens are designed for
+the complementary regime but may be misaligned with the coordinated
+regime, whose bid patterns can resemble competitive tenders. The
+participation footprint---never winning yet bidding repeatedly---is
+invariant to the bid distribution, making it robust to both regimes.
 
 \emph{Second}, it provides a structural interpretation for the
 \citet{bajari2003deciding} exchangeability test. FL bid residuals
 violate exchangeability and exhibit excess pairwise correlation,
 but these violations \emph{reverse} under tender fixed effects---the
-FL pairwise product drops below the non-FL product. The model
-predicts exactly this pattern: cover bids share a focal-point
-component ($b^* + \epsilon$) that tender fixed effects absorb,
-leaving only residual dispersion---which, under Regime~2, is low.
-The reversal is a novel directional prediction that only the
-structural model generates (Section~\ref{sec:spec_tests}).
+FL pairwise product drops below the non-FL product. Under the
+coordinated regime, this is expected: cover bids share a
+focal-point component ($b^* + \epsilon$) that tender fixed effects
+absorb, leaving only residual dispersion, which under Regime~2 is
+low. The reversal is a directional prediction generated by the
+focal-point model (Section~\ref{sec:spec_tests}).
 
 \emph{Third}, it yields testable market-selection predictions.
 Because cover bidding is most valuable in competitive markets (low
 HHI), the model predicts that FL activity concentrates in
-competitive rather than concentrated markets. We confirm this
-empirically, and the calibrated complementarity elasticity
-$\hat{\gamma} = 0.694$ shows that cartels scale cover-bidder
-deployment nearly proportionally to genuine competition---roughly,
-one additional genuine bidder elicits 0.7 additional cover
-bidders---a
-relationship that holds both across and within PBUs
+competitive rather than concentrated markets. The data are
+consistent with this, and the calibrated complementarity elasticity
+$\hat{\gamma} = 0.694$ indicates that, conditional on the FL
+partition, cover-bidder deployment scales nearly proportionally with
+genuine competition---roughly, one additional genuine bidder is
+associated with 0.7 additional cover bidders---a relationship that
+holds both across and within PBUs
 (Section~\ref{sec:results_calibration}).
 
 \subsection{Contributions}
 
-We make three contributions to the understanding of how bid-rigging
-cartels operate.
+We make three contributions.
 
-\emph{First}, we develop and estimate a structural model of
-cover-bidder deployment that distinguishes complementary from
-coordinated cover bidding. The model formalizes the cartel's
-trade-off between detection risk, cover-bidding cost, and the
-institutional constraint of minimum-bidder rules, and generates
-closed-form predictions for the number, distribution, and market
-selection of cover bids. Regime~2 (coordinated) is selected
-overwhelmingly ($\Delta$BIC~$= -91{,}473$), establishing the
-dispersion paradox as an equilibrium outcome: \emph{low} dispersion,
-not high, is the empirical signature of cover bidding in this setting.
+\emph{First}, we develop a structural model of cover-bidder
+deployment that distinguishes complementary from coordinated
+cover-bidding regimes. The model formalizes the cartel's trade-off
+between detection risk, cover-bidding cost, and the institutional
+constraint of minimum-bidder rules, and generates predictions for the
+number, distribution, and market selection of cover bids.
+Conditional on the FL partition, Regime~2 (coordinated) fits the
+data much better ($\Delta$BIC~$= -91{,}473$): in this setting,
+\emph{low} dispersion, not high, characterizes FL-labeled bids.
 
-\emph{Second}, we validate the model through five out-of-sample
-specification tests on moments not targeted in estimation:
-(i)~the corner-vs-interior solution for cover-bidder counts;
+\emph{Second}, we examine the model's consistency with five
+out-of-sample moments not targeted in estimation:
+(i)~the convite--preg\~ao deployment asymmetry;
 (ii)~within-tender bid dispersion (FL bids less dispersed in
 82.6\% of mixed tenders); (iii)~the $m$--$\theta$ comparative
 static across PBU size quartiles; (iv)~the Bajari--Ye
 exchangeability and conditional-independence violations; and
-(v)~the market-selection gradient across winner HHI. All five go
-in the direction predicted by the model. The Bajari--Ye tender-FE
-reversal---where the FL correlation flips sign once the shared
-focal-point component is absorbed---is a novel prediction that only
-the structural model generates.
+(v)~the market-selection gradient across winner HHI. All five are
+consistent with the model's predictions. The Bajari--Ye tender-FE
+reversal---where the FL pairwise product flips sign once the
+shared focal-point component is absorbed---is the most probative of
+these tests.
 
-\paragraph{The structural value-added.}
-The model delivers three things that reduced-form analysis alone
-cannot: (i)~the two-regime taxonomy that gives the dispersion paradox
-its equilibrium interpretation; (ii)~the Bajari--Ye tender-FE
-reversal, a novel directional prediction that only the focal-point
-model generates; and (iii)~the calibrated complementarity elasticity
-($\hat{\gamma} = 0.694$) that quantifies how cartels scale cover
-bidding with genuine competition. The welfare counterfactuals
-(Section~\ref{sec:counterfactual}) use the structurally identified
-deployment chain, combined with reduced-form price bounds that are
-transparent about the role of selection.
+\paragraph{What the paper does and does not claim.}
+The structural framework organizes three features that reduced-form
+analysis alone does not: (i)~a two-regime taxonomy that gives the
+dispersion pattern its theoretical interpretation; (ii)~the
+Bajari--Ye tender-FE reversal, a directional prediction generated by
+the focal-point model; and (iii)~the calibrated complementarity
+elasticity ($\hat{\gamma} = 0.694$) that quantifies how cover-bidder
+deployment covaries with genuine competition. The paper does
+\emph{not} identify true cartel membership (the FL labels are
+statistical, not forensic), does not causally identify the
+FL--price association (which reflects both treatment and selection),
+and does not establish a universal property of cover bidding across
+procurement environments. The welfare counterfactuals
+(Section~\ref{sec:counterfactual}) are illustrative calculations that
+combine the model's deployment logic with reduced-form price bounds.
 
-\emph{Third}, we derive policy implications from the model's
-mechanism. The minimum-bidder rule for convite procedures creates a
-corner solution that forces cover-bidder deployment in 39.2\% of
-FL-present tenders; removing it would eliminate the institutional
-demand for cover bidding. Brazil's 2021 procurement reform
-(Lei~14.133) has since abolished convite entirely, effectively
-implementing this counterfactual. We embed the detection ROC curve
-in a social welfare function and show that the welfare-maximizing threshold
-($1.6\times$IQR) coincides with the statistical optimum, providing
-a coherent basis for operational deployment. The model also explains
-why participation-based screens (AUC~$= 0.94$) outperform
-variance-based screens (AUC~$= 0.79$): the dispersion paradox
-renders bid-level statistics structurally uninformative about
-coordinated cartels.
+\emph{Third}, we derive illustrative policy implications. The
+minimum-bidder rule for convite procedures creates a corner solution
+that forces cover-bidder deployment in 39.2\% of FL-present
+tenders. Brazil's 2021 procurement reform (Lei~14.133) has since
+abolished convite entirely, moving policy in a direction consistent
+with this implication. We embed the detection ROC in a social
+welfare function and show that the welfare-maximizing threshold
+($1.6\times$IQR) coincides with the statistical optimum, though
+the welfare calculations depend on the reduced-form price bounds.
+The model also helps rationalize why participation-based screens
+(AUC~$= 0.94$) outperform variance-based screens
+(AUC~$= 0.79$) in this environment: under the coordinated regime,
+bid-level statistics are uninformative.
 
 \subsection{Related literature}
 
@@ -152,15 +158,15 @@ estimation of the cover-bid distribution without an EM algorithm.
 
 Second, the proactive cartel screening literature
 \citep{harrington2008detecting, imhof2019detecting,
-huber2019machine}. Our structural model provides a mechanism-based
-explanation for the documented performance gap between
-participation-based and variance-based screens.
+huber2019machine}. Our structural model provides one mechanism-based
+interpretation of the documented performance gap between
+participation-based and variance-based screens in this setting.
 
 Third, the procurement design literature
-\citep{szymanski2006impact, decarolis2018buyers}. The model's corner
-solution (Proposition~\ref{prop:optimal_m}) shows that minimum-bidder
-rules create institutional demand for cover bidders, converting a
-competition-enhancing regulation into a cartel-facilitating one.
+\citep{szymanski2006impact, decarolis2018buyers}. The model's corner solution
+(Proposition~\ref{prop:optimal_m}) suggests that minimum-bidder
+rules may create institutional demand for cover bidders in settings
+where they bind.
 
 The remainder of this paper is organized as follows.
 Section~\ref{sec:structural} develops the structural model.

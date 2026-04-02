@@ -5,68 +5,60 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-How do cartels calibrate cover bids, and what does this imply for
-detection? This paper answers both questions through a structural
-model estimated on 40~million bids in Brazilian public procurement
-(2009--2019). The model generates five testable predictions; all
-five are confirmed out of sample.
+This paper proposes a structural interpretation of a low-dispersion
+pattern in cover bidding. Conditional on an externally constructed
+FL partition, a coordinated cover-bidding regime fits FL-labeled bid
+data much better than the complementary alternative in Brazilian
+electronic procurement ($\Delta$BIC~$= -91{,}473$;
+$\hat{\sigma}_c / \hat{\sigma}_g = 0.72$). Five out-of-sample
+moments are consistent with the model's predictions. The most
+probative is the Bajari--Ye tender-FE reversal, where the FL
+pairwise product flips sign once the shared focal-point component
+is absorbed.
 
-The central finding is the dispersion paradox: coordinated cover
-bidding---the empirically dominant regime ($\Delta$BIC~$= -91{,}473$)---
-produces \emph{lower} within-tender bid dispersion than genuine
-competition ($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$). This
-overturns a maintained assumption in the cartel detection literature
-\citep{imhof2019detecting, huber2019machine} and explains a
-practical puzzle: why participation-based screens (AUC~$= 0.94$)
-dominate variance-based alternatives (AUC~$= 0.79$). Under
-Regime~2, bid-level statistics are structurally uninformative; the
-participation footprint---never winning yet bidding
-repeatedly---is the only invariant signature of cover bidding.
-
-The welfare counterfactuals illustrate the policy stakes. The
-model's corner solution shows that convite minimum-bidder rules
-forced cover-bidder deployment in 39.2\% of FL-present tenders;
-Brazil's Lei~14.133/2021 has since abolished convite entirely
-(Art.~28), effectively implementing this counterfactual. The
-welfare-maximizing detection threshold ($1.6\times$IQR) coincides
-with the statistical and detection-theoretic optima, providing a
-coherent basis for operational deployment.
+This interpretation helps rationalize the observed performance gap
+between participation-based screens (AUC~$= 0.94$) and
+variance-based alternatives (AUC~$= 0.79$) in this setting: under
+the coordinated regime, bid-level statistics are uninformative,
+while the participation footprint---never winning yet bidding
+repeatedly---is invariant to the bid distribution. The illustrative
+welfare counterfactuals suggest that convite minimum-bidder rules may
+have facilitated cover-bidder deployment; Brazil's Lei~14.133/2021
+has since abolished convite (Art.~28), moving policy in a direction
+consistent with this implication.
 
 \paragraph{Scope and boundaries.}
-The structural model identifies the cover-bid mechanism---the
-distribution, deployment, and market selection of cover
-bids---while the price-link in the welfare chain uses reduced-form
-bounds (3.6--8.0\% across five estimators) that reflect both
+The paper does not identify true cartel membership, causal price
+effects, or welfare losses. The FL labels are a statistical partition,
+not forensic ground truth; the structural model characterizes
+bid-generating processes conditional on that partition. The price
+association (3.6--8.0\% across five estimators) reflects both
 treatment and selection. All results come from a single electronic
-procurement platform (BEC/S\~ao Paulo); the dispersion paradox
-depends on Regime~2, which requires real-time information
-exchange---a feature of electronic auctions. In jurisdictions where
-sealed-bid formats dominate, Regime~1 may prevail and
-variance-based screens may perform adequately. The calibrated
-detection-penalty $\hat{\phi}_0$ is indistinguishable from zero,
-limiting enforcement counterfactuals; this may reflect limited
-enforcement variation in the data rather than true insensitivity.
-The main results are robust to threshold variation, alternative
-clustering, latent-class validation, and placebo tests
-(Section~\ref{sec:robustness}).
-Replication on platforms with different institutional designs is the
-natural next step.
+platform (BEC/S\~ao Paulo); the coordinated regime requires
+real-time information exchange, and in sealed-bid settings the
+complementary regime may prevail---in which case high-dispersion
+screens may perform adequately. The detection-penalty
+$\hat{\phi}_0$ is indistinguishable from zero, limiting enforcement
+counterfactuals. The main results are robust to threshold variation,
+alternative clustering, latent-class validation, and placebo tests
+(Section~\ref{sec:robustness}). Replication on platforms with
+different institutional designs is essential before broader claims
+are warranted.
 
 \paragraph{Implications for detection methodology.}
-The dispersion paradox has a practical corollary: any screen that
-conditions on within-tender bid statistics will underperform when
-facing coordinated cartels---precisely the cartels with the highest
-welfare cost. Participation-based screens, which detect the
-\emph{operational footprint} of cover bidding regardless of bid
-calibration, fill this gap. The structural model's specification
-tests show that the IQR rule captures the most discriminative
-dimension of cover bidding; adding bid-level features or structural
-scores does not improve detection.
+The dispersion pattern documented here suggests caution about
+screening approaches that assume cover bidding increases bid
+dispersion. In settings with strong bid coordination,
+participation-based screens---which detect the operational
+footprint of cover bidding regardless of bid calibration---may be
+more robust. Whether this lesson generalizes beyond BEC/S\~ao Paulo
+is an open question.
 
 \paragraph{Future research.}
 Three directions merit investigation: (i)~replication in other
-procurement systems to test external validity;
+procurement systems, especially those with sealed-bid formats, to
+test whether the dispersion pattern holds more broadly;
 (ii)~dynamic models of cartel--authority interaction, where cartels
-adapt to screening by rotating cover bidders or allowing occasional
-wins; and (iii)~field experiments in which procurement agencies
-deploy FL screening and measure deterrence effects.
+adapt to screening by rotating cover bidders; and (iii)~field
+experiments in which procurement agencies deploy FL screening and
+measure deterrence effects.
