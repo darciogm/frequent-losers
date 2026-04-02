@@ -340,53 +340,97 @@ if (ncol(boot_ci) >= 2) {
   }
 }
 
-# ── Overidentification: corner-solution check ──────────────────────
-# Corner solutions = convite tenders where minimum-bidder rule (n_min=3)
-# forces the cartel to deploy more FLs than optimal. If the model is
-# correct, the interior-solution prediction m*(n,θ) should be BELOW the
-# observed m in corner tenders (the constraint is binding).
-if (nrow(corner) > 0 && !is.na(params["c1"])) {
-  cat("\n--- Overidentification: corner-solution check ---\n")
-  cat("  Corner-solution tenders:", formatC(nrow(corner), big.mark = ","), "\n")
+# ── Overidentification: split-sample out-of-sample prediction ──────
+# Estimate on 2/3 of PBUs, predict m̄ on the holdout 1/3.
+# Reports correlation, RMSE, and mean absolute error.
+cat("\n--- Overidentification: split-sample prediction ---\n")
+if (!is.na(params["c1"])) {
+  set.seed(2026)
+  n_pbus <- nrow(pbu_moments)
+  train_idx <- sort(sample(n_pbus, round(n_pbus * 2/3)))
+  test_idx <- setdiff(seq_len(n_pbus), train_idx)
+  train <- pbu_moments[train_idx]
+  test  <- pbu_moments[test_idx]
+  cat("  Train PBUs:", nrow(train), "| Test PBUs:", nrow(test), "\n")
 
-  corner_pbu <- corner[, .(
-    m_corner  = mean(n_fl),
-    n_bar     = mean(n_gen),
-    pbu_size  = first(pbu_size),
-    n_tenders = .N
-  ), by = pbu_code]
-  corner_pbu <- corner_pbu[n_bar > 0]  # need positive n for prediction
+  # Re-estimate on training set at fixed psi*
+  train[, pbu_psi_star := pbu_size^psi_star]
+  oos_fit <- tryCatch(
+    nls(log_m ~ log_pi0 + gamma * log_n - log(c1 + phi0 * pbu_psi_star),
+        data = train,
+        start = list(log_pi0 = log(params["pi0"]), gamma = params["gamma"],
+                     c1 = params["c1"], phi0 = params["phi0"]),
+        lower = c(log_pi0 = -Inf, gamma = -Inf, c1 = 1e-6, phi0 = 1e-8),
+        upper = c(log_pi0 =  Inf, gamma =  Inf, c1 = 50,   phi0 = 10),
+        algorithm = "port",
+        weights = train$n_tenders,
+        control = nls.control(maxiter = 1000, tol = 1e-6, warnOnly = TRUE)),
+    error = function(e) NULL)
 
-  # Predict m* from interior-solution model
-  corner_pbu[, m_pred := params["pi0"] * n_bar^(params["gamma"]) /
-             (params["c1"] + params["phi0"] * pbu_size^params["psi"])]
-  corner_pbu[, excess := m_corner - m_pred]
+  if (!is.null(oos_fit)) {
+    oos_coefs <- coef(oos_fit)
+    # Predict on test set
+    test[, pbu_psi_star := pbu_size^psi_star]
+    test[, log_m_pred := oos_coefs["log_pi0"] + oos_coefs["gamma"] * log_n -
+           log(oos_coefs["c1"] + oos_coefs["phi0"] * pbu_psi_star)]
 
-  cat("  PBUs with corner tenders:", nrow(corner_pbu), "\n")
-  cat("  Mean observed m (corner):", round(mean(corner_pbu$m_corner), 3), "\n")
-  cat("  Mean predicted m (interior model):", round(mean(corner_pbu$m_pred, na.rm = TRUE), 3), "\n")
-  cat("  Mean excess m (observed - predicted):", round(mean(corner_pbu$excess, na.rm = TRUE), 3), "\n")
-  cat("  % PBUs where m_obs > m_pred:", round(100 * mean(corner_pbu$excess > 0, na.rm = TRUE), 1), "%\n")
+    oos_cor <- cor(test$log_m, test$log_m_pred, use = "complete.obs")
+    oos_rmse <- sqrt(mean((test$log_m - test$log_m_pred)^2, na.rm = TRUE))
+    oos_mae <- mean(abs(test$log_m - test$log_m_pred), na.rm = TRUE)
+    oos_r2 <- 1 - sum((test$log_m - test$log_m_pred)^2) /
+                  sum((test$log_m - mean(test$log_m))^2)
 
-  # Formal test: one-sided t-test H0: excess <= 0 vs H1: excess > 0
-  if (nrow(corner_pbu) >= 5) {
-    t_test <- t.test(corner_pbu$excess, alternative = "greater", mu = 0)
-    cat("  One-sided t-test (H1: excess > 0):\n")
-    cat("    t-stat:", round(t_test$statistic, 3), "\n")
-    cat("    p-value:", format.pval(t_test$p.value, digits = 3), "\n")
-    cat("    Constraint binding confirmed:", t_test$p.value < 0.05, "\n")
+    cat("  Train estimates: gamma =", round(oos_coefs["gamma"], 4),
+        ", c1 =", round(oos_coefs["c1"], 4), "\n")
+    cat("  Out-of-sample correlation:", round(oos_cor, 4), "\n")
+    cat("  Out-of-sample R²:", round(oos_r2, 4), "\n")
+    cat("  RMSE (log scale):", round(oos_rmse, 4), "\n")
+    cat("  MAE (log scale):", round(oos_mae, 4), "\n")
+
+    # Comparison: naive model (predict mean)
+    naive_rmse <- sqrt(mean((test$log_m - mean(train$log_m))^2))
+    cat("  Naive RMSE (predict mean):", round(naive_rmse, 4), "\n")
+    cat("  RMSE improvement vs naive:", round(100 * (1 - oos_rmse / naive_rmse), 1), "%\n")
+  } else {
+    cat("  NLS on training set failed — using Step 1 OLS for OOS test.\n")
+    oos_ols <- lm(log_m ~ log_n + log_pbu, data = train, weights = n_tenders)
+    test[, log_m_pred := predict(oos_ols, newdata = test)]
+    oos_cor <- cor(test$log_m, test$log_m_pred)
+    oos_r2 <- 1 - sum((test$log_m - test$log_m_pred)^2) /
+                  sum((test$log_m - mean(test$log_m))^2)
+    oos_rmse <- sqrt(mean((test$log_m - test$log_m_pred)^2))
+    naive_rmse <- sqrt(mean((test$log_m - mean(train$log_m))^2))
+    cat("  Out-of-sample correlation:", round(oos_cor, 4), "\n")
+    cat("  Out-of-sample R²:", round(oos_r2, 4), "\n")
+    cat("  RMSE (log scale):", round(oos_rmse, 4), "\n")
+    cat("  RMSE improvement vs naive:", round(100 * (1 - oos_rmse / naive_rmse), 1), "%\n")
   }
 
-  # Also: Wilcoxon signed-rank (non-parametric)
-  if (nrow(corner_pbu) >= 10) {
-    w_test <- wilcox.test(corner_pbu$excess, alternative = "greater", mu = 0)
-    cat("  Wilcoxon signed-rank (H1: excess > 0):\n")
-    cat("    p-value:", format.pval(w_test$p.value, digits = 3), "\n")
-  }
+  # Save OOS predictions
+  write.csv(test[, .(pbu_code, log_m, log_m_pred, n_tenders)],
+            file.path(OUT, "oos_predictions.csv"), row.names = FALSE)
+  cat("  OOS predictions saved to oos_predictions.csv\n")
 
-  # Save corner diagnostics
-  write.csv(corner_pbu, file.path(OUT, "corner_overid.csv"), row.names = FALSE)
-  cat("  Corner diagnostics saved to corner_overid.csv\n")
+  # Repeated splits for stability
+  cat("\n  --- Stability: 100 random splits ---\n")
+  set.seed(42)
+  n_splits <- 100
+  split_r2 <- numeric(n_splits)
+  split_cor <- numeric(n_splits)
+  for (s in seq_len(n_splits)) {
+    s_train <- sort(sample(n_pbus, round(n_pbus * 2/3)))
+    s_test <- setdiff(seq_len(n_pbus), s_train)
+    s_ols <- lm(log_m ~ log_n + log_pbu, data = pbu_moments[s_train],
+                weights = n_tenders)
+    s_pred <- predict(s_ols, newdata = pbu_moments[s_test])
+    s_obs <- pbu_moments[s_test]$log_m
+    split_cor[s] <- cor(s_obs, s_pred)
+    split_r2[s] <- 1 - sum((s_obs - s_pred)^2) / sum((s_obs - mean(s_obs))^2)
+  }
+  cat("  Median OOS R²:", round(median(split_r2), 4), "\n")
+  cat("  IQR OOS R²: [", round(quantile(split_r2, 0.25), 4), ",",
+      round(quantile(split_r2, 0.75), 4), "]\n")
+  cat("  Median OOS correlation:", round(median(split_cor), 4), "\n")
 }
 
 # ── Save results ───────────────────────────────────────────────────

@@ -118,20 +118,28 @@ The per-bidder cost $\hat{c}_1 = 0.238$ is well identified
 $\hat{\phi}_0 = 0.019$ is economically negligible and
 statistically indistinguishable from zero (CI includes zero):
 we cannot reject that enforcement variation across PBUs has no
-effect on cover-bidder deployment. The profile-concentrated
+effect on cover-bidder deployment. The concentrated-NLS estimate
 $\psi^* = 0.1$ reinforces this finding---enforcement costs are
 effectively constant across PBU sizes.
 
-\paragraph{Overidentification check.}
-In corner-solution convite tenders (where the 3-bidder minimum
-binds), the calibrated interior-solution model predicts
-$\hat{m}_{\text{interior}} = 0.36$, well below the observed
-$\bar{m}_{\text{corner}} = 1.00$. The excess is positive in all
-393 PBUs with corner solutions ($t = 179.2$, $p < 0.001$),
-confirming that the minimum-bidder constraint forces deployment
-above the interior optimum. This is the institutional mechanism
-that Section~\ref{sec:counterfactual} exploits for the welfare
-counterfactual.
+\paragraph{Out-of-sample validation.}
+We assess predictive power via repeated split-sample validation:
+the model is estimated on a random two-thirds of PBUs and used to
+predict $\log \bar{m}$ on the holdout third. Across 100 random
+splits, the median out-of-sample $R^2$ is 0.561
+(IQR~$[0.537, 0.588]$), with a 36\% RMSE improvement over the
+naive mean-only predictor. The model's out-of-sample fit is driven
+almost entirely by the complementarity elasticity $\hat{\gamma}$:
+knowing a PBU's average genuine-bidder count explains over half the
+cross-PBU variation in cover-bidder deployment, even out of
+sample.\footnote{We initially explored an overidentification test
+based on corner-solution convite tenders (where the 3-bidder
+minimum binds). However, convite and preg\~ao differ in multiple
+dimensions beyond the bidder floor---contract size, electronic
+participation, item composition---making the comparison confounded.
+Within convite, FL count is approximately 1 regardless of
+$n_{\text{genuine}}$, providing insufficient variation for a clean
+test.}
 
 % ── 6.3 Specification Tests ───────────────────────────────────────
 
@@ -141,14 +149,19 @@ counterfactual.
 The model's empirical bite comes from predictions on moments not used
 in estimation. All five go in the predicted direction.
 
-\paragraph{Corner vs.\ interior solution
-(Proposition~\ref{prop:optimal_m}).}
-Mean FL count is 10.7 when $n_{\text{genuine}} = 0$ (the
-minimum-bidder constraint forces $m \geq 3$) and $\approx 2$ when
-$n \geq 2$ (interior solution). The corner solution drives the
-convite--preg\~ao asymmetry: 39.2\% of FL-present convite tenders
-have $n_{\text{genuine}} < 3$, and 23.5\% have $n = 0$---pure
-cover-bidding tenders where every participant is FL.
+\paragraph{Convite--preg\~ao asymmetry
+(Proposition~\ref{prop:optimal_m}(iii)).}
+FL deployment differs sharply across modalities: convite tenders
+have $\bar{m} \approx 1$ regardless of $n_{\text{genuine}}$, while
+preg\~ao tenders show $\bar{m}$ ranging from 1.3 (at $n = 1$) to
+3.5 (at $n \geq 5$). This gap persists even when the 3-bidder floor
+is irrelevant ($n \geq 3$), indicating that modality affects
+cover-bidder deployment through channels beyond the minimum-bidder
+rule---likely the lower participation costs and broader reach of
+electronic auctions. Within convite, FL participation appears to be
+a minimal-effort response (one cover bidder per tender), consistent
+with the model's prediction that the marginal return to cover bidding
+is lower in sealed-bid formats.
 
 \paragraph{Within-tender dispersion (Prediction~\ref{pred:regime}).}
 In 29,398 tenders with both FL and non-FL bidders, FL bid CV is 0.57

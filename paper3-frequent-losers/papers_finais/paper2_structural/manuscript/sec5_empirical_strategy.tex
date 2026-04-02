@@ -135,7 +135,7 @@ We estimate Eq.~\eqref{eq:calibration_moment} on PBU-level moments
 from 913 PBUs with $\geq$10 interior-solution tenders ($m^* >
 \underline{n}(\tau) - n$). Because the five-parameter NLS surface
 exhibits near-collinearity between $c_1$ and $\phi_0$ (enforcement
-variation across PBUs is limited), we adopt a profile-likelihood
+variation across PBUs is limited), we adopt a concentrated least-squares
 approach: $\psi$ is concentrated out over a grid
 $\{0.1, 0.2, \ldots, 3.0\}$, and the remaining four parameters
 $(\pi_0, \gamma, c_1, \phi_0)$ are estimated by weighted NLS at each
@@ -143,11 +143,9 @@ grid point. The profile-best $\psi^*$ minimizes the weighted residual
 sum of squares. Standard errors by PBU-clustered bootstrap (500
 replications) at fixed $\psi^*$.
 
-Corner-solution tenders---convite auctions where the 3-bidder
-minimum forces $m \geq \underline{n}(\tau) - n$---are excluded from
-estimation and reserved for an overidentification check: the
-interior-solution model should predict lower FL counts than observed
-in these tenders, confirming that the constraint binds.
+We assess out-of-sample fit via repeated split-sample validation:
+the model is estimated on two-thirds of PBUs and tested on the
+holdout third (100 random splits).
 
 \paragraph{Identification.}
 $\gamma$ is identified from the covariation of $\bar{m}$ with
