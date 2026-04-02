@@ -1,0 +1,154 @@
+\section{Empirical Strategy}
+\label{sec:empirical}
+
+The empirical analysis exploits two sources of institutional
+variation to test the predictions in
+Table~\ref{tab:predictions}: (i)~the convite--preg\~ao modality
+split, which separates rule-bound from unconstrained deployment,
+and (ii)~purchasing-unit size as a proxy for enforcement capacity.
+We describe the baseline specification, the two heterogeneity
+tests, and the threats to identification.
+
+\subsection{Baseline Specification}
+\label{sec:baseline}
+
+The baseline regresses tender-item outcomes on FL presence:
+\begin{equation}
+  y_{igt} = \beta \cdot \text{losers}_{igt}
+  + \delta \cdot \text{convite}_{igt}
+  + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt}
+  \label{eq:baseline}
+\end{equation}
+where $y_{igt}$ is log negotiated price for tender-item $i$ in item
+group $g$ at time $t$ and purchasing unit $k$;
+$\text{losers}_{igt} \in \{0,1\}$ indicates FL presence;
+$\text{convite}_{igt}$ is a modality indicator; $\alpha_g$,
+$\lambda_t$, and $\gamma_k$ are item, year, and PBU fixed effects;
+and $\varepsilon_{igt}$ is clustered at the item level.
+
+The coefficient $\hat{\beta}$ is a conditional association, not a
+causal effect. Item fixed effects absorb permanent cross-market
+heterogeneity (more expensive product categories mechanically
+attract different bidder pools); year and PBU effects absorb
+aggregate price trends and procuring-unit characteristics. The
+residual threat is time-varying, within-item confounders that
+jointly attract FL firms and raise prices---for example, demand
+shocks or supplier entry that simultaneously affect prices and
+bidder composition.
+
+We assess sensitivity using the \citet{cinelli2020making} framework.
+The robustness value is $RV_{q=1} = 17.5\%$: an unobserved
+confounder would need to explain at least 17.5\% of the residual
+variation in both FL presence and log prices to drive $\hat{\beta}$
+to zero---a high bar given the fixed-effects structure.
+
+As a non-parametric check, we estimate the price effect using
+coarsened exact matching on year, modality, item group, and PBU
+size quartile (CEM: $\hat{\beta} = 0.077$) and inverse probability
+weighting (IPW: $\hat{\beta} = 0.055$). Together with the OLS
+baseline (0.064) and temporal cross-fitting (0.036), these four
+estimators bracket the FL--price association in a 3.6--7.7\% range.%
+\footnote{Full matching and cross-fitting results are in
+\citet{genicolomartins2026screening}. We report the headline range
+here and focus on the institutional heterogeneity.}
+
+\subsection{Modality Split: Convite vs.\ Preg\~ao}
+\label{sec:modality_split}
+
+The central test in this paper estimates
+Equation~\eqref{eq:baseline} separately by modality:
+\begin{equation}
+  y_{igt} = \beta_s \cdot \text{losers}_{igt}
+  + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt},
+  \qquad s \in \{\text{preg\~ao}, \text{convite}\}
+  \label{eq:modality_split}
+\end{equation}
+Prediction~P2 states that $\hat{\beta}_{\text{convite}} <
+\hat{\beta}_{\text{preg\~ao}}$: the minimum-bidder rule forces
+deployment in convite even where cover bidding would otherwise be
+unprofitable, mixing mandatory (corner-solution) and voluntary
+(interior-solution) deployments. The mandatory component adds noise
+to the FL indicator without adding to prices, compressing the
+coefficient toward zero. In preg\~ao, all deployment is voluntary,
+so the coefficient captures only tenders where the cartel expects
+cover bidding to be profitable.
+
+We supplement the split with an interaction specification on the
+full sample:
+\begin{equation}
+  y_{igt} = \beta_1 \cdot \text{losers}_{igt}
+  + \beta_2 \cdot \text{losers}_{igt} \times \text{convite}_{igt}
+  + \delta \cdot \text{convite}_{igt}
+  + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt}
+  \label{eq:interaction}
+\end{equation}
+Under P2, $\hat{\beta}_2 < 0$: the convite interaction is
+negative, indicating that the rule dilutes the FL signal.
+
+\paragraph{Voluntary deployment premium.}
+Within the convite sample, we can separate tenders where the
+minimum-bidder rule binds ($n_{\text{genuine}} < 3$, requiring FL
+deployment) from tenders where it does not ($n_{\text{genuine}} \geq
+3$, FL deployment is voluntary). If the rule forces some
+unprofitable deployments, the FL coefficient should be larger in
+the non-binding subsample---the ``voluntary deployment premium.''
+This within-convite comparison partially addresses the concern that
+the modality split is confounded by differences in contract value
+or item composition between convite and preg\~ao.
+
+\subsection{Enforcement-Capacity Gradient}
+\label{sec:oversight}
+
+Prediction~P4 states that the FL price effect decreases in
+enforcement capacity. We proxy enforcement capacity with annual
+procurement volume by PBU: larger PBUs have dedicated procurement
+staff, internal audit, and greater Tribunal de Contas visibility.
+We split the sample into PBU-size quartiles and estimate
+Equation~\eqref{eq:baseline} within each:
+\begin{equation}
+  y_{igt} = \beta_q \cdot \text{losers}_{igt}
+  + \alpha_g + \lambda_t + \varepsilon_{igt},
+  \qquad q \in \{Q1, Q2, Q3, Q4\}
+  \label{eq:pbu_split}
+\end{equation}
+PBU fixed effects are absorbed within each quartile. The prediction
+is that $\hat{\beta}_{Q1} > \hat{\beta}_{Q4}$: the FL--price
+association is strongest where oversight is weakest.
+
+\subsection{Threats to Identification}
+\label{sec:threats}
+
+Three threats deserve explicit discussion.
+
+\paragraph{Selection into modality.}
+Convite and preg\~ao differ in contract value, item composition,
+and the population of eligible firms. The modality split is not
+random assignment; it reflects legislative rules (value thresholds)
+and procurement-officer discretion. We address this in two ways.
+\emph{First}, item and year fixed effects absorb much of the
+cross-modality heterogeneity: within a given product code and year,
+the price comparison exploits variation in FL presence, not in
+modality choice. \emph{Second}, the within-convite
+voluntary-deployment test (Section~\ref{sec:modality_split})
+provides a comparison that holds the modality constant.
+
+\paragraph{Endogeneity of PBU size.}
+PBU procurement volume may correlate with unobserved procurement
+quality or local market structure. We do not claim that PBU size
+causes differences in the FL--price association; the gradient is
+descriptive. The prediction is that the pattern is \emph{monotone}
+(decreasing in PBU size), which is harder to generate from
+confounders that would need to vary monotonically with volume
+while being orthogonal to the fixed-effects structure.
+
+\paragraph{FL classification as treatment.}
+The FL indicator is an imperfect proxy for cover-bidder presence.
+Misclassification attenuates the OLS coefficient: some FL-flagged
+firms are genuine losers, and some cover bidders escape the
+threshold. The companion paper shows that a leave-one-out IV
+(exploiting FL supply at other PBUs in the same product market)
+yields a coefficient of 0.194---three times the OLS---consistent
+with measurement-error attenuation. However, the IV has
+exclusion-restriction concerns and we do not use it as a primary
+estimate. The OLS coefficient is conservative: it understates the
+association between cover-bidder presence and prices.

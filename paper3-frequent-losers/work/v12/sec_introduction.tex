@@ -1,34 +1,39 @@
 \section{Introduction}
 \label{sec:intro}
 
-Bid-rigging cartels in public procurement face a practical constraint:
-they must simulate competition to avoid detection. A common solution is
-\emph{cover bidding}---deploying firms that submit losing bids to
-legitimize the process and create the appearance of rivalry
-\citep{marshall2012economics, asker2010leniency}. Detecting such
-behavior remains hard, especially where bid-level data are unavailable
-\citep{harrington2008detecting, imhof2019detecting}.
+Competition authorities need scalable tools to flag bid-rigging
+cartels in public procurement. Existing screens
+\citep{imhof2019detecting, huber2019machine} require bid-level
+microdata---prices, dispersion measures, distributional
+features---that are incomplete or absent in many procurement systems.
+This paper proposes a screen that requires only participation records
+and win/loss outcomes: \emph{frequent losers} (FL)---firms that never
+win yet participate in abnormally many tenders. The screen is
+deployable at scale, produces firm-level flags that triage
+investigations, and captures information orthogonal to bid-level tools.
 
-This paper proposes a firm-level diagnostic built on a participation
-anomaly: firms that repeatedly enter tenders but never win. We call
-them \emph{frequent losers} (FL). Sustained participation with a zero
-win rate is difficult to reconcile with profit-maximizing behavior
-when bidding is costly, and matches patterns observed in prosecuted
-documented in prosecuted cartels---and the screen requires only
-participation and outcome records, making it applicable where the
-bid-level data demanded by existing tools are incomplete or absent.
-
-Our laboratory is S\~ao Paulo's Bolsa Eletr\^onica de Compras (BEC),
-covering 4.5 million tender-items and 40 million bids over
-2009--2019. Among 41,000 firms, 16,843 never win a single tender.
-An IQR-based outlier rule applied to this always-loser population
-identifies 2,735 whose participation frequency cannot be squared with
-profit-maximizing entry---the frequent losers. A firm that bids on
+The behavioral anomaly is simple: sustained participation with a zero
+win rate is difficult to reconcile with profit-maximizing entry when
+bidding is costly. It matches patterns documented in prosecuted
+cartels, where designated firms submit deliberately losing bids to
+simulate competition---what we call \emph{synthetic competition}
+\citep{marshall2012economics, asker2010leniency}. A firm that bids on
 50 tenders over a decade without winning a single one is either
 extraordinarily unlucky or playing a different game.
 
-Within-item, within-year, within-purchasing-unit comparisons show a
-3.6--7.7\% conditional price gap in FL-present tenders. The range
+We validate the screen against external enforcement data. Among
+2,735 FL firms identified in S\~ao Paulo's Bolsa Eletr\^onica de
+Compras (BEC, 2009--2019), 7.1\% co-participate with
+CADE-convicted cartelists---3.5$\times$ the baseline rate
+($p < 0.001$). The ROC curve achieves AUC~$= 0.94$, with the
+data-driven optimal threshold (Youden's $J = 0.84$) nearly
+identical to the baseline IQR rule. A horse-race regression
+shows the FL screen captures price information orthogonal to
+\citet{imhof2019detecting}-style bid-level features (correlation
+0.06), confirming complementarity rather than redundancy.
+
+FL-flagged procurement environments show 3.6--7.7\% higher prices in
+within-item, within-year, within-purchasing-unit comparisons. The range
 spans temporal cross-fitting (3.6\%), OLS with high-dimensional fixed
 effects (6.4\%), and matching (CEM: 7.7\%; IPW: 5.5\%). After
 absorbing item fixed effects the raw gap collapses from 2.43 to 0.050
@@ -48,19 +53,12 @@ presented as an unresolved ambiguity
 systematically associated with higher prices and with known cartel
 activity.
 
-An external consistency check against CADE (Brazil's competition
-authority) shows FL firms are 3.5$\times$ more present in
-cartel-affected markets ($p < 0.001$). This excess reflects market
-proximity rather than direct cartel membership; its nuances are taken
-up in Section~\ref{sec:cade}. The price association barely moves when
-we drop all CADE-involved markets ($\hat{\beta} = 0.062$), so the
-marker picks up something beyond the enforcement record.
-
 We complement the price regressions with a battery of diagnostics
-that check whether the screen's behavior is coherent with cover
-bidding. The price effect concentrates in competitive markets;
+that check whether the screen's behavior is coherent with synthetic
+competition. The price effect concentrates in competitive markets;
 bid-coordination tests reject exchangeability of FL and non-FL
-residuals; and the FL premium is larger in convite tenders where the
+residuals; FL--winner pairs recur more often than chance predicts;
+and the FL premium is larger in convite tenders where the
 minimum-bidder rule does not bind (7.6\%) than where it forces
 participation. These patterns are individually coherent with cover
 bidding but admit non-collusive readings; they serve as supporting
@@ -68,20 +66,21 @@ diagnostics, not identifying evidence
 (Sections~\ref{sec:results}--\ref{sec:mechanisms}).
 
 \subsection{Contributions}
-% FINAL-MOVE-1: contributions rewrite
 
-\emph{First}, we build a firm-level screen that uses only participation
-frequency and win rates. It requires no bid microdata, no structural
-assumptions, and no enforcement records. It is deployable at scale.
+\emph{First}, we build a firm-level screening tool that uses only
+participation frequency and win rates---no bid microdata, no
+structural assumptions, no enforcement records. It achieves
+AUC~$= 0.94$ against competition-authority convictions and is
+deployable at scale.
 
-\emph{Second}, we show that the screen marks procurement environments
-where prices are 3.6--7.7\% higher in within-item comparisons. This is
-a conditional association under item $\times$ year $\times$ buyer fixed
-effects, not a causal estimate.
+\emph{Second}, we show that FL-flagged environments have
+3.6--7.7\% higher prices in within-item comparisons (a conditional
+association, not a causal estimate) and that the screen captures
+information orthogonal to existing bid-level tools.
 
 \emph{Third}, we check whether the screen's behavior is coherent with
-cover bidding through a battery of independent diagnostics (Bajari--Ye,
-invitation heterogeneity, bid-level patterns, CADE co-bidding). The
+synthetic competition through independent diagnostics (Bajari--Ye,
+dyadic linkage, invitation heterogeneity, CADE co-bidding). The
 diagnostics produce coherent results; they do not identify the
 mechanism.
 

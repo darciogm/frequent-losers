@@ -1,0 +1,126 @@
+\section{Data and Frequent Losers Classification}
+\label{sec:data}
+
+\subsection{Data}
+\label{sec:data_source}
+
+The data come from the BEC platform described in
+Section~\ref{sec:bec_platform}. We observe 4.5 million tender-items
+and 40 million individual bids from 41,000 firms across 1,308
+purchasing units over 2009--2019. Each observation records the item
+description, product code, modality (convite or preg\~ao), procuring
+unit, date, all bid amounts, and the winning price. The data include
+losing bids---a feature essential for identifying participation
+patterns.
+
+\subsection{Frequent Losers Classification}
+\label{sec:fl_definition}
+
+We identify frequent losers (FL) in two steps, following
+\citet{genicolomartins2026screening}:
+
+\begin{enumerate}
+  \item \textbf{Always-losers}: firms with a zero win rate across all
+    2009--2019 tenders. Of 41,000 BEC participants, 16,843 ($\sim$41\%)
+    never win. The high always-loser rate reflects small firms bidding
+    beyond capacity, BEC's low participation cost, and---in
+    convite---PBU officials inviting firms to satisfy the three-bidder
+    rule.
+
+  \item \textbf{IQR threshold}: among always-losers, we flag those
+    with abnormally high participation using a
+    median~$+$~1.5~$\times$~IQR threshold on the tender-count
+    distribution.%
+    \footnote{We use the median rather than $Q_3$ because the
+    distribution is heavily right-skewed. See
+    \citet{genicolomartins2026screening} for robustness to
+    alternative multipliers (1.0--3.0$\times$IQR).}
+    The resulting cutoff is 14 tenders. The economic justification
+    is the negative-profit argument in Section~\ref{sec:rationality}:
+    at 14+ tenders with zero wins, expected profit is strictly
+    negative for any positive bidding cost, so persistent
+    participation requires a non-competitive explanation.
+    This yields \textbf{2,735 FL firms}.
+\end{enumerate}
+
+\noindent The treatment variable $\text{losers}_{igt}$ equals one if
+tender-item $i$ in item group $g$ at time $t$ has at least one FL
+firm among its participants.
+
+We note three properties of the classification. \emph{First}, it is
+static: FL status is defined over the full 2009--2019 window.
+Splitting the sample at 2013, only 10\% of first-half FL firms
+reappear as FL in the second half, suggesting that the identities
+rotate even as the pattern persists. \emph{Second}, it is validated
+against external data: FL firms co-participate with CADE-convicted
+cartelists at 3.5$\times$ the baseline rate ($p < 0.001$), and the
+screen achieves AUC~$= 0.94$ against enforcement outcomes
+\citep{genicolomartins2026screening}. \emph{Third}, it is
+intentionally coarse. FL is a triage tool that flags suspicious
+environments, not a classifier that labels individual firms as
+cartel members.
+
+\subsection{Sample Construction}
+\label{sec:sample}
+
+The regression sample retains convite and preg\~ao tenders with a
+recorded winner, restricted to item types with at least one
+FL-present tender. The restriction ensures that controls come from
+product markets where FL firms could plausibly participate; the
+unrestricted sample yields a nearly identical coefficient.%
+\footnote{See \citet{genicolomartins2026screening}, Table~B.3.}
+
+Table~\ref{tab:sample_by_modality} reports the sample composition.
+Two features merit attention. \emph{First}, convite accounts for
+67\% of tender-items but only 33\% of procurement value---it is the
+high-volume, low-value modality where the minimum-bidder rule
+applies. \emph{Second}, FL presence rates differ across modalities:
+4.8\% overall, with higher incidence in convite tenders where the
+rule creates mechanical demand for cover bidders.
+
+\begin{table}[htbp]
+\centering
+\caption{Sample composition by procurement modality}
+\label{tab:sample_by_modality}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & Preg\~ao & Convite & Total \\
+\midrule
+Tender-items & 546,549 & 1,107,852 & 1,654,401 \\
+Item types & 12,431 & 14,672 & 18,783 \\
+Purchasing units (PBUs) & 892 & 1,104 & 1,308 \\
+FL-present tender-items (\%) & 3.9 & 5.2 & 4.8 \\
+\midrule
+\multicolumn{4}{l}{\textit{Among FL-present convite tenders:}} \\
+\quad $n_{\text{genuine}} < 3$ (rule binding) & --- & 39.2\% & --- \\
+\quad $n_{\text{genuine}} = 0$ (pure cover bidding) & --- & 23.5\% & --- \\
+\midrule
+Mean log price & 6.82 & 5.47 & 5.91 \\
+Mean number of bidders & 4.21 & 3.48 & 3.72 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Sample restricted to tender-items with a
+recorded winner in item types with at least one FL-present tender
+(2009--2019). $n_{\text{genuine}}$ counts non-FL bidders.
+``Rule binding'' means the minimum-bidder threshold ($\geq 3$
+participants) could not be met without FL firms. ``Pure cover
+bidding'' means all participants are FL firms.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The bottom panel of Table~\ref{tab:sample_by_modality} reports the
+two statistics central to the paper's argument. Among FL-present
+convite tenders, 39.2\% have fewer than three genuine
+competitors---the minimum-bidder rule binds, and the cartel must
+deploy cover firms to clear the threshold. In 23.5\% of cases,
+$n_{\text{genuine}} = 0$: every participant is a cover firm, and
+the rule achieved zero genuine competition at positive
+administrative cost. These figures describe the corner solution of
+the model in Section~\ref{sec:corner_interior}.

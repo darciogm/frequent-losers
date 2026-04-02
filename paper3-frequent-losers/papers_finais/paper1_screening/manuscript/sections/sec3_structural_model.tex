@@ -1,0 +1,83 @@
+% ============================================================================
+% sec3_structural_model.tex — Cover-bidding model (full proofs in Appendix A)
+% ============================================================================
+
+\section{A Model of Cover Bidding in Procurement Auctions}
+\label{sec:structural}
+
+Cover bidding is well documented in prosecuted cartels
+\citep{porter1999ohio, pesendorfer2000study, asker2010leniency,
+marshall2012economics}, yet no existing model turns it into a source
+of \emph{ex ante} testable predictions. We develop a model that does.
+It distinguishes two cover-bidding regimes---complementary and
+coordinated---and generates five empirical predictions that discipline
+every subsequent test (Table~\ref{tab:predictions}). The model's
+central implication is a detection impossibility result: under the
+coordinated regime (Regime~2), cover bids cluster tightly above the
+designated winner, so within-tender dispersion screens lose power
+\emph{precisely when coordination is strongest}. A
+participation-based screen sidesteps this vulnerability entirely.
+
+The full model, assumptions, proofs, and structural likelihood are in
+Appendix~\ref{app:proofs} and~\ref{app:structural_id}. Here we
+present the setup, key results, and the predictions taken to data.
+
+\subsection{Setup and Key Results}
+
+A cartel controls a designated winner and deploys $m \geq 0$ cover
+bidders (FL firms), each bidding above the cartel's winning bid
+$b^*$. The cartel maximizes profit net of cover-bidding costs and
+detection penalties, subject to a minimum-bidder constraint under
+convite ($\underline{n} = 3$) and no constraint under preg\~ao.
+Under standard assumptions on diminishing returns and increasing
+detection risk (Appendix~\ref{app:proofs}), the optimal number of
+cover bidders $m^*$ satisfies:
+\begin{enumerate}
+  \item[(i)] $m^*$ decreases in detection probability $\theta_k$;
+  \item[(ii)] $m^*$ decreases in per-bidder cost $c_1$;
+  \item[(iii)] $m^*$ is weakly larger under convite (corner solution
+    from the minimum-bidder rule). However, the constraint-driven
+    component dilutes the FL--price signal by mixing mandatory and
+    voluntary deployments (Section~\ref{sec:mechanisms}).
+\end{enumerate}
+
+Two cover-bidding regimes are possible. Under \textbf{Regime~1}
+(complementary), cover bids are uniformly distributed above $b^*$,
+producing higher dispersion than genuine bids. Under \textbf{Regime~2}
+(coordinated), cover bids follow a truncated normal centered near
+$b^*$, producing \emph{lower} dispersion---a pattern also observed in
+coordinated settings. BIC selects between
+regimes using the mixture likelihood (Appendix~\ref{app:structural_id}).
+
+The \textbf{market-selection prediction} follows from the cross-derivative
+of cartel surplus: cover bidding is most profitable in competitive
+markets (low HHI), where the marginal return to manufactured
+competition is highest.
+
+\subsection{Testable Predictions}
+\label{sec:predictions}
+
+Table~\ref{tab:predictions} maps the model's predictions to the
+empirical tests reported below.
+
+\begin{table}[htbp]
+\centering
+\caption{Model predictions and empirical tests}
+\label{tab:predictions}
+\small
+\begin{tabular}{llll}
+\toprule
+\# & Prediction & Test & Section \\
+\midrule
+P1\label{pred:price_v6} & FL $\Rightarrow$ higher prices & OLS with FE & \ref{sec:reduced_form} \\
+P2\label{pred:selection_v6} & FL adds to, not displaces, genuine bidders & Non-FL count & \ref{sec:reduced_form} \\
+P3\label{pred:regime_v6} & Regime~2: $\sigma_c < \sigma_g$ & BIC model selection & \ref{sec:structural_estimation} \\
+P4\label{pred:market_v6} & FL effect $\downarrow$ in HHI & Network split & \ref{sec:empirical_network} \\
+P5\label{pred:exchange_v6} & FL residuals non-exchangeable & Bajari--Ye KS + pairwise & \ref{sec:bajari_ye} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The model generates the predictions tested in
+Sections~\ref{sec:results}--\ref{sec:mechanisms}; welfare
+implications are in Appendix~\ref{app:extensions}.

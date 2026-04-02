@@ -1,0 +1,153 @@
+\section{Theoretical Framework}
+\label{sec:framework}
+
+This section develops a simple model of cover-bidder deployment that
+generates testable predictions about the minimum-bidder rule. The
+model is intentionally spare: we need only the corner-vs-interior
+distinction and the enforcement-capacity comparative static to
+discipline the empirical analysis. The full structural model,
+identification, and estimation appear in a companion paper.%
+\footnote{See \citet{genicolomartins2026screening}, Appendix~A.}
+
+\subsection{Setup}
+
+A cartel controls a designated winner in a procurement tender and may
+deploy $m \geq 0$ cover bidders---affiliated firms that submit
+deliberately losing bids above the cartel's winning bid $b^*$. Each
+cover bidder costs $c_1 > 0$ (coordination, side payments, and the
+bidder's opportunity cost). Detection occurs with probability
+$\theta_k \in (0,1)$ per tender at purchasing unit $k$, with
+penalty $F > 0$.
+
+The cartel's per-tender payoff is
+\begin{equation}
+  \Pi(m) = (b^* - c_0) - m \cdot c_1 - \theta_k \cdot F
+  \label{eq:cartel_payoff}
+\end{equation}
+where $c_0$ is the cartel's cost of production. The cartel chooses
+$m$ to maximize $\Pi$ subject to an institutional constraint that
+depends on the procurement modality.
+
+\subsection{Corner vs.\ Interior Solution}
+\label{sec:corner_interior}
+
+Under \textbf{preg\~ao}, there is no minimum-bidder requirement. The
+cartel deploys cover bidders only if the marginal benefit (inflating
+apparent competition, anchoring reference prices) exceeds $c_1$.
+When the market has enough genuine competitors, the cartel may
+optimally set $m^* = 0$. This is the \emph{interior solution}:
+deployment is voluntary and responds to economic incentives.
+
+Under \textbf{convite}, Art.\ 22, \S\,3 of Lei 8.666 requires at
+least $\underline{n} = 3$ participants. If the number of genuine
+competitors is $n_g < 3$, the cartel must deploy at least
+$\underline{m} = 3 - n_g$ cover bidders or risk cancellation and
+re-advertisement (Art.\ 22, \S\,7). The cartel's problem becomes
+\begin{equation}
+  m^*_{\text{convite}} = \max\bigl\{\underline{m},\; m^*_{\text{interior}}\bigr\}
+  \label{eq:corner}
+\end{equation}
+where $m^*_{\text{interior}}$ is the unconstrained optimum. When
+$\underline{m} > m^*_{\text{interior}}$, the rule forces deployment
+beyond what the cartel would choose voluntarily. This is the
+\emph{corner solution}: the constraint binds, and the cartel fills
+the gap with cover firms.
+
+The corner solution has a direct empirical implication. In convite
+tenders where $n_g < 3$, cover-bidder deployment is a \emph{necessary
+condition} for the tender to proceed---not a signal of unusually
+aggressive collusion, but a mechanical consequence of the rule. The
+FL--price coefficient in these tenders reflects a mix of mandatory
+and voluntary deployments, compressing the estimate toward zero.
+
+\subsection{Rationality of Cover-Bidder Participation}
+\label{sec:rationality}
+
+Cover bidders pay a bidding cost $c > 0$ per tender and earn zero
+revenue (win rate = 0). Their expected profit per bid is
+\begin{equation}
+  E[\pi_{\text{FL}}] = 0 \times \bar{V} \times \text{margin} - c = -c < 0
+  \label{eq:fl_profit}
+\end{equation}
+for any $c > 0$. On BEC, bidding is electronic; $c$ captures staff
+time for bid preparation and documentation (1--2 hours at
+R\$25--50/hour), yielding $c \in [\text{R\$50}, \text{R\$500}]$ per
+tender.
+
+Near the FL classification threshold (14 tenders over 2009--2019),
+cumulative losses range from R\$700 to R\$7,000---conceivably
+explained by bad luck or learning. At the 90th percentile (50+
+tenders), losses reach R\$2,500--R\$25,000. A Bayesian learner with
+a uniform prior updates $\Pr(\text{win}) = 1/(n+2)$ after $n$
+zero-win trials; after 50 trials, expected gain per bid is
+R\$163---below even the lowest bidding cost.%
+\footnote{With $\bar{V} = \text{R\$}86{,}000$ (sample mean) and
+10\% margin: $0.019 \times 86{,}000 \times 0.10 = \text{R\$}163$.}
+Under any standard competitive search model, the firm should exit.
+Persistent participation at negative expected profit is consistent
+with side payments from a cartel---exactly the compensation term
+that makes $m > 0$ individually rational for the cover bidder.
+
+This argument does not prove collusion: firms may win tenders
+outside BEC, derive non-monetary value from participation, or simply
+behave irrationally. But it establishes that the FL pattern is
+\emph{costly to maintain} and therefore requires explanation.
+
+\subsection{Enforcement Capacity}
+\label{sec:enforcement}
+
+Detection probability $\theta_k$ varies across purchasing units.
+Large PBUs have dedicated procurement staff, internal audit
+departments, and higher visibility from the Tribunal de Contas;
+small PBUs often have a single procurement officer handling all
+modalities. From Equation~\eqref{eq:cartel_payoff}, $\partial
+m^*/\partial \theta_k < 0$: as detection probability rises, the
+cartel deploys fewer cover bidders. The expected FL--price effect
+should therefore be largest at low-capacity PBUs and smallest at
+high-capacity ones.
+
+\subsection{Predictions}
+\label{sec:predictions}
+
+The model generates four testable predictions, each linked to the
+institutional variation described in Section~\ref{sec:institutional}.
+
+\begin{table}[htbp]
+\centering
+\caption{Testable predictions from the cover-bidder deployment model}
+\label{tab:predictions}
+\small
+\begin{tabular}{clll}
+\toprule
+\# & Prediction & Institutional variation & Section \\
+\midrule
+P1 & FL presence $\Rightarrow$ higher prices
+   & Within-item, within-year, within-PBU
+   & \ref{sec:results} \\[4pt]
+P2 & \parbox[t]{6.2cm}{Convite coefficient $<$ preg\~ao coefficient\\
+   (corner solution dilutes the signal)}
+   & Modality: convite vs.\ preg\~ao
+   & \ref{sec:results} \\[4pt]
+P3 & \parbox[t]{6.2cm}{39.2\% of FL-present convites have $n_g < 3$;\\
+   23.5\% have $n_g = 0$ (pure cover bidding)}
+   & Minimum-bidder rule binding
+   & \ref{sec:results} \\[4pt]
+P4 & \parbox[t]{6.2cm}{FL price effect decreasing in PBU size\\
+   (proxy for enforcement capacity $\theta_k$)}
+   & PBU procurement volume quartile
+   & \ref{sec:results} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent P1 is the baseline association. P2 and P3 exploit the
+convite--preg\~ao institutional variation: the minimum-bidder rule
+forces deployment in convite, compressing the coefficient relative
+to preg\~ao, where only voluntary (and presumably more profitable)
+deployments occur. P4 exploits cross-sectional variation in
+enforcement capacity.
+
+None of these predictions identifies a causal effect. P2 and P4, in
+particular, rely on cross-modality and cross-PBU comparisons that
+may be confounded by selection. We discuss threats to identification
+in Section~\ref{sec:empirical}.

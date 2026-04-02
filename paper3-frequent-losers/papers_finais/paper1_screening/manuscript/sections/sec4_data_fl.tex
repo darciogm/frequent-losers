@@ -1,0 +1,128 @@
+% ============================================================================
+
+% Paper: Frequent Losers and Cover Bidding in Public Procurement
+% ============================================================================
+
+\section{Data and Frequent Losers Definition}
+\label{sec:data}
+
+\subsection{BEC Platform}
+\label{sec:bec}
+
+The data come from the Bolsa Eletr\^onica de Compras (BEC), S\~ao
+Paulo's centralized electronic procurement platform. BEC serves 1,308
+purchasing units (PBUs) and handles two modalities:
+\emph{convite} (sealed-bid, minimum three bidders, Lei~8.666/93) and
+\emph{preg\~ao} (electronic reverse auction, no minimum-bidder rule).
+The convite minimum-bidder rule creates a direct incentive for cover
+bidding; under preg\~ao, cover bidders inflate apparent competition.
+The sample spans 2009--2019: 4.5 million tender-items,
+40 million bids, 41,000 firms
+(Table~\ref{tab:modality_year}, Appendix~\ref{app:competition}).
+
+\subsection{Frequent Losers Definition}
+\label{sec:fl_definition}
+
+We define frequent losers (FL) in two steps:
+
+\begin{enumerate}
+  \item \textbf{Always-losers}: firms with a zero win rate across all
+    2009--2019 tenders. 16,843 firms ($\sim$41\% of all
+    BEC participants) never win a single tender---a high rate
+    explained by BEC's low participation cost (electronic, no travel)
+    and, for convite, PBU officials inviting firms to meet the
+    three-bidder minimum. FL firms are a small, extreme tail of this
+    heterogeneous population: among 16,843 always-losers, only 2,735
+    participate at intensities incompatible with profit-maximizing
+    entry.
+  \item \textbf{IQR threshold}: among always-losers, we identify those
+    with abnormally high participation counts using a median + 1.5
+    $\times$ IQR threshold on the distribution of tender
+    participations. The primary justification is economic: at the
+    resulting threshold of 14 or more tenders with a zero win rate,
+    expected profit is strictly negative for any positive bidding cost
+    ($E[\pi] = 0 \times \overline{V} \times \text{margin} - c < 0$;
+    see Section~\ref{sec:rationality}). Sustained participation at this
+    intensity is difficult to rationalize as competitive entry and
+    in line with the side-payment arrangements documented in prosecuted
+    cartels \citep{asker2010leniency, marshall2012economics}. The
+    threshold was fixed \emph{a priori} at 1.5$\times$IQR based on
+    this economic rationale, before examining CADE data.%
+    \footnote{We use median + 1.5 $\times$ IQR rather than the standard
+    Tukey rule (Q3 + 1.5 $\times$ IQR) because the participation
+    distribution is highly right-skewed.}
+    Post hoc, the ROC analysis in
+    Section~\ref{sec:detection_validation} shows that the
+    data-driven optimal threshold (Youden's $J = 0.84$) corresponds
+    to a multiplier of 1.45$\times$IQR---close to the 1.5$\times$
+    rule we chose on economic grounds. This convergence is reassuring
+    but was not used to select the threshold; robustness to the
+    multiplier is reported in Section~\ref{sec:robustness}.
+    The definition yields 2,735 FL firms.
+\end{enumerate}
+
+The treatment variable $\text{losers}_{igt}$ equals one if tender-item
+$i$ in item group $g$ at time $t$ has at least one FL firm among its
+participants, and zero otherwise.
+
+The FL classification is static: it pools participation over the full
+2009--2019 window. Classifying FL separately in 2009--2013 and
+2014--2019, only 10\% of early-period FL firms reappear as FL in the
+second half (111 of 1,095). The turnover is consistent with what
+prosecution records document: cartels rotate cover bidders to avoid
+detection \citep{marshall2012economics}. The identities change, but
+the pattern endures---precisely the signature of an ongoing practice
+rather than a fixed pool of chronic losers. For empirical purposes,
+FL status is best read as an environment-level marker (a tender with
+suspicious participation) rather than a stable firm label.
+Diagnostics of the classification---continuous measures, permutation
+placebos, and zero-win sensitivity---are reported in
+Section~\ref{sec:class_diagnostics}.
+
+\subsection{Sample Construction}
+\label{sec:sample}
+
+The participation distribution among always-losers is heavily
+right-skewed (Figures~\ref{fig:losses}--\ref{fig:iqr},
+Appendix~\ref{app:robustness}).
+The regression sample retains convite and preg\~ao modalities with a
+recorded winner and item types with at least one FL-present tender.
+This last restriction conditions on the treatment: items that never
+attract FL firms are excluded, ensuring controls come from item
+markets where FL firms could plausibly participate. The unrestricted
+sample (Appendix~\ref{app:online_robustness}) yields a nearly
+identical coefficient, confirming that the restriction is empirically
+innocuous.
+The resulting sample contains 1,654,447 tender-items across 18,783
+item types (defined at the finest product-code level available in BEC,
+not aggregated to two-digit groups), of which 15,101 (82\%) have both
+FL-present and FL-absent tenders and thus contribute to within-item
+identification. FL firms
+participate in 4.8\% of tender-items.
+Table~\ref{tab:descstats} reports descriptive statistics.
+
+\input{./output/tables/tab_desc_stats}
+
+\subsection{Structural Estimation Sample}
+\label{sec:structural_sample}
+
+The structural model requires bid-level data: 40 million bids from
+41,000 firms, with bid amount, winning price, firm identity, and FL
+classification. FL losing bids exhibit a mean log-spread of 0.83
+(SD = 1.19) above the winning price, versus a genuine-bid SD of 1.64.
+The ratio $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$ is coherent with Regime~2
+(coordinated cover bidding).
+
+\subsection{CADE Sample}
+\label{sec:cade_sample}
+
+The CADE consistency check uses a temporal split to prevent information
+leakage: FL status is defined on 2009--2014 data and evaluated against
+2015--2019 enforcement outcomes. The CADE data comprise 65 cartel
+cases, of which 47 convicted firms match BEC identifiers. Among 2,735
+FL firms, 193 (7.1\%) co-participate with CADE-convicted
+cartelists---3.5 times the expected rate ($p < 0.001$;
+Section~\ref{sec:cade}).
+
+Section~\ref{sec:structural} develops the cover-bidding model that
+generates the predictions tested in the empirical analysis.

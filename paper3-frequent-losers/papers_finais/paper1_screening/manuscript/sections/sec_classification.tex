@@ -1,0 +1,53 @@
+% ============================================================================
+% sec_classification.tex — V8/V9: Alternative FL classification methods
+% Addresses external referee Concern 2: ad hoc classification rule
+% ============================================================================
+
+\subsection{Classification Robustness: IQR Rule vs.\ Model-Based Alternatives}
+\label{sec:classification_robustness}
+
+A concern with the IQR threshold rule is that it may be ad hoc and
+could capture inefficient firms rather than cover bidders. We compare
+the IQR rule with two model-based alternatives on the same CADE
+ground truth.
+
+\paragraph{Structural classifier.}
+Using the estimated Regime~2 parameters ($\hat{\epsilon} = 0.83$,
+$\hat{\sigma}_c = 1.19$), we compute a log-likelihood ratio score for
+each always-loser firm. This score achieves AUC~$= 0.56$---barely
+above random---because the structural model characterizes cover-bid
+distributions at the \emph{aggregate} level but its parameters are
+insufficiently discriminative at the \emph{individual firm} level.
+
+\paragraph{Machine-learning classifier.}
+A random forest (500 trees, 5-fold CV) trained on seven firm-level
+features achieves cross-validated AUC~$= 0.90$---strong, but below
+the IQR rule's $0.94$ (DeLong $p = 0.04$).
+
+\paragraph{Unsupervised latent class analysis.}
+A two-component Gaussian mixture on 8,275 always-losers with $\geq 3$
+tenders discovers two latent classes without using FL labels. The
+``cover bidder'' class (mean participation: 45.2 vs.\ 9.0 tenders)
+contains 71.2\% FL firms versus 20.0\% in the ``genuine'' class
+(Table~\ref{tab:lca_validation}). The posterior probability
+$\Pr(\text{cover} \mid \text{FL}) = 0.56$ falls below the 0.75
+benchmark ($F_1 = 0.62$), reflecting the LCA's distribution of weight
+across correlated features whereas the IQR rule concentrates on the
+single most discriminative dimension. The key result is that an
+unsupervised model independently recovers a class whose defining
+characteristic---abnormally high participation with zero
+wins---aligns with the FL definition.
+
+LCA validation results are reported in Table~\ref{tab:lca_validation}
+(Appendix~\ref{app:robustness}).
+
+\paragraph{Interpretation.}
+Table~\ref{tab:classification_comparison} summarizes the supervised
+comparison (ROC curves in Figure~\ref{fig:classification_comparison},
+Appendix~\ref{app:robustness}). The IQR rule dominates both alternatives. Combined with
+the LCA's independent recovery of a cover-bidder class, the threshold
+rule captures the most discriminative feature of cover
+bidding---\emph{abnormally high participation despite zero wins}---which
+neither ML nor unsupervised methods improve upon.
+
+\input{tables/tab_classification_comparison}
