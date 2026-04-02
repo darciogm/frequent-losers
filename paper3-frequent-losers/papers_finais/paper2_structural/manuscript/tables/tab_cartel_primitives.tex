@@ -1,0 +1,48 @@
+% Calibrated cartel decision parameters (Section 5.2 / 6.2)
+\begin{table}[!htbp]
+\centering
+\caption{Calibrated Cartel Primitives}
+\label{tab:cartel_primitives}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+Parameter & Estimate & Bootstrap SE & 95\% CI \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel A: Structural Parameters}} \\[3pt]
+$\hat{\pi}_0$ (marginal return scale) & 0.073 & 0.006 & [0.063, 0.086] \\
+$\hat{\gamma}$ (complementarity elasticity) & 0.694 & 0.026 & [0.640, 0.744] \\
+$\hat{c}_1$ (per-bidder cost) & 0.238 & 0.033 & [0.177, 0.306] \\
+$\hat{\phi}_0$ (detection penalty) & 0.019 & 0.016 & [0.000, 0.056] \\
+$\psi$ (enforcement curvature) & \multicolumn{3}{c}{0.1 (concentrated NLS)} \\[3pt]
+$N$ (PBUs) & \multicolumn{3}{c}{913} \\
+$N$ (interior-solution tenders) & \multicolumn{3}{c}{83,024} \\
+Step~1 $R^2$ (log-linear) & \multicolumn{3}{c}{0.585} \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel B: Out-of-Sample Validation (100 random 2/3--1/3 splits)}} \\[3pt]
+Median OOS $R^2$ & \multicolumn{3}{c}{0.561 [0.537, 0.588]} \\
+Median OOS correlation & \multicolumn{3}{c}{0.753} \\
+RMSE improvement vs.\ naive & \multicolumn{3}{c}{36.1\%} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Minimum-distance estimates of cartel decision
+parameters from Eq.~\eqref{eq:calibration_moment}, estimated on
+PBU-level moments from 913 PBUs with $\geq$10 interior-solution
+tenders. The enforcement curvature $\psi$ is concentrated out via
+grid search over $\{0.1, \ldots, 3.0\}$; remaining parameters
+estimated by weighted NLS at the best $\psi^* = 0.1$.
+PBU-clustered bootstrap standard errors (500 replications, 291
+converged). $\hat{\gamma} > 0$ confirms strategic complementarity
+(Proposition~\ref{prop:market_selection}): cartels deploy more cover
+bidders in more competitive tenders. $\hat{\phi}_0$ is
+indistinguishable from zero, indicating that enforcement variation
+across PBUs does not significantly affect cover-bidder deployment.
+Panel~B reports out-of-sample predictive power from 100 random
+2/3--1/3 PBU splits; the model reduces RMSE by 36\% relative to
+the naive mean-only predictor, driven almost entirely by
+$\hat{\gamma}$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
