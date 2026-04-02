@@ -1,0 +1,113 @@
+% ============================================================================
+% sec8_robustness.tex — Paper 2: Robustness
+% ============================================================================
+
+\section{Robustness}
+\label{sec:robustness}
+
+The companion paper \citep{genicolomartins2026screening} reports
+extensive reduced-form robustness checks (IQR threshold variants,
+clustering alternatives, matching estimators, sensitivity to
+unobservables). Here we focus on checks specific to the structural
+model and the welfare counterfactuals.
+
+\paragraph{Reduced-form stability.}
+Table~\ref{tab:robustness_summary} collects the price association
+across FL-definition variants, sample restrictions, and estimation
+methods. The coefficient ranges from 0.036 (cross-fit) to 0.077
+(CEM), significant in all specifications. The cross-fit average
+breaks any mechanical link between the FL rule and the price outcome.
+\citet{cinelli2020making} sensitivity analysis yields $RV_{q=1} =
+17.5\%$: an unobserved confounder would need to explain 17.5\% of
+residual variation in both FL presence and log prices to nullify the
+association.
+
+\begin{table}[htbp]
+\centering
+\caption{Robustness summary: FL--price association}
+\label{tab:robustness_summary}
+\small
+\begin{tabular}{lccc}
+\hline\hline
+Check & Coeff.\ & SE & Note \\
+\hline
+OLS (item + year + PBU FE) & 0.064 & 0.020 & Baseline \\
+Cross-fit average & 0.036 & --- & Out-of-sample \\
+CEM matching & 0.077 & 0.024 & Non-parametric \\
+IPW matching & 0.055 & 0.021 & Non-parametric \\
+$n$-conditional (structural) & 0.062 & 0.019 & Controls for $n_{\text{genuine}}$ \\
+IV (leave-one-out) & 0.194 & 0.077 & Upper bound \\
+\hline
+IQR 1.0$\times$ & 0.079 & 0.023 & 3,442 FL firms \\
+IQR 2.0$\times$ & 0.060 & 0.022 & 2,093 FL firms \\
+IQR 3.0$\times$ & 0.050 & 0.024 & 1,456 FL firms \\
+\hline\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Structural robustness.}
+Three checks address the structural estimates. \emph{First}, the
+regime selection is insensitive to the estimation sample: restricting
+to preg\~ao-only or convite-only subsamples yields
+$\Delta$BIC~$< -10{,}000$ in favor of Regime~2 in both cases.
+\emph{Second}, the dispersion ratio $\hat{\sigma}_c / \hat{\sigma}_g$
+is stable across IQR multiplier thresholds: 0.70 at $1.0\times$,
+0.72 at $1.5\times$ (baseline), and 0.74 at $3.0\times$---the
+structural finding does not depend on the classification boundary.
+\emph{Third}, the ground-truth tests
+(Section~\ref{sec:results_detection}) confirm that the structural
+LR score (AUC~$= 0.56$) does not improve on the simple IQR rule
+(AUC~$= 0.94$), indicating that the model characterizes the
+mechanism but does not substitute for the participation-based screen.
+
+\paragraph{Random-label placebo.}
+To verify that the structural findings are specific to FL firms and
+not an artifact of selecting any subset of high-participation losers,
+we assign the ``FL'' label to 2,735 randomly chosen non-FL firms
+(matching the true FL count) and re-estimate the dispersion ratio.
+Across 100 placebo draws, the mean placebo ratio is
+$\hat{\sigma}_c / \hat{\sigma}_g = 1.00$ (SD~$= 0.01$)---centered
+at one, as expected when labels carry no information. The true ratio
+(0.72) falls below every placebo draw ($p < 0.01$). The Bajari--Ye
+pairwise product under placebo labels shows no tender-FE reversal
+(mean product $\approx 0.8$, compared to 0.38 for true FL firms).
+The placebo confirms that the dispersion paradox and the tender-FE
+reversal are specific to FL-labeled firms, not a mechanical
+consequence of subsetting.
+
+\paragraph{Latent class validation.}
+An unsupervised two-component Gaussian mixture on 8,275 always-losers
+(using five bid-level features, \emph{without} FL labels) discovers
+a ``cover-bidder'' class with mean participation of 45.2 tenders
+versus 9.0 for the ``genuine'' class. The cover class contains
+71.2\% FL firms versus 20.0\% in the genuine class
+(Table~\ref{tab:lca_validation}, Appendix~\ref{app:robustness}).
+The unsupervised model independently recovers the defining
+characteristic of the FL classification, providing structural support
+for the IQR rule.
+
+\paragraph{Staggered DiD.}
+A \citet{callaway2021difference} DiD and a stacked regression
+\citep{cengiz2019effect} both produce insignificant ATTs
+(C\&S: 0.014, SE $= 0.039$; stacked: $-0.006$, SE $= 0.014$).
+The stacked 95\% CI ($-0.034$, $0.022$) excludes the OLS baseline
+(0.064), consistent with failure of parallel trends---the pre-trend
+coefficients at $t = -2$ and $t = -3$ confirm that FL entry is
+endogenous to market conditions. The DiD designs are invalid for
+this setting, reinforcing the diagnostic framing. Full results in
+Appendix~\ref{app:did}.
+
+\paragraph{Oversight heterogeneity.}
+The FL--price association varies steeply with PBU size: 0.214 (Q1),
+0.098 (Q2), 0.045 (Q3), 0.017 (Q4)---a 12.5$\times$ gradient
+consistent with Proposition~\ref{prop:optimal_m}
+($\partial m^* / \partial \theta_k < 0$). The gradient motivates
+CF3 (Section~\ref{sec:counterfactual}): concentrating oversight on
+small PBUs maximizes the deterrence return.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_07_threshold_stability.pdf}
+\caption{FL--price association across IQR multiplier thresholds.}
+\label{fig:threshold_stability}
+\end{figure}

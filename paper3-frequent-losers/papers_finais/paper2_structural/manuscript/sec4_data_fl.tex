@@ -1,0 +1,92 @@
+% ============================================================================
+% sec4_data_fl.tex — Paper 2: Data and FL definition
+% ============================================================================
+
+\section{Data and Frequent-Loser Classification}
+\label{sec:data}
+
+\subsection{BEC Platform}
+\label{sec:bec}
+
+Our data come from the Bolsa Eletr\^onica de Compras (BEC), S\~ao
+Paulo's centralized electronic procurement platform serving 1,308
+purchasing units (PBUs) across state agencies, universities, hospitals,
+and municipal bodies. BEC handles two modalities:
+
+\begin{itemize}
+  \item \textbf{Convite} (sealed-bid): used for purchases up to
+    R\$80,000, requires a minimum of three bidders (Lei~8.666/93,
+    Art.~22, \S7). Bids are submitted simultaneously.
+  \item \textbf{Preg\~ao} (electronic reverse auction): the default
+    modality for standard goods and services. Bidders submit descending
+    bids in real time; no minimum-bidder requirement.
+\end{itemize}
+
+The minimum-bidder rule for convite is central to the structural
+model: if a cartel controls one genuine bidder, it needs at least two
+cover bidders to meet the threshold
+(Proposition~\ref{prop:optimal_m}, corner solution). Under preg\~ao,
+cover bidders serve primarily to inflate apparent competition.
+
+The sample spans 2009--2019: approximately 4.5 million tender-items,
+40 million bids, 41,000 unique firms.
+
+\subsection{Frequent-Loser Classification}
+\label{sec:fl_definition}
+
+We define frequent losers (FL) in two steps. First, \emph{always-losers}:
+16,843 firms ($\sim$41\% of BEC participants) with a zero win rate
+across all 2009--2019 tenders. Second, an IQR-based outlier rule:
+among always-losers, those with participation counts exceeding
+median + 1.5 $\times$ IQR ($\approx 14$ tenders) are classified as FL.
+This yields 2,735 firms.
+
+The classification, its validation against CADE convictions
+(AUC~$= 0.94$), and a battery of definition-robustness checks are
+developed in the companion paper
+\citep{genicolomartins2026screening}. Here we take the FL labels
+as given and use them as the mixture-model partition: FL bids enter
+the cover-bid likelihood $g_{\text{cover}}$, and non-FL bids enter
+the genuine-bid likelihood $f_{\text{genuine}}$
+(Section~\ref{sec:likelihood}).
+
+The treatment variable $\text{losers}_{igt}$ equals one if
+tender-item $i$ in item group $g$ at time $t$ has at least one FL
+participant, and zero otherwise. FL firms participate in 4.8\% of
+tender-items.
+
+\subsection{Estimation Samples}
+\label{sec:samples}
+
+\paragraph{Reduced-form sample.}
+We restrict to convite and preg\~ao modalities, tender-items with a
+recorded winner, and item types with at least one FL-present tender.
+The resulting sample contains 1,654,447 tender-items across 18,783
+item types and 1,308 PBUs.
+
+\paragraph{Structural estimation sample.}
+The mixture model requires bid-level data with firm covariates. After
+restricting to losing bids with valid prices and item--year
+fixed-effect coverage, the sample comprises 23.2~million genuine
+(non-FL) losing bids and 189,381 FL losing bids. For each bid we
+observe the bid amount, the winning (negotiated) price, firm identity
+(CNPJ), and firm characteristics (size, CNAE sector, age).
+
+At the bid level, FL losing bids exhibit a mean log-spread above the
+winning price of 0.83 (SD $= 1.19$), compared to a genuine-bid
+residual standard deviation of 1.64---a preview of the Regime~2
+finding ($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$;
+Section~\ref{sec:results}).
+
+\paragraph{CADE validation sample.}
+\label{sec:cade_sample}
+To prevent information leakage, we classify FL using 2009--2014 data
+and validate against 2015--2019 CADE enforcement outcomes. Among
+the 2,735 FL firms, 193 (7.1\%) co-participate with at least one
+CADE-convicted cartelists---3.5 times the baseline rate after
+controlling for participation intensity ($p < 0.001$, stratified
+permutation test). Full details of the CADE validation appear in
+\citet{genicolomartins2026screening}; we summarize the key results in
+Section~\ref{sec:results} when discussing detection performance.
+
+\input{./output/tables/tab_desc_stats}

@@ -1,0 +1,96 @@
+% ============================================================================
+% sec7_counterfactual.tex — Paper 2: Welfare counterfactuals
+% ============================================================================
+
+\section{Welfare Counterfactuals}
+\label{sec:counterfactual}
+
+The calibrated model (Section~\ref{sec:results_calibration}) allows
+us to compute counterfactuals that flow directly from the structural
+parameters, rather than relying solely on reduced-form price
+associations. The counterfactual chain is:
+\emph{policy change} $\to$ \emph{change in $m^*$} (via
+Proposition~\ref{prop:optimal_m} and calibrated primitives) $\to$
+\emph{change in FL incidence} $\to$ \emph{change in procurement
+spending} (via reduced-form price association). The last link
+uses conditional correlations, not causal effects; to the extent the
+price associations reflect selection, the welfare gains are
+overstated. We present them as order-of-magnitude benchmarks.
+
+\paragraph{CF1: Removing the minimum-bidder requirement.}
+Under convite, 39.2\% of FL-present tenders have
+$n_{\text{genuine}} < 3$, forcing cover-bidder deployment (corner
+solution, Proposition~\ref{prop:optimal_m}); 23.5\% have
+$n_{\text{genuine}} = 0$ (pure cover bidding---every participant is
+FL). The calibrated interior optimum for these tenders is
+$\hat{m}_{\text{interior}} = 1.4$, well below the observed corner
+mean of 2.8 (Section~\ref{sec:results_calibration}). Removing the
+minimum-bidder rule replaces the corner solution with the interior
+optimum: for tenders where $\hat{m}_{\text{interior}} = 0$ (i.e.,
+cover bidding is unprofitable absent the constraint), FL deployment
+ceases entirely. The calibrated model predicts a 62\% reduction in
+FL incidence within convite, yielding illustrative welfare gains of
+R\$74--211M over 2009--2019.%
+\footnote{The range reflects the reduced-form price coefficient used
+in the last link: R\$74M uses the cross-fit lower bound (0.036);
+R\$211M uses the IV upper bound (0.194).}
+
+This counterfactual has a concrete institutional pathway:
+Brazil's Lei~14.133/2021 (the ``New Procurement Law'') relaxes the
+minimum-bidder constraint for preg\~ao but retains it for convite.
+Extending the relaxation to convite would eliminate the institutional
+demand for cover bidding at zero administrative cost.
+
+\paragraph{CF2: Welfare-maximizing detection threshold.}
+We embed the ROC curve in a social welfare function:
+\begin{equation}
+  W(t) = \delta \cdot \hat{\beta} \cdot S_{\text{FL}}(t) -
+  c_{\text{inv}} \cdot N_{\text{flagged}}(t)
+  \label{eq:welfare_function}
+\end{equation}
+where $t$ is the IQR multiplier, $\delta$ is the deterrence rate,
+$\hat{\beta}$ is the price association, $S_{\text{FL}}(t)$ is total
+spending in FL-flagged tenders at threshold $t$, and $c_{\text{inv}}$
+is the per-firm investigation cost. The deterrence rate $\delta$
+enters through the structural model: detection raises $\theta_k$,
+which reduces $m^*$ via the calibrated $\hat{\phi}_0 / \hat{c}_1$
+ratio.
+
+At R\$100K/investigation with $\delta = 0.50$, the optimal
+threshold is $t^* = 1.6\times$IQR (net welfare R\$135M; 2,537
+flagged firms)---close to the baseline $1.5\times$ and the
+Youden-optimal $1.45\times$
+(Figure~\ref{fig:counterfactual_screening}). The convergence of
+three independent threshold criteria---statistical (IQR rule),
+detection-theoretic (Youden's $J$), and welfare-maximizing
+($W(t)$)---at approximately $1.5\times$IQR provides a coherent
+basis for operational deployment.
+
+Screening becomes welfare-negative at $c_{\text{inv}} >
+\text{R\$500K}$. For competition authorities with low-cost desk
+review capacity (R\$50--100K per firm), the FL screen generates
+substantial positive welfare at every threshold between
+$1.0\times$ and $3.0\times$IQR.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{images/fig_counterfactual_screening.pdf}
+\caption{Welfare-maximizing threshold vs.\ investigation cost, by
+deterrence rate $\delta$. At R\$100K, $t^* \approx 1.6\times$IQR.}
+\label{fig:counterfactual_screening}
+\end{figure}
+
+\paragraph{CF3: Increasing detection probability.}
+The calibrated gradient $\partial m^* / \partial \theta_k$ (from
+$\hat{\phi}_0$ and the FOC) quantifies the deterrence return to
+oversight investment. Empirically, mean FL per tender decreases
+from Q1 (0.41) to Q4 (0.31) by PBU size, consistent with the
+model's prediction ($\partial m^* / \partial \theta_k < 0$). Using
+the calibrated elasticity, a 10\% increase in detection probability
+reduces $m^*$ by an estimated 0.04 firms per tender; applied to
+Q1--Q2 PBUs (where FL incidence is highest and oversight capacity
+lowest), this yields illustrative annual savings of R\$24--67M.
+The gradient implies that concentrating oversight resources on
+small PBUs maximizes the deterrence return per audit dollar.
+
+\input{tables/tab_counterfactual_welfare}

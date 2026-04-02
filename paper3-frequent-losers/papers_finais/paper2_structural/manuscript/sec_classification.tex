@@ -1,0 +1,84 @@
+% ============================================================================
+% sec_classification.tex — V8: Alternative FL classification methods
+% Addresses external referee Concern 2: ad hoc classification rule
+% ============================================================================
+
+\subsection{Classification Robustness: IQR Rule vs.\ Model-Based Alternatives}
+\label{sec:classification_robustness}
+
+A concern with the IQR threshold rule is that it may be ad hoc and
+could capture inefficient firms rather than cover bidders. We compare
+the IQR rule with two model-based alternatives on the same CADE
+ground truth.
+
+\paragraph{Structural classifier.}
+Using the estimated Regime~2 parameters ($\hat{\epsilon} = 0.83$,
+$\hat{\sigma}_c = 1.19$), we compute a log-likelihood ratio score for
+each always-loser firm: the likelihood of the firm's mean bid spread
+under the cover-bid distribution relative to the genuine-loser spread
+distribution. Firms with high scores are more likely cover bidders
+according to the structural model. This score achieves
+AUC~$= 0.56$---barely above random---because the bid-spread
+distributions of genuine losers and cover bidders overlap
+substantially. The structural model identifies cover bidding at the
+\emph{distributional} level (Regime~2 vs.\ Regime~1) but its
+parameters are insufficiently discriminative at the \emph{individual
+firm} level.
+
+\paragraph{Machine-learning classifier.}
+We train a random forest (500 trees, 5-fold cross-validation to
+prevent overfitting) on seven firm-level features: number of
+participations, number of tenders, mean/SD/median bid spread,
+fraction of bids above the winner, and bid-level CV. The
+cross-validated AUC is $0.90$---strong, but \emph{below} the IQR
+rule's $0.94$ (DeLong $p = 0.04$).
+
+\paragraph{Unsupervised latent class analysis.}
+To verify that the FL classification has structural content beyond an
+ad hoc threshold, we estimate a two-component Gaussian mixture model
+on 8,275 always-loser firms with $\geq 3$ tenders, using five
+firm-level features: mean bid distance from winner, SD of bid distance,
+fraction of bids above the winner, winner HHI (co-bidding
+concentration), and participation count. The model discovers two
+latent classes without using FL labels. The ``cover bidder'' class
+(identified by higher mean participation: 45.2 vs.\ 9.0 tenders)
+contains 71.2\% FL firms, compared with 20.0\% in the ``genuine''
+class (Table~\ref{tab:lca_validation}). The mean posterior probability
+$\Pr(\text{cover} \mid \text{FL}) = 0.56$ falls below the 0.75
+benchmark, with precision 0.71 and recall 0.55 ($F_1 = 0.62$). The
+partial overlap reflects the multivariate LCA distributing weight
+across correlated features, whereas the IQR rule concentrates on the
+single most discriminative dimension---participation intensity. The
+key result is that the unsupervised model independently recovers a
+class whose defining characteristic (abnormally high participation
+with zero wins) aligns with the FL definition, providing structural
+support for the IQR rule even when the overlap is imperfect.
+
+\input{tables/tab_lca_validation}
+
+\paragraph{Interpretation.}
+Table~\ref{tab:classification_comparison} and
+Figure~\ref{fig:classification_comparison} summarize the supervised
+comparison. The IQR rule dominates both the structural classifier and
+the random forest. Combined with the LCA's independent recovery of a
+cover-bidder class, this result has two implications. First, the
+threshold rule is not merely convenient; it captures the most
+discriminative feature of cover bidding---\emph{abnormally high
+participation despite zero wins}---which neither ML nor unsupervised
+methods can improve upon. Second, the structural model's bid-level
+parameters are complementary (they identify the \emph{mechanism}) but
+not substitutes (they do not improve \emph{detection}) for the
+participation-based screen.
+
+\input{tables/tab_classification_comparison}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{images/fig_classification_comparison.pdf}
+\caption{ROC curves: IQR rule vs.\ model-based classifiers.
+The IQR rule (AUC~$= 0.94$) dominates the random forest with
+7 bid-level features (AUC~$= 0.90$; DeLong $p = 0.04$) and the
+structural likelihood-ratio score (AUC~$= 0.56$). Ground truth:
+co-participation with CADE-convicted cartelists.}
+\label{fig:classification_comparison}
+\end{figure}

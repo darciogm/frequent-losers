@@ -1,0 +1,463 @@
+% ============================================================================
+% sec3_structural_model.tex — Paper 2: Structural model
+% ============================================================================
+
+\section{A Structural Model of Cover-Bidder Deployment}
+\label{sec:structural}
+
+We develop a model in which a cartel chooses the number of cover
+bidders, their bid distribution, and which markets to target. The
+model has three aims: (i)~to formalize the economic logic behind
+the frequent-loser phenomenon; (ii)~to specify a mixture likelihood
+that separates cover bids from genuine bids in the data; and
+(iii)~to derive the \emph{dispersion paradox}---that coordinated
+cover bidding produces lower, not higher, within-tender bid
+dispersion---as an equilibrium prediction rather than an empirical
+curiosity.
+
+% ── 3.1 Environment ──────────────────────────────────────────────
+
+\subsection{Environment}
+\label{sec:environment}
+
+Consider a procurement auction for item $i$ at purchasing unit $k$ in
+year $t$. The procuring agency posts a reference price $r > 0$ and
+selects the lowest bidder.%
+\footnote{Under BEC's procurement rules, the reference price is
+set by the purchasing unit based on market research---typically
+the median of three price quotations from suppliers or the
+average of prices in recent comparable tenders. The reference
+price is public information, posted before bidding opens.}
+There are $n \geq 1$ \emph{genuine} bidders,
+each with private cost $c_j \sim F(\cdot \mid \mathbf{x}_j)$, where
+$\mathbf{x}_j$ is a vector of observable cost shifters (firm size, CNAE
+sector, geographic distance to PBU~$k$). Genuine bidders submit bids
+$b_j = c_j + \mu_j$, where $\mu_j \geq 0$ is a markup.
+
+A cartel controls firm $j^*$---the designated winner---and deploys
+$m \geq 0$ \emph{cover bidders} (frequent losers). Each cover bidder
+submits a bid $b_\ell$ drawn from a distribution $G(\cdot \mid b^*,
+\boldsymbol{\theta})$, where $b^*$ is the cartel's designated winning
+bid and $\boldsymbol{\theta}$ is a vector of strategic parameters. Cover
+bids satisfy $b_\ell > b^*$ with probability
+one. The procuring agency observes $n + m$ total bids.
+
+Two institutional features of S\~ao Paulo's BEC platform shape the
+model:
+
+\begin{enumerate}
+  \item \textbf{Convite} (sealed-bid): requires at least three bidders
+    (Lei~8.666/93, Art.~22, \S7). If $n < 3$, the cartel must deploy
+    $m \geq 3 - n$ cover bidders to satisfy the minimum-bidder
+    constraint.
+  \item \textbf{Preg\~ao} (electronic reverse auction): no
+    minimum-bidder requirement. Bidders submit descending bids in real
+    time, allowing cover bidders to observe auction dynamics before
+    calibrating their bids.
+\end{enumerate}
+
+\noindent We denote the auction modality by $\tau \in \{\text{convite},
+\text{preg\~ao}\}$, the minimum-bidder constraint by $\underline{n}(\tau)$
+(equal to 3 for convite, 0 for preg\~ao), and the detection probability
+by $\theta_k \in [0,1]$, which varies across PBUs and is increasing in
+oversight capacity.
+
+% ── 3.2 Cartel's Problem ─────────────────────────────────────────
+
+\subsection{The Cartel's Optimization Problem}
+\label{sec:cartel_problem}
+
+The cartel chooses $m$, $b^*$, and $G$ to maximize expected profit
+net of cover-bidding costs and detection penalties:
+\begin{equation}
+  \max_{m \in \mathbb{Z}_+,\, b^*,\, G} \; \underbrace{\pi(b^*, m, n)
+  }_{\text{cartel surplus}}
+  - \underbrace{C(m)}_{\text{cover cost}}
+  - \underbrace{\theta_k \cdot \Phi(m)}_{\text{expected penalty}}
+  \label{eq:cartel_objective}
+\end{equation}
+subject to:
+\begin{align}
+  b^* &\leq r \label{eq:ref_price_constraint} \\
+  \Pr(b_\ell > b^* \mid G) &= 1 \quad \forall \, \ell \in \{1, \ldots, m\}
+    \label{eq:cover_above} \\
+  n + m &\geq \underline{n}(\tau) \label{eq:min_bidder}
+\end{align}
+
+\noindent We maintain the following assumptions:
+
+\begin{description}
+  \item[A1 (Surplus structure).] $\pi(b^*, m, n) = b^* - c_{j^*}$
+    with $\partial \pi / \partial m \geq 0$: additional cover bidders
+    help sustain $b^*$ by creating the appearance of competition.
+
+  \item[A2 (Diminishing returns).] $\partial^2 \pi / \partial m^2 < 0$:
+    the marginal return to cover bidding is decreasing.
+
+  \item[A3 (Cover-bidding cost).] $C(m) = c_0 + c_1 m$ with $c_0 \geq 0$
+    and $c_1 > 0$: linear in the number of cover bidders. The
+    per-bidder cost $c_1 = \kappa + \bar{u}_{(m)}$ is microfounded
+    in Section~\ref{sec:cover_participation} as the sum of the
+    institutional participation cost and the marginal cover bidder's
+    opportunity cost.
+
+  \item[A4 (Detection penalty).] $\theta_k \cdot \Phi(m)$ with
+    $\Phi'(m) > 0$ and $\Phi''(m) \geq 0$: more cover bidders increase
+    the forensic footprint. For closed-form results we use
+    $\Phi(m) = \phi_0 m$ with $\phi_0 > 0$.
+
+  \item[A5 (Interior solution exists).] $\partial \pi / \partial m
+    \big|_{m=0} > c_1 + \theta_k \phi_0$.
+\end{description}
+
+\begin{proposition}[Optimal number of cover bidders]
+\label{prop:optimal_m}
+Under Assumptions A1--A5, the cartel's optimal cover-bidder count is:
+\begin{equation}
+  m^* = \max\!\left\{\underline{n}(\tau) - n, \;
+  \left\lfloor \frac{\partial \pi / \partial m}{c_1 + \theta_k \phi_0}
+  \right\rfloor \right\}
+  \label{eq:optimal_m}
+\end{equation}
+The optimal $m^*$ satisfies:
+\emph{(i)}~$\partial m^* / \partial \theta_k < 0$\,;
+\emph{(ii)}~$\partial m^* / \partial c_1 < 0$\,;
+\emph{(iii)}~$m^*$ is weakly larger under convite than preg\~ao,
+holding $n$ fixed.
+\end{proposition}
+
+\noindent\emph{Proof.} See Appendix~\ref{app:proofs}. \hfill$\square$
+
+\medskip
+
+Property~(iii) has a direct institutional implication: the
+minimum-bidder rule converts an \emph{interior} solution (cartel
+chooses $m$ optimally) into a \emph{corner} solution (cartel is
+forced to deploy $m \geq 3 - n$). When $n_{\text{genuine}} = 0$,
+the cartel must field at least three cover bidders---a pure
+cover-bidding tender where no genuine competition exists.
+
+\paragraph{Quantity vs.\ effectiveness.}
+Note that (iii) is a prediction about the \emph{number} of cover
+bidders, not about their \emph{effectiveness}. The price impact per
+cover bidder depends on the coordination regime
+(Section~\ref{sec:cover_distributions}): under Regime~2
+(preg\~ao), each cover bidder is more effective because she
+calibrates her bid with real-time information. The model therefore
+permits $m^*_{\text{convite}} > m^*_{\text{preg\~ao}}$ and yet a
+larger price association under preg\~ao---a distinction we test in
+Section~\ref{sec:results_ols}.
+
+% ── 3.2b Cover-Bidder Participation ────────────────────────────────
+
+\subsection{Cover-Bidder Participation}
+\label{sec:cover_participation}
+
+A cover bidder is a firm that submits bids designed to lose. Why
+would a rational firm participate in an auction it cannot win? The
+cartel must compensate cover bidders to induce participation; we
+formalize this as a participation constraint.
+
+Each cover bidder $\ell$ faces an outside option $\bar{u}_\ell \geq 0$
+(the value of her next-best use of time) and incurs a per-tender
+participation cost $\kappa > 0$ (registration fees, bid preparation,
+bid bonds where applicable). The cartel offers a side payment
+$s \geq 0$ per tender. Cover bidder $\ell$ participates if and only
+if:
+\begin{equation}
+  s - \kappa \geq \bar{u}_\ell
+  \label{eq:participation_constraint}
+\end{equation}
+
+The cartel's cost of deploying $m$ cover bidders is therefore:
+\begin{equation}
+  C(m) = m \cdot s = m \cdot (\kappa + \bar{u}_{(m)})
+  \label{eq:cover_cost_micro}
+\end{equation}
+where $\bar{u}_{(m)}$ is the outside option of the $m$-th cheapest
+cover bidder (ordered by $\bar{u}_\ell$). This microfounds
+Assumption~A3: the linear cost $c_1 = \kappa + \bar{u}_{(m)}$
+reflects both the institutional participation cost and the cover
+bidder's opportunity cost.
+
+\begin{prediction}[Cover-bidder rationality]
+\label{pred:rationality}
+If FL firms are cover bidders compensated by side payments, they
+should exhibit: (i)~low opportunity costs (small firms, narrow
+product scope, geographically proximate to target PBUs);
+(ii)~persistent relationships with the same set of winners
+(reflecting cartel membership); and (iii)~no economic rationale
+for participation absent side payments (zero win rate, no learning
+or market-entry motivation).
+\end{prediction}
+
+\noindent In Section~\ref{sec:spec_tests}, we document that FL firms
+are disproportionately micro-enterprises (73\%) with narrow CNAE
+scope, consistent with low $\bar{u}_\ell$. Their winner-HHI is 2.4
+times the non-FL median, indicating concentrated co-bidding
+relationships consistent with cartel membership. FL persistence is
+low (10\% across years), consistent with cover bidding as a
+transient role assigned by the cartel rather than a permanent firm
+characteristic.
+
+\paragraph{Alternative interpretations.}
+Two non-cartel explanations for FL behavior merit discussion.
+\emph{First}, firms may bid repeatedly to learn about cost
+structures or gain experience (``bidding to learn''). This
+explanation predicts that FL firms should eventually win some
+tenders or exit; the zero win rate over 11~years and high
+persistence of participation are inconsistent with a learning
+motive. \emph{Second}, firms may bid to maintain ``active bidder''
+status in procurement registries. BEC does not require active
+bidding for registration renewal, ruling out this mechanism in
+our setting.
+
+% ── 3.3 Cover-Bid Distributions ──────────────────────────────────
+
+\subsection{Equilibrium Cover-Bid Distributions}
+\label{sec:cover_distributions}
+
+The cartel chooses $G$ to minimize detection probability while
+satisfying constraint~\eqref{eq:cover_above}. The key primitive that
+distinguishes the two regimes is the \emph{information structure}:
+what does a cover bidder know about $b^*$ when submitting a bid? We
+formalize two polar cases, corresponding to the two institutional
+modalities in BEC.
+
+\begin{description}
+  \item[I1 (Limited information).] The cover bidder receives the
+    instruction ``bid above $b^*$'' but does not observe $b^*$
+    directly. She knows only the reference price $r$ and an upper
+    bound $\delta$ on how far above $b^*$ is acceptable (to avoid
+    suspiciously high bids). This corresponds to sealed-bid
+    (convite) tenders, where bids are simultaneous and $b^*$
+    cannot be observed before submission.
+
+  \item[I2 (Full information).] The cover bidder observes $b^*$ in
+    real time---or receives a precise target from the cartel
+    coordinator---and aims to bid $b^* + \epsilon$ with execution
+    noise $\eta \sim N(0, \sigma_c^2)$, $\sigma_c > 0$. This
+    corresponds to electronic reverse auction (preg\~ao) tenders,
+    where the cartel coordinator can observe the auction dynamics
+    and relay a target to cover bidders.
+\end{description}
+
+\begin{proposition}[Regime~1: Complementary cover bidding]
+\label{prop:regime1}
+Under I1, if the cover bidder maximizes entropy over $[b^*, b^* +
+\delta]$ subject to $b_\ell > b^*$ (i.e., she has no basis for
+concentrating her bid at any particular level), the equilibrium
+cover-bid distribution is uniform:
+\begin{equation}
+  G_1(b) = \frac{b - b^*}{\delta}, \quad b \in [b^*, b^* + \delta]
+  \label{eq:regime1}
+\end{equation}
+with $\text{Var}(b_\ell) = \delta^2 / 12$. If $\delta$ is large
+relative to genuine-bid dispersion,
+$\sigma_{\text{cover}} > \sigma_{\text{genuine}}$.
+\end{proposition}
+
+\begin{proposition}[Regime~2: Coordinated cover bidding]
+\label{prop:regime2}
+Under I2, the cover bidder targets $b^* + \epsilon$ with execution
+noise $\eta$. The resulting cover-bid distribution is truncated
+normal:
+\begin{equation}
+  G_2(b) = \frac{\phi\!\left(\frac{b - (b^* + \epsilon)}
+  {\sigma_c}\right)}{\sigma_c\left[1 - \Phi\!\left(
+  \frac{b^* - (b^* + \epsilon)}{\sigma_c}\right)\right]},
+  \quad b > b^*
+  \label{eq:regime2}
+\end{equation}
+with $\mu_c = b^* + \epsilon$ and truncation at $b^*$ (the cover
+bid must exceed the winning bid). Because the truncation compresses
+the distribution from below and the target precision $\sigma_c$
+reflects the coordinator's real-time information, the effective
+dispersion satisfies $\text{sd}(b_\ell \mid b_\ell > b^*) <
+\sigma_g$ whenever $\sigma_c \leq \sigma_g$---i.e., coordination
+reduces dispersion below the genuine-bid level.
+\end{proposition}
+
+\noindent\emph{Proofs.} See Appendix~\ref{app:proofs}. \hfill$\square$
+
+\medskip
+
+The information structure generates a sharp, testable prediction
+about the direction of bid dispersion. Under I1 (Regime~1), the
+cover bidder's ignorance of $b^*$ forces dispersion \emph{above}
+the genuine level. Under I2 (Regime~2), the coordinator's
+real-time information allows dispersion \emph{below} it. The two
+regimes are empirically distinguishable because they generate
+opposite predictions for $\sigma_c / \sigma_g$.
+
+\paragraph{Institutional mapping.}
+The information structures map directly onto BEC's two modalities.
+Convite (sealed-bid) provides limited information to cover bidders,
+as all bids are submitted simultaneously; this favors Regime~1.
+Preg\~ao (electronic reverse auction) provides full real-time
+information, enabling the precise coordination of Regime~2. If
+Regime~2 dominates empirically, it implies that the preg\~ao format
+---designed to enhance competition---inadvertently facilitates the
+most effective form of cover bidding.
+
+% ── 3.4 Market Selection ─────────────────────────────────────────
+
+\subsection{Market Selection}
+\label{sec:market_selection}
+
+\begin{proposition}[Market-selection prediction]
+\label{prop:market_selection}
+Under Assumptions A1--A2, if the marginal return to cover bidding is
+decreasing in market concentration:
+\begin{equation}
+  \frac{\partial^2 \pi}{\partial m \, \partial \text{HHI}} < 0
+  \label{eq:cross_deriv}
+\end{equation}
+then $m^*$ is decreasing in HHI. Cover bidding concentrates in
+competitive markets.
+\end{proposition}
+
+\noindent\emph{Proof.} See Appendix~\ref{app:proofs}. \hfill$\square$
+
+\medskip
+
+This reverses the standard detection heuristic. Collusion is commonly
+associated with concentrated markets; Proposition~\ref{prop:market_selection}
+shows that cover bidding---the operational mechanism of collusion in
+procurement---concentrates in \emph{competitive} markets where
+manufactured competition is most valuable.
+
+\paragraph{Implication for detection.}
+Cover bidding is a strategic complement to genuine competition, not
+a substitute. Cartels deploy more cover bidders in competitive
+markets (low HHI), where genuine bidders exert downward price
+pressure that cover bidders help offset. When HHI is high, the
+cartel can sustain prices through market power alone, reducing the
+marginal return to synthetic competition.
+
+% ── 3.5 Structural Likelihood ────────────────────────────────────
+
+\subsection{Structural Likelihood}
+\label{sec:likelihood}
+
+Each bid $b_{jt}$ in tender $t$ is generated by one of two processes:
+\begin{equation}
+  b_{jt} \sim
+  \begin{cases}
+    F_{\text{genuine}}(b \mid \mathbf{x}_j, \boldsymbol{\alpha}) &
+      \text{if firm } j \text{ is genuine (non-FL)} \\
+    G_{\text{cover}}(b \mid b^*_t, \boldsymbol{\gamma}) &
+      \text{if firm } j \text{ is FL}
+  \end{cases}
+  \label{eq:mixture}
+\end{equation}
+The FL classification provides the mixture labels, so no EM algorithm
+is required---the model is a supervised mixture with observed group
+membership.
+
+\paragraph{Genuine bids.} Log-normal with item and year fixed effects:
+\begin{equation}
+  \log b_{jt} \mid j \text{ genuine} \sim
+  N\!\left(\mathbf{x}_j'\boldsymbol{\beta} + \alpha_i + \lambda_t,
+  \; \sigma_g^2\right)
+  \label{eq:genuine_dist}
+\end{equation}
+where $\mathbf{x}_j$ includes firm size, firm age, and CNAE sector.
+
+\paragraph{Cover bids.} Under Regime~1:
+$b_{jt} \mid j \text{ FL} \sim \text{Uniform}[b^*_t, b^*_t + \delta]$.
+Under Regime~2:
+$\log b_{jt} \mid j \text{ FL} \sim N(\log b^*_t + \epsilon, \sigma_c^2)$
+with $\sigma_c < \sigma_g$.
+
+\paragraph{Log-likelihood.}
+\begin{equation}
+  \ell_t = \sum_{j \in \mathcal{G}_t} \log f_{\text{genuine}}(b_{jt}
+  \mid \mathbf{x}_j, \boldsymbol{\alpha})
+  + \sum_{\ell \in \mathcal{F}_t} \log g_{\text{cover}}(b_{\ell t}
+  \mid b^*_t, \boldsymbol{\gamma})
+  \label{eq:loglik}
+\end{equation}
+
+\paragraph{Robustness to classification error.}
+The FL classification is a statistical rule that necessarily involves
+misclassification. In a supervised mixture with noisy labels,
+misclassification attenuates the estimated distributional difference
+between groups: if a fraction $\alpha$ of FL-labeled bids are
+actually genuine, $\hat{\epsilon}_{\text{noisy}} =
+(1-\alpha) \epsilon$. Our estimates of $\hat{\epsilon}$ and
+$\hat{\sigma}_c$ are therefore conservative (biased toward the
+genuine distribution).
+
+\paragraph{Estimation.}
+We estimate $(\boldsymbol{\alpha}, \boldsymbol{\gamma})$ by maximum
+likelihood using 23.2~million non-FL losing bids (genuine
+parameters) and 189,381 FL losing bids (cover parameters,
+conditional on $b^*_t$). Standard errors: parametric bootstrap
+(500 replications). Model selection between regimes uses BIC and
+Kolmogorov--Smirnov goodness-of-fit.
+
+% ── 3.6 Identification ───────────────────────────────────────────
+
+\subsection{Identification}
+\label{sec:identification}
+
+\begin{itemize}
+  \item $(\boldsymbol{\beta}, \sigma_g^2)$: identified from non-FL
+    losing bids within item--year cells. Item FE absorb
+    product-specific cost levels; year FE absorb aggregate trends.
+
+  \item $(\delta \text{ or } \sigma_c, \epsilon)$: identified from
+    the distribution of FL bids relative to $b^*_t$ in each tender.
+
+  \item $\theta_k$ (detection probability): partially identified from
+    the cross-section of PBU characteristics via
+    Proposition~\ref{prop:optimal_m}: $m^*$ is decreasing in
+    $\theta_k$, proxied by PBU procurement volume.
+
+  \item Price association: \emph{not} independently identified by
+    $(\hat{\epsilon}, \hat{\sigma}_c)$. These characterize the
+    cover-bid mechanism, not the price-setting decision. The
+    FL--price association comes from the reduced-form comparison of
+    FL-present and FL-absent tenders; it reflects both treatment
+    and selection, disciplined by the model's predictions.
+\end{itemize}
+
+% ── 3.7 Testable Predictions ─────────────────────────────────────
+
+\subsection{Testable Predictions}
+\label{sec:predictions}
+
+The model generates five predictions, each tested on independent data
+or moments not used in estimation:
+
+\begin{prediction}[Price effect]
+\label{pred:price}
+FL-present tenders have higher winning prices than comparable tenders
+without FL, controlling for item, year, and PBU.
+\end{prediction}
+
+\begin{prediction}[Strategic selection]
+\label{pred:selection}
+FL-present tenders have at least as many genuine (non-FL) competitors
+as FL-absent tenders: cover bidders complement, not substitute.
+\end{prediction}
+
+\begin{prediction}[Regime identification]
+\label{pred:regime}
+Under Regime~1, $\sigma_c > \sigma_g$. Under Regime~2,
+$\sigma_c < \sigma_g$. BIC selects the dominant regime.
+\end{prediction}
+
+\begin{prediction}[Market selection]
+\label{pred:market}
+The FL--price association is decreasing in market concentration (HHI):
+cover bidding concentrates in competitive markets.
+\end{prediction}
+
+\begin{prediction}[Exchangeability violation]
+\label{pred:exchange}
+FL bid residuals are non-exchangeable with non-FL residuals:
+the structural model implies FL bids are drawn from $G_{\text{cover}}$,
+a distinct data-generating process.
+\end{prediction}

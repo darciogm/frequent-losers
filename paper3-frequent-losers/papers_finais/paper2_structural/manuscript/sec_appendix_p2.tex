@@ -1,0 +1,129 @@
+% ============================================================================
+% Appendix — Paper 2: Structural Estimation
+% ============================================================================
+
+\section{Proofs of Propositions}\label{app:proofs}
+
+\begin{proof}[\textbf{Proof of Proposition~\ref{prop:optimal_m}}]
+Relaxing the integer constraint, the FOC for $m$ is
+$\partial \pi / \partial m = c_1 + \theta_k \phi_0$.
+By A2, $\partial^2 \pi / \partial m^2 < 0$, so the SOC is satisfied
+and $\tilde{m}$ is unique. When $\underline{n}(\tau) - n > \tilde{m}$,
+$m^* = \underline{n}(\tau) - n$ (corner). Otherwise,
+$m^* = \lfloor \tilde{m} \rfloor$.
+Comparative statics by implicit differentiation:
+$\partial m^* / \partial \theta_k =
+-\phi_0 / (\partial^2 \pi / \partial m^2) < 0$;
+$\partial m^* / \partial c_1 < 0$ by the same argument.
+Property~(iii) follows from $\underline{n}(\text{convite}) = 3 >
+0 = \underline{n}(\text{preg\~ao})$.
+\end{proof}
+
+\begin{proof}[\textbf{Proof of Proposition~\ref{prop:regime1}}]
+Under information structure I1, the cover bidder knows only that
+$b_\ell \in [b^*, b^* + \delta]$ (constraint~\eqref{eq:cover_above}
+plus the upper bound from suspicion avoidance). She has no basis
+for concentrating probability at any particular point in this
+interval. The maximum-entropy distribution on a bounded interval
+$[a, a + \delta]$ is the uniform $U[a, a + \delta]$
+\citep[see, e.g.,][Ch.~12]{jaynes2003probability}. Therefore
+$G_1 = U[b^*, b^* + \delta]$, with variance $\delta^2/12$.
+Since $\delta$ reflects the cover bidder's uncertainty about
+$b^*$, large uncertainty produces high dispersion:
+$\sigma_{\text{cover}} > \sigma_{\text{genuine}}$ whenever
+$\delta > \sqrt{12}\,\sigma_g$.
+\end{proof}
+
+\begin{proof}[\textbf{Proof of Proposition~\ref{prop:regime2}}]
+Under information structure I2, the cover bidder targets
+$b^* + \epsilon$ with execution noise $\eta \sim N(0, \sigma_c^2)$,
+yielding $b_\ell = b^* + \epsilon + \eta$. The constraint
+$b_\ell > b^*$ truncates the distribution from below at $b^*$.
+The resulting distribution is
+$b_\ell \mid b_\ell > b^* \sim
+\text{TruncNormal}(b^* + \epsilon, \sigma_c^2, b^*, \infty)$.
+For the dispersion result, note that the variance of a left-truncated
+normal is strictly below the untruncated variance:
+$\text{Var}(b_\ell \mid b_\ell > b^*) = \sigma_c^2[1 - \lambda(\alpha)
+(\lambda(\alpha) - \alpha)]$ where $\alpha = -\epsilon/\sigma_c$
+and $\lambda(\alpha) = \phi(\alpha)/[1 - \Phi(\alpha)]$ is the
+inverse Mills ratio. Since $\epsilon > 0$ implies $\alpha < 0$,
+the correction term is positive and the effective standard deviation
+satisfies $\text{sd}(b_\ell \mid b_\ell > b^*) < \sigma_c$.
+A fortiori, if $\sigma_c \leq \sigma_g$ (the coordinator's
+information advantage reduces noise below the genuine level),
+then $\text{sd}(b_\ell \mid b_\ell > b^*) < \sigma_g$.
+\end{proof}
+
+\begin{proof}[\textbf{Proof of Proposition~\ref{prop:market_selection}}]
+From the FOC: $\partial \pi / \partial m = c_1 + \theta_k \phi_0$.
+Implicit differentiation:
+$\partial m^* / \partial \text{HHI} =
+-(\partial^2 \pi / \partial m \, \partial \text{HHI}) /
+(\partial^2 \pi / \partial m^2)$.
+By A2, the denominator is negative; by~\eqref{eq:cross_deriv}, the
+numerator is negative. Therefore $\partial m^* / \partial \text{HHI} < 0$.
+\end{proof}
+
+% ============================================================================
+
+\section{Additional Tables and Figures}\label{app:robustness}
+
+\subsection{IV Balance Tests}\label{app:iv_balance}
+The leave-one-out IV ($F = 396$) exhibits statistically significant
+but economically small imbalance across observables: FL-present
+PBU-group-years differ from FL-absent ones in item composition
+and PBU size (all differences $< 0.001$ in standardized units).
+The imbalance is consistent with the model's market-selection
+prediction (Proposition~\ref{prop:market_selection}) rather than
+instrument invalidity, but precludes a causal interpretation of
+the IV estimate. We treat the IV as a measurement-error diagnostic
+(Section~\ref{sec:reduced_form}).
+
+\subsection{Bajari--Ye Tender Fixed Effects}
+\input{tables/tab_bajari_ye_corrected}
+
+\subsection{Latent Class Validation}
+\input{tables/tab_lca_validation}
+
+\subsection{Staggered DiD}\label{app:did}
+A \citet{callaway2021difference} DiD and a stacked regression
+\citep{cengiz2019effect} both produce insignificant ATTs
+(C\&S: 0.014, SE $= 0.039$; stacked: $-0.006$, SE $= 0.014$).
+The stacked 95\% CI ($-0.034$, $0.022$) excludes the OLS baseline
+(0.064), consistent with failure of parallel trends---the pre-trend
+coefficients at $t = -2$ and $t = -3$ confirm that FL entry is
+endogenous to market conditions (Section~\ref{sec:results_additional}).
+The DiD designs are invalid for this setting, reinforcing the
+diagnostic interpretation of the price association.
+
+\subsection{Detection Performance Details}\label{app:detection}
+
+\input{tables/tab_roc_detection}
+
+\input{tables/tab_classification_comparison}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{images/fig_roc_fl_screen.pdf}
+\caption{ROC curve for the FL screen. Ground truth: co-participation
+with CADE-convicted cartelists. Baseline (1.5$\times$IQR) and
+Youden-optimal thresholds marked.}
+\label{fig:roc_detail}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{images/fig_classification_comparison.pdf}
+\caption{ROC curves: IQR rule vs.\ model-based classifiers.
+Ground truth: CADE co-participation.}
+\label{fig:classification_comparison}
+\end{figure}
+
+\input{tables/tab_imhof_comparison}
+
+% ============================================================================
+
+\section{Welfare Details}\label{app:extensions}
+
+See Table~\ref{tab:counterfactual_welfare} in the main text.

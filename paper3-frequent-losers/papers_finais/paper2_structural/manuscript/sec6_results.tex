@@ -1,0 +1,353 @@
+% ============================================================================
+% sec6_results.tex — Paper 2: Results
+% Ordering: Structural → Spec tests → Detection → Reduced-form →
+%           Bajari-Ye → Network → Event study
+% ============================================================================
+
+\section{Results}
+\label{sec:results}
+
+% ── 6.1 Structural Estimation ─────────────────────────────────────
+
+\subsection{Structural Estimates: The Dispersion Paradox Confirmed}
+\label{sec:results_structural}
+
+Table~\ref{tab:structural_params} reports the two-stage mixture-model
+estimates.
+
+\paragraph{Genuine bid distribution (Panel~A).}
+The genuine bid parameters, estimated from 23.2~million non-FL losing
+bids with item and year fixed effects, yield $\hat{\sigma}_g = 1.64$
+(bootstrap SE~$= 0.003$). The first-stage $R^2$ indicates that
+product-year fixed effects absorb a large share of bid-level
+variation; the residual dispersion reflects firm-level cost
+heterogeneity.
+
+\paragraph{Regime selection (Panels~B--C).}
+BIC selects Regime~2 (coordinated cover bidding) with
+$\Delta$BIC~$= -91{,}473$---overwhelming evidence against Regime~1.
+Under Regime~2, FL bids are drawn from a log-normal distribution
+centered at $\hat{\epsilon} = 0.83$ log points above the winning bid,
+with $\hat{\sigma}_c = 1.19$ (SE~$= 0.012$). The
+Kolmogorov--Smirnov distance is 0.24 under Regime~2 versus 0.64
+under Regime~1.
+
+The key result is the dispersion ratio:
+$\hat{\sigma}_c / \hat{\sigma}_g = 1.19 / 1.64 = 0.72$ (bootstrap
+95\% CI: [0.70, 0.74]; 1,000 replications resampling tenders). The
+confidence interval lies entirely below one, confirming that the
+dispersion paradox is not a sampling artifact. Cover bids
+are 28\% \emph{less} dispersed than genuine bids---confirming
+Prediction~\ref{pred:regime} under Regime~2. Coordinated cover
+bidders cluster near a focal point ($b^* + \epsilon$) with imperfect
+but substantial precision. The ratio is below one but not near zero,
+indicating general instructions (``bid around 80\% above the
+winner'') rather than exact bid levels.
+
+\paragraph{Goodness of fit.}
+Figure~\ref{fig:qqplot} presents a QQ-plot of FL bid log-spreads
+against the fitted truncated normal. The fit is good in the central
+mass (10th--90th percentiles) but deviates in the right tail: the
+empirical distribution has heavier tails than the fitted normal,
+consistent with a small fraction of FL bids being submitted with less
+precise instructions (a Regime~1 component within the predominantly
+Regime~2 population). The KS distance of 0.24 reflects this
+tail behavior; a mixture of 90\% truncated normal and 10\% uniform
+reduces the KS to 0.09. The dispersion ratio $\hat{\sigma}_c /
+\hat{\sigma}_g$ is robust to this tail heterogeneity because it is
+driven by the central mass, not the tails.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{images/fig_qqplot_regime2.pdf}
+\caption{QQ-plot: observed FL bid log-spreads vs.\ fitted Regime~2
+(truncated normal) quantiles. Blue dashed lines: 95\% simulation
+envelope. Deviations in the right tail suggest a small Regime~1
+component.}
+\label{fig:qqplot}
+\end{figure}
+
+\paragraph{Misclassification bounds (Panel~D).}
+The FL label is a statistical rule that necessarily involves
+misclassification. The unsupervised latent class model
+(Section~\ref{sec:robustness}) provides an independent estimate of
+the contamination rate: among FL-labeled firms, 71.2\% fall in the
+``cover-bidder'' class and 28.8\% in the ``genuine'' class, implying
+$\hat{\alpha} \approx 0.29$. Under linear contamination,
+$\hat{\epsilon}_{\text{corrected}} = \hat{\epsilon}_{\text{noisy}} /
+(1 - \hat{\alpha}) = 0.83 / 0.71 = 1.17$ log points, and
+$\hat{\sigma}_c / \hat{\sigma}_g$ corrects downward (to
+$\approx 0.61$), \emph{strengthening} the dispersion paradox:
+the true cover-bid distribution is even more compressed than the
+observed one. These bounds are conservative: they assume the
+``genuine'' class firms in the FL group are drawn entirely from
+$F_{\text{genuine}}$, ignoring the possibility that some are
+cover bidders misclassified by the LCA.
+
+\paragraph{Implied price association (Panel~E).}
+Conditioning on the number of genuine bidders $n$
+(saturated dummies), the $n$-conditional price coefficient is
+$\hat{\mu} = 0.062$ (SE~$= 0.019$, 6.4\%)---virtually identical to
+unconditional OLS (0.064). The structural parameters characterize the
+cover-bid \emph{mechanism}; the price association comes from the
+reduced-form comparison, disciplined by the model. That the
+$n$-conditional and unconditional estimates coincide indicates that
+differential genuine competition does not confound the FL--price
+association.
+
+\input{tables/tab_structural_params}
+
+% ── 6.2 Calibrated Cartel Primitives ─────────────────────────────
+
+\subsection{Calibrated Cartel Primitives}
+\label{sec:results_calibration}
+
+Table~\ref{tab:structural_params}, Panel~F reports the
+minimum-distance estimates of the cartel's decision parameters
+(Section~\ref{sec:calibration}). The competition elasticity
+$\hat{\gamma} = 0.694$ (SE~$= 0.026$) is precisely estimated:
+each 1\% increase in genuine bidders is associated with a
+0.69\% increase in cover-bidder deployment, indicating that
+cartels scale cover bidding nearly proportionally to competitive
+pressure. The per-bidder cost $\hat{c}_1 = 0.218$ is well
+identified (CI~$[0.156, 0.278]$), while the detection-penalty
+parameter $\hat{\phi}_0 = 0.017$ is economically small and
+imprecisely estimated (CI includes zero), suggesting that
+enforcement variation across PBUs plays a limited role in
+cover-bidder deployment decisions. The profile-concentrated
+$\psi^* = 0.1$ confirms near-constant enforcement costs across
+PBU sizes.
+
+\paragraph{Overidentification check.}
+In corner-solution convite tenders (where the 3-bidder minimum
+binds), the calibrated interior-solution model predicts
+$\hat{m}_{\text{interior}} = 0.36$, well below the observed
+$\bar{m}_{\text{corner}} = 1.00$. The excess is positive in all
+393 PBUs with corner solutions ($t = 179.2$, $p < 0.001$),
+confirming that the minimum-bidder constraint forces deployment
+above the interior optimum. This is the institutional mechanism
+that Section~\ref{sec:counterfactual} exploits for the welfare
+counterfactual.
+
+% ── 6.3 Specification Tests ───────────────────────────────────────
+
+\subsection{Out-of-Sample Specification Tests}
+\label{sec:spec_tests}
+
+The model's empirical bite comes from predictions on moments not used
+in estimation. All five go in the predicted direction.
+
+\paragraph{Corner vs.\ interior solution
+(Proposition~\ref{prop:optimal_m}).}
+Mean FL count is 10.7 when $n_{\text{genuine}} = 0$ (the
+minimum-bidder constraint forces $m \geq 3$) and $\approx 2$ when
+$n \geq 2$ (interior solution). The corner solution drives the
+convite--preg\~ao asymmetry: 39.2\% of FL-present convite tenders
+have $n_{\text{genuine}} < 3$, and 23.5\% have $n = 0$---pure
+cover-bidding tenders where every participant is FL.
+
+\paragraph{Within-tender dispersion (Prediction~\ref{pred:regime}).}
+In 29,398 tenders with both FL and non-FL bidders, FL bid CV is 0.57
+versus non-FL 1.65; FL bids are less dispersed in 82.6\% of tenders
+(paired $t = -104$, $p < 0.001$). This tender-level validation
+confirms the distributional finding ($\hat{\sigma}_c < \hat{\sigma}_g$)
+at the individual-auction level.
+
+\paragraph{$m$--$\theta$ comparative static
+(Proposition~\ref{prop:optimal_m}).}
+Mean FL per tender decreases monotonically from Q1 (0.41) to Q4
+(0.31) by PBU size, consistent with $\partial m^* / \partial
+\theta_k < 0$: larger PBUs with more oversight capacity attract
+fewer cover bidders.
+
+\paragraph{Bajari--Ye exchangeability and the tender-FE reversal
+(Prediction~\ref{pred:exchange}).}
+FL bid residuals violate exchangeability (KS~$D = 0.15$,
+$p < 0.001$) and exhibit excess pairwise correlation
+(product~$= 4.28$, $t = 81.0$)---standard Bajari--Ye evidence of
+non-competitive bidding. The novel test is the \emph{tender-FE
+variant}, which the structural model predicts should reverse the
+sign of the FL correlation.
+
+The logic is as follows. Under Regime~2, each cover bid contains a
+shared focal-point component: $b_\ell = (b^* + \epsilon) + \eta_\ell$,
+where $\epsilon$ is the cartel's target spread above the winning price
+and $\eta_\ell$ is idiosyncratic execution noise. In the baseline
+specification (without tender FE), the pairwise product of FL
+residuals is positive because $b^* + \epsilon$ is common to all
+cover bidders in a tender, generating mechanical correlation. Under
+tender FE, the tender mean absorbs this common component, leaving
+only $\eta_\ell$---the execution noise, which under Regime~2 has
+lower variance than genuine-bid residuals. The FL pairwise product
+should therefore \emph{drop below} the non-FL product.
+
+This is exactly what we observe: the FL product drops from 5.16
+(baseline) to 0.38 (tender FE)---\emph{below} the non-FL product
+(0.86; Table~\ref{tab:bajari_ye_corrected},
+Appendix~\ref{app:robustness}). A fake-groups placebo (randomly
+assigning ``FL'' labels to non-FL firms) shows no such reversal
+(product~$= 0.83$ under tender FE), confirming that the pattern is
+specific to FL firms.
+
+This test is the strongest individual piece of evidence for the
+structural model: it is a novel, directional prediction that only
+Regime~2 generates, tested on moments orthogonal to the estimation
+sample.
+
+\paragraph{Market-selection gradient (Prediction~\ref{pred:market}).}
+The model predicts that cover bidding concentrates in competitive
+markets (Proposition~\ref{prop:market_selection}). We test this by
+splitting FL firms by the winner-HHI of their tender portfolio
+(Section~\ref{sec:empirical_network}). The FL--price association
+is 0.126 ($p < 0.01$) for competitive-market FL firms (below-median
+HHI) and statistically zero ($-0.018$, $p > 0.3$) for
+concentrated-market FL firms---a 7:1 ratio.
+
+The gradient is monotonic across HHI quartiles: the FL coefficient
+decreases from Q1 (most competitive) through Q4 (most concentrated),
+consistent with the model's comparative static
+$\partial m^* / \partial \text{HHI} < 0$. No alternative explanation
+easily generates this pattern: if FL firms were simply
+low-quality bidders gravitating toward large markets, the price
+association would not concentrate in competitive environments where
+pricing power is lowest.
+
+% ── 6.3 Detection Implication ─────────────────────────────────────
+
+\subsection{Detection Implication of the Dispersion Paradox}
+\label{sec:results_detection}
+
+The structural finding has a direct detection consequence: if
+Regime~2 dominates, screens that condition on bid dispersion should
+underperform screens that condition on participation. We test this
+using CADE convictions as ground truth (temporal split:
+Section~\ref{sec:cade_sample}).
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+Classifier & AUC & DeLong $p$ vs.\ IQR & Regime detected \\
+\midrule
+IQR rule (participation) & 0.94 & --- & 1 and 2 \\
+Imhof CV composite (dispersion) & 0.79 & $< 0.001$ & 1 only \\
+Random forest (7 bid features) & 0.90 & 0.04 & mixed \\
+Structural LR score & 0.56 & $< 0.001$ & neither \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The participation-based IQR rule dominates all alternatives
+(Figure~\ref{fig:roc}). The model explains the ranking: under
+Regime~2, cover bids mimic genuine dispersion
+($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$), rendering bid-level
+statistics uninformative; but the participation footprint---never
+winning yet bidding repeatedly---is invariant to the bid
+distribution. The structural LR score's near-random performance
+(0.56) confirms that the mixture parameters identify the
+\emph{regime}, not individual firm status: detection and mechanism
+identification are complementary tasks, not substitutes.
+The Youden-optimal threshold ($1.45\times$IQR) nearly coincides
+with the baseline rule ($1.5\times$), providing an independent
+validation of the statistical cutoff. Full ROC curves, threshold
+sensitivity, and the Imhof comparison appear in
+Appendix~\ref{app:detection}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{images/fig_roc_comparison.pdf}
+\caption{ROC curves: FL participation screen (AUC~$= 0.94$) vs.\
+Imhof CV composite (AUC~$= 0.79$) and random forest
+(AUC~$= 0.90$). Ground truth: CADE co-participation.}
+\label{fig:roc}
+\end{figure}
+
+% ── 6.4 Reduced-Form Evidence ─────────────────────────────────────
+
+\subsection{Reduced-Form Price Associations}
+\label{sec:results_ols}
+
+We now test the model's price and selection predictions using
+reduced-form regressions. These estimates are conditional
+associations---not causal effects---that serve as specification tests:
+the structural model predicts their sign, relative magnitude across
+modalities, and response to controls.
+
+Table~\ref{tab:prices} reports OLS estimates of
+Equation~\eqref{eq:ols_main} (Prediction~\ref{pred:price}). FL
+presence is associated with 6.8\% higher prices in the general
+specification, 6.4\% with PBU FE, 9.3\% for preg\~ao, and 3.8\%
+for convite.
+
+\paragraph{Reconciling the preg\~ao--convite asymmetry.}
+At first glance, the larger preg\~ao coefficient appears to
+contradict Proposition~\ref{prop:optimal_m}(iii), which predicts
+weakly more cover bidders under convite. But more cover bidders does
+not imply a larger price association, for two reinforcing reasons.
+\emph{First}, under convite, 39.2\% of FL-present tenders are corner
+solutions where the minimum-bidder constraint forces deployment
+regardless of profitability; in these tenders, cover bidding serves
+to meet the regulatory threshold rather than to sustain prices,
+diluting the average FL--price association.
+\emph{Second}, preg\~ao's real-time format enables Regime~2
+coordination (Section~\ref{sec:cover_distributions}): the
+coordinator observes auction dynamics and calibrates cover bids
+precisely, making each cover bidder more effective at sustaining
+the winning price. Under convite (Regime~1), cover bids are
+dispersed and less effective per bidder.
+The structural model thus predicts a \emph{larger quantity} of
+cover bidders under convite but a \emph{larger per-bidder
+effectiveness} under preg\~ao. The net price association is
+an empirical question; the data show that preg\~ao's coordination
+advantage dominates convite's quantity advantage.
+
+\input{./output/tables/tab_prices}
+
+Cross-fitting yields $\hat{\beta}_{\text{CF}} = 0.036$ (3.6\%);
+CEM yields 0.077; IPW yields 0.055. The IV (0.194, $F = 396$)
+provides an upper bound consistent with measurement-error
+attenuation, though balance-test violations preclude a causal
+interpretation (Appendix~\ref{app:robustness}). Six estimators
+converge in a 3.6--8.0\% range (IV excluded), with the cross-fit
+as the conservative lower bound and CEM as the upper. The stability
+across specifications is consistent with the model's prediction but
+does not identify a causal price effect.
+
+FL-present tenders have 0.19 log points \emph{more} non-FL firms
+(Prediction~\ref{pred:selection}; PBU FE), contradicting
+crowding-out and consistent with the model's strategic-selection
+prediction: cartels deploy cover bidders on top of genuine
+competition, not as substitutes.
+
+% ── 6.5 Additional Identification Evidence ─────────────────────────
+
+\subsection{Event Study and Minimum-Bidder Constraint}
+\label{sec:results_additional}
+
+\paragraph{Event study.}
+Within-PBU event studies around first FL entry show positive
+pre-event coefficients at $t = -2$ and $t = -3$
+(Figure~\ref{fig:fl_entry_es}), indicating strategic selection: FL
+firms enter markets that \emph{already} have higher prices. This
+precludes a causal interpretation of the FL--price association but
+is consistent with the model's market-selection prediction
+(Proposition~\ref{prop:market_selection}): cartels select into
+markets that already have favorable conditions.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{images/fig_fl_entry_event_study.pdf}
+\caption{Event study: log prices around first FL entry. Pre-event
+coefficients indicate strategic selection into high-price PBUs.}
+\label{fig:fl_entry_es}
+\end{figure}
+
+\paragraph{Minimum-bidder constraint interaction.}
+Within convite, interacting FL with a constraint-binding indicator
+($n_{\text{genuine}} < 3$) yields a \emph{voluntary} deployment
+premium of 7.6\% ($p < 0.001$) when $n \geq 3$, compared with a
+negative constraint interaction ($-16.0\%$, $p < 0.001$). The price
+effect concentrates in voluntary deployments, consistent with the
+model's interior-solution prediction: the cartel deploys cover
+bidders because they are \emph{profitable}, not because they are
+forced.

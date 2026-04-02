@@ -1,0 +1,87 @@
+\documentclass[12pt]{article}
+
+% ---- Packages ----------------------------------------------------------------
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{url,xurl}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[authoryear]{natbib}
+\usepackage{amsthm}
+
+\pdfsuppresswarningpagegroup=1
+\tolerance=600
+\emergencystretch=1em
+
+\newcommand{\cites}[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}[definition]{Hypothesis}
+\newtheorem{prediction}[definition]{Prediction}
+\newtheorem{proposition}[definition]{Proposition}
+
+% ---- Formatting --------------------------------------------------------------
+\doublespacing
+
+\setlength{\abovedisplayskip}{8pt plus 2pt minus 4pt}
+\setlength{\belowdisplayskip}{8pt plus 2pt minus 4pt}
+\setlength{\textfloatsep}{12pt plus 2pt minus 4pt}
+\setlength{\floatsep}{10pt plus 2pt minus 4pt}
+\setlength{\abovecaptionskip}{6pt}
+\setlength{\belowcaptionskip}{2pt}
+
+\setcounter{MaxMatrixCols}{10}
+\setlength{\bibsep}{0pt}
+\renewcommand{\bibfont}{\small}
+\interfootnotelinepenalty=50000
+\renewcommand{\arraystretch}{1.3}
+
+\hyphenation{eco-no-me-tric re-gres-sion dif-fer-ence-in-dif-fer-ences
+  en-do-ge-nei-ty het-e-ro-sce-das-tic-i-ty pro-cure-ment}
+
+\graphicspath{{./output/figures/}{./images/}}
+
+% ==============================================================================
+\begin{document}
+% ==============================================================================
+
+\input{sec_frontmatter}
+
+\input{sec_introduction}
+\input{sec_literature}
+\input{sec3_structural_model}
+\input{sec4_data_fl}
+\input{sec5_empirical_strategy}
+\input{sec6_results}
+\input{sec7_counterfactual}
+\input{sec8_robustness}
+\input{sec9_conclusion}
+
+\bibliographystyle{chicago}
+\bibliography{references}
+
+\appendix
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\makeatletter
+\@addtoreset{table}{section}
+\@addtoreset{figure}{section}
+\makeatother
+
+\input{sec_appendix_p2}
+
+\end{document}

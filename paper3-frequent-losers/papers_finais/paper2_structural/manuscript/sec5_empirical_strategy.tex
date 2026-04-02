@@ -1,0 +1,219 @@
+% ============================================================================
+% sec5_empirical_strategy.tex — Paper 2: Estimation strategy
+% ============================================================================
+
+\section{Estimation Strategy}
+\label{sec:empirical}
+
+The estimation has four components, ordered by their structural content.
+\emph{First}, we estimate the mixture model from
+Section~\ref{sec:likelihood}, which identifies the cover-bid
+distribution and selects between regimes
+(Section~\ref{sec:structural_estimation}). \emph{Second}, we test
+the model's predictions using reduced-form regressions, matching
+estimators, and an IV bracketing exercise
+(Section~\ref{sec:reduced_form}). \emph{Third}, we validate detection
+performance against CADE convictions and compare with bid-level
+screens (Section~\ref{sec:detection_validation}). \emph{Fourth}, we
+implement Bajari--Ye bid-coordination tests using the FL partition
+(Section~\ref{sec:bajari_ye}).
+
+% ── 5.1 Structural Estimation ────────────────────────────────────
+
+\subsection{Structural Likelihood Estimation}
+\label{sec:structural_estimation}
+
+The estimation proceeds in two stages on the bid-level sample
+(23.2~million genuine losing bids; 189,381 FL losing bids).
+
+\paragraph{Stage 1: Genuine bid distribution.}
+We estimate $(\boldsymbol{\beta}, \sigma_g^2)$ from non-FL losing bids
+by maximum likelihood under the log-normal
+specification~\eqref{eq:genuine_dist}:
+\begin{equation}
+  (\hat{\boldsymbol{\beta}}, \hat{\sigma}_g^2) =
+  \operatorname*{arg\,max}_{\boldsymbol{\beta}, \sigma_g^2}
+  \sum_{t=1}^{T} \sum_{j \in \mathcal{G}_t}
+  \log \phi\!\left(
+    \frac{\log b_{jt} - \mathbf{x}_j'\boldsymbol{\beta}
+    - \hat{\alpha}_i - \hat{\lambda}_t}{\sigma_g}
+  \right)
+  \label{eq:mle_genuine}
+\end{equation}
+In practice, this reduces to OLS of $\log b_{jt}$ on $\mathbf{x}_j$
+with item and year fixed effects, yielding $\hat{\sigma}_g^2$ as the
+residual variance.
+
+\paragraph{Stage 2: Cover bid distribution.}
+Conditional on $b^*_t$, we estimate cover-bid parameters from FL bids.
+Under Regime~1: $\hat{\delta} = \max_{j \in \mathcal{F}_t, t}
+(b_{jt} - b^*_t)$. Under Regime~2:
+\begin{equation}
+  \hat{\epsilon} = \overline{\log b_{jt} - \log b^*_t}, \qquad
+  \hat{\sigma}_c^2 = \frac{1}{|\mathcal{F}|}
+  \sum_{t,j \in \mathcal{F}_t}
+  \left(\log b_{jt} - \log b^*_t - \hat{\epsilon}\right)^2
+  \label{eq:mle_cover}
+\end{equation}
+
+\paragraph{Model selection.}
+BIC and Kolmogorov--Smirnov goodness-of-fit jointly select the
+regime:
+\begin{equation}
+  \text{BIC}_r = -2\ell_r + k_r \log N, \quad r \in \{1, 2\}
+  \label{eq:bic}
+\end{equation}
+
+\paragraph{Price-association consistency check.}
+The $n$-conditional price association compares FL-present and
+FL-absent tenders, conditioning on the number of genuine competitors
+$n$:
+\begin{equation}
+  \hat{\mu} = E[\log p \mid \text{FL present}, n] -
+  E[\log p \mid \text{FL absent}, n]
+  \label{eq:structural_markup}
+\end{equation}
+This is a calibration check: if the structural model is correctly
+specified, the $n$-conditional coefficient should be consistent with
+the unconditional OLS estimate, because the model predicts that
+differential genuine competition does not drive the FL--price
+association. The structural parameters
+$(\hat{\epsilon}, \hat{\sigma}_c)$ characterize the cover-bid
+\emph{mechanism}; the price association comes from the reduced-form
+comparison, disciplined by the model's predictions.
+
+\paragraph{Standard errors.}
+Parametric bootstrap with 500 replications, resampling tenders to
+preserve within-tender correlation.
+
+% ── 5.2 Calibration of Cartel Primitives ──────────────────────────
+
+\subsection{Calibration of Cartel Primitives}
+\label{sec:calibration}
+
+The mixture model identifies the cover-bid distribution
+($\hat{\epsilon}$, $\hat{\sigma}_c$) but not the cartel's
+decision parameters ($c_1$, $\phi_0$) that govern cover-bidder
+deployment. We recover these from the model's comparative statics
+using a minimum-distance calibration.
+
+\paragraph{Moment conditions.}
+From Proposition~\ref{prop:optimal_m}, the interior-solution FOC
+implies:
+\begin{equation}
+  m^*_{kt} = \frac{\pi'(n_{kt})}{c_1 + \theta_k \phi_0}
+  \label{eq:foc_m}
+\end{equation}
+where $\pi'(n) \equiv \partial \pi / \partial m$ is the marginal
+return to cover bidding, decreasing in $n$ by A2. Taking logs:
+\begin{equation}
+  \log m^*_{kt} = \log \pi'(n_{kt}) - \log(c_1 + \theta_k \phi_0)
+  \label{eq:log_foc}
+\end{equation}
+
+We parameterize $\pi'(n) = \pi_0 \cdot n^{-\gamma}$ (diminishing
+returns to cover bidding as genuine competition increases) and
+$\theta_k = \bar{\theta} \cdot \text{PBUsize}_k^{\psi}$ (detection
+probability increasing in oversight capacity). This yields a
+log-linear specification:
+\begin{equation}
+  \log \bar{m}_k = a_0 - \gamma \log \bar{n}_k
+  - \log\!\left(c_1 + \bar{\theta} \cdot \text{PBUsize}_k^{\psi}
+  \cdot \phi_0\right) + \nu_k
+  \label{eq:calibration_moment}
+\end{equation}
+where $\bar{m}_k$ and $\bar{n}_k$ are PBU-level means of FL count
+and genuine-bidder count, respectively, and $\nu_k$ captures
+unobserved PBU heterogeneity.
+
+\paragraph{Estimation.}
+We estimate Eq.~\eqref{eq:calibration_moment} on PBU-level moments
+from 913 PBUs with $\geq$10 interior-solution tenders ($m^* >
+\underline{n}(\tau) - n$). Because the five-parameter NLS surface
+exhibits near-collinearity between $c_1$ and $\phi_0$ (enforcement
+variation across PBUs is limited), we adopt a profile-likelihood
+approach: $\psi$ is concentrated out over a grid
+$\{0.1, 0.2, \ldots, 3.0\}$, and the remaining four parameters
+$(\pi_0, \gamma, c_1, \phi_0)$ are estimated by weighted NLS at each
+grid point. The profile-best $\psi^*$ minimizes the weighted residual
+sum of squares. Standard errors by PBU-clustered bootstrap (500
+replications) at fixed $\psi^*$.
+
+Corner-solution tenders---convite auctions where the 3-bidder
+minimum forces $m \geq \underline{n}(\tau) - n$---are excluded from
+estimation and reserved for an overidentification check: the
+interior-solution model should predict lower FL counts than observed
+in these tenders, confirming that the constraint binds.
+
+\paragraph{Identification.}
+$\gamma$ is identified from the cross-PBU covariation of $\bar{m}$
+with $\bar{n}$ (holding PBU size fixed) and is the best-determined
+parameter ($R^2 = 0.585$ from the log-linear first stage alone).
+The level of $c_1$ is pinned down by the unconditional mean of $m^*$.
+The ratio $\phi_0 / c_1$ is identified from the cross-PBU gradient of
+$\bar{m}$ with PBU size (holding $\bar{n}$ fixed): larger PBUs with
+higher detection probability should attract fewer cover bidders. In
+practice, this gradient is economically small ($-0.018$, $p = 0.024$),
+limiting the precision of $\phi_0$ while leaving $\gamma$ and $c_1$
+well identified.
+
+% ── 5.3 Reduced-Form Tests ──────────────────────────────────────
+
+\subsection{Reduced-Form Tests of Structural Predictions}
+\label{sec:reduced_form}
+
+\paragraph{Reduced-form tests (Predictions~\ref{pred:price}--\ref{pred:selection}).}
+\begin{equation}
+  y_{igt} = \beta \cdot \text{losers}_{igt} + \mathbf{x}_{igt}'
+  \boldsymbol{\delta} + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt}
+  \label{eq:ols_main}
+\end{equation}
+Standard errors clustered at the item level. Four specifications:
+(1)~item + year FE; (2)~+ PBU FE; (3)~preg\~ao only; (4)~convite
+only. Cross-fitting (FL defined on odd years, estimated on even, and
+vice versa) breaks the classification--outcome link and yields a
+conservative lower bound. CEM and IPW matching provide non-parametric
+checks.
+
+\paragraph{IV as measurement-error diagnostic.}
+A leave-one-out instrument
+$Z_{kgt} = \sum_{j \neq k} \mathbf{1}[\text{FL active at PBU } j,
+\text{ group } g, \text{ year } t]$
+exploits supply-side variation ($F = 396$). The IV is not our
+primary estimator---balance tests reveal systematic imbalance across
+observables (Appendix~\ref{app:robustness})---but it serves as a
+measurement-error diagnostic: the point estimate (0.194) exceeds
+OLS (0.064) by a factor of three, consistent with attenuation from
+binary misclassification of FL status.
+
+% ── 5.4 Additional Tests ──────────────────────────────────────────
+
+\subsection{Specification and Detection Tests}
+\label{sec:additional_tests}
+
+\paragraph{Detection comparison.}
+\label{sec:detection_validation}
+We benchmark the FL screen against three alternatives using CADE
+convictions as ground truth (temporal split:
+Section~\ref{sec:cade_sample}): (i)~\citet{imhof2019detecting}-style
+bid-level features; (ii)~a random forest (500 trees, 5-fold CV);
+(iii)~the structural likelihood-ratio score.
+
+\paragraph{Bajari--Ye tests.}
+\label{sec:bajari_ye}
+First-stage residuals from
+$\log b_{jt} = \mathbf{x}_j'\boldsymbol{\phi} + \alpha_i +
+\lambda_t + u_{jt}$, excluding $n_{\text{bids}}$
+\citep[jointly determined;][p.~978]{bajari2003deciding}.
+Tests: exchangeability (KS on FL vs.\ non-FL residuals) and
+conditional independence (pairwise product of FL residuals). A
+tender-FE variant tests the novel Regime~2 prediction: the FL
+pairwise product should drop \emph{below} the non-FL product, as
+the tender mean absorbs the shared focal-point component.
+
+\paragraph{Market-selection heterogeneity.}
+\label{sec:empirical_network}
+For each FL firm, we compute the winner HHI
+$= \sum_{w} s_{wj}^2$ and split at the median. Under
+Proposition~\ref{prop:market_selection}, the FL--price association
+should concentrate in competitive markets.
