@@ -11,7 +11,7 @@
 
 This section presents four sets of results: classification
 diagnostics, price regressions, detection performance against CADE
-convictions, and model-based diagnostics. After absorbing item fixed
+convictions, and supporting diagnostics. After absorbing item fixed
 effects, the raw FL--non-FL gap compresses from 2.43 to 0.050 log
 points (overlap 0.978): within narrow product categories, FL-present
 and FL-absent tenders look nearly identical on observables. The
@@ -114,10 +114,10 @@ Appendix~\ref{app:robustness}).
 Four approaches that differ in weighting, functional form, and
 information sets produce a consistent 3.6--7.7\% price gap:
 cross-fit (3.6\%), IPW (5.5\%), OLS (6.4\%), CEM (7.7\%). The
-estimates cluster rather than scatter---the hallmark of a robust
-association. The IV (19.4\%) indicates that the binary FL indicator
-attenuates the OLS toward zero, suggesting the underlying association lies
-above, not below, the OLS baseline. An omitted confounder would
+estimates cluster rather than scatter, indicating a stable conditional
+association. The IV (19.4\%) is directionally consistent with
+attenuation in the binary indicator, though not substantively
+interpretable as a preferred magnitude. An omitted confounder would
 need to explain 17.5\% of residual variation in \emph{both}
 FL presence and log prices---after absorbing item, year, and PBU
 fixed effects---to nullify the coefficient
@@ -145,8 +145,9 @@ to 1.45$\times$IQR---nearly identical to the 1.5$\times$ rule chosen
 \emph{a priori} on economic grounds---achieving TPR~$= 1.00$ with
 FPR~$= 0.16$. The convergence between the economic threshold and the
 detection-theoretic optimum is notable: it means the participation
-intensity at which profit-maximizing entry becomes implausible is
-also the intensity that best discriminates cartel-linked firms.
+intensity at which profit-maximizing entry becomes difficult to
+rationalize is also the intensity that best discriminates
+cartel-linked environments.
 Higher participation counts mechanically increase co-participation
 opportunities; the permutation test (Section~\ref{sec:cade}), which
 stratifies on participation quartile, provides an independent check
@@ -175,12 +176,12 @@ Including both FL presence and an Imhof-style CV flag as regressors
 reveals that the two screens capture nearly orthogonal information
 (correlation 0.060). The FL coefficient \emph{rises} from 0.064 to
 0.084 ($p < 0.01$) when the CV flag is added---a suppression effect
-coherent with Regime~2: coordinated cover bidding produces low
-within-tender dispersion (evading CV-based screens) while maintaining
-FL participation (detected by the participation-based screen). The
-Imhof flag enters at 0.021 ($p < 0.01$). The two screens are
-complementary, not redundant---each detects a different regime of
-cartel behavior (Table~\ref{tab:horse_race},
+consistent with the framework's logic: if coordinated cover bidding
+produces low within-tender dispersion, CV-based screens miss it while
+the participation-based screen does not. The
+Imhof flag enters at 0.021 ($p < 0.01$). For enforcement purposes,
+the screen's main value is not to replace bid-level tools but to
+prioritize where those tools should be deployed (Table~\ref{tab:horse_race},
 Appendix~\ref{app:robustness}).
 
 \input{sections/sec_ground_truth}
@@ -217,8 +218,9 @@ cells absorbing the effect cannot be ruled out with cross-sectional
 data; the monotonic pattern across HHI quartiles is suggestive but not
 definitive.}
 From a detection standpoint, the result is encouraging: the FL screen
-bites hardest in competitive markets, precisely where collusion is
-most costly to taxpayers and hardest to detect by other means.
+bites hardest in competitive markets, especially where collusion is
+most costly to taxpayers and where other detection tools have limited
+reach.
 
 \input{./output/tables/tab_network_split}
 
@@ -234,14 +236,14 @@ Table~\ref{tab:bajari_ye_corrected} in Appendix~\ref{app:robustness}).
 
 \paragraph{Exchangeability.}
 The KS test rejects the null that FL and non-FL bid residuals share
-the same distribution ($D = 0.15$, $p < 0.001$): FL bids are drawn
-from a distinct process.
+the same distribution ($D = 0.15$, $p < 0.001$): FL bids appear to be drawn
+from a different process.
 
 \paragraph{Conditional independence.}
 The mean pairwise product of FL residuals is 4.28 ($t = 81.0$,
 $p < 0.001$), with the bootstrap FL--non-FL difference
 excluding zero, indicating systematically different within-tender
-correlation that fits coordinated bidding. Enriching the
+correlation coherent with coordinated bidding. Enriching the
 first stage with firm age and CNAE sector dummies alongside firm
 size leaves R-squared virtually unchanged (0.770) and does not
 alter the KS or pairwise-product results, reducing the concern
@@ -252,10 +254,10 @@ cost shifters (Table~\ref{tab:bajari_ye_corrected}).
 Under tender FE (Table~\ref{tab:bajari_ye_tender_fe},
 Appendix~\ref{app:robustness}), both products drop substantially
 (FL: $5.16 \to 0.38$; non-FL: $2.21 \to 0.86$), with the FL product
-falling \emph{below} non-FL---a reversal predicted by Regime~2.
+falling \emph{below} non-FL---a reversal consistent with Regime~2.
 Cover bids cluster near $b^* + \epsilon$; removing the tender mean
-strips out the shared focal-point component, which is exactly the
-variation coordinated cover bidding generates.
+strips out the shared focal-point component, which is the sort of
+variation the coordinated-regime framework emphasizes.
 
 \input{sections/sec_identification}
 
@@ -264,7 +266,7 @@ variation coordinated cover bidding generates.
 \subsection{Structural Estimation Results}
 \label{sec:results_structural}
 
-BIC selects Regime~2 (coordinated cover bidding) decisively
+Within the framework, BIC strongly favors Regime~2 (coordinated cover bidding)
 ($\Delta$BIC~$= -91{,}473$; Table~\ref{tab:structural_params},
 Appendix~\ref{app:structural_id}). The dispersion ratio
 $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$: FL bids are 28\%
@@ -272,7 +274,7 @@ $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$: FL bids are 28\%
 coordinated cover bidding, under which variance-based screens lose
 power. The $n$-conditional markup
 (6.4\%) matches the OLS baseline exactly, and the sharpest
-out-of-sample test confirms the model: mean FL count is 10.7 when
+out-of-sample test is consistent with the framework's logic: mean FL count is 10.7 when
 $n_{\text{genuine}} = 0$ (minimum-bidder constraint) and drops to
 $\approx 2$ when $n \geq 2$, as predicted. Additional specification
 tests are in Appendix~\ref{app:structural_id}; a companion paper
