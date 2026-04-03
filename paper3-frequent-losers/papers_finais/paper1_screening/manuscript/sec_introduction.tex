@@ -1,44 +1,47 @@
 \section{Introduction}
 \label{sec:intro}
 
-The bid-rigging detection literature has a blind spot. Its most
-widely deployed tools---within-tender variance, kurtosis, and
+Procurement authorities investigating bid rigging face a practical
+constraint: the most widely deployed detection tools require granular
+bid data that many systems do not collect.
+Existing screens---within-tender variance, kurtosis, and
 coefficient of variation
-\citep{imhof2019detecting, huber2019machine}---all rely on bid
-dispersion. Yet the best-organized cartels defeat precisely these
-screens: when cover bidders coordinate their bids tightly around
-the designated winner, dispersion \emph{falls}, and the
-statistical signature of collusion vanishes. The cartels that
-matter most are the ones current tools cannot see.
+\citep{imhof2019detecting, huber2019machine}---rely on bid
+dispersion and require bid-level microdata. Moreover, when cover
+bidders coordinate their bids tightly around the designated winner,
+dispersion \emph{falls} and these screens lose power---a
+vulnerability that a participation-based approach sidesteps.
 
-We exploit a different footprint. Cover bidding requires firms to
+We exploit a simpler footprint. Cover bidding requires firms to
 show up and lose---repeatedly. A firm that bids on 50 tenders
 over a decade without winning a single one is either
-extraordinarily unlucky or playing a different game. We call these
+extraordinarily unlucky or engaged in behavior that warrants
+scrutiny. We call these
 firms \emph{frequent losers} (FL) and show that this participation
 anomaly---observable from win/loss records alone, without any bid
-microdata---marks procurement environments with systematically higher
-prices and deep proximity to known cartels.
+microdata---flags procurement environments with systematically higher
+conditional prices and strong proximity to known cartel environments.
 
-A cover-bidding model (Section~\ref{sec:structural}) formalizes the
-intuition and distinguishes two regimes: under complementary cover
-bidding (Regime~1), cover bids scatter above the winning bid; under
-coordinated cover bidding (Regime~2), they cluster near a focal
-point. The distinction has a sharp detection implication: Regime~2
-defeats dispersion-based screens precisely when coordination is
-strongest. A participation-based screen is immune to this problem
-because it does not depend on how cover bids are distributed---only
-on the fact that cover bidders must participate.
+A conceptual framework (Section~\ref{sec:structural}) organizes the
+screening intuition by distinguishing two cover-bidding regimes: under
+complementary cover bidding (Regime~1), cover bids scatter above the
+winning bid; under coordinated cover bidding (Regime~2), they cluster
+near a focal point. The distinction has a sharp detection
+implication: Regime~2 defeats dispersion-based screens precisely when
+coordination is strongest. A participation-based screen sidesteps
+this problem because it does not depend on how cover bids are
+distributed---only on the fact that cover bidders must participate.
 
 We test this logic on S\~ao Paulo's Bolsa Eletr\^onica de Compras (BEC),
 covering 4.5 million tender-items and 40 million bids over 2009--2019.
 Among 41,000 firms, 16,843 never win a single tender; a simple
 IQR-based outlier rule identifies 2,735 whose participation frequency
-cannot be squared with profit-maximizing entry---the frequent losers.
-Against the same CADE ground truth, the rule achieves higher AUC
-than a random forest and a structural classifier
-(Section~\ref{sec:classification_robustness}), though the
-comparison uses coarser proxies for the full Imhof implementation.
+is difficult to reconcile with profit-maximizing entry---the frequent
+losers. Against CADE ground truth, the rule achieves
+AUC~$= 0.94$---higher than a CV-based proxy for
+\citet{imhof2019detecting}-style screens (AUC~$= 0.79$), though the
+comparison uses a coarser implementation than the full Imhof pipeline
+(Section~\ref{sec:results_detection}).
 The single most discriminative feature of cover
 bidding---participating heavily despite never winning---is hard for
 more complex methods to improve upon.
@@ -50,10 +53,10 @@ convicted cartelists at 3.5$\times$ the baseline rate ($p < 0.001$).
 Three CADE-convicted cover bidders are themselves classified as FL
 (Section~\ref{sec:cade}).
 
-FL-flagged tenders show 3.6--7.7\% higher prices in within-item,
-within-year, within-purchasing-unit comparisons. The range spans
-temporal cross-fitting (3.6\%), OLS with high-dimensional fixed
-effects (6.4\%), and matching (CEM: 7.7\%; IPW: 5.5\%). After
+FL-flagged tenders show 3.6--7.7\% higher conditional prices in
+within-item, within-year, within-purchasing-unit comparisons. The
+range spans temporal cross-fitting (3.6\%), OLS with high-dimensional
+fixed effects (6.4\%), and matching (CEM: 7.7\%; IPW: 5.5\%). After
 absorbing item fixed effects the raw gap collapses from 2.43 to 0.050
 log points (overlap 0.978; Table~\ref{tab:conditional_descstats},
 Appendix~\ref{app:competition}), so the regressions compare
@@ -61,9 +64,10 @@ observationally similar tenders within tight product categories.
 Sensitivity analysis (\citealt{cinelli2020making},
 $RV = 17.5\%$) sets a high bar for omitted confounders.
 
-The model generates five testable predictions; we take each to the
-data. The price effect concentrates in competitive markets, where the
-model says cover bidding pays the highest marginal return. BIC selects
+Five diagnostics, each motivated by the framework, assess whether the
+screen's behavior is coherent with coordinated cover bidding.
+The price association concentrates in competitive markets, where the
+framework says cover bidding pays the highest marginal return. BIC selects
 Regime~2, revealing a \emph{dispersion paradox}: cover-bid dispersion
 is 28\% \emph{below} genuine bids ($\sigma_c/\sigma_g = 0.72$),
 the opposite of what variance-based screens assume.
@@ -73,39 +77,39 @@ predicts. And the FL premium is larger in tenders where cover bidding
 is voluntary (7.6\%) than where the minimum-bidder rule forces
 participation. A horse-race regression shows FL captures price
 information nearly orthogonal to \citet{imhof2019detecting}-style
-bid-level features (correlation 0.06). No single test is dispositive,
-but the joint pattern is difficult to generate under any non-collusive
-story.
+bid-level features (correlation 0.06). No single diagnostic is
+dispositive, but the joint pattern strengthens the plausibility of
+the cover-bidding interpretation.
 
 \subsection{Contributions}
 
-\emph{First}, we develop a model of cover bidding that exposes a
-blind spot in existing detection tools. The model distinguishes
-complementary from coordinated regimes and shows that the coordinated
-regime---BIC-selected in the data---defeats dispersion-based screens.
-This makes participation-based detection not a convenience but a
-necessity.
+\emph{First}, we build a firm-level screen that requires only
+win/loss records---no bid microdata, no enforcement priors, no
+supervised training labels. A conceptual framework distinguishing
+complementary from coordinated cover-bidding regimes motivates the
+screen and organizes the diagnostics.
 
-\emph{Second}, we build a screen that requires only win/loss
-records---no bid microdata, no enforcement priors, no supervised
-training labels. It achieves AUC~$= 0.94$ against
-competition-authority convictions, achieving higher AUC than a
-random forest and a structural classifier on the same ground
-truth. The screen is
-deployable wherever procurement systems record who bid and who won.
+\emph{Second}, the screen achieves AUC~$= 0.94$ against
+competition-authority convictions and flags environments with
+3.6--7.7\% higher conditional prices, with the CADE-optimal
+threshold nearly identical to the \emph{a priori} economic rule.
+It is deployable wherever procurement systems record who bid and
+who won.
 
-\emph{Third}, we document a 3.6--7.7\% price gap in FL-flagged
-tenders and trace it through five independent diagnostics that jointly
-match the coordinated cover-bidding model: regime selection,
+\emph{Third}, five independent diagnostics---regime selection,
 Bajari--Ye bid-coordination tests, network-split heterogeneity,
-dyadic linkage, and invitation variation. The challenge for
-alternative explanations is to produce all five patterns
-simultaneously.
+dyadic linkage, and invitation variation---are jointly coherent
+with coordinated cover bidding, providing supporting evidence for
+the screen's economic rationale without claiming mechanism
+identification.
 
-We emphasize what the paper does \emph{not} claim. The price
-association is a conditional correlation, not a causal estimate; the
-FL classification identifies a participation anomaly, not true cartel
-membership; and the results are specific to one procurement platform.
-The paper's contribution is the screen and its diagnostic validation,
-not causal identification of the FL--price effect
+Three boundaries define what this paper does \emph{not} claim. The
+price association is a conditional correlation, not a causal
+estimate; the FL classification identifies a participation anomaly,
+not true cartel membership; and the diagnostics are coherent with
+coordinated cover bidding but do not uniquely identify the
+mechanism. The paper's contribution is the screen itself---its
+construction, external validation, and the coherent diagnostic
+pattern that supports its deployment---not causal identification
+of a price effect or proof of a mechanism
 (Section~\ref{sec:limitations}).
