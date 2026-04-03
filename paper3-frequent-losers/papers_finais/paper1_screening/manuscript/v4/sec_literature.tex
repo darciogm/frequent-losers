@@ -1,7 +1,7 @@
 \section{Related Literature}
 \label{sec:literature}
 
-This paper sits at the intersection of four literatures.
+The paper draws on four literatures.
 
 \paragraph{Bid-coordination tests and bidder classification.}
 \citet{bajari2003deciding} develop powerful tests for
@@ -12,9 +12,8 @@ fringe.'' No existing method provides this partition from data alone.
 Subsequent work detects bid rotation
 \citep{porter1993detection, porter1999ohio}, collusion in timber
 auctions \citep{baldwin1997bidder}, bidder groups from co-bidding
-patterns \citep{conley2016detecting}, and collusion dynamics in
-long-lived cartels \citep{clark2021collusion,
-schurter2020identification}. \citet{conley2016detecting} are the
+patterns \citep{conley2016detecting}, and cartel pricing dynamics
+\citep{clark2014explicit, schurter2020identification}. \citet{conley2016detecting} are the
 closest precedent in data requirements, though they detect group
 structure rather than flag individual firms. In every case the
 partition is constructed \emph{ex post} or by assumption. The FL
@@ -26,9 +25,11 @@ that can feed into Bajari--Ye tests (Section~\ref{sec:results_bajari}).
 \citet{imhof2019detecting} and \citet{imhof2018screening} train ML
 classifiers on tender-level features and achieve high accuracy against
 known cartels; see also \citet{abrantesmetz2006a},
-\citet{harrington2008detecting}, \citet{chassang2022robust}, and
-\citet{wallimann2023machine}. All share two requirements: granular bid
-values and tender-level units of analysis. Many procurement systems,
+\citet{harrington2008detecting}, \citet{chassang2022robust},
+\citet{wallimann2023machine}, and \citet{caoui2022umbrella}, who
+uses structural estimation to quantify umbrella damages from
+bid-rigging cartels in procurement. All share two requirements:
+granular bid values and tender-level units of analysis. Many procurement systems,
 particularly in developing economies, record who bid and who won but
 not the bid amounts. The FL screen operates at the \emph{firm} level
 using only participation and outcome records, enabling a two-stage
@@ -41,25 +42,49 @@ orthogonal (correlation 0.06).%
 for the full implementation; see Section~\ref{sec:results_detection}.}
 
 \paragraph{Cover bidding.}
-Cover bidders have been documented in prosecuted cartels
-\citep{porter1999ohio, pesendorfer2000study, asker2010leniency,
-marshall2012economics} and in theoretical comparisons of auction
-formats \citep{athey2011comparing}. In every case, identification is
-\emph{ex post}---the cover bidder is named after the cartel is
-caught. Our conceptual framework models cover bidding \emph{ex ante},
+Cover bidders appear throughout the empirical record of prosecuted
+cartels \citep{porter1999ohio, pesendorfer2000study,
+asker2010leniency, marshall2012economics} and in theoretical
+comparisons of auction formats \citep{athey2011comparing}. In every
+case the cover bidder is identified \emph{ex post}, after the cartel
+is caught. Our framework models cover bidding \emph{ex ante},
 distinguishing two regimes with different bid distributions and
-different detection vulnerabilities. Under the coordinated regime,
-dispersion-based screens lose power, highlighting a setting in which a
-participation-based screen may be especially useful.
+different vulnerabilities to detection. Under the coordinated
+regime, dispersion-based screens lose power---precisely the setting
+in which a participation-based screen may be most useful.
+
+\paragraph{Enforcement costs and procurement design.}
+\citet{posner1970statistical} documented half a century ago that
+antitrust enforcement concentrates on easily detected
+conspiracies, leaving a large pool of cartels undetected. The
+economics of enforcement \citep{becker1968crime,
+polinsky2000economics} explain why: investigation is expensive, so
+screening tools that narrow the search have direct welfare
+value---even before any case is brought.
+\citet{ghosal2014cartel} trace the evolution of U.S.\ cartel
+enforcement through three institutional stages, each relying more
+heavily on data-driven detection; the FL screen fits this trajectory
+as a first-stage filter that needs no supervised training and no
+enforcement priors. \citet{harrington2015leniency} show that
+leniency programs work best when paired with independent detection
+capacity---precisely the role a low-cost screen can fill.
+On the design side, minimum-bidder requirements can facilitate cover
+bidding \citep{athey2011comparing}, while electronic formats may
+reduce but not eliminate coordination
+\citep{bajari2009auctions}. Our results speak to this interaction:
+the FL--price association varies across procurement formats in the
+direction that differences in participation incentives predict.
 
 \paragraph{Procurement in developing economies.}
 The bid-rigging literature concentrates on developed economies, yet
 enforcement needs are most acute where investigative resources are
 scarce and bid microdata are unavailable
-\citep{sanchezgraells2019screening}. The FL screen's minimal data
-requirements---participation records and outcomes, without bid
-microdata---make it directly portable to low-capacity enforcement
-settings. BEC's scale (4.5 million tender-items, 40 million bids,
+\citep{sanchezgraells2019screening}. \citet{baranek2024favoritism} find that political favoritism raises
+Czech procurement prices by $\sim$6\%---a magnitude comparable to our
+FL--price association (6.4\%)---illustrating how institutional
+distortions leave detectable price footprints. The FL screen's
+minimal data requirements make it directly portable to low-capacity
+enforcement settings. BEC's scale (4.5 million tender-items, 40 million bids,
 11 years, two auction formats) provides a demanding test bed for a
 screen designed to operate with less. For enforcement agencies in
 such settings, the relevant question is not whether a screen

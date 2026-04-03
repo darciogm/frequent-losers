@@ -1,100 +1,110 @@
 \section{Introduction}
 \label{sec:intro}
 
-Procurement authorities need triage tools that can flag suspicious
-environments with minimal data. Most existing bid-rigging screens
-require granular bid amounts---within-tender variance, kurtosis,
-and coefficient of variation
+Procurement authorities need triage tools that work with minimal
+data. Most bid-rigging screens rely on granular bid
+amounts---within-tender variance, kurtosis, coefficient of variation
 \citep{imhof2019detecting, huber2019machine}---yet many procurement
 systems record only who bid and who won. When cover bidders
 coordinate their bids tightly around the designated winner,
-dispersion \emph{falls} and these screens lose power. The
-enforcement gap is practical: how should an agency with
-participation records but no bid microdata decide where to direct
-its investigative resources?
+dispersion \emph{falls} and these screens lose power. The gap is
+practical: how should an agency with participation records but no bid
+microdata decide where to look?
 
 We propose a screen built on a simpler footprint. Cover bidding
 requires firms to show up and lose---repeatedly. A firm that bids
-on 50 tenders over a decade without winning a single one is either
-extraordinarily unlucky or engaged in behavior that warrants
-scrutiny. We call these firms \emph{frequent losers} (FL) and show
-that this participation anomaly---observable from win/loss records
+on 50 tenders over a decade without winning once is either
+spectacularly unlucky or doing something that warrants scrutiny. We
+call these firms \emph{frequent losers} (FL) and show that this
+participation anomaly---observable from win/loss records
 alone---flags procurement environments with systematically higher
-conditional prices and strong proximity to known cartel
-environments. A simple conceptual framework
-(Section~\ref{sec:structural}) organizes the screening intuition by
+prices and strong proximity to known cartel activity. A conceptual
+framework (Section~\ref{sec:structural}) organizes the intuition by
 distinguishing two cover-bidding regimes, but the screen's value
 rests on its empirical performance, not on the framework.
 
-We test this logic on S\~ao Paulo's Bolsa Eletr\^onica de Compras
-(BEC), covering 4.5 million tender-items and 40 million bids over
-2009--2019. Among 41,000 firms, 16,843 never win a single tender;
-a simple IQR-based outlier rule identifies 2,735 whose
-participation frequency is difficult to reconcile with
-profit-maximizing entry. The FL rule is a first-stage triage device
-that prioritizes suspicious environments for investigation, not a
-tool for establishing cartel membership or adjudicating liability.
+The institutional logic is direct. Brazil's sealed-bid procurement
+(convite) requires at least three bidders; cartels can satisfy this
+rule by deploying cover bidders who show up and lose. The
+minimum-bidder rule creates the incentive; the FL screen detects the
+behavioral response; a three-stage enforcement pathway directs
+scarce resources toward the highest-risk environments. The price
+association is 3.8\% for convite but 9.3\% for preg\~ao (electronic
+auction, no minimum-bidder rule)---larger where cover bidding is
+purely voluntary. The convite rule forces some participation
+regardless of market conditions, diluting the FL signal; preg\~ao
+cover bidding is a strategic choice, and the screen picks it up more
+cleanly.
 
-Against CADE (Brazil's competition authority), the screen achieves
-AUC~$= 0.94$---higher than a CV-based proxy for
+We test this on S\~ao Paulo's Bolsa Eletr\^onica de Compras (BEC),
+which covers 4.5 million tender-items and 40 million bids over
+2009--2019. Among 41,000 participating firms, 16,843 never win a
+single tender; a simple IQR-based outlier rule identifies 2,735
+whose participation frequency is hard to square with
+profit-maximizing entry. The screen is a first-stage triage
+device---it flags suspicious environments, not guilty firms.
+
+Validated against CADE (Brazil's competition authority), the screen
+achieves AUC~$= 0.94$---above a CV-based proxy for
 \citet{imhof2019detecting}-style screens (AUC~$= 0.79$), though the
 comparison uses a coarser implementation than the full Imhof pipeline
 (Section~\ref{sec:results_detection}). FL firms co-participate with
 convicted cartelists at 3.5$\times$ the baseline rate
-($p < 0.001$). Three CADE-convicted cover bidders are themselves
+($p < 0.001$), and three CADE-convicted firms are themselves
 classified as FL (Section~\ref{sec:cade}).
 
 FL-flagged tenders show 3.6--7.7\% higher conditional prices in
-within-item, within-year, within-purchasing-unit comparisons. The
-range spans temporal cross-fitting (3.6\%), OLS with high-dimensional
+within-item, within-year, within-purchasing-unit comparisons---a
+range spanning cross-fitting (3.6\%), OLS with high-dimensional
 fixed effects (6.4\%), and matching (CEM: 7.7\%; IPW: 5.5\%). After
-absorbing item fixed effects the raw gap collapses from 2.43 to 0.050
-log points (overlap 0.978; Table~\ref{tab:conditional_descstats},
+absorbing item fixed effects, the raw FL--non-FL gap collapses from
+2.43 to 0.050 log points (overlap 0.978;
+Table~\ref{tab:conditional_descstats},
 Appendix~\ref{app:competition}), so the regressions compare
-observationally similar tenders within tight product categories.
-Sensitivity analysis (\citealt{cinelli2020making},
-$RV = 17.5\%$) sets a high bar for omitted confounders.
+observationally similar tenders within tight product categories. An
+omitted confounder would need to explain 17.5\% of residual variation
+in both FL presence and prices to eliminate the coefficient
+(\citealt{cinelli2020making}).
 
-Five supporting diagnostics assess whether the screen's behavior is
-coherent with coordinated cover bidding: the conditional price
-association concentrates in competitive markets, Bajari--Ye tests
-reject exchangeability of FL and non-FL bid residuals, FL--winner
-pairs recur beyond chance, the FL coefficient is larger where cover
-bidding is voluntary, and a horse-race regression shows FL captures
-information nearly orthogonal to bid-level screens (correlation
-0.06). No single diagnostic is dispositive; the joint pattern
-strengthens the rationale for deploying the screen.
+We then ask whether the screen behaves as one would expect under
+coordinated cover bidding. The evidence is suggestive across several
+dimensions: the price association concentrates in competitive
+markets; Bajari--Ye tests reject exchangeability of FL and non-FL
+bid residuals; FL--winner pairs recur well beyond chance; the
+coefficient is larger where cover bidding is voluntary; and in a
+horse-race regression FL turns out to be nearly orthogonal to
+bid-level screens (correlation 0.06). None of these tests is
+decisive on its own, but the joint pattern is difficult to reconcile
+with a benign explanation.
 
 \subsection{Contributions}
 
-\emph{First}, we build a participation-based screen that requires
-only win/loss records---no bid microdata, no enforcement priors, no
-supervised training labels---and is immediately deployable wherever
-procurement systems record who bid and who won.
-
-\emph{Second}, the screen achieves AUC~$= 0.94$ against
-competition-authority convictions, flags environments with
-3.6--7.7\% higher conditional prices, and complements bid-level
-tools that capture different collusion signatures (correlation 0.06).
-
-\emph{Third}, five independent diagnostics---Bajari--Ye
-bid-coordination tests, network-split heterogeneity, regime
-selection, dyadic linkage, and invitation variation---are jointly
-coherent with coordinated cover bidding, providing supporting
-evidence for the screen's economic rationale.
+The paper makes three contributions. We introduce a
+participation-based screen that runs on win/loss records alone---no
+bid microdata, no enforcement priors, no supervised training---and
+can be deployed by any procurement agency that records who bid and
+who won. Against competition-authority convictions the screen
+achieves AUC~$= 0.94$, flags environments with 3.6--7.7\% higher
+conditional prices, and complements bid-level tools that capture
+different collusion signatures (correlation 0.06). Five independent
+diagnostics---Bajari--Ye bid-coordination tests, network-split
+heterogeneity, regime selection, dyadic linkage, and minimum-bidder
+constraint variation---are jointly consistent with coordinated cover
+bidding. Importantly, the price association concentrates where cover
+bidding is a strategic choice (7.6\% voluntary premium) and where
+oversight is weakest (12.5$\times$ gradient across purchasing-unit
+size quartiles), tying the screen's empirical performance to the
+institutional features that make cover bidding profitable.
 
 \medskip
-\noindent\textbf{Non-claims.}\quad Three boundaries define what this
-paper does \emph{not} claim. The conditional price association is
-not a causal estimate of the effect of collusion on prices. The FL
-classification identifies a participation anomaly, not cartel
-membership: it flags suspicious environments, not guilty firms.
-The diagnostics are coherent with coordinated cover bidding but do
-not uniquely identify the mechanism and do not constitute
-sanction-grade evidence. The paper's contribution is the screen
-itself---its construction, external validation, and the coherent
-diagnostic pattern that supports its deployment as an investigative
-prioritization tool.
+\noindent\textbf{Non-claims.}\quad The conditional price association
+is not a causal estimate of the effect of collusion on prices; the
+FL classification flags suspicious environments, not guilty firms;
+and the diagnostics, while consistent with coordinated cover
+bidding, fall short of sanction-grade evidence. What the paper
+contributes is the screen itself---how to build it, how it performs
+against external enforcement data, and why the diagnostic pattern
+supports its use as a first-stage investigative tool.
 
 \medskip
 \noindent\textbf{Scope.}\quad The remainder of the paper proceeds
