@@ -13,15 +13,23 @@
 \phantomsection\label{eq:cross_deriv}
 
 \begin{proof}[\textbf{Proof of Proposition 1 (Optimal number of cover bidders)}]
-Relaxing the integer constraint, the cartel's first-order condition
-for $m$ is:
+Let $\pi(m)$ denote the cartel's gross benefit from deploying $m$
+cover bidders---reflecting the higher price sustained by the
+appearance of competition. Each cover bidder costs $c_1$ (direct
+compensation) and raises the expected detection penalty by
+$\theta_k \phi_0$ (where $\theta_k$ is the purchasing unit's
+oversight capacity and $\phi_0$ is the per-bidder detection
+sensitivity). Relaxing the integer constraint, the first-order
+condition equates the marginal benefit to the marginal cost:
 \begin{equation}
   \frac{\partial \pi}{\partial m} = c_1 + \theta_k \phi_0
   \label{eq:foc_m}
 \end{equation}
-The gross benefit $\pi(m)$ is strictly concave in $m$
-($\partial^2 \pi / \partial m^2 < 0$), so the second-order
-condition is satisfied and the interior solution
+The gross benefit is strictly concave in $m$
+($\partial^2 \pi / \partial m^2 < 0$): each additional cover bidder
+contributes less to the illusion of competition than the last. The
+second-order condition is therefore satisfied and the interior
+solution
 $\tilde{m}$ defined by~\eqref{eq:foc_m} is therefore unique. When
 the constraint $n + m \geq \underline{n}(\tau)$ binds (i.e.,
 $\underline{n}(\tau) - n > \tilde{m}$), the optimal solution is
@@ -47,11 +55,18 @@ solution.
 \end{proof}
 
 \begin{proof}[\textbf{Proof of Proposition 2 (Regime~1: Complementary cover bidding)}]
-The cartel minimizes the KL divergence between $G$ and the maximum-entropy
-distribution over $[b^*, b^* + \delta]$. By Gibbs' inequality,
+Under Regime~1, cover bidders lack information about genuine bid
+levels---they know only that their bids must exceed the cartel's
+winning bid $b^*$ and fall within a plausible range $[b^*, b^* +
+\delta]$. Without a coordination signal, the best the cartel can do
+is scatter cover bids as randomly as possible to avoid creating
+detectable patterns. This is equivalent to maximizing the entropy of
+the cover-bid distribution $G$, or equivalently, minimizing the KL
+divergence from the maximum-entropy distribution $U =
+\text{Uniform}[b^*, b^* + \delta]$. By Gibbs' inequality,
 $D_{\text{KL}}(G \| U) \geq 0$ with equality if and only if $G = U$
-almost everywhere. Since the constraint set
-$\{G : \text{supp}(G) \subseteq [b^*, b^* + \delta]\}$ includes $U$,
+almost everywhere. Since $U$ belongs to the feasible set
+$\{G : \text{supp}(G) \subseteq [b^*, b^* + \delta]\}$,
 the minimum is attained at $G_1 = U[b^*, b^* + \delta]$.
 \end{proof}
 
@@ -73,6 +88,10 @@ If the cartel sets $\sigma_c = \sigma_{\text{genuine}}$ to mimic
 genuine bid dispersion, the left-truncation compresses the effective
 standard deviation below $\sigma_{\text{genuine}}$, yielding
 $\text{sd}(b_\ell \mid b_\ell > b^*) < \sigma_{\text{genuine}}$.
+This is the mechanism through which coordinated cover bidding defeats
+dispersion-based screens: the screen observes low within-tender
+variance and reads it as competitive, when in fact it reflects
+tight coordination around the winning bid.
 \end{proof}
 
 \begin{proof}[\textbf{Proof of Proposition 4 (Market-selection prediction)}]
