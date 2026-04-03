@@ -1,0 +1,67 @@
+\section{Related Literature}
+\label{sec:literature}
+
+This paper sits at the intersection of four literatures.
+
+\paragraph{Bid-coordination tests and bidder classification.}
+\citet{bajari2003deciding} develop powerful tests for
+collusion---exchangeability of bid functions and conditional
+independence of bid residuals---but require an \emph{ex ante}
+partition of bidders into ``suspected colluders'' and a ``competitive
+fringe.'' No existing method provides this partition from data alone.
+Subsequent work detects bid rotation
+\citep{porter1993detection, porter1999ohio}, collusion in timber
+auctions \citep{baldwin1997bidder}, bidder groups from co-bidding
+patterns \citep{conley2016detecting}, and collusion dynamics in
+long-lived cartels \citep{clark2021collusion,
+schurter2020identification}. \citet{conley2016detecting} are the
+closest precedent in data requirements, though they detect group
+structure rather than flag individual firms. In every case the
+partition is constructed \emph{ex post} or by assumption. The FL
+classification provides a candidate for this partition: a data-driven,
+\emph{ex ante} classification grounded in a participation anomaly
+that can feed into Bajari--Ye tests (Section~\ref{sec:results_bajari}).
+
+\paragraph{Proactive screens for bid rigging.}
+\citet{imhof2019detecting} and \citet{imhof2018screening} train ML
+classifiers on tender-level features and achieve high accuracy against
+known cartels; see also \citet{abrantesmetz2006a},
+\citet{harrington2008detecting}, \citet{chassang2022robust}, and
+\citet{wallimann2023machine}. All share two requirements: granular bid
+values and tender-level units of analysis. Many procurement systems,
+particularly in developing economies, record who bid and who won but
+not the bid amounts. The FL screen operates at the \emph{firm} level
+using only participation and outcome records, enabling a two-stage
+triage workflow: FL flags prioritize environments for closer scrutiny,
+and bid-level analysis follows on the flagged subset. In a direct
+comparison on the same ground truth, FL achieves AUC~$= 0.94$ versus
+0.79 for an Imhof-style CV proxy, and the two screens are nearly
+orthogonal (correlation 0.06).%
+\footnote{Our Imhof comparison uses a CV median split, a coarser proxy
+for the full implementation; see Section~\ref{sec:results_detection}.}
+
+\paragraph{Cover bidding.}
+Cover bidders have been documented in prosecuted cartels
+\citep{porter1999ohio, pesendorfer2000study, asker2010leniency,
+marshall2012economics} and in theoretical comparisons of auction
+formats \citep{athey2011comparing}. In every case, identification is
+\emph{ex post}---the cover bidder is named after the cartel is
+caught. Our conceptual framework models cover bidding \emph{ex ante},
+distinguishing two regimes with different bid distributions and
+different detection vulnerabilities. Under the coordinated regime,
+dispersion-based screens lose power, highlighting a setting in which a
+participation-based screen may be especially useful.
+
+\paragraph{Procurement in developing economies.}
+The bid-rigging literature concentrates on developed economies, yet
+enforcement needs are most acute where investigative resources are
+scarce and bid microdata are unavailable
+\citep{sanchezgraells2019screening}. The FL screen's minimal data
+requirements---participation records and outcomes, without bid
+microdata---make it directly portable to low-capacity enforcement
+settings. BEC's scale (4.5 million tender-items, 40 million bids,
+11 years, two auction formats) provides a demanding test bed for a
+screen designed to operate with less. For enforcement agencies in
+such settings, the relevant question is not whether a screen
+identifies the mechanism but whether it reliably flags environments
+that warrant closer scrutiny with scarce investigative resources.

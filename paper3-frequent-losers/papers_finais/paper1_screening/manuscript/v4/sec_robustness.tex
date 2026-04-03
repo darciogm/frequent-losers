@@ -1,0 +1,127 @@
+
+\section{Robustness and Extensions}
+\label{sec:robustness}
+
+
+We subject the baseline to five groups of checks:
+(i)~FL-definition variants (IQR multiplier, win-rate cutoff, temporal
+window); (ii)~sample and specification variants (unrestricted sample,
+homogeneous subsamples, item$\times$year FE, matching);
+(iii)~alternative clustering; (iv)~sensitivity to unobservables
+(Cinelli--Hazlett); and (v)~staggered DiD.
+Table~\ref{tab:robustness_summary} collects the point estimates, with
+an extra column spelling out what each estimator assumes.
+
+
+\begin{table}[htbp]
+\centering
+\caption{Robustness summary: FL conditional price coefficient across checks}
+\label{tab:robustness_summary}
+\begin{adjustbox}{max width=\textwidth}
+\footnotesize
+\begin{tabular}{lcccp{3.2cm}l}
+\hline\hline
+Check & Coeff. & SE & $N$ & Assumption & Note \\
+\hline
+\multicolumn{6}{l}{\textit{Baseline and matching}} \\
+OLS (item + year + PBU FE) & 0.064 & 0.020 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Baseline \\
+CEM & 0.077 & 0.024 & 969{,}751 & Sel.\ on obs. & Sec.~\ref{sec:results_ols} \\
+IPW & 0.055 & 0.021 & 830{,}194 & Sel.\ on obs. & Sec.~\ref{sec:results_ols} \\
+Cross-fit & 0.036 & 0.019 & 1{,}654{,}401 & Sel.\ on obs.\ + FE; no mechanical link & Out-of-sample \\
+\hline
+\multicolumn{6}{l}{\textit{FL definition variants}} \\
+IQR 1.0$\times$ & 0.079 & 0.023 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 3{,}442 FL \\
+IQR 1.5$\times$ & \multicolumn{5}{l}{\textit{(= OLS baseline above)}} \\
+IQR 2.0$\times$ & 0.060 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 2{,}093 FL \\
+IQR 3.0$\times$ & 0.050 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 1{,}456 FL \\
+\hline
+\multicolumn{6}{l}{\textit{Specification variants}} \\
+Item$\times$year FE & 0.074 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Tighter controls \\
+Two-way clustering & 0.064 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Item + PBU \\
+\hline
+\multicolumn{6}{l}{\textit{Alternative specifications}} \\
+Continuous (log max AL) & 0.022 & 0.005 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Per log-point \\
+Decomposition (odd-yr FL) & 0.043 & 0.019 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Intermediate \\
+Horse-race (FL + Imhof CV) & 0.084 & 0.023 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Suppression \\
+IV (leave-one-out) & 0.194 & 0.077 & 1{,}654{,}401 & Excl.\ restriction & Meas.\ error \\
+\hline
+\multicolumn{6}{l}{\textit{Staggered DiD}} \\
+Stacked DiD & $-$0.006 & 0.014 & 715{,}116 & Parallel trends & Pre-trends \\
+Oster $\hat{\delta}$ & \multicolumn{2}{c}{degen.} & 1{,}654{,}401 & Proportional sel. & $R^2$ gap $\approx 0$ \\
+\hline\hline
+\end{tabular}
+\end{adjustbox}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} ``Sel.\ on obs.\ + FE'' = selection on observables absorbed by item, year, and PBU fixed effects. Cross-fit removes any mechanical link between classification and outcome. The IV is a measurement-error diagnostic; exclusion-restriction concerns (Section~\ref{sec:results_ols}) keep it off the primary range.
+\end{tablenotes}
+\end{table}
+
+
+\paragraph{Threshold sensitivity.}
+The coefficient decreases monotonically with stricter thresholds
+(0.079 at 1.0$\times$, 0.064 baseline, 0.060 at 2.0$\times$, 0.050
+at 3.0$\times$), most likely reflecting classification noise as the
+treated group shrinks. A two-dimensional sensitivity analysis varying
+both multiplier and win-rate cutoff produces significant coefficients
+across all 36 cells
+(Figure~\ref{fig:threshold_heatmap}, Appendix~\ref{app:robustness}).
+For a deploying authority, this means the screen's triage signal is
+not sensitive to the exact threshold chosen.
+
+\paragraph{Sensitivity to unobservables.}
+\citet{cinelli2020making} sensitivity analysis yields $RV_{q=1} =
+17.5\%$: an unobserved confounder would need to explain 17.5\% of
+residual variation in \emph{both} FL presence and log prices to nullify
+the coefficient---stringent given the item, year, and PBU fixed-effects
+structure. Full sensitivity plots are in
+Appendix~\ref{app:robustness}.
+
+
+\paragraph{Staggered difference-in-differences.}
+\citet{callaway2021difference} yields ATT~$= 0.014$ (SE~$= 0.039$);
+stacked DiD \citep{cengiz2019effect} gives $-0.006$ (SE~$= 0.014$;
+Table~\ref{tab:stacked_did}, Appendix~\ref{app:did}). Positive
+pre-trend coefficients at $t = -2$ and $t = -3$ preclude a causal
+reading: PBUs receiving FL entry \emph{already had higher prices},
+coherent with strategic market selection but equally compatible
+with within-market confounding. This is a disciplined non-result:
+the pre-trends reinforce the paper's non-causal framing and
+underscore that within-item conditioning does not eliminate
+time-varying within-market confounders. For the paper's purposes,
+the DiD failure is informative---it reinforces that the conditional
+price association should not be read as a causal effect.
+\citet{rambachan2023more} sensitivity analysis is in
+Appendix~\ref{app:did}.
+
+\paragraph{Coefficient stability (Oster).}
+The \citet{oster2019unobservable} bound is degenerate
+($\hat{\delta} = 261.6$) because PBU FE barely move $R^2$
+(0.879 to 0.886)---a design strength, not fragility. The
+\citet{cinelli2020making} framework ($RV = 17.5\%$) is the
+appropriate sensitivity metric
+(Table~\ref{tab:oster_delta}, Appendix~\ref{app:robustness}).
+
+
+\paragraph{Illustrative welfare.}
+Appendix~\ref{app:extensions} reports back-of-the-envelope welfare
+calculations applying the price coefficients to FL-present spending,
+under an assumption of full causality.
+
+
+\paragraph{Oversight heterogeneity.}
+The conditional FL--price association varies with PBU size: 0.214 in
+the smallest quartile, 0.098 in Q2, 0.045 in Q3, and 0.017 in Q4
+(Table~\ref{tab:regime_oversight}, Appendix~\ref{app:robustness}).
+The 12.5$\times$ gradient is coherent with the framework's
+comparative static ($\partial m^*/\partial \theta_k < 0$): where
+oversight capacity is lower, the FL--price association is larger.
+The pattern is suggestive but not uniquely diagnostic: smaller PBUs
+also have thinner fixed-effect cells that could mechanically inflate
+the coefficient.%
+\footnote{The monotonic gradient across all four quartiles weighs
+against a pure noise story, but we cannot fully rule out that thinner
+item--PBU cells in smaller PBUs drive part of the pattern.}
+Threshold stability across IQR multipliers and a comparison between
+the IQR rule and model-based classifiers are in
+Appendix~\ref{app:robustness}.

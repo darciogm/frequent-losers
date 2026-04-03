@@ -1,0 +1,184 @@
+% ============================================================================
+
+% Paper: Screening for Bid Rigging with Frequent Losers
+% ============================================================================
+
+\section{Empirical Strategy}
+\label{sec:empirical}
+
+The empirical analysis is organized in three tiers, in descending
+order of evidentiary weight.
+
+\medskip
+\noindent\textbf{Tier~1: Conditional price association}
+(Section~\ref{sec:reduced_form}). OLS with high-dimensional fixed
+effects, temporal cross-fitting, and matching document a robust
+association between FL presence and tender prices. These are
+conditional correlations, not causal estimates.
+
+\noindent\textbf{Tier~2: Detection performance}
+(Section~\ref{sec:detection_validation}). The paper's primary
+validation exercise: ROC analysis against CADE cartel convictions,
+benchmarked against bid-level screens.
+
+\noindent\textbf{Tier~3: Supporting diagnostics}
+(Sections~\ref{sec:structural_estimation}--\ref{sec:empirical_network}).
+Structural estimation, Bajari--Ye bid-coordination tests, and
+network-split heterogeneity assess whether the screen's behavior
+is coherent with coordinated cover bidding. These support the
+screen's economic rationale without claiming mechanism
+identification.
+
+\medskip
+\noindent The hierarchy matters: the screen's value as a triage
+tool rests primarily on Tiers~1 and~2. Tier~3 diagnostics
+strengthen the rationale for deployment but are not necessary for
+the screen to be useful.
+
+% ── 5.1 Conditional Price Association ────────────────────────────
+
+\subsection{Conditional Price Association}
+\label{sec:reduced_form}
+
+\paragraph{OLS baseline.}
+The baseline specification regresses tender outcomes on FL presence:
+\begin{equation}
+  y_{igt} = \beta \cdot \text{losers}_{igt} + \mathbf{x}_{igt}'
+  \boldsymbol{\delta} + \alpha_g + \lambda_t + \gamma_k + \varepsilon_{igt}
+  \label{eq:ols_main}
+\end{equation}
+where $y_{igt}$ is the outcome for tender-item $i$ in item group $g$ at
+time $t$ and purchasing unit $k$; $\text{losers}_{igt} \in \{0,1\}$
+indicates FL presence; $\mathbf{x}_{igt}$ includes a convite indicator;
+$\alpha_g$, $\lambda_t$, and $\gamma_k$ are item, year, and PBU fixed
+effects; and $\varepsilon_{igt}$ is the error term clustered at the item
+level.
+
+The OLS coefficient $\hat{\beta}$ captures a conditional
+association---the average difference in outcomes between FL-present and
+FL-absent tenders within the same item type, year, and purchasing unit.
+Under the framework's first diagnostic implication (Table~\ref{tab:predictions}), $\hat{\beta} > 0$ for prices.
+Item, year, and PBU fixed effects absorb time-invariant cross-market
+heterogeneity; the residual threat is time-varying within-market
+confounders (Section~\ref{sec:limitations}). We assess the sensitivity
+of $\hat{\beta}$ to such confounders using the
+\citet{cinelli2020making} framework, which yields a robustness value
+of $RV_{q=1} = 17.5\%$: an unobserved confounder would need to
+explain at least 17.5\% of the residual variation in both FL presence
+and log prices to reduce $\hat{\beta}$ to zero.
+
+\paragraph{Matching estimators.}
+To address potential selection on observables, we estimate the
+price association using two matching approaches: coarsened exact
+matching (CEM) on year, procedure type, item group, and PBU size
+quartile ($\hat{\beta}_{\text{CEM}} = 0.077$, $N = 969{,}751$), and
+inverse probability weighting (IPW, $\hat{\beta}_{\text{IPW}} = 0.055$,
+$N = 830{,}194$). These estimates bracket the OLS baseline (0.064)
+and the cross-fit average (0.036), providing a non-parametric check
+that the price association survives reweighting on observables.
+
+\paragraph{Instrumental variable (measurement-error diagnostic).}
+The binary screening indicator contains misclassification noise:
+firms near the IQR threshold may not have collusion-related
+participation, and some collusion-related firms may escape the
+threshold. Classical binary measurement error attenuates the OLS
+coefficient toward zero. We use a leave-one-out FL supply
+instrument primarily to diagnose this attenuation:
+\begin{equation}
+  Z_{kgt} = \sum_{j \neq k} \mathbf{1}[\text{FL firm active at PBU } j
+  \text{ in group } g, \text{ year } t]
+  \label{eq:iv_v6}
+\end{equation}
+The instrument exploits aggregate FL supply variation at other
+purchasing units in the same product market and year. We treat
+$\hat{\beta}_{\text{IV}}$ as a measurement-error diagnostic: it
+indicates the direction of bias in the binary FL indicator
+(attenuation toward zero) but not the magnitude of any underlying association, because
+balance tests reveal systematic imbalance across observables
+(Table~\ref{tab:iv_balance}, Appendix~\ref{app:robustness}). The IV
+is coherent with OLS understating the association; our primary range is
+cross-fit (0.036), OLS (0.064), and matching (0.055--0.077).
+
+% ── 5.2 Detection Validation ─────────────────────────────────────
+
+\subsection{Detection Performance Validation}
+\label{sec:detection_validation}
+
+The detection assessment uses CADE cartel convictions as ground truth,
+with FL status defined on 2009--2014 data and evaluated against
+2015--2019 enforcement outcomes (the temporal split described in
+Section~\ref{sec:cade_sample}).
+
+\paragraph{ROC analysis.}
+We vary the IQR multiplier from 0.5 to 5.0 in steps of 0.1, producing
+46 FL thresholds. For each, we compute the true-positive and
+false-positive rates against CADE co-participation and trace the ROC
+curve. The optimal multiplier maximizes Youden's $J$ (TPR $-$ FPR),
+connecting the IQR rule to a formal detection-theoretic criterion.
+
+\paragraph{Benchmarking.}
+We benchmark FL against \citet{imhof2019detecting}-style bid-level
+features on the same CADE ground truth, and include both screens in a
+horse-race regression to test orthogonality
+(Section~\ref{sec:results_detection}).
+
+% ── 5.3 Structural Diagnostic ────────────────────────────────────
+
+\subsection{Structural Diagnostic}
+\label{sec:structural_estimation}
+
+As a Tier~3 supporting diagnostic, we estimate a two-stage mixture
+model on bid-level data and use BIC to select between the two
+cover-bidding regimes. Details are in
+Appendix~\ref{app:structural_id}.
+
+% ── 5.4 Bajari-Ye Tests ──────────────────────────────────────────
+
+\subsection{Bajari--Ye Bid Coordination Tests}
+\label{sec:bajari_ye}
+
+We implement the \citet{bajari2003deciding} tests using corrected
+first-stage residuals from the bid equation:
+\begin{equation}
+  \log b_{jt} = \mathbf{x}_j'\boldsymbol{\phi} + \alpha_i + \lambda_t
+  + u_{jt}
+  \label{eq:by_first_stage}
+\end{equation}
+where $\mathbf{x}_j$ includes firm size, firm age, and CNAE sector
+dummies. We exclude $n_{\text{bids}}$ from the first stage: it is
+jointly determined with bid levels and mechanically increased by FL
+presence \citep[p.~978]{bajari2003deciding}.
+
+Using the residuals $\hat{u}_{jt}$, we test (i)~\emph{exchangeability}
+(KS test comparing FL and non-FL residual distributions;
+Diagnostic~\ref{pred:exchange_v6}) and (ii)~\emph{conditional
+independence} (mean pairwise product of FL residuals within tenders;
+bootstrap with 1,000 iterations). A fake-groups placebo splits non-FL
+firms randomly within each tender; the economically relevant statistic
+is the FL--non-FL pairwise \emph{difference}, which isolates excess
+FL correlation beyond common tender-level shocks. We also report a
+tender-FE variant as a conservative specification absorbing all
+tender-level variation.
+
+% ── 5.5 Network-Split Heterogeneity ──────────────────────────────
+
+\subsection{Network-Split Heterogeneity Test}
+\label{sec:empirical_network}
+
+To assess the framework's market-selection implication---that cover
+bidding concentrates in competitive markets---we split FL firms into two
+subgroups based on co-bidding network characteristics.
+
+\paragraph{Winner HHI classification.}
+For each FL firm $j$, we compute the HHI of winning firms across all
+tenders in which $j$ participates. Firms above the sample-median HHI
+are classified as \emph{concentrated-market}; those below as
+\emph{competitive-market}. We interact $\text{losers}_{igt}$ with the
+market-structure indicator in Equation~\eqref{eq:ols_main}.
+
+Before presenting the price regressions, we check the FL
+classification against external enforcement data
+(Section~\ref{sec:cade}). This provides an initial check that FL
+presence flags economically meaningful environments---a necessary
+condition for the screen to be useful as a triage tool and for the
+price association to be informative.
