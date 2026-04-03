@@ -26,8 +26,9 @@ a public anchor \citep{marshall2012economics}.
 \paragraph{M3: Do FL firms chase high prices?}
 Regressing FL entry on lagged prices within market yields $0.0021$
 (SE = 0.0008): a 10\% price increase raises FL entry by 0.02~pp
-against a 4.8\% baseline---an order of magnitude too small to
-generate a 6.4\% price gap through reverse causality alone.
+against a 4.8\% baseline. While this test cannot fully distinguish
+reverse causality from strategic selection, the elasticity is small
+relative to the 6.4\% price gap.
 
 \paragraph{Alternative explanations.}
 FL firms are roughly one year younger than non-FL firms, consistent
@@ -44,92 +45,52 @@ cover-bidder entry.
 
 \paragraph{Rationality of FL participation.}
 \label{sec:rationality}
-With zero wins, expected profit per bid is
-$E[\pi] = 0 \times \bar{V} \times m - c = -c < 0$
-for any bidding cost $c > 0$, where $\bar{V}$ is the mean
-procurement-order value and $m$ the gross margin. BEC is electronic;
-$c$ captures staff time for bid preparation and documentation
-compliance (1--2 hours at R\$25--50/hour), yielding a conservative
-range of $c \in [\text{R\$50}, \text{R\$500}]$. Near the threshold
-(14 tenders), career losses range from R\$700 to R\$7,000---conceivably
-explained by persistent bad luck or learning. At the 90th percentile
-(50+ tenders), career losses reach R\$2,500--R\$25,000: a firm that
-bids 50 times over a decade without winning a single tender spends at
-minimum R\$2,500 in direct costs and substantially more in opportunity
-cost. Under any standard competitive search model---including the most
-generous interpretation where BEC is a low-cost discovery channel---the
-firm should have exited after observing a posterior win probability
-indistinguishable from zero.%
-\footnote{A Bayesian learner with a uniform prior updates
-$\Pr(\text{win}) = (0 + 1) / (n + 2)$ after $n$ zero-win trials.
-After $n = 50$, $\Pr(\text{win}) = 0.019$. With $\bar{V} = \text{R\$}86{,}000$
-(sample mean) and $m = 0.10$, expected gain per bid is
-$0.019 \times 86{,}000 \times 0.10 = \text{R\$}163$---less than the
-lowest bidding cost, so exit is rational even for the most optimistic
-learner.}
-Win rate zero in BEC does not mean zero everywhere---FL firms may
-win federal or municipal tenders we do not observe---but 50+ zero-win
-participations require explanation even for firms profitable outside
-BEC \citep{asker2010leniency, marshall2012economics}
-(Table~\ref{tab:rationality}).
-
-\input{tables/tab_rationality}
+With zero wins, expected profit per bid is $-c < 0$ for any bidding
+cost $c > 0$. At the FL threshold (14 tenders), career losses are
+R\$700--7,000---conceivably bad luck. At the 90th percentile (50+
+tenders), losses reach R\$2,500--25,000: a Bayesian learner updates
+$\Pr(\text{win})$ to 0.019 after 50 zero-win trials, making exit
+rational even under the most generous assumptions.%
+\footnote{With $\bar{V} = \text{R\$}86{,}000$ and margin $= 0.10$,
+expected gain is R\$163---below the lowest bidding cost (R\$50).
+Win rate zero in BEC does not mean zero elsewhere, but 50+ zero-win
+BEC participations require explanation even for firms profitable
+outside the platform \citep{asker2010leniency, marshall2012economics}.}
+Full rationality calculations are in Table~\ref{tab:rationality}
+(Appendix~\ref{app:robustness}).
 
 \paragraph{M4: Dyadic linkage concentration.}
-If FL firms are random losers, their co-bidding partners should be
-no more concentrated than those of comparable always-losers. A
-stratified permutation test (1,000 iterations, preserving
-participation-count quartiles) compares the observed FL--winner pair
-concentration against a null where FL labels are randomly reassigned
-among the 16,843 always-losers. FL firms form 4,696 pairs with
-$\geq$5 co-bids, versus a permuted mean of 3,271 ($p < 0.001$), and
-their top-10 pairs average 129.7 co-occurrences versus 109.9
-($p = 0.016$). The excess of high-frequency, stable FL--winner pairs
-is what one expects from persistent cartel relationships with
-designated cover bidders
+A stratified permutation test (1,000 iterations, preserving
+participation quartiles) shows FL firms form 4,696 high-frequency
+co-bidding pairs ($\geq$5 shared tenders) versus a permuted mean of
+3,271 ($p < 0.001$). The excess of stable FL--winner pairs fits
+persistent cartel relationships
 (Table~\ref{tab:dyadic_permutation}, Appendix~\ref{app:robustness}).
 
 \paragraph{M5: Firm exit in FL-exposed markets.}
-A Cox proportional hazard model estimates whether genuine (non-FL)
-firms in FL-heavy markets exit BEC faster. FL exposure---the fraction
-of a firm's tenders with FL presence---is associated with a
-\emph{lower} exit hazard (HR~$= 0.60$, $p < 0.01$) after controlling
-for participation volume and win rate
-(Table~\ref{tab:cox_survival}, Appendix~\ref{app:robustness}).
-Firms in FL-exposed markets survive \emph{longer}, not shorter---the
-opposite of crowding-out and consistent with a cartel ecosystem that
-sustains genuine participants.%
+A Cox model shows FL exposure is associated with \emph{lower} exit
+hazard (HR~$= 0.60$, $p < 0.01$): firms in FL-exposed markets survive
+longer, the opposite of crowding-out.%
 \footnote{The PH assumption is rejected ($p < 0.001$); the hazard
-ratio should be read as descriptive. ``Exit'' means cessation of BEC
-participation, not firm closure.}
-Together with M1 ($+0.143$ non-FL firms), the survival result
-paints a coherent picture: cover bidders add noise, not competition,
-so genuine firms have no reason to exit.
+ratio is descriptive. ``Exit'' means cessation of BEC participation.}
+Together with M1, the result confirms cover bidders add noise, not
+competition
+(Table~\ref{tab:cox_survival}, Appendix~\ref{app:robustness}).
 
 \paragraph{Strategic adaptation.}
-If a cartel reads this paper, the obvious responses---rotating FL
-firms, allowing occasional wins, staying below the IQR threshold---would blunt the screen. The threshold sensitivity already hints at
-this: the coefficient weakens as the threshold rises. The zero-win
-condition is doing heavy lifting; relaxing it to low-win-rate firms
-attenuates the coefficient substantially
-(Table~\ref{tab:fl_lowwinrate},
-Appendix~\ref{app:online_robustness}). A competition authority deploying FL screening would need to update
-the threshold periodically and combine it with bid-level
-tools \citep{harrington2008detecting}---hence the three-stage workflow
-proposed in Section~\ref{sec:conclusion}.
+Cartels could rotate FL firms or allow occasional wins to evade the
+screen; the threshold sensitivity (Section~\ref{sec:robustness})
+already hints at this. A deployed screen would need periodic threshold
+updates combined with bid-level tools
+\citep{harrington2008detecting}---hence the three-stage workflow in
+Section~\ref{sec:conclusion}.
 
 \paragraph{Joint assessment.}
-The five diagnostics trace the outline of coordinated cover bidding
-with increasing specificity: FL firms add to rather than displace
-genuine bidders (M1), winning bids anchor to the reference price
-(M2), reverse causality is an order of magnitude too weak to explain
-the price gap (M3), FL--winner pairs recur far beyond chance (M4),
-and genuine firms in FL-exposed markets survive \emph{longer}, not
-shorter (M5). Each test, in isolation, admits alternative readings.
-Taken together, they present a sharp challenge: what single
-non-collusive story generates coordinated entry without displacement,
-reference-price anchoring, persistent dyadic relationships, and an
-ecosystem that sustains rather than crowds out genuine competitors?
-We are not aware of one.
+Each diagnostic admits alternative readings in isolation. Taken
+together, they present a sharp challenge: what non-collusive story
+generates coordinated entry without displacement (M1),
+reference-price anchoring (M2), negligible reverse causality (M3),
+excess dyadic linkage (M4), and an ecosystem that sustains rather
+than crowds out genuine competitors (M5)? We are not aware of one.
 
 \input{sections/sec_mechanism_evidence}

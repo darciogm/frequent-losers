@@ -35,9 +35,11 @@ covering 4.5 million tender-items and 40 million bids over 2009--2019.
 Among 41,000 firms, 16,843 never win a single tender; a simple
 IQR-based outlier rule identifies 2,735 whose participation frequency
 cannot be squared with profit-maximizing entry---the frequent losers.
-The rule outperforms both a random forest and a structural
-classifier on the same ground truth (Section~\ref{sec:classification_robustness}):
-the single most discriminative feature of cover
+Against the same CADE ground truth, the rule achieves higher AUC
+than a random forest and a structural classifier
+(Section~\ref{sec:classification_robustness}), though the
+comparison uses coarser proxies for the full Imhof implementation.
+The single most discriminative feature of cover
 bidding---participating heavily despite never winning---is hard for
 more complex methods to improve upon.
 
@@ -62,7 +64,9 @@ $RV = 17.5\%$) sets a high bar for omitted confounders.
 The model generates five testable predictions; we take each to the
 data. The price effect concentrates in competitive markets, where the
 model says cover bidding pays the highest marginal return. BIC selects
-Regime~2, with cover-bid dispersion 28\% below genuine bids.
+Regime~2, revealing a \emph{dispersion paradox}: cover-bid dispersion
+is 28\% \emph{below} genuine bids ($\sigma_c/\sigma_g = 0.72$),
+the opposite of what variance-based screens assume.
 Bajari--Ye tests reject exchangeability of FL and non-FL bid
 residuals. FL--winner pairs recur far more often than chance
 predicts. And the FL premium is larger in tenders where cover bidding
@@ -85,8 +89,9 @@ necessity.
 \emph{Second}, we build a screen that requires only win/loss
 records---no bid microdata, no enforcement priors, no supervised
 training labels. It achieves AUC~$= 0.94$ against
-competition-authority convictions, outperforming both a random forest
-and a structural classifier on the same ground truth. The screen is
+competition-authority convictions, achieving higher AUC than a
+random forest and a structural classifier on the same ground
+truth. The screen is
 deployable wherever procurement systems record who bid and who won.
 
 \emph{Third}, we document a 3.6--7.7\% price gap in FL-flagged
@@ -96,3 +101,11 @@ Bajari--Ye bid-coordination tests, network-split heterogeneity,
 dyadic linkage, and invitation variation. The challenge for
 alternative explanations is to produce all five patterns
 simultaneously.
+
+We emphasize what the paper does \emph{not} claim. The price
+association is a conditional correlation, not a causal estimate; the
+FL classification identifies a participation anomaly, not true cartel
+membership; and the results are specific to one procurement platform.
+The paper's contribution is the screen and its diagnostic validation,
+not causal identification of the FL--price effect
+(Section~\ref{sec:limitations}).
