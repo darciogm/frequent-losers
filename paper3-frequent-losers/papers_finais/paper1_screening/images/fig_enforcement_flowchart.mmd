@@ -1,0 +1,22 @@
+%%{ init: {"theme": "base", "themeVariables": {"primaryColor": "#f0f0f0", "primaryBorderColor": "#333333", "lineColor": "#555555", "textColor": "#000000"}} }%%
+graph TD
+    A["<b>PROCUREMENT DATABASE</b><br/>41,000 firms &bull; 4.5M tender-items<br/><i>Participation + outcome records only</i>"]
+    A --> B{"<b>STAGE 1: SCREEN</b><br/>Win rate = 0 AND<br/>Participation > IQR threshold (≥ 14)"}
+    B -->|"No flag<br/>(38,265 firms)"| C["No action"]
+    B -->|"FL flag<br/>(2,735 firms)"| D["<b>STAGE 2: TRIAGE</b><br/>Network metrics (Winner-HHI)<br/>Oversight capacity (PBU size)<br/>Co-bidding concentration"]
+    D --> E{"Prioritize by<br/>risk score"}
+    E -->|"Low risk"| F["Monitor<br/>(periodic re-screen)"]
+    E -->|"High risk"| G["<b>STAGE 3: INVESTIGATE</b><br/>Bid-level forensics on triaged subset<br/>FL + Imhof screens (corr. 0.06)<br/>Bajari&ndash;Ye bid-coordination tests"]
+    G --> H[["Referral to CADE / TCU / MP<br/><i>AUC = 0.94 against CADE convictions</i>"]]
+
+    classDef process fill:#f5f5f5,stroke:#555,stroke-width:1px,color:#000
+    classDef decision fill:#e8e8e8,stroke:#333,stroke-width:2px,color:#000
+    classDef output fill:#d9d9d9,stroke:#333,stroke-width:2px,color:#000
+    classDef noaction fill:#f5f5f5,stroke:#999,stroke-width:1px,color:#777
+
+    class A process
+    class B,E decision
+    class D,G process
+    class H output
+    class C,F noaction
+
