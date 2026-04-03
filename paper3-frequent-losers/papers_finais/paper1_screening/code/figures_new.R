@@ -60,32 +60,32 @@ PARQUET_BWP <- file.path(PROJECT_ROOT, "v3", "data", "processed",
 PARAMS_CSV  <- file.path(PROJECT_ROOT, "papers_finais", "paper2_structural",
                          "work", "v6", "tables", "cartel_primitives.csv")
 
-# Try Palatino for consistency with the LaTeX manuscript; fall back to serif
+# JLE requires Times Roman in figures
 font_ok <- tryCatch({
   showtext_auto()
-  font_add("Palatino", regular = "pplr8a.pfb")
+  font_add("Times", regular = "timesbd.ttf")
   TRUE
 }, error = function(e) FALSE)
-FONT_FAMILY <- if (font_ok) "Palatino" else "serif"
+FONT_FAMILY <- if (font_ok) "Times" else "serif"
 
-# Colour palette and dimensions — kept sober for journal submission
-FL_BLUE   <- "#2c5f8a"
-GREY_DARK <- "#4a4a4a"
-FIG_W <- 7
-FIG_H <- 5
+# JLE requires: no colour, no shading, max 4.5in wide, Times Roman >= 7pt
+FL_COL    <- "black"
+NONFL_COL <- "grey55"
+FIG_W <- 4.5
+FIG_H <- 3.5
 
-theme_paper <- function(base_size = 10) {
+theme_paper <- function(base_size = 7) {
   theme_minimal(base_size = base_size) +
     theme(
       text             = element_text(family = FONT_FAMILY),
       panel.grid.major.x = element_blank(),
       panel.grid.minor   = element_blank(),
-      panel.grid.major.y = element_line(colour = "grey92"),
+      panel.grid.major.y = element_line(colour = "grey88", linewidth = 0.2),
       axis.line        = element_line(colour = "black", linewidth = 0.3),
-      axis.ticks       = element_line(colour = "black", linewidth = 0.3),
+      axis.ticks       = element_line(colour = "black", linewidth = 0.2),
       legend.background = element_blank(),
       legend.key        = element_blank(),
-      plot.margin       = margin(8, 12, 8, 8)
+      plot.margin       = margin(4, 6, 4, 4)
     )
 }
 
@@ -185,15 +185,15 @@ rug_dt <- fl_tenders[n_gen <= 12, .(n_gen)]
 
 # ── Plot ──
 p1 <- ggplot() +
-  # Blue shading for the constraint-binding region
+  # Constraint-binding region marked with a light hatching-style border
   annotate("rect", xmin = -0.2, xmax = 3, ymin = -0.15, ymax = Inf,
-           fill = FL_BLUE, alpha = 0.07) +
+           fill = NA, colour = "grey70", linetype = "dotted", linewidth = 0.3) +
   # Corner: m* = 3 - n
   geom_line(data = corner_dt, aes(x = n, y = m),
-            linewidth = 1.2, colour = FL_BLUE) +
+            linewidth = 1.2, colour = FL_COL) +
   # Interior: calibrated m*(n) with level shift
   geom_line(data = curve_dt[region == "Interior"],
-            aes(x = n, y = m), linewidth = 1.2, colour = GREY_DARK) +
+            aes(x = n, y = m), linewidth = 1.2, colour = NONFL_COL) +
   # n = 3 transition
   geom_vline(xintercept = 3, linetype = "dashed", colour = "grey50", linewidth = 0.5) +
   # Empirical binned means with error bars
@@ -204,17 +204,17 @@ p1 <- ggplot() +
                   size = 0.4, colour = "black") +
   # Rug plot (subsample for clarity)
   geom_rug(data = rug_dt[sample(.N, min(.N, 5000))],
-           aes(x = n_gen), sides = "b", alpha = 0.04, colour = GREY_DARK) +
+           aes(x = n_gen), sides = "b", alpha = 0.04, colour = NONFL_COL) +
   # Text labels
-  annotate("text", x = 0.6, y = max(binned$mean_nfl) + 0.15,
+  annotate("text", x = 0.5, y = max(binned$mean_nfl) + 0.12,
            label = "Constraint binding\n(quorum rule, n < 3)",
-           size = 3, colour = FL_BLUE, fontface = "italic", family = FONT_FAMILY,
+           size = 2, colour = "black", fontface = "italic", family = FONT_FAMILY,
            hjust = 0, vjust = 0) +
-  annotate("text", x = 8.5, y = max(m_interior[n_seq > 7]) + 0.08,
-           label = "Interior: strategic complementarity",
-           size = 3, colour = GREY_DARK, fontface = "italic", family = FONT_FAMILY) +
-  annotate("text", x = 3.05, y = 0.05, label = "n = 3", hjust = 0,
-           size = 2.5, colour = "grey50", family = FONT_FAMILY) +
+  annotate("text", x = 7, y = max(m_interior[n_seq > 7]) + 0.06,
+           label = "Interior: strategic\ncomplementarity",
+           size = 2, colour = "grey40", fontface = "italic", family = FONT_FAMILY) +
+  annotate("text", x = 3.1, y = 0.05, label = "n = 3", hjust = 0,
+           size = 1.8, colour = "grey50", family = FONT_FAMILY) +
   # Scales
   scale_x_continuous(
     name = expression(italic(n)~"(genuine bidders)"),
@@ -241,18 +241,18 @@ corner_ill <- data.table(n = seq(0, 3, 0.1), m = pmax(3 - seq(0, 3, 0.1), 0))
 
 p1_app <- ggplot() +
   annotate("rect", xmin = -0.2, xmax = 3, ymin = -0.15, ymax = Inf,
-           fill = FL_BLUE, alpha = 0.07) +
+           fill = NA, colour = "grey70", linetype = "dotted", linewidth = 0.3) +
   geom_line(data = corner_ill, aes(x = n, y = m),
-            linewidth = 1.2, colour = FL_BLUE) +
+            linewidth = 1.2, colour = FL_COL) +
   geom_line(data = ill_dt[region == "Interior"],
-            aes(x = n, y = m), linewidth = 1.2, colour = GREY_DARK) +
+            aes(x = n, y = m), linewidth = 1.2, colour = NONFL_COL) +
   geom_vline(xintercept = 3, linetype = "dashed", colour = "grey50", linewidth = 0.5) +
   annotate("text", x = 1.2, y = 2.8,
            label = "Constraint binding\n(quorum rule, n < 3)",
-           size = 3, colour = FL_BLUE, fontface = "italic", family = FONT_FAMILY) +
+           size = 3, colour = FL_COL, fontface = "italic", family = FONT_FAMILY) +
   annotate("text", x = 9, y = 0.45,
            label = "Interior: diminishing returns",
-           size = 3, colour = GREY_DARK, fontface = "italic", family = FONT_FAMILY) +
+           size = 3, colour = NONFL_COL, fontface = "italic", family = FONT_FAMILY) +
   scale_x_continuous(name = TeX("$n$ (genuine bidders)"),
                      breaks = 0:15, limits = c(-0.2, 15.5), expand = c(0, 0)) +
   scale_y_continuous(name = TeX("$m^*$ (cover bidders)"),
@@ -327,44 +327,45 @@ dens_dt <- rbind(
 # Factor ordering: FL on top so its density line isn't hidden
 dens_dt[, group := factor(group, levels = unique(group))]
 
-p2 <- ggplot(dens_dt, aes(x = log_spread, colour = group, fill = group)) +
-  geom_density(linewidth = 0.7, alpha = 0.15, adjust = 1.5) +
+p2 <- ggplot(dens_dt, aes(x = log_spread, colour = group, linetype = group)) +
+  geom_density(linewidth = 0.6, adjust = 1.5) +
   # Dashed lines at group means
-  geom_vline(xintercept = fl_mean, linetype = "dashed", colour = FL_BLUE,
+  geom_vline(xintercept = fl_mean, linetype = "dashed", colour = FL_COL,
              linewidth = 0.5, alpha = 0.7) +
-  geom_vline(xintercept = nonfl_mean, linetype = "dashed", colour = GREY_DARK,
+  geom_vline(xintercept = nonfl_mean, linetype = "dashed", colour = NONFL_COL,
              linewidth = 0.5, alpha = 0.7) +
   # FL summary stats
   annotate("text", x = fl_mean + 0.15, y = 1.45,
            label = paste0("FL: \u03bc = ", round(fl_mean, 2),
                           ", \u03c3 = ", round(fl_sd, 2)),
-           size = 2.8, colour = FL_BLUE, hjust = 0, family = FONT_FAMILY) +
+           size = 2.2, colour = "black", hjust = 0, family = FONT_FAMILY) +
   # Non-FL summary stats
-  annotate("text", x = 2.5, y = 1.3,
+  annotate("text", x = 2.2, y = 1.25,
            label = paste0("Non-FL: \u03bc = ", round(nonfl_mean, 2),
                           ", \u03c3 = ", round(nonfl_sd, 2)),
-           size = 2.8, colour = GREY_DARK, hjust = 0, family = FONT_FAMILY) +
+           size = 2.2, colour = "grey40", hjust = 0, family = FONT_FAMILY) +
   # The within-tender paradox — the whole point of this figure
-  annotate("label", x = upper_lim * 0.55, y = 0.7,
+  annotate("label", x = upper_lim * 0.50, y = 0.65,
            label = paste0("Within-tender CV:\n",
                           "  FL = 0.57  vs  non-FL = 1.65\n",
                           "Structural  \u03c3c / \u03c3g = 0.72\n",
                           "KS D = ", round(ks_stat$statistic, 2), ",  p < 0.001"),
-           size = 2.4, fill = "grey97", colour = "grey30",
-           label.padding = unit(0.4, "lines"),
+           size = 1.8, fill = "white", colour = "grey30",
+           label.padding = unit(0.3, "lines"),
            family = FONT_FAMILY, hjust = 0, vjust = 1) +
   # Arrow calling attention to FL clustering
-  annotate("segment", x = 2.2, xend = fl_mean + 0.2,
-           y = 0.45, yend = 0.30,
-           arrow = arrow(length = unit(0.15, "cm"), type = "closed"),
-           colour = FL_BLUE, linewidth = 0.4) +
-  annotate("text", x = 2.25, y = 0.48,
+  annotate("segment", x = 2.0, xend = fl_mean + 0.2,
+           y = 0.42, yend = 0.28,
+           arrow = arrow(length = unit(0.1, "cm"), type = "closed"),
+           colour = "black", linewidth = 0.3) +
+  annotate("text", x = 2.05, y = 0.45,
            label = "FL bids cluster\nabove winner",
-           size = 2.5, colour = FL_BLUE, fontface = "italic",
+           size = 1.8, colour = "black", fontface = "italic",
            family = FONT_FAMILY, hjust = 0) +
   # Scales
-  scale_colour_manual(values = c(FL_BLUE, GREY_DARK)) +
-  scale_fill_manual(values = c(FL_BLUE, GREY_DARK)) +
+  scale_colour_manual(values = c("black", "grey55")) +
+  scale_fill_manual(values = c("black", "grey55")) +
+  scale_linetype_manual(values = c("solid", "dashed")) +
   scale_x_continuous(
     name = expression(log(b[l] / b^"*")~~"(log bid spread above winner)"),
     limits = c(0, upper_lim),
@@ -373,9 +374,10 @@ p2 <- ggplot(dens_dt, aes(x = log_spread, colour = group, fill = group)) +
   scale_y_continuous(name = "Density", expand = expansion(mult = c(0, 0.05))) +
   theme_paper() +
   theme(
-    legend.position = c(0.78, 0.92),
-    legend.text     = element_text(size = 8),
-    legend.title    = element_blank()
+    legend.position = c(0.72, 0.92),
+    legend.text     = element_text(size = 5),
+    legend.title    = element_blank(),
+    legend.key.size = unit(0.35, "cm")
   )
 
 save_fig(p2, "fig_dispersion_paradox.pdf")
