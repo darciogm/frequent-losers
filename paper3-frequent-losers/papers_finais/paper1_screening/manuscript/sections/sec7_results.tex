@@ -1,13 +1,11 @@
 % ============================================================================
-% Results — ordered to match H1-first narrative:
-%   7.1 Reduced-form (H1 core) → 7.2 Detection (H1 validation) →
-%   7.3 Mechanism tests (H2 evidence) → 7.4 Structural estimation (H2 model) →
-%   7.5 Specification tests
+% Results — ordered: classification → price association → detection →
+%   supporting diagnostics (network, Bajari-Ye, structural)
 % ============================================================================
 
 \section{Results}
 \label{sec:results}
-% FINAL-MOVE-2: results opening
+% Results opening — screening/triage framing
 
 This section reports four sets of results that play distinct roles.
 Classification diagnostics (Section~\ref{sec:class_diagnostics})
@@ -55,7 +53,7 @@ replications), with no permutation reaching 0.064. The FL--price
 association reflects the specific allocation of FL presence across
 tenders, not chance.
 
-% ── 7.1 Reduced-Form Evidence (H1 core) ─────────────────────────
+% ── 7.1 Price Association ───────────────────────────────────────
 
 \subsection{OLS and Matching Results}
 \label{sec:results_ols}
@@ -76,8 +74,8 @@ item-type restriction does not inflate the baseline.
 
 FL-present tenders also have 0.19 log points more non-FL firms
 (Diagnostic~\ref{pred:selection_v6}; PBU FE specification),
-contradicting crowding-out and consistent with \emph{strategic
-selection} into competitive markets
+contradicting crowding-out and consistent with selection
+into competitive markets
 (Table~\ref{tab:nfirms_excl}, Appendix~\ref{app:competition}).
 
 \paragraph{Cross-fit estimate.}
@@ -112,8 +110,8 @@ attenuation in the binary FL indicator
 (Section~\ref{sec:reduced_form}). However, if cartels operate across
 PBUs within the same product market, the instrument may capture cartel
 intensity rather than misclassification alone, biasing the IV upward.
-We therefore treat the IV as a diagnostic indicating that the OLS is
-conservative, not as a primary estimator
+We therefore treat the IV as a diagnostic suggesting that the OLS
+may be attenuated, not as a primary estimator
 (Table~\ref{tab:iv_balance}, Table~\ref{tab:iv_main} in
 Appendix~\ref{app:robustness}).
 
@@ -142,7 +140,7 @@ estimation methods. OLS estimates in gray; IV estimates in red.}
 \label{fig:coef_summary}
 \end{figure}
 
-% ── 7.2 Detection Performance (H1 validation) ───────────────────
+% ── 7.2 Detection Performance ────────────────────────────────────
 
 \subsection{Detection Performance}
 \label{sec:results_detection}
@@ -200,7 +198,7 @@ Appendix~\ref{app:robustness}).
 
 \input{sections/sec_ground_truth}
 
-% ── 7.3 Mechanism and Network Evidence (H2) ─────────────────────
+% ── 7.3 Supporting Diagnostics ──────────────────────────────────
 
 \medskip
 \noindent\textit{The remaining subsections report diagnostics assessing
@@ -221,10 +219,11 @@ winner patterns (low HHI)---account for most of the observed price association: 
 ($p < 0.01$, PBU FE). Concentrated-market FL firms show no significant
 effect ($-0.018$, $p > 0.3$).
 
-The pattern is consistent with Proposition~\ref{prop:market_selection}:
-in the framework, cover bidding is most profitable in competitive
+The pattern is consistent with the framework's market-selection
+implication (Appendix~\ref{app:proofs}): cover bidding is most
+profitable in competitive
 markets, where manufactured competition has the highest marginal
-return. In concentrated markets, cartels already sustain high prices
+return. In the framework, concentrated markets already sustain high prices
 through market power, making cover bidders redundant---consistent
 with the near-zero FL coefficient in concentrated markets.%
 \footnote{Noisier FL classification in concentrated markets or thin FE
@@ -232,9 +231,8 @@ cells absorbing the effect cannot be ruled out with cross-sectional
 data; the monotonic pattern across HHI quartiles is suggestive but not
 definitive.}
 From a detection standpoint, the result is encouraging: the FL screen
-bites hardest in competitive markets, especially where collusion is
-most costly to taxpayers and where other detection tools have limited
-reach.
+bites hardest in competitive markets, especially where undetected collusion would be most costly to
+taxpayers and where other detection tools have limited reach.
 
 \input{./output/tables/tab_network_split}
 
@@ -269,13 +267,13 @@ Under tender FE (Table~\ref{tab:bajari_ye_tender_fe},
 Appendix~\ref{app:robustness}), both products drop substantially
 (FL: $5.16 \to 0.38$; non-FL: $2.21 \to 0.86$), with the FL product
 falling \emph{below} non-FL---a reversal consistent with Regime~2.
-Cover bids cluster near $b^* + \epsilon$; removing the tender mean
-strips out the shared focal-point component, which is the sort of
+Under the framework, cover bids would cluster near $b^* + \epsilon$;
+removing the tender mean strips out any shared focal-point component, which is the sort of
 variation the coordinated-regime framework emphasizes.
 
 \input{sections/sec_identification}
 
-% ── 7.4 Structural Estimation (H2 model) ────────────────────────
+% ── 7.4 Structural Diagnostic ───────────────────────────────────
 
 \subsection{Structural Estimation Results}
 \label{sec:results_structural}
@@ -287,7 +285,7 @@ $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$: FL bids are 28\%
 \emph{less} dispersed than non-FL bids---a pattern coherent with
 coordinated cover bidding, under which variance-based screens lose
 power. The $n$-conditional markup
-(6.4\%) matches the OLS baseline exactly, and the sharpest
+(6.4\%) is close to the OLS baseline, and the sharpest
 out-of-sample test is consistent with the framework's logic: mean FL count is 10.7 when
 $n_{\text{genuine}} = 0$ (minimum-bidder constraint) and drops to
 $\approx 2$ when $n \geq 2$, consistent with the framework. Additional specification
