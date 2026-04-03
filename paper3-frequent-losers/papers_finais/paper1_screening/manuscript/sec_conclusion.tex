@@ -2,45 +2,55 @@
 \label{sec:conclusion}
 
 Procurement authorities need triage tools that work with minimal data.
-Existing bid-level screens require granular bid data and lose power
-against cartels that may coordinate cover bids to mimic genuine
-dispersion.
-The frequent-loser screen exploits a simpler trace---participation---that
-coordinated cover bidding is unlikely to erase.
+The frequent-loser screen meets this need: it requires only win/loss
+records, runs in minutes on any procurement database, and flags
+environments with systematically higher conditional prices and strong
+proximity to known cartel environments. Applied to 4.5 million
+tender-items from Brazilian procurement, it achieves AUC~$= 0.94$
+against competition-authority convictions and 3.6--7.7\% higher
+conditional prices across four estimation approaches. Five supporting
+diagnostics are coherent with coordinated cover bidding, strengthening
+the rationale for deployment without claiming to identify the
+mechanism.
 
-A firm that bids on dozens of tenders over a decade without winning a
-single one exhibits behavior difficult to reconcile with
-profit-maximizing entry. The frequent-loser screen flags this anomaly
-using only win/loss records. Applied
-to 4.5 million tender-items from Brazilian procurement, it achieves
-AUC~$= 0.94$ against competition-authority convictions and flags
-environments with 3.6--7.7\% higher conditional prices. Five
-supporting diagnostics produce a joint pattern coherent with
-coordinated cover bidding, strengthening the economic rationale for
-the screen's deployment without claiming to identify the mechanism.
-
-For procurement authorities, we propose a three-stage pathway:
-(i)~\emph{Screen}---apply the FL rule to participation records, a
-computation that runs in minutes on any procurement database;
+We propose a three-stage enforcement pathway.
+(i)~\emph{Screen}---apply the FL rule to participation records; the
+computation requires no bid microdata, no enforcement priors, and no
+supervised training.
 (ii)~\emph{Triage}---cross-reference FL-flagged markets with network
-metrics to prioritize the highest-risk cases; and
-(iii)~\emph{Investigate}---deploy bid-level forensic tools on the
-triaged set. The first stage requires no bid microdata, no
-enforcement priors, and no supervised training---only the information
-that every procurement system already collects.
+metrics and oversight-capacity indicators to prioritize the
+highest-risk cases; the 12.5$\times$ gradient in the FL--price
+association between the smallest and largest purchasing units suggests
+that triage resources are best directed toward low-oversight
+environments.
+(iii)~\emph{Investigate}---deploy bid-level forensic tools
+\emph{on the triaged subset}. The screen's near-orthogonality with
+bid-level screens (correlation 0.06) means the two stages capture
+different information, and combining them reduces both false
+positives and missed cases.
 
-The screen's bite varies with institutional context: the FL price
-association is 12.5 times larger in the smallest purchasing units than
-in the largest, consistent with the framework's implication that cover
-bidding thrives where oversight is weakest. This gradient suggests
-that even modest investments in procurement monitoring can compress the
-scope for anomalous entry.
+Two features make the screen administrable. First, the threshold is
+robust: varying the IQR multiplier from 1.0$\times$ to 3.0$\times$
+and the win-rate cutoff from 0\% to 5\% produces significant
+coefficients across all 36 parameter combinations, so the triage
+signal does not hinge on a precise calibration choice. Second, the
+data requirements are minimal---participation and outcome records
+that every procurement system already collects---making the screen
+portable to settings where bid-level forensics are infeasible,
+including developing-country procurement systems with limited
+investigative capacity.
 
-The FL pattern need not be specific to Brazilian institutions.
-Wherever procurement systems record participation and outcomes, the
-screen is directly applicable; its economic rationale---that cover
-bidders must participate to perform their role---is
-institution-general, though its empirical performance in other
-settings remains to be tested. Replication across procurement systems
-is the most pressing next step; the screen's minimal data requirements
-make it immediately portable.
+The screen's main limitation is also its boundary: it flags suspicious
+environments, not individual firms, and the conditional price
+association does not have a causal interpretation. These are features
+of a triage tool, not defects. An enforcement agency deploying the
+screen would use it to allocate investigative effort, not to
+adjudicate liability.
+
+Replication across procurement systems is the most pressing next step.
+The screen's economic rationale---that cover bidders must participate
+to perform their role---is institution-general, but its empirical
+performance outside BEC remains to be tested. Brazil's recent
+procurement reform (Lei 14.133/2021), which restructures bidding
+modalities and minimum-bidder rules, provides a natural laboratory
+for assessing whether the screen adapts to institutional change.
