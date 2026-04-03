@@ -9,14 +9,21 @@
 \label{sec:results}
 % FINAL-MOVE-2: results opening
 
-This section presents four sets of results: classification
-diagnostics, price regressions, detection performance against CADE
-convictions, and supporting diagnostics. After absorbing item fixed
-effects, the raw FL--non-FL gap compresses from 2.43 to 0.050 log
-points (overlap 0.978): within narrow product categories, FL-present
-and FL-absent tenders look nearly identical on observables. The
-conditional price association is 3.6--7.7\% across four estimation
-approaches.
+This section reports four sets of results that play distinct roles.
+Classification diagnostics (Section~\ref{sec:class_diagnostics})
+assess whether the FL rule captures a real behavioral pattern.
+Conditional price comparisons
+(Section~\ref{sec:results_ols}) document the association between FL
+presence and tender outcomes. Detection performance
+(Section~\ref{sec:results_detection}) evaluates the screen against
+external enforcement data. Supporting diagnostics
+(Sections~\ref{sec:results_network}--\ref{sec:results_structural})
+ask whether the screen's observed behavior is coherent with
+coordinated cover bidding. After absorbing item fixed effects, the
+raw FL--non-FL gap compresses from 2.43 to 0.050 log points (overlap
+0.978): within narrow product categories, FL-present and FL-absent
+tenders look nearly identical on observables. The conditional price
+association is 3.6--7.7\% across four estimation approaches.
 
 % ── 7.0 Classification Diagnostics ──────────────────────────────
 
@@ -112,16 +119,20 @@ Appendix~\ref{app:robustness}).
 
 \paragraph{Summary.}
 Four approaches that differ in weighting, functional form, and
-information sets produce a consistent 3.6--7.7\% price association:
-cross-fit (3.6\%), IPW (5.5\%), OLS (6.4\%), CEM (7.7\%). The
-estimates cluster rather than scatter, indicating a stable conditional
-association. The IV (19.4\%) is directionally consistent with
-attenuation in the binary indicator, though not substantively
-interpretable as a preferred magnitude. An omitted confounder would
-need to explain 17.5\% of residual variation in \emph{both}
-FL presence and log prices---after absorbing item, year, and PBU
-fixed effects---to nullify the coefficient
-\citep{cinelli2020making}.
+information sets produce a consistent 3.6--7.7\% conditional price
+association: cross-fit (3.6\%), IPW (5.5\%), OLS (6.4\%), CEM
+(7.7\%). The estimates cluster rather than scatter, indicating a
+stable conditional association across designs. The IV (19.4\%) is
+directionally consistent with attenuation in the binary indicator
+but is not interpretable as a preferred magnitude, given
+exclusion-restriction concerns
+(Section~\ref{sec:reduced_form}). An omitted confounder would need
+to explain 17.5\% of residual variation in \emph{both} FL presence
+and log prices---after absorbing item, year, and PBU fixed
+effects---to nullify the coefficient \citep{cinelli2020making}.
+None of these estimates has a causal interpretation; they document a
+robust conditional association that motivates the screen's
+deployment.
 
 \begin{figure}[htbp]
 \centering
@@ -136,24 +147,24 @@ estimation methods. OLS estimates in gray; IV estimates in red.}
 \subsection{Detection Performance}
 \label{sec:results_detection}
 
-Figure~\ref{fig:roc} (Appendix~\ref{app:robustness}) presents the
-FL ROC curve against CADE cartel co-participation. The screen achieves
-AUC~$= 0.94$ (bootstrapped 95\% CI: $[0.91, 0.94]$;
+This subsection evaluates the screen's triage performance---its
+ability to flag suspicious environments using only participation
+records. Figure~\ref{fig:roc} (Appendix~\ref{app:robustness})
+presents the FL ROC curve against CADE cartel co-participation. The
+screen achieves AUC~$= 0.94$ (bootstrapped 95\% CI: $[0.91, 0.94]$;
 Table~\ref{tab:roc_detection}, Appendix~\ref{app:robustness}).
 The data-driven optimal threshold (Youden's $J = 0.84$) corresponds
 to 1.45$\times$IQR---nearly identical to the 1.5$\times$ rule chosen
 \emph{a priori} on economic grounds---achieving TPR~$= 1.00$ with
-FPR~$= 0.16$. The convergence between the economic threshold and the
-detection-theoretic optimum is notable: it means the participation
-intensity at which profit-maximizing entry becomes difficult to
-rationalize is also the intensity that best discriminates
-cartel-linked environments.
+FPR~$= 0.16$. The convergence is notable: the participation intensity
+at which profit-maximizing entry becomes difficult to rationalize is
+also the intensity that best discriminates cartel-linked environments.
 Higher participation counts mechanically increase co-participation
 opportunities; the permutation test (Section~\ref{sec:cade}), which
 stratifies on participation quartile, provides an independent check
 that the association is real (3.5$\times$, $p < 0.001$).
 
-\paragraph{Complementarity with Imhof-style screens.}
+\paragraph{Complementarity with bid-level screens.}
 Against the same CADE ground truth, the FL screen achieves
 AUC~$= 0.94$ versus 0.79 for a \citet{imhof2019detecting}-style
 bid-level proxy (CV median split; DeLong $p < 0.001$;
@@ -167,21 +178,24 @@ vs.\ tender).%
 mechanically favor participation-based screens; the permutation test
 (Section~\ref{sec:cade}) controls for this.}
 What FL adds is reach: it operates where bid-level records are
-unavailable---a common constraint in developing-country procurement---and
-produces firm-level flags that triage investigations before detailed
-bid analysis begins.
+unavailable---a common constraint in developing-country
+procurement---and produces firm-level flags that triage
+investigations before detailed bid analysis begins. For enforcement
+purposes, the screen's main value is not to replace bid-level tools
+but to prioritize where those tools should be deployed, particularly
+in settings where investigative resources are scarce.
 
 \paragraph{Horse-race regression.}
 Including both FL presence and an Imhof-style CV flag as regressors
 reveals that the two screens capture nearly orthogonal information
 (correlation 0.060). The FL coefficient \emph{rises} from 0.064 to
 0.084 ($p < 0.01$) when the CV flag is added---a suppression effect
-consistent with the framework's logic: if coordinated cover bidding
-produces low within-tender dispersion, CV-based screens miss it while
-the participation-based screen does not. The
-Imhof flag enters at 0.021 ($p < 0.01$). For enforcement purposes,
-the screen's main value is not to replace bid-level tools but to
-prioritize where those tools should be deployed (Table~\ref{tab:horse_race},
+consistent with the framework's logic that coordinated cover bidding
+may produce low within-tender dispersion while maintaining FL
+participation. The Imhof flag enters at 0.021 ($p < 0.01$). The two
+screens complement each other: FL triages environments using
+participation records alone, and bid-level tools can then be deployed
+on the flagged subset (Table~\ref{tab:horse_race},
 Appendix~\ref{app:robustness}).
 
 \input{sections/sec_ground_truth}
