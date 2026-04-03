@@ -122,7 +122,8 @@ p3 <- ggplot(coef_data, aes(x = coef, y = spec, shape = outcome, color = method)
   geom_errorbar(aes(xmin = ci_lo, xmax = ci_hi), width = 0.15, linewidth = 0.5,
                 position = position_dodge(width = 0.6)) +
   geom_point(size = 2.5, position = position_dodge(width = 0.6)) +
-  scale_color_manual(values = c("OLS" = "gray30", "IV" = "firebrick")) +
+  scale_color_manual(values = c("OLS" = "gray50", "IV" = "black")) +
+  scale_shape_manual(values = c("Log Price" = 3, "Log Firms" = 15, "Log Firms (excl. FL)" = 17, "Log Bids" = 16)) +
   labs(x = "Coefficient on FL Presence", y = NULL, color = "Method") +
   theme_pub()
 save_pub(p3, "fig_03_coef_summary.pdf")
@@ -417,7 +418,7 @@ if (!is.null(models$network_split) && length(models$network_split) > 0) {
       geom_errorbar(aes(xmin = ci_lo, xmax = ci_hi), width = 0.15, linewidth = 0.5,
                     position = position_dodge(width = 0.4)) +
       geom_point(size = 2.5, position = position_dodge(width = 0.4)) +
-      scale_color_manual(values = c("High Suspicion" = "firebrick", "Low Suspicion" = "steelblue")) +
+      scale_color_manual(values = c("High Suspicion" = "black", "Low Suspicion" = "gray55")) +
       labs(x = "Coefficient on FL (log price)", y = NULL) +
       theme_pub()
     save_pub(p11, "fig_11_network_split.pdf")
@@ -502,11 +503,11 @@ if (file.exists(CADE_CACHE_V4)) {
 
     p13 <- ggplot(perm_dt, aes(x = rate)) +
       geom_histogram(bins = 50, fill = "gray60", color = "gray30", linewidth = 0.3) +
-      geom_vline(xintercept = obs_rate, linetype = "dashed", color = "firebrick",
+      geom_vline(xintercept = obs_rate, linetype = "dashed", color = "black",
                  linewidth = 0.7) +
       annotate("text", x = obs_rate, y = Inf, vjust = 2, hjust = -0.1,
                label = sprintf("Observed = %.1f%%", obs_rate),
-               size = 3, color = "firebrick") +
+               size = 3, color = "black") +
       labs(x = "Co-participation Rate with CADE Firms (%)",
            y = "Number of Permutations") +
       theme_pub()
@@ -602,15 +603,15 @@ if (file.exists(bl_file)) {
     med_nfl <- median(bl_losers[is_fl == 0L, log_ratio], na.rm = TRUE)
     shift_pct <- round((exp(med_fl) - exp(med_nfl)) / exp(med_nfl) * 100, 1)
 
-    p15 <- ggplot(bl_losers, aes(x = log_ratio, fill = group, color = group)) +
-      geom_density(alpha = 0.25, linewidth = 0.6) +
-      geom_vline(xintercept = med_fl, linetype = "dashed", color = "firebrick3", linewidth = 0.4) +
-      geom_vline(xintercept = med_nfl, linetype = "dashed", color = "steelblue4", linewidth = 0.4) +
+    p15 <- ggplot(bl_losers, aes(x = log_ratio, linetype = group, color = group)) +
+      geom_density(linewidth = 0.6) +
+      geom_vline(xintercept = med_fl, linetype = "dashed", color = "black", linewidth = 0.4) +
+      geom_vline(xintercept = med_nfl, linetype = "dashed", color = "gray50", linewidth = 0.4) +
       annotate("text", x = max(med_fl, med_nfl) + 0.1, y = Inf, vjust = 2,
                label = paste0("+", shift_pct, "% shift"),
                size = 3, fontface = "bold") +
-      scale_fill_manual(values = c("FL Bids" = "firebrick3", "Non-FL Bids" = "steelblue4")) +
-      scale_color_manual(values = c("FL Bids" = "firebrick3", "Non-FL Bids" = "steelblue4")) +
+      scale_color_manual(values = c("FL Bids" = "black", "Non-FL Bids" = "gray55")) +
+      scale_linetype_manual(values = c("FL Bids" = "solid", "Non-FL Bids" = "dashed")) +
       labs(x = "Log(Bid / Winning Price)", y = "Density") +
       theme_pub()
 

@@ -179,12 +179,12 @@ p_km <- ggplot(km_data, aes(x = time, y = surv, color = group, fill = group)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.15, linetype = 0) +
   scale_y_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
   scale_x_continuous(breaks = 1:11) +
-  scale_color_manual(values = c("No FL exposure" = "gray50",
-                                 "Low FL" = "steelblue",
-                                 "High FL" = "firebrick")) +
-  scale_fill_manual(values = c("No FL exposure" = "gray50",
-                                "Low FL" = "steelblue",
-                                "High FL" = "firebrick")) +
+  scale_color_manual(values = c("No FL exposure" = "gray70",
+                                 "Low FL" = "gray40",
+                                 "High FL" = "black")) +
+  scale_fill_manual(values = c("No FL exposure" = "gray70",
+                                "Low FL" = "gray40",
+                                "High FL" = "black")) +
   labs(x = "Years since entry", y = "Survival probability") +
   theme_pub()
 

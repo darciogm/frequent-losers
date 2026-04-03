@@ -152,7 +152,7 @@ p_heat <- ggplot(grid_results[!is.na(coef)],
     ifelse(!is.na(pval) & pval < 0.05, "**",
     ifelse(!is.na(pval) & pval < 0.1, "*", ""))))),
     size = 2.5, color = "white") +
-  scale_fill_gradient2(low = "steelblue4", mid = "gray95", high = "firebrick3",
+  scale_fill_gradient2(low = "gray85", mid = "gray95", high = "black",
                         midpoint = 0, name = "FL coeff.",
                         labels = scales::label_number(accuracy = 0.01)) +
   scale_x_continuous(breaks = iqr_mults) +
@@ -254,7 +254,7 @@ if (!is.na(price_col) && price_col %in% names(dt)) {
                   color = ifelse(net_welfare_m > 0, "pos", "neg")),
               size = 2.5, show.legend = FALSE) +
     scale_color_manual(values = c("pos" = "white", "neg" = "gray20")) +
-    scale_fill_gradient2(low = "firebrick3", mid = "lightyellow", high = "darkgreen",
+    scale_fill_gradient2(low = "gray85", mid = "gray95", high = "black",
                           midpoint = 0, name = "Net welfare\n(R$ millions)",
                           labels = scales::label_number(accuracy = 1)) +
     scale_x_continuous(breaks = iqr_mults) +

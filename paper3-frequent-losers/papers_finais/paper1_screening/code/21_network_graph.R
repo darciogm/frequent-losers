@@ -131,7 +131,7 @@ p_net <- ggraph(tg, layout = "fr") +
   geom_edge_link(aes(width = weight), alpha = 0.3, color = "gray60") +
   geom_node_point(aes(color = type, size = type)) +
   scale_edge_width(range = c(0.3, 2.5), name = "Co-bids") +
-  scale_color_manual(values = c("FL" = "firebrick3", "Winner" = "steelblue4"),
+  scale_color_manual(values = c("FL" = "black", "Winner" = "gray55"),
                       labels = c("FL" = "Frequent Loser", "Winner" = "Winner")) +
   scale_size_manual(values = c("FL" = 2.5, "Winner" = 4),
                      labels = c("FL" = "Frequent Loser", "Winner" = "Winner")) +
