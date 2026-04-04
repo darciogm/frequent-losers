@@ -75,6 +75,8 @@ oversight weakest.
 
 <div class="quick-links" markdown>
 
+[**Video** <br> Narrated animated overview of the paper (English)](video.md)
+
 [**Paper** <br> Contribution, institutional setting, and empirical strategy](paper.md)
 
 [**Results** <br> Classification, detection, price association, and diagnostics](results.md)
