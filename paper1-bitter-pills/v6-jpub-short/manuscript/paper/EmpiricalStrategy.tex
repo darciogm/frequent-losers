@@ -1,0 +1,49 @@
+\section{Empirical Strategy}
+\label{sec:empirical}
+
+Our empirical analysis proceeds in two stages. First, we estimate the overall enforcement costs of urgent procurement by comparing ordinary and urgent purchases. Second, we isolate the ``under the gun'' effect by comparing litigated and administrative urgent purchases.
+
+\subsection{Identification}
+
+The key identification assumption is that, conditional on item, time, and buyer fixed effects, the assignment of purchases to the urgent category is exogenous to unobserved determinants of procurement outcomes. Several institutional features support this assumption.
+
+First, judicial orders and administrative requests originate from individuals' health needs and legal claims, which are unrelated to the procurement process itself. The principle of impersonality in Brazilian public administration ensures that tender outcomes depend on purchase characteristics---item specifications, market conditions, and planning parameters---not on the identity or circumstances of the requesting individual.
+
+Second, the timing and content of court orders are unpredictable from the PBU's perspective. PBUs cannot anticipate exactly which items, in what quantities, and when they will be compelled to purchase. Only 4\% of judicial claims arise from stock shortages or service failures, suggesting that litigation is poorly correlated with PBU-level mismanagement or unobserved quality.
+
+Third, the key source of variation---the urgency regime---is determined by external judicial or administrative decisions, not by PBU choice. While PBUs might in principle manipulate item classification, the legal requirement to reference court orders in tender notices and our REGEX-based classification using official texts mitigate this concern.
+
+\subsection{Enforcement Costs: Ordinary vs.\ Urgent}
+
+We estimate the following baseline specification:
+\begin{equation}
+\label{eq:baseline}
+y_{i,g,t} = \beta \cdot \text{Urgent}_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t},
+\end{equation}
+where $y_{i,g,t}$ is the outcome (log reference price, log negotiated price, log quantity, log number of firms, or tender success) for purchase order $i$ of item $g$ at time $t$; $\text{Urgent}_{i,g,t}$ equals 1 for administrative or litigated purchases and 0 for ordinary purchases; $\gamma_g$ are item fixed effects; $\lambda_t$ are time fixed effects (year or year-month); and $\delta_b$ are PBU fixed effects. Standard errors are clustered at the PBU level.
+
+We report four specifications with progressively richer fixed effects:
+\begin{enumerate}
+  \item[(1)] Item FE only;
+  \item[(2)] Item + Year FE;
+  \item[(3)] Item + Year + PBU FE (preferred);
+  \item[(4)] Item + Year-Month + PBU FE.
+\end{enumerate}
+
+Specification~(3) is our preferred specification because it absorbs time-invariant item characteristics, common annual trends, and buyer-specific heterogeneity, while retaining sufficient within-cell variation for precise estimation.
+
+For negotiated prices and number of firms, we additionally estimate a ``direct effect'' specification that controls for log quantity:
+\begin{equation}
+\label{eq:direct}
+y_{i,g,t} = \beta \cdot \text{Urgent}_{i,g,t} + \alpha \cdot \ln Q_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t}.
+\end{equation}
+This specification captures the direct effect of urgency on prices and competition, net of the quantity channel (since urgent purchases typically involve smaller quantities, which may independently affect prices through reduced bulk discounts).
+
+\subsection{The ``Under the Gun'' Effect: Litigated vs.\ Administrative}
+
+To isolate the effect of judicial sanctions on procurement costs, we restrict the sample to urgent purchases only (both administrative and litigated) for items with at least one purchase of each type, and estimate:
+\begin{equation}
+\label{eq:utg}
+\ln(\text{Price}_{i,g,t}) = \beta \cdot \text{Admin}_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t},
+\end{equation}
+where $\text{Admin}$ equals 1 for administrative purchases and 0 for litigated purchases. The coefficient $\beta$ captures the price differential between administrative and litigated purchases, holding constant the item, time period, and buying unit. Since both types face identical planning constraints, $\beta$ isolates the cost attributable to the sanction regime: the threat of judicial punishment for procurement failure.
