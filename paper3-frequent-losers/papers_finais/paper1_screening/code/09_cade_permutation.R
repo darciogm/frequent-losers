@@ -171,6 +171,135 @@ if (!is.null(fls)) {
 }
 
 # ============================================================================
+# Phase 2b: Within-band AUC (Concern 1 — volume decomposition)
+# ============================================================================
+# Both FL score (participation count) and ground truth (CADE co-participation)
+# are volume-driven. We decompose the AUC by computing it within participation-
+# count deciles, isolating the signal that is not mechanically driven by volume.
+
+cat("  Phase 2b: Within-band AUC decomposition...\n")
+
+if (!is.null(fls) && length(win_rate_col) > 0 && length(tc_col) > 0) {
+  # Simple AUC function (Mann-Whitney U statistic)
+  auc_simple <- function(score, label) {
+    pos <- score[label == 1L]
+    neg <- score[label == 0L]
+    if (length(pos) == 0 || length(neg) == 0) return(NA_real_)
+    # Mann-Whitney U / (n_pos * n_neg)
+    u <- sum(vapply(pos, function(p) sum(p > neg) + 0.5 * sum(p == neg), numeric(1)))
+    u / (length(pos) * length(neg))
+  }
+
+  # Prepare always-loser data with CADE co-participation label
+  al_auc <- copy(always_losers)
+  al_auc[, cade_cobid := as.integer(firm_id %chin% as.character(all_cade_cobid))]
+  al_auc[, is_fl := as.integer(firm_id %chin% as.character(fl_ids))]
+
+  # Create deciles of participation count (use frank to handle ties)
+  al_auc[, tc_rank := frank(tc, ties.method = "random")]
+  al_auc[, tc_decile := ceiling(tc_rank / .N * 10)]
+  al_auc[tc_decile > 10L, tc_decile := 10L]
+
+  # Overall AUC (unconditional)
+  overall_auc <- auc_simple(al_auc$tc, al_auc$cade_cobid)
+  cat(sprintf("  Overall AUC (participation count): %.4f\n", overall_auc))
+
+  # Within-band AUC per decile
+  band_results <- al_auc[, {
+    n_cade <- sum(cade_cobid)
+    n_total <- .N
+    tc_range <- paste0(min(tc), "--", max(tc))
+    auc_val <- if (n_cade >= 2 && n_cade < n_total) auc_simple(tc, cade_cobid) else NA_real_
+    list(n_firms = n_total, n_cade = n_cade, tc_range = tc_range, auc = auc_val)
+  }, by = tc_decile][order(tc_decile)]
+
+  cat("  Within-band AUC by participation-count decile:\n")
+  print(band_results)
+
+  # Pooled within-band AUC (weighted average of decile AUCs)
+  valid_bands <- band_results[!is.na(auc)]
+  if (nrow(valid_bands) > 0) {
+    pooled_within_auc <- weighted.mean(valid_bands$auc, valid_bands$n_firms)
+    cat(sprintf("  Pooled within-band AUC: %.4f\n", pooled_within_auc))
+  } else {
+    pooled_within_auc <- NA
+  }
+
+  # Residualized AUC: demean participation count within deciles
+  al_auc[, tc_resid := tc - mean(tc, na.rm = TRUE), by = tc_decile]
+  resid_auc <- auc_simple(al_auc$tc_resid, al_auc$cade_cobid)
+  cat(sprintf("  Residualized AUC (demeaned within bands): %.4f\n", resid_auc))
+
+  # Bootstrap CI for within-band AUC
+  n_boot <- 500L
+  set.seed(123)
+  boot_within <- numeric(n_boot)
+  for (b in seq_len(n_boot)) {
+    idx <- sample.int(nrow(al_auc), replace = TRUE)
+    boot_dt <- al_auc[idx]
+    boot_dt[, tc_rank_b := frank(tc, ties.method = "random")]
+    boot_dt[, tc_decile_b := ceiling(tc_rank_b / .N * 10)]
+    boot_dt[tc_decile_b > 10L, tc_decile_b := 10L]
+    bw <- boot_dt[, {
+      n_c <- sum(cade_cobid); n_t <- .N
+      auc_v <- if (n_c >= 2 && n_c < n_t) auc_simple(tc, cade_cobid) else NA_real_
+      list(n = n_t, auc = auc_v)
+    }, by = tc_decile_b]
+    bv <- bw[!is.na(auc)]
+    boot_within[b] <- if (nrow(bv) > 0) weighted.mean(bv$auc, bv$n) else NA_real_
+  }
+  boot_within <- boot_within[!is.na(boot_within)]
+  within_ci <- quantile(boot_within, c(0.025, 0.975))
+  cat(sprintf("  Within-band AUC 95%% CI: [%.3f, %.3f]\n", within_ci[1], within_ci[2]))
+
+  # Write table
+  cat("  Writing tab_within_band_auc.tex...\n")
+  wb_lines <- c(
+    "\\begin{table}[htbp]", "\\centering",
+    "\\caption{Within-Band AUC: FL Screen Performance by Participation Volume}",
+    "\\label{tab:within_band_auc}",
+    "\\begin{adjustbox}{max width=\\textwidth}",
+    "\\begin{threeparttable}", "\\small",
+    "\\begin{tabular}{clcccc}", "\\toprule",
+    "Decile & Tenders range & Firms & CADE-linked & AUC \\\\",
+    "\\midrule"
+  )
+  for (r in seq_len(nrow(band_results))) {
+    row <- band_results[r]
+    auc_str <- if (is.na(row$auc)) "---" else sprintf("%.3f", row$auc)
+    wb_lines <- c(wb_lines,
+      sprintf("%d & %s & %s & %d & %s \\\\",
+              row$tc_decile, row$tc_range, pfmt_int(row$n_firms),
+              row$n_cade, auc_str))
+  }
+  wb_lines <- c(wb_lines,
+    "\\midrule",
+    sprintf("\\multicolumn{4}{l}{Overall AUC (unconditional)} & %.3f \\\\", overall_auc),
+    sprintf("\\multicolumn{4}{l}{Pooled within-band AUC} & %.3f \\\\",
+            if (!is.na(pooled_within_auc)) pooled_within_auc else 0),
+    sprintf("\\multicolumn{4}{l}{\\quad 95\\%% CI} & [%.3f, %.3f] \\\\",
+            within_ci[1], within_ci[2]),
+    sprintf("\\multicolumn{4}{l}{Residualized AUC (demeaned)} & %.3f \\\\", resid_auc),
+    "\\bottomrule", "\\end{tabular}",
+    "\\begin{tablenotes}", "\\small",
+    "\\item \\textit{Notes:} AUC computed using participation count as the",
+    "screening score and CADE co-participation as the binary outcome.",
+    "Within-band AUC measures discrimination after controlling for volume.",
+    "Residualized AUC uses participation count demeaned within deciles.",
+    sprintf("Total always-losers: %s (CADE-linked: %d).",
+            pfmt_int(nrow(al_auc)), sum(al_auc$cade_cobid)),
+    "\\end{tablenotes}", "\\end{threeparttable}",
+    "\\end{adjustbox}", "\\end{table}")
+  writeLines(wb_lines, file.path(OUT_TAB, "tab_within_band_auc.tex"))
+
+} else {
+  pooled_within_auc <- NA
+  resid_auc <- NA
+  band_results <- NULL
+  cat("  Skipping within-band AUC (data unavailable).\n")
+}
+
+# ============================================================================
 # Phase 3: Regressions excluding CADE-involved markets [R2.10]
 # ============================================================================
 
@@ -329,6 +458,12 @@ cade_results <- list(
     rates = perm_rates,
     observed = if (exists("observed_rate")) observed_rate else NA,
     p_value = perm_p_value
+  ),
+  within_band_auc = list(
+    overall_auc = if (exists("overall_auc")) overall_auc else NA,
+    pooled_within_auc = pooled_within_auc,
+    resid_auc = if (exists("resid_auc")) resid_auc else NA,
+    band_results = band_results
   ),
   excl_cade = m_clean
 )

@@ -106,29 +106,23 @@ and cross-fit estimates: the price association holds up under non-parametric
 reweighting.
 
 \paragraph{Measurement-error diagnostic (IV).}
-The leave-one-out IV estimate (0.194, $p = 0.01$, $F = 396$) exceeds
-OLS by a factor of three, consistent with attenuation in the binary
-FL indicator. Exclusion-restriction concerns
-(Section~\ref{sec:reduced_form}) keep it off the primary range
-(Tables~\ref{tab:iv_balance}--\ref{tab:iv_main},
-Appendix~\ref{app:robustness}).
+A leave-one-out IV suggests OLS understates the association
+(0.194 vs.\ 0.064), consistent with binary misclassification
+attenuation, but balance violations preclude a preferred-estimate
+interpretation (Appendix~\ref{app:robustness}).
 
 \paragraph{Summary.}
 Four approaches that differ in weighting, functional form, and
 information sets produce a consistent 3.6--7.7\% conditional price
 association: cross-fit (3.6\%), IPW (5.5\%), OLS (6.4\%), CEM
 (7.7\%). The estimates cluster rather than scatter, indicating a
-stable conditional association across designs. The IV (19.4\%) is
-directionally consistent with attenuation in the binary screening indicator
-but is not interpretable as a preferred magnitude, given
-exclusion-restriction concerns
-(Section~\ref{sec:reduced_form}). An omitted confounder would need
-to explain 17.5\% of residual variation in \emph{both} FL presence
-and log prices---after absorbing item, year, and PBU fixed
-effects---to nullify the coefficient \citep{cinelli2020making}.
-None of these estimates has a causal interpretation; they document a
-robust conditional association that motivates the screen's
-deployment.
+stable conditional association across designs. An omitted
+confounder would need to explain 17.5\% of residual variation in
+\emph{both} FL presence and log prices---after absorbing item, year,
+and PBU fixed effects---to nullify the coefficient
+\citep{cinelli2020making}. None of these estimates has a causal
+interpretation; they document a robust conditional association that
+motivates the screen's deployment.
 
 \begin{figure}[htbp]
 \centering
@@ -148,17 +142,30 @@ Figure~\ref{fig:roc} (Appendix~\ref{app:robustness}) traces the FL
 ROC curve against CADE cartel co-participation: AUC~$= 0.94$
 (bootstrapped 95\% CI: $[0.91, 0.94]$;
 Table~\ref{tab:roc_detection}, Appendix~\ref{app:robustness}).
-The data-driven optimal threshold (Youden's $J = 0.84$) falls at
-1.45$\times$IQR---nearly identical to the 1.5$\times$ rule we chose
-\emph{a priori} on economic grounds---achieving TPR~$= 1.00$ with
-FPR~$= 0.16$. The convergence is striking: the participation
-intensity at which profit-maximizing entry becomes hard to
-rationalize is also the intensity that best discriminates
-cartel-linked environments. Higher participation counts mechanically
-increase co-participation opportunities; a count-matched
-permutation test ($2.2\times$ at $\pm 2$ tenders, $p < 0.001$;
-Section~\ref{sec:cade}) confirms the signal survives exact
-volume control.
+
+Participation volume contributes substantially to this figure: both
+the FL score (participation count) and the ground truth (CADE
+co-participation) are volume-driven. Decomposing the AUC within
+participation-count deciles yields a pooled within-band AUC of 0.54
+(Table~\ref{tab:within_band_auc}, Appendix~\ref{app:robustness}),
+confirming that most of the unconditional discrimination reflects
+the volume channel. The within-band AUC exceeds chance but is
+modest; the screen's detection power comes primarily from
+identifying the high-participation tail of always-losers, not from
+discriminating among firms with similar volume.
+
+For operational screening, the unconditional AUC remains the
+relevant metric: enforcement agencies care about total signal, and
+participation volume is part of the behavioral anomaly the screen
+exploits. The data-driven optimal threshold (Youden's $J = 0.84$)
+falls at 1.45$\times$IQR---nearly identical to the 1.5$\times$
+rule we chose \emph{a priori} on economic grounds---achieving
+TPR~$= 1.00$ with FPR~$= 0.16$. A count-matched permutation test
+($2.2\times$ at $\pm 2$ tenders, $p < 0.001$;
+Section~\ref{sec:cade}) confirms that the FL classification adds
+signal beyond volume alone, consistent with the logistic
+decomposition showing that the zero-win condition is the active
+ingredient (Section~\ref{sec:cade}).
 
 \paragraph{Complementarity with bid-level screens.}
 Against the same CADE ground truth, the FL screen achieves
@@ -196,11 +203,14 @@ ceiling). The FL coefficient \emph{rises} from 0.064 to
 0.084 ($p < 0.01$) when the CV flag is added---a suppression effect
 predicted by the framework: coordinated cover bidding
 may produce low within-tender dispersion while maintaining FL
-participation. The Imhof flag enters at 0.021 ($p < 0.01$). The two
-screens complement each other: FL triages environments using
-participation records alone, and bid-level tools can then be deployed
-on the flagged subset (Table~\ref{tab:horse_race},
-Appendix~\ref{app:robustness}).
+participation. The Imhof flag enters at 0.021 ($p < 0.01$). Both screens
+contribute marginally to $R^2$ given the dominance of
+high-dimensional fixed effects (Table~\ref{tab:horse_race},
+Appendix~\ref{app:robustness}); the coefficient changes, rather
+than the $R^2$ increments, document their independent information
+content. The two screens complement each other: FL triages
+environments using participation records alone, and bid-level tools
+can then be deployed on the flagged subset.
 
 \paragraph{Why combination degrades.}
 Naively combining the FL and Imhof scores into a single index
@@ -245,14 +255,19 @@ This is what the framework predicts
 (Appendix~\ref{app:proofs}): in competitive markets, where no single
 firm dominates, manufactured competition has the highest marginal
 return. Concentrated markets already sustain high prices through
-market power, making cover bidders redundant.%
-\footnote{Noisier FL classification in concentrated markets or thin FE
-cells absorbing the effect cannot be ruled out with cross-sectional
-data; the monotonic pattern across HHI quartiles is suggestive but not
-definitive.}
+market power, making cover bidders redundant.
 For enforcement, the implication is that the screen is most
 informative precisely in the markets where undetected collusion would
 be costliest to taxpayers.
+
+The network-split classification is endogenous: market concentration
+is not randomly assigned, and FL firms that appear in concentrated
+markets differ systematically from those in competitive markets.
+Noisier FL classification in concentrated markets or thinner
+fixed-effect cells could also attenuate the coefficient. The
+monotonic pattern across HHI quartiles is suggestive of the
+framework's prediction but does not establish that competition level
+causally moderates the FL--price association.
 
 \input{./output/tables/tab_network_split}
 
@@ -304,15 +319,22 @@ suggestive but not definitive.
 
 As a final supporting diagnostic, we report the structural
 estimation results from the bid-level mixture model
-(Appendix~\ref{app:structural_id}). BIC strongly favors Regime~2
-($\Delta$BIC~$= -91{,}473$;
+(Appendix~\ref{app:structural_id}). The regime test distinguishes
+between two forms of cover bidding---complementary (uniformly
+dispersed above the winning bid) and coordinated (tightly clustered
+near the winning bid). It does not test cover bidding against
+competition; that comparison is addressed by the cross-sectional
+price association (Section~\ref{sec:results_ols}) and the CADE
+validation (Section~\ref{sec:cade}). BIC strongly favors the
+coordinated regime ($\Delta$BIC~$= -91{,}473$;
 Table~\ref{tab:structural_params}). The dispersion ratio
 $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$: FL bids are 28\%
 \emph{less} dispersed than non-FL bids---as expected under coordinated
 cover bidding, where variance-based screens lose power.
 The $n$-conditional markup (6.4\%) is close to the OLS baseline.
-These results provide a structural interpretation for why a
-participation-based screen may complement dispersion-based tools.
+These results inform the enforcement response: participation-based
+screens complement dispersion-based tools precisely because the
+dominant cover-bidding regime defeats the latter.
 
 \begin{figure}[htbp]
 \centering

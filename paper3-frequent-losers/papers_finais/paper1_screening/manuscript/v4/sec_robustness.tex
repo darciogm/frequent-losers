@@ -74,15 +74,34 @@ not sensitive to the exact threshold chosen.
 17.5\%$: an unobserved confounder would need to explain 17.5\% of
 residual variation in \emph{both} FL presence and log prices to nullify
 the coefficient---stringent given the item, year, and PBU fixed-effects
-structure. Full sensitivity plots are in
-Appendix~\ref{app:robustness}.
+structure. The bound assumes a single additive confounder; if selection
+operates through multiple correlated channels---each individually below
+17.5\%---the required confounder strength may be lower. The positive
+pre-trends at $t = -2$ and $t = -3$ suggest multi-channel selection
+may be relevant (Section~\ref{sec:limitations}). Full sensitivity
+plots are in Appendix~\ref{app:robustness}.
 
 
 \paragraph{Staggered difference-in-differences.}
-\citet{callaway2021difference} yields ATT~$= 0.014$ (SE~$= 0.039$);
-stacked DiD \citep{cengiz2019effect} gives $-0.006$ (SE~$= 0.014$).
-Positive pre-trends at $t = -2$ and $t = -3$ preclude a causal
-reading, consistent with strategic market selection
+The Callaway \& Sant'Anna ATT is 0.014 (SE~$= 0.042$) and the stacked
+DiD \citep{cengiz2019effect} gives $-0.006$ (SE~$= 0.014$): both are
+statistically indistinguishable from zero. The minimum detectable effect
+at 80\% power is 0.117 for the C\&S estimator---nearly twice the OLS
+baseline of 0.064---so the DiD lacks statistical power to detect the
+cross-sectional association even if it were entirely causal. Moreover,
+positive pre-event coefficients at $t = -2$ and $t = -3$
+(Figure~\ref{fig:event_study}, Appendix~\ref{app:did}) indicate that
+PBUs receiving FL entry already had higher prices, consistent with
+the framework's prediction that cover bidders target profitable
+environments.
+
+The DiD null is uninformative about the FL--price association: it is
+compatible with zero causal effect, insufficient power, or---most
+likely---violation of parallel trends through strategic market
+selection. The paper's evidence hierarchy does not rely on DiD
+identification; the cross-sectional association documented in
+Section~\ref{sec:results_ols} rests on selection-on-observables
+absorbed by high-dimensional fixed effects
 (Tables~\ref{tab:stacked_did}--\ref{tab:did_revised},
 Appendix~\ref{app:did}).
 
