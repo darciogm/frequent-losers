@@ -7,7 +7,7 @@
 %% ====================================================================
 \subsection*{A. Event Study Coefficients}
 
-The event study graphs below complement Figure~\ref{fig:logprices} in the main text by plotting the semester-by-semester DiDiR coefficients for the remaining three outcome variables: distance from PBUs to winning firms, number of participant firms, and number of valid bids. In each panel, the coefficients are estimated relative to the last pre-treatment semester, and the vertical dashed line marks the policy change in March 2018. The key pattern is that the difference between Group 65 and other groups narrows dramatically after the policy shift and then stabilizes, providing visual support for the parallel trends assumption in the post-period.
+The event study graphs below complement Figure~\ref{fig:logprices} in the main text by plotting the semester-by-semester DiDiR coefficients for the remaining three outcome variables. In each panel, the coefficients are estimated relative to the last pre-treatment semester, and the vertical dashed line marks the policy change in March 2018.
 
 \begin{figure}[htbp]
 \centering
@@ -31,69 +31,6 @@ The event study graphs below complement Figure~\ref{fig:logprices} in the main t
 \end{figure}
 
 %% ====================================================================
-%% B. Raw Monthly Trends
-%% ====================================================================
-\subsection*{B. Raw Monthly Trends}
-
-Figures~A.4 through A.7 display the unconditional monthly means of each outcome variable, separately for Group 65 and all other groups. These raw trends serve two purposes: they illustrate the level differences between the groups and allow the reader to visually assess whether the groups move in parallel after March 2018---the key identifying assumption of the DiDiR design. The raw trends are broadly consistent with the event study estimates, showing a narrowing of the gap between the two groups after the policy change.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_05_trends_prices.pdf}
-\caption{Raw Trends: Mean Log Price by Month (Group 65 vs.\ Other Groups)}
-\label{fig:trends_prices}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_06_trends_firms.pdf}
-\caption{Raw Trends: Mean Log Number of Firms by Month (Group 65 vs.\ Other Groups)}
-\label{fig:trends_firms}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_07_trends_bids.pdf}
-\caption{Raw Trends: Mean Log Number of Valid Bids by Month (Group 65 vs.\ Other Groups)}
-\label{fig:trends_bids}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_08_trends_distance.pdf}
-\caption{Raw Trends: Mean Distance (km) by Month (Group 65 vs.\ Other Groups)}
-\label{fig:trends_distance}
-\end{figure}
-
-%% ====================================================================
-%% C. Randomization Inference
-%% ====================================================================
-\subsection*{C. Randomization Inference}
-
-Figure~A.8 presents the results of a randomization inference exercise. The treatment assignment (Group 65 vs.\ other groups) is randomly permuted 500 times, and the main price regression is re-estimated for each permutation. The histogram displays the distribution of permuted coefficients, with the actual estimate marked by a vertical line. The two-sided permutation $p$-value is 0.317, reflecting the inherently low power of permutation tests when treatment is assigned to a single unit out of 76 product groups. Many permutations assign the fake treatment to large groups with idiosyncratic price trends, generating a fat-tailed permutation distribution that makes it difficult to reject the null even with a genuine treatment effect. The primary evidence against group-specific confounding comes from the four-outcome consistency test and the placebo exercises (see Section~4.4).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_09_permutation.pdf}
-\caption{Randomization Inference: Distribution of Permuted Coefficients (Log Prices, 18-month window)}
-\label{fig:permutation}
-\end{figure}
-
-%% ====================================================================
-%% D. SME Participation Share
-%% ====================================================================
-\subsection*{D. SME Participation Trends}
-
-Figure~A.9 plots the monthly share of winning firms that are classified as SMEs, separately for Group 65 and all other groups. Before March 2018, the SME winner share for Group 65 was near zero (open tenders attracted predominantly non-SME winners), while other groups exhibited SME winner shares of approximately 40\%. After the policy change, the SME winner share for Group 65 rises sharply, converging toward that of other groups. This pattern provides direct visual evidence that the SME-only restriction reshapes winner composition.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_10_sme_share.pdf}
-\caption{SME Winner Share (Completed Items) by Month}
-\label{fig:sme_share}
-\end{figure}
-
-%% ====================================================================
 %% Appendix Tables
 %% ====================================================================
 
@@ -101,45 +38,43 @@ Figure~A.9 plots the monthly share of winning firms that are classified as SMEs,
 \setcounter{table}{0}
 
 %% ====================================================================
-%% E. Additional Outcome Tables
+%% B. Additional Outcome Tables
 %% ====================================================================
-\subsection*{E. Additional Outcome Variables}
+\subsection*{B. Additional Outcome Variables}
 
-Tables~B.1 and B.2 report the DiDiR estimates for two outcome variables that complement the main results. Table~B.1 presents the effects on the number of valid bids (in logs), which mirrors the pattern found for the number of participant firms. Table~B.2 reports the effects on the distance between winning firms and PBUs. Together, these tables provide a complete picture of the four-outcome estimation reported in the main text.
+Tables~B.1 and B.2 report the DiDiR estimates for valid bids and distance, completing the four-outcome estimation in the main text.
 
 \input{../output/tables/tab_validbids.tex}
 \input{../output/tables/tab_distance.tex}
 
 %% ====================================================================
-%% F. Robustness Tables
+%% C. Robustness Tables
 %% ====================================================================
-\subsection*{F. Robustness Checks}
+\subsection*{C. Robustness Checks}
 
-Tables~B.3 and B.4 probe the sensitivity of the main estimates to alternative inference and data-processing choices. Table~B.3 re-estimates the main specifications under alternative clustering strategies: at the item group level, at the PBU level, and with two-way clustering at both the item and PBU levels. The estimates remain statistically significant across all choices, confirming that the results are not sensitive to the clustering structure. Table~B.4 winsorizes the dependent variables at the 1st/99th and 5th/95th percentiles, ruling out the possibility that the results are driven by extreme values in the tails of the distributions.
+Tables~B.3 and B.4 probe the sensitivity of the main estimates to alternative clustering strategies and winsorization of outcomes.
 
 \input{../output/tables/tab_altcluster.tex}
 \input{../output/tables/tab_winsorize.tex}
 
 %% ====================================================================
-%% G. Extension Tables
+%% D. Score Cluster Bootstrap
 %% ====================================================================
-\subsection*{G. Extension Analyses}
+\subsection*{D. Score Cluster Bootstrap}
 
-Tables~B.5 through B.9 report extensions that deepen the analysis. IPCA-deflated real prices (Table~B.5) confirm that the price effects reflect real procurement cost differences rather than differential inflation. The extensive margin analysis (Table~B.6) examines completion rates. Procurement efficiency (Table~B.7) measures the ratio of negotiated to reference prices. Winner composition (Table~B.8) shows shifts in the probability of SME winners. Finally, heterogeneity by PBU type (Table~B.9) tests whether the effects differ between direct and indirect administration entities.
+\IfFileExists{../output/tables/tab_wcb.tex}{
+Table~B.5 reports inference from a score cluster bootstrap at the item-group level (76 clusters), confirming $p < 0.001$ for all four outcomes.
 
-\input{../output/tables/tab_prices_real.tex}
-\input{../output/tables/tab_extensive.tex}
-\input{../output/tables/tab_efficiency.tex}
-\input{../output/tables/tab_sme_winner.tex}
-\input{../output/tables/tab_heterog_pbu.tex}
+\input{../output/tables/tab_wcb.tex}
+}{}
 
 %% ====================================================================
-%% H. Parallel Trends Sensitivity (HonestDiD)
+%% E. Parallel Trends Sensitivity (HonestDiD)
 %% ====================================================================
-\subsection*{H. Sensitivity to Parallel Trends Violations}
+\subsection*{E. Sensitivity to Parallel Trends Violations}
 
 \IfFileExists{../output/figures/fig_11_honestdid.pdf}{
-Figure~A.10 displays the results of the \citet{rambachan2023} sensitivity analysis (HonestDiD). This method constructs robust confidence intervals for the treatment effect under controlled violations of the parallel trends assumption. The parameter $\bar{M}$ governs the maximum amount by which the post-treatment trend may deviate from the pre-treatment path: $\bar{M}=0$ corresponds to the standard parallel trends assumption, while larger values allow progressively more severe violations. The figure shows that the main price effect remains statistically significant even under substantial deviations from strict parallel trends, providing strong evidence that the results are not driven by pre-existing differential trends between Group 65 and other groups.
+Figure~A.4 displays the \citet{rambachan2023} sensitivity analysis (HonestDiD), showing that the main price effect remains statistically significant even under substantial deviations from strict parallel trends.
 
 \begin{figure}[htbp]
 \centering
@@ -150,159 +85,15 @@ Figure~A.10 displays the results of the \citet{rambachan2023} sensitivity analys
 }{}
 
 %% ====================================================================
-%% I. Sample Selection Correction (Lee Bounds)
+%% F. Sample Selection Correction (Lee Bounds)
 %% ====================================================================
-\subsection*{I. Sample Selection Correction (Lee Bounds)}
+\subsection*{F. Sample Selection Correction (Lee Bounds)}
 
 \IfFileExists{../output/tables/tab_lee_bounds.tex}{
-The price and distance regressions in the main text condition on item completion (i.e., a winning bid exists), which may introduce sample selection bias if the treatment itself affects completion rates. Table~B.10 applies the \citet{lee2009} bounding procedure to address this concern. The method identifies the direction and magnitude of differential selection (here, a trimming proportion of 8.82\%) and constructs lower and upper bounds on the treatment effect by trimming the outcome distribution in the excess-selected cell. The bounds for log prices range from $-0.131$ to $-0.123$, both highly significant. The tightness of the bounds indicates that sample selection has a negligible impact on the main price estimates, and the core finding of lower prices under open tenders is robust to this correction.
+Table~B.6 applies the \citet{lee2009} bounding procedure. The bounds for log prices range from $-0.131$ to $-0.123$, both highly significant, indicating that sample selection has a negligible impact on the main estimates.
 
 \input{../output/tables/tab_lee_bounds.tex}
 }{}
 
-%% ====================================================================
-%% J. Heterogeneous Treatment Effects (Causal Forest)
-%% ====================================================================
-\subsection*{J. Heterogeneous Treatment Effects (Causal Forest)}
-
-\IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{
-Figures~A.11 and A.12 and Table~B.11 present results from a causal forest analysis \citep{athey2019, wager2018}. This machine learning method estimates individualized treatment effects (CATEs) using an honest, doubly-robust random forest. The analysis uses Frisch--Waugh--Lovell (FWL) residualized outcomes after partialling out item fixed effects. Figure~A.11 shows the variable importance ranking: item quantity (log) is the dominant source of treatment effect heterogeneity (importance = 0.486), followed by the type of tender (convite, 0.183) and whether the winning firm is located in Sao Paulo state (0.156). Figure~A.12 and Table~B.11 report the group average treatment effects (GATEs) by CATE quartile, revealing modest heterogeneity across the distribution of predicted treatment effects. The overall ATE from the causal forest is imprecisely estimated, which is expected given that the forest operates on residualized data and the sample contains substantial within-item variation.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}
-\caption{Causal Forest: Variable Importance for Treatment Effect Heterogeneity}
-\label{fig:cforest_varimp}
-\end{figure}
-}{}
-
-\IfFileExists{../output/figures/fig_13_cforest_gate.pdf}{
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_13_cforest_gate.pdf}
-\caption{Causal Forest: Group Average Treatment Effects by CATE Quartile}
-\label{fig:cforest_gate}
-\end{figure}
-}{}
-
-\IfFileExists{../output/tables/tab_cforest.tex}{\input{../output/tables/tab_cforest.tex}}{}
-
-%% ====================================================================
-%% K. Distributional Effects (Quantile DiD)
-%% ====================================================================
-\subsection*{K. Distributional Effects (Quantile DiD)}
-
-\IfFileExists{../output/figures/fig_14_quantile_did.pdf}{
-Figure~A.13 and Table~B.12 present quantile difference-in-differences estimates using the \citet{canay2011} two-step estimator. While the main OLS specification estimates the average effect on prices, the quantile approach reveals how the treatment effect varies across the price distribution. The results show a striking pattern: the effect is strongly negative at lower quantiles ($\tau=0.10$: $-0.623$; $\tau=0.25$: $-0.543$) and becomes positive at the upper tail ($\tau=0.90$: $+0.445$). The OLS benchmark of $-0.124$ represents a weighted average of these heterogeneous effects. This distributional pattern suggests that the benefits of open competition are concentrated in the left tail of the price distribution, where competitive bidding drives down procurement costs most effectively. At the upper tail, where items may be more specialized or face thinner supplier markets, the policy difference has the opposite sign.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}
-\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}
-\label{fig:quantile_did}
-\end{figure}
-}{}
-
-\IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
-
-%% ====================================================================
-%% L. Mechanism Decomposition (Gelbach)
-%% ====================================================================
-\subsection*{L. Mechanism Decomposition (Gelbach)}
-
-\IfFileExists{../output/figures/fig_15_mediation.pdf}{
-Figure~A.14 and Table~B.13 report the results of a \citet{gelbach2016} decomposition, which partitions the total price effect into contributions from observable channels. The method compares a ``short'' regression (treatment and controls only) with a ``full'' regression that adds mediators (log number of firms and SME winner indicator). The gap between the short and full regression coefficients ($-0.132$ vs.\ $-0.123$, a difference of $-0.009$) is decomposed into channel-specific contributions using the omitted variable bias formula $\delta_k = \gamma_k \times \pi_k$. The competition channel (log firms) accounts for $-85\%$ of the explained gap, while the composition channel (SME winner) contributes $185\%$. The opposing signs reflect the fact that competition and winner composition operate as partially offsetting mechanisms: open tenders increase competition (lowering prices) but also attract non-SME winners that may charge different prices conditional on winning. The large unexplained component ($-0.123$) indicates that most of the price effect operates through channels not captured by these two mediators.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}
-\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}
-\label{fig:mediation}
-\end{figure}
-}{}
-
-\IfFileExists{../output/tables/tab_mediation.tex}{\input{../output/tables/tab_mediation.tex}}{}
-
-%% ====================================================================
-%% M. Balance Test
-%% ====================================================================
-\subsection*{M. Pre-Treatment Balance Test}
-
-\IfFileExists{../output/tables/tab_balance.tex}{
-Table~B.14 compares pre-treatment covariate means between Group 65 and all other product groups. While some covariates show statistically significant differences---reflecting the inherent heterogeneity between medical supplies and other product categories---the DiDiR design does not require cross-sectional balance; it requires parallel trends in the post-treatment period, which is assessed in the event study (Figure~\ref{fig:logprices}).
-
-\input{../output/tables/tab_balance.tex}
-}{}
-
-%% ====================================================================
-%% N. Exclude Last Post-Period
-%% ====================================================================
-\subsection*{N. Excluding Last Post-Period Semester}
-
-\IfFileExists{../output/tables/tab_excl_lastpost.tex}{
-Table~B.15 re-estimates the main specifications using a truncated 18-month window that excludes the final post-period semester (March--August 2019), which showed a positive drift in the event study coefficients. The results are virtually unchanged from the full-window estimates, confirming that the main findings are not driven by the final semester's deviation from the parallel trends pattern.
-
-\input{../output/tables/tab_excl_lastpost.tex}
-}{}
-
-%% ====================================================================
-%% O. Score Cluster Bootstrap
-%% ====================================================================
-\subsection*{O. Score Cluster Bootstrap}
-
-\IfFileExists{../output/tables/tab_wcb.tex}{
-Table~B.16 reports inference from a score cluster bootstrap at the item-group level (76 clusters). Because the main specification clusters standard errors at the item level while treatment is assigned at the group level, this exercise verifies that the results survive inference appropriate for the number of treatment clusters. All four outcomes remain highly significant under the bootstrap distribution, with $p$-values below 0.001.
-
-\input{../output/tables/tab_wcb.tex}
-}{}
-
-%% ====================================================================
-%% P. Mechanism Evidence
-%% ====================================================================
-\subsection*{P. Mechanism Evidence}
-
-Tables~B.17--B.19 provide three pieces of mechanism evidence. Table~\ref{tab:dose_response} splits the sample by item quantity at the median. The increase in participating firms is five times larger for high-quantity items (12.4\% vs.\ 2.4\%), consistent with the causal forest finding that item quantity is the dominant moderator of the treatment effect (variable importance = 0.486). The price effects are similar in magnitude across quantity levels, suggesting that even small increases in competition translate into meaningful price reductions.
-
-Table~\ref{tab:entry_margin} implements a mediation analysis by sequentially adding the number of firms and the SME winner indicator as controls to the price regression. Controlling for both mediators attenuates the treatment coefficient by approximately 6\%, indicating that most of the price effect operates through channels beyond simple participation counts and winner composition---such as bid aggressiveness conditional on entry or the efficiency of matched suppliers.
-
-Table~\ref{tab:within_g65} decomposes the Group 65 effect into medications (class 6531, subject to CMED pharmaceutical price regulation) and other medical supplies (hospital equipment, dental supplies). The price effect is approximately 67\% larger for medications ($-0.166$) than for other medical items ($-0.099$). This pattern could reflect either (a) greater market power in the oligopolistic pharmaceutical sector, making the SME restriction more costly, or (b) residual differential inflation from CMED-regulated prices. Both interpretations are consistent with the aggregate finding; the distinction bears on the precise mechanism. The firm participation effect is also substantially larger for medications ($+0.152$ vs.\ $+0.044$), supporting the competition channel.
-
-\input{../output/tables/tab_dose_response.tex}
-\input{../output/tables/tab_entry_margin.tex}
-\input{../output/tables/tab_within_g65.tex}
-
-%% ====================================================================
-%% Q. Synthetic Control
-%% ====================================================================
-\subsection*{Q. Synthetic Control}
-
-\IfFileExists{../output/tables/tab_synth.tex}{
-As an alternative to the DiDiR design, I estimate a synthetic control model \citep{abadie2010} using the 69 balanced product groups as donors to construct a synthetic Group 65. The augmented synthetic control \citep{ben2021} uses Ridge regularization to improve pre-treatment fit. The treatment date is March 2018, when Group 65 lost its open-tender exemption.
-
-Figure~\ref{fig:synth_levels} shows that the synthetic control matches Group 65 prices almost exactly in the pre-treatment period (L2 imbalance $\approx 0$). After March 2018, Group 65 prices rise relative to the synthetic by approximately 17 log points on average (Table~\ref{tab:synth}), consistent in direction and magnitude with the DiDiR estimates of 13 log points. The post-treatment divergence reflects the cost of losing the open-tender exemption: once Group 65 became subject to SME-only tender rules, its prices converged upward toward the always-treated groups.
-
-Figure~\ref{fig:synth_gap} plots the gap over time. The in-space placebo test (Figure~\ref{fig:synth_placebo}) assigns placebo treatment status to each of the 69 donor groups: only 7 of 69 placebos produce an ATT as large as Group 65's (rank $p$-value = 0.103), providing moderate evidence that the estimated effect is not a statistical artifact.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_16_synth_levels.pdf}
-\caption{Synthetic Control: Group 65 (Actual) vs.\ Synthetic Group 65}
-\label{fig:synth_levels}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_17_synth_gap.pdf}
-\caption{Synthetic Control: Gap Between Group 65 and Synthetic (Log Prices)}
-\label{fig:synth_gap}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_18_synth_placebo.pdf}
-\caption{Synthetic Control: In-Space Placebo Distribution of Post-Treatment ATTs}
-\label{fig:synth_placebo}
-\end{figure}
-
-\input{../output/tables/tab_synth.tex}
-}{}
+\bigskip
+\noindent\textit{Additional results---including raw monthly trends, randomization inference, SME participation trends, IPCA-deflated prices, extensive margin, procurement efficiency, winner composition, PBU heterogeneity, causal forest analysis, quantile DiD, Gelbach decomposition, balance tests, excluding the last post-period semester, mechanism evidence, and synthetic control estimates---are available in the Online Appendix.}
