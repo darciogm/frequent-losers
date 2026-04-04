@@ -258,9 +258,24 @@ Table~B.17 reports inference from a score cluster bootstrap at the item-group le
 }{}
 
 %% ====================================================================
-%% P. Synthetic Control
+%% P. Mechanism Evidence
 %% ====================================================================
-\subsection*{P. Synthetic Control}
+\subsection*{P. Mechanism Evidence}
+
+Tables~B.18--B.20 provide three pieces of mechanism evidence. Table~\ref{tab:dose_response} splits the sample by item quantity at the median. The increase in participating firms is five times larger for high-quantity items (11.7\% vs.\ 2.4\%), consistent with the causal forest finding that item quantity is the dominant moderator of the treatment effect (variable importance = 0.486). The price effects are similar in magnitude across quantity levels, suggesting that even small increases in competition translate into meaningful price reductions.
+
+Table~\ref{tab:entry_margin} implements a mediation analysis by sequentially adding the number of firms and the SME winner indicator as controls to the price regression. Controlling for both mediators attenuates the treatment coefficient by approximately 6\%, indicating that most of the price effect operates through channels beyond simple participation counts and winner composition---such as bid aggressiveness conditional on entry or the efficiency of matched suppliers.
+
+Table~\ref{tab:within_g65} decomposes the group 65 effect into medications (class 6531, subject to CMED pharmaceutical price regulation) and other medical supplies (hospital equipment, dental supplies). The price effect is approximately 67\% larger for medications ($-0.166$) than for other medical items ($-0.099$). This pattern could reflect either (a) greater market power in the oligopolistic pharmaceutical sector, making the SME restriction more costly, or (b) residual differential inflation from CMED-regulated prices. Both interpretations are consistent with the aggregate finding; the distinction bears on the precise mechanism. The firm participation effect is also substantially larger for medications ($+0.152$ vs.\ $+0.044$), supporting the competition channel.
+
+\input{../output/tables/tab_dose_response.tex}
+\input{../output/tables/tab_entry_margin.tex}
+\input{../output/tables/tab_within_g65.tex}
+
+%% ====================================================================
+%% Q. Synthetic Control
+%% ====================================================================
+\subsection*{Q. Synthetic Control}
 
 \IfFileExists{../output/tables/tab_synth.tex}{
 As an alternative to the DiDiR design, I estimate a synthetic control model \citep{abadie2010} using the 68 balanced product groups as donors to construct a synthetic group 65. The augmented synthetic control \citep{ben2021} uses Ridge regularization to improve pre-treatment fit. The treatment date is March 2018, when group 65 lost its open-tender exemption.
