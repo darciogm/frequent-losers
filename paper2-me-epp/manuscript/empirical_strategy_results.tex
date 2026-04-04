@@ -1,13 +1,7 @@
 \section{Empirical Strategy and Results}
 
-This section is organized into two parts. First, I describe the method I use to estimate the impacts of the SME public procurement policy shift on the selected outcomes. I perform a DiD analysis, but unlike a standard DiD, the control group is always treated instead of always untreated \citep{kim2019}. Then, I discuss the identifying assumptions in the context of the DiDiR I employ. In the second part, I discuss the main results.
-
 \subsection{Main Specification and Identification Strategy}
-The identification strategy exploits the timing of a change in the policy of restricted SME tenders (March 2018) that affects only a specific group of items (Group 65). Thus, it is possible to simultaneously use time and cross-sectional variations to estimate the potential effects of this policy shift.
-
-In a standard DiD with treatment $d$ and outcome $y$, there exists a group of units ($q=1$) with its treatment changing from $d=0$ to $d=1$ at some date, and there exists another group ($q=0$) in which $d=0$ always. In this paper, however, the framework is slightly different: the group ``$q=0$'' always has $d=1$ instead of $d=0$, and the group ``$q=1$'', as in DiD, undergoes a switch in the treatment.
-
-This variation of a standard DiD is known as difference-in-differences in reverse (DiDiR), or ``time-reversed DiD'' \citep{kim2019}. This same framework can be found in the literature~\citep{kotchen2011, chemin2009, autor2006, shapiro2008, monstad2008}. Importantly, because the design involves a single treatment date and a clean two-group comparison, the estimation is not subject to the staggered-adoption concerns that may bias two-way fixed effects estimators with heterogeneous treatment effects \citep{dechaisemartin2020, roth2023}.
+The identification strategy exploits the timing of the policy change (March 2018) that affected only Group 65, using time and cross-sectional variation in a difference-in-differences in reverse (DiDiR) design~\citep{kim2019}. Unlike a standard DiD, where the control group is never treated, the DiDiR control group is \emph{always} treated: all product groups except Group 65 faced opt-out costs throughout the sample period, while Group 65 switched from no opt-out costs to positive opt-out costs in March 2018. This framework---also employed by \citet{autor2006}, \citet{shapiro2008}, and others---avoids the staggered-adoption concerns that may bias two-way fixed effects estimators with heterogeneous treatment effects~\citep{dechaisemartin2020, roth2023}.
 
 As described in Section~3, from August 2014 to February 2018, PBUs faced opt-out costs to avoid tendering for SMEs only, with the exception of Group 65 (with mandatory open tenders). From March 2018 to December 2019, PBUs were subject to opt-out costs for all groups of items purchased. Thus, the always-treated group here consists of all groups of items but Group 65, which comprises the switched group. Table~\ref{tab:groups} summarizes the above description.
 
@@ -27,9 +21,7 @@ Others (always-treated group) & Opt-out costs $>$ 0 & Opt-out costs $>$ 0 \\
 \end{adjustbox}
 \end{table}
 
-DiDiR identifies pre-switch-period effects; i.e., it estimates effects for the past \citep{kim2019}. I estimate this pre-switch-period effect on the switched group, comparing the observed outcomes for Group 65 before the policy shift and the outcomes that would have occurred for this group if there had been opt-out costs before March 2018 ($t=1$).
-
-Using subindex $p$ to denote purchase offer, $i$ to denote items, $t$ to denote months, and $g$ to denote groups of analysis, I estimate the following DiDiR model:
+DiDiR identifies pre-switch-period effects---it estimates what Group 65 outcomes would have been if opt-out costs had been imposed before March 2018~\citep{kim2019}. Using subindex $p$ for purchase offer, $i$ for items, $t$ for months, and $g$ for groups, the estimating equation is:
 \begin{equation}
 y_{pigt} = \eta_i + \gamma\,\text{Pre}_t + \beta\,\bigl(g65_{pgt}\times \text{Pre}_t\bigr) + x_{pigt}\,\delta + \varepsilon_{pigt}
 \end{equation}
@@ -54,9 +46,7 @@ where $\eta_g$ is the group fixed effects, and \textit{Semester} is a set of dum
 \label{fig:logprices}
 \end{figure}
 
-Although there are few periods observed after the change in the SME purchasing policy, it is possible to observe that the difference between the two groups narrows dramatically after the change in the purchasing policy. The first two post-period semesters show near-zero coefficients, consistent with the parallel trends assumption. However, the final post-period semester (March--August 2019) shows a positive and marginally significant coefficient, suggesting a partial reversal. This could reflect PBU learning---as buyers accumulate experience with SME-only procurement for Group 65, they may gradually mitigate some of the efficiency costs---or seasonal factors specific to the final observation window. Reassuringly, re-estimating the main specifications while excluding this final semester yields virtually identical coefficients (Table~\ref{tab:excl_lastpost}, Appendix). Figures A.1, A.2, and A.3 (appendix) report equivalent results regarding the distance from PBUs to winner firms, the number of participant firms, and the number of valid bids, respectively.
-
-In this context, the validity of the parallel trends assumption in the post-change period might be reinforced by an institutional reason. Over time, PBUs accumulate knowledge and develop expertise on how to buy items from the market. After the policy change, when new restrictions are imposed, PBUs adapt to the new conditions, and the pattern of results in tenders might change. However, in subsequent periods, it is reasonable to expect that prices and other performance indicators in tenders tend to vary little, \emph{ceteris paribus}, given that PBUs have already adapted to the new situation.
+Although there are few periods observed after the change in the SME purchasing policy, it is possible to observe that the difference between the two groups narrows dramatically after the change in the purchasing policy. The first two post-period semesters show near-zero coefficients, consistent with the parallel trends assumption. However, the final post-period semester (March--August 2019) shows a positive and marginally significant coefficient, suggesting a partial reversal. This could reflect PBU learning---as buyers accumulate experience with SME-only procurement for Group 65, they may gradually mitigate some of the efficiency costs---or seasonal factors specific to the final observation window. Reassuringly, re-estimating the main specifications while excluding this final semester yields virtually identical coefficients (Table~\ref{tab:excl_lastpost}, Appendix). Figures~A.1--A.3 (Appendix) report equivalent event study results for distance, participating firms, and valid bids.
 
 \subsection{Results}
 I perform item-level regressions in a two-period DiDiR for which $t$ is collapsed into pre and post periods. The estimations refer to the pre-switch-period effect for four distinct outcomes: negotiated prices, the number of participant firms, the number of valid bids, and the distance from PBUs to winner firms.
