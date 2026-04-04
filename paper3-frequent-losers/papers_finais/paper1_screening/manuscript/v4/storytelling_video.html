@@ -797,7 +797,8 @@ function show(idx) {
   const sub = document.getElementById('subtitle');
   sub.textContent = S[idx].text; sub.classList.add('visible');
   speak(S[idx].text, () => {
-    if (!paused && cur < S.length - 1) tmr = setTimeout(next, 1400);
+    // Both minimum time and speech are done — advance after a brief pause
+    if (!paused && cur < S.length - 1) tmr = setTimeout(next, 1800);
   });
 }
 
@@ -809,7 +810,27 @@ function speak(text, onEnd) {
   utt.pitch = 1.0;
   if (bestVoice) utt.voice = bestVoice;
 
-  // Chrome bug: long utterances stop after ~15s. Workaround: resume periodically.
+  // === TIMING STRATEGY ===
+  // The scene advances only when BOTH conditions are met:
+  //   1. The minimum duration (dur) has elapsed
+  //   2. The TTS has finished speaking (or timed out)
+  // This prevents premature advancement from buggy onend events.
+
+  const sceneIdx = cur;
+  let speechDone = false;
+  let timerDone = false;
+
+  function tryAdvance() {
+    if (speechDone && timerDone && sceneIdx === cur && onEnd) onEnd();
+  }
+
+  // Minimum scene timer — guarantees the scene stays visible for at least `dur` ms
+  const minTimer = setTimeout(() => { timerDone = true; tryAdvance(); }, S[sceneIdx].dur);
+
+  // Hard ceiling fallback — if TTS never fires onend (browser bug)
+  const ceiling = setTimeout(() => { speechDone = true; tryAdvance(); }, S[sceneIdx].dur + 8000);
+
+  // Chrome bug: long utterances silently stop after ~15s. Workaround: resume periodically.
   let resumeInterval = null;
   const startResume = () => {
     resumeInterval = setInterval(() => {
@@ -819,26 +840,31 @@ function speak(text, onEnd) {
     }, 10000);
   };
 
-  const fb = setTimeout(() => {
-    if (resumeInterval) clearInterval(resumeInterval);
-    if(onEnd) onEnd();
-  }, S[cur].dur + 5000);
-
   utt.onstart = startResume;
   utt.onend = () => {
     if (resumeInterval) clearInterval(resumeInterval);
-    clearTimeout(fb);
-    if(onEnd) onEnd();
+    clearTimeout(ceiling);
+    speechDone = true;
+    tryAdvance();
   };
   utt.onerror = () => {
     if (resumeInterval) clearInterval(resumeInterval);
-    clearTimeout(fb);
-    if(onEnd) onEnd();
+    clearTimeout(ceiling);
+    speechDone = true;
+    tryAdvance();
   };
   synth.speak(utt);
+
+  // Store cleanup refs so stopSpeak can clear them
+  utt._cleanup = () => {
+    clearTimeout(minTimer);
+    clearTimeout(ceiling);
+    if (resumeInterval) clearInterval(resumeInterval);
+  };
 }
 
 function stopSpeak() {
+  if (utt && utt._cleanup) utt._cleanup();
   synth.cancel();
   if(tmr) clearTimeout(tmr);
 }
