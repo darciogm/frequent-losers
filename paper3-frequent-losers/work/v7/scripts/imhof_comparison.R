@@ -94,9 +94,12 @@ fp_scored[, imhof_score := rowMeans(cbind(z_cv, z_kurt, z_spread, z_skew), na.rm
 roc_imhof <- roc(fp_scored$is_cade, fp_scored$imhof_score, quiet=TRUE)
 cat("  Imhof composite AUC:  ", round(auc(roc_imhof), 4), "\n")
 
-# Combined
+# Combined (all 5 z-scores: FL + 4 Imhof components)
+# NOTE: AUC ≈ 0.50 is expected, not a bug. Under Regime 2, FL firms
+# raise within-tender dispersion, so Imhof features point in the
+# opposite direction from FL participation — the signals cancel.
 fp_scored[, z_fl := as.numeric(scale(tenders_count))]
-fp_scored[, combined := rowMeans(cbind(z_fl, z_cv, z_kurt, z_spread), na.rm=TRUE)]
+fp_scored[, combined := rowMeans(cbind(z_fl, z_cv, z_kurt, z_spread, z_skew), na.rm=TRUE)]
 roc_combined <- roc(fp_scored$is_cade, fp_scored$combined, quiet=TRUE)
 cat("  Combined AUC:         ", round(auc(roc_combined), 4), "\n")
 

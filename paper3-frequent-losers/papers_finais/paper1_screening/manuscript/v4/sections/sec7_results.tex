@@ -95,8 +95,8 @@ not a mechanical bias in the baseline.\footnote{The difference
 $0.064 - 0.043 = 0.021$ has approximate SE
 $\sqrt{0.019^2 + 0.020^2} \approx 0.028$, yielding $t \approx 0.75$
 ($p \approx 0.45$).}
-The cross-fit is valuable as a lower bound that eliminates any
-within-sample mechanical correlation; the OLS provides the
+The cross-fit is valuable as a conservative estimate that eliminates
+any within-sample mechanical correlation; the OLS provides the
 full-sample baseline. The robust range is 3.6--6.4\%.
 
 \paragraph{Matching estimators.}
@@ -191,6 +191,19 @@ screens complement each other: FL triages environments using
 participation records alone, and bid-level tools can then be deployed
 on the flagged subset (Table~\ref{tab:horse_race},
 Appendix~\ref{app:robustness}).
+
+\paragraph{Why combination degrades.}
+Naively combining the FL and Imhof scores into a single index
+degrades detection sharply (AUC~$= 0.61$ vs.\ 0.94 for FL alone;
+Table~\ref{tab:imhof_comparison}). The degradation reflects the
+framework's central insight: under coordinated cover bidding, FL
+firms enter tenders where they \emph{raise} within-tender dispersion
+(Table~\ref{tab:regime_test}, coefficient 0.47--0.55 on log bid SD),
+causing Imhof-style features to classify those environments as
+\emph{less} suspicious. The two screens point in opposite directions
+for the same firms---precisely the reason the paper proposes
+sequential deployment (screen $\to$ triage $\to$ investigate) rather
+than score combination.
 
 \input{sections/sec_ground_truth}
 
