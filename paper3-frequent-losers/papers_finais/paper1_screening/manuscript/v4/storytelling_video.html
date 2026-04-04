@@ -759,13 +759,21 @@ const hooks = {
 };
 
 // === SCENE MANAGEMENT ===
+
+// Global handle for the current scene's async cleanup
+let _sceneCleanup = null;
+
 function show(idx) {
   if (idx < 0 || idx >= S.length) return;
+
+  // --- 1. Kill everything from the previous scene ---
+  cleanup();
+
   cur = idx;
   document.getElementById('progress').style.width = ((idx+1)/S.length*100)+'%';
   document.getElementById('counter').textContent = `${String(idx+1).padStart(2,'0')} / ${S.length}`;
 
-  // Deactivate all
+  // Deactivate all scenes
   document.querySelectorAll('.scene').forEach(s => {
     s.classList.remove('active');
     s.querySelectorAll('.on').forEach(e => e.classList.remove('on'));
@@ -792,90 +800,106 @@ function show(idx) {
     setTimeout(() => e.classList.add('on'), parseInt(e.dataset.d) + 200);
   });
 
-  // Narrate
-  stopSpeak();
+  // --- 2. Subtitle ---
   const sub = document.getElementById('subtitle');
-  sub.textContent = S[idx].text; sub.classList.add('visible');
-  speak(S[idx].text, () => {
-    // Both minimum time and speech are done — advance after a brief pause
-    if (!paused && cur < S.length - 1) tmr = setTimeout(next, 1800);
-  });
-}
+  sub.textContent = S[idx].text;
+  sub.classList.add('visible');
 
-function speak(text, onEnd) {
+  // --- 3. Start TTS (fire-and-forget — we never rely on its events) ---
   synth.cancel();
-  utt = new SpeechSynthesisUtterance(text);
+  utt = new SpeechSynthesisUtterance(S[idx].text);
   utt.lang = 'en-US';
   utt.rate = 0.92;
   utt.pitch = 1.0;
   if (bestVoice) utt.voice = bestVoice;
-
-  // === TIMING STRATEGY ===
-  // The scene advances only when BOTH conditions are met:
-  //   1. The minimum duration (dur) has elapsed
-  //   2. The TTS has finished speaking (or timed out)
-  // This prevents premature advancement from buggy onend events.
-
-  const sceneIdx = cur;
-  let speechDone = false;
-  let timerDone = false;
-
-  function tryAdvance() {
-    if (speechDone && timerDone && sceneIdx === cur && onEnd) onEnd();
-  }
-
-  // Minimum scene timer — guarantees the scene stays visible for at least `dur` ms
-  const minTimer = setTimeout(() => { timerDone = true; tryAdvance(); }, S[sceneIdx].dur);
-
-  // Hard ceiling fallback — if TTS never fires onend (browser bug)
-  const ceiling = setTimeout(() => { speechDone = true; tryAdvance(); }, S[sceneIdx].dur + 8000);
-
-  // Chrome bug: long utterances silently stop after ~15s. Workaround: resume periodically.
-  let resumeInterval = null;
-  const startResume = () => {
-    resumeInterval = setInterval(() => {
-      if (!synth.paused && synth.speaking) {
-        synth.pause(); synth.resume();
-      }
-    }, 10000);
-  };
-
-  utt.onstart = startResume;
-  utt.onend = () => {
-    if (resumeInterval) clearInterval(resumeInterval);
-    clearTimeout(ceiling);
-    speechDone = true;
-    tryAdvance();
-  };
-  utt.onerror = () => {
-    if (resumeInterval) clearInterval(resumeInterval);
-    clearTimeout(ceiling);
-    speechDone = true;
-    tryAdvance();
-  };
+  // Swallow all events — we do NOT use onend/onerror for advancement
+  utt.onend = () => {};
+  utt.onerror = () => {};
   synth.speak(utt);
 
-  // Store cleanup refs so stopSpeak can clear them
-  utt._cleanup = () => {
-    clearTimeout(minTimer);
-    clearTimeout(ceiling);
-    if (resumeInterval) clearInterval(resumeInterval);
+  // --- 4. Chrome long-utterance workaround ---
+  // Chrome silently stops TTS after ~15 s. Periodic pause/resume keeps it alive.
+  // We do NOT rely on any event this might fire.
+  const resumeInterval = setInterval(() => {
+    if (synth.speaking && !synth.paused) {
+      synth.pause();
+      synth.resume();
+    }
+  }, 10000);
+
+  // --- 5. Advancement logic: poll-based, never event-based ---
+  //
+  // STRATEGY (belt-and-suspenders):
+  //   A) The scene stays visible for AT LEAST `dur` milliseconds.
+  //   B) After `dur` has elapsed, we poll synth.speaking every 500 ms.
+  //   C) The scene advances only when BOTH dur has passed AND speech has stopped.
+  //   D) Hard ceiling at dur + 15 s in case synth.speaking gets stuck.
+  //   E) We NEVER use onend/onerror to trigger advancement.
+  //
+  // All timer/interval IDs are collected in `ids` so cleanup() can nuke them all.
+
+  const sceneIdx = idx;
+  const minDur = S[idx].dur;
+
+  // Collector for ALL async handles this scene creates
+  const ids = { timeouts: [], intervals: [resumeInterval] };
+
+  // After minDur, start polling synth.speaking
+  ids.timeouts.push(setTimeout(() => {
+    if (sceneIdx !== cur) return;
+    // Speech might already be done by now
+    if (!synth.speaking) { scheduleAdvance(sceneIdx); return; }
+    // Poll until speech finishes
+    const poll = setInterval(() => {
+      if (sceneIdx !== cur) { clearInterval(poll); return; }
+      if (!synth.speaking) { clearInterval(poll); scheduleAdvance(sceneIdx); }
+    }, 500);
+    ids.intervals.push(poll);
+  }, minDur));
+
+  // Hard ceiling: if synth.speaking is stuck, advance after dur + 15 s
+  ids.timeouts.push(setTimeout(() => {
+    if (sceneIdx !== cur) return;
+    scheduleAdvance(sceneIdx);
+  }, minDur + 15000));
+
+  // Single cleanup function that clears EVERYTHING
+  _sceneCleanup = () => {
+    ids.timeouts.forEach(t => clearTimeout(t));
+    ids.intervals.forEach(i => clearInterval(i));
   };
 }
 
-function stopSpeak() {
-  if (utt && utt._cleanup) utt._cleanup();
-  synth.cancel();
-  if(tmr) clearTimeout(tmr);
+// Schedule the auto-advance to the next scene (with a brief breathing pause)
+function scheduleAdvance(fromIdx) {
+  if (fromIdx !== cur) return;
+  if (paused) return;
+  if (cur >= S.length - 1) return;
+  tmr = setTimeout(() => {
+    if (fromIdx === cur && !paused) next();
+  }, 1800);
 }
 
-function next() { stopSpeak(); if(cur < S.length-1) show(cur+1); }
-function prev() { stopSpeak(); if(cur > 0) show(cur-1); }
+// Kill all timers, intervals, and TTS from the current scene
+function cleanup() {
+  if (_sceneCleanup) { _sceneCleanup(); _sceneCleanup = null; }
+  if (tmr) { clearTimeout(tmr); tmr = null; }
+  synth.cancel();
+}
+
+function next() { cleanup(); if(cur < S.length-1) show(cur+1); }
+function prev() { cleanup(); if(cur > 0) show(cur-1); }
 function pp() {
   paused = !paused;
   document.getElementById('ppBtn').innerHTML = paused ? '&#9654;' : '&#10074;&#10074;';
-  if (paused) { synth.pause(); if(tmr) clearTimeout(tmr); }
-  else synth.resume();
+  if (paused) {
+    synth.pause();
+    if (tmr) { clearTimeout(tmr); tmr = null; }
+  } else {
+    synth.resume();
+    // If speech is already done and we were just waiting, try to advance
+    if (!synth.speaking) scheduleAdvance(cur);
+  }
 }
 
 function start() {
