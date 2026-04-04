@@ -44,14 +44,16 @@ whose participation frequency is hard to square with
 profit-maximizing entry. The screen is a first-stage triage
 device---it flags suspicious environments, not guilty firms.
 
-Validated against CADE (Brazil's competition authority), the screen
-achieves AUC~$= 0.94$---above a CV-based proxy for
-\citet{imhof2019detecting}-style screens (AUC~$= 0.79$), though the
-comparison uses a coarser implementation than the full Imhof pipeline
-(Section~\ref{sec:results_detection}). FL firms co-participate with
-convicted cartelists at 3.5$\times$ the baseline rate
-($p < 0.001$), and three CADE-convicted firms are themselves
-classified as FL (Section~\ref{sec:cade}).
+Validated against CADE (Brazil's competition authority) cartel
+co-participation, the screen achieves AUC~$= 0.94$---above a
+random forest trained on seven bid-level features
+(AUC~$= 0.90$; DeLong $p = 0.04$) and a coarser CV-based proxy
+(AUC~$= 0.79$; Section~\ref{sec:results_detection}). Volume
+contributes to this performance---high-participation firms
+mechanically co-participate more---but a count-matched permutation
+test confirms the signal survives exact volume control
+($2.2\times$, $p < 0.001$; Section~\ref{sec:cade}). Three
+CADE-convicted firms are themselves classified as FL.
 
 FL-flagged tenders show 3.6--7.7\% higher conditional prices in
 within-item, within-year, within-purchasing-unit comparisons---a
@@ -83,8 +85,9 @@ The paper makes three contributions. We introduce a
 participation-based screen that runs on win/loss records alone---no
 bid microdata, no enforcement priors, no supervised training---and
 can be deployed by any procurement agency that records who bid and
-who won. Against competition-authority convictions the screen
-achieves AUC~$= 0.94$, flags environments with 3.6--7.7\% higher
+who won. Against competition-authority co-participation the screen
+achieves AUC~$= 0.94$ (surviving exact count matching at
+$2.2\times$), flags environments with 3.6--7.7\% higher
 conditional prices, and complements bid-level tools that capture
 different collusion signatures (correlation 0.06). Five independent
 diagnostics---Bajari--Ye bid-coordination tests, network-split

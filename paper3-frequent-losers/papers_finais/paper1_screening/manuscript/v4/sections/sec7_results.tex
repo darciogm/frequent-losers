@@ -155,23 +155,30 @@ FPR~$= 0.16$. The convergence is striking: the participation
 intensity at which profit-maximizing entry becomes hard to
 rationalize is also the intensity that best discriminates
 cartel-linked environments. Higher participation counts mechanically
-increase co-participation opportunities, but the permutation test
-(Section~\ref{sec:cade}), stratified on participation quartile,
-confirms the association is real (3.5$\times$, $p < 0.001$).
+increase co-participation opportunities; a count-matched
+permutation test ($2.2\times$ at $\pm 2$ tenders, $p < 0.001$;
+Section~\ref{sec:cade}) confirms the signal survives exact
+volume control.
 
 \paragraph{Complementarity with bid-level screens.}
 Against the same CADE ground truth, the FL screen achieves
-AUC~$= 0.94$ versus 0.79 for a \citet{imhof2019detecting}-style
-bid-level proxy (CV median split; DeLong $p < 0.001$;
+AUC~$= 0.94$ versus 0.90 for a random forest trained on seven
+bid-level features (DeLong $p = 0.04$;
+Table~\ref{tab:classification_comparison},
+Appendix~\ref{app:robustness}) and 0.79 for a coarser
+\citet{imhof2019detecting}-style CV proxy (CV median split;
 Table~\ref{tab:imhof_comparison},
 Figure~\ref{fig:roc_comparison} in Appendix~\ref{app:robustness}).
-The comparison uses a coarser proxy than the full Imhof
-implementation (which combines CV, kurtosis, spread, and a trained
-classifier), and the two screens operate at different levels (firm
-vs.\ tender).%
-\footnote{The CADE ground truth, based on co-participation, may
-mechanically favor participation-based screens; the permutation test
-(Section~\ref{sec:cade}) controls for this.}
+The CV proxy understates what a full Imhof implementation (CV,
+kurtosis, spread, and a trained classifier) would achieve, so the
+random forest is the fairer benchmark.%
+\footnote{Two structural differences also affect the comparison.
+First, the CADE ground truth, based on co-participation, partly
+favors participation-based screens through a volume channel
+(Section~\ref{sec:cade}). Second, FL operates at the firm level
+while bid-level screens operate at the tender level; aggregating
+tender-level scores to the firm level introduces noise that
+penalizes bid-level approaches.}
 What FL adds is reach: it works where bid-level records are
 unavailable---a common constraint in developing-country
 procurement---and produces firm-level flags that triage

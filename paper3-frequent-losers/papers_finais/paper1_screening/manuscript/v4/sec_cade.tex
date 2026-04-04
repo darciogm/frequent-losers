@@ -14,24 +14,49 @@ screen is designed to reach the rest.
 
 \paragraph{Interpretation.}
 Co-participation measures proximity to suspicious procurement
-environments, not cartel membership. Once we condition on
-participation count, the FL--CADE overlap rate becomes
-indistinguishable from that of other always-losers ($p = 0.93$;
-Section~\ref{sec:ground_truth}): the unconditional excess is driven
-by high participation volume, which is the anomaly the screen is
-designed to exploit. The AUC therefore reflects the screen's ability
-to identify high-participation firms that operate near known cartel
-environments, not its ability to distinguish colluders from
-non-colluders conditional on participation intensity.
-The permutation test (3.5$\times$, stratified
-by participation quartile) indicates that the excess is not purely
-mechanical, but within-quartile variation in participation counts
-may still contribute to the association.
+environments, not cartel membership. Higher participation volume
+mechanically raises co-participation opportunities, and the
+unconditional excess is partly driven by this channel. Within the
+always-loser population, conditioning on participation count renders
+FL and non-FL overlap rates indistinguishable ($p = 0.93$;
+Section~\ref{sec:ground_truth})---as expected, since FL \emph{is}
+the high-participation tail of always-losers. The relevant question
+is whether the FL classification adds signal beyond volume alone.
+
+\paragraph{Disentangling volume from the zero-win condition.}
+Three tests address this. First, a logistic regression of CADE
+co-participation on $\log(\text{participation count})$,
+always-loser status, and FL status across all 41,444 BEC firms
+shows that always-loser status alone adds nothing beyond volume
+(LR $\chi^2 = 0.2$, $p = 0.64$), but FL adds substantial signal
+conditional on both volume and always-loser status
+(LR $\chi^2 = 46.3$, $p < 10^{-6}$). Once FL is included,
+always-loser status turns \emph{negative} ($-0.354$,
+$p < 0.001$): non-FL always-losers are \emph{less} likely to
+co-participate with CADE firms than non-always-losers with the
+same volume. It is the combination of zero wins and abnormally
+high participation---not either component alone---that predicts
+CADE proximity.
+
+Second, a permutation test matching each FL firm to a non-FL
+always-loser with the same participation count ($\pm 2$ tenders;
+1,000 iterations) yields an FL co-participation rate of 7.2\%
+versus a matched mean of 3.4\% ($2.2\times$, $p < 0.001$). The
+signal survives exact count matching, ruling out a purely
+mechanical volume explanation.
+
+Third, the stratified permutation test (3.5$\times$, $p < 0.001$;
+1,000 iterations preserving participation quartiles) confirms the
+association is not an artifact of the stratification granularity.
+
+The AUC reflects the screen's ability to identify
+high-participation zero-win firms that operate near known cartel
+environments. Volume contributes to the signal---as it
+should, since abnormally high participation is the behavioral
+anomaly the screen exploits---but does not exhaust it.
 For enforcement purposes, this is the relevant target:
 a triage rule that flags environments warranting closer scrutiny,
-not a tool that adjudicates firm-level liability. The screen does
-not identify which firms are colluding; it identifies where an
-enforcement agency should look next.
+not a tool that adjudicates firm-level liability.
 
 \paragraph{Dual pattern.}
 Most CADE-convicted firms in BEC are \emph{winners}---the designated
