@@ -1,12 +1,11 @@
-\documentclass[12pt]{elsarticle}
+\documentclass[review,12pt,authoryear]{elsarticle}
 
 % --- Typography & Layout ---
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage{setspace}
-\usepackage[left=28mm,right=28mm,top=28mm,bottom=28mm]{geometry}
-\linespread{1.5}
+\doublespacing
 
 % --- Math ---
 \usepackage{amsmath,amssymb}
@@ -21,7 +20,7 @@
 \usepackage{lscape}
 \usepackage{adjustbox}
 
-% --- Float control (prevent floats from crossing section/subsection boundaries) ---
+% --- Float control ---
 \usepackage{placeins}
 \let\Oldsection\section
 \renewcommand{\section}{\FloatBarrier\Oldsection}
@@ -30,7 +29,6 @@
 
 % --- References ---
 \usepackage{natbib}
-\biboptions{authoryear}
 \setlength{\bibsep}{0pt plus 0.3ex}
 
 % --- Hyperlinks ---
@@ -48,50 +46,54 @@
 \usetikzlibrary{positioning,arrows.meta,decorations.pathreplacing}
 \usepackage{caption}
 
-% --- Header/Footer ---
-\makeatletter
-\def\ps@pprintTitle{
-  \let\@oddhead\@empty
-  \let\@evenhead\@empty
-  \def\@oddfoot{\reset@font\hfil\thepage\hfil}
-  \let\@evenfoot\@oddfoot
-}
-\makeatother
-
 % --- Custom commands ---
 \newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
 
 % --- Paths ---
 \graphicspath{{figures/}{../../../v4/pub/figures/}}
 
+% --- Journal information ---
+\journal{Journal of Public Economics}
+
 \begin{document}
 
 \begin{frontmatter}
-\title{Bitter Pills to Swallow:\\ The Enforcement Costs of Health Litigation}
-\tnotetext[tfoot]{\emph{This version: February 2026.}}
+
+\title{Bitter Pills to Swallow:\\ The Enforcement Costs of Health Litigation%
+\tnoteref{t1}}
+\tnotetext[t1]{Short paper. This version: April 2026. We thank
+[acknowledgments to be added]. All errors are our own.}
 
 \author[INSPER]{Darcio Genicolo-Martins\corref{cor1}}
 \ead{darciogm1@insper.edu.br}
 \author[INSPER]{Paulo Furquim de Azevedo}
 \ead{paulofa1@insper.edu.br}
 \cortext[cor1]{Corresponding author.}
-\address[INSPER]{Insper Institute of Education and Research, S\~ao Paulo, Brazil}
+\address[INSPER]{Insper Institute of Education and Research,
+  Rua Quat\'a 300, S\~ao Paulo, SP 04546-042, Brazil}
 
 \begin{abstract}
-Public health procurement is shaped not only by administrative decisions but also by judicial interventions that compel urgent purchases. These court-mandated procurements carry substantial fiscal costs because they undermine procurement planning and expose officials to sanctions that incentivize compliance over cost-efficiency---a mechanism we term the ``under the gun'' effect. Using granular bid-level data on pharmaceutical procurement in S\~ao Paulo, Brazil (2009--2019), with item, time, and buyer fixed effects, we estimate that judicial enforcement increases reference prices by 2.7--17.8\%, raises negotiated prices by 3.1--17.2\%, and reduces bidder participation by 4.1--10.7\%. Isolating the sanction channel by comparing litigated and administrative urgent purchases, we find judicial pressure alone raises prices by 23.2--30.2\%. These findings highlight the economic burden of judicial enforcement on public budgets and suggest that legal mandates should weigh procurement efficiency alongside individual rights.
+Courts routinely compel governments to purchase specific medicines
+under tight deadlines, overriding standard procurement procedures. We
+estimate the fiscal costs of such judicial enforcement using bid-level
+data on pharmaceutical procurement in S\~ao Paulo, Brazil
+(2009--2019). With item, time, and buyer fixed effects,
+court-mandated purchases raise negotiated prices by 3.1--5.4\% and
+reduce bidder participation by 4.1--5.5\%. Comparing litigated and
+administrative urgent purchases---which share planning constraints but
+differ in penalty exposure---we isolate the ``under the gun'' effect:
+judicial sanctions alone raise procurement costs by 23--30\%. These
+findings reveal a substantial and previously unquantified fiscal cost
+of right-to-health enforcement.
 \end{abstract}
 
 \begin{keyword}
-public procurement \sep health litigation \sep enforcement costs \sep judicial mandates \sep Brazil
+public procurement \sep health litigation \sep enforcement costs \sep
+judicial mandates \sep passive waste
+\JEL D44 \sep D73 \sep H51 \sep H57 \sep I18 \sep K41
 \end{keyword}
 
 \end{frontmatter}
-
-\noindent\textbf{JEL Classification:} D44, D73, H51, H57, I18, K41.
-
-\bigskip
-\clearpage
-\begin{sloppypar}
 
 \input{Introduction}
 \input{LiteratureReview}
@@ -101,12 +103,11 @@ public procurement \sep health litigation \sep enforcement costs \sep judicial m
 \input{Results}
 \input{Conclusion}
 
-\clearpage
-\bibliographystyle{chicago}
+\section*{References}
+\bibliographystyle{elsarticle-harv}
 \bibliography{References}
 
 \clearpage
 \input{Appendix}
 
-\end{sloppypar}
 \end{document}
