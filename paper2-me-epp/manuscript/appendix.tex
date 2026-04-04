@@ -256,3 +256,39 @@ Table~B.17 reports inference from a score cluster bootstrap at the item-group le
 
 \input{../output/tables/tab_wcb.tex}
 }{}
+
+%% ====================================================================
+%% P. Synthetic Control
+%% ====================================================================
+\subsection*{P. Synthetic Control}
+
+\IfFileExists{../output/tables/tab_synth.tex}{
+As an alternative to the DiDiR design, I estimate a synthetic control model \citep{abadie2010} using the 68 balanced product groups as donors to construct a synthetic group 65. The augmented synthetic control \citep{ben2021} uses Ridge regularization to improve pre-treatment fit. The treatment date is March 2018, when group 65 lost its open-tender exemption.
+
+Figure~\ref{fig:synth_levels} shows that the synthetic control matches group 65 prices almost exactly in the pre-treatment period (L2 imbalance $\approx$ 0). After March 2018, group 65 prices rise relative to the synthetic by approximately 17 log points on average (Table~\ref{tab:synth}), consistent in direction and magnitude with the DiDiR estimates of 13 log points. The post-treatment divergence reflects the cost of losing the open-tender exemption: once group 65 became subject to SME-only tender rules, its prices converged upward toward the always-treated groups.
+
+Figure~\ref{fig:synth_gap} plots the gap over time. The in-space placebo test (Figure~\ref{fig:synth_placebo}) assigns placebo treatment status to each of the 68 donor groups: only 7 of 68 placebos produce an ATT as large as group 65's (rank $p$-value = 0.10), providing moderate evidence that the estimated effect is not a statistical artifact.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_16_synth_levels.pdf}
+\caption{Synthetic Control: Group 65 (Actual) vs.\ Synthetic Group 65}
+\label{fig:synth_levels}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_17_synth_gap.pdf}
+\caption{Synthetic Control: Gap Between Group 65 and Synthetic (Log Prices)}
+\label{fig:synth_gap}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_18_synth_placebo.pdf}
+\caption{Synthetic Control: In-Space Placebo Distribution of Post-Treatment ATTs}
+\label{fig:synth_placebo}
+\end{figure}
+
+\input{../output/tables/tab_synth.tex}
+}{}
