@@ -167,16 +167,19 @@ if (file.exists(rob_path)) {
   }
 }
 
-# ---- SME share trends ------------------------------------------------------
-if ("sme_share_ph1" %in% names(dt)) {
-  cat("  Figure 10: SME participation share...\n")
+# ---- SME winner share trends ------------------------------------------------
+# Note: sme_share_ph1 (firm-type counts in phase 1) has all NAs due to a
+# data import issue. We use sme_winner (binary: was the winner an SME?) as
+# a proxy, computed on completed items only.
+if ("sme_winner" %in% names(dt)) {
+  cat("  Figure 10: SME winner share...\n")
 
   sub <- dt[data_oc_numb >= WIN_18M[1] & data_oc_numb <= WIN_18M[2] &
-             !is.na(sme_share_ph1)]
+             oc_item_status == 1L & !is.na(sme_winner)]
   sub[, group_label := fifelse(g65 == 1, "Group 65", "Other groups")]
 
-  agg <- sub[, .(mean_share = mean(sme_share_ph1, na.rm = TRUE),
-                  se = sd(sme_share_ph1, na.rm = TRUE) / sqrt(.N)),
+  agg <- sub[, .(mean_share = mean(sme_winner, na.rm = TRUE),
+                  se = sd(sme_winner, na.rm = TRUE) / sqrt(.N)),
               by = .(data_oc_numb, group_label)]
   agg[, ci_lo := mean_share - 1.96 * se]
   agg[, ci_hi := mean_share + 1.96 * se]
@@ -192,7 +195,7 @@ if ("sme_share_ph1" %in% names(dt)) {
     scale_linetype_manual(values = c("Group 65" = "solid", "Other groups" = "dashed")) +
     scale_shape_manual(values = c("Group 65" = 16, "Other groups" = 1)) +
     scale_y_continuous(labels = scales::percent_format()) +
-    labs(x = "Month (Stata monthly date)", y = "SME Share Among Firms (Phase 1)") +
+    labs(x = "Month (Stata monthly date)", y = "SME Winner Share (Completed Items)") +
     theme_pub() +
     theme(legend.position = "bottom")
 
