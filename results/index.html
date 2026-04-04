@@ -9,7 +9,7 @@
         <meta name="author" content="Darcio Genicolo-Martins &amp; Paulo Furquim de Azevedo">
       
       
-        <link rel="canonical" href="https://darciogm.github.io/frequent-losers/results/">
+        <link rel="canonical" href="https://darciogm.github.io/research/frequent-losers/results/">
       
       
         <link rel="prev" href="../changelog/">
@@ -653,6 +653,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#why-combination-degrades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Combination Degrades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cade-external-validation" class="md-nav__link">
     <span class="md-ellipsis">
       CADE External Validation
@@ -1019,11 +1028,13 @@
 <p>The data-driven optimal threshold (Youden <span class="arithmatex">\(J = 0.84\)</span>) falls at 1.45x IQR---nearly identical to the 1.5x rule chosen <em>a priori</em> on economic grounds. The convergence is striking: the participation intensity at which profit-maximizing entry becomes hard to rationalize is also the intensity that best discriminates cartel-linked environments.</p>
 </div>
 <h3 id="horse-race-regression">Horse-Race Regression<a class="headerlink" href="#horse-race-regression" title="Permanent link">¶</a></h3>
-<p>The FL screen and an Imhof-style CV flag capture nearly orthogonal information (correlation <strong>0.06</strong>). When both are included as regressors:</p>
+<p>The FL screen and an Imhof-style CV flag capture largely non-overlapping information (correlation <strong>0.06</strong>; the theoretical maximum for two binary indicators with prevalences 4.8% and 50% is approximately 0.30, so the observed correlation is about one-fifth of this ceiling). When both are included as regressors:</p>
 <ul>
 <li>FL coefficient <strong>rises</strong> from 0.064 to <strong>0.084</strong> (<span class="arithmatex">\(p &lt; 0.01\)</span>)---a suppression effect predicted by the framework (coordinated cover bidding produces low dispersion while maintaining FL participation)</li>
 <li>Imhof CV flag enters at 0.021 (<span class="arithmatex">\(p &lt; 0.01\)</span>)</li>
 </ul>
+<h3 id="why-combination-degrades">Why Combination Degrades<a class="headerlink" href="#why-combination-degrades" title="Permanent link">¶</a></h3>
+<p>Naively combining the FL and Imhof scores into a single index degrades detection sharply (AUC = <strong>0.61</strong> vs. 0.94 for FL alone). The degradation reflects the framework's central insight: under coordinated cover bidding, FL firms enter tenders where they <em>raise</em> within-tender dispersion (coefficient 0.47--0.55 on log bid SD), causing Imhof-style features to classify those environments as <em>less</em> suspicious. The two screens point in opposite directions for the same firms---precisely the reason the paper proposes sequential deployment (screen → triage → investigate) rather than score combination.</p>
 <h3 id="cade-external-validation">CADE External Validation<a class="headerlink" href="#cade-external-validation" title="Permanent link">¶</a></h3>
 <table>
 <thead>
@@ -1134,7 +1145,7 @@
 </tr>
 </tbody>
 </table>
-<p>The FL product falls <strong>below</strong> non-FL---a reversal predicted by Regime 2. Under the coordinated regime, cover bids cluster near <span class="arithmatex">\(b^* + \epsilon\)</span>; removing the tender mean strips out the shared focal-point component.</p>
+<p>The FL product falls <strong>below</strong> non-FL---a reversal predicted by Regime 2. Under the coordinated regime, cover bids cluster near <span class="arithmatex">\(b^* + \epsilon\)</span>; removing the tender mean strips out the shared focal-point component. The reversal is also consistent, however, with a simpler account in which FL--non-FL bid differences are entirely between-tender rather than within-tender; the tender-FE result is therefore suggestive but not definitive.</p>
 <hr>
 <h2 id="structural-diagnostic">Structural Diagnostic<a class="headerlink" href="#structural-diagnostic" title="Permanent link">¶</a></h2>
 <p>BIC strongly favors Regime 2 (<span class="arithmatex">\(\Delta\)</span>BIC <span class="arithmatex">\(= -91{,}473\)</span>).</p>
