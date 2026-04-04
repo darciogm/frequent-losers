@@ -223,3 +223,36 @@ Figure~A.14 and Table~B.14 report the results of a \citet{gelbach2016} decomposi
 }{}
 
 \IfFileExists{../output/tables/tab_mediation.tex}{\input{../output/tables/tab_mediation.tex}}{}
+
+%% ====================================================================
+%% M. Balance Test
+%% ====================================================================
+\subsection*{M. Pre-Treatment Balance Test}
+
+\IfFileExists{../output/tables/tab_balance.tex}{
+Table~B.15 compares pre-treatment covariate means between group 65 and all other product groups. While some covariates show statistically significant differences---reflecting the inherent heterogeneity between medical supplies and other product categories---the DiDiR design does not require cross-sectional balance; it requires parallel trends in the post-treatment period, which is assessed in the event study (Figure~\ref{fig:logprices}).
+
+\input{../output/tables/tab_balance.tex}
+}{}
+
+%% ====================================================================
+%% N. Exclude Last Post-Period
+%% ====================================================================
+\subsection*{N. Excluding Last Post-Period Semester}
+
+\IfFileExists{../output/tables/tab_excl_lastpost.tex}{
+Table~B.16 re-estimates the main specifications using a truncated 18-month window that excludes the final post-period semester (March--August 2019), which showed a positive drift in the event study coefficients. The results are virtually unchanged from the full-window estimates, confirming that the main findings are not driven by the final semester's deviation from the parallel trends pattern.
+
+\input{../output/tables/tab_excl_lastpost.tex}
+}{}
+
+%% ====================================================================
+%% O. Score Cluster Bootstrap
+%% ====================================================================
+\subsection*{O. Score Cluster Bootstrap}
+
+\IfFileExists{../output/tables/tab_wcb.tex}{
+Table~B.17 reports inference from a score cluster bootstrap at the item-group level (76 clusters). Because the main specification clusters standard errors at the item level while treatment is assigned at the group level, this exercise verifies that the results survive inference appropriate for the number of treatment clusters. All four outcomes remain highly significant under the bootstrap distribution, with $p$-values below 0.001.
+
+\input{../output/tables/tab_wcb.tex}
+}{}
