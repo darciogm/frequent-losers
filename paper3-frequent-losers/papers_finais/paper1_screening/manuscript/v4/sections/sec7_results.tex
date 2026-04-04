@@ -30,9 +30,9 @@ four estimation approaches.
 \subsection{Classification Diagnostics}
 \label{sec:class_diagnostics}
 
-Before turning to the price regressions, we assess whether the binary
-FL classification captures something real or is an artifact of the
-threshold. The zero-win condition is strict: relaxing it to include
+Any binary classification built on a statistical threshold invites
+the question: is the cutoff doing real work, or just splitting noise?
+Before turning to prices, we check. The zero-win condition is strict: relaxing it to include
 firms with win rates below 1\% or 2\% attenuates the price coefficient
 substantially (Table~\ref{tab:fl_lowwinrate},
 Appendix~\ref{app:online_robustness}), so the bright line at zero is
@@ -60,15 +60,12 @@ tenders, not chance.
 \subsection{OLS and Matching Results}
 \label{sec:results_ols}
 
-Table~\ref{tab:prices} reports the baseline OLS estimates of
-Equation~\eqref{eq:ols_main} for log negotiated prices
-(Diagnostic~\ref{pred:price_v6}). Across all four
-specifications, FL presence is associated with significantly higher
-prices: 6.8\% in the general specification (column~1), 6.4\% with PBU
-fixed effects (column~2), 9.3\% for preg\~ao (column~3), and 3.8\% for
-convite (column~4). Adding PBU fixed effects barely changes the
-coefficient, indicating that FL presence does not proxy for high-cost
-purchasing units. The unrestricted sample (including items that never
+Table~\ref{tab:prices} reports the baseline OLS estimates. FL
+presence is associated with significantly higher prices across all
+four specifications: 6.8\% without PBU fixed effects, 6.4\% with
+them, 9.3\% for preg\~ao, and 3.8\% for convite. That PBU fixed
+effects barely move the coefficient matters: FL presence does not
+proxy for purchasing units that happen to pay more. The unrestricted sample (including items that never
 attract FL firms) yields a nearly identical coefficient, so the
 item-type restriction does not inflate the baseline.
 
@@ -112,17 +109,17 @@ attenuation, but balance violations preclude a preferred-estimate
 interpretation (Appendix~\ref{app:robustness}).
 
 \paragraph{Summary.}
-Four approaches that differ in weighting, functional form, and
-information sets produce a consistent 3.6--7.7\% conditional price
-association: cross-fit (3.6\%), IPW (5.5\%), OLS (6.4\%), CEM
-(7.7\%). The estimates cluster rather than scatter, indicating a
-stable conditional association across designs. An omitted
-confounder would need to explain 17.5\% of residual variation in
-\emph{both} FL presence and log prices---after absorbing item, year,
-and PBU fixed effects---to nullify the coefficient
-\citep{cinelli2020making}. None of these estimates has a causal
-interpretation; they document a robust conditional association that
-motivates the screen's deployment.
+The price association is remarkably stable: four approaches that
+differ in weighting, functional form, and information sets all land
+between 3.6\% and 7.7\%. They cluster rather than scatter---the
+hallmark of a real association, not a methodological artifact. To
+nullify the coefficient, an omitted confounder would need to explain
+17.5\% of residual variation in \emph{both} FL presence and log
+prices, after item, year, and PBU fixed effects have already
+absorbed most cross-market heterogeneity
+\citep{cinelli2020making}. None of these estimates is causal; they
+document a conditional association robust enough to motivate
+deploying the screen.
 
 \begin{figure}[htbp]
 \centering
@@ -137,7 +134,7 @@ estimation methods. OLS estimates in gray; IV estimates in red.}
 \subsection{Detection Performance}
 \label{sec:results_detection}
 
-This is the paper's primary validation exercise.
+The real test comes from outside the data used to build the screen.
 Figure~\ref{fig:roc} (Appendix~\ref{app:robustness}) traces the FL
 ROC curve against CADE cartel co-participation: AUC~$= 0.94$
 (bootstrapped 95\% CI: $[0.93, 0.95]$;
@@ -220,10 +217,10 @@ framework's central insight: under coordinated cover bidding, FL
 firms enter tenders where they \emph{raise} within-tender dispersion
 (Table~\ref{tab:regime_test}, coefficient 0.47--0.55 on log bid SD),
 causing Imhof-style features to classify those environments as
-\emph{less} suspicious. The two screens point in opposite directions
-for the same firms---precisely the reason the paper proposes
-sequential deployment (screen $\to$ triage $\to$ investigate) rather
-than score combination.
+\emph{less} suspicious. For the same firms, the two screens point in opposite
+directions. This is not a failure---it is the reason sequential
+deployment (screen $\to$ triage $\to$ investigate) dominates score
+combination.
 
 \input{sections/sec_ground_truth}
 
@@ -251,14 +248,13 @@ Nearly all of the association comes from competitive-market FL
 firms (0.126, $p < 0.01$, PBU FE); in concentrated markets the
 coefficient is indistinguishable from zero ($-0.018$, $p > 0.3$).
 
-This is what the framework predicts
-(Appendix~\ref{app:proofs}): in competitive markets, where no single
-firm dominates, manufactured competition has the highest marginal
-return. Concentrated markets already sustain high prices through
-market power, making cover bidders redundant.
-For enforcement, the implication is that the screen is most
-informative precisely in the markets where undetected collusion would
-be costliest to taxpayers.
+This is exactly what the framework predicts
+(Appendix~\ref{app:proofs}): where no single firm dominates,
+manufactured competition has the highest marginal return; where
+market power already sustains high prices, cover bidders are
+redundant. The enforcement implication is striking: the screen is
+most informative precisely where undetected collusion would cost
+taxpayers the most.
 
 The network-split classification is endogenous: market concentration
 is not randomly assigned, and FL firms that appear in concentrated
@@ -274,23 +270,24 @@ causally moderates the FL--price association.
 \subsection{Bajari--Ye Tests}
 \label{sec:results_bajari}
 
-The price association concentrates in competitive markets; the next
-question is whether FL bids look like they come from a different
-data-generating process. The \citet{bajari2003deciding} framework
-provides two tests
-(Diagnostic~\ref{pred:exchange_v6};
-Table~\ref{tab:bajari_ye_corrected} in Appendix~\ref{app:robustness}).
+The price association concentrates in competitive markets. But are
+FL bids actually different from genuine bids, or do they just happen
+to come from firms that lose? The \citet{bajari2003deciding}
+framework provides two formal tests
+(Table~\ref{tab:bajari_ye_corrected}, Appendix~\ref{app:robustness}).
 
 \paragraph{Exchangeability.}
-The KS test rejects the null that FL and non-FL bid residuals share
-the same distribution ($D = 0.15$, $p < 0.001$): FL bids appear to be drawn
-from a different process.
+If FL firms were ordinary competitors, their bid residuals would be
+statistically indistinguishable from non-FL residuals. They are not:
+the KS test rejects exchangeability ($D = 0.15$, $p < 0.001$). FL
+bids appear to be drawn from a different process.
 
 \paragraph{Conditional independence.}
-The mean pairwise product of FL residuals is 4.28 ($t = 81.0$,
-$p < 0.001$), with the bootstrap FL--non-FL difference
-excluding zero, indicating systematically different within-tender
-correlation consistent with coordinated bidding. Enriching the
+If FL firms bid independently, the pairwise products of their
+residuals within a tender would average near zero. Instead, the mean
+is 4.28 ($t = 81.0$, $p < 0.001$), with the bootstrap FL--non-FL
+difference excluding zero---consistent with coordinated bidding
+rather than independent cost draws. Enriching the
 first stage with firm age and CNAE sector dummies alongside firm
 size leaves R-squared virtually unchanged (0.770) and does not
 alter the KS or pairwise-product results, reducing the concern
@@ -332,9 +329,11 @@ $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$: FL bids are 28\%
 \emph{less} dispersed than non-FL bids---as expected under coordinated
 cover bidding, where variance-based screens lose power.
 The $n$-conditional markup (6.4\%) is close to the OLS baseline.
-These results inform the enforcement response: participation-based
-screens complement dispersion-based tools precisely because the
-dominant cover-bidding regime defeats the latter.
+The enforcement implication is direct: participation-based screens
+complement dispersion-based tools precisely because the dominant
+cover-bidding regime defeats the latter. Where coordination is
+tightest, variance screens see nothing; the FL screen sees
+everyone who showed up.
 
 \begin{figure}[htbp]
 \centering
