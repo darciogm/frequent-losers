@@ -298,7 +298,7 @@ def process_vinculos(bec_raiz_set: set) -> pl.DataFrame:
                 pl.col("horas_contratuais").mean().alias("avg_hours"),
                 # Demographics
                 pl.col("escolaridade").mean().alias("avg_escolaridade"),
-                pl.col("sexo").mean().alias("share_female"),  # 2=female in RAIS
+                (pl.col("sexo") == 2).cast(pl.Float64).mean().alias("share_female"),
                 pl.col("idade").mean().alias("avg_age_worker"),
                 # Tenure
                 pl.col("tempo_emprego")
