@@ -197,12 +197,28 @@ def build_pairs(pairs_path: Path, cnae: pl.DataFrame,
                 .str.slice(0, 8).alias("cnpj_raiz")
         )
 
+    # Harmonize pair-matched column. Pregão has both_cartel_active (year-aware);
+    # convite has only both_cartel_firm. Map to a single column "pair_matched".
+    if "both_cartel_active" in pairs.columns:
+        pairs = pairs.with_columns(
+            pl.col("both_cartel_active").cast(pl.Int8).alias("pair_matched")
+        )
+    elif "both_cartel_firm" in pairs.columns:
+        pairs = pairs.with_columns(
+            pl.col("both_cartel_firm").cast(pl.Int8).alias("pair_matched")
+        )
+    else:
+        pairs = pairs.with_columns(
+            pl.lit(0, dtype=pl.Int8).alias("pair_matched")
+        )
+
     winners = pairs.filter(pl.col("flagvencedor") == 1).select([
         "auction_item",
         pl.col("cnpj_raiz").alias("winner_cnpj"),
         "year", "MV",
         pl.col("has_active_cartel"),
         pl.col("has_any_cartel_firm"),
+        pl.col("pair_matched"),
     ])
     losers = pairs.filter(pl.col("flagvencedor") == 0).select([
         "auction_item",
@@ -268,7 +284,92 @@ def report_subsample(label, treat_arr, control_arr, f) -> None:
             f"t={t:+.2f} AUC={auc:.4f}\n")
 
 
-def evaluate_screen(label, auctions, score_col, f) -> None:
+def report_distribution(label, treat, control, f) -> None:
+    """Skew diagnostic — print percentiles by group. Detects when t-stat
+    and AUC disagree (t inflated by tail outliers, AUC at chance)."""
+    if len(treat) < 5 or len(control) < 5:
+        return
+    f.write(f"    skew diag — {label}:\n")
+    for q in [50, 75, 90, 95, 99]:
+        ct = float(np.quantile(control, q/100))
+        tt = float(np.quantile(treat, q/100))
+        f.write(f"      p{q:>2}: control={ct:>10.3f}  treat={tt:>10.3f}\n")
+    f.write(f"      max: control={float(control.max()):>10.3f}  "
+            f"treat={float(treat.max()):>10.3f}\n")
+
+
+def evaluate_pair_matched(label, auctions, score_col, f,
+                          n_bootstrap: int = 1000) -> None:
+    """PAIR-MATCHED test: treatment = both winner AND runner-up are
+    cartel-active. This is the gold-standard test (designated rotation).
+    Bootstrap CI on AUC because n_treat is small."""
+    f.write(f"\n--- {label} on {score_col} [PAIR-MATCHED] ---\n")
+    treat = (auctions.filter(pl.col("pair_matched") == 1)[score_col]
+             .drop_nulls().to_numpy())
+    control = (auctions.filter(pl.col("has_any_cartel_firm") == 0)[score_col]
+               .drop_nulls().to_numpy())
+
+    if len(treat) < 3:
+        f.write(f"  [skip — n_pair_matched={len(treat)} too small]\n")
+        return
+
+    f.write(f"  N_pair_matched={len(treat):,}  N_control={len(control):,}\n")
+    if len(treat) >= 2:
+        f.write(f"  μ_treat={float(treat.mean()):.4f}  "
+                f"μ_control={float(control.mean()):.4f}\n")
+        f.write(f"  median_treat={float(np.median(treat)):.4f}  "
+                f"median_control={float(np.median(control)):.4f}\n")
+
+    if len(treat) >= 5 and len(control) >= 100:
+        auc = auc_mwu(treat, control)
+        f.write(f"  point AUC: {auc:.4f}\n")
+
+        # Bootstrap CI
+        rng = np.random.default_rng(42)
+        # Subsample control for speed (control is huge, AUC stable on 5k)
+        if len(control) > 5000:
+            control_sub = rng.choice(control, size=5000, replace=False)
+        else:
+            control_sub = control
+        boot = np.empty(n_bootstrap)
+        for b in range(n_bootstrap):
+            t_b = rng.choice(treat, size=len(treat), replace=True)
+            c_b = rng.choice(control_sub, size=len(control_sub), replace=True)
+            boot[b] = auc_mwu(t_b, c_b)
+        lo, hi = np.quantile(boot, [0.025, 0.975])
+        f.write(f"  bootstrap 95% CI [B={n_bootstrap}, "
+                f"control sub={len(control_sub):,}]: "
+                f"[{lo:.4f}, {hi:.4f}]\n")
+
+        # Within-CNAE pair-matched (when n permits)
+        same = auctions.filter(pl.col("same_cnae") == 1)
+        treat_s = (same.filter(pl.col("pair_matched") == 1)[score_col]
+                   .drop_nulls().to_numpy())
+        control_s = (same.filter(pl.col("has_any_cartel_firm") == 0)[score_col]
+                     .drop_nulls().to_numpy())
+        if len(treat_s) >= 5 and len(control_s) >= 100:
+            auc_s = auc_mwu(treat_s, control_s)
+            f.write(f"  within same CNAE-2dig: AUC={auc_s:.4f} "
+                    f"(N_t={len(treat_s):,} N_c={len(control_s):,})\n")
+        else:
+            f.write(f"  within same CNAE-2dig: [skip — n_t={len(treat_s)}]\n")
+
+
+def fit_residual(pairs: pl.DataFrame, score_col: str = "shared_workers"):
+    """Fit log-log regression of shared_workers ~ n_cobids on the control
+    pairs (no cartel firm) and return the residualized score for the full
+    sample. Returns (intercept, slope, residual_array)."""
+    ctrl = pairs.filter(pl.col("has_any_cartel_firm") == 0)
+    x = np.log1p(ctrl["n_cobids"].to_numpy())
+    y = np.log1p(ctrl[score_col].to_numpy())
+    slope, intercept = np.polyfit(x, y, 1)
+    x_all = np.log1p(pairs["n_cobids"].to_numpy())
+    y_all = np.log1p(pairs[score_col].to_numpy())
+    resid = y_all - (intercept + slope * x_all)
+    return intercept, slope, resid
+
+
+def evaluate_screen(label, auctions, score_col, f, with_skew: bool = False) -> None:
     f.write(f"\n--- {label} on {score_col} ---\n")
     treat = (auctions.filter(pl.col("has_active_cartel") == 1)[score_col]
              .drop_nulls().to_numpy())
@@ -276,6 +377,8 @@ def evaluate_screen(label, auctions, score_col, f) -> None:
                .drop_nulls().to_numpy())
     report_subsample(f"baseline (any cartel-active)",
                      treat, control, f)
+    if with_skew:
+        report_distribution("baseline", treat, control, f)
 
     # Within same CNAE
     same = auctions.filter(pl.col("same_cnae") == 1)
@@ -284,6 +387,8 @@ def evaluate_screen(label, auctions, score_col, f) -> None:
     control_s = (same.filter(pl.col("has_any_cartel_firm") == 0)[score_col]
                  .drop_nulls().to_numpy())
     report_subsample(f"WITHIN same CNAE-2dig", treat_s, control_s, f)
+    if with_skew:
+        report_distribution("within same CNAE", treat_s, control_s, f)
 
     # Different CNAE (placebo)
     diff = auctions.filter(pl.col("same_cnae") == 0)
@@ -378,7 +483,7 @@ def main() -> None:
 
         # ──────────────────────────────────────────────────
         # Robustness 3: Worker-flow CONTROLLING for co-bidding
-        # (residualize one against the other)
+        # (residualize one against the other) — pregão AND convite
         # ──────────────────────────────────────────────────
         f.write("\n" + "=" * 70 + "\n")
         f.write("ROBUSTNESS 3 — Worker-flow excess over co-bidding norm\n")
@@ -386,28 +491,68 @@ def main() -> None:
         f.write("\nFor each pair, compute residual:\n")
         f.write("  resid = log(1+shared_workers) - log(1+expected_workers_given_cobids)\n")
         f.write("where expected is from a global regression of\n")
-        f.write("  log(1+shared_workers) ~ log(1+n_cobids)\n\n")
+        f.write("  log(1+shared_workers) ~ log(1+n_cobids)\n")
+        f.write("fit on control sample only (no cartel firm) to avoid leakage.\n")
 
-        # Fit a simple linear regression on the entire universe of pairs that
-        # have both metrics, then compute residual.
-        # Use control pairs to fit (avoid information leakage).
-        ctrl_p = pregao.filter(pl.col("has_any_cartel_firm") == 0)
-        x = np.log1p(ctrl_p["n_cobids"].to_numpy())
-        y = np.log1p(ctrl_p["shared_workers"].to_numpy())
-        # Simple OLS
-        slope, intercept = np.polyfit(x, y, 1)
-        f.write(f"  Fit (control sample, log-log): "
-                f"intercept={intercept:.4f}, slope={slope:.4f}\n")
-
-        # Apply to entire pregão sample
-        x_all = np.log1p(pregao["n_cobids"].to_numpy())
-        y_all = np.log1p(pregao["shared_workers"].to_numpy())
-        resid = y_all - (intercept + slope * x_all)
-        pregao_with_resid = pregao.with_columns(
-            pl.Series("wf_resid", resid)
-        )
+        f.write("\n[PREGÃO]\n")
+        intc_p, slp_p, resid_p = fit_residual(pregao, "shared_workers")
+        f.write(f"  Fit log-log: intercept={intc_p:.4f}, slope={slp_p:.4f}\n")
+        pregao_with_resid = pregao.with_columns(pl.Series("wf_resid", resid_p))
         evaluate_screen("worker-flow RESIDUAL (over co-bidding)",
                         pregao_with_resid, "wf_resid", f)
+
+        f.write("\n[CONVITE]\n")
+        intc_c, slp_c, resid_c = fit_residual(convite, "shared_workers")
+        f.write(f"  Fit log-log: intercept={intc_c:.4f}, slope={slp_c:.4f}\n")
+        convite_with_resid = convite.with_columns(pl.Series("wf_resid", resid_c))
+        evaluate_screen("worker-flow RESIDUAL (over co-bidding)",
+                        convite_with_resid, "wf_resid", f)
+
+        # ──────────────────────────────────────────────────
+        # Robustness 4: PAIR-MATCHED test (gold standard)
+        # Treatment = both winner AND runner-up are cartel firms
+        # ──────────────────────────────────────────────────
+        f.write("\n" + "=" * 70 + "\n")
+        f.write("ROBUSTNESS 4 — PAIR-MATCHED gold standard\n")
+        f.write("Treatment = BOTH winner and runner-up are cartel firms\n")
+        f.write("(pregão uses both_cartel_active; convite uses both_cartel_firm)\n")
+        f.write("=" * 70 + "\n")
+
+        n_pm_pregao = pregao.filter(pl.col("pair_matched") == 1).height
+        n_pm_convite = convite.filter(pl.col("pair_matched") == 1).height
+        f.write(f"\nN pair-matched in close-bid window |MV|<0.10:\n")
+        f.write(f"  pregão:  {n_pm_pregao}\n")
+        f.write(f"  convite: {n_pm_convite}\n")
+
+        f.write("\n[PREGÃO]\n")
+        evaluate_pair_matched("worker-flow [shared_workers]", pregao,
+                              "shared_workers", f)
+        evaluate_pair_matched("worker-flow [jaccard]", pregao, "jaccard", f)
+        evaluate_pair_matched("worker-flow RESIDUAL", pregao_with_resid,
+                              "wf_resid", f)
+        evaluate_pair_matched("co-bidding [n_cobids]", pregao, "n_cobids", f)
+
+        f.write("\n[CONVITE]\n")
+        evaluate_pair_matched("worker-flow [shared_workers]", convite,
+                              "shared_workers", f)
+        evaluate_pair_matched("worker-flow [jaccard]", convite, "jaccard", f)
+        evaluate_pair_matched("worker-flow RESIDUAL", convite_with_resid,
+                              "wf_resid", f)
+        evaluate_pair_matched("co-bidding [n_cobids]", convite, "n_cobids", f)
+
+        # ──────────────────────────────────────────────────
+        # Robustness 5: Skew diagnostic for the disputed convite case
+        # ──────────────────────────────────────────────────
+        f.write("\n" + "=" * 70 + "\n")
+        f.write("ROBUSTNESS 5 — SKEW DIAGNOSTIC (convite shared_workers)\n")
+        f.write("Check why within-CNAE AUC=0.50 with t=+9.36 in convite.\n")
+        f.write("If treat distribution has fat right tail and same median\n")
+        f.write("as control, AUC=0.50 is correct and t-stat is misleading.\n")
+        f.write("=" * 70 + "\n")
+        evaluate_screen("worker-flow [shared_workers]", convite,
+                        "shared_workers", f, with_skew=True)
+        evaluate_screen("worker-flow [jaccard]", convite,
+                        "jaccard", f, with_skew=True)
 
     # Print to stdout
     print("\n[written]", REPORT_OUT)

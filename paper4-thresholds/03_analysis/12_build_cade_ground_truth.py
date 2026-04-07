@@ -55,26 +55,29 @@ OUT_PROCESS = BASE / "02_data" / "firms" / "cade_cartel_processes.parquet"
 OUT_REPORT  = BASE / "02_data" / "intermediate" / "cade_ground_truth_report.txt"
 
 # ─────────────────────────────────────────────────────────────────────
-# Hand-curated cartel period info, parsed from CADE README + notes column.
-# Each entry: (processo, start_year, end_year). end_year = None means
-# cartel was still active or end date not known; we use judgment_year as a
-# conservative upper bound in that case.
+# Hand-curated cartel period info, AUDITED 2026-04-07 against CADE sources.
+# Format: processo -> (start_year, end_year, source_note)
+# Periods for the 7 SP-relevant processes were verified via WebSearch of
+# CADE press releases and court decisions. See
+# 03_analysis/cade_period_audit.md for full citations.
 # ─────────────────────────────────────────────────────────────────────
 CARTEL_PERIODS = {
-    "08012.010022/2008-16": (2006, 2010),  # merenda escolar SP — Pregão 73/2006 + 08/2009
-    "08700.004617/2013-41": (1998, 2013),  # trens/metrôs SP — desde 1998 Linha 5 Metrô
-    "08012.001273/2010-24": (2009, 2013),  # aquecedores solares MCMV
-    "08700.005876/2019-85": (2017, 2019),  # transporte escolar Fernandópolis
-    "08700.007278/2015-17": (2010, 2015),  # cafeterias Infraero
-    "08700.005789/2015-02": (2008, 2014),  # sacos de lixo SP MG PR — Op Colludium
+    # SP-relevant (audited 2026-04-07)
+    "08012.010022/2008-16": (2006, 2013),  # merenda escolar SP — Pregão 73/2006; CADE analyzed 2008-2013 docs, condemned 2021
+    "08700.004617/2013-41": (1999, 2013),  # trens/metrôs SP — CADE: "at least 10 years", 26 bids affected 1999-2013; condemned 2019
+    "08012.001273/2010-24": (2009, 2010),  # aquecedores solares CDHU — two in-person auctions 2009 and 2010; condemned 2015
+    "08700.005876/2019-85": (2019, 2019),  # transporte escolar Fernandópolis — single 2019 Seduc-SP e-auction; condemned 2020
+    "08700.007278/2015-17": (2014, 2014),  # cafeterias Infraero — May-Nov 2014, six airports (SP, SC, AL, PE, PR, MS); condemned 2022
+    "08700.005789/2015-02": (2008, 2014),  # sacos de lixo SP MG PR MT MS — Op Colludium; confirmed 2008-2014
+    "08012.002222/2011-09": (2007, 2011),  # medicamentos SP MG BA PE — hub-and-spoke; confirmed 2007-2011
+
+    # Non-SP (not audited in this session — keep original curation)
     "08012.003931/2005-55": (2004, 2006),  # ambulâncias SUS SES-SP 2005
-    "08012.002222/2011-09": (2007, 2011),  # medicamentos SP MG BA PE
     "08012.009732/2008-01": (2005, 2010),  # unidades móveis saúde nacional
     "08012.011853/2008-13": (2005, 2009),  # coleta lixo RS Santa Rosa
     "08012.008821/2008-22": (2006, 2008),  # antirretrovirais nacional
     "08012.005928/2003-12": (2000, 2003),  # medicamentos genéricos / Merck
-    # IT_DF case has no formal process number in the CSV
-    "IT_DF": (2005, 2008),                 # TI Brasília 4 empresas
+    "IT_DF": (2005, 2008),                 # TI Brasília 4 empresas (no formal CSV number)
 }
 
 
