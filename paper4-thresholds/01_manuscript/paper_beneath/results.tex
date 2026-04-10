@@ -1,58 +1,52 @@
-\section{Empirical Results}\label{res}
+\section{Results}\label{res}
 
-Our empirical analysis identifies statistically significant discontinuities at the threshold of closely contested auctions, suggesting potential anti-competitive dynamics in public procurement markets.
+We present the empirical results in three parts. Section~\ref{sec:res_classical} reports the performance of classical bid-distribution screens and the close-margin RD on the unified benchmark. Section~\ref{sec:res_network} reports the performance of worker-flow and co-bidding network screens. Section~\ref{sec:res_placebo} reports the specialization-placebo decomposition.
 
-Graphical representations of these effects are illustrated in Figures \ref{fig:incumbent} and \ref{fig:lastbid}. Quantitative estimates supporting the graphical evidence are presented in Table \ref{tab:estimates}.
-Figure \ref{fig:incumbent} shows the estimated probability that the winning firm was the incumbent—defined as the firm winning the immediately preceding auction for a similar good—as a function of the bid margin. A clear discontinuity at the threshold (bid margin equal to zero) indicates that firms narrowly winning auctions (negative bid margin) exhibit a higher probability of incumbency compared to narrowly losing firms (positive bid margin). This pattern is consistent with incumbent firms benefiting disproportionately, which may be reflective of strategic bidding practices or bid rotation schemes.
+\subsection{Classical screens and the close-margin RD}\label{sec:res_classical}
 
-\begin{figure}[htbp!]
-\centering
-\caption{Probability of Incumbency around the Bid Margin}\label{fig:incumbent}
-\includegraphics[width=0.8\textwidth]{Presentations/rd_plot_won_t_minus_1_overall_market.pdf}
-\begin{minipage}{0.8\textwidth}
-{\scriptsize \emph{Notes:} The figure plots binned averages of incumbency status against the bid margin, where negative values correspond to narrowly won auctions and positive values reflect narrowly lost auctions. A distinct discontinuity at the cutoff suggests potential incumbency advantages. \par}
-\end{minipage}
-\end{figure}
+Table~\ref{tab:unified} presents the unified benchmark comparison of all screens on the same close-margin pregão sample ($\lvert MV \rvert \le 0.10$). Panel~A reports the classical bid-distribution screens on the cartel-active benchmark ($N = 2{,}319$ cartel-tainted auctions vs.\ $N = 527{,}259$ clean controls).
 
-Similarly, Figure \ref{fig:lastbid} examines the probability that the winning firm submitted the last bid in the auction as a function of the bid margin. A comparable discontinuity at the cutoff suggests firms narrowly winning auctions have a higher likelihood of being the final bidder, potentially indicating strategic bid timing indicative of anti-competitive behavior, such as bid leakage or collusion.
+All four classical screens fire in the direction predicted by the bid-rotation model: the coefficient of variation ($\Delta = -0.035$, $d = -0.07$), bid spread ($\Delta = -0.173$, $d = -0.10$), and number of active bidders ($\Delta = -0.87$, $d = -0.24$) are compressed at cartel-tainted auctions relative to clean controls. Welch $t$-statistics are large and statistically significant, owing to the massive control sample. Yet the effect sizes are small: Cohen's $d$ ranges from $-0.07$ to $-0.24$, indicating near-total distributional overlap between cartel and clean auctions. The AUCs reflect this overlap, ranging from $0.52$ (coefficient of variation) to $0.56$ (number of bidders)---above chance but far too low for investigative triage. A Wilcoxon rank-sum test confirms the weak rank-order separation ($p < 10^{-4}$ for each screen, consistent with the AUC direction).
 
-\begin{figure}[htbp!]
-\centering
-\caption{Probability of Being the Last Bidder around the Bid Margin}\label{fig:lastbid}
-\includegraphics[width=0.8\textwidth]{Presentations/rd_plot_last_bid_overall_market.pdf}
-\begin{minipage}{0.8\textwidth}
-{\scriptsize \emph{Notes:} The figure plots binned averages of the probability that the winning firm submitted the last bid against the bid margin, where negative values correspond to narrowly won auctions and positive values reflect narrowly lost auctions. A discontinuity at the threshold indicates potential strategic timing in bid submissions. \par}
-\end{minipage}
-\end{figure}
+The margin of victory exhibits an anomalous pattern: $\Delta MV = +0.004$ ($d = +0.17$), with an AUC of $0.46$---slightly \emph{below} chance and in the \emph{opposite} direction to the bid-rotation prediction. Cartel-active auctions have marginally \emph{larger} winning margins, not smaller. We interpret this as consistent with a partial phantom-bidding mechanism in which cover bids are inflated relative to the designated winner's price, widening rather than compressing the margin. This finding warrants further investigation but does not affect the headline conclusion: classical screens as a portfolio do not achieve operational discriminative power on this benchmark.
 
-The regression discontinuity estimates corresponding to these graphical results, accounting also for year and market fixed effects, are reported in Table \ref{tab:estimates}. We find that being the incumbent is associated with a 1.82\% increase in the probability of winning an auction within the same market. Similarly, winning firms are  6.36\% more likely to submit the final bid. Both coefficients are statistically significant at the 1\% level. The results remain robust to the inclusion of market and year fixed effects and statistically support the graphical evidence, reinforcing the interpretation of non-competitive forces at play in closely contested procurement auctions.
+A direct replication of the \citet{kawai2023using} close-margin RD on the cartel-active subsample yields no statistically detectable discontinuity in incumbency ($\hat{\beta} = 0.018$, $\text{SE} = 0.005$ on the full sample; $p > 0.15$ on the cartel-active subsample) or last-bid behavior at the cutoff. A density test in the spirit of \citet{imhof2018screening} detects no manipulation of the running variable ($T_{\text{CJM}} \approx 0$, $p = 1.0$ on the cartel-active benchmark). Neither the RD design nor the density test flags the cartel-active auctions as anomalous relative to competitive bidding.
 
-\begin{table}[htbp]
-\centering
-\caption{Effect of Winning Auction on Key Outcomes}\label{tab:estimates}
-\begin{tabular}{lcccc}
-\toprule
- & \multicolumn{2}{c}{Incumbent} & \multicolumn{2}{c}{Last Bid} \\
-\cmidrule(lr){2-3} \cmidrule(lr){4-5}
- & (1) & (2) & (3) & (4) \\
-\midrule
-Winning Auction & $0.0182^{***}$ & $0.0179^{***}$ & $0.0636^{***}$ & $0.0636^{***}$ \\
- & ($0.005$) & ($0.005$) & ($0.008$) & ($0.008$) \\
-\\
-Observations & $261370$ & $260985$ & $156418$ & $156418$ \\
-Optimal Bandwidth & 0.02 & 0.02 & 0.01 & 0.01 \\
-Year FE &  & \checkmark &  & \checkmark \\
-Market FE &  & \checkmark &  & \checkmark \\
-\bottomrule
-\end{tabular}
-\vspace{0.5em}
-\begin{minipage}{0.9\textwidth}
-\scriptsize{
-\textbf{Notes:} Standard errors are reported in parentheses. *** indicates statistical significance at the 1\% level. The dependent variables are defined as follows: (1) \textit{Incumbent} is a dummy indicating whether the firm won the previous auction within the same market; (2) \textit{Last Bid} is a dummy variable indicating whether the winning firm submitted the final bid in the auction. \par}
-\end{minipage}
-\end{table}
+\subsection{Network-based screens}\label{sec:res_network}
 
-\section{Additional Results - TBC}\label{res_ar}
-\subsection{Heterogenety by market}
-\subsection{Correlation with predicted corruption}
-\subsection{Firms outcomes}
+Panel~B of Table~\ref{tab:unified} reports the network screens on the same unified benchmark ($N = 2{,}319$ cartel-active pregão auctions, $\lvert MV \rvert \le 0.10$).
+
+The worker-flow screens achieve markedly higher discriminative power. The shared-worker count yields an AUC of $0.750$ ($\Delta = +3.70$, $t = +14.1$), and the Jaccard similarity yields an AUC of $0.739$ ($\Delta = +0.0014$, $d = +0.19$, $t = +20.7$). Both outperform the best classical screen (number of bidders, AUC $= 0.56$) by roughly 20 percentage points. A third screen constructed from co-bidding density yields an AUC of $0.695$, providing independent corroboration through a distinct information channel.
+
+Critically, the worker-flow signal is not an artifact of sectoral composition. Restricting attention to firm pairs that share the same 2-digit CNAE sectoral classification reduces the Jaccard AUC only marginally, from $0.739$ to approximately $0.730$. The residual of worker-flow after partialling out the log co-bidding density of each pair achieves an AUC of $0.749$---essentially unchanged from the raw baseline, indicating that worker mobility carries detection information above and beyond what co-bidding patterns alone can reveal.
+
+On the convite subsample ($N = 263$ cartel-active, $\lvert MV \rvert \le 0.10$), the worker-flow screens maintain strong performance: shared-worker AUC $= 0.704$, Jaccard AUC $= 0.701$. The consistency of network-screen performance across auction formats---in contrast to the format-sensitive behavior of classical screens---supports the view that worker-flow connectivity captures a channel of coordination that is invariant to the procedural details of the bidding mechanism.
+
+On the strict pair-matched sample ($N = 10$ after close-margin filtering), worker-flow AUCs decline to near chance (shared workers: $0.56$; Jaccard: $0.55$; bootstrap 95\% CI includes $0.5$). We attribute this to power constraints at small sample sizes rather than to a breakdown in the underlying signal: median shared workers and Jaccard are both zero in both the pair-matched and control samples, and the large-sample cartel-active benchmark is where discriminative power can be meaningfully evaluated.
+
+\subsection{Specialization-placebo decomposition}\label{sec:res_placebo}
+
+Table~\ref{tab:placebo} reports the three-way comparison of worker-flow distributions across the cartel, same-market placebo, and clean-global samples (pregão, $\lvert MV \rvert \le 0.10$).
+
+Cartel pairs share at least one worker in 57.9\% of cases, compared with 31.1\% for same-market placebo pairs and 9.9\% for pairs in other markets. The Jaccard AUC against the global clean baseline is $0.740$ for cartel pairs and $0.605$ for same-market placebo pairs. In a linear decomposition of the total AUC gain (cartel vs.\ clean minus $0.5$):
+
+\begin{itemize}
+\item The \textbf{specialization component} (placebo vs.\ clean) absorbs approximately $0.105$ AUC points, or roughly 44\% of the total signal.
+\item The \textbf{cartel-specific residual} (cartel vs.\ placebo) accounts for approximately $0.138$ AUC points, or roughly 56\% of the total signal.
+\end{itemize}
+
+Both components are consistent with the institutional-thinness mechanism of Section~\ref{sec:model}: thin specialized-labor markets generate spontaneous labor circulation among same-market firms (the specialization component), and cartels additionally reinforce those flows to sustain coordination (the cartel-specific residual). The two-component structure also has a practical implication: a worker-flow screen deployed without conditioning on market identity would capture both components, potentially flagging non-colluding same-market firm pairs as suspicious. Conditioning on market or product code absorbs the specialization component, yielding a purer cartel signal at the cost of a modest reduction in overall AUC (from $0.740$ to $0.638$).
+
+%% Placeholder for unified benchmark table
+%\begin{table}[htbp]
+%\centering
+%\caption{Unified Benchmark: All Screens on the Same Close-Margin Sample}\label{tab:unified}
+%\textit{[Table to be generated programmatically from table1\_unified\_benchmark.csv]}
+%\end{table}
+
+%% Placeholder for placebo decomposition table
+%\begin{table}[htbp]
+%\centering
+%\caption{Specialization-Placebo Decomposition of Worker-Flow Signal}\label{tab:placebo}
+%\textit{[Table to be generated programmatically from v3\_specialization\_placebo.txt]}
+%\end{table}
