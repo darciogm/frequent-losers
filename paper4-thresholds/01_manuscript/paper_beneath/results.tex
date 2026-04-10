@@ -14,15 +14,15 @@ A direct replication of the \citet{kawai2023using} close-margin RD on the cartel
 
 \subsection{Network-based screens}\label{sec:res_network}
 
-Panel~B of Table~\ref{tab:unified} reports the network screens on the same unified benchmark ($N = 2{,}319$ cartel-active pregão auctions, $\lvert MV \rvert \le 0.10$).
+If classical screens cannot separate cartel from clean on this benchmark, what can? Panel~B of Table~\ref{tab:unified} turns to the network screens, evaluated on the same $N = 2{,}319$ cartel-active auctions.
 
-The worker-flow screens achieve markedly higher discriminative power. The shared-worker count yields an AUC of $0.750$ ($\Delta = +3.70$, $t = +14.1$), and the Jaccard similarity yields an AUC of $0.739$ ($\Delta = +0.0014$, $d = +0.19$, $t = +20.7$). Both outperform the best classical screen (number of bidders, AUC $= 0.56$) by roughly 20 percentage points. A third screen constructed from co-bidding density yields an AUC of $0.695$, providing independent corroboration through a distinct information channel.
+The answer is worker flows. The shared-worker count yields an AUC of $0.750$ ($\Delta = +3.70$, $t = +14.1$), and the Jaccard similarity yields an AUC of $0.739$ ($\Delta = +0.0014$, $d = +0.19$, $t = +20.7$). Both outperform the best classical screen (number of bidders, AUC $= 0.56$) by roughly 20 percentage points. A third screen constructed from co-bidding density yields an AUC of $0.695$, providing independent corroboration through a distinct information channel.
 
 Critically, the worker-flow signal is not an artifact of sectoral composition. Restricting attention to firm pairs that share the same 2-digit CNAE sectoral classification reduces the Jaccard AUC only marginally, from $0.739$ to approximately $0.730$. The residual of worker-flow after partialling out the log co-bidding density of each pair achieves an AUC of $0.749$---essentially unchanged from the raw baseline, indicating that worker mobility carries detection information above and beyond what co-bidding patterns alone can reveal.
 
-On the convite subsample ($N = 263$ cartel-active, $\lvert MV \rvert \le 0.10$), the worker-flow screens maintain strong performance: shared-worker AUC $= 0.704$, Jaccard AUC $= 0.701$. The consistency of network-screen performance across auction formats---in contrast to the format-sensitive behavior of classical screens---supports the view that worker-flow connectivity captures a channel of coordination that is invariant to the procedural details of the bidding mechanism.
+The pattern holds across auction formats. On the convite subsample ($N = 263$ cartel-active, $\lvert MV \rvert \le 0.10$), worker-flow AUCs remain strong ($0.704$ and $0.701$), even as classical screens lose direction entirely. That worker-flow screens are format-invariant while classical screens are format-sensitive is itself consistent with the institutional-thinness mechanism: bid distributions depend on auction rules, but the personnel connections that sustain coordination do not.
 
-A natural question is what the cartel-active AUC actually measures, given that in most auctions only \emph{one} of the two firms in the (winner, runner-up) pair is a convicted cartelist. Of the 2{,}319 cartel-active auctions, 996 have the \emph{winner} as the cartel-active firm and the runner-up as a non-cartel firm; 1{,}313 have the \emph{runner-up} as the cartel-active firm; and only 10 have both firms cartel-active. Decomposing the AUC by cartel role clarifies the interpretation:
+These headline numbers raise a natural question. In most cartel-active auctions, only \emph{one} of the two firms in the (winner, runner-up) pair is a convicted cartelist---so what exactly is the AUC measuring? Of the 2{,}319 cartel-active auctions, 996 have the \emph{winner} as the cartel-active firm and the runner-up as a non-cartel firm; 1{,}313 have the \emph{runner-up} as the cartel-active firm; and only 10 have both firms cartel-active. Decomposing the AUC by cartel role clarifies the interpretation:
 
 \begin{center}
 \begin{tabular}{lccc}
@@ -42,9 +42,9 @@ The decomposition clarifies the mechanism: the worker-flow screen detects that c
 
 \subsection{Specialization-placebo decomposition}\label{sec:res_placebo}
 
-Table~\ref{tab:placebo} reports the three-way comparison of worker-flow distributions across the cartel, same-market placebo, and clean-global samples (pregão, $\lvert MV \rvert \le 0.10$).
+The worker-flow signal could reflect two quite different forces: the natural personnel circulation that thin product markets generate among \emph{all} firms, or the incremental coordination that cartels layer on top. To separate them, we build a three-way comparison (Table~\ref{tab:placebo}).
 
-Cartel pairs share at least one worker in 57.9\% of cases, compared with 31.1\% for same-market placebo pairs and 9.9\% for pairs in other markets. The Jaccard AUC against the global clean baseline is $0.740$ for cartel pairs and $0.605$ for same-market placebo pairs. In a linear decomposition of the total AUC gain (cartel vs.\ clean minus $0.5$):
+The raw match rates are revealing. Cartel pairs share at least one worker in 57.9\% of cases; same-market non-cartel pairs share one in 31.1\%; pairs from other markets, in just 9.9\%. The Jaccard AUC against the global clean baseline is $0.740$ for cartel pairs and $0.605$ for same-market placebo pairs. In a linear decomposition of the total AUC gain (cartel vs.\ clean minus $0.5$):
 
 \begin{itemize}
 \item The \textbf{specialization component} (placebo vs.\ clean) absorbs approximately $0.105$ AUC points, or roughly 44\% of the total signal.
@@ -55,7 +55,7 @@ Both components are consistent with the institutional-thinness mechanism of Sect
 
 \subsection{Heterogeneity by market thickness}\label{sec:heterogeneity}
 
-The institutional-thinness model of Section~\ref{sec:model} predicts that worker-flow screens should outperform classical screens most sharply in thin markets, where the cheapest coordination technology operates through personnel flows rather than bid-pattern manipulation. We test this prediction by splitting the cartel-active benchmark according to market thickness, measured as the median number of bidders per auction for each item code in the clean control sample. Markets with a control-sample median at or below the overall median of 5~firms are classified as ``thin''; those above are classified as ``thick.'' This proxy is constructed entirely from the non-cartel sample to avoid contamination by cartel-induced changes in bidder counts.
+The placebo tells us what part of the signal is cartel-specific. The next question is where that signal lives. If the institutional-thinness mechanism of Section~\ref{sec:model} is right, worker-flow screens should outperform classical screens most sharply in thin markets---and classical screens should work better, perhaps even well, in thick ones. We test this by splitting the benchmark according to market thickness, measured as the median number of bidders per auction for each item code in the clean control sample. Markets with a control-sample median at or below the overall median of 5~firms are classified as ``thin''; those above are classified as ``thick.'' This proxy is constructed entirely from the non-cartel sample to avoid contamination by cartel-induced changes in bidder counts.
 
 Table~\ref{tab:thickness} reports the results. The pattern is striking. In thin markets ($N_{\text{cartel}} = 1{,}618$), classical screens fire in the \emph{wrong} direction: $CV$ AUC $= 0.45$, spread AUC $= 0.44$, and bidder-count AUC $= 0.40$---all below chance. Cartel-tainted auctions in thin markets exhibit \emph{more} bid dispersion and \emph{more} active bidders than clean controls, consistent with a phantom-bidding or cover-bid mechanism in which all cartel members participate and submit inflated bids. By contrast, in thick markets ($N_{\text{cartel}} = 416$), classical screens fire in the predicted direction: $CV$ AUC $= 0.59$, spread $= 0.60$, bidder count $= 0.60$---substantively above chance and consistent with the standard bid-rotation model.
 
