@@ -1,16 +1,59 @@
 \section{Data}\label{data}
-\subsection{Sources}
-We utilize a rich administrative dataset of public procurement auctions conducted via the BEC platform in São Paulo state. The dataset covers the period from January 2009 to December 2019 and includes detailed bid-level information for auctions of common goods and services. During this period, 1,344 PBUs (encompassing state-level executive agencies, the legislative and judicial branches, as well as some municipal governments and even a few private organizations authorized to use the system) carried out procurement through BEC. In total, the data comprise 3,866,407 individual bidding transactions submitted by 19,007 distinct firms, corresponding to 169,607 unique procurement items. Each record in the data identifies the purchase offer (PO) and item, the participating firm, the bid amount, and the auction outcome (win or loss), among other details.
 
-The BEC system's hierarchical catalog organizes items into groups and classes. For example, medical supplies are grouped under a specific category (e.g., group 65 for medical and hospital items), with finer classifications down to individual item codes.\footnote{An illustrative item is code 110639, which corresponds to "Furosemide 40mg tablets," classified under class 6531 (a category of pharmaceuticals) within group 65.} This structured coding is useful for analyzing procurement patterns by item type or sector. Our analysis leverages the full breadth of goods and services in the dataset, while controlling for any category-specific effects as needed.
+Our analysis draws on three administrative data sources: the BEC procurement platform (bid-level records), the RAIS employer--employee matched panel (worker-flow construction), and CADE administrative proceedings (cartel ground truth). This section describes each source and the construction of the conviction-anchored benchmark samples.
 
-For the purposes of our study, we focus on competitive tenders that resulted in a contract award (i.e., at least one winner and one or more losing bids). We exclude tenders that were canceled or received only a single bid, since those do not provide information on competitive dynamics. This yields a sample of auctions where a meaningful competition took place, which is essential for implementing our regression discontinuity approach. 
+\subsection{BEC: bid-level procurement data}
+
+We use the universe of bid-level records from the \emph{Bolsa Eletr\^{o}nica de Compras} (BEC) platform for the period January 2009 to December 2019. The data comprise 3,866,407 individual bidding transactions submitted by 19,007 distinct firms across 169,607 unique procurement items. Each record identifies the purchase offer (PO) and item code, the participating firm (by CNPJ), the bid amount, the auction outcome (win or loss), the auction format (pregão or convite), and the identity of the purchasing agency. We restrict attention to competitive tenders with at least one winner and one loser, excluding canceled tenders and single-bid auctions. We define a unique auction as a (PO number $\times$ item code) pair, henceforth POI.
+
+For each POI, we construct the auction-level variables described in Section~\ref{sec:classical}: the coefficient of variation, bid spread, margin of victory, and number of active bidders, computed on firm-best bids (retaining each firm's lowest bid when multiple rounds exist). We define markets following \citet{kawai2023using}: two firms belong to the same market if they participated at least once in the same auction for the same item code. This transitive market definition yields 7,581 distinct markets.
+
+\subsection{RAIS: employer--employee matched panel}
+
+The \emph{Rela\c{c}\~{a}o Anual de Informa\c{c}\~{o}es Sociais} (RAIS) is the universe of formal-sector employment relationships in Brazil, collected annually by the Ministry of Labor. Every establishment with a CNPJ must file a RAIS declaration listing each employment bond active at any point during the calendar year, identified by the worker's PIS/PASEP number and the establishment's full 14-digit CNPJ. We use RAIS vinculos for the years 2009--2017, restricting to establishments whose 8-digit CNPJ root appears in the BEC firm universe (approximately 19,000 roots). The resulting panel contains all formal-sector employment bonds at BEC-active firms over the nine-year window.
+
+From this panel, we construct the firm--firm worker-flow edge list described in Section~\ref{sec:network}. For each pair of BEC firms $(i, j)$, we count the number of distinct PIS numbers that appear in the employment records of both firms at any point during the nine-year window (the shared-worker count $W_{ij}$) and compute the Jaccard similarity $J_{ij}$. We retain only edges with $W_{ij} \ge 1$; the remaining pairs are zero-imputed when joined to the auction-level benchmark.
+
+\subsection{CADE: cartel ground truth}
+
+The ground truth is constructed from CADE administrative proceedings with final Tribunal decisions convicting named firms of cartel conduct in S\~{a}o Paulo procurement markets (see Section~\ref{hist} for institutional background). We identified seven relevant cartels spanning the sectors listed in Table~\ref{tab:cartels}, involving 35 firms with matchable CNPJ roots. For each cartel, the CADE case files specify a conduct period (start and end years) and the product market in which bid rigging or market division was found to have occurred.
+
+We match each convicted firm's 8-digit CNPJ root to the BEC bidding records by firm identifier. We then label each BEC auction as \emph{cartel-tainted} if at least one convicted firm participated during the CADE-specified conduct period for the relevant product market and year. This firm $\times$ period $\times$ product matching ensures that auctions are labeled as cartel-tainted only when a convicted firm was bidding during the window in which its cartel was found to be active---not merely because the firm appears in a CADE database at some other time.
+
+\subsection{Sample construction}
+
+We construct three conviction-anchored detection samples, all restricted to the close-margin envelope $\lvert MV \rvert \le 0.10$:
+
+\begin{enumerate}
+\item \textbf{Cartel-active benchmark} ($N \approx 2{,}300$ for pregão; $N = 263$ for convite): auctions in which at least one convicted firm participated during the active period of its cartel. This is the primary evaluation sample on which all screens are tested.
+
+\item \textbf{Strict pair-matched sample} ($N = 10$ for pregão after close-margin filtering): auctions in which \emph{both} the winner and the runner-up are firms convicted in the same cartel during the same conduct period. This sample is the gold standard for detecting coordination between known cartel partners but is severely power-limited.
+
+\item \textbf{Anytime-listed sensitivity sample} ($N \approx 80$ for pregão): auctions in which both the winner and runner-up appear in a CADE conviction for the same cartel process, but the auction year may fall outside the prosecuted conduct window. Of the 107 pre-filtering auctions in this sample, 93 are out-of-window and 100 come from a single cartel (the medicamentos hub-and-spoke case, CADE process 08012.002222/2011-09). Because treating out-of-window bidding by former cartelists as collusive behavior requires assumptions we do not attempt to resolve, this sample is reported only as a sensitivity check.
+\end{enumerate}
+
+The \emph{clean control} consists of all close-margin auctions in which no cartel-listed firm participated ($N = 527{,}259$ for pregão; $N = 519{,}557$ for convite). All screens---classical and network-based---are evaluated against this common control on the unified close-margin benchmark.
 
 \subsection{Variable definitions}
-We construct key variables to capture firm outcomes and auction characteristics. First, we define a market such that two firms belong to the same market if they participated at least once in the same auction for the same type of good. This market classification is transitive, resulting in 7,581 distinct markets defined within at least one of our defined time periods.
 
-Following \citet{kawai2022study}, we construct an \textit{Incumbent} dummy variable based on this market definition. Specifically, this variable equals 1 if a given firm won the last auction it participated in within the same market before the current auction, and 0 otherwise. This indicator reflects whether the firm entered the current tender as a reigning winner (incumbent) in the specific market or not.
+Table~\ref{tab:variables} summarizes the key variables used in the analysis.
 
-Additionally, we define the \textit{Last Bid} dummy variable equal to 1 if the firm was the last to submit a bid in the auction, and 0 otherwise. %Second, we measure each firm's \textit{Backlog} as the total value of contracts the firm has won in the recent past. In practice, we calculate the backlog as the sum of all contract awards obtained by the firm in the 90 days (approximately three months) prior to a given auction. Because firms differ greatly in size and bidding frequency, we standardize this backlog measure by subtracting the firm's mean backlog (over the sample period) and dividing by its standard deviation. This standardization (also used by \citet{kawai2022study}) yields a normalized index of how "busy" a firm is relative to its own typical level of contract work at that point in time.
-
-Finally, we define the \textit{Margin of Victory}, which serves as the running variable in our RDD design. For each auction, the margin of victory is calculated as the percentage difference between the winning bid and the second-lowest bid, expressed as a fraction of the winning bid. Formally, if $b_{\text{win}}$ is the winning bid and $b_{\text{runner-up}}$ is the next lowest bid, the margin is $(b_{\text{runner-up}} - b_{\text{win}})/b_{\text{win}}$. When this margin is very small, the auction outcome was decided by a tiny price difference.
+\begin{table}[htbp]
+\centering
+\caption{Variable Definitions}\label{tab:variables}
+\begin{tabular}{lp{10cm}}
+\toprule
+Variable & Definition \\
+\midrule
+$MV_a$ & Margin of victory: $(b^{\text{runner-up}}_a - b^{\text{win}}_a) / b^{\text{win}}_a$ \\
+$CV_a$ & Coefficient of variation of firm-best bids in auction $a$ \\
+$S_a$ & Bid spread: $(\max - \min) / \text{mean}$ of firm-best bids \\
+$N_a$ & Number of distinct firms submitting bids in auction $a$ \\
+Incumbent$_a$ & $= 1$ if the winning firm won the preceding auction in the same market \\
+Last bidder$_a$ & $= 1$ if the winning firm submitted the final bid \\
+$W_{ij}$ & Shared workers: count of distinct PIS appearing at both firms $i$ and $j$ \\
+$J_{ij}$ & Jaccard similarity: $W_{ij} / (N_i + N_j - W_{ij})$ \\
+$C_{ij}$ & Co-bidding count: number of auctions where both $i$ and $j$ bid \\
+\bottomrule
+\end{tabular}
+\end{table}
