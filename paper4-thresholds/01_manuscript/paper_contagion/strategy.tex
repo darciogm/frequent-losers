@@ -1,0 +1,29 @@
+\section{Empirical Strategy}\label{sec:strategy}
+
+\subsection{Stacked difference-in-differences}
+
+The treatment---absorbing ex-cartel workers---is staggered: different firms absorb workers in different years (2012--2015), as cartel conduct periods end at different times. A standard two-way fixed-effects (TWFE) specification is subject to the biases documented by \citet{goodman2021difference}: already-treated units serve as implicit controls for later-treated units, potentially contaminating the estimates. We adopt the stacked-cohort approach of \citet{cengiz2019effect} to avoid this.
+
+For each cohort $g \in \{2012, 2014, 2015\}$, we construct a separate clean dataset:\footnote{We drop cohort 2013 ($N = 34$ treated firms) because its small size generates noisy pre-trend estimates that do not permit meaningful inference. Results including cohort 2013 are qualitatively similar but less precise.}
+
+\begin{itemize}
+\item \textbf{Treated}: firms whose first ex-cartel worker arrived in year $g$.
+\item \textbf{Controls}: never-treated firms (firms that bid on cartel item codes but never absorbed an ex-cartel worker).
+\item \textbf{Window}: $[g - 2, g + 4]$.
+\end{itemize}
+
+The cohort-specific datasets are stacked, and we estimate:
+\begin{equation}\label{eq:stacked}
+y_{ijt}^{(g)} \;=\; \alpha_i^{(g)} + \gamma_{jt}^{(g)} + \sum_{\tau \neq -1} \beta_\tau \cdot D_{i\tau}^{(g)} + \varepsilon_{ijt}^{(g)}\,,
+\end{equation}
+where $i$ indexes firms, $j$ indexes item codes, $t$ indexes calendar years, $g$ indexes cohorts, $\alpha_i^{(g)}$ is a firm-within-cohort fixed effect, $\gamma_{jt}^{(g)}$ is an item-code-by-year-within-cohort fixed effect, and $D_{i\tau}^{(g)} = 1$ if firm $i$ is treated in cohort $g$ and the observation is at event time $\tau = t - g$. The omitted category is $\tau = -1$. Standard errors are clustered at the firm-within-cohort level.
+
+The item-code-by-year-within-cohort fixed effect $\gamma_{jt}^{(g)}$ absorbs all market-level variation---changes in demand, reference prices, and the number of competitors---within each cohort. The identifying assumption is parallel trends: absent treatment, the treated and never-treated firms would have followed the same within-market trajectory. We assess this by inspecting pre-treatment coefficients.
+
+\subsection{CEM matching}
+
+As a robustness check, we implement Coarsened Exact Matching (CEM) on pre-period characteristics measured in the two years before the first ex-cartel worker arrives: the number of bids, the number of distinct item codes, the win rate, and firm size (number of RAIS employees). We match on quintiles of each variable and estimate a weighted TWFE event study on the matched sample, with CEM weights applied. This addresses the concern that treated and control firms differ systematically in pre-period levels, which could generate spurious pre-trends.
+
+\subsection{Exit placebo}
+
+To test whether the treatment effect is cartel-specific, we construct a placebo by replacing the cartel-worker treatment with an exit-worker treatment: absorption of workers from non-cartel BEC firms that stopped bidding between 2011 and 2014. If the win-rate and price effects are driven by cartel-specific knowledge transfer, they should be absent---or at least substantially attenuated---in the exit placebo. If they are similar, the effect is generic to any labor-supply shock from a contracting firm.
