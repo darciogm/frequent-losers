@@ -28,13 +28,43 @@ Post mean & $+0.061$ & & & \\
 \end{minipage}
 \end{table}
 
-The CEM-matched specification confirms the result at a smaller magnitude ($+3.2$~pp) with cleaner pre-trends (max $|t| = 0.65$). The difference in magnitudes is consistent with positive selection: firms with rising pre-period win rates are more likely to absorb workers, and the CEM matching removes this component.
+\begin{figure}[htbp]
+\centering
+\caption{Win Rate Event Study: Stacked DiD (Robust)}\label{fig:stacked}
+\includegraphics[width=0.85\textwidth]{contagion_stacked_robust.pdf}
+\begin{minipage}{0.85\textwidth}
+\vspace{0.3em}
+{\scriptsize \emph{Notes:} Each point is $\hat{\beta}_\tau$ from the stacked DiD specification (Equation~\ref{eq:stacked}), with 95\% CIs (firm-cohort clustered SEs). Cohorts 2012, 2014, 2015; never-treated controls. Dashed red line: treatment onset. Blue solid: robust stacked; red dashed: baseline (all 4 cohorts). Source: script 42.\par}
+\end{minipage}
+\end{figure}
+
+The CEM-matched specification (Figure~\ref{fig:matched}) confirms the result at a smaller magnitude ($+3.2$~pp) with cleaner pre-trends (max $|t| = 0.65$). The difference in magnitudes is consistent with positive selection: firms with rising pre-period win rates are more likely to absorb workers, and the CEM matching removes this component.
+
+\begin{figure}[htbp]
+\centering
+\caption{Win Rate Event Study: CEM Matched}\label{fig:matched}
+\includegraphics[width=0.85\textwidth]{contagion_matched_event_study.pdf}
+\begin{minipage}{0.85\textwidth}
+\vspace{0.3em}
+{\scriptsize \emph{Notes:} CEM matching on quintiles of pre-period bids, items, win rate, and firm size. Weighted TWFE with firm + item$\times$year FEs, firm-clustered SEs. Blue: CEM matched ($N = 270$ firms); red dashed: unmatched. Source: script 37.\par}
+\end{minipage}
+\end{figure}
 
 \subsection{Prices do not increase}
 
 The stacked DiD for log price ratio yields a precisely estimated null. The post-treatment average is $+0.05$ log points---one-fifth of the naive TWFE estimate ($+0.26$) and statistically insignificant ($t < 1.4$ at all event times). The TWFE price effect was an artifact of staggered-treatment bias: late cohorts' price trajectories were contaminated by already-treated early cohorts serving as implicit controls.
 
-This null is the paper's most important result. It rules out collusion contagion: if ex-cartel workers transmitted pricing coordination to the receiving firm, we would expect higher prices alongside higher win rates. Instead, firms win more auctions at \emph{unchanged prices}---the signature of capacity gain, not market power.
+This null is the paper's most important result. It rules out collusion contagion: if ex-cartel workers transmitted pricing coordination to the receiving firm, we would expect higher prices alongside higher win rates. Instead, firms win more auctions at \emph{unchanged prices}---the signature of capacity gain, not market power. Figure~\ref{fig:dual} juxtaposes the two outcomes.
+
+\begin{figure}[htbp]
+\centering
+\caption{Stacked DiD: Win Rate vs.\ Price}\label{fig:dual}
+\includegraphics[width=\textwidth]{contagion_stacked_did.pdf}
+\begin{minipage}{0.95\textwidth}
+\vspace{0.3em}
+{\scriptsize \emph{Notes:} Panel A: win rate. Panel B: log(bid price / reference price). Blue: stacked DiD (4 cohorts, never-treated controls). Red dashed: CEM-matched TWFE. The TWFE price effect (+0.26, Panel B red) vanishes under the stacked estimator (+0.05, Panel B blue). Source: script 40.\par}
+\end{minipage}
+\end{figure}
 
 \subsection{The exit placebo: win rates are cartel-specific, prices are generic}
 
@@ -45,7 +75,17 @@ To test whether the win-rate effect reflects cartel-specific knowledge, we compa
 \item \textbf{Price}: both groups show similar price effects ($+0.31$ for exit absorbers vs.\ $+0.26$ for cartel absorbers in TWFE). The price effect is generic---and, as shown above, is a TWFE artifact in both cases.
 \end{itemize}
 
-The cartel-specific win-rate effect is consistent with ex-cartel workers bringing product-market knowledge---familiarity with specific items, supply-chain relationships, procurement procedures---that generic labor-market movers do not possess.
+The cartel-specific win-rate effect is consistent with ex-cartel workers bringing product-market knowledge---familiarity with specific items, supply-chain relationships, procurement procedures---that generic labor-market movers do not possess. Figure~\ref{fig:placebo} visualizes the comparison.
+
+\begin{figure}[htbp]
+\centering
+\caption{Exit Placebo: Cartel vs.\ Non-Cartel Worker Absorption}\label{fig:placebo}
+\includegraphics[width=\textwidth]{contagion_exit_placebo.pdf}
+\begin{minipage}{0.95\textwidth}
+\vspace{0.3em}
+{\scriptsize \emph{Notes:} Panel A: win rate. Panel B: log price ratio. Blue: exit-firm placebo (CEM matched, $N_{\text{treated}} = 2{,}102$). Red dashed: cartel absorbers (CEM matched, $N_{\text{treated}} = 110$). Source: script 39.\par}
+\end{minipage}
+\end{figure}
 
 \subsection{Who moves? The displacement profile}
 
