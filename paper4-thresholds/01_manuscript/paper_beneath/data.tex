@@ -1,24 +1,24 @@
 \section{Data}\label{data}
 
-Our analysis draws on three administrative data sources: the BEC procurement platform (bid-level records), the RAIS employer--employee matched panel (worker-flow construction), and CADE administrative proceedings (cartel ground truth). This section describes each source and the construction of the conviction-anchored benchmark samples.
+The analysis rests on three administrative data sources---procurement bids, employment records, and antitrust rulings---which we link at the firm level to construct the conviction-anchored benchmark.
 
 \subsection{BEC: bid-level procurement data}
 
-We use the universe of bid-level records from the \emph{Bolsa Eletr\^{o}nica de Compras} (BEC) platform for the period January 2009 to December 2019. Restricting to pregão and convite procedures with at least two participating firms (competitive auctions), the data comprise 2{,}613{,}010 unique auctions involving 13{,}957{,}419 firm-level bid participations, submitted by 40{,}273 distinct firms across 153{,}048 unique procurement items. Each record identifies the purchase offer (PO) and item code, the participating firm (by CNPJ), the bid amount, the auction outcome (win or loss), the auction format (pregão or convite), and the identity of the purchasing agency. We restrict attention to competitive tenders with at least one winner and one loser, excluding canceled tenders and single-bid auctions. We define a unique auction as a (PO number $\times$ item code) pair, henceforth POI.
+We draw on the complete bid-level records from S\~{a}o Paulo's \emph{Bolsa Eletr\^{o}nica de Compras} (BEC) for January 2009 through December 2019. After restricting to preg\~{a}o and convite procedures with at least two participating firms, the data contain 2{,}613{,}010 competitive auctions, 13{,}957{,}419 firm-level bid participations, 40{,}273 distinct firms, and 153{,}048 unique item codes. Each record identifies the purchase offer, item code, participating firm (by CNPJ), bid amount, outcome, auction format, and purchasing agency.
 
-For each POI, we construct the auction-level variables described in Section~\ref{sec:classical}: the coefficient of variation, bid spread, margin of victory, and number of active bidders, computed on firm-best bids (retaining each firm's lowest bid when multiple rounds exist). We define markets following \citet{kawai2023using}: two firms belong to the same market if they participated at least once in the same auction for the same item code. This transitive market definition yields 7,581 distinct markets.
+For each auction we compute the screens described in Section~\ref{sec:classical}---coefficient of variation, bid spread, margin of victory, and bidder count---on firm-best bids (keeping each firm's lowest bid when multiple rounds exist). Markets are defined transitively following \citet{kawai2023using}: two firms share a market if they ever bid on the same item code in the same auction. This yields 7{,}581 distinct markets.
 
 \subsection{RAIS: employer--employee matched panel}
 
-The \emph{Rela\c{c}\~{a}o Anual de Informa\c{c}\~{o}es Sociais} (RAIS) is the universe of formal-sector employment relationships in Brazil, collected annually by the Ministry of Labor. Every establishment with a CNPJ must file a RAIS declaration listing each employment bond active at any point during the calendar year, identified by the worker's PIS/PASEP number and the establishment's full 14-digit CNPJ. We use RAIS vinculos for the years 2009--2017, restricting to establishments whose 8-digit CNPJ root appears in the BEC firm universe (approximately 19,000 roots). The resulting panel contains all formal-sector employment bonds at BEC-active firms over the nine-year window.
+The \emph{Rela\c{c}\~{a}o Anual de Informa\c{c}\~{o}es Sociais} (RAIS) is Brazil's compulsory annual census of formal employment. Every establishment with a CNPJ must report each employment bond active at any point during the year, identified by the worker's PIS/PASEP number. We use the 2009--2017 vintages, restricting to establishments whose 8-digit CNPJ root appears in the BEC firm universe---roughly 19{,}000 roots. The result is a nine-year panel of every formal-sector job at every BEC-active firm.
 
-From this panel, we construct the firm--firm worker-flow edge list described in Section~\ref{sec:network}. For each pair of BEC firms $(i, j)$, we count the number of distinct PIS numbers that appear in the employment records of both firms at any point during the nine-year window (the shared-worker count $W_{ij}$) and compute the Jaccard similarity $J_{ij}$. We retain only edges with $W_{ij} \ge 1$; the remaining pairs are zero-imputed when joined to the auction-level benchmark.
+From this panel we build the worker-flow edge list. For each pair of BEC firms $(i, j)$, we count distinct PIS numbers that appear at both firms at any point during the nine years (the shared-worker count $W_{ij}$) and compute the Jaccard similarity $J_{ij}$. Pairs with no shared workers are zero-imputed when merged to the auction benchmark.
 
 \subsection{CADE: cartel ground truth}
 
-The ground truth is constructed from CADE administrative proceedings with final Tribunal decisions convicting named firms of cartel conduct in S\~{a}o Paulo procurement markets (see Section~\ref{hist} for institutional background). We identified seven relevant cartels spanning the sectors listed in Table~\ref{tab:cartels}, involving 35 firms with matchable CNPJ roots. For each cartel, the CADE case files specify a conduct period (start and end years) and the product market in which bid rigging or market division was found to have occurred.
+Our ground truth comes from CADE administrative proceedings with final Tribunal decisions convicting named firms of cartel conduct in S\~{a}o Paulo procurement markets (see Section~\ref{hist}). Table~\ref{tab:cartels} lists the seven cartels we identified---spanning pharmaceuticals, school meals, trash bags, solar water heaters, metropolitan rail, airport cafeterias, and school transport---together with their conduct periods and the 35 firms whose CNPJ roots match BEC records.
 
-We match each convicted firm's 8-digit CNPJ root to the BEC bidding records by firm identifier. We then label each BEC auction as \emph{cartel-tainted} if at least one convicted firm participated during the CADE-specified conduct period for the relevant product market and year. This firm $\times$ period $\times$ product matching ensures that auctions are labeled as cartel-tainted only when a convicted firm was bidding during the window in which its cartel was found to be active---not merely because the firm appears in a CADE database at some other time.
+The key feature for detection is that each case file specifies not just the colluding firms but the product market and time window. We exploit this to label individual auctions as cartel-tainted: an auction earns the flag only if a convicted firm bid during the CADE-specified conduct period for the relevant product and year. This firm $\times$ period $\times$ product matching avoids the coarser alternative of treating every auction involving a flagged firm as suspicious.
 
 \begin{table}[htbp]
 \centering
@@ -40,27 +40,27 @@ Transporte escolar & 08700.005876 & 2019 & 2 & 2 & Bid rigging \\
 \end{tabular}
 \vspace{0.5em}
 \begin{minipage}{0.95\textwidth}
-\scriptsize{\textbf{Notes:} ``Firms'' counts unique 8-digit CNPJ roots per cartel; ``In BEC'' counts those matched to BEC bidding records. Row totals are after cross-cartel deduplication; the In BEC total exceeds the Firms total because one firm participates in two cartels. Conduct periods are hand-curated from CADE Tribunal decisions and press releases (see Appendix for full audit). Source: script 12.\par}
+\scriptsize{\textbf{Notes:} ``Firms'' and ``In BEC'' count unique 8-digit CNPJ roots per cartel; row totals are after cross-cartel deduplication. The In BEC total exceeds the Firms total because one firm participates in two cartels. Conduct periods hand-curated from CADE Tribunal decisions and press releases (see Appendix). Source: script 12.\par}
 \end{minipage}
 \end{table}
 
 \subsection{Sample construction}
 
-We construct three conviction-anchored detection samples, all restricted to the close-margin envelope $\lvert MV \rvert \le 0.10$:
+All detection tests use the close-margin envelope $\lvert MV \rvert \le 0.10$. Within that envelope we define three samples:
 
 \begin{enumerate}
-\item \textbf{Cartel-active benchmark} ($N \approx 2{,}300$ for pregão; $N = 263$ for convite): auctions in which at least one convicted firm participated during the active period of its cartel. This is the primary evaluation sample on which all screens are tested.
+\item \textbf{Cartel-active benchmark} ($N \approx 2{,}300$ preg\~{a}o; $N = 263$ convite). At least one convicted firm bid during the active period of its cartel. This is the primary evaluation sample.
 
-\item \textbf{Strict pair-matched sample} ($N = 10$ for pregão after close-margin filtering): auctions in which \emph{both} the winner and the runner-up are firms convicted in the same cartel during the same conduct period. This sample is the gold standard for detecting coordination between known cartel partners but is severely power-limited.
+\item \textbf{Strict pair-matched sample} ($N = 10$ preg\~{a}o). Both the winner and the runner-up belong to the same convicted cartel during the same conduct period. The gold standard for head-to-head coordination, but power-limited.
 
-\item \textbf{Anytime-listed sensitivity sample} ($N \approx 80$ for pregão): auctions in which both the winner and runner-up appear in a CADE conviction for the same cartel process, but the auction year may fall outside the prosecuted conduct window. Of the 107 pre-filtering auctions in this sample, 93 are out-of-window and 100 come from a single cartel (the medicamentos hub-and-spoke case, CADE process 08012.002222/2011-09). Because treating out-of-window bidding by former cartelists as collusive behavior requires assumptions we do not attempt to resolve, this sample is reported only as a sensitivity check.
+\item \textbf{Anytime-listed sensitivity} ($N \approx 80$ preg\~{a}o). Both firms appear in a CADE conviction for the same cartel, but the auction year may fall outside the conduct window. Of the 107 pre-filtering auctions, 93 are out-of-window and 100 come from a single case (the medicamentos hub-and-spoke, CADE 08012.002222/2011-09). Reported as a sensitivity only.
 \end{enumerate}
 
-The \emph{clean control} consists of all close-margin auctions in which no cartel-listed firm participated ($N = 527{,}259$ for pregão; $N = 519{,}557$ for convite). All screens---classical and network-based---are evaluated against this common control on the unified close-margin benchmark.
+The \emph{clean control} is every close-margin auction with no cartel-listed firm ($N = 527{,}259$ preg\~{a}o; $519{,}557$ convite). All screens are evaluated against this common baseline.
 
 \subsection{Variable definitions}
 
-Table~\ref{tab:variables} summarizes the key variables used in the analysis.
+Table~\ref{tab:variables} collects the key variables.
 
 \begin{table}[htbp]
 \centering
@@ -70,14 +70,14 @@ Table~\ref{tab:variables} summarizes the key variables used in the analysis.
 Variable & Definition \\
 \midrule
 $MV_a$ & Margin of victory: $(b^{\text{runner-up}}_a - b^{\text{win}}_a) / b^{\text{win}}_a$ \\
-$CV_a$ & Coefficient of variation of firm-best bids in auction $a$ \\
+$CV_a$ & Coefficient of variation of firm-best bids \\
 $S_a$ & Bid spread: $(\max - \min) / \text{mean}$ of firm-best bids \\
-$N_a$ & Number of distinct firms submitting bids in auction $a$ \\
+$N_a$ & Number of distinct firms submitting bids \\
 Incumbent$_a$ & $= 1$ if the winning firm won the preceding auction in the same market \\
 Last bidder$_a$ & $= 1$ if the winning firm submitted the final bid \\
-$W_{ij}$ & Shared workers: count of distinct PIS appearing at both firms $i$ and $j$ \\
+$W_{ij}$ & Shared workers: distinct PIS appearing at both firms $i$ and $j$ \\
 $J_{ij}$ & Jaccard similarity: $W_{ij} / (N_i + N_j - W_{ij})$ \\
-$C_{ij}$ & Co-bidding count: number of auctions where both $i$ and $j$ bid \\
+$C_{ij}$ & Co-bidding count: auctions where both $i$ and $j$ bid \\
 \bottomrule
 \end{tabular}
 \end{table}

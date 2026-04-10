@@ -1,91 +1,85 @@
 \section{Empirical Strategy}\label{coll}
 
-We deploy four complementary detection approaches on the conviction-anchored benchmark described in Section~\ref{data}: a close-margin regression discontinuity (Section~\ref{sec:rdd}), classical bid-distribution screens (Section~\ref{sec:classical}), network-based screens constructed from worker-flow and co-bidding data (Section~\ref{sec:network}), and a specialization placebo that decomposes the network signal into market-specialization and cartel-specific components (Section~\ref{sec:placebo}). We evaluate each screen's discriminative power using the area under the receiver-operating-characteristic curve (Section~\ref{sec:auc}). Section~\ref{sec:model} sketches a simple model linking the informativeness of each screen family to institutional primitives.
+We bring four detection approaches to the conviction-anchored benchmark: a close-margin regression discontinuity (Section~\ref{sec:rdd}), classical bid-distribution screens (Section~\ref{sec:classical}), network screens built from worker-flow and co-bidding data (Section~\ref{sec:network}), and a specialization placebo that separates market-level labor circulation from cartel-specific coordination (Section~\ref{sec:placebo}). Every screen is evaluated by its area under the ROC curve (Section~\ref{sec:auc}). A simple model in Section~\ref{sec:model} ties the pieces together.
 
 \subsection{Close-margin regression discontinuity}\label{sec:rdd}
 
-Following \citet{kawai2023using}, we exploit the winning--losing threshold in close-margin pregão auctions. Let $MV_{a}$ denote the margin of victory in auction $a$, defined as the percentage difference between the runner-up bid and the winning bid:
+Following \citet{kawai2023using}, we focus on auctions decided by a hair. Define the margin of victory in auction $a$ as
 \[
 MV_a \;=\; \frac{b^{\text{runner-up}}_a - b^{\text{win}}_a}{b^{\text{win}}_a}\,.
 \]
-The running variable is $MV_a$, with a cutoff at zero: auctions with $MV_a \approx 0$ are those in which the winner barely underbid the closest rival. Under competitive conditions, the observable pre-determined characteristics of narrowly winning and narrowly losing firms should be continuous at $MV_a = 0$. Any statistically sharp discontinuity at the cutoff identifies a non-competitive wedge---either collusion or external favoritism.
+When $MV_a$ is close to zero, the winner barely underbid the nearest rival. Under genuine competition, narrowly winning and narrowly losing firms should look alike on pre-determined characteristics; a sharp discontinuity at the cutoff signals something non-competitive.
 
-We estimate the discontinuity using local-polynomial regression with the bandwidth selector of \citet{imhof2018screening}. The two primary outcomes are \emph{incumbency}---an indicator equal to one if the firm won the immediately preceding auction in the same market---and \emph{last bidder}---an indicator for whether the firm submitted the final bid in the auction. A positive jump in incumbency at $MV = 0$ is consistent with bid rotation (the designated winner is systematically a past winner); a jump in last-bidder status is consistent with strategic bid timing. We supplement the RD estimates with a density test on the running variable, following \citet{imhof2018screening}, to assess whether there is manipulation of the bid margin itself---a prerequisite for interpreting discontinuities causally.
+We estimate the jump using local-polynomial regression with a data-driven bandwidth. Two outcomes carry interpretive weight. \emph{Incumbency}---whether the firm won the previous auction in the same market---tests for bid rotation: a jump would indicate that designated winners are systematically past winners. \emph{Last bidder}---whether the firm submitted the final bid---tests for strategic timing. A density test on the running variable checks whether the margin itself is being manipulated.
 
 \subsection{Classical bid-distribution screens}\label{sec:classical}
 
-We implement four classical screens computed at the auction level on firm-best bids (one bid per firm, retaining the firm's lowest bid when multiple rounds exist):
+We compute four screens on firm-best bids (one bid per firm per auction, keeping the lowest when multiple rounds exist):
 
 \begin{enumerate}
-\item \textbf{Coefficient of variation} ($CV_a$): the standard deviation of firm-best bids divided by their mean. Under bid rotation with cover bidding, $CV_a$ is predicted to be lower at cartel-tainted auctions because bids cluster around the designated winner's price \citep{porter1993detecting, abrantesmetz2006variance}.
+\item \textbf{Coefficient of variation} ($CV_a$): standard deviation divided by mean. Bid rotation predicts lower $CV$ because cover bids cluster near the designated winner \citep{porter1993detecting, abrantesmetz2006variance}.
 
-\item \textbf{Bid spread} ($S_a$): the range of firm-best bids normalized by their mean, $S_a = (\max - \min)/\text{mean}$. Like $CV_a$, the spread is predicted to be compressed under cover bidding.
+\item \textbf{Bid spread} ($S_a$): $(\max - \min)/\text{mean}$. Like $CV$, compressed under cover bidding.
 
-\item \textbf{Margin of victory} ($MV_a$): defined above. Under bid rotation, the winning margin is predicted to be \emph{small} because the designated winner undercuts cover bids by only the minimum necessary to win.
+\item \textbf{Margin of victory} ($MV_a$): the designated winner should undercut cover bids by just enough to win, yielding a small margin.
 
-\item \textbf{Number of active bidders} ($N_a$): the count of distinct firms submitting bids. Collusive entry deterrence or market-division agreements predict \emph{fewer} bidders at cartel-tainted auctions \citep{marshall2012economics}.
+\item \textbf{Number of bidders} ($N_a$): entry deterrence or market division should reduce the count \citep{marshall2012economics}.
 \end{enumerate}
 
-Each screen is evaluated on the cartel-active benchmark ($\lvert MV \rvert \le 0.10$), comparing the distribution of cartel-tainted auctions to clean controls. We report the Welch $t$-statistic for the mean difference, Cohen's $d$ for effect-size calibration, the Wilcoxon rank-sum $p$-value for rank-order separation, and the AUC (Section~\ref{sec:auc}).
+For each, we compare cartel-tainted auctions to clean controls on the close-margin benchmark ($\lvert MV \rvert \le 0.10$), reporting the Welch $t$-statistic, Cohen's $d$, the Wilcoxon rank-sum $p$-value, and the AUC.
 
 \subsection{Network-based screens}\label{sec:network}
 
-We construct three screens from administrative data sources external to the bid records themselves.
+We step outside the bid data entirely and build three screens from administrative sources that CADE analysts do not routinely examine.
 
-\noindent\textbf{Worker-flow screens.} For each auction-level (winner, runner-up) firm pair, we measure inter-firm labor connectivity using the full 2009--2017 RAIS employer--employee panel. Two variants capture different aspects of labor proximity:
+\noindent\textbf{Worker-flow screens.} For each (winner, runner-up) pair we measure labor connectivity from the full 2009--2017 RAIS panel:
 
 \begin{itemize}
-\item \textbf{Shared workers} ($W_{ij}$): the number of distinct workers (identified by their PIS number) who appear in the employment records of both firm $i$ and firm $j$ at any point during the nine-year panel. A higher count indicates denser personnel flows between the two firms.
+\item \textbf{Shared workers} ($W_{ij}$): the count of distinct PIS numbers appearing at both firms during the nine-year window.
 
-\item \textbf{Jaccard similarity} ($J_{ij}$): the ratio $J_{ij} = W_{ij} / (N_i + N_j - W_{ij})$, where $N_i$ and $N_j$ are the total number of distinct workers employed by each firm over the window. The Jaccard index normalizes the shared-worker count by the size of each firm's workforce, ensuring that the screen is not mechanically driven by firm size.
+\item \textbf{Jaccard similarity} ($J_{ij} = W_{ij} / (N_i + N_j - W_{ij})$): normalizes the count by firm size, so that large employers are not mechanically flagged.
 \end{itemize}
 
-The hypothesis is that cartel coordination leaves detectable traces in personnel flows: managers, salespeople, or technical staff who rotate between colluding firms serve as informal communication channels \citep{stoyanov2012worker, serafinelli2019good}. Under the institutional-thinness mechanism we develop below, the worker-flow signal should be strongest in markets with thin specialized-labor pools.
+The logic is straightforward. If cartel coordination in thin labor markets runs through personnel---managers carrying pricing information, technicians rotating between member firms---then the employment records should show it \citep{stoyanov2012worker, serafinelli2019good}.
 
-\noindent\textbf{Co-bidding screen.} For each (winner, runner-up) pair, we count the number of auctions in which both firms submitted bids over the full sample period ($C_{ij}$). Firms that co-bid frequently may be coordinating market presence. The co-bidding screen provides an independent network channel constructed entirely within the procurement data, serving as a comparator for the worker-flow screens, which are constructed from a wholly external source.
+\noindent\textbf{Co-bidding screen.} For each pair we count the auctions in which both firms submitted bids ($C_{ij}$). This provides a network channel built entirely within the procurement data, serving as a benchmark against which the value-added of the external worker-flow layer can be measured.
 
 \subsection{Detection evaluation: AUC}\label{sec:auc}
 
-For each screen $s$, we evaluate discriminative power by computing the area under the receiver-operating-characteristic curve (AUC). The AUC is the probability that a randomly drawn cartel-tainted auction scores higher (more cartel-like) on screen $s$ than a randomly drawn clean auction. For screens where lower values are predicted under collusion ($CV$, $S$, $MV$, $N$), we negate the scores before computing the AUC, so that a value above 0.5 always indicates detection in the predicted direction. An AUC of 0.5 corresponds to chance (no separation), and an AUC of 1.0 to perfect separation.
-
-We compute the AUC via the Mann--Whitney $U$ statistic with average-rank tie-handling:
+We use the area under the ROC curve to compare screens. The AUC is simply the probability that a randomly chosen cartel auction scores more ``cartel-like'' than a randomly chosen clean auction. For screens where lower is more suspicious ($CV$, $S$, $MV$, $N$), we negate scores so that AUC $> 0.5$ always means detection in the predicted direction. We compute the AUC via the Mann--Whitney $U$ statistic with average-rank tie-handling:
 \[
 \text{AUC} \;=\; \frac{U_1}{n_1 \times n_0}\,,
 \]
-where $U_1$ is the sum of ranks of cartel-tainted auctions minus $n_1(n_1+1)/2$, and $n_1$ and $n_0$ are the cartel and clean sample sizes, respectively. All screens---classical and network-based---are evaluated on the same unified close-margin benchmark ($\lvert MV \rvert \le 0.10$), ensuring apples-to-apples comparability. Appendix~\ref{app:bandwidth} reports AUCs at six alternative bandwidths ($0.02$--$0.50$); results are stable across the full range.
+where $n_1$ and $n_0$ are the cartel and clean sample sizes. All screens are evaluated on the same unified close-margin benchmark, so comparisons are apples-to-apples. Appendix~\ref{app:bandwidth} shows that results are stable across bandwidths from $0.02$ to $0.50$.
 
 \subsection{Specialization placebo}\label{sec:placebo}
 
-The worker-flow AUC may reflect two distinct channels: (i)~\emph{market specialization}---firms operating in the same thin product market share workers because the pool of specialized labor is small, regardless of whether they collude---and (ii)~\emph{cartel-specific coordination}---colluding firms engage in additional personnel transfers to sustain communication and monitoring. To disentangle these channels, we construct a three-way sample decomposition:
+Elevated worker flows between a cartel firm and its rival could mean two very different things: that the firms collude through personnel, or that they simply draw from the same thin labor pool. We need to tell them apart.
 
-\begin{enumerate}
-\item \textbf{Cartel}: auction-level (winner, runner-up) pairs in which at least one firm is cartel-active, drawn from the close-margin benchmark ($N \approx 2{,}300$ for pregão).
-\item \textbf{Placebo (same market)}: non-cartel firm pairs bidding on the same BEC item code in the same year as each cartel-active auction. These pairs face the same product-market labor pool as cartel pairs but are not colluding (by the ground-truth definition).
-\item \textbf{Clean (global)}: all remaining non-cartel pairs in the close-margin benchmark.
-\end{enumerate}
+We build a three-way decomposition. The \textbf{cartel} sample consists of auction-level (winner, runner-up) pairs in which at least one firm is cartel-active ($N \approx 2{,}300$ for preg\~{a}o). The \textbf{placebo} consists of non-cartel pairs bidding on the same BEC item code in the same year---firms facing the same product-market labor pool but not colluding. The \textbf{clean} baseline is every other non-cartel pair.
 
-If the entire worker-flow signal were driven by market specialization, the placebo pairs should exhibit the same AUC as cartel pairs (relative to the global clean baseline). If instead there is a cartel-specific residual, cartel pairs should exhibit \emph{higher} worker-flow overlap than same-market placebo pairs. In a linear decomposition of the total AUC gain (cartel vs.\ clean minus 0.5), we attribute the fraction absorbed by the placebo to market specialization and the remainder to cartel-specific coordination.
+If the entire worker-flow signal were market specialization, the placebo should look like the cartel sample. If there is a cartel-specific coordination channel on top, cartel pairs should show still more worker overlap than same-market non-cartel pairs. We measure the split by comparing AUCs: the fraction of the total gain (cartel vs.\ clean, minus $0.5$) absorbed by the placebo is the specialization share; the remainder is the cartel residual.
 
 \subsection{A simple model of institution-dependent coordination}\label{sec:model}
 
-We sketch a parsimonious framework to organize the empirical predictions. Consider a market with $n \ge 2$ firms that can form a cartel. The cartel must coordinate on a winning bid for each auction. Two coordination technologies are available:
+Why should screen effectiveness depend on the market? Consider $n \ge 2$ firms that can form a cartel. They need to coordinate on a winning bid for each auction. Two technologies are available:
 
 \begin{itemize}
-\item \textbf{Bid-pattern coordination} (cost $c_b$): the cartel arranges bids so that cover bids cluster around the designated winner's price. This technology leaves traces in bid-distribution statistics ($CV$, spread, bidder counts) and is the mechanism assumed by classical screens.
+\item \textbf{Bid-pattern coordination} (cost $c_b$): arrange cover bids around the designated winner's price. Leaves traces in $CV$, spread, and bidder counts---exactly what classical screens are designed to catch.
 
-\item \textbf{Personnel-flow coordination} (cost $c_w(L)$, decreasing in the thickness $L$ of the specialized-labor pool): the cartel coordinates through the transfer or rotation of key personnel---managers, salespeople, or technical staff---between member firms. This technology leaves traces in worker-flow statistics but not necessarily in bid distributions.
+\item \textbf{Personnel-flow coordination} (cost $c_w(L)$, decreasing in the thickness $L$ of the specialized-labor pool): coordinate through transfers, rotations, or shared employment of key staff. Leaves traces in worker-flow statistics but not necessarily in the bid distribution.
 \end{itemize}
 
-Each cartel chooses the cheapest available technology. In thick markets (large $L$), $c_w(L) > c_b$, and the cartel coordinates through bids: classical screens fire. In thin markets (small $L$), $c_w(L) < c_b$, and the cartel coordinates through personnel: worker-flow screens fire, but classical screens may not, because the bid distribution is not distorted by the coordination mechanism.
+Rational cartel members pick the cheaper channel. In thick markets (large $L$), $c_w > c_b$: collusion runs through bids, and classical screens fire. In thin markets (small $L$), $c_w < c_b$: collusion runs through people, and the bid distribution looks clean.
 
-This framework generates three testable predictions:
+Three testable predictions follow:
 
 \begin{enumerate}
-\item \textbf{Direction}: In thin-labor markets, classical screen AUCs should be near chance; worker-flow AUCs should be above chance. The reverse holds in thick-labor markets.
+\item \textbf{Thickness gradient.} In thin markets, classical AUCs should be near chance while worker-flow AUCs should be above chance. In thick markets, the gap should narrow as classical screens recover.
 
-\item \textbf{Placebo decomposition}: Because thin specialized-labor pools generate spontaneous inter-firm labor circulation even among non-colluding firms, a same-market placebo should exhibit elevated worker-flow overlap relative to random pairs (the specialization component). Cartel pairs should exhibit still greater overlap on top of that baseline (the coordination component). Both components should be present in thin-market data.
+\item \textbf{Placebo decomposition.} Thin labor pools produce spontaneous inter-firm worker circulation even without collusion. A same-market placebo should show elevated worker overlap relative to random pairs (specialization), and cartel pairs should show more still (coordination). Both components should be present.
 
-\item \textbf{Symmetry}: Because personnel-flow coordination operates through the shared labor pool of the market---not through the outcome of any individual auction---the worker-flow detection signal should be symmetric across winner and runner-up roles. It should not matter whether the cartel firm wins or loses a given tender.
+\item \textbf{Symmetry.} Because personnel-flow coordination operates through the shared labor pool of the market---not through the outcome of any particular auction---the worker-flow signal should not depend on whether the cartel firm wins or loses.
 \end{enumerate}
 
-The model is deliberately stylized: it abstracts from dynamic considerations (repeated games, leniency incentives), from the possibility that firms use both technologies simultaneously, and from heterogeneity in $c_b$ across auction formats. The framework is offered not as a structural model to be estimated but as an organizing device for interpreting our empirical findings and for specifying the conditions under which the classical-vs.-network screen comparison is most informative.
+The model is deliberately spare. It abstracts from repeated-game dynamics, leniency, the possibility that firms use both channels simultaneously, and heterogeneity in $c_b$ across auction formats. We offer it not as a structure to be estimated but as a lens for reading the results and for specifying when the classical-vs.-network comparison is most informative.
