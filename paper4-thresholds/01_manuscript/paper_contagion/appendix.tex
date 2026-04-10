@@ -5,7 +5,35 @@
 \renewcommand{\thetable}{A.\arabic{table}}
 \renewcommand{\thefigure}{A.\arabic{figure}}
 
-\section{Appendix: TWFE vs.\ Stacked DiD Comparison}\label{app:twfe}
+\section{Appendix}\label{app}
+
+\subsection{CEM Balance}\label{app:balance}
+
+Table~\ref{tab:balance} reports pre-period means for treated and control firms before and after CEM matching. The key matching variable---pre-period win rate---is well balanced after matching (0.52 vs.\ 0.51). Pre-period bid volume and firm size remain imbalanced, reflecting the fact that treated firms (those that absorb ex-cartel workers) tend to be larger. This level difference is absorbed by the firm fixed effect in the DiD specification; the identifying assumption is parallel \emph{trends}, not balanced levels.
+
+\begin{table}[htbp]
+\centering
+\caption{CEM Balance: Pre-Period Means}\label{tab:balance}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{3}{c}{Unmatched} & \multicolumn{3}{c}{CEM Matched} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+Variable & Treated & Control & NSD & Treated & Control & Diff \\
+\midrule
+Pre-period bids & 49.5 & 53.5 & $-0.02$ & 68.9 & 37.2 & $+31.7$ \\
+Pre-period item codes & 13.0 & 19.0 & $-0.14$ & 17.8 & 11.0 & $+6.9$ \\
+Pre-period win rate & 0.52 & 0.43 & $+0.32$ & 0.52 & 0.51 & $+0.00$ \\
+Firm size (RAIS workers) & 674 & 58 & $+0.81$ & 316 & 202 & $+113$ \\[3pt]
+$N$ (firms) & 241 & 475 & & 110 & 160 & \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.90\textwidth}
+\scriptsize{\textbf{Notes:} Pre-period defined as $[\text{arrival\_year} - 2, \text{arrival\_year} - 1]$ for treated firms and $[2012, 2013]$ for controls. NSD: normalized standardized difference. CEM matching on quintiles of all four variables. Matched control means are CEM-weighted. Source: script 37.\par}
+\end{minipage}
+\end{table}
+
+\subsection{TWFE vs.\ Stacked DiD Comparison}\label{app:twfe}
 
 Table~\ref{tab:twfe_vs_stacked} compares event-study coefficients across four specifications: unmatched TWFE, CEM-matched TWFE, stacked DiD (all 4 cohorts), and stacked DiD robust (dropping cohort 2013). The comparison illustrates two points. First, the win-rate effect is robust across all four specifications, with post-treatment means ranging from $+0.032$ to $+0.061$. Second, the price effect is present only in the TWFE specifications ($+0.26$) and vanishes under the stacked estimator ($+0.05$), revealing staggered-treatment bias.
 
