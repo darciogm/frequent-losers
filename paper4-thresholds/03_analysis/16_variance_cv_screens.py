@@ -141,10 +141,54 @@ def build_auction_screens(proc_label: str) -> pl.DataFrame:
     auction = auction.join(runnerup, on=["numerodaoc", "códigoitem"], how="left")
 
     # Margin of victory at the auction level
+    # Sanity mask: set mv to NULL whenever (i) winner_bid is missing or
+    # non-positive (division by zero), (ii) mv is negative (anomalous: winner
+    # is not lowest bidder — rare, possible under disqualifications, excluded
+    # for screen comparability with the literature), or (iii) mv > MV_MAX
+    # (data-entry error or bid typo — runner-up bidding more than MV_MAX*100%
+    # above the winner is implausible for competitive procurement).
+    # Pre-fix, ~a handful of auctions with winner_bid ≈ 0 pulled control means
+    # into the hundreds, contaminating every downstream t-test and AUC in
+    # variance_screens_results.txt and table1_multiscreen_report.txt.
+    MV_MAX = 1.0  # 100% margin: runner-up is at most double the winner
     auction = auction.with_columns([
-        ((pl.col("runnerup_bid") - pl.col("winner_bid")) /
-         pl.col("winner_bid")).alias("mv"),
+        pl.when(
+            (pl.col("winner_bid").is_not_null())
+            & (pl.col("winner_bid") > 0)
+            & (pl.col("runnerup_bid").is_not_null())
+        )
+        .then((pl.col("runnerup_bid") - pl.col("winner_bid")) / pl.col("winner_bid"))
+        .otherwise(None)
+        .alias("mv_raw"),
     ])
+    auction = auction.with_columns([
+        pl.when(
+            pl.col("mv_raw").is_not_null()
+            & (pl.col("mv_raw") >= 0)
+            & (pl.col("mv_raw") <= MV_MAX)
+        )
+        .then(pl.col("mv_raw"))
+        .otherwise(None)
+        .alias("mv"),
+    ])
+
+    n_total = auction.height
+    n_mv_ok = auction.filter(pl.col("mv").is_not_null()).height
+    n_mv_neg = auction.filter(
+        pl.col("mv_raw").is_not_null() & (pl.col("mv_raw") < 0)
+    ).height
+    n_mv_big = auction.filter(
+        pl.col("mv_raw").is_not_null() & (pl.col("mv_raw") > MV_MAX)
+    ).height
+    n_mv_null_raw = auction.filter(pl.col("mv_raw").is_null()).height
+    print(
+        f"  mv sanity: total={n_total:,}  kept={n_mv_ok:,}  "
+        f"dropped_raw_null={n_mv_null_raw:,}  dropped_neg={n_mv_neg:,}  "
+        f"dropped_gt_{MV_MAX}={n_mv_big:,}"
+    )
+
+    # Drop the raw helper column so downstream scripts see a clean schema
+    auction = auction.drop("mv_raw")
 
     return auction
 
