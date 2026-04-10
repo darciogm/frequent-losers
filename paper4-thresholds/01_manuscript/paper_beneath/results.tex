@@ -61,7 +61,17 @@ Table~\ref{tab:thickness} reports the results. The pattern is striking. In thin 
 
 Worker-flow screens show the opposite gradient. In thin markets, shared-worker AUC reaches $0.774$ and Jaccard AUC reaches $0.758$; in thick markets, both decline to approximately $0.70$. The gap between the best classical screen and the worker-flow screen is 33~percentage points in thin markets but only 10~percentage points in thick markets---a three-fold difference that confirms the model's core prediction.
 
-The tercile decomposition (reported in the notes to Table~\ref{tab:thickness}) reveals additional structure: the worker-flow AUC peaks in mid-thickness markets (tercile~2: AUC $= 0.80$) rather than in the thinnest markets (tercile~1: AUC $= 0.75$). This non-monotonicity is consistent with the specialization-placebo finding of Section~\ref{sec:res_placebo}: in the very thinnest markets, spontaneous same-market labor circulation is so dense that it partially compresses the cartel-vs-clean AUC from above, even as the cartel-specific signal remains strong.
+Figure~\ref{fig:thickness} plots the gradient at finer resolution, using eight thickness bins. The two curves tell the model's story in a single image. The worker-flow AUC starts above $0.75$ in the thinnest markets, peaks near $0.81$ at moderate thickness, and declines toward $0.53$ in thick markets. The classical screen (bidder count) traces the mirror path: it begins below $0.31$---\emph{anti-informative}---and climbs steadily to $0.66$. The curves cross at a market thickness of roughly 10~median bidders, the point at which the cheapest coordination technology switches from personnel to bids. Below the crossing, worker-flow screens dominate; above it, classical screens recover and eventually overtake. The peak of the worker-flow curve at moderate thickness (rather than at the thinnest point) is consistent with the specialization-placebo finding: in the very thinnest markets, spontaneous same-market labor circulation is so dense that it compresses the cartel-vs.-clean AUC from above.
+
+\begin{figure}[htbp]
+\centering
+\caption{Screen Performance by Market Thickness}\label{fig:thickness}
+\includegraphics[width=0.85\textwidth]{thickness_gradient.pdf}
+\begin{minipage}{0.85\textwidth}
+\vspace{0.3em}
+{\scriptsize \emph{Notes:} Each point represents the AUC on the cartel-active benchmark within a thickness bin, defined by the median number of bidders per item code in the clean control sample. Worker-flow AUC uses shared workers (higher is cartel); classical AUC uses bidder count (negated; above 0.5 = detection in predicted direction). Sample sizes ($n$) refer to cartel-active auctions per bin.\par}
+\end{minipage}
+\end{figure}
 
 \begin{table}[htbp]
 \centering
@@ -80,6 +90,14 @@ All (benchmark) & 2{,}319 & 527{,}259 & 0.523 & 0.531 & 0.555 & \textbf{0.750} &
 \scriptsize{\textbf{Notes:} Market thickness is the median number of bidders per auction for each item code, computed on clean-control auctions with $\ge 5$ observations. ``Thin'' = median $\le 5$; ``Thick'' = median $> 5$. Classical screen AUCs use ``lower is cartel'' convention. Tercile decomposition: T1 (median $= 4$): $N_t = 1{,}191$, shared-workers AUC $= 0.751$, $CV$ AUC $= 0.382$; T2 (median $= 5$): $N_t = 602$, shared-workers AUC $= 0.797$, $CV$ AUC $= 0.533$; T3 (median $= 8$): $N_t = 241$, shared-workers AUC $= 0.644$, $CV$ AUC $= 0.612$.\par}
 \end{minipage}
 \end{table}
+
+\subsection{Robustness: leave-one-cartel-out and permutation falsification}\label{sec:robustness}
+
+Two additional tests probe whether the headline AUC of $0.75$ is robust or fragile.
+
+\emph{Leave-one-cartel-out.} We drop each of the seven convicted cartels in turn and recompute the worker-flow AUC on the remaining six. For six of the seven drops, the AUC is virtually unchanged ($0.74$--$0.77$). The exception is the medicamentos hub-and-spoke cartel (CADE 08012.002222/2011-09): excluding its eight firms removes 85\% of the cartel-active sample ($N$ falls from $2{,}319$ to $344$), and the shared-worker AUC drops to $0.58$. This decline reflects the dominance of one large cartel in the benchmark rather than a breakdown in the screen: with only 344 treated auctions the test is severely power-limited, and even at $0.58$ the worker-flow screen still outperforms the best classical screen ($0.56$). Still, the concentration is a caveat: the headline result draws disproportionately on the medicamentos case, and replication on larger or independent ground-truth sets is a priority for future work.
+
+\emph{Permutation falsification.} We randomly reassign the cartel-active label 1{,}000~times (preserving the treatment proportion) and recompute the AUC in each permutation. The permuted AUCs cluster tightly around $0.500$ (mean $= 0.500$, sd $= 0.003$, 95\% interval $[0.494, 0.505]$). The real AUC of $0.75$ lies at the 100th percentile of the permutation distribution ($p < 0.001$): no random relabeling comes close.
 
 \subsection{Model predictions vs.\ empirical findings}\label{sec:model_test}
 
