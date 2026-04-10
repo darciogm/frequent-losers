@@ -53,6 +53,34 @@ Cartel pairs share at least one worker in 57.9\% of cases, compared with 31.1\% 
 
 Both components are consistent with the institutional-thinness mechanism of Section~\ref{sec:model}: thin specialized-labor markets generate spontaneous labor circulation among same-market firms (the specialization component), and cartels additionally reinforce those flows to sustain coordination (the cartel-specific residual). The two-component structure also has a practical implication: a worker-flow screen deployed without conditioning on market identity would capture both components, potentially flagging non-colluding same-market firm pairs as suspicious. Conditioning on market or product code absorbs the specialization component, yielding a purer cartel signal at the cost of a modest reduction in overall AUC (from $0.740$ to $0.638$).
 
+\subsection{Heterogeneity by market thickness}\label{sec:heterogeneity}
+
+The institutional-thinness model of Section~\ref{sec:model} predicts that worker-flow screens should outperform classical screens most sharply in thin markets, where the cheapest coordination technology operates through personnel flows rather than bid-pattern manipulation. We test this prediction by splitting the cartel-active benchmark according to market thickness, measured as the median number of bidders per auction for each item code in the clean control sample. Markets with a control-sample median at or below the overall median of 5~firms are classified as ``thin''; those above are classified as ``thick.'' This proxy is constructed entirely from the non-cartel sample to avoid contamination by cartel-induced changes in bidder counts.
+
+Table~\ref{tab:thickness} reports the results. The pattern is striking. In thin markets ($N_{\text{cartel}} = 1{,}618$), classical screens fire in the \emph{wrong} direction: $CV$ AUC $= 0.45$, spread AUC $= 0.44$, and bidder-count AUC $= 0.40$---all below chance. Cartel-tainted auctions in thin markets exhibit \emph{more} bid dispersion and \emph{more} active bidders than clean controls, consistent with a phantom-bidding or cover-bid mechanism in which all cartel members participate and submit inflated bids. By contrast, in thick markets ($N_{\text{cartel}} = 416$), classical screens fire in the predicted direction: $CV$ AUC $= 0.59$, spread $= 0.60$, bidder count $= 0.60$---substantively above chance and consistent with the standard bid-rotation model.
+
+Worker-flow screens show the opposite gradient. In thin markets, shared-worker AUC reaches $0.774$ and Jaccard AUC reaches $0.758$; in thick markets, both decline to approximately $0.70$. The gap between the best classical screen and the worker-flow screen is 33~percentage points in thin markets but only 10~percentage points in thick markets---a three-fold difference that confirms the model's core prediction.
+
+The tercile decomposition (reported in the notes to Table~\ref{tab:thickness}) reveals additional structure: the worker-flow AUC peaks in mid-thickness markets (tercile~2: AUC $= 0.80$) rather than in the thinnest markets (tercile~1: AUC $= 0.75$). This non-monotonicity is consistent with the specialization-placebo finding of Section~\ref{sec:res_placebo}: in the very thinnest markets, spontaneous same-market labor circulation is so dense that it partially compresses the cartel-vs-clean AUC from above, even as the cartel-specific signal remains strong.
+
+\begin{table}[htbp]
+\centering
+\caption{Screen Performance by Market Thickness}\label{tab:thickness}
+\begin{tabular}{lccccccc}
+\toprule
+& $N_{\text{cartel}}$ & $N_{\text{clean}}$ & $CV$ & Spread & $N_{\text{firms}}$ & Shared workers & Jaccard \\
+\midrule
+Thin ($\le 5$ firms) & 1{,}618 & 217{,}662 & 0.447 & 0.436 & 0.400 & \textbf{0.774} & \textbf{0.758} \\
+Thick ($> 5$ firms) & 416 & 224{,}074 & 0.594 & 0.604 & 0.604 & 0.699 & 0.694 \\[3pt]
+All (benchmark) & 2{,}319 & 527{,}259 & 0.523 & 0.531 & 0.555 & \textbf{0.750} & \textbf{0.739} \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.95\textwidth}
+\scriptsize{\textbf{Notes:} Market thickness is the median number of bidders per auction for each item code, computed on clean-control auctions with $\ge 5$ observations. ``Thin'' = median $\le 5$; ``Thick'' = median $> 5$. Classical screen AUCs use ``lower is cartel'' convention. Tercile decomposition: T1 (median $= 4$): $N_t = 1{,}191$, shared-workers AUC $= 0.751$, $CV$ AUC $= 0.382$; T2 (median $= 5$): $N_t = 602$, shared-workers AUC $= 0.797$, $CV$ AUC $= 0.533$; T3 (median $= 8$): $N_t = 241$, shared-workers AUC $= 0.644$, $CV$ AUC $= 0.612$.\par}
+\end{minipage}
+\end{table}
+
 \subsection{Selection and the interpretation of the benchmark}\label{sec:selection}
 
 A natural concern with any conviction-anchored benchmark is that the cartels CADE detected and convicted are not a random sample of all cartels that existed during the study period. If the detection channel itself correlates with worker-flow intensity---for instance, if CADE is more likely to investigate firms when their personnel connections are visible to investigators---then the worker-flow AUC may overstate the screen's performance on the universe of undetected cartels. We address this concern in three ways.
