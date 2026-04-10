@@ -1,6 +1,6 @@
 \section{Empirical Strategy}\label{coll}
 
-We bring four detection approaches to the conviction-anchored benchmark: a close-margin regression discontinuity (Section~\ref{sec:rdd}), classical bid-distribution screens (Section~\ref{sec:classical}), network screens built from worker-flow and co-bidding data (Section~\ref{sec:network}), and a specialization placebo that separates market-level labor circulation from cartel-specific coordination (Section~\ref{sec:placebo}). Every screen is evaluated by its area under the ROC curve (Section~\ref{sec:auc}). A simple model in Section~\ref{sec:model} ties the pieces together.
+We bring five detection approaches to the conviction-anchored benchmark: a close-margin regression discontinuity (Section~\ref{sec:rdd}), classical bid-distribution screens (Section~\ref{sec:classical}), network screens built from worker-flow and co-bidding data (Section~\ref{sec:network}), a specialization placebo (Section~\ref{sec:placebo}), and---crucially---a temporal-conditioning test that distinguishes prospective from retrospective detection power (Section~\ref{sec:temporal_method}). Every screen is evaluated by its area under the ROC curve (Section~\ref{sec:auc}). A simple model in Section~\ref{sec:model} organizes predictions about where classical screens should fail and where post-enforcement labor reallocation should concentrate.
 
 \subsection{Close-margin regression discontinuity}\label{sec:rdd}
 
@@ -30,7 +30,7 @@ For each, we compare cartel-tainted auctions to clean controls on the close-marg
 
 \subsection{Network-based screens}\label{sec:network}
 
-We step outside the bid data entirely and build three screens from administrative sources that CADE analysts do not routinely examine.
+We step outside the bid data and build three screens from administrative sources.
 
 \noindent\textbf{Worker-flow screens.} For each (winner, runner-up) pair we measure labor connectivity from the full 2009--2017 RAIS panel:
 
@@ -40,9 +40,9 @@ We step outside the bid data entirely and build three screens from administrativ
 \item \textbf{Jaccard similarity} ($J_{ij} = W_{ij} / (N_i + N_j - W_{ij})$): normalizes the count by firm size, so that large employers are not mechanically flagged.
 \end{itemize}
 
-The logic is straightforward. If cartel coordination in thin labor markets runs through personnel---managers carrying pricing information, technicians rotating between member firms---then the employment records should show it \citep{stoyanov2012worker, serafinelli2019good}.
+The logic is straightforward. If cartel coordination in thin labor markets runs through personnel---managers carrying pricing information, technicians rotating between member firms---then the employment records should show it \citep{stoyanov2012worker, serafinelli2019good}. Alternatively, if the signal is retrospective---reflecting labor reallocation \emph{after} the cartel period ends---it would still appear in the full-panel measure but would vanish under temporal conditioning. We test both possibilities.
 
-\noindent\textbf{Co-bidding screen.} For each pair we count the auctions in which both firms submitted bids ($C_{ij}$). This provides a network channel built entirely within the procurement data, serving as a benchmark against which the value-added of the external worker-flow layer can be measured.
+\noindent\textbf{Co-bidding screen.} For each pair we count the auctions in which both firms submitted bids ($C_{ij}$). This provides a network channel built entirely within the procurement data.
 
 \subsection{Detection evaluation: AUC}\label{sec:auc}
 
@@ -52,34 +52,36 @@ We use the area under the ROC curve to compare screens. The AUC is simply the pr
 \]
 where $n_1$ and $n_0$ are the cartel and clean sample sizes. All screens are evaluated on the same unified close-margin benchmark, so comparisons are apples-to-apples. Appendix~\ref{app:bandwidth} shows that results are stable across bandwidths from $0.02$ to $0.50$.
 
+\subsection{Temporal conditioning and decomposition}\label{sec:temporal_method}
+
+Network screens built from administrative panel data face a fundamental identification challenge: the measure uses information from the \emph{entire} panel, including periods after the auction being screened. If cartel detection or enforcement changes the network---for instance, by triggering labor reallocation from convicted firms to competitors---then the full-panel AUC conflates prospective detection power with retrospective correlation. We implement two tests.
+
+\emph{Temporal conditioning.} For each auction at year $t$, we recompute the worker-flow and co-bidding screens using only data from years strictly before $t$. If the AUC survives, the screen captures information available at the time of the auction. If it collapses, the signal is retrospective. We report a cumulative backward window $[2009, t-1]$ and a rolling window $[\max(2009, t-3), t-1]$.
+
+\emph{Temporal decomposition.} For each shared worker between a cartel firm and a rival, we classify the inter-firm link by when it was first observable relative to the cartel's conduct period: \textbf{pre-conduct} (both firms employed the worker before the start year), \textbf{during-conduct} (the link appeared during $[\text{start}, \text{end}]$), or \textbf{post-conduct} (the link appeared after the end year). We then use each window's shared-worker count as a separate screen and evaluate it against the benchmark. This decomposition identifies \emph{when} the signal arises---and whether it reflects coordination, ongoing cartel activity, or enforcement aftermath.
+
 \subsection{Specialization placebo}\label{sec:placebo}
 
-Elevated worker flows between a cartel firm and its rival could mean two very different things: that the firms collude through personnel, or that they simply draw from the same thin labor pool. We need to tell them apart.
+Elevated worker flows between a cartel firm and its rival could reflect several forces: pre-existing personnel connections, the natural circulation of a thin labor pool, or post-conduct labor reallocation. To separate market-level circulation from the cartel-specific component, we build a three-way comparison. The \textbf{cartel} sample consists of auction-level (winner, runner-up) pairs with at least one cartel-active firm ($N \approx 2{,}300$). The \textbf{placebo} consists of non-cartel pairs bidding on the same BEC item code in the same year. The \textbf{clean} baseline is every other non-cartel pair.
 
-We build a three-way decomposition. The \textbf{cartel} sample consists of auction-level (winner, runner-up) pairs in which at least one firm is cartel-active ($N \approx 2{,}300$ for preg\~{a}o). The \textbf{placebo} consists of non-cartel pairs bidding on the same BEC item code in the same year---firms facing the same product-market labor pool but not colluding. The \textbf{clean} baseline is every other non-cartel pair.
+If the entire worker-flow signal were market specialization, the placebo should match the cartel sample. Any excess in the cartel sample over the placebo is a cartel-specific residual---though, as we show in the results, this residual is driven primarily by post-conduct displacement rather than by coordination during the cartel period.
 
-If the entire worker-flow signal were market specialization, the placebo should look like the cartel sample. If there is a cartel-specific coordination channel on top, cartel pairs should show still more worker overlap than same-market non-cartel pairs. We measure the split by comparing AUCs: the fraction of the total gain (cartel vs.\ clean, minus $0.5$) absorbed by the placebo is the specialization share; the remainder is the cartel residual.
+\subsection{A framework for screen heterogeneity}\label{sec:model}
 
-\subsection{A simple model of institution-dependent coordination}\label{sec:model}
+Why should screen effectiveness depend on the market? And why should post-enforcement labor reallocation concentrate in thin markets? Consider $n \ge 2$ firms operating in a product market with specialized-labor pool of thickness $L$.
 
-Why should screen effectiveness depend on the market? Consider $n \ge 2$ firms that can form a cartel. They need to coordinate on a winning bid for each auction. Two technologies are available:
+The first question has a standard answer. Classical bid-distribution screens exploit the compression that bid rotation imposes on the bid distribution. In thick markets (large $L$, many bidders), rotation is the natural coordination device and the compression is detectable. In thin markets (small $L$, few bidders), the bid distribution is inherently noisy---few firms generate high variance even under collusion---and phantom-bidding or cover-bid mechanisms may inflate rather than compress dispersion. Classical screens should therefore work in thick markets and fail in thin ones.
 
-\begin{itemize}
-\item \textbf{Bid-pattern coordination} (cost $c_b$): arrange cover bids around the designated winner's price. Leaves traces in $CV$, spread, and bidder counts---exactly what classical screens are designed to catch.
-
-\item \textbf{Personnel-flow coordination} (cost $c_w(L)$, decreasing in the thickness $L$ of the specialized-labor pool): coordinate through transfers, rotations, or shared employment of key staff. Leaves traces in worker-flow statistics but not necessarily in the bid distribution.
-\end{itemize}
-
-Rational cartel members pick the cheaper channel. In thick markets (large $L$), $c_w > c_b$: collusion runs through bids, and classical screens fire. In thin markets (small $L$), $c_w < c_b$: collusion runs through people, and the bid distribution looks clean.
+The second question is about the labor-market aftermath of enforcement. When a cartel firm contracts---losing contracts, facing fines, undergoing investigation---it sheds workers. In thick labor markets, those workers disperse across many potential employers; the per-firm flow is dilute and hard to detect. In thin markets, the same workers have few alternative employers, and the flows concentrate in the small set of firms that operate in the same specialized product market. The worker-flow screen, evaluated on the full panel, captures this concentration---but it is a concentration of \emph{displacement}, not of \emph{coordination}.
 
 Three testable predictions follow:
 
 \begin{enumerate}
-\item \textbf{Thickness gradient.} In thin markets, classical AUCs should be near chance while worker-flow AUCs should be above chance. In thick markets, the gap should narrow as classical screens recover.
+\item \textbf{Thickness gradient for classical screens.} In thin markets, classical AUCs should be near or below chance. In thick markets, they should recover. This prediction is independent of the temporal-conditioning critique and uses contemporaneous bid data.
 
-\item \textbf{Placebo decomposition.} Thin labor pools produce spontaneous inter-firm worker circulation even without collusion. A same-market placebo should show elevated worker overlap relative to random pairs (specialization), and cartel pairs should show more still (coordination). Both components should be present.
+\item \textbf{Thickness gradient for post-conduct reallocation.} Full-panel worker-flow AUCs should be highest in thin markets---not because coordination runs through personnel, but because displacement concentrates where the labor pool is shallowest.
 
-\item \textbf{Symmetry.} Because personnel-flow coordination operates through the shared labor pool of the market---not through the outcome of any particular auction---the worker-flow signal should not depend on whether the cartel firm wins or loses.
+\item \textbf{Temporal asymmetry.} If the worker-flow signal reflects coordination, it should be present in pre-conduct flows. If it reflects enforcement aftermath, it should be concentrated in post-conduct flows. The temporal decomposition directly tests this.
 \end{enumerate}
 
-The model is deliberately spare. It abstracts from repeated-game dynamics, leniency, the possibility that firms use both channels simultaneously, and heterogeneity in $c_b$ across auction formats. We offer it not as a structure to be estimated but as a lens for reading the results and for specifying when the classical-vs.-network comparison is most informative.
+The framework is deliberately spare. It abstracts from repeated-game dynamics, leniency, and heterogeneity across auction formats. We offer it not as a structure to be estimated but as a lens for organizing the results and for specifying \emph{when} each family of screens should and should not carry signal.

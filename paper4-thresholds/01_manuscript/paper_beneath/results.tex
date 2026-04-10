@@ -1,6 +1,10 @@
 \section{Results}\label{res}
 
-We present the empirical results in three parts. Section~\ref{sec:res_classical} reports the performance of classical bid-distribution screens and the close-margin RD on the unified benchmark. Section~\ref{sec:res_network} reports the performance of worker-flow and co-bidding network screens. Section~\ref{sec:res_placebo} reports the specialization-placebo decomposition.
+We present the results in two acts. The first (Sections~\ref{sec:res_classical}--\ref{sec:res_network}) establishes the facts: classical screens fail, and worker-flow screens appear to succeed. The second (Sections~\ref{sec:temporal}--\ref{sec:rivalry}) tests whether the apparent success is genuine---and discovers that it is not. The remaining subsections interpret the pattern that emerges.
+
+%% ═══════════════════════════════════════════════════════════════════
+%% ACT 1: THE APPARENT DETECTION RESULT
+%% ═══════════════════════════════════════════════════════════════════
 
 \subsection{Classical screens and the close-margin RD}\label{sec:res_classical}
 
@@ -8,70 +12,239 @@ Table~\ref{tab:unified} presents the unified benchmark comparison of all screens
 
 All four classical screens fire in the direction predicted by the bid-rotation model: the coefficient of variation ($\Delta = -0.035$, $d = -0.07$), bid spread ($\Delta = -0.173$, $d = -0.10$), and number of active bidders ($\Delta = -0.87$, $d = -0.24$) are compressed at cartel-tainted auctions relative to clean controls. Welch $t$-statistics are large and statistically significant, owing to the massive control sample. Yet the effect sizes are small: Cohen's $d$ ranges from $-0.07$ to $-0.24$, indicating near-total distributional overlap between cartel and clean auctions. The AUCs reflect this overlap, ranging from $0.52$ (coefficient of variation) to $0.56$ (number of bidders)---above chance but far too low for investigative triage. A Wilcoxon rank-sum test confirms the weak rank-order separation ($p < 10^{-4}$ for each screen, consistent with the AUC direction).
 
-The margin of victory exhibits an anomalous pattern: $\Delta MV = +0.004$ ($d = +0.17$), with an AUC of $0.46$---slightly \emph{below} chance and in the \emph{opposite} direction to the bid-rotation prediction. Cartel-active auctions have marginally \emph{larger} winning margins, not smaller. We interpret this as consistent with a partial phantom-bidding mechanism in which cover bids are inflated relative to the designated winner's price, widening rather than compressing the margin. This finding warrants further investigation but does not affect the headline conclusion: classical screens as a portfolio do not achieve operational discriminative power on this benchmark.
+The margin of victory exhibits an anomalous pattern: $\Delta MV = +0.004$ ($d = +0.17$), with an AUC of $0.46$---slightly \emph{below} chance and in the \emph{opposite} direction to the bid-rotation prediction. Cartel-active auctions have marginally \emph{larger} winning margins, not smaller. We interpret this as consistent with a partial phantom-bidding mechanism in which cover bids are inflated relative to the designated winner's price, widening rather than compressing the margin.
 
-A direct replication of the \citet{kawai2023using} close-margin RD detects a baseline incumbency advantage on the full sample ($\hat{\beta} = 0.018$, $\text{SE} = 0.005$, $p < 0.001$), reflecting a competitive pattern in which recent winners are slightly more likely to win again. On the cartel-active subsample, however, no \emph{additional} discontinuity is detected ($p > 0.15$): cartel exposure does not amplify the baseline incumbency pattern, nor does it produce a detectable jump in last-bid behavior. A density test in the spirit of \citet{imhof2018screening} detects no manipulation of the running variable on the cartel-active benchmark ($T_{\text{CJM}} = -0.02$, $p = 0.98$). Neither the RD design nor the density test flags the cartel-active auctions as anomalous relative to competitive bidding.
+A direct replication of the \citet{kawai2023using} close-margin RD detects a baseline incumbency advantage on the full sample ($\hat{\beta} = 0.018$, $\text{SE} = 0.005$, $p < 0.001$), reflecting a competitive pattern in which recent winners are slightly more likely to win again. On the cartel-active subsample, however, no \emph{additional} discontinuity is detected ($p > 0.15$): cartel exposure does not amplify the baseline incumbency pattern, nor does it produce a detectable jump in last-bid behavior. A density test detects no manipulation of the running variable ($T_{\text{CJM}} = -0.02$, $p = 0.98$). Neither the RD design nor the density test flags the cartel-active auctions as anomalous relative to competitive bidding.
 
-\subsection{Network-based screens}\label{sec:res_network}
+\subsection{Heterogeneity by coordination technology}\label{sec:coord_type}
 
-If classical screens cannot separate cartel from clean on this benchmark, what can? Panel~B of Table~\ref{tab:unified} turns to the network screens, evaluated on the same $N = 2{,}319$ cartel-active auctions.
+The aggregate null conceals a sharp split by coordination technology. Table~\ref{tab:coord_type} disaggregates the benchmark by the conduct type documented in CADE's proceedings: five cartels operated through \emph{bid rigging} (with or without price fixing or market division), while one---the medicamentos hub-and-spoke cartel---coordinated through a central distributor.
 
-The answer is worker flows. The shared-worker count yields an AUC of $0.750$ ($\Delta = +3.70$, $t = +14.1$), and the Jaccard similarity yields an AUC of $0.739$ ($\Delta = +0.0014$, $d = +0.19$, $t = +20.7$). Both outperform the best classical screen (number of bidders, AUC $= 0.56$) by roughly 20 percentage points. A third screen constructed from co-bidding density yields an AUC of $0.695$, providing independent corroboration through a distinct information channel.
-
-Critically, the worker-flow signal is not an artifact of sectoral composition. Restricting attention to firm pairs that share the same 2-digit CNAE sectoral classification reduces the Jaccard AUC only marginally, from $0.739$ to approximately $0.730$. The residual of worker-flow after partialling out the log co-bidding density of each pair achieves an AUC of $0.749$---essentially unchanged from the raw baseline, indicating that worker mobility carries detection information above and beyond what co-bidding patterns alone can reveal.
-
-The pattern holds across auction formats. On the convite subsample ($N = 263$ cartel-active, $\lvert MV \rvert \le 0.10$), worker-flow AUCs remain strong ($0.704$ and $0.701$), even as classical screens lose direction entirely. That worker-flow screens are format-invariant while classical screens are format-sensitive is itself consistent with the institutional-thinness mechanism: bid distributions depend on auction rules, but the personnel connections that sustain coordination do not.
-
-These headline numbers raise a natural question. In most cartel-active auctions, only \emph{one} of the two firms in the (winner, runner-up) pair is a convicted cartelist---so what exactly is the AUC measuring? Of the 2{,}319 cartel-active auctions, 996 have the \emph{winner} as the cartel-active firm and the runner-up as a non-cartel firm; 1{,}313 have the \emph{runner-up} as the cartel-active firm; and only 10 have both firms cartel-active. Decomposing the AUC by cartel role clarifies the interpretation:
-
-\begin{center}
-\begin{tabular}{lccc}
+\begin{table}[htbp]
+\centering
+\caption{Classical Screen AUCs by Coordination Technology}\label{tab:coord_type}
+\begin{tabular}{lrcccc}
 \toprule
-Subgroup & $N$ & AUC (shared workers) & AUC (Jaccard) \\
+& $N$ & $CV$ & Spread & $N_{\text{firms}}$ \\
 \midrule
-Winner cartel, runner-up clean & 996 & 0.741 & 0.730 \\
-Runner-up cartel, winner clean & 1{,}313 & 0.759 & 0.747 \\
-Both cartel-active & 10 & 0.558 & 0.550 \\
+Bid rigging (5 cartels) & 342 & \textbf{0.652} & \textbf{0.654} & \textbf{0.600} \\
+Hub-and-spoke (1 cartel) & 1{,}977 & 0.501 & 0.510 & 0.547 \\[3pt]
+All (benchmark) & 2{,}319 & 0.523 & 0.531 & 0.555 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\vspace{0.5em}
+\begin{minipage}{0.90\textwidth}
+\scriptsize{\textbf{Notes:} Preg\~{a}o, $\lvert MV \rvert \le 0.10$. Bid rigging includes \emph{trens e metr\^{o}s}, \emph{merenda escolar}, \emph{sacos de lixo}, \emph{transporte escolar}, and \emph{cafeteria aeroporto}. Hub-and-spoke is the \emph{medicamentos} cartel (CADE 08012.002222/2011-09). Classical screen AUCs use ``lower is cartel'' convention. Source: script 34.\par}
+\end{minipage}
+\end{table}
 
-Three observations emerge. \emph{First}, the AUC is remarkably stable across the two one-sided subgroups ($0.74$--$0.76$), indicating that the detection signal is symmetric: it does not matter whether the cartel firm wins or loses the auction. This rules out the concern that the screen merely captures a ``winner effect'' driven by a cartel firm's incumbency or market dominance. \emph{Second}, the signal is present even when the \emph{runner-up} is the cartel firm (AUC $= 0.759$), confirming that elevated worker-flow connectivity is a property of cartel-firm pairs in thin labor markets, not an artifact of winning per se. \emph{Third}, intra-cartel pairs (both firms cartel-active, $N = 10$) exhibit the highest mean shared-worker count ($\bar{W} = 28.4$, compared with $6.5$ for winner-only and $2.1$ for clean controls) but an AUC near chance ($0.56$), reflecting severe power constraints at small $N$ rather than an absence of signal.
+Classical screens detect bid rigging. On the 342 cartel-active auctions involving bid-rigging cartels, the $CV$ AUC reaches $0.65$, spread reaches $0.65$, and bidder count reaches $0.60$---all substantively above chance and operationally useful as triage indicators. On the 1{,}977 hub-and-spoke auctions, every classical screen is at or near chance ($0.50$--$0.55$). The aggregate null of $0.52$--$0.56$ is a composition effect: the hub-and-spoke cartel, which accounts for $85\%$ of the sample and leaves no trace in bid patterns, dilutes the bid-rigging signal that would otherwise be visible.
 
-The decomposition clarifies the mechanism: the worker-flow screen detects that cartel firms are embedded in thin specialized-labor markets where personnel flows with \emph{all} rivals---not just co-conspirators---are dense. The specialization placebo (Section~\ref{sec:res_placebo}) further separates this market-embeddedness component from the cartel-specific coordination residual. The headline AUC of $0.75$ thus captures both channels; the cartel-specific residual, net of market specialization, is approximately $0.64$ (Section~\ref{sec:res_placebo}).
+The result makes economic sense. Bid-rigging cartels coordinate by arranging cover bids around a designated winner, which compresses the bid distribution---exactly the signature that variance screens are designed to detect. Hub-and-spoke cartels coordinate through a central intermediary (in this case, a pharmaceutical distributor) that sets prices upstream; individual firms may submit bids that look competitive at the auction level even when prices are pre-arranged at the wholesale level. Classical screens, which operate on the bid distribution, are architecturally incapable of detecting coordination that occurs outside the auction.
 
-\subsection{Specialization-placebo decomposition}\label{sec:res_placebo}
+This finding is the paper's positive detection result. It does not require temporal conditioning---it uses contemporaneous bid data---and it does not depend on the medicamentos cartel that dominates the benchmark. The message for competition authorities is direct: classical variance screens detect bid rigging at operationally useful levels (AUC $\approx 0.65$), but they are blind to hub-and-spoke coordination. Matching the screen to the suspected coordination technology is essential.
 
-The worker-flow signal could reflect two quite different forces: the natural personnel circulation that thin product markets generate among \emph{all} firms, or the incremental coordination that cartels layer on top. To separate them, we build a three-way comparison (Table~\ref{tab:placebo}).
+\subsection{Network-based screens: an apparent breakthrough}\label{sec:res_network}
 
-The raw match rates are revealing. Cartel pairs share at least one worker in 57.9\% of cases; same-market non-cartel pairs share one in 31.1\%; pairs from other markets, in just 9.9\%. The Jaccard AUC against the global clean baseline is $0.740$ for cartel pairs and $0.605$ for same-market placebo pairs. In a linear decomposition of the total AUC gain (cartel vs.\ clean minus $0.5$):
+If classical screens detect bid rigging but miss hub-and-spoke, can network screens fill the gap? Panel~B of Table~\ref{tab:unified} turns to the network screens, evaluated on the same $N = 2{,}319$ cartel-active auctions.
 
+The answer appears to be worker flows. The shared-worker count yields an AUC of $0.750$ ($\Delta = +3.70$, $t = +14.1$), and the Jaccard similarity yields an AUC of $0.739$ ($\Delta = +0.0014$, $d = +0.19$, $t = +20.7$). Both outperform the best classical screen (number of bidders, AUC $= 0.56$) by roughly 20 percentage points. A third screen constructed from co-bidding density yields an AUC of $0.695$, providing independent corroboration through a distinct information channel.
+
+The signal is not an artifact of sectoral composition. Restricting attention to firm pairs that share the same 2-digit CNAE sectoral classification reduces the Jaccard AUC only marginally, from $0.739$ to approximately $0.730$. The residual of worker-flow after partialling out the log co-bidding density of each pair achieves an AUC of $0.749$---essentially unchanged from the raw baseline.
+
+Decomposing the AUC by cartel role reveals symmetry. Of the $2{,}319$ cartel-active auctions, $996$ have the winner as the cartel-active firm, $1{,}313$ have the runner-up as the cartel firm, and only $10$ have both. The AUC is stable across these subgroups ($0.74$--$0.76$), indicating that the signal does not depend on whether the cartel firm wins or loses.
+
+These results appear compelling. But they rest on a critical assumption: that the worker-flow measure captures information available at the time of the auction. The shared-worker count uses the full 2009--2017 RAIS panel---which means that for an auction held in 2010, the screen incorporates worker movements that occurred in 2015. Two features of the benchmark compound this concern. First, one cartel (medicamentos, conduct 2007--2011) accounts for 85\% of the cartel-active sample, so the headline AUC is overwhelmingly a statement about that single case. Second, in 99.6\% of cartel-active auctions only one firm in the (winner, runner-up) pair is a convicted cartelist---the screen is measuring the connectivity of a cartel firm with an arbitrary non-cartel rival, not the coordination between two co-conspirators. We turn next to the question that these observations make unavoidable: does the signal survive when we restrict the employment data to information that was actually available before each auction?
+
+%% ═══════════════════════════════════════════════════════════════════
+%% ACT 2: THE TEMPORAL CONDITIONING TEST
+%% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Temporal conditioning: the signal collapses}\label{sec:temporal}
+
+For each auction at year $t$, we count shared workers using only RAIS observations from years strictly before $t$: the cumulative backward window $[2009, t-1]$. This preserves the full employment history available at the time of the auction while eliminating any look-ahead. The resulting AUC is $0.52$---indistinguishable from chance. A three-year rolling window $[t-3, t-1]$ produces an essentially identical result ($0.54$). Table~\ref{tab:temporal} summarizes.
+
+\begin{table}[htbp]
+\centering
+\caption{Worker-Flow AUC under Temporal Conditioning}\label{tab:temporal}
+\begin{tabular}{lcc}
+\toprule
+Window & AUC & $N_{\text{cartel}}$ \\
+\midrule
+Full panel $[2009, 2017]$ & \textbf{0.750} & 2{,}319 \\
+Cumulative backward $[2009, t-1]$ & 0.524 & 2{,}319 \\
+Rolling $[t-3, t-1]$ & 0.536 & 1{,}826 \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.85\textwidth}
+\scriptsize{\textbf{Notes:} Preg\~{a}o, $\lvert MV \rvert \le 0.10$. Full panel uses all RAIS 2009--2017 observations regardless of auction year. Cumulative backward restricts to RAIS years $< t$ for auction year $t$. Rolling uses $[\max(2009, t-3), t-1]$ and restricts to auctions in 2010--2017. AUC computed via Mann--Whitney $U$ (shared workers, higher is cartel). Sources: scripts 23, 25, 26.\par}
+\end{minipage}
+\end{table}
+
+The gap between $0.75$ and $0.52$ is the central fact of this paper. The prospective detection power of the worker-flow screen is zero on this benchmark. The signal that produces the headline result comes entirely from worker movements that occurred \emph{after} the auction being screened.
+
+The bias is not specific to worker-flow screens. The co-bidding density measure, which achieves an AUC of $0.70$ on the full panel (Table~\ref{tab:unified}), falls to $0.55$ under cumulative temporal conditioning---a drop of $0.15$, compared with $0.23$ for shared workers. Both network screens lose their detection power once future information is excluded.
+
+\subsection{Temporal decomposition: the signal is post-conduct}\label{sec:decomposition}
+
+If the worker-flow signal is retrospective, where exactly does it come from? We classify each shared worker by when the inter-firm link was first observable relative to the cartel's conduct period:
 \begin{itemize}
-\item The \textbf{specialization component} (placebo vs.\ clean) absorbs approximately $0.105$ AUC points, or roughly 44\% of the total signal.
-\item The \textbf{cartel-specific residual} (cartel vs.\ placebo) accounts for approximately $0.138$ AUC points, or roughly 56\% of the total signal.
+\item \textbf{Pre-conduct}: both firms employed the worker before the cartel's start year.
+\item \textbf{During-conduct}: the link became observable during the conduct period $[\text{start}, \text{end}]$.
+\item \textbf{Post-conduct}: the link became observable after the conduct period ended.
 \end{itemize}
 
-Both components are consistent with the institutional-thinness mechanism of Section~\ref{sec:model}: thin specialized-labor markets generate spontaneous labor circulation among same-market firms (the specialization component), and cartels additionally reinforce those flows to sustain coordination (the cartel-specific residual). The two-component structure also has a practical implication: a worker-flow screen deployed without conditioning on market identity would capture both components, potentially flagging non-colluding same-market firm pairs as suspicious. Conditioning on market or product code absorbs the specialization component, yielding a purer cartel signal at the cost of a modest reduction in overall AUC (from $0.740$ to $0.638$).
+\begin{table}[htbp]
+\centering
+\caption{AUC by Temporal Window of Worker Flow}\label{tab:temporal_decomp}
+\begin{tabular}{lccc}
+\toprule
+Window & AUC & Mean (cartel) & Mean (clean) \\
+\midrule
+Pre-conduct & 0.500 & 0.000 & 0.000 \\
+During-conduct & 0.618 & 2.20 & 0.00 \\
+Post-conduct & \textbf{0.773} & 3.47 & 0.00 \\
+All windows & 0.789 & 5.67 & 0.00 \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.85\textwidth}
+\scriptsize{\textbf{Notes:} Each row uses the shared-worker count from the indicated temporal window as the screen. Preg\~{a}o, $\lvert MV \rvert \le 0.10$, $N_{\text{cartel}} = 2{,}319$, $N_{\text{clean}} = 527{,}259$. Source: script 27.\par}
+\end{minipage}
+\end{table}
 
-\subsection{Heterogeneity by market thickness}\label{sec:heterogeneity}
+The decomposition in Table~\ref{tab:temporal_decomp} is definitive. Pre-conduct worker flows produce an AUC of exactly $0.50$: there is no detectable difference in pre-existing personnel connections between cartel-active and clean auction pairs. During-conduct flows produce a modest $0.62$. Post-conduct flows produce $0.77$---nearly the full headline result. The signal is an aftermath, not a precursor.
 
-The placebo tells us what part of the signal is cartel-specific. The next question is where that signal lives. If the institutional-thinness mechanism of Section~\ref{sec:model} is right, worker-flow screens should outperform classical screens most sharply in thin markets---and classical screens should work better, perhaps even well, in thick ones. We test this by splitting the benchmark according to market thickness, measured as the median number of bidders per auction for each item code in the clean control sample. Markets with a control-sample median at or below the overall median of 5~firms are classified as ``thin''; those above are classified as ``thick.'' This proxy is constructed entirely from the non-cartel sample to avoid contamination by cartel-induced changes in bidder counts.
+The post-conduct flows are directional. Across all cartels, 30{,}977 distinct workers moved from cartel firms to rivals after the conduct period, versus 13{,}236 in the reverse direction---a $2.3{:}1$ ratio. The asymmetry intensifies over time: in 2010, the cartel-to-rival ratio is $1.4{:}1$; by 2016--2017, it reaches $4{:}1$. The pattern is consistent with enforcement-driven labor displacement: as CADE investigations proceed and conduct periods end, convicted firms shed employees who are absorbed by competitors in the same thin labor markets.
 
-Table~\ref{tab:thickness} reports the results. The pattern is striking. In thin markets ($N_{\text{cartel}} = 1{,}618$), classical screens fire in the \emph{wrong} direction: $CV$ AUC $= 0.45$, spread AUC $= 0.44$, and bidder-count AUC $= 0.40$---all below chance. Cartel-tainted auctions in thin markets exhibit \emph{more} bid dispersion and \emph{more} active bidders than clean controls, consistent with a phantom-bidding or cover-bid mechanism in which all cartel members participate and submit inflated bids. By contrast, in thick markets ($N_{\text{cartel}} = 416$), classical screens fire in the predicted direction: $CV$ AUC $= 0.59$, spread $= 0.60$, bidder count $= 0.60$---substantively above chance and consistent with the standard bid-rotation model.
+\subsection{Event study: do outflows spike after conduct ends?}\label{sec:event_study}
 
-Worker-flow screens show the opposite gradient. In thin markets, shared-worker AUC reaches $0.774$ and Jaccard AUC reaches $0.758$; in thick markets, both decline to approximately $0.70$. The gap between the best classical screen and the worker-flow screen is 33~percentage points in thin markets but only 10~percentage points in thick markets---a three-fold difference that confirms the model's core prediction.
+The temporal decomposition shows \emph{where} the signal lives (post-conduct flows), but not whether outflows \emph{increase} relative to a counterfactual. To test this, we estimate a firm-level event study around the end of each cartel's conduct period:
+\[
+\text{outflow\_rate}_{it} \;=\; \alpha_i + \gamma_t + \sum_{\tau \neq -1} \beta_\tau \cdot D_{i\tau} + \varepsilon_{it}\,,
+\]
+where the outcome is the share of firm $i$'s workers in year $t-1$ who appear at a different BEC firm in year $t$, $\alpha_i$ and $\gamma_t$ are firm and year fixed effects, and $D_{i\tau}$ indicates that firm $i$ is a cartel firm at event time $\tau = t - \text{end\_year}_i$. The omitted category is $\tau = -1$. Standard errors are clustered at the firm level. The control group is all non-cartel BEC firms with at least three employees, yielding a panel of $159{,}140$ firm-year observations ($26{,}928$ firms, $257$ treated observations from $41$ cartel firms with conduct ending by 2017).
 
-Figure~\ref{fig:thickness} plots the gradient at finer resolution, using eight thickness bins. The two curves tell the model's story in a single image. The worker-flow AUC starts above $0.75$ in the thinnest markets, peaks near $0.81$ at moderate thickness, and declines toward $0.53$ in thick markets. The classical screen (bidder count) traces the mirror path: it begins below $0.31$---\emph{anti-informative}---and climbs steadily to $0.66$. The curves cross at a market thickness of roughly 10~median bidders, the point at which the cheapest coordination technology switches from personnel to bids. Below the crossing, worker-flow screens dominate; above it, classical screens recover and eventually overtake. The peak of the worker-flow curve at moderate thickness (rather than at the thinnest point) is consistent with the specialization-placebo finding: in the very thinnest markets, spontaneous same-market labor circulation is so dense that it compresses the cartel-vs.-clean AUC from above.
+Figure~\ref{fig:event_study} plots the event-study coefficients. Two patterns stand out. \emph{First}, pre-treatment coefficients are flat and insignificant (max $|t| = 0.65$ for $\tau \in [-4, -2]$): cartel and control firms follow parallel outflow trajectories before the conduct period ends. \emph{Second}, outflows rise after the conduct period ends. The post-treatment coefficients average $+0.019$, a $29\%$ increase relative to the control-group mean outflow rate of $6.7\%$. The effect peaks at $\tau = +1$ ($\hat{\beta} = +0.035$, $t = 1.94$) and $\tau = +4$ ($\hat{\beta} = +0.040$, $t = 1.17$).
 
 \begin{figure}[htbp]
 \centering
-\caption{Screen Performance by Market Thickness}\label{fig:thickness}
-\includegraphics[width=0.85\textwidth]{thickness_gradient.pdf}
+\caption{Event Study: Worker Outflows around Cartel Conduct End}\label{fig:event_study}
+\includegraphics[width=0.85\textwidth]{../../04_figures/event_study_outflows.pdf}
 \begin{minipage}{0.85\textwidth}
 \vspace{0.3em}
-{\scriptsize \emph{Notes:} Each point represents the AUC on the cartel-active benchmark within a thickness bin, defined by the median number of bidders per item code in the clean control sample. Worker-flow AUC uses shared workers (higher is cartel); classical AUC uses bidder count (negated; above 0.5 = detection in predicted direction). Sample sizes ($n$) refer to cartel-active auctions per bin.\par}
+{\scriptsize \emph{Notes:} Each point is the coefficient $\hat{\beta}_\tau$ from the TWFE specification above, with 95\% confidence intervals (firm-clustered SEs). $\tau = 0$ is the first year after conduct ends. The dashed vertical line marks the conduct-end date. Shading distinguishes pre-treatment (left) from post-treatment (right). The control group is all non-cartel BEC firms with $\ge 3$ employees. Source: script 28.\par}
 \end{minipage}
 \end{figure}
+
+The estimates are imprecise---only $\tau = +1$ is marginally significant at the 10\% level---reflecting the small number of treated firms ($41$). But the direction is unambiguous, the pre-trends are clean, and the magnitude ($+29\%$) is economically meaningful. The event study provides suggestive evidence that the post-conduct worker-flow pattern documented in Section~\ref{sec:decomposition} reflects a genuine increase in outflows from cartel firms, not a pre-existing difference in mobility rates.
+
+\subsection{Where do the workers go?}\label{sec:rivalry}
+
+Who absorbs the displaced workers---the cartel firm's direct auction competitors, or unrelated firms? We classify each destination into three categories: \textbf{auction rivals} ($318$ firm pairs that were runner-up or winner against the cartel firm in a close-margin auction during conduct), \textbf{market peers} ($2{,}181$ pairs that bid on the same item codes but were never in a close-margin pair), and \textbf{bystanders} (all other BEC firms).
+
+\begin{table}[htbp]
+\centering
+\caption{Post-Conduct Worker Flows by Rival Type}\label{tab:rivalry}
+\begin{tabular}{lrrrc}
+\toprule
+Destination type & Workers & Share & Dest.\ firms & Workers/firm \\
+\midrule
+Auction rivals & 382 & 1.0\% & 44 & 8.7 \\
+Market peers & 5{,}606 & 14.5\% & 183 & \textbf{30.6} \\
+Bystanders & 32{,}663 & 84.5\% & 3{,}903 & 8.4 \\
+\midrule
+Total & 38{,}651 & 100\% & & \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.90\textwidth}
+\scriptsize{\textbf{Notes:} Post-conduct flows from cartel firms (conduct end $\le 2017$) to non-cartel BEC firms. Auction rivals defined from close-margin preg\~{a}o pairs ($\lvert MV \rvert \le 0.10$) during the conduct period. Source: script 31.\par}
+\end{minipage}
+\end{table}
+
+The bulk of the reallocation ($84.5\%$) goes to bystanders, consistent with generic labor-market mobility. But the \emph{intensity} tells a different story: market peers receive $30.6$~workers per destination firm, $3.6$ times the bystander rate. Workers from cartel firms disproportionately concentrate in firms operating in the same product markets, consistent with sector-specific human capital flowing through the only available channel in thin labor markets.
+
+A direct test of pair-level absorption reinforces this pattern. Of $993$ close-margin auctions where the cartel firm won during conduct, $463$ ($46.6\%$) show at least one ex-worker of the winning cartel firm subsequently appearing at the specific runner-up of that auction. Nearly half of all close-margin winner--runner-up pairs exhibit a post-conduct worker transfer---not mass displacement along auction lines, but a fine-grained pattern of specialized workers finding their way to the small set of firms in the same thin product market.
+
+%% ═══════════════════════════════════════════════════════════════════
+%% INTERPRETATION AND ROBUSTNESS
+%% ═══════════════════════════════════════════════════════════════════
+
+\subsection{Who moves? Worker characteristics}\label{sec:who_moves}
+
+If the post-conduct flows carry cartel-specific knowledge---pricing strategies, coordination protocols---we would expect managers, professionals, and high-wage workers to be overrepresented among movers. Table~\ref{tab:worker_chars} compares three groups: workers who leave cartel firms for other BEC firms post-conduct (\emph{cartel movers}, $N = 17{,}381$), workers who remain at cartel firms (\emph{cartel stayers}, $N = 47{,}255$), and workers who move between non-cartel BEC firms in the same period (\emph{control movers}, $N = 296{,}036$, 10\% sample).
+
+\begin{table}[htbp]
+\centering
+\caption{Characteristics of Workers Who Leave Cartel Firms}\label{tab:worker_chars}
+\begin{tabular}{lccc}
+\toprule
+& Cartel movers & Cartel stayers & Control movers \\
+\midrule
+\multicolumn{4}{l}{\emph{Continuous variables (means)}} \\[3pt]
+Wage (minimum wages) & 2.4 & 3.9 & 2.2 \\
+Tenure (months) & 31.7 & 38.9 & 26.6 \\
+Age & 37.2 & 37.2 & 33.6 \\[6pt]
+\multicolumn{4}{l}{\emph{Occupation (\%)}} \\[3pt]
+Directors \& managers & 2.6 & 3.5 & 3.3 \\
+Professionals (degree-required) & 7.3 & 9.3 & 9.1 \\
+Service \& sales & \textbf{55.1} & 36.8 & 37.9 \\
+Production \& craft & 10.5 & 21.5 & 12.9 \\[6pt]
+\multicolumn{4}{l}{\emph{Demographics (\%)}} \\[3pt]
+Male & 40.0 & 58.8 & 62.5 \\
+Tertiary education & 14.6 & 17.9 & 17.6 \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.90\textwidth}
+\scriptsize{\textbf{Notes:} Characteristics measured in the last year of the cartel's conduct period. Cartel movers: workers at a cartel firm who subsequently appear at a different BEC firm. Cartel stayers: workers who remain. Control movers: 10\% sample of workers who move between non-cartel BEC firms in 2011--2014. Occupations from CBO 2002 major groups. Source: script 32.\par}
+\end{minipage}
+\end{table}
+
+The profile of cartel movers is clear---and it is not the profile of knowledge carriers. Managers and professionals are \emph{under}represented among movers ($9.9\%$) relative to stayers ($12.9\%$) and control movers ($12.3\%$). The modal cartel mover is a service or sales worker ($55\%$ of movers vs.\ $37\%$ of stayers), female ($60\%$), earning $2.4$ minimum wages, with lower educational attainment than stayers. This is a displacement profile, not a knowledge-transfer profile. The workers who carry pricing strategies and coordination know-how---directors, professionals, long-tenured specialists---are disproportionately the ones who \emph{stay}.
+
+The finding has a direct implication for the collusion-contagion concern. If cartel firms were shedding coordination-capable workers to competitors, we would expect high-skill, high-wage movers. Instead, the outflow is dominated by operational workers whose departure is consistent with generic firm contraction rather than strategic knowledge diffusion.
+
+\subsection{Is the pattern cartel-specific? An exit placebo}\label{sec:exit_placebo}
+
+The temporal decomposition and event study show that cartel firms' outflows increase after conduct ends. But is this a cartel-specific phenomenon, or would any firm that contracts in thin markets generate the same pattern? To test this, we construct a placebo from $3{,}335$ non-cartel BEC firms that exit the platform (last bid between 2011 and 2014, at least two active years), and run the same event-study specification as in Section~\ref{sec:event_study}, with the exit year replacing the conduct-end year.
+
+\begin{table}[htbp]
+\centering
+\caption{Event Study: Cartel Firms vs.\ Non-Cartel Exit Firms}\label{tab:exit_placebo}
+\begin{tabular}{rcccc}
+\toprule
+$\tau$ & $\hat{\beta}$ (exit) & SE & $\hat{\beta}$ (cartel) & Sig.\ (exit) \\
+\midrule
+$-3$ & $+0.005$ & 0.003 & $-0.003$ & $*$ \\
+$-2$ & $-0.001$ & 0.002 & $+0.014$ & \\
+$-1$ & \multicolumn{2}{c}{(reference)} & (reference) & \\
+$0$ & $+0.015$ & 0.002 & $+0.025$ & $***$ \\
+$+1$ & $+0.021$ & 0.003 & $+0.035$ & $***$ \\
+$+2$ & $+0.018$ & 0.003 & $-0.001$ & $***$ \\
+$+3$ & $+0.015$ & 0.003 & $+0.019$ & $***$ \\
+$+4$ & $+0.009$ & 0.003 & $+0.040$ & $***$ \\
+\midrule
+Mean $\tau \ge 0$ & $+0.016$ & & $+0.019$ & \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.90\textwidth}
+\scriptsize{\textbf{Notes:} Exit firms: non-cartel BEC firms with last bid in 2011--2014 and $\ge 2$ active years ($N = 3{,}335$). Cartel coefficients from Section~\ref{sec:event_study} ($N = 41$). Firm and year FEs; firm-clustered SEs. Source: scripts 28 and 33.\par}
+\end{minipage}
+\end{table}
+
+The exit-placebo coefficients are highly significant ($t = 5$--$8$, reflecting the much larger treated sample) and economically similar to the cartel coefficients: post-event outflows average $+1.6$~pp for exit firms versus $+1.9$~pp for cartel firms, a ratio of $1.25$. The patterns are not statistically distinguishable.
+
+This is a sobering finding. The post-conduct outflow pattern that drives the full-panel worker-flow AUC is not cartel-specific---it is a generic consequence of firm contraction in thin labor markets. Any firm that stops bidding on BEC generates elevated worker outflows to competitors in subsequent years, at roughly the same magnitude as cartel firms after their conduct period ends. Cartel enforcement is \emph{one cause} of firm contraction, but the labor-market response it triggers is not distinctive.
+
+The result sharpens the paper's contribution in two ways. First, it reinforces the look-ahead bias warning: full-panel network screens absorb post-event labor reallocation regardless of whether the event is a cartel conviction, a voluntary exit, or any other firm contraction. The bias is \emph{generic}, not cartel-specific, which makes the methodological caveat broader and more important. Second, it disciplines the interpretation: the matched employer--employee record captures the labor-market aftermath of firm exit in thin markets, not a cartel-specific enforcement effect.
+
+\subsection{Reinterpreting the thickness gradient}\label{sec:heterogeneity}
+
+The temporal conditioning results change the interpretation of the market-thickness analysis, but not its empirical content. We split the benchmark by median bidders per item code (computed on clean controls). Table~\ref{tab:thickness} and Figure~\ref{fig:thickness} report AUCs by thickness group.
 
 \begin{table}[htbp]
 \centering
@@ -87,21 +260,89 @@ All (benchmark) & 2{,}319 & 527{,}259 & 0.523 & 0.531 & 0.555 & \textbf{0.750} &
 \end{tabular}
 \vspace{0.5em}
 \begin{minipage}{0.95\textwidth}
-\scriptsize{\textbf{Notes:} Market thickness is the median number of bidders per auction for each item code, computed on clean-control auctions with $\ge 5$ observations. ``Thin'' = median $\le 5$; ``Thick'' = median $> 5$. Classical screen AUCs use ``lower is cartel'' convention. Tercile decomposition: T1 (median $= 4$): $N_t = 1{,}191$, shared-workers AUC $= 0.751$, $CV$ AUC $= 0.382$; T2 (median $= 5$): $N_t = 602$, shared-workers AUC $= 0.797$, $CV$ AUC $= 0.533$; T3 (median $= 8$): $N_t = 241$, shared-workers AUC $= 0.644$, $CV$ AUC $= 0.612$.\par}
+\scriptsize{\textbf{Notes:} Market thickness is the median number of bidders per auction for each item code, computed on clean-control auctions with $\ge 5$ observations. ``Thin'' = median $\le 5$; ``Thick'' = median $> 5$. Classical screen AUCs use ``lower is cartel'' convention. Worker-flow AUCs use full-panel shared workers. 285 cartel-active auctions with item codes having $< 5$ clean observations are unclassified and excluded from thin/thick rows but included in ``All.'' Source: script 24.\par}
 \end{minipage}
 \end{table}
 
-\subsection{Robustness: leave-one-cartel-out and permutation falsification}\label{sec:robustness}
+\begin{figure}[htbp]
+\centering
+\caption{Screen Performance by Market Thickness}\label{fig:thickness}
+\includegraphics[width=0.85\textwidth]{thickness_gradient.pdf}
+\begin{minipage}{0.85\textwidth}
+\vspace{0.3em}
+{\scriptsize \emph{Notes:} Each point represents the AUC within a thickness bin. Worker-flow AUC uses shared workers (full panel); classical AUC uses bidder count (negated). Sample sizes ($n$) refer to cartel-active auctions per bin.\par}
+\end{minipage}
+\end{figure}
 
-Two additional tests probe whether the headline AUC of $0.75$ is robust or fragile.
+The gradient for \emph{classical screens} is robust and does not depend on the temporal-conditioning critique: in thin markets, classical screens fire in the wrong direction (AUC $0.40$--$0.45$); in thick markets, they recover to $0.60$. This pattern---which uses contemporaneous bid data, not panel employment data---is a clean empirical finding about where traditional detection methods fail.
 
-\emph{Leave-one-cartel-out.} We drop each of the seven convicted cartels in turn and recompute the worker-flow AUC on the remaining six. For six of the seven drops, the AUC is virtually unchanged ($0.74$--$0.77$). The exception is the medicamentos hub-and-spoke cartel (CADE 08012.002222/2011-09): excluding its eight firms removes 85\% of the cartel-active sample ($N$ falls from $2{,}319$ to $344$), and the shared-worker AUC drops to $0.58$. This decline reflects the dominance of one large cartel in the benchmark rather than a breakdown in the screen: with only 344 treated auctions the test is severely power-limited, and even at $0.58$ the worker-flow screen still outperforms the best classical screen ($0.56$). Still, the concentration is a caveat: the headline result draws disproportionately on the medicamentos case, and replication on larger or independent ground-truth sets is a priority for future work.
+The gradient for \emph{worker-flow screens} requires reinterpretation. The full-panel worker-flow AUC is higher in thin markets ($0.77$) than in thick ones ($0.70$). In light of the temporal decomposition, this gradient tells us not where \emph{detection} is easiest, but where \emph{post-conduct labor reallocation} is most concentrated. Thin markets, by definition, have few employers capable of absorbing displaced workers---so post-conduct flows between cartel firms and rivals are mechanically denser, producing higher retrospective AUCs.
 
-\emph{Permutation falsification.} We randomly reassign the cartel-active label 1{,}000~times (preserving the treatment proportion) and recompute the AUC in each permutation. The permuted AUCs cluster tightly around $0.500$ (mean $= 0.500$, sd $= 0.003$, 95\% interval $[0.494, 0.505]$). The real AUC of $0.75$ lies at the 100th percentile of the permutation distribution ($p < 0.001$): no random relabeling comes close.
+\subsection{Reinterpreting the specialization placebo}\label{sec:res_placebo}
+
+The specialization-placebo decomposition (Table~\ref{tab:placebo}) similarly retains its empirical content but shifts in interpretation.
+
+\begin{table}[htbp]
+\centering
+\caption{Specialization-Placebo Decomposition of Worker-Flow Signal}\label{tab:placebo}
+\begin{tabular}{lcccc}
+\toprule
+Sample & $N$ & \% with $\ge 1$ shared worker & Mean Jaccard & AUC vs.\ clean \\
+\midrule
+Cartel-active & 2{,}321 & 57.9\% & 0.0022 & 0.740 \\
+Placebo (same market) & 5{,}313 & 31.1\% & 0.0012 & 0.605 \\
+Clean (global) & 523{,}414 & 9.9\% & 0.0008 & --- \\[6pt]
+\multicolumn{5}{l}{\emph{Signal decomposition (Jaccard AUC relative to clean baseline)}} \\[3pt]
+\multicolumn{4}{l}{\quad Total signal (cartel vs.\ clean $-$ 0.5)} & $+0.240$ \\
+\multicolumn{4}{l}{\quad Specialization component (placebo vs.\ clean)} & $+0.105$ \quad (44\%) \\
+\multicolumn{4}{l}{\quad Cartel-specific residual (cartel vs.\ placebo)} & $+0.138$ \quad (56\%) \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.95\textwidth}
+\scriptsize{\textbf{Notes:} Pregão, $\lvert MV \rvert \le 0.10$. Placebo consists of non-cartel firm pairs bidding on the same BEC item code in the same year. AUC computed via Mann--Whitney $U$ (Jaccard similarity, higher is cartel). Source: v3 specialization placebo.\par}
+\end{minipage}
+\end{table}
+
+The original interpretation was that $44\%$ of the worker-flow signal reflects natural thin-market labor circulation and $56\%$ reflects cartel-specific coordination. In light of the temporal evidence, the ``cartel-specific residual'' is more precisely a \emph{post-conduct displacement residual}: cartel firms shed more workers to rivals than same-market non-cartel firms do, because enforcement-driven contraction is concentrated in cartel firms. The specialization component remains what it was---thin markets generate spontaneous worker overlap among all firms---but the cartel residual is not evidence of coordination during the cartel period. It is evidence of accelerated labor reallocation after the cartel period ends.
+
+\subsection{Sample concentration and cartel-by-cartel performance}\label{sec:concentration}
+
+The cartel-active benchmark is not equally distributed across the seven convicted cartels. Table~\ref{tab:cartel_by_cartel} reports the composition and per-cartel AUCs.
+
+\begin{table}[htbp]
+\centering
+\caption{Per-Cartel Sample Sizes and AUCs}\label{tab:cartel_by_cartel}
+\begin{tabular}{lrccc}
+\toprule
+Cartel & $N$ & \% of sample & CV AUC & SW AUC (full) \\
+\midrule
+Medicamentos & 1{,}977 & 85.3 & 0.501 & 0.780 \\
+Sacos de lixo & 224 & 9.7 & 0.633 & 0.530 \\
+Trens e metr\^{o}s & 85 & 3.7 & 0.680 & 0.592 \\
+Merenda escolar & 26 & 1.1 & 0.820 & 0.941 \\
+Transporte escolar & 6 & 0.3 & 0.191 & 0.527 \\
+Cafeteria aeroporto & 1 & 0.0 & --- & --- \\
+Aquecedores solares & 0 & 0.0 & --- & --- \\
+\midrule
+All & 2{,}319 & 100 & 0.523 & 0.750 \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.95\textwidth}
+\scriptsize{\textbf{Notes:} Preg\~{a}o, $\lvert MV \rvert \le 0.10$. CV AUC uses ``lower is cartel'' convention. SW AUC uses full-panel shared workers. Aquecedores solares has zero cartel-active auctions in the close-margin benchmark. Source: script 25.\par}
+\end{minipage}
+\end{table}
+
+The medicamentos cartel accounts for $85\%$ of the treated sample. Its full-panel worker-flow AUC ($0.780$) essentially \emph{is} the headline result. Meanwhile, \emph{sacos de lixo} and \emph{trens e metr\^{o}s} show classical screen AUCs above $0.63$ but worker-flow AUCs near chance ($0.53$--$0.59$), consistent with the thickness gradient: these are thicker markets where classical screens work and where post-conduct labor reallocation is less concentrated. The concentration is a caveat for all results in this paper. It does not invalidate the temporal decomposition---the post-conduct pattern is present in the medicamentos case and absent in pre-conduct data---but it limits external validity. Replication on larger ground-truth sets is a priority.
+
+\subsection{Robustness: permutation falsification}\label{sec:robustness}
+
+We randomly reassign the cartel-active label $1{,}000$~times and recompute the full-panel AUC. The permuted AUCs cluster at $0.500$ ($\text{sd} = 0.003$, $95\%$ interval $[0.494, 0.505]$). The real AUC of $0.75$ lies at the 100th percentile ($p < 0.001$): the full-panel signal is non-random. But as the temporal decomposition shows, it is retrospective rather than prospective.
 
 \subsection{Model predictions vs.\ empirical findings}\label{sec:model_test}
 
-Table~\ref{tab:predictions} summarizes the correspondence between the three testable predictions of the institutional-thinness model (Section~\ref{sec:model}) and the empirical results documented in this section.
+Table~\ref{tab:predictions} summarizes the correspondence between the model's predictions (Section~\ref{sec:model}) and the results, including temporal conditioning.
 
 \begin{table}[htbp]
 \centering
@@ -110,26 +351,20 @@ Table~\ref{tab:predictions} summarizes the correspondence between the three test
 \toprule
 Prediction & Empirical test & Result \\
 \midrule
-P1.\ In thin markets, classical AUCs $\approx 0.5$; worker-flow AUCs $> 0.5$. & Table~\ref{tab:thickness}: median split by market thickness & Classical AUC $= 0.40$--$0.45$ (inverted, exceeding prediction---suggests phantom-bidding not in model); worker-flow AUC $= 0.77$. \textbf{Direction confirmed.} \\[6pt]
-P2.\ Same-market placebo exhibits elevated worker-flow relative to random pairs; cartel pairs exhibit still more. & Table~\ref{tab:placebo}: three-way decomposition & Specialization component $= 44\%$; cartel residual $= 56\%$. Both present. \textbf{Confirmed.} \\[6pt]
-P3.\ Worker-flow signal is symmetric: does not depend on whether the cartel firm wins or loses. & Section~\ref{sec:res_network}: role decomposition & Winner-only AUC $= 0.74$; runner-only AUC $= 0.76$. \textbf{Confirmed.} \\
+P1.\ In thin markets, classical AUCs $\approx 0.5$; worker-flow AUCs $> 0.5$. & Table~\ref{tab:thickness}: median split & Classical AUC $= 0.40$--$0.45$ (inverted). Full-panel worker-flow AUC $= 0.77$, but $\approx 0.52$ after temporal conditioning. \textbf{Classical gradient confirmed; worker-flow gradient is retrospective.} \\[6pt]
+P2.\ Same-market placebo shows elevated worker-flow; cartel pairs show more. & Table~\ref{tab:placebo}: three-way decomposition & Both components present, but cartel residual driven by post-conduct flows. \textbf{Pattern confirmed; interpretation revised.} \\[6pt]
+P3.\ Worker-flow signal symmetric in winner/loser role. & Section~\ref{sec:res_network}: role decomposition & AUC $= 0.74$--$0.76$. \textbf{Confirmed.} Consistent with both coordination and displacement. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-All three predictions are borne out in the data. The model's qualitative framework---that the cheapest coordination technology determines which screen family carries the detection signal---is thus not merely an organizing device but a tested empirical proposition, at least within the institutional setting of S\~{a}o Paulo procurement.
+The classical-screen predictions (P1 for classical screens) are cleanly confirmed and robust. The worker-flow predictions require reinterpretation: the model posits that worker flows carry signal because they reflect coordination; the temporal evidence shows they carry signal because they reflect post-conduct displacement. The institutional-thinness mechanism is still operative---thin markets are where post-conduct reallocation concentrates---but the channel runs through enforcement aftermath rather than active coordination.
 
 \subsection{Selection and the interpretation of the benchmark}\label{sec:selection}
 
-A natural concern with any conviction-anchored benchmark is that the cartels CADE detected and convicted are not a random sample of all cartels that existed during the study period. If the detection channel itself correlates with worker-flow intensity---for instance, if CADE is more likely to investigate firms when their personnel connections are visible to investigators---then the worker-flow AUC may overstate the screen's performance on the universe of undetected cartels. We address this concern in three ways.
+The temporal conditioning results largely supersede the selection concern. The full-panel AUC is inflated not by selection but by look-ahead. Once temporal conditioning is applied, the AUC falls to $0.52$ regardless of selection on detectability.
 
-\emph{First}, we document the evidentiary basis of each of the seven convicted cartels from the public record of CADE's administrative proceedings. Table~\ref{tab:evidence} summarizes the primary detection channel and the nature of the evidence that sustained each conviction. The evidence channels are heterogeneous: one case (aquecedores solares) was convicted ``based exclusively on indirect evidence''---that is, bid-pattern analysis alone; one case (transporte escolar) relied on IP address coincidence during electronic bidding; one case (sacos de lixo) originated from a state-level police operation (\emph{Opera\c{c}\~{a}o Colludium}); and the remaining four were built from leniency confessions, procurement-document analysis, or investigation-triggered dawn raids. Crucially, \emph{none} of the seven cases mentions matched employer--employee data, RAIS records, or inter-firm personnel connections as part of the evidentiary basis for the investigation or conviction. CADE does not, as a matter of standard practice, use worker-flow analysis as an investigative tool---the data linkage we construct in this paper is, to our knowledge, the first of its kind. The detection channel (CADE investigations driven by complaints, leniency, police operations, and bid-pattern screens) is therefore independent of the screening channel (worker-flow connectivity measured from RAIS).
-
-\emph{Second}, we note that the worker-flow screen is constructed from an entirely external administrative data source (RAIS, held by the Ministry of Labor) that is not part of CADE's standard enforcement toolkit. Unlike co-bidding patterns---which are constructed from the same procurement data that CADE analysts routinely examine---worker-flow connectivity requires a separate data-access agreement and a non-trivial linkage procedure. The informational independence of the two channels reduces the scope for mechanical circularity.
-
-\emph{Third}, we observe that the worker-flow AUC is relatively stable across the seven cartels despite the heterogeneity in detection channels. If selection-on-detection were driving the result, we would expect the worker-flow signal to be concentrated in cases where personnel connections played a role in the investigation. Instead, the signal is present even in the aquecedores solares case---convicted on bid-pattern evidence alone---and in the transporte escolar case---detected through IP forensics. While this cross-cartel stability is suggestive rather than definitive (small $N$ of cartels limits formal testing), it is inconsistent with a pure selection story.
-
-These observations do not fully eliminate the selection concern. It remains possible that firms with dense worker-flow networks are easier to detect through \emph{any} channel---for instance, because the same organizational proximity that generates personnel flows also generates careless document trails or complaints from disgruntled employees. A definitive test would require evaluating the worker-flow screen against cartels detected through channels that are \emph{provably} orthogonal to personnel connectivity, such as pure leniency applications from firms with no prior labor-market overlap. We leave this test to future work and flag the selection caveat as the principal interpretive limitation of our benchmark design.
+For the record, none of the seven CADE cases lists employer--employee data or worker flows as part of the evidentiary basis (Table~\ref{tab:evidence}). The selection concern remains relevant for interpreting the post-conduct displacement pattern: if CADE preferentially convicts cartels in markets where labor reallocation is naturally high, the post-conduct AUC could partly reflect market selection rather than enforcement effects.
 
 \begin{table}[htbp]
 \centering
@@ -149,7 +384,7 @@ Medicamentos & 08012.002222/ 2011-09 & 2007--2011 & Hub-and-spoke investigation;
 \end{tabular}
 \vspace{0.5em}
 \begin{minipage}{0.95\textwidth}
-\scriptsize{\textbf{Notes:} Evidence channels documented from CADE public press releases and Tribunal decisions (see Appendix for full citations). None of the seven cases lists matched employer--employee data, RAIS records, or inter-firm worker flows as part of the evidentiary basis.\par}
+\scriptsize{\textbf{Notes:} Evidence channels documented from CADE public press releases and Tribunal decisions. None lists matched employer--employee data, RAIS records, or inter-firm worker flows as part of the evidentiary basis.\par}
 \end{minipage}
 \end{table}
 
@@ -176,27 +411,5 @@ Medicamentos & 08012.002222/ 2011-09 & 2007--2011 & Hub-and-spoke investigation;
 \vspace{0.5em}
 \begin{minipage}{0.95\textwidth}
 \scriptsize{\textbf{Notes:} All screens evaluated on the unified close-margin benchmark ($\lvert MV \rvert \le 0.10$) against a common clean control ($N_0 = 527{,}259$ pregão; $N_0 = 519{,}557$ convite). Classical screen AUCs use the ``lower is cartel'' convention; values above 0.5 indicate detection in the predicted direction. Network screen AUCs use ``higher is cartel.'' Bold indicates AUC $\ge 0.70$. Cohen's $d$ is the standardized mean difference (pooled SD). Source: script 23.\par}
-\end{minipage}
-\end{table}
-
-\begin{table}[htbp]
-\centering
-\caption{Specialization-Placebo Decomposition of Worker-Flow Signal}\label{tab:placebo}
-\begin{tabular}{lcccc}
-\toprule
-Sample & $N$ & \% with $\ge 1$ shared worker & Mean Jaccard & AUC vs.\ clean \\
-\midrule
-Cartel-active & 2{,}321 & 57.9\% & 0.0022 & 0.740 \\
-Placebo (same market) & 5{,}313 & 31.1\% & 0.0012 & 0.605 \\
-Clean (global) & 523{,}414 & 9.9\% & 0.0008 & --- \\[6pt]
-\multicolumn{5}{l}{\emph{Signal decomposition (Jaccard AUC relative to clean baseline)}} \\[3pt]
-\multicolumn{4}{l}{\quad Total signal (cartel vs.\ clean $-$ 0.5)} & $+0.240$ \\
-\multicolumn{4}{l}{\quad Specialization component (placebo vs.\ clean)} & $+0.105$ \quad (44\%) \\
-\multicolumn{4}{l}{\quad Cartel-specific residual (cartel vs.\ placebo)} & $+0.138$ \quad (56\%) \\
-\bottomrule
-\end{tabular}
-\vspace{0.5em}
-\begin{minipage}{0.95\textwidth}
-\scriptsize{\textbf{Notes:} Pregão, $\lvert MV \rvert \le 0.10$. Placebo consists of non-cartel firm pairs bidding on the same BEC item code in the same year as each cartel-active auction. AUC computed via Mann--Whitney $U$ (Jaccard similarity, higher is cartel). The decomposition is approximate: because AUC is a rank-order statistic, the two components do not sum exactly to the total ($0.105 + 0.138 = 0.243$ vs.\ total $0.240$). Percentages are shares of total signal. Source: v3 specialization placebo.\par}
 \end{minipage}
 \end{table}
