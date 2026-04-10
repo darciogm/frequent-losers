@@ -20,6 +20,30 @@ The ground truth is constructed from CADE administrative proceedings with final 
 
 We match each convicted firm's 8-digit CNPJ root to the BEC bidding records by firm identifier. We then label each BEC auction as \emph{cartel-tainted} if at least one convicted firm participated during the CADE-specified conduct period for the relevant product market and year. This firm $\times$ period $\times$ product matching ensures that auctions are labeled as cartel-tainted only when a convicted firm was bidding during the window in which its cartel was found to be active---not merely because the firm appears in a CADE database at some other time.
 
+\begin{table}[htbp]
+\centering
+\caption{Convicted Cartels in S\~{a}o Paulo Procurement Markets}\label{tab:cartels}
+\begin{tabular}{p{3.2cm}lcccc}
+\toprule
+Sector & CADE process & Period & Firms & In BEC & Conduct type \\
+\midrule
+Trens e metr\^{o}s & 08700.004617 & 1999--2013 & 13 & 10 & Bid rigging \\
+Merenda escolar & 08012.010022 & 2006--2013 & 7 & 6 & Market division \\
+Medicamentos & 08012.002222 & 2007--2011 & 8 & 8 & Hub-and-spoke \\
+Sacos de lixo & 08700.005789 & 2008--2014 & 3 & 3 & Bid rigging / price fixing \\
+Aquecedores solares & 08012.001273 & 2009--2010 & 5 & 4 & Bid rigging \\
+Cafeterias Infraero & 08700.007278 & 2014 & 6 & 3 & Bid rigging \\
+Transporte escolar & 08700.005876 & 2019 & 2 & 2 & Bid rigging \\
+\midrule
+\multicolumn{2}{l}{Total (unique CNPJ roots)} & & 35 & 36 & \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.95\textwidth}
+\scriptsize{\textbf{Notes:} ``Firms'' counts unique 8-digit CNPJ roots per cartel; ``In BEC'' counts those matched to BEC bidding records. Total is after deduplication across cartels. Conduct periods are hand-curated from CADE Tribunal decisions and press releases (see Appendix for full audit). Source: script 12.\par}
+\end{minipage}
+\end{table}
+
 \subsection{Sample construction}
 
 We construct three conviction-anchored detection samples, all restricted to the close-margin envelope $\lvert MV \rvert \le 0.10$:

@@ -87,16 +87,50 @@ Medicamentos & 08012.002222/ 2011-09 & 2007--2011 & Hub-and-spoke investigation;
 \end{minipage}
 \end{table}
 
-%% Placeholder for unified benchmark table
-%\begin{table}[htbp]
-%\centering
-%\caption{Unified Benchmark: All Screens on the Same Close-Margin Sample}\label{tab:unified}
-%\textit{[Table to be generated programmatically from table1\_unified\_benchmark.csv]}
-%\end{table}
+\begin{table}[htbp]
+\centering
+\caption{Unified Benchmark: All Screens on the Same Close-Margin Sample}\label{tab:unified}
+\begin{tabular}{llccccc}
+\toprule
+& & \multicolumn{2}{c}{Pregão ($N_t = 2{,}319$)} & & \multicolumn{2}{c}{Convite ($N_t = 263$)} \\
+\cmidrule{3-4} \cmidrule{6-7}
+& Screen & Cohen's $d$ & AUC & & Cohen's $d$ & AUC \\
+\midrule
+\multicolumn{7}{l}{\emph{Panel A: Classical bid-distribution screens}} \\[3pt]
+& Coefficient of variation ($CV$) & $-0.07$ & 0.523 & & $-0.01$ & 0.515 \\
+& Bid spread ($S$) & $-0.10$ & 0.531 & & $+0.04$ & 0.502 \\
+& Margin of victory ($MV$) & $+0.17$ & 0.457 & & $+0.14$ & 0.456 \\
+& Number of bidders ($N$) & $-0.24$ & 0.555 & & $+0.06$ & 0.467 \\[6pt]
+\multicolumn{7}{l}{\emph{Panel B: Network-based screens}} \\[3pt]
+& Shared workers ($W_{ij}$) & $+0.06$ & \textbf{0.750} & & $+0.47$ & \textbf{0.704} \\
+& Jaccard similarity ($J_{ij}$) & $+0.19$ & \textbf{0.739} & & $+0.09$ & \textbf{0.701} \\
+& Co-bidding density ($C_{ij}$) & $+0.14$ & 0.695 & & $-0.04$ & 0.525 \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.95\textwidth}
+\scriptsize{\textbf{Notes:} All screens evaluated on the unified close-margin benchmark ($\lvert MV \rvert \le 0.10$) against a common clean control ($N_0 = 527{,}259$ pregão; $N_0 = 519{,}557$ convite). Classical screen AUCs use the ``lower is cartel'' convention; values above 0.5 indicate detection in the predicted direction. Network screen AUCs use ``higher is cartel.'' Bold indicates AUC $\ge 0.70$. Cohen's $d$ is the standardized mean difference (pooled SD). Source: script 23.\par}
+\end{minipage}
+\end{table}
 
-%% Placeholder for placebo decomposition table
-%\begin{table}[htbp]
-%\centering
-%\caption{Specialization-Placebo Decomposition of Worker-Flow Signal}\label{tab:placebo}
-%\textit{[Table to be generated programmatically from v3\_specialization\_placebo.txt]}
-%\end{table}
+\begin{table}[htbp]
+\centering
+\caption{Specialization-Placebo Decomposition of Worker-Flow Signal}\label{tab:placebo}
+\begin{tabular}{lcccc}
+\toprule
+Sample & $N$ & \% with $\ge 1$ shared worker & Mean Jaccard & AUC vs.\ clean \\
+\midrule
+Cartel-active & 2{,}321 & 57.9\% & 0.0022 & 0.740 \\
+Placebo (same market) & 5{,}313 & 31.1\% & 0.0012 & 0.605 \\
+Clean (global) & 523{,}414 & 9.9\% & 0.0008 & --- \\[6pt]
+\multicolumn{5}{l}{\emph{Signal decomposition (Jaccard AUC relative to clean baseline)}} \\[3pt]
+\multicolumn{4}{l}{\quad Total signal (cartel vs.\ clean $-$ 0.5)} & $+0.240$ \\
+\multicolumn{4}{l}{\quad Specialization component (placebo vs.\ clean)} & $+0.105$ \quad (44\%) \\
+\multicolumn{4}{l}{\quad Cartel-specific residual (cartel vs.\ placebo)} & $+0.138$ \quad (56\%) \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.95\textwidth}
+\scriptsize{\textbf{Notes:} Pregão, $\lvert MV \rvert \le 0.10$. Placebo consists of non-cartel firm pairs bidding on the same BEC item code in the same year as each cartel-active auction. AUC computed via Mann--Whitney $U$ (Jaccard similarity, higher is cartel). Percentages in decomposition are shares of total signal. Source: v3 specialization placebo.\par}
+\end{minipage}
+\end{table}
