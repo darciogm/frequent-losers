@@ -22,7 +22,23 @@ Critically, the worker-flow signal is not an artifact of sectoral composition. R
 
 On the convite subsample ($N = 263$ cartel-active, $\lvert MV \rvert \le 0.10$), the worker-flow screens maintain strong performance: shared-worker AUC $= 0.704$, Jaccard AUC $= 0.701$. The consistency of network-screen performance across auction formats---in contrast to the format-sensitive behavior of classical screens---supports the view that worker-flow connectivity captures a channel of coordination that is invariant to the procedural details of the bidding mechanism.
 
-On the strict pair-matched sample ($N = 10$ after close-margin filtering), worker-flow AUCs decline to near chance (shared workers: $0.56$; Jaccard: $0.55$; bootstrap 95\% CI includes $0.5$). We attribute this to power constraints at small sample sizes rather than to a breakdown in the underlying signal: median shared workers and Jaccard are both zero in both the pair-matched and control samples, and the large-sample cartel-active benchmark is where discriminative power can be meaningfully evaluated.
+A natural question is what the cartel-active AUC actually measures, given that in most auctions only \emph{one} of the two firms in the (winner, runner-up) pair is a convicted cartelist. Of the 2{,}319 cartel-active auctions, 996 have the \emph{winner} as the cartel-active firm and the runner-up as a non-cartel firm; 1{,}313 have the \emph{runner-up} as the cartel-active firm; and only 10 have both firms cartel-active. Decomposing the AUC by cartel role clarifies the interpretation:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Subgroup & $N$ & AUC (shared workers) & AUC (Jaccard) \\
+\midrule
+Winner cartel, runner-up clean & 996 & 0.741 & 0.730 \\
+Runner-up cartel, winner clean & 1{,}313 & 0.759 & 0.747 \\
+Both cartel-active & 10 & 0.558 & 0.550 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Three observations emerge. \emph{First}, the AUC is remarkably stable across the two one-sided subgroups ($0.74$--$0.76$), indicating that the detection signal is symmetric: it does not matter whether the cartel firm wins or loses the auction. This rules out the concern that the screen merely captures a ``winner effect'' driven by a cartel firm's incumbency or market dominance. \emph{Second}, the signal is present even when the \emph{runner-up} is the cartel firm (AUC $= 0.759$), confirming that elevated worker-flow connectivity is a property of cartel-firm pairs in thin labor markets, not an artifact of winning per se. \emph{Third}, intra-cartel pairs (both firms cartel-active, $N = 10$) exhibit the highest mean shared-worker count ($\bar{W} = 28.4$, compared with $6.5$ for winner-only and $2.1$ for clean controls) but an AUC near chance ($0.56$), reflecting severe power constraints at small $N$ rather than an absence of signal.
+
+The decomposition clarifies the mechanism: the worker-flow screen detects that cartel firms are embedded in thin specialized-labor markets where personnel flows with \emph{all} rivals---not just co-conspirators---are dense. The specialization placebo (Section~\ref{sec:res_placebo}) further separates this market-embeddedness component from the cartel-specific coordination residual. The headline AUC of $0.75$ thus captures both channels; the cartel-specific residual, net of market specialization, is approximately $0.64$ (Section~\ref{sec:res_placebo}).
 
 \subsection{Specialization-placebo decomposition}\label{sec:res_placebo}
 
