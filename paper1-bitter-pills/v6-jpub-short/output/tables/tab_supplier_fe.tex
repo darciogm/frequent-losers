@@ -1,29 +1,41 @@
-
-\begingroup
-\centering
-\begin{tabular}{lccc}
-   \toprule
-    & \multicolumn{3}{c}{bid\_price\_log}\\
-                           & (1)            & (2)                   & (3)\\  
-   \midrule 
-   Urgent Purchase         & 0.0513$^{***}$ & 0.0245                & 0.0109\\   
-                           & (0.0153)       & (0.0159)              & (0.0179)\\   
-   Log Quantity            &                &                       & -0.3931$^{***}$\\   
-                           &                &                       & (0.0325)\\   
-    \\
-   Observations            & 196,883        & 196,642               & 196,642\\  
-   R$^2$                   & 0.86796        & 0.88083               & 0.92157\\  
-   Within R$^2$            & 0.00022        & $5.41\times 10^{-5}$  & 0.34189\\  
-    \\
-   item\_id fixed effects  & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   year\_n fixed effects   & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   pbu\_id fixed effects   & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   firm\_f fixed effects   &                & $\checkmark$          & $\checkmark$\\   
-   \bottomrule
-\end{tabular}
- 
-\par \raggedright 
-DV: log negotiated price. Sample: winning bids for items with both ordinary and litigated purchases. Column (1): item + year + PBU FE. Column (2) adds firm FE. Column (3) adds log quantity. SE clustered at PBU level.
-\par\endgroup
-
-
+\begin{table}[ht]
+  \centering
+  \caption{Demand-Side vs.\ Supply-Side Decomposition: Supplier Fixed Effects}
+  \label{tab:supplier_fe}
+  \small
+  \begin{threeparttable}
+  \begin{tabular}{lccc}
+    \toprule
+    & \multicolumn{3}{c}{\textit{DV: log negotiated price}} \\
+    \cmidrule(lr){2-4}
+                           & (1)            & (2)            & (3)            \\
+    \midrule
+    Urgent Purchase        & 0.0513$^{***}$ & 0.0245         & 0.0109         \\
+                           & (0.0153)       & (0.0159)       & (0.0179)       \\[3pt]
+    Log Quantity           &                &                & $-$0.3931$^{***}$ \\
+                           &                &                & (0.0325)       \\
+    \midrule
+    Item FE                & $\checkmark$   & $\checkmark$   & $\checkmark$   \\
+    Year FE                & $\checkmark$   & $\checkmark$   & $\checkmark$   \\
+    PBU FE                 & $\checkmark$   & $\checkmark$   & $\checkmark$   \\
+    Supplier (Firm) FE     &                & $\checkmark$   & $\checkmark$   \\[3pt]
+    Observations           & 196{,}883      & 196{,}642      & 196{,}642      \\
+    R$^2$                  & 0.868          & 0.881          & 0.922          \\
+    Within R$^2$           & 0.00022        & $5.41\!\times\!10^{-5}$ & 0.34189 \\
+    \bottomrule
+  \end{tabular}
+  \begin{tablenotes}
+    \small
+    \item \textit{Notes:} Sample: winning bids for items with at least one
+    ordinary and one litigated purchase. Column~(1) reproduces the preferred
+    specification from Table~\ref{tab:neg_prices} (item + year + PBU FE).
+    Column~(2) adds supplier (firm) fixed effects---isolating within-firm
+    variation---and the urgency coefficient falls by 52\%, indicating that
+    roughly half of the total premium is absorbed by supplier selection
+    under pressure. Column~(3) additionally partials out log quantity and
+    the residual premium collapses to 1\% (insignificant). Standard errors
+    clustered at the PBU level in parentheses. Significance: $^{***}$
+    $p<0.01$, $^{**}$ $p<0.05$, $^{*}$ $p<0.10$.
+  \end{tablenotes}
+  \end{threeparttable}
+\end{table}

@@ -1,26 +1,42 @@
-
-\begingroup
-\centering
-\begin{tabular}{lcccc}
-   \toprule
-    & \multicolumn{2}{c}{bid\_price\_log} & \multicolumn{2}{c}{bid\_price\_ref\_log}\\
-                           & (1)                   & (2)            & (3)                   & (4)\\  
-   \midrule 
-   Urgent Purchase         & -0.0204               & 0.0513$^{***}$ & -0.0306               & 0.0305$^{**}$\\   
-                           & (0.0316)              & (0.0153)       & (0.0447)              & (0.0141)\\   
-    \\
-   Observations            & 39,283                & 196,883        & 46,874                & 226,278\\  
-   R$^2$                   & 0.83364               & 0.86796        & 0.81121               & 0.85183\\  
-   Within R$^2$            & $7.03\times 10^{-6}$  & 0.00022        & $1.73\times 10^{-5}$  & $7.43\times 10^{-5}$\\   
-    \\
-   item\_id fixed effects  & $\checkmark$          & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   year\_n fixed effects   & $\checkmark$          & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   pbu\_id fixed effects   & $\checkmark$          & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   \bottomrule
-\end{tabular}
- 
-\par \raggedright 
-Placebo sample: items with zero litigated purchases across 2009-2019. Main sample: items with at least one litigated and one ordinary purchase. DV: log price. Item + Year + PBU FE. SE clustered at PBU level.
-\par\endgroup
-
-
+\begin{table}[ht]
+  \centering
+  \caption{Falsification: Items Never Subject to Litigation}
+  \label{tab:placebo}
+  \small
+  \begin{threeparttable}
+  \begin{tabular}{lcccc}
+    \toprule
+    & \multicolumn{2}{c}{\textit{DV: log negotiated price}}
+    & \multicolumn{2}{c}{\textit{DV: log reference price}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+                           & (1)                      & (2)            & (3)                      & (4)           \\
+    \midrule
+    Urgent Purchase        & $-$0.0204                & 0.0513$^{***}$ & $-$0.0306                & 0.0305$^{**}$ \\
+                           & (0.0316)                 & (0.0153)       & (0.0447)                 & (0.0141)      \\[3pt]
+    \midrule
+    Observations           & 39{,}283                 & 196{,}883      & 46{,}874                 & 226{,}278     \\
+    R$^2$                  & 0.834                    & 0.868          & 0.811                    & 0.852         \\
+    Within R$^2$           & $7.0\!\times\!10^{-6}$   & 0.00022        & $1.7\!\times\!10^{-5}$   & $7.4\!\times\!10^{-5}$ \\
+    \midrule
+    Sample                 & Never-litigated          & Full           & Never-litigated          & Full          \\
+    Item FE                & $\checkmark$             & $\checkmark$   & $\checkmark$             & $\checkmark$  \\
+    Year FE                & $\checkmark$             & $\checkmark$   & $\checkmark$             & $\checkmark$  \\
+    PBU FE                 & $\checkmark$             & $\checkmark$   & $\checkmark$             & $\checkmark$  \\
+    \bottomrule
+  \end{tabular}
+  \begin{tablenotes}
+    \small
+    \item \textit{Notes:} Columns~(1) and~(3) restrict the sample to items
+    with zero litigated purchases across 2009--2019, keeping only those
+    with both ordinary and administrative purchases for within-item
+    comparability. Columns~(2) and~(4) reproduce the full-sample estimates
+    from Tables~\ref{tab:neg_prices} and~\ref{tab:ref_prices} for reference.
+    The urgency coefficient is economically small and statistically
+    indistinguishable from zero in the never-litigated sample, consistent
+    with the urgency premium arising from exposure to judicial sanctions
+    rather than from generic features of urgency. Standard errors
+    clustered at the PBU level. Significance: $^{***}$ $p<0.01$,
+    $^{**}$ $p<0.05$, $^{*}$ $p<0.10$.
+  \end{tablenotes}
+  \end{threeparttable}
+\end{table}
