@@ -1,0 +1,75 @@
+%% Bitter Pills to Swallow -- Online Appendix
+%% Compiled separately from submission.tex. Uses the same CAS class so
+%% that the typeset look matches the main manuscript.
+
+\documentclass[a4paper,fleqn]{cas-sc}
+
+\usepackage[authoryear,longnamesfirst]{natbib}
+
+% --- LaTeX3 (expl3) compatibility patch (see submission.tex) ---------------
+\ExplSyntaxOn
+\cs_if_exist:NTF \vbox_unpack_clear:N
+  { }
+  { \cs_new_eq:NN \vbox_unpack_clear:N \box_unpack_drop:N }
+\ExplSyntaxOff
+% ---------------------------------------------------------------------------
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{caption}
+
+% (No xr to body: OA prose refers to "the main text" in words, so the
+% few cross-refs to body labels like tab:neg_prices simply render as
+% boldface question marks in standalone compilation---acceptable for
+% supplementary material.)
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+
+\graphicspath{{figures/}}
+
+\newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+% --- Appendix numbering ---
+\renewcommand{\thesection}{A}
+\renewcommand{\thetable}{A.\arabic{table}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+
+\begin{document}
+\let\WriteBookmarks\relax
+
+\shorttitle{Bitter Pills -- Online Appendix}
+\shortauthors{Genicolo-Martins \& Furquim de Azevedo}
+
+\title[mode=title]{Online Appendix\\[4pt]
+  \large Bitter Pills to Swallow: The Enforcement Costs of Health Litigation}
+
+\author[1]{Darcio Genicolo-Martins}
+\ead{darciogm1@insper.edu.br}
+\affiliation[1]{organization={Insper Institute of Education and Research},
+            city={S\~ao Paulo},
+            country={Brazil}}
+
+\author[1]{Paulo Furquim de Azevedo}
+\ead{paulofa1@insper.edu.br}
+
+\maketitle
+
+\noindent\textit{Not for print --- available as supplementary material.}
+
+\bigskip
+
+\input{Appendix}
+
+% --- Bibliography (required because Appendix.tex cites borusyak2024,
+%     callaway2021, etc.) ---
+\bibliographystyle{cas-model2-names}
+\bibliography{References}
+
+\end{document}
