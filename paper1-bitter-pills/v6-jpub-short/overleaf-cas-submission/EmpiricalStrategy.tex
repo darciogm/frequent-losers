@@ -1,0 +1,33 @@
+\section{Empirical Strategy}
+\label{sec:empirical}
+
+The analysis has two stages: we first estimate the overall cost of urgency by comparing ordinary and urgent purchases, then isolate the sanction channel by comparing litigated and administrative urgent purchases.
+
+\subsection{Identification}
+
+Identification requires that, conditional on fixed effects, urgency is uncorrelated with unobserved determinants of procurement outcomes. Three institutional features support this. First, court orders originate from patients' health needs and legal claims---not from the procurement process. Brazilian public administration operates under a principle of impersonality: tender outcomes depend on item specifications and market conditions, not on who requested the purchase. Second, court orders are unpredictable from the buyer's perspective. Only 4\% of claims arise from stock shortages or service failures, so litigation is poorly correlated with PBU-level mismanagement. Third, the urgency regime is determined externally---by judges or by the SES/SP's scientific committee---not by the purchasing unit. While PBUs could in principle misclassify purchases, the legal requirement to reference court orders in tender notices, combined with our REGEX-based classification of official texts, limits this concern. An honest-DiD event study around each item's first court order, computed via the imputation estimator of \citet{borusyak2024revisiting} (Online Appendix, Figure~A.15), exhibits pre-period coefficients statistically and economically indistinguishable from zero---supporting parallel trends---and post-period coefficients that rise monotonically from $+5.2\%$ at $t=0$ to $+14.7\%$ at $t=+5$. This pattern rules out the reverse-causality story in which high prices attract lawsuits.
+
+\subsection{Enforcement Costs: Ordinary vs.\ Urgent}
+
+We estimate the following baseline specification:
+\begin{equation}
+\label{eq:baseline}
+y_{i,g,t} = \beta \cdot \text{Urgent}_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t},
+\end{equation}
+where $y_{i,g,t}$ is the outcome for purchase order $i$ of item $g$ at time $t$; $\gamma_g$ are item fixed effects; $\lambda_t$ are time fixed effects; and $\delta_b$ are PBU fixed effects. Standard errors are clustered at the PBU level. We report four specifications with progressively richer fixed effects, from item FE only through item + year-month + PBU FE. Our preferred specification (item + year + PBU FE) absorbs time-invariant item characteristics, common annual trends, and buyer-specific heterogeneity, while retaining sufficient within-cell variation for precise estimation.
+
+For negotiated prices and number of firms, we additionally estimate a specification that partials out log quantity:
+\begin{equation}
+\label{eq:direct}
+y_{i,g,t} = \beta \cdot \text{Urgent}_{i,g,t} + \alpha \cdot \ln Q_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t},
+\end{equation}
+Because log quantity is itself an outcome of urgency, \eqref{eq:direct} does not identify a structural direct effect \citep{acharya2016explaining}; we therefore read the contrast between \eqref{eq:baseline} and \eqref{eq:direct} as a descriptive mediation decomposition, quantifying how much of the total premium co-moves with the quantity margin that urgency itself induces. Section~\ref{sec:main_results} develops this interpretation.
+
+\subsection{The ``Under the Gun'' Effect: Litigated vs.\ Administrative}
+
+To isolate the effect of judicial sanctions, we restrict the sample to urgent purchases only and estimate:
+\begin{equation}
+\label{eq:utg}
+\ln(\text{Price}_{i,g,t}) = \beta \cdot \text{Admin}_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t},
+\end{equation}
+where $\text{Admin}$ equals 1 for administrative purchases and 0 for litigated. Since both types face identical planning constraints, $\beta$ isolates the cost attributable to the sanction regime.
