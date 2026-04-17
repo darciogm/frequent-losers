@@ -1,6 +1,6 @@
-# Bitter Pills to Swallow --- Overleaf + Elsevier CAS submission package
+# Bitter Pills --- Overleaf + Elsevier CAS submission package
 
-Overleaf-ready archive for **"Bitter Pills to Swallow: The Enforcement
+Overleaf-ready archive for **"Bitter Pills: The Enforcement
 Costs of Health Litigation"** (Darcio Genicolo-Martins & Paulo Furquim
 de Azevedo, Insper), typeset with the modern **Elsevier CAS
 single-column** class (`cas-sc`).

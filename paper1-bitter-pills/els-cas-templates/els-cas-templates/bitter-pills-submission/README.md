@@ -1,7 +1,7 @@
-# Bitter Pills to Swallow --- Elsevier CAS submission package
+# Bitter Pills --- Elsevier CAS submission package
 
 JPubE Short Paper submission package for
-**"Bitter Pills to Swallow: The Enforcement Costs of Health Litigation"**
+**"Bitter Pills: Judicial Enforcement and the Cost of Public Procurement in Brazil"**
 (Darcio Genicolo-Martins & Paulo Furquim de Azevedo, Insper),
 typeset with Elsevier's **CAS single-column** class (`cas-sc`).
 

@@ -5,9 +5,9 @@ hide:
 
 <div class="hero-section" markdown>
 
-# Bitter Pills to Swallow
+# Bitter Pills
 
-<p class="subtitle">The Enforcement Costs of Health Litigation</p>
+<p class="subtitle">Judicial Enforcement and the Cost of Public Procurement in Brazil</p>
 <p class="authors">Darcio Genicolo-Martins &nbsp;&middot;&nbsp; Paulo Furquim de Azevedo</p>
 <p class="affiliation">Insper Institute of Education and Research, Sao Paulo, Brazil</p>
 

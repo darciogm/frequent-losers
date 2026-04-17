@@ -1,7 +1,7 @@
-# Bitter Pills to Swallow — Overleaf submission package
+# Bitter Pills — Overleaf submission package
 
 JPubE Short Paper submission package for
-**"Bitter Pills to Swallow: The Enforcement Costs of Health Litigation"**
+**"Bitter Pills: Judicial Enforcement and the Cost of Public Procurement in Brazil"**
 by Darcio Genicolo-Martins & Paulo Furquim de Azevedo (Insper).
 
 This archive is self-contained: every figure and table referenced by the

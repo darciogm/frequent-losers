@@ -1,6 +1,6 @@
 # The Paper
 
-## Bitter Pills to Swallow: The Enforcement Costs of Health Litigation
+## Bitter Pills: Judicial Enforcement and the Cost of Public Procurement in Brazil
 
 **Authors:** Darcio Genicolo-Martins and Paulo Furquim de Azevedo
 **Affiliation:** Insper Institute of Education and Research, Sao Paulo, Brazil
