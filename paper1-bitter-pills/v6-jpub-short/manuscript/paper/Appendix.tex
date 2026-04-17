@@ -185,18 +185,49 @@ Figure~\ref{fig:admin_ratio} shows the share of administrative purchases as a pr
   \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on BEC procurement data.
 \end{figure}
 
-\subsection*{A.5 Event Study: First Court Order}
+\subsection*{A.5 Event Study: First Court Order (Honest DiD)}
 \label{sec:appendix_eventstudy}
 
-Figure~\ref{fig:event_study} plots price dynamics around the first court order for each item (769 items with $\geq 2$ pre- and post-treatment years). Prices \emph{decline} monotonically in the years before litigation ($t=-5$: $-0.43$; $t=-2$: $-0.03$) and rise sharply after ($t=+1$: $+0.12$; $t=+5$: $+0.50$). The negative pre-trends rule out the concern that rising prices attract litigation; if anything, declining prices may generate the unmet demand that triggers court orders.
+To address concerns about pre-trends and heterogeneous-treatment-effect
+contamination in the TWFE event-study design, we re-estimate the dynamic
+response of log negotiated prices to the first court order for each item
+using two contemporary estimators: the imputation estimator of
+\citet{borusyak2024revisiting} (BJS) and the ATT$(g,t)$ estimator of
+\citet{callaway2021did} (CS). The panel is at the item-year level with
+winner-only observations; treatment is defined as the calendar year of
+the first litigated purchase for each item; the BJS specification uses
+item + year fixed effects fit on untreated observations to impute the
+counterfactual. The CS specification uses never-litigated items as the
+control group.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\textwidth]{../../output/figures/fig_event_study_item.pdf}
-  \caption{Log Negotiated Price Relative to First Court Order ($t = -1$ Reference)}
+  \includegraphics[width=\textwidth]{../../output/figures/fig_event_study_honest.pdf}
+  \caption{Log Negotiated Price Around First Court Order: Honest DiD Estimators}
   \label{fig:event_study}
-  \par\smallskip\footnotesize\textit{Notes:} Item + PBU FE. SE clustered at PBU level. 769 items with $\geq 2$ pre- and $\geq 2$ post-treatment years. 95\% CIs shaded.
+  \par\smallskip\footnotesize\textit{Notes:} Item-year panel, winner-only
+  observations. BJS (\citealt{borusyak2024revisiting}) shown with shaded
+  95\% confidence interval; CS (\citealt{callaway2021did}) with
+  never-treated control group; TWFE shown only as a pre-reform benchmark.
+  The BJS pre-period coefficients are economically small (all $<0.05$ in
+  absolute value) and statistically indistinguishable from zero,
+  consistent with parallel trends; post-treatment coefficients rise
+  monotonically from $+0.052$ at $t = 0$ to $+0.147$ at $t = +5$. The CS
+  estimator with never-treated control is substantially noisier because
+  items that never attract a court order are a systematically different
+  comparison group (they tend to be routine, well-stocked items);
+  HonestDiD (\citealt{borusyak2024revisiting}-compatible sensitivity in
+  the companion CSV) confirms that the CS point estimate at $t=0$ is not
+  robust to parallel-trend violations of moderate magnitude.
 \end{figure}
+
+BJS is our preferred honest specification because it uses pre-treatment
+observations of eventually-treated items to fit the counterfactual model,
+avoiding the selection problem that haunts the CS nevertreated comparison.
+The pattern is consistent with the cross-sectional estimates in the main
+text: after a court order, the same item is systematically more expensive
+than it was in its own pre-period, with no detectable pre-trend that could
+confound the interpretation.
 
 \subsection*{A.6 Heterogeneity}
 \label{sec:appendix_het}
