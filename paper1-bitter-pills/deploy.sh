@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-DESTINO="../darciogm.github.io/papers/bitter-pills"
-REPO_PESSOAL="../darciogm.github.io"
+DESTINO="../../darciogm.github.io/papers/bitter-pills"
+REPO_PESSOAL="../../darciogm.github.io"
 
 echo "🔨 Building MkDocs..."
 rm -rf site/
