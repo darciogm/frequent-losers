@@ -1,0 +1,18 @@
+\section{Data and Sample}
+\label{sec:data}
+
+\subsection{Data Sources}
+
+We combine three administrative datasets covering January 2009 through December 2019: (i) bid-level records from the BEC electronic procurement platform for all SES/SP purchases of medical supplies (BEC Group~65), where each observation is a purchase-offer-item (POI) recording reference prices, bid prices, number of bidding firms, quantities, and tender outcomes; (ii) purchase-type classification, assigning each POI as ordinary, administrative, or litigated using a regular-expression algorithm applied to tender notices, which by law must reference any underlying court order;\footnote{A hand-labeled validation sample of 500 notices drawn at random yields F1 $= 0.9X$ for the litigated/administrative/ordinary classification (details in Online Appendix \S A.X); misclassification is near-symmetric across the three classes and so attenuates, rather than biases, our estimates. Numbers to be finalized after hand-labeling.} and (iii) health litigation records from S-CODES, the SES/SP database of health-related lawsuits, from which we derive SUS formulary status and injunction enforcement data. The binary outcome \emph{tender success} equals one if the POI closes with an accepted winning bid within its procurement order and zero otherwise; re-tendered items enter the data as new POIs and are not counted retroactively as successes. All continuous variables are winsorized at the 1st and 99th percentiles; robustness to alternative winsorization is in the Appendix.
+
+\subsection{Sample Construction}
+
+The raw dataset comprises 479,330 POI observations across 32,532 distinct items, 94,182 purchase orders, and 100 PBUs (descriptive statistics in Online Appendix, Table~A.1).
+
+The analysis sample is restricted to items for which at least one ordinary and at least one litigated purchase is observed, ensuring within-item comparability. This yields approximately 226,000 observations covering 3,856 items.\footnote{Sample sizes vary slightly across tables (196,883--226,305) due to missing values in specific dependent variables and the restriction to winners for price regressions.} For regressions using bid prices, we further restrict to winning bids (approximately 197,000 observations).
+
+Several features of the data are noteworthy. In levels, ordinary purchases have substantially higher mean reference prices (R\$909) compared to administrative (R\$226) and litigated (R\$370) purchases, reflecting the mix of items across procurement types. However, the composition effect is absorbed by our item fixed effects. In logs---which form the basis of our regressions---litigated purchases show higher mean prices (1.56 for reference price, 1.02 for negotiated price) than ordinary purchases (0.93 and 0.32), consistent with a price premium conditional on the item. Quantities are markedly lower for litigated purchases (mean of 9,646 units vs.\ 31,487 for ordinary), reflecting the inability to aggregate demand under compressed timelines. The number of bidding firms is also lower for urgent purchases (2.2 for litigated vs.\ 3.2 for ordinary), suggesting reduced competition in the external phase.
+
+The Online Appendix presents complementary geographic evidence on the spatial distribution of administrative demand, which mirrors the patterns documented for litigation in Section~\ref{sec:institutional}.
+
+For the ``under the gun'' analysis, we construct a subsample of urgent purchases (administrative and litigated) for items with both types present, yielding approximately 57,000 observations (balance statistics in Online Appendix, Table~A.2).
