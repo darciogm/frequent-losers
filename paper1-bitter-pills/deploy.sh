@@ -16,7 +16,7 @@ rsync -av --delete site/ "$DESTINO/"
 echo ""
 echo "🚀 Commitando no repo pessoal..."
 cd "$REPO_PESSOAL"
-git pull origin main --rebase  # garante que está atualizado antes do push
+git pull origin main --rebase --autostash  # garante que está atualizado; autostash handles rsync changes
 git add papers/bitter-pills/
 
 if git diff --staged --quiet; then
