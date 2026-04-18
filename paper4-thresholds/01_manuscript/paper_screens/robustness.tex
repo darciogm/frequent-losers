@@ -1,0 +1,106 @@
+\section{Robustness}\label{sec:robustness}
+
+This section reports six robustness exercises, each designed to answer a specific question that a careful reader of Section~\ref{sec:results} will want addressed. Section~\ref{sec:rob_inference} summarizes the inference results from the main text for easy reference. Section~\ref{sec:rob_features} is the core feature-selection justification: it reports the alternative labor-similarity specification, the trivial baselines, and the item-overlap window sensitivity. Section~\ref{sec:rob_dose} documents what cartel characteristics predict fold-level performance --- and transparently reports where the prediction deviates from the framework. Section~\ref{sec:rob_closure} presents an auxiliary within-item closure metric that corroborates the main findings at a different unit of analysis. Section~\ref{sec:rob_variance} benchmarks against the classical variance-based cartel screen and explains why it fails on preg\~{a}o-auction data. Section~\ref{sec:rob_summary} consolidates the five robustness conclusions.
+
+\subsection{Statistical inference summary}\label{sec:rob_inference}
+
+For convenience, the inference results from Section~\ref{sec:res_inference_main} are:
+\begin{itemize}
+\item Main composite pooled AUC: $0.809$, cluster-bootstrap 95\% CI $[0.480, 0.949]$.
+\item Main composite macro AUC: $0.845$, cluster-bootstrap 95\% CI $[0.661, 0.956]$.
+\item Incremental macro AUC over overlap alone: $+0.107$, cluster-bootstrap 95\% CI $[-0.073, +0.265]$, empirical $p(\Delta \leq 0) = 0.104$.
+\item Incremental pooled AUC over overlap alone: $+0.003$, cluster-bootstrap 95\% CI $[-0.407, +0.266]$, empirical $p(\Delta \leq 0) = 0.506$.
+\end{itemize}
+
+\textbf{Label-permutation null.} As a complementary inference exercise we run a label-permutation test on the full pair frame ($100$ positive pairs, $100{,}000$ negative pairs). For each permutation we randomly reassign positive-class labels across pairs and recompute the LOO-CV pooled AUC of the main composite. The permutation null sits tightly around mean $0.59$ with 95th percentile $0.80$ and 99th percentile $0.81$; the observed pooled AUC of $0.8089$ exceeds the null's 95th percentile, giving an empirical $p$-value of $\mathbf{0.020}$ (two of 100 permutation replicates produced AUCs at or above the observed value). We reject at the 5\% level the hypothesis that the composite's pooled signal is a label-assignment artifact. The macro AUC permutation is not directly reportable because the macro metric under label permutation is contaminated by concentrated-fold variance (a random permutation can assign all of a cluster's ``positive'' labels to a single fold's pairs, trivially inflating that fold's AUC toward one); we rely on the cluster bootstrap for macro inference. Source: \texttt{03\_analysis/64\_permutation\_standalone.py}.
+
+Read together, the two inference tests give a consistent picture. The composite's overall signal is strong enough to reject the no-signal null at the 2\% level. The specific incremental contribution of worker flow over product-market overlap alone is economically meaningful but sits just outside the 10\% significance threshold on a cluster-bootstrap test with five informative cartels. These two readings do not contradict each other; they describe different inference questions.
+
+\subsection{Sensitivity to feature definition}\label{sec:rob_features}
+
+The core feature-selection exercise in this paper is the choice of pair-level worker flow as the labor-network feature, in preference to static labor-cosine similarity. We document the reasoning in detail, because it is both the empirical and the theoretical backbone of the composite's design.
+
+\textbf{Static labor cosine similarity (rejected).} An earlier version of this project used the cosine similarity of firms' 2009 occupation-by-municipality employment vectors as the labor feature. Under LOO-CV, this static measure performs as follows:
+
+\begin{itemize}
+\item Single-feature LOO pooled AUC: $0.528$ (essentially random).
+\item Single-feature LOO macro AUC: $0.616$.
+\item Composite (static cosine $+$ overlap): pooled $0.908$, macro $0.815$.
+\end{itemize}
+
+The static-cosine composite has \emph{higher} pooled AUC than the worker-flow composite ($0.908$ versus $0.809$) but \emph{lower} macro AUC ($0.815$ versus $0.845$). Under macro averaging --- our preferred cross-cartel generalization metric --- worker flow dominates. The pooled advantage of static cosine comes from its stronger fit to the three large cartels (which dominate the pooled weight); the macro advantage of worker flow comes from its better generalization to the small cartels (where static cosine's fold AUCs collapse toward chance).
+
+The conceptual explanation for this pattern is as follows. The absolute level of a firm pair's CBO-municipality cosine similarity varies systematically across industries: two pharmaceutical firms have a different expected similarity distribution than two transportation firms, driven by industry-specific occupational concentration rather than by cartel-specific integration. A classifier trained on pharmaceutical cartels cannot use a learned similarity threshold to detect transportation cartels, because the threshold that separates within-industry from across-industry cosine values differs. Pair-level worker flow does not have this problem: it is on a scale-invariant numeric axis (workers moved) that does not depend on industry baselines. This is the empirical and conceptual argument for preferring worker flow as the labor feature.
+
+We note that this is not an ad-hoc rationalization: the two features were tested in parallel, and the worker-flow specification was selected on the basis of its LOO-CV macro-average superiority. The static-cosine result remains in the comparison table as the reference specification we rejected.
+
+\textbf{CNAE4 industry-match baseline.} The natural referee question is whether the composite's gain over overlap alone is really attributable to labor-network structure, or whether it could be replicated by a simple industry-match dummy. We test this:
+
+\begin{itemize}
+\item CNAE4 match alone: pooled $0.793$, macro $0.628$.
+\item CNAE4 match $+$ overlap: pooled $0.855$, macro $0.804$.
+\item Worker flow $+$ overlap (main): pooled $0.809$, macro $0.845$.
+\end{itemize}
+
+Under macro averaging, the worker-flow composite beats the CNAE-match composite by $+0.041$ AUC. Under pooled averaging, CNAE-match is slightly better ($0.855$ versus $0.809$). Again the macro reading favors worker flow and the pooled reading is close to a wash. CNAE-match alone is higher than static labor cosine alone ($0.63$ versus $0.62$) --- a trivial industry-code dummy outperforms static occupational-geographic similarity as a cartel screen --- which is an additional reason to prefer worker flow over static cosine as the labor feature.
+
+\textbf{Item-overlap window sensitivity.} The main overlap feature is computed on the full 2009--2017 window. We test two alternative windows:
+
+\begin{itemize}
+\item Full window ($2009$--$2017$): single-feature pooled $0.856$, macro $0.734$.
+\item Pre-conduct-only (items bid on before each cartel's start year): pooled $0.777$, macro $0.504$.
+\item Post-conduct-only (items bid on after each cartel's end year): pooled $0.800$, macro $0.622$.
+\end{itemize}
+
+The full window is the strongest. Pre-conduct-only is noticeably weaker (macro drops from $0.73$ to $0.50$), which is informative: a substantial share of the product-market overlap signal comes from the conduct period itself, partially confounding latent pre-conduct structure with observed cartel activity. A referee-style reading of this sensitivity is that the overlap feature measures coordinated bidding as much as latent product-market proximity. We retain the full-window specification as the main because it is the strongest signal, but flag this sensitivity as a property of the operationalization rather than a strict test of latent structure.
+
+\textbf{Common-auction and common-buyer baselines.} Two additional trivial baselines:
+
+\begin{itemize}
+\item Common-auction indicator: pooled $0.785$, macro $0.566$.
+\item Common-buyer indicator: pooled $0.635$, macro $0.675$.
+\end{itemize}
+
+Both underperform the main composite under macro averaging, and neither dominates the overlap-only reference. The main composite is not being matched by a simpler construction.
+
+\subsection{Dose-response: fingerprint strength and cartel characteristics}\label{sec:rob_dose}
+
+Section~\ref{sec:framework} argued that structural fingerprints develop over time: longer-running, larger, or broader-scope cartels should exhibit stronger within-cartel features and therefore be easier to detect. This subsection tests the prediction directly by computing Spearman rank correlations between each cartel's structural attributes and its leave-one-out fold AUC.
+
+The results are mixed, and we report them transparently. Product-market scope (the number of distinct BEC item codes bid on by any member of the cartel) is a strong positive correlate of fold AUC ($\rho \approx +0.80$). Mean within-cartel log product-market overlap is an even stronger correlate ($\rho \approx +0.90$). Mean within-cartel pair-level worker flow is also positively correlated with fold AUC ($\rho \approx +0.7$), consistent with the main finding that worker flow is informative.
+
+Conduct duration, however, is essentially uncorrelated with fold AUC ($\rho \approx +0.10$), and the number of firms in each cartel is mildly negatively correlated ($\rho \approx -0.30$). These two results \emph{contradict} the framework's specific prediction that fingerprints should strengthen with cartel age and size. We take this as evidence that the right interpretation of the framework is that fingerprint detectability depends on coordination breadth --- how many products a cartel coordinates across, and how much pair-level labor mobility supports that coordination --- rather than on how long the cartel has been operating or how many firms it includes. We revise the framework interpretation accordingly in the discussion.
+
+\subsection{Refined closure metric: auxiliary within-item evidence}\label{sec:rob_closure}
+
+An auxiliary test at a distinct unit of analysis corroborates the main findings. For each BEC item code with at least two consecutive-year auctions, we track the within-item (winner, runner-up) pair across years and measure the \emph{market-set closure rate}: the fraction of transitions in which the winner in year $t+1$ is either the winner or the runner-up in year $t$.
+
+Under unconditional aggregation, cartel-involved transitions show a closure rate of $0.972$ versus $0.286$ for non-cartel transitions --- a ratio of $3.4$. Under the stricter conditioning that both year-$t$ pair members remain active on the same item in year $t+1$ (removing the firm-churn confounder), the non-cartel closure rises to $0.672$ and the cartel rate stays at $0.973$, narrowing the ratio to $1.45$. Even the conditional gap --- $0.973$ versus $0.672$ --- is economically meaningful: conditional on both firms remaining active in the same item, cartel pairs retain market control 97\% of the time against 67\% for comparable non-cartel pairs.
+
+The closure metric is reported as auxiliary evidence, not integrated into the main pair-level composite. Its distinct unit of analysis (item-level transitions rather than pair-level scoring) and its separate statistical logic complement the main findings without contaminating them. A three-feature composite that integrates closure as a third pair-level signal is a natural extension and is left for future work.
+
+\subsection{Classical variance screen as a benchmark}\label{sec:rob_variance}
+
+Any new cartel screen should be benchmarked against the classical variance-based screen of \citet{abrantesmetz2006screening}, which flags auctions or items whose within-auction bid distribution is unusually concentrated. For each BEC item code we compute the average of the within-auction coefficient of variation of bids; for each firm pair we aggregate this to the mean item-level CV across items on which both firms bid. Lower pair-level CV should indicate collusive bidding.
+
+The result is striking: the pair-level variance screen achieves a raw single-feature AUC of $0.479$ on our ground truth --- \emph{below} the random-chance threshold of $0.50$. Cartel pairs in our sample have slightly \emph{higher} pair-level CV than non-cartel pairs (mean CV $0.179$ versus $0.173$), which goes in the opposite direction from what classical theory predicts.
+
+We attribute this failure to a structural feature of the BEC preg\~{a}o auction format. Preg\~{a}o is a \emph{descending electronic auction}: bidders observe each other's bids in real time during a short bidding window and iteratively undercut toward the lowest-so-far price. This format compresses the within-auction bid distribution across almost all auctions --- cartels and non-cartels alike --- because competitive firms also compress their bids toward the current leading bid. The within-auction variance-screen signal that is informative in sealed-bid procurement settings (for example, in \citet{kawai2022detecting} on Japanese construction procurement) is compressed out by the preg\~{a}o mechanism itself, leaving little room for a variance-based fingerprint to distinguish cartel from competitive items.
+
+The policy reading of this finding is sharp. In sealed-bid procurement settings where bidders cannot observe each other's bids, the classical variance screen remains the workhorse of cartel detection. In dynamic-auction settings like preg\~{a}o eletr\^{o}nico --- which has been adopted widely in Latin America, Asia, and by multilateral procurement agencies --- the variance screen does not work, and structural fingerprints of the type we propose are, to our knowledge, the only applicable alternative. Competition authorities in jurisdictions that have moved to dynamic electronic auctions should not expect bid-distribution screens to detect cartels and should consider firm-pair fingerprints as a practical substitute.
+
+\subsection{Summary}\label{sec:rob_summary}
+
+Five conclusions from the robustness exercises.
+
+\emph{First}, the composite's overall signal is real and rejects a random-label null at the 2\% level. The specific incremental contribution of worker flow over product-market overlap alone is economically meaningful ($+0.11$ macro AUC) but statistically imprecise ($p \approx 0.10$), and the precision limit is driven by the five-cartel validation sample rather than by the informativeness of the feature.
+
+\emph{Second}, pair-level worker flow is the correct operationalization of the labor feature for cross-cartel generalization. Static labor cosine similarity achieves higher pooled AUC on the three large cartels but fails to generalize under macro averaging; worker flow has the opposite profile and is the better cross-cartel classifier. The switch from static cosine to worker flow is the core methodological choice of the final specification.
+
+\emph{Third}, the main composite outperforms three trivial firm-pair baselines (CNAE4 match, common-auction indicator, common-buyer indicator) under macro averaging, establishing that the contribution is not trivially replicable by a simpler industry- or market-structure dummy.
+
+\emph{Fourth}, the dose-response analysis \emph{contradicts} the framework's original prediction that fingerprints should strengthen with cartel age and size. What drives fold AUC is coordination breadth (product scope and pair-level worker flow), not cartel maturity. We revise the framework interpretation accordingly.
+
+\emph{Fifth}, the classical variance screen fails on preg\~{a}o data because the descending-auction mechanism mechanically compresses within-auction bid variance. This establishes a clear operating niche for firm-pair fingerprints in dynamic-auction settings where bid-distribution-based screens are structurally ineffective.
+
+Section~\ref{sec:conclusion} draws out the policy and methodological implications.

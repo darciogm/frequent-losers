@@ -20,6 +20,106 @@ where $i$ indexes firms, $j$ indexes item codes, $t$ indexes calendar years, $g$
 
 The item-code-by-year-within-cohort fixed effect $\gamma_{jt}^{(g)}$ absorbs all market-level variation---changes in demand, reference prices, and the number of competitors---within each cohort. The identifying assumption is parallel trends: absent treatment, the treated and never-treated firms would have followed the same within-market trajectory. We assess this by inspecting pre-treatment coefficients.
 
+\subsection{Endogeneity of treatment timing}\label{sec:endogeneity}
+
+Equation~\eqref{eq:stacked} treats the year a firm first absorbs an
+ex-cartel worker as a shock to its competitive behavior. Hiring, however,
+is a choice, and the timing of cartel-worker arrival is plausibly
+correlated with unobserved determinants of the outcome. We confront this
+concern through three complementary strategies: (i)~a shift-share exposure
+design that instruments worker absorption with predetermined occupational
+and geographic overlap between the receiving firm and the cartel; (ii)~a
+conditional-on-hiring placebo that holds the firm's hiring decision fixed
+and varies only the source of the new worker; and (iii)~the imputation
+estimator of \citet{borusyak2024revisiting} as a check against
+staggered-treatment artifacts.
+
+Four channels of endogeneity are conceptually distinct, and all bias the
+headline coefficient in the same direction. \emph{First}, capacity-pull
+reverse causality: a firm $i$ that wins more cartel-item contracts at
+date~$t$ requires labor to deliver them, posts vacancies, and absorbs
+workers from a cartel firm that is simultaneously contracting---so the
+arrival of the worker may mark $i$'s expansion rather than cause it.
+\emph{Second}, common demand shocks: a buyer-side expansion in product
+class~$j$ can raise both $i$'s win rate in~$j$ and $i$'s demand for
+$j$-relevant labor, generating correlation through a third variable that
+the item-by-year fixed effect~$\gamma_{jt}$ does not absorb when the shock
+loads on a subset of firms. \emph{Third}, mechanical displacement on
+controls: in zero-sum auctions, never-treated firms competing on the same
+items lose contracts when the treated firm wins them, so the
+difference-in-differences estimator captures the treatment effect plus a
+displacement term. \emph{Fourth}, network selection: workers move along
+occupational and geographic ties, and firms with overlapping labor pools
+tend to have overlapping product portfolios, so the treatment indicator
+selects firms that are close substitutes for the cartel firm in the
+product market---precisely the firms whose win rates rise mechanically as
+the cartel exits. All four channels push~$\hat{\beta}$ upward; we
+therefore interpret the OLS stacked-DiD estimates as upper bounds on the
+true capacity-transfer effect.
+
+\subsubsection*{Shift-share exposure instrument}
+
+To address reverse causality and common demand shocks, we construct a
+shift-share instrument in the spirit of \citet{borusyak2025nonrandom}. For
+each receiving firm~$i$ and year~$t$, define
+\begin{equation}\label{eq:bartik}
+Z_{it} \;=\; \sum_{c \in \mathcal{C}} \mathbb{1}[t \geq T_c]
+            \cdot W_c \cdot s_{i,c}^{\text{pre}}\,,
+\end{equation}
+where $\mathcal{C}$ is the set of convicted cartels, $T_c$ is the
+conduct-end date of cartel~$c$, $W_c$ is the cartel's end-of-conduct
+workforce by occupation--municipality cell, and $s_{i,c}^{\text{pre}}$ is
+firm~$i$'s pre-period (2009) employment share in the same
+occupation--municipality cells. The instrument captures the structural
+exposure of firm~$i$ to the labor reallocation triggered by enforcement,
+using only the cartel's contraction (the ``shift,'' exogenous to~$i$
+conditional on enforcement timing) and $i$'s predetermined
+occupational--geographic mix (the ``share,'' fixed before any cartel
+worker could have moved).
+
+We use~$Z_{it}$ as an instrument for the number of ex-cartel workers
+absorbed by firm~$i$ in year~$t$ in a 2SLS event-study analogue of
+equation~\eqref{eq:stacked}. The exclusion restriction is that
+firm~$i$'s 2009 occupational--geographic structure is uncorrelated with
+its post-conviction idiosyncratic demand shocks in cartel item codes,
+conditional on the item-by-year fixed effect. We assess this restriction
+by regressing $i$'s \emph{pre}-period item-level win-rate trajectories on
+lagged~$Z_{it}$; the absence of predictive power supports the
+exclusion.\footnote{Following \citet{borusyak2025nonrandom}, identification
+requires either many quasi-random shocks or exogenous shares. With only
+six cartels contributing shocks, we are at the lower end of what the
+asymptotic theory supports, and we treat the IV as a complement to---not a
+substitute for---the OLS upper bounds.}
+
+\subsubsection*{Conditional-on-hiring placebo}
+
+The shift-share design addresses confounders that operate through the
+hiring decision; a complementary test holds the hiring decision fixed and
+varies only the source of the new worker. We restrict the sample to
+firm-years in which firm~$i$ hired at least one worker in an occupation
+that overlaps with the cartel-firm workforce, and estimate
+\begin{equation}\label{eq:condhire}
+y_{ijt} \;=\; \alpha_i + \gamma_{jt}
+            + \beta \cdot \text{CartelHire}_{it}
+            + \delta \cdot \text{AnyHire}_{it}
+            + \varepsilon_{ijt}\,,
+\end{equation}
+so that~$\beta$ is identified from variation in the \emph{source} of the
+new worker rather than from the firm's decision to hire. A null on~$\beta$
+would indicate that the headline effect reflects the hiring decision
+itself; a surviving positive~$\beta$ supports the interpretation of the
+worker as a vehicle of cartel-firm-specific knowledge or capacity.
+
+\subsubsection*{Robust estimator and imputation}
+
+We additionally report the imputation estimator of
+\citet{borusyak2024revisiting}, which uses both never-treated and
+not-yet-treated firms to construct counterfactuals and which has correct
+standard errors under heterogeneous treatment effects. Divergence between
+the imputation estimator and the stacked DiD would localize residual
+staggered-treatment bias. Results for all three robustness strategies are
+reported in Section~\ref{sec:rob_endog}.
+
 \subsection{CEM matching}
 
 As a robustness check, we implement Coarsened Exact Matching (CEM) on pre-period characteristics measured in the two years before the first ex-cartel worker arrives: the number of bids, the number of distinct item codes, the win rate, and firm size (number of RAIS employees). We match on quintiles of each variable and estimate a weighted TWFE event study on the matched sample, with CEM weights applied. This addresses the concern that treated and control firms differ systematically in pre-period levels, which could generate spurious pre-trends.

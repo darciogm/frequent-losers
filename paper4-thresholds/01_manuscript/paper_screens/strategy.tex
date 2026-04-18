@@ -1,0 +1,44 @@
+\section{Empirical Strategy}\label{sec:strategy}
+
+The empirical strategy has three components. Section~\ref{sec:strategy_logit} specifies the class-balanced logistic composite that combines the two features into a single score. Section~\ref{sec:strategy_cv} describes the leave-one-CADE-cartel-out cross-validation procedure and explains why we report both pooled and macro AUC aggregations. Section~\ref{sec:strategy_inference} details the cluster-bootstrap and label-permutation inference machinery and is explicit about what each inference test can and cannot resolve given our five-effective-cartel validation design.
+
+\subsection{Logistic composite}\label{sec:strategy_logit}
+
+For unordered firm pair $\{i, j\}$ with label $y_{ij} \in \{0, 1\}$ indicating same-cartel membership, we specify
+\begin{equation}\label{eq:logit}
+\Pr\bigl(y_{ij} = 1 \mid \mathrm{wf}_{ij}, \mathrm{ov}_{ij}\bigr)
+\;=\; \Lambda\!\left(\alpha + \beta_1 \cdot \widetilde{\mathrm{wf}}_{ij} + \beta_2 \cdot \widetilde{\mathrm{ov}}_{ij}\right),
+\end{equation}
+where $\Lambda(\cdot)$ is the logistic CDF, $\widetilde{\mathrm{wf}}_{ij}$ and $\widetilde{\mathrm{ov}}_{ij}$ are the standardized (zero mean, unit variance) versions of log pair-level worker flow and log product-market overlap, and $\alpha, \beta_1, \beta_2$ are parameters to estimate.
+
+Because the positive class is rare (100 of approximately 100{,}100 pairs, or $0.1\%$), unweighted maximum-likelihood logistic regression over-weights negatives and drives the fitted probabilities of all observations toward the negative-class mean. This matters for calibration but not for AUC --- the AUC depends only on the ranking implied by the fitted score --- so we adopt \emph{class-balanced weighting} for numerical stability and interpretability of the coefficients. Each observation receives weight $w_{+} = N/(2N_{+})$ if positive and $w_{-} = N/(2N_{-})$ if negative, equalizing the total weight of the two classes. We add a weak $\ell^2$ penalty ($\lambda = 0.001$) for numerical stability; results are insensitive to the penalty level.
+
+The composite score for a pair is its fitted log-odds from~\eqref{eq:logit}. We rank pairs by this score and compute the area under the receiver-operating-characteristic curve (AUC) as our headline detection metric.
+
+\subsection{Leave-one-CADE-cartel-out validation}\label{sec:strategy_cv}
+
+The six-cartel sample is small, and the natural concern in this setting is within-cartel leakage: a classifier trained on pairs from cartel $C$ can trivially identify held-out pairs from the same cartel because the member firms are observed during training. We avoid this by using \emph{leave-one-CADE-cartel-out} cross-validation.
+
+For each of the six CADE cartels $C \in \{C_1, \ldots, C_6\}$, we: (i)~fit the logistic~\eqref{eq:logit} on a training set consisting of the full negative-class sample plus the positive pairs from the other five cartels; (ii)~evaluate the classifier on a test set consisting of the negatives and the held-out positive pairs from cartel $C$; and (iii)~compute the fold AUC via the Mann--Whitney U statistic on the test-set scores.
+
+Fold AUCs are aggregated in two ways that encode different evaluation philosophies. The \emph{pooled} (micro-averaged) AUC is the Mann--Whitney U computed on the concatenated out-of-fold scores: rank all positive pairs from all six folds against all negatives simultaneously. This is the standard single-metric report for cross-validated classifiers. It has a structural feature that matters in our sample: pooled AUC is dominated by the three large cartels (medicamentos, merenda escolar, trens metros), which contribute 88 of the 100 positive pairs in the validation set, because large folds contribute more pairs to the pooled ranking.
+
+The \emph{macro-averaged} AUC is the equal-weighted average of the per-cartel fold AUCs, dropping the \emph{sacos de lixo} fold (three positive pairs, numerically unstable) and the \emph{cafeteria aeroporto} fold (uninformative for the static-similarity comparison). Macro averaging weights each informative cartel equally and is less sensitive to the three large cartels' outsize influence on the pooled metric. We report the macro AUC as the preferred cross-cartel generalization metric on the argument that a cartel detection screen should work across the distribution of cartel types in the population, not only on the types that happen to be numerically dominant in the validation sample. The pooled number is reported alongside for comparability with prior work.
+
+\subsection{Inference: cluster bootstrap and label permutation}\label{sec:strategy_inference}
+
+With five informative cartels, the statistical power of the validation is bounded by the number of clusters, not by the number of pair-level observations. We therefore reject a naive stratified pair bootstrap --- which treats all 100{,}100 pairs as independent observations and underestimates the true variance --- in favor of a \emph{cluster bootstrap over cartels}.
+
+For $B = 500$ bootstrap replicates, we: (i)~draw the five informative cartels with replacement from the five-cartel set; (ii)~take all positive pairs from each drawn cartel into the bootstrap frame; (iii)~draw the same number of negative pairs as in the observed sample by resampling negative rows with replacement; (iv)~refit the composite and recompute the LOO-CV pooled and macro AUCs on the bootstrap sample; and (v)~store the bootstrap statistic. We report 95\% percentile confidence intervals on (a)~the pooled AUC, (b)~the macro AUC, (c)~the pooled AUC difference between the two-feature composite and the overlap-only specification, and (d)~the macro AUC difference. The two AUC-difference intervals directly test whether the worker-flow feature contributes statistically distinguishable signal beyond what product-market overlap already provides.
+
+We complement the bootstrap with a label-permutation null test. For each of $B = 500$ permutations, we randomly reassign positive-class labels across firm pairs (preserving class proportions) and recompute the LOO-CV pooled AUC of the composite on the permuted sample. The empirical $p$-value is the fraction of permuted AUCs at or above the observed value. This directly tests whether the composite's signal is distinguishable from a random-label baseline --- a question the cluster bootstrap does not answer because the bootstrap fixes the assignment of labels to pairs and varies only the sampling distribution over clusters.
+
+\subsection{What the inference can and cannot resolve}\label{sec:strategy_inference_honesty}
+
+A candid note on statistical precision. With only five informative cartels, cluster-bootstrap confidence intervals on the composite's AUC are wide by construction: the design has no way to produce narrow CIs when one of the bootstrap draws is, say, three copies of the weakest-performing cartel (\emph{aquecedores solares}). In particular, the 95\% CI on the macro AUC difference (composite minus overlap-only) will either include or exclude zero depending on the sampling variance of the five-cluster design, and we commit in advance to reporting whichever direction the bootstrap selects.
+
+We therefore interpret the composite's incremental contribution through the combined lens of (i)~the point-estimate magnitude; (ii)~the cluster-bootstrap 95\% CI; (iii)~the label-permutation $p$-value on the composite as a whole; and (iv)~its alignment with the labor-economics literature on inter-firm knowledge transmission through worker mobility \citep{stoyanov2012worker, jarosch2021learning}. None of these four on its own is dispositive; together they are a more complete description of what the data say.
+
+\subsection{What we do not estimate}\label{sec:strategy_nonestimands}
+
+This paper does not estimate (i)~the welfare cost of the cartels we detect, which is the subject of separate work using CADE conviction dates as treatment timing; (ii)~the causal effect of enforcement on subsequent worker mobility, similarly the subject of separate work; or (iii)~the bid-level overcharge from cartel conduct, which is known from prior literature \citep{connorbolotova2006}. The paper is narrowly about detection: given a universe of firm pairs, how accurately can we rank them by the probability that they are a cartel pair, using only the two features defined in Section~\ref{sec:framework}?

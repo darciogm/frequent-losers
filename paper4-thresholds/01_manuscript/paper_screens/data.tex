@@ -1,0 +1,79 @@
+\section{Data}\label{sec:data}
+
+We combine three administrative sources: the Brazilian antitrust authority's ground truth on procurement cartels, the S\~{a}o Paulo state electronic procurement platform's bid-level records, and Brazil's universe-level matched employer--employee dataset. The linkage key is the firm's eight-digit CNPJ root (\emph{cnpj\_raiz}).
+
+\subsection{CADE ground truth}\label{sec:data_cade}
+
+The CADE (\emph{Conselho Administrativo de Defesa Econ\^{o}mica}) is Brazil's federal competition authority. Since 2009 it has maintained a public register of its enforcement decisions, including the set of firms convicted in each case, the conduct type, the product market, and the relevant conduct period. We obtain this ground truth from aggregated CADE case files and restrict to cases that satisfy three criteria: the conduct is documented in a formal CADE proceeding, the conduct period is bounded in both start and end year, and the conduct period ended by 2016 so that at least one post-conduct year of BEC data is available for the robustness exercises in Section~\ref{sec:rob_features}. Six cartels satisfy all three criteria \emph{and} have at least one firm that is also active in our BEC bidder universe: solar water heaters (\emph{aquecedores solares}), airport cafeterias (\emph{cafeteria aeroporto}), pharmaceuticals (\emph{medicamentos}), school meals (\emph{merenda escolar}), trash bags (\emph{sacos de lixo}), and metropolitan rail (\emph{trens metros}).
+
+Table~\ref{tab:cade_cartels} summarizes these six cartels. They involve 33 distinct BEC-active firms after deduplicating one firm (CNPJ root $= 60756475$) that appears in both \emph{trens metros} and \emph{aquecedores solares}. Counting unordered within-cartel pairs across the six sectors yields exactly 100. These 100 pairs constitute the positive class of our classification task. The conduct periods span 1999--2013; the longest-running cartel (\emph{trens metros}) lasted fifteen years, the shortest two (\emph{aquecedores solares} and \emph{cafeteria aeroporto}) lasted one year each.
+
+\begin{table}[htbp]
+\centering
+\caption{CADE-convicted cartels used for validation}\label{tab:cade_cartels}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Cartel & Start & End & Firms & Pairs & Used \\
+\midrule
+aquecedores solares  & 2009 & 2010 &  4 &  6 & yes \\
+cafeteria aeroporto  & 2014 & 2014 &  3 &  3 & no \\
+medicamentos         & 2007 & 2011 &  8 & 28 & yes \\
+merenda escolar      & 2006 & 2013 &  6 & 15 & yes \\
+sacos de lixo        & 2008 & 2014 &  3 &  3 & yes$^\dagger$ \\
+trens metros         & 1999 & 2013 & 10 & 45 & yes \\
+\midrule
+\emph{Total}         &      &      & 34 & 100 & \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\begin{minipage}{0.95\textwidth}
+\scriptsize{\textbf{Notes:} ``Pairs'' is the count of unordered within-cartel firm pairs; across the six sectors, the total is 100 positive pairs. ``Used'' indicates whether the cartel enters the leave-one-out validation fold. The \emph{cafeteria aeroporto} cartel is dropped because none of its three BEC-active firms appear in 2009 RAIS with occupational data sufficient for the static-similarity comparison in Section~\ref{sec:rob_features}; it re-enters the analysis through the worker-flow and product-market-overlap features, which do not require 2009 RAIS occupational data. ${}^\dagger$\emph{Sacos de lixo} contributes a numerically unstable fold AUC because it has only three positive pairs; we retain it in the pooled aggregation but exclude it from cluster-bootstrap macro averaging. One firm (CNPJ root $= 60756475$) appears in both \emph{trens metros} and \emph{aquecedores solares} and is counted once in the unique-firms total (33). The effective validation set has five informative cartels. Source: \texttt{03\_analysis/63\_paper\_master.py}.\par}
+\end{minipage}
+\end{table}
+
+\subsection{BEC: bid-level procurement records}\label{sec:data_bec}
+
+The \emph{Bolsa Eletr\^{o}nica de Compras} (BEC) is S\~{a}o Paulo state's centralized electronic procurement platform. It handles competitive tender procedures, predominantly the \emph{preg\~{a}o eletr\^{o}nico} descending auction format. We use a cleaned version of the BEC bid-level records for 2009--2019, which contains 837{,}706 preg\~{a}o auction events spanning 94{,}720 distinct item codes and 26{,}291 firms, with roughly 1.67 million firm--bid observations. For the analyses presented here we focus on 2009--2017, the interval for which BEC and RAIS are both available. The auction-format detail matters for one of our robustness exercises: as we show in Section~\ref{sec:rob_variance}, the descending-auction mechanism of preg\~{a}o compresses within-auction bid variance across cartel and non-cartel auctions alike, which is why the classical variance-based cartel screen fails on this data.
+
+\subsection{RAIS: matched employer--employee records}\label{sec:data_rais}
+
+The \emph{Rela\c{c}\~{a}o Anual de Informa\c{c}\~{o}es Sociais} (RAIS) is Brazil's universe-level matched employer--employee dataset, maintained by the Ministry of Labor. Every formal-sector employment bond is reported annually and identified by the worker's PIS number. We use the 2009--2017 RAIS panels, restricted to establishments whose CNPJ root appears in the BEC bidder universe or in the CADE cartel set. For each worker--firm--year observation we retain the occupational code (CBO2002) and the establishment municipality (seven-digit IBGE code). The panel includes approximately 47 million worker--firm--year observations for the relevant firm universe.
+
+\subsection{Feature construction}\label{sec:data_features}
+
+We construct two primary pair-level features and three trivial firm-pair baselines.
+
+\textbf{Pair-level worker flow (primary labor feature).} For each unordered pair of firms $\{i, j\}$, we count the number of PIS observed at firm $i$ in one year and at firm $j$ in the following year, plus the reverse. Formally,
+\begin{align*}
+\mathrm{wf}_{ij} \;=\; \sum_{t=2009}^{2016}\Bigl[\,
+& \#\bigl\{\text{PIS}\ w : (w, i, t) \in \text{RAIS},\ (w, j, t+1) \in \text{RAIS}\bigr\} \\
++\ & \#\bigl\{\text{PIS}\ w : (w, j, t) \in \text{RAIS},\ (w, i, t+1) \in \text{RAIS}\bigr\}\,\Bigr],
+\end{align*}
+and our empirical feature is $\ln(1 + \mathrm{wf}_{ij})$.
+
+This measure operationalizes the pair-level labor-mobility pipeline documented by \citet{stoyanov2012worker}, \citet{jarosch2021learning}, and \citet{sorkin2018ranking}: it counts workers who actually moved between the two firms, not workers who happen to have similar occupational profiles. We document in Section~\ref{sec:rob_features} that an alternative static-similarity feature (cosine similarity of firms' 2009 occupation-by-municipality employment vectors) is dominated by worker flow under leave-one-cartel-out cross-validation, which is why we select worker flow as the primary labor feature.
+
+\textbf{Product-market overlap.} For each firm $i$, define the set $\Pi_i \subseteq \mathcal{K}$ of BEC item codes on which $i$ submitted at least one bid during 2009--2017. For each unordered firm pair $\{i, j\}$, compute
+\[
+\mathrm{ov}_{ij} \;=\; \ln\bigl(1 + |\Pi_i \cap \Pi_j|\bigr).
+\]
+The full-window specification (2009--2017) is our main feature. Section~\ref{sec:rob_features} reports the sensitivity to two alternative windows: pre-conduct-only and post-conduct-only (defined per cartel from its CADE-documented conduct period). The full window is the strongest; pre-conduct-only is materially weaker, which we interpret as evidence that part of the overlap signal reflects observed coordinated bidding rather than pure latent product-market structure. We flag this sensitivity in our interpretation of the main result and return to it in the discussion.
+
+\textbf{Trivial firm-pair baselines.} To address the natural referee-style concern that the composite's performance could be replicated by simpler constructions, we compute three baselines:
+\begin{itemize}
+\item \emph{CNAE4 match}: indicator variable equal to 1 if both firms' modal four-digit industry code (CNAE 2.0) in 2009 RAIS coincide.
+\item \emph{Co-bid indicator}: indicator variable equal to 1 if both firms ever submitted a bid on the same auction-item (a specific auction-event-specific item identifier).
+\item \emph{Common-buyer indicator}: indicator variable equal to 1 if both firms ever won a contract from the same buyer agency.
+\end{itemize}
+All three are reported alongside the proposed features in Section~\ref{sec:res_single}, and the main composite is evaluated against them directly.
+
+\subsection{Pair-level analysis sample}\label{sec:data_sample}
+
+The analysis sample consists of unordered firm pairs in two classes.
+
+\textbf{Positive class.} All unordered pairs within a single CADE-convicted cartel sector, after set-based deduplication of multi-sector firms. The positive count is exactly 100. All 100 pairs have worker-flow and product-market-overlap features defined (both features are well-defined for any pair of firms that appear in RAIS and BEC respectively in at least one year of the panel).
+
+\textbf{Negative class.} A random sample of approximately 100{,}000 unordered pairs drawn from 2{,}000 BEC-active non-cartel firms. Both members of each pair are required to be non-members of any CADE-convicted cartel and to appear in the BEC bidder universe in at least one year. The sampling scheme draws uniformly from the set of $\binom{2000}{2} \approx 2\ \text{million}$ possible unordered non-cartel pairs. The class imbalance of roughly 1:1000 is handled by class-weighted logistic regression (Section~\ref{sec:strategy_logit}).
+
+The effective validation set for macro averaging has five informative cartels: the one positive pair in \emph{cafeteria aeroporto} that survives all filters and the three positive pairs in \emph{sacos de lixo} do not provide stable per-cartel fold AUCs, so the pooled number reports the full sample while the macro number drops them.

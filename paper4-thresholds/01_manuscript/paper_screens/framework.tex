@@ -1,0 +1,69 @@
+\section{Conceptual Framework}\label{sec:framework}
+
+This section states two hypotheses about what convicted cartels look like in pair-level firm data, justifies each against the relevant theoretical and empirical literature, and is explicit about what the framework does not claim. The goal is not to derive a novel theoretical result but to make the assumptions behind our detection exercise visible so that a reader can judge what the empirical findings do and do not imply.
+
+\subsection{Primitives}
+
+Let $\mathcal{F}$ denote the set of firms potentially active in procurement, $\mathcal{K}$ the set of item codes (products), and $\mathcal{C}$ the set of latent cartels operating in $\mathcal{F}$, with $C \in \mathcal{C}$ a particular cartel comprising a subset of firms $\mathcal{F}_C \subset \mathcal{F}$. Each firm $i \in \mathcal{F}$ has two predetermined attributes that we treat as exogenous to the cartel-formation decision: its position in the inter-firm labor-mobility network --- specifically, the set of workers it has employed over time and the extent to which that employment overlaps with other firms' employment --- and its product portfolio $\Pi_i \subseteq \mathcal{K}$, the set of items on which it would potentially bid absent coordination.
+
+Cartels form to coordinate bidding. The canonical rationale for cartel formation \citep{stigler1964theory, green1984noncooperative} is that firms with overlapping product portfolios face repeated competitive interactions; coordination is feasible and profitable when such overlap is high enough and communication between members is inexpensive enough for an enforced collusive agreement to be sustainable. Both of those conditions --- overlap and cheap communication --- leave observable traces in firm-structural data if one knows where to look.
+
+\subsection{Hypothesis 1: Worker flow as a candidate coordination channel}
+
+Our first hypothesis concerns the ``cheap communication'' half of the cartel-formation condition. Cartels require repeated information exchange among members: about production costs, about strategic intentions, about each other's bidding histories. One natural conduit for that exchange, in developing-country procurement markets where formal meetings are risky and formal contracts are legally impossible, is the movement of workers. Workers who have worked at firm $i$ and then move to firm $j$ carry with them their knowledge of $i$'s costs, capacity, and internal organization --- and, if that knowledge is economically useful to $j$, the flow creates a pair-level information pipeline between the two firms.
+
+The labor-economics literature documents that such pipelines exist and are economically meaningful. \citet{stoyanov2012worker} show that productivity spillovers between Danish manufacturing firms flow through worker mobility, with spillover magnitudes proportional to the sending firm's productivity premium. \citet{jarosch2021learning} develop a model of learning from coworkers and structurally estimate it on German matched employer--employee data, showing that worker-level human capital grows in proportion to the quality of coworkers at the current firm and is carried across firms when workers move. \citet{sorkin2018ranking} documents that worker-flow networks encode firm-level amenities and organizational characteristics. Whether the knowledge that flows through these pipelines is used for pro-competitive purposes (productivity spillovers) or for coordinated conduct is an open question, and no applied detection work has, to our knowledge, asked whether the magnitude of the pair-level pipeline distinguishes convicted cartels from random non-cartel pairs.
+
+We formalize pair-level worker flow as
+\[
+\mathrm{wf}_{ij} \;=\; \sum_{t} \#\bigl\{w : w \text{ worked at } i \text{ in year } t \text{ and at } j \text{ in year } t+1,\ \text{or the reverse}\bigr\},
+\]
+the symmetric count of workers moving between firm $i$ and firm $j$ across consecutive years in the RAIS panel. Our empirical feature is $\ln(1 + \mathrm{wf}_{ij})$.
+
+\begin{quotation}
+\noindent\textbf{H1.} Firms in a cartel $C$ exchange more workers than random pairs drawn from $\mathcal{F}$:
+\[
+\mathbb{E}\!\left[\mathrm{wf}_{ij} \mid i, j \in \mathcal{F}_C \right]
+\;>\;
+\mathbb{E}\!\left[\mathrm{wf}_{ij} \mid i, j \in \mathcal{F} \right].
+\]
+\end{quotation}
+
+Two notes on interpretation. \emph{First}, H1 is a statement about \emph{flow}, not \emph{similarity}. Two firms can have nearly identical occupational--geographic employment profiles and exchange zero workers; H1 would not count this as a cartel fingerprint. Conversely, two firms with very different employment profiles that repeatedly trade specific workers would satisfy H1. This distinction matters for the empirical specification we choose in Section~\ref{sec:data_features} and for the comparison in Section~\ref{sec:rob_features} with a static-similarity alternative. \emph{Second}, H1 is a statistical statement about the pair distribution, not a causal claim about the mechanism by which each worker's movement facilitates coordination. What we test is whether cartel pairs have a higher worker-flow fingerprint than the population baseline. Whether that flow causally enables coordination, or merely co-occurs with coordination driven by other channels --- common ownership, informal off-site meetings, shared customers, industry associations --- is a separate question that our observational design cannot resolve. For our detection purposes, what matters is that the fingerprint exists and is measurable; the causal interpretation is reserved for future experimental or quasi-experimental work.
+
+\subsection{Hypothesis 2: Product-market overlap}
+
+Our second hypothesis concerns the ``shared product portfolio'' half of the cartel-formation condition. It is more direct: cartels operate on a shared set of items, and that set is detectable in the raw participation record.
+
+\begin{quotation}
+\noindent\textbf{H2.} Firms in a cartel $C$ have higher product-portfolio overlap than random pairs from $\mathcal{F}$:
+\[
+\mathbb{E}\!\left[|\Pi_i \cap \Pi_j| \mid i, j \in \mathcal{F}_C \right]
+\;>\;
+\mathbb{E}\!\left[|\Pi_i \cap \Pi_j| \mid i, j \in \mathcal{F} \right].
+\]
+\end{quotation}
+
+H2 follows almost mechanically from the definition of a cartel: colluding firms must coordinate on something, and that something is a set of items. The cartel is characterized by its product scope, and any firm in the cartel is by construction active in items in that scope. What is not mechanical is whether the overlap is \emph{numerically detectable} against the background of overlap among non-cartel firms in similar industries. That is what the empirical exercise tests.
+
+Importantly, H2 says nothing about bid \emph{values} --- only about the set of items on which both firms bid. This is the sense in which the screen is robust to bid-distribution manipulation: a cartel that cleverly shapes its bids to look competitive cannot as easily hide the fact that its members participate in the same auctions. Our empirical measure is $\ln(1 + |\Pi_i \cap \Pi_j|)$, computed over the 2009--2017 BEC bidding panel. Section~\ref{sec:rob_features} reports the sensitivity to the window choice and documents that pre-conduct-only and post-conduct-only variants produce weaker but still-positive signals.
+
+\subsection{Why both features}
+
+A sharp reader will ask whether one feature subsumes the other. If cartels are both structurally linked through labor and coordinated over items, and those two attributes covary, then a composite classifier might be redundant --- one feature could absorb the other's contribution.
+
+The conceptual argument for distinctness is that the two features load on different economic primitives. Worker flow reflects \emph{pair-level communication infrastructure}: the historical volume of workers moving between two firms. Product-market overlap reflects \emph{market-level product positioning}: the extent to which two firms target the same buyers for the same goods. A pair of firms can be heavily linked through labor mobility without competing on many of the same items --- e.g., two firms in the same industrial cluster bidding on different public works --- and a pair can overlap heavily on products without exchanging workers --- e.g., a generalist distributor and a specialized manufacturer both bidding on the same pharmaceutical tenders. The two fingerprints are, conceptually, measuring different things.
+
+The empirical argument is whether both features receive positive weight when a joint classifier is fit. Section~\ref{sec:res_composite} reports that they do: the logistic composite assigns a standardized coefficient of $+0.83$ to log worker flow and $+0.46$ to log product-market overlap, and neither absorbs the other. The precision of the composite's gain over product-market overlap alone is, as noted in the introduction, limited by the five-effective-cartel validation sample; we return to this precision issue in Section~\ref{sec:rob_inference}.
+
+\subsection{What the fingerprints do not capture}
+
+We are explicit about what the screens are \emph{not} designed to do, so that readers can judge the operating envelope correctly.
+
+\emph{They do not capture short-lived cartels.} A cartel that forms quickly, operates briefly, and dissolves before firms have time to exchange workers or accumulate joint bidding history will not leave a detectable fingerprint in either dimension. The screen will miss it. We anticipated when designing the empirical exercise that \emph{time} would be the operative dimension here: older cartels should accumulate more detectable structure. It is worth flagging now, before the reader reaches the results section, that the dose-response analysis in Section~\ref{sec:rob_dose} does not support this specific prediction. Conduct duration does not correlate with fold-level detectability in our sample; what does correlate, and strongly, is the cartel's product-market \emph{scope}. We update the framework interpretation in light of this finding: the operative dimension for detection is not how long a cartel has operated, but how many products its members coordinate across. We flag the deviation here rather than in Section~\ref{sec:rob_dose} because the update is load-bearing for how the reader should interpret failure modes, and because we want the framework reader to know in advance that at least one of our originally stated predictions did not survive the data.
+
+\emph{They do not capture cartels among firms with heterogeneous internal structure.} If a cartel includes firms with radically different sizes, technologies, or geographies, the worker-flow feature will pick up less signal because labor mobility is lower between structurally dissimilar firms. Product-market overlap may still work, but the two-dimensional composite will be weaker than on homogeneous cartels.
+
+\emph{They do not detect cartel conduct per se, only cartel membership.} The screen identifies firms that are structurally positioned to collude. It does not directly measure whether they have. A high-scoring pair deserves audit; the audit itself uses the bid stream, buyer complaints, leniency applications, and other instruments to establish conduct. This is a separation-of-concerns design: the fingerprints narrow the search space, and traditional investigative instruments confirm the finding.
+
+Section~\ref{sec:res_failures} reports how the six-cartel validation sample partitions along these failure modes.
