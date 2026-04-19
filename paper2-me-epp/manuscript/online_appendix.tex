@@ -117,10 +117,13 @@ Sun-Abraham reduces to a cohort $\times$ event-time interaction specification fo
 
 \IfFileExists{../output/tables/tab_sunab.tex}{\begin{table}[htbp]\centering\caption{Sun-Abraham Event-Study ATT (reprinted)}\label{tab:sunab-oa}\end{table}}{}
 
+Figure~\ref{fig:sunab-event} shows the Sun-Abraham dynamic event study, plotting the interaction-weighted coefficient at each relative period. The pre-cutoff coefficients hover around zero and the post-cutoff coefficients depart sharply, tracking the same trajectory as the Callaway-Sant'Anna estimate above.
+
 \begin{figure}[htbp]
 \centering
 \IfFileExists{../output/figures/fig_sunab_event.pdf}{\includegraphics[width=0.7\textwidth]{fig_sunab_event.pdf}}
 \caption{Sun-Abraham Event Study: Log Prices Around March 2018}
+\label{fig:sunab-event}
 \end{figure}
 
 \subsection*{OA.6.3 Goodman-Bacon (2021) Decomposition}
@@ -143,7 +146,9 @@ The spillover test regresses control-group outcomes on $\mathit{Post} \times \ma
 
 \section{Gelbach (2016) Mediation Decomposition}
 
-\IfFileExists{../output/figures/fig_15_mediation.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}\end{figure}}{}
+This section documents the full Gelbach decomposition summarized by the stacked-bar figure in the main text (Figure~\ref{fig:gelbach}). Figure~\ref{fig:gelbach-oa} displays the per-channel $\delta$ contributions and their standard errors; Table~OA below reports the underlying coefficients.
+
+\IfFileExists{../output/figures/fig_15_mediation.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}\label{fig:gelbach-oa}\end{figure}}{}
 
 \IfFileExists{../output/tables/tab_mediation.tex}{\input{../output/tables/tab_mediation.tex}}{}
 
@@ -163,15 +168,19 @@ Table~OA.11 holds the extensive margin fixed by restricting the sample to items 
 
 \section{Causal Forest}
 
-\IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}\caption{Causal Forest: Variable Importance for Treatment-Effect Heterogeneity}\end{figure}}{}
+The \citet{athey2019,wager2018} causal-forest estimator locates where treatment effects concentrate across the covariate space. I train the forest on the 18-month completed-items sample with log reference value, log quantity, class dummies, sealed-bid indicator, and PBU type as inputs. Figure~\ref{fig:cforest-varimp} reports the variable-importance diagnostic: item quantity dominates with an importance of 0.486, roughly an order of magnitude above the next covariate. Figure~\ref{fig:cforest-gate} plots the group-average treatment effect (GATE) across quartiles of the estimated conditional-average treatment effect (CATE); the monotone decline from Q1 to Q4 provides the heterogeneity signal that motivates the value-threshold counterfactual.
 
-\IfFileExists{../output/figures/fig_13_cforest_gate.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_13_cforest_gate.pdf}\caption{Causal Forest: Group Average Treatment Effects by CATE Quartile}\end{figure}}{}
+\IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}\caption{Causal Forest: Variable Importance for Treatment-Effect Heterogeneity}\label{fig:cforest-varimp}\end{figure}}{}
+
+\IfFileExists{../output/figures/fig_13_cforest_gate.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_13_cforest_gate.pdf}\caption{Causal Forest: Group Average Treatment Effects by CATE Quartile}\label{fig:cforest-gate}\end{figure}}{}
 
 \IfFileExists{../output/tables/tab_cforest.tex}{\input{../output/tables/tab_cforest.tex}}{}
 
 \section{Quantile Difference-in-Differences}
 
-\IfFileExists{../output/figures/fig_14_quantile_did.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}\end{figure}}{}
+A parallel check comes from the \citet{canay2011} quantile DiD estimator on the residualized log-price distribution. Figure~\ref{fig:quantile-did-oa} plots the coefficient at each decile. The effect is strongly negative at the lower quantiles ($\tau=0.10$: $-0.623$; $\tau=0.25$: $-0.543$) and turns positive at the upper tail ($\tau=0.90$: $+0.445$). At the lower quantiles---where items are more standardized and multiple capable suppliers exist---open competition drives prices down sharply; at the upper tail, items tend to be more specialized with thinner markets. The pattern is the quantile-regression counterpart of the causal-forest GATE curve in Figure~\ref{fig:cforest-gate}, and is also visible in Figure~\ref{fig:qte} (residualized quantile regression). The complementary bid-level QTE from the main text (Figure~\ref{fig:qte} in Section~OA.C) delivers the same conclusion using a different estimator.
+
+\IfFileExists{../output/figures/fig_14_quantile_did.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}\label{fig:quantile-did-oa}\end{figure}}{}
 
 \IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
 
@@ -188,10 +197,13 @@ Table~\ref{tab:cf-oa} reports the per-quartile DiD coefficients used in the valu
 
 \IfFileExists{../output/tables/tab_counterfactual.tex}{\begin{table}[htbp]\centering\caption{Counterfactual Policy Designs (reprinted)}\label{tab:cf-oa}\end{table}}{}
 
+Figure~\ref{fig:cf-level-oa} reprints the residual-fiscal-cost schedule as a function of the exemption percentile, complementing the Pareto-frontier view of Figure~\ref{fig:counterfactual} in the main text. Both figures deliver the same message through different axes: the first reads the marginal cost of preserving the SME-only rule at each percentile, while the second reads the cumulative cost recovered by exempting everything above a percentile.
+
 \begin{figure}[htbp]
 \centering
 \IfFileExists{../output/figures/fig_counterfactual.pdf}{\includegraphics[width=0.7\textwidth]{fig_counterfactual.pdf}}
 \caption{Residual Fiscal Cost as a Function of the Exemption Percentile}
+\label{fig:cf-level-oa}
 \end{figure}
 
 \section{CMED-Regulated Pharmaceuticals vs.\ Non-Pharma Medical Supplies}
@@ -301,23 +313,28 @@ Table~\ref{tab:age-size-oa} crosses winner age (young/mature, median split at 9 
 
 \section{Synthetic Control}
 
+As an external check that does not rely on the DiD framing, I build a synthetic control for Group~65 using the 76 never-treated product groups as donors~\citep{abadie2010,ben2021}. The donor weights are chosen to match the Group-65 pre-period trajectory in log prices. Figure~\ref{fig:synth-levels} overlays actual Group-65 log prices against the synthetic counterfactual, demonstrating near-exact fit in the pre-period and a visible gap opening after March~2018. Figure~\ref{fig:synth-gap} plots the gap directly, and Figure~\ref{fig:synth-placebo} reports the in-space placebo distribution of post-treatment ATTs across donor groups: the Group-65 post-switch gap sits in the extreme tail of the placebo distribution, consistent with a non-spurious treatment effect.
+
 \IfFileExists{../output/tables/tab_synth.tex}{
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_16_synth_levels.pdf}
 \caption{Synthetic Control: Group 65 (Actual) vs.\ Synthetic Group 65}
+\label{fig:synth-levels}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_17_synth_gap.pdf}
 \caption{Synthetic Control: Gap Between Group 65 and Synthetic (Log Prices)}
+\label{fig:synth-gap}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_18_synth_placebo.pdf}
 \caption{Synthetic Control: In-Space Placebo Distribution of Post-Treatment ATTs}
+\label{fig:synth-placebo}
 \end{figure}
 
 \input{../output/tables/tab_synth.tex}
@@ -325,10 +342,13 @@ Table~\ref{tab:age-size-oa} crosses winner age (young/mature, median split at 9 
 
 \section{HonestDiD Sensitivity Analysis}
 
+Figure~\ref{fig:honestdid-oa} reprints the \citet{rambachan2023} sensitivity diagnostic from the main appendix. The figure plots robust 95\% confidence intervals for the price effect under post-treatment deviations from parallel trends up to $\bar M$ times the largest pre-period violation. The interval excludes zero for $\bar M \leq 2$, so the price effect survives substantial departures from strict parallel trends.
+
 \begin{figure}[htbp]
 \centering
 \IfFileExists{../output/figures/fig_11_honestdid.pdf}{\includegraphics[width=0.7\textwidth]{fig_11_honestdid.pdf}}
 \caption{HonestDiD Sensitivity Analysis of the Log-Price Effect}
+\label{fig:honestdid-oa}
 \end{figure}
 
 \section{Lee (2009) Bounds}
