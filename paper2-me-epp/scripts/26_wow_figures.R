@@ -67,31 +67,51 @@ if (!file.exists(BID_CACHE)) {
 }
 
 # ============================================================================
-# FIGURE 1: "The Collapse" — bid-discount density by regime x N_firms
+# FIGURE 1: The Collapse — DiD effect on phase-2 discount from reference,
+# by number of participating firms
 # ============================================================================
-cat("  Figure 1: The Collapse (bid-discount density)...\n")
-bd[, nfirms_cat := factor(
-  fcase(num_firms == 2L,           "N = 2 firms",
-        num_firms == 3L,           "N = 3 firms",
-        num_firms >= 5L,           "N >= 5 firms"),
-  levels = c("N = 2 firms", "N = 3 firms", "N >= 5 firms"))]
+# Parallels Fig 5 (log-SD coefficient) but for the discount-from-reference
+# outcome. Both are extracted from /tmp/p2_bid_moments.rds (same regressions
+# that feed tab_bid_moments in the paper).
+cat("  Figure 1: The Collapse (discount DiD coefficients)...\n")
+mm1 <- readRDS("/tmp/p2_bid_moments.rds")
+extract_b1 <- function(m) {
+  if (is.null(m)) return(c(NA_real_, NA_real_, NA_integer_))
+  c(coef(m)["g65_pre"],
+    sqrt(vcov(m)["g65_pre", "g65_pre"]),
+    m$nobs)
+}
+rows1 <- list(
+  list(label = "Full sample", m = mm1$full$bid_discount),
+  list(label = "N = 2",       m = mm1$cond$bid_discount_n2),
+  list(label = "N = 3",       m = mm1$cond$bid_discount_n3),
+  list(label = "N >= 5",      m = mm1$cond$bid_discount_n5p)
+)
+dt1 <- rbindlist(lapply(rows1, function(r) {
+  v <- extract_b1(r$m)
+  data.table(label = r$label, est = v[1], se = v[2], n = as.integer(v[3]))
+}))
+dt1[, label := factor(label, levels = rev(c("Full sample", "N = 2",
+                                            "N = 3", "N >= 5")))]
+dt1[, ci_lo := est - 1.96 * se]
+dt1[, ci_hi := est + 1.96 * se]
+print(dt1[, .(label, est = round(est, 3), se = round(se, 3), n)])
 
-plot_bd <- bd[!is.na(nfirms_cat) & bid_discount >= -0.15 & bid_discount <= 0.55]
-plot_bd[, regime := factor(regime, levels = c("Open tenders", "SME-only"))]
-
-p1 <- ggplot(plot_bd, aes(x = bid_discount,
-                          fill = regime, color = regime, linetype = regime)) +
-  geom_density(alpha = 0.35, linewidth = 0.6, adjust = 1.2) +
-  facet_wrap(~ nfirms_cat, ncol = 3) +
-  scale_fill_grey(start = 0.25, end = 0.75) +
-  scale_color_grey(start = 0.00, end = 0.40) +
-  scale_linetype_manual(values = c("solid", "longdash")) +
-  scale_x_continuous(labels = percent_format(accuracy = 1),
-                     breaks = c(-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5)) +
-  labs(x = "Winning-bid discount from reference price",
-       y = "Density") +
-  theme_pub() +
-  theme(legend.position = "bottom")
+p1 <- ggplot(dt1, aes(x = label, y = est)) +
+  geom_hline(yintercept = 0, linetype = "dotted",
+             color = "gray40", linewidth = 0.35) +
+  geom_errorbar(aes(ymin = ci_lo, ymax = ci_hi), width = 0.15,
+                linewidth = 0.5, color = "black") +
+  geom_point(size = 3.4, color = "black") +
+  geom_text(aes(label = sprintf("+%.1f pp", est * 100)),
+            hjust = -0.45, size = 3.2) +
+  coord_flip(ylim = c(0, 0.16)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1),
+                     breaks = c(0, 0.05, 0.10, 0.15)) +
+  labs(x = NULL,
+       y = expression("DiD effect on phase-2 discount from reference" ~
+                      (italic(g65 %*% Pre)))) +
+  theme_pub()
 save_pub(p1, "fig_wow1_collapse.pdf")
 
 # ============================================================================
@@ -144,30 +164,56 @@ cat(sprintf("    Short beta = %.4f; Full beta = %.4f\n", beta_short, beta_full))
 cat(sprintf("    Entry: %.1f%%  Composition: %.1f%%  Intensive: %.1f%%\n",
             entry_pct, comp_pct, direct_pct))
 
-wbars <- data.table(
-  channel = c("Intensive margin\n(bid aggressiveness)",
-              "Composition\n(SME winner)",
-              "Entry\n(log firms)"),
-  pct = c(direct_pct, comp_pct, entry_pct)
-)
-wbars[, channel := factor(channel, levels = channel)]
+# Two-segment stacked bar showing the paper's headline 94/6 split:
+# |beta_full|/|beta_short| = direct (intensive) share; complement = mediated.
+# Individual channels (entry, composition) can have opposite signs and do not
+# sum cleanly to 100%, so the figure reports the net direct-vs-mediated split.
+direct_share <- round(abs(beta_full) / abs(beta_short) * 100)
+mediated_share <- 100 - direct_share
+cat(sprintf("    94/6 split: direct = %d%%, mediated = %d%%\n",
+            direct_share, mediated_share))
 
-p2 <- ggplot(wbars, aes(x = pct, y = 1, fill = channel)) +
-  geom_col(width = 0.5, color = "black", linewidth = 0.3) +
-  geom_text(aes(label = sprintf("%s: %.0f%%",
-                                gsub("\n", " ", as.character(channel)), pct)),
-            position = position_stack(vjust = 0.5), size = 3.2,
-            color = c("white", "black", "black")) +
-  scale_x_continuous(labels = percent_format(scale = 1), breaks = seq(0, 100, 20),
+wbars <- data.table(
+  channel = c("Mediated", "Intensive"),
+  pct     = c(mediated_share, direct_share)
+)
+wbars[, xmax := cumsum(pct)]
+wbars[, xmin := shift(xmax, fill = 0)]
+wbars[, xmid := (xmin + xmax) / 2]
+
+p2 <- ggplot(wbars) +
+  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = 0.35, ymax = 0.85,
+                fill = channel), color = "black", linewidth = 0.45) +
+  annotate("text", x = wbars[channel == "Intensive", xmid], y = 0.60,
+           label = sprintf("%d%%", direct_share),
+           size = 8, fontface = "bold", color = "white") +
+  annotate("text", x = wbars[channel == "Mediated", xmid], y = 1.05,
+           label = sprintf("%d%%", mediated_share),
+           size = 5, fontface = "bold", color = "black") +
+  annotate("text", x = wbars[channel == "Intensive", xmid], y = 0.18,
+           label = "Intensive margin (bid aggressiveness)",
+           size = 3.3, color = "black", fontface = "bold") +
+  annotate("segment",
+           x = wbars[channel == "Mediated", xmid],
+           xend = wbars[channel == "Mediated", xmid],
+           y = 0.95, yend = 1.00,
+           linewidth = 0.3, color = "gray40") +
+  annotate("text", x = 22, y = 1.05,
+           label = "Mediated (entry + composition)",
+           hjust = 0, size = 3.1, color = "gray25") +
+  scale_fill_manual(values = c("Mediated"  = "gray82",
+                               "Intensive" = "gray18")) +
+  scale_x_continuous(labels = percent_format(scale = 1),
+                     breaks = seq(0, 100, 20),
                      limits = c(0, 100), expand = c(0, 0)) +
-  scale_fill_manual(values = c("gray20", "gray65", "gray85")) +
-  labs(x = "Share of the 12.5% price effect",
-       y = NULL) +
+  coord_cartesian(ylim = c(0, 1.2), clip = "off") +
+  labs(x = "Share of the 12.5% price effect", y = NULL) +
   theme_pub() +
-  theme(axis.text.y  = element_blank(),
+  theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         legend.position = "none",
-        panel.grid.major.y = element_blank())
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank())
 save_pub(p2, "fig_wow2_gelbach.pdf")
 
 # ============================================================================
@@ -193,24 +239,31 @@ sample_lorenz <- g65_pre[seq(1, .N, by = max(1L, floor(.N / 600L)))]
 
 p3 <- ggplot(sample_lorenz, aes(x = rank_pct, y = cum_value)) +
   geom_abline(intercept = 0, slope = 1, linetype = "dotted",
-              color = "gray50", linewidth = 0.35) +
-  geom_line(linewidth = 0.9, color = "black") +
+              color = "gray55", linewidth = 0.35) +
+  geom_line(linewidth = 1.0, color = "black") +
   geom_vline(xintercept = 75, linetype = "dashed",
              color = "gray20", linewidth = 0.4) +
-  annotate("point", x = 75, y = p75_y, color = "black", fill = "gray30",
-           size = 3, shape = 21) +
-  annotate("text", x = 75 - 3, y = p75_y + 20,
-           label = sprintf("Top 25%% of items\nhold %.0f%% of total value",
+  annotate("point", x = 75, y = p75_y, color = "black", fill = "gray25",
+           size = 3.2, shape = 21) +
+  annotate("label", x = 50, y = 65,
+           label = sprintf("Top 25%% of items hold\n%.0f%% of total value",
                            top_q_share),
-           hjust = 1, size = 3.2, fontface = "bold") +
-  annotate("text", x = 75 + 3, y = p75_y - 8,
-           label = sprintf("Bottom 75%%: %.0f%% of value", p75_y),
-           hjust = 0, size = 3.0) +
+           hjust = 0.5, size = 3.3, fontface = "bold",
+           label.padding = unit(0.3, "lines"), label.size = 0.25,
+           fill = "white") +
+  annotate("label", x = 35, y = 15,
+           label = sprintf("Bottom 75%% of items:\n%.0f%% of total value",
+                           p75_y),
+           hjust = 0.5, size = 3.0,
+           label.padding = unit(0.25, "lines"), label.size = 0.2,
+           fill = "white", color = "gray20") +
   scale_x_continuous(labels = function(x) paste0(x, "%"),
-                     breaks = seq(0, 100, 25), limits = c(0, 100)) +
+                     breaks = seq(0, 100, 25),
+                     limits = c(0, 100), expand = c(0.02, 0.02)) +
   scale_y_continuous(labels = function(x) paste0(x, "%"),
-                     breaks = seq(0, 100, 25), limits = c(0, 101)) +
-  coord_equal() +
+                     breaks = seq(0, 100, 25),
+                     limits = c(0, 100), expand = c(0.02, 0.02)) +
+  coord_equal(clip = "off") +
   labs(x = "Items, sorted by reference value (percentile)",
        y = "Cumulative share of Group-65 procurement value") +
   theme_pub()
@@ -366,26 +419,46 @@ med_sme  <- median(g65_dist[regime == "SME-only",    dist1])
 cat(sprintf("    Median distance (km):  open = %.1f  SME-only = %.1f  shift = %.1f\n",
             med_open, med_sme, med_open - med_sme))
 
-p7 <- ggplot(g65_dist, aes(x = dist1, fill = regime,
-                           color = regime, linetype = regime)) +
-  geom_density(alpha = 0.35, linewidth = 0.7, adjust = 1.4) +
-  geom_vline(xintercept = med_open, linetype = "dotted",
-             color = "gray20", linewidth = 0.35) +
-  geom_vline(xintercept = med_sme,  linetype = "dotted",
-             color = "gray50", linewidth = 0.35) +
-  annotate("text", x = med_open + 15, y = 0.004,
-           label = sprintf("Median under open\n%.0f km", med_open),
-           hjust = 0, size = 2.8) +
-  annotate("text", x = med_sme + 15, y = 0.006,
-           label = sprintf("Median under SME-only\n%.0f km", med_sme),
-           hjust = 0, size = 2.8) +
-  scale_fill_grey(start = 0.25, end = 0.75) +
-  scale_color_grey(start = 0.00, end = 0.40) +
-  scale_linetype_manual(values = c("solid", "longdash")) +
-  scale_x_continuous(breaks = c(0, 100, 250, 500, 750, 1000),
+# CDF visualization makes the distributional shift visible; truncate at 600 km
+# for readability (99.6% of observations) with an annotation on the long tail.
+p7_data <- g65_dist[dist1 <= 600]
+
+p7 <- ggplot(p7_data, aes(x = dist1, color = regime, linetype = regime)) +
+  stat_ecdf(geom = "step", linewidth = 0.9) +
+  annotate("segment", x = med_sme, xend = med_open, y = 0.5, yend = 0.5,
+           arrow = grid::arrow(length = unit(0.2, "cm"), ends = "both",
+                               type = "closed"),
+           color = "gray25", linewidth = 0.45) +
+  annotate("label", x = (med_open + med_sme) / 2, y = 0.5,
+           label = sprintf("%.0f km shift at the median", med_open - med_sme),
+           hjust = 0.5, vjust = -0.6, size = 2.9, fontface = "bold",
+           label.padding = unit(0.2, "lines"), label.size = 0.2,
+           fill = "white") +
+  geom_segment(data = data.table(x = c(med_open, med_sme),
+                                  regime = c("Open tenders", "SME-only")),
+               aes(x = x, xend = x, y = 0, yend = 0.5,
+                   color = regime, linetype = regime),
+               linewidth = 0.35, show.legend = FALSE) +
+  annotate("label", x = med_open + 20, y = 0.25,
+           label = sprintf("open: %.0f km", med_open),
+           hjust = 0, size = 2.7,
+           label.padding = unit(0.15, "lines"), label.size = 0.15,
+           fill = "white", color = "black") +
+  annotate("label", x = med_sme - 20, y = 0.30,
+           label = sprintf("SME-only: %.0f km", med_sme),
+           hjust = 1, size = 2.7,
+           label.padding = unit(0.15, "lines"), label.size = 0.15,
+           fill = "white", color = "gray40") +
+  scale_color_manual(values = c("Open tenders" = "black",
+                                "SME-only"     = "gray55")) +
+  scale_linetype_manual(values = c("Open tenders" = "solid",
+                                   "SME-only"     = "longdash")) +
+  scale_x_continuous(breaks = c(0, 100, 200, 300, 400, 500, 600),
                      labels = function(x) paste0(x, " km")) +
+  scale_y_continuous(breaks = seq(0, 1, 0.25),
+                     labels = function(x) paste0(round(x * 100), "%")) +
   labs(x = "Distance from winning firm to buyer (PBU)",
-       y = "Density of completed Group-65 items") +
+       y = "Cumulative share of Group-65 items") +
   theme_pub() +
   theme(legend.position = "bottom")
 save_pub(p7, "fig_wow7_distance.pdf")
