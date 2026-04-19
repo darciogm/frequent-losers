@@ -103,9 +103,9 @@ p1 <- ggplot(dt1, aes(x = label, y = est)) +
   geom_errorbar(aes(ymin = ci_lo, ymax = ci_hi), width = 0.15,
                 linewidth = 0.5, color = "black") +
   geom_point(size = 3.4, color = "black") +
-  geom_text(aes(label = sprintf("+%.1f pp", est * 100)),
-            hjust = -0.45, size = 3.2) +
-  coord_flip(ylim = c(0, 0.16)) +
+  geom_text(aes(y = ci_hi, label = sprintf("+%.1f pp", est * 100)),
+            hjust = -0.2, size = 3.2) +
+  coord_flip(ylim = c(-0.005, 0.12)) +
   scale_y_continuous(labels = percent_format(accuracy = 1),
                      breaks = c(0, 0.05, 0.10, 0.15)) +
   labs(x = NULL,
@@ -322,10 +322,14 @@ p4 <- ggplot(sched_thin, aes(x = items_preserved, y = cost_recovered)) +
   annotate("point", x = p75_point$items_preserved,
            y = p75_point$cost_recovered,
            size = 3.2, shape = 21, fill = "gray20", color = "black") +
-  annotate("text", x = 73, y = p75_point$cost_recovered + 5,
+  annotate("label", x = 38, y = 38,
            label = sprintf("Value-threshold reform:\nkeep 75%% of items,\nrecover %.0f%% of cost",
                            p75_point$cost_recovered),
-           hjust = 1, size = 3.2, fontface = "bold") +
+           hjust = 0.5, size = 3.2, fontface = "bold",
+           label.padding = unit(0.3, "lines"), fill = "white") +
+  annotate("curve", x = 53, xend = 73, y = 52, yend = p75_point$cost_recovered - 3,
+           curvature = -0.2, color = "gray30", linewidth = 0.3,
+           arrow = grid::arrow(length = unit(0.15, "cm"), type = "closed")) +
   scale_x_continuous(labels = function(x) paste0(x, "%"),
                      breaks = seq(0, 100, 25), limits = c(0, 100)) +
   scale_y_continuous(labels = function(x) paste0(x, "%"),

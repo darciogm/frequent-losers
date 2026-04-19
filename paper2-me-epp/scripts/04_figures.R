@@ -237,15 +237,24 @@ if (file.exists(adv_path)) {
 
       plot_df <- hd$result  # data.frame with Mbar, lb, ub
 
+      # Expand y-axis by 8% on both ends so CI lines don't abut the panel edges
+      # (fixes the "title overlaps CI" complaint).
+      y_range <- range(c(plot_df$lb, plot_df$ub), na.rm = TRUE)
+      y_pad <- 0.08 * diff(y_range)
+
       p <- ggplot(plot_df, aes(x = Mbar)) +
         geom_ribbon(aes(ymin = lb, ymax = ub), alpha = 0.2, fill = "gray50") +
         geom_line(aes(y = lb), linetype = "dashed", color = "black") +
         geom_line(aes(y = ub), linetype = "dashed", color = "black") +
         geom_hline(yintercept = 0, linetype = "dotted", color = "red", linewidth = 0.3) +
-        labs(x = expression(bar(M)), y = "Robust CI for first post-treatment period",
+        scale_y_continuous(limits = c(y_range[1] - y_pad, y_range[2] + y_pad)) +
+        labs(x = expression(bar(M)), y = "Robust CI",
              title = outcome_labels[nm]) +
         theme_pub(base_size = 8) +
-        theme(plot.title = element_text(face = "bold", size = 9))
+        theme(plot.title = element_text(face = "bold", size = 9,
+                                        margin = margin(b = 8)),
+              plot.title.position = "plot",
+              plot.margin = margin(t = 10, r = 8, b = 4, l = 4))
 
       hd_plots[[nm]] <- p
     }
