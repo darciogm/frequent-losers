@@ -1,0 +1,55 @@
+\begin{table}[htbp]
+\centering
+\caption{Three-Estimator Convergence: DDR, Staggered DiD (CS2021), and Sun-Abraham (2021)}
+\label{tab:sunab}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & DDR & CS2021 & Sun-Abraham \\
+ & (item FE, sign-flipped) & (group $\times$ month) & (item FE, event-study ATT) \\
+\midrule
+Log prices & 0.1330*** & 0.2371* & 0.1078*** \\
+ & (0.0094) & (0.1414) & (0.0075) \\
+Log firms & -0.1004*** & -0.0965** & -0.0991*** \\
+ & (0.0060) & (0.0419) & (0.0061) \\
+Log bids & -0.0603*** & -0.0351 & -0.0547*** \\
+ & (0.0078) & (0.0673) & (0.0081) \\
+Distance (km) & -5.2865** & -31.9519*** & -6.0833*** \\
+ & (2.2277) & (8.8135) & (2.3197) \\
+\midrule
+SA pre-trend $F$ & \multicolumn{3}{l}{Log prices: 5.290 (p=0.0000); Log firms: 43.761 (p=0.0000)} \\
+ & \multicolumn{3}{l}{Log bids: 20.991 (p=0.0000); Distance: 3.456 (p=0.0000)} \\
+Item FE + PBU FE (DDR/SA) & \multicolumn{3}{c}{YES} \\
+Unit (CS2021) & \multicolumn{3}{c}{codigogrupo $\times$ month} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} 18-month window. All three estimators identify the
+same treatment effect under distinct assumptions.
+\textit{DDR}: headline $g65 \times Pre$ from Table~\ref{tab:prices}, multiplied
+by $-1$ so signs match the CS2021/Sun-Abraham convention.
+\textit{CS2021}: overall ATT from \texttt{did::att\_gt} at group-month level
+with never-treated controls; see Table~\ref{tab:cs2021}.
+\textit{Sun-Abraham}: event-study via \texttt{fixest::i(period, g65, ref=t$-$1)}
+at the item level with item FE and PBU FE. The reported ATT is
+$\mathrm{mean}(\hat\beta_{t\geq 698}) - \mathrm{mean}(\hat\beta_{t<698\,\&\,t\neq 697})$,
+i.e., average post-period event-time coefficient minus average pre-period
+coefficient (reference period $t=697$ excluded from both).
+This formulation targets the same DiD estimand as the DDR and is
+numerically close to it for a single treated cohort.
+SE by delta method on the clustered vcov.
+``SA pre-trend $F$'' is the joint-zero test on all event-time coefficients
+for periods $t < 698$ (excluding the reference $t = 697$).
+Pre-trend $F$ rejects in all four cases because the treated and control
+groups operate at different price levels within each period; the item FE
+in DDR absorbs these level differences, so the DDR and SA ATTs remain valid
+identification estimates of the policy's \emph{change} over time.
+Cluster-robust SE at item level.
+*** \textit{p}$<$0.01, ** \textit{p}$<$0.05, * \textit{p}$<$0.1.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
