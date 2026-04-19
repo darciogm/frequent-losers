@@ -64,7 +64,16 @@ def main():
                 SUM("Qtd Vínculos CLT")                    AS vinc_clt_sum,
                 MAX("Tamanho Estabelecimento")             AS tamanho_max,
                 MAX(CASE WHEN "Ind Simples" = 1 THEN 1 ELSE 0 END) AS any_simples,
-                MIN("Data Abertura")                       AS data_abertura_min,
+                -- Data Abertura is DDMMYYYY or DMMYYYY (variable length).
+                -- Year is always the last 4 digits. Filter bad values (0,
+                -- out-of-range). Accept single-digit-day dates (7-digit int)
+                -- by widening the lower bound to 1011900 (01/01/1900).
+                MIN(CASE
+                    WHEN "Data Abertura" >= 1011900
+                     AND "Data Abertura" <= 31122020
+                    THEN CAST("Data Abertura" % 10000 AS INTEGER)
+                    ELSE NULL
+                END)                                       AS year_abertura_min,
                 MODE() WITHIN GROUP (ORDER BY "CNAE 2.0 Classe") AS cnae20_modal,
                 MODE() WITHIN GROUP (ORDER BY "Município")       AS mun_modal,
                 MODE() WITHIN GROUP (ORDER BY UF)                AS uf_modal,
@@ -119,7 +128,7 @@ def main():
                    r.vinc_clt_sum,
                    r.tamanho_max,
                    r.any_simples,
-                   r.data_abertura_min,
+                   r.year_abertura_min,
                    r.cnae20_modal,
                    r.mun_modal,
                    r.uf_modal,
