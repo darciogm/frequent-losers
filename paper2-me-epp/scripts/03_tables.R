@@ -261,10 +261,14 @@ if (has_rob && !is.null(rob$placebo1_prices)) {
   cat("  Generating placebo table...\n")
 
   dvs_p <- list(
-    list(label = "Log prices",    p1 = "placebo1_prices",   p2 = "placebo2_prices"),
-    list(label = "Log firms",     p1 = "placebo1_firms",    p2 = "placebo2_firms"),
-    list(label = "Log bids",      p1 = "placebo1_bids",     p2 = "placebo2_bids"),
-    list(label = "Distance (km)", p1 = "placebo1_distance", p2 = "placebo2_distance")
+    list(label = "Log prices",    p1 = "placebo1_prices",
+         p2 = "placebo2_prices",  p3 = "placebo3_prices"),
+    list(label = "Log firms",     p1 = "placebo1_firms",
+         p2 = "placebo2_firms",   p3 = "placebo3_firms"),
+    list(label = "Log bids",      p1 = "placebo1_bids",
+         p2 = "placebo2_bids",    p3 = "placebo3_bids"),
+    list(label = "Distance (km)", p1 = "placebo1_distance",
+         p2 = "placebo2_distance",p3 = "placebo3_distance")
   )
 
   lines <- c(
@@ -275,32 +279,34 @@ if (has_rob && !is.null(rob$placebo1_prices)) {
     "\\begin{adjustbox}{max width=\\textwidth}",
     "\\begin{threeparttable}",
     "\\small",
-    "\\begin{tabular}{lcccccccc}",
+    "\\begin{tabular}{lcccccccccccc}",
     "\\toprule",
-    " & \\multicolumn{2}{c}{Log prices} & \\multicolumn{2}{c}{Log firms} & \\multicolumn{2}{c}{Log bids} & \\multicolumn{2}{c}{Distance} \\\\",
-    "\\cmidrule(lr){2-3} \\cmidrule(lr){4-5} \\cmidrule(lr){6-7} \\cmidrule(lr){8-9}",
-    " & Sep 2017 & Mar 2017 & Sep 2017 & Mar 2017 & Sep 2017 & Mar 2017 & Sep 2017 & Mar 2017 \\\\",
+    " & \\multicolumn{3}{c}{Log prices} & \\multicolumn{3}{c}{Log firms} & \\multicolumn{3}{c}{Log bids} & \\multicolumn{3}{c}{Distance} \\\\",
+    "\\cmidrule(lr){2-4} \\cmidrule(lr){5-7} \\cmidrule(lr){8-10} \\cmidrule(lr){11-13}",
+    " & Sep~17 & Mar~17 & Jun~17 & Sep~17 & Mar~17 & Jun~17 & Sep~17 & Mar~17 & Jun~17 & Sep~17 & Mar~17 & Jun~17 \\\\",
     "\\midrule"
   )
 
-  # Coefficient row
-  vals <- character(8)
-  ses  <- character(8)
-  obs  <- character(8)
-  r2v  <- character(8)
+  # Coefficient row: 4 outcomes x 3 placebos = 12 cells
+  vals <- character(12)
+  ses  <- character(12)
+  obs  <- character(12)
+  r2v  <- character(12)
   idx <- 1
   for (v in dvs_p) {
-    m1 <- rob[[v$p1]]
-    m2 <- rob[[v$p2]]
-    vals[idx]     <- coef_cell(m1, "g65_pre_placebo", 4)
-    vals[idx + 1] <- coef_cell(m2, "g65_pre_placebo", 4)
-    ses[idx]      <- se_cell(m1, "g65_pre_placebo", 4)
-    ses[idx + 1]  <- se_cell(m2, "g65_pre_placebo", 4)
-    obs[idx]      <- pfmt_int(m1$nobs)
-    obs[idx + 1]  <- pfmt_int(m2$nobs)
-    r2v[idx]      <- pfmt(fitstat(m1, "wr2")[[1]], 4)
-    r2v[idx + 1]  <- pfmt(fitstat(m2, "wr2")[[1]], 4)
-    idx <- idx + 2
+    for (pkey in c("p1", "p2", "p3")) {
+      m <- rob[[v[[pkey]]]]
+      if (is.null(m)) {
+        vals[idx] <- "--"; ses[idx] <- "--"
+        obs[idx]  <- "--"; r2v[idx] <- "--"
+      } else {
+        vals[idx] <- coef_cell(m, "g65_pre_placebo", 4)
+        ses[idx]  <- se_cell(m, "g65_pre_placebo", 4)
+        obs[idx]  <- pfmt_int(m$nobs)
+        r2v[idx]  <- pfmt(fitstat(m, "wr2")[[1]], 4)
+      }
+      idx <- idx + 1
+    }
   }
 
   lines <- c(lines,
@@ -309,13 +315,17 @@ if (has_rob && !is.null(rob$placebo1_prices)) {
     "\\midrule",
     sprintf("Observations & %s \\\\", paste(obs, collapse = " & ")),
     sprintf("R-squared & %s \\\\", paste(r2v, collapse = " & ")),
-    "Item FE & YES & YES & YES & YES & YES & YES & YES & YES \\\\",
+    paste0("Item + Month FE", paste(rep(" & YES", 12), collapse = ""), " \\\\"),
     "\\bottomrule",
     "\\end{tabular}",
     "\\begin{tablenotes}",
     "\\small",
-    "\\item \\textit{Notes:} Placebo tests using fake treatment dates (Sep 2017 and Mar 2017) on pre-treatment data only.",
-    "Standard errors clustered at the item level in parentheses.",
+    "\\item \\textit{Notes:} Placebo tests using three fake treatment dates",
+    "(Sep 2017, Mar 2017, Jun 2017) on pre-treatment data only. Sep~2017",
+    "uses window $[680, 697]$; Mar~2017 uses $[680, 691]$; Jun~2017 uses",
+    "$[683, 695]$. Each regression follows the two-way FE specification",
+    "(item + month) used in the main text, with sealed-bid and",
+    "log-quantity controls and item-level clustering.",
     "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1.",
     "\\end{tablenotes}",
     "\\end{threeparttable}",

@@ -28,7 +28,8 @@ run_placebo <- function(dv, data, fake_date, window, completed = FALSE) {
   if (completed) sub <- sub[oc_item_status == 1L]
   sub[, Pre_placebo := as.integer(data_oc_numb < fake_date)]
   sub[, g65_pre_placebo := g65 * Pre_placebo]
-  fml <- as.formula(paste0(dv, " ~ g65_pre_placebo + convite + lquantidade | item_alt"))
+  # Two-way FE: item + month, matching the main DiD specification
+  fml <- as.formula(paste0(dv, " ~ g65_pre_placebo + convite + lquantidade | item_alt + data_oc_numb"))
   feols(fml, data = sub, cluster = ~item_alt, fixef.rm = "none")
 }
 
@@ -39,6 +40,14 @@ PLACEBO1_WIN  <- c(680L, 697L)
 # Placebo 2: Mar 2017 cutoff on data within [680, 691] (bounded by 18m window start)
 PLACEBO2_DATE <- 686L
 PLACEBO2_WIN  <- c(680L, 691L)
+
+# Placebo 3: Jun 2017 cutoff on data within [683, 695]. A third placebo
+# centered on a different month than the first two, entirely within the
+# pre-real-treatment era. The data cache starts at data_oc_numb = 680, so
+# a cutoff earlier than that is not feasible; this third placebo gives an
+# additional cut between placebo 1 (Sep 2017) and placebo 2 (Mar 2017).
+PLACEBO3_DATE <- 689L
+PLACEBO3_WIN  <- c(683L, 695L)
 
 dvs_placebo <- list(
   list(dv = "lpreco_final", completed = TRUE,  label = "prices"),
@@ -55,6 +64,10 @@ for (v in dvs_placebo) {
   cat("    Placebo 2 (Mar 2017):", v$label, "...\n")
   robustness[[paste0("placebo2_", v$label)]] <-
     run_placebo(v$dv, dt, PLACEBO2_DATE, PLACEBO2_WIN, v$completed)
+
+  cat("    Placebo 3 (Sep 2016):", v$label, "...\n")
+  robustness[[paste0("placebo3_", v$label)]] <-
+    run_placebo(v$dv, dt, PLACEBO3_DATE, PLACEBO3_WIN, v$completed)
 }
 
 # ============================================================================
