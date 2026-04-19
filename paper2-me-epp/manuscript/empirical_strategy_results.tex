@@ -116,7 +116,7 @@ A further corroboration from the Online Appendix: splitting the sample by item q
 
 \subsection{Heterogeneous Effects by Item Value}
 
-The aggregate results may mask important heterogeneity across item types. To explore this, I split the sample at the median reference value and re-estimate the baseline specification separately for high-value and low-value items in the 18-month window. Table~\ref{tab:heterog_value} reports the results.
+The aggregate coefficients may mask meaningful heterogeneity across item types. To probe this, I split the sample at the median reference value and re-run the baseline specification separately for high- and low-value items in the 18-month window. Table~\ref{tab:heterog_value} reports the results.
 
 \input{../output/tables/tab_heterog_value.tex}
 
@@ -124,7 +124,7 @@ The price effects are substantially larger for high-value items (above median): 
 
 \subsection{Robustness Checks}
 
-A natural concern with the DiD design is that the estimated coefficients could reflect pre-existing differential trends rather than the causal impact of the policy regime. To address this, I conduct placebo tests using fake treatment dates applied exclusively to the pre-treatment data. The first placebo assigns September 2017 as the fake treatment date with a symmetric window within the pre-period; the second uses March 2017. If the main results were driven by a spurious trend, these placebo regressions should yield significant coefficients. Table~\ref{tab:placebo} reports the results.
+A natural worry is that the DiD coefficients reflect pre-existing differential trends rather than a causal policy effect. To test for that, I run placebo regressions on the pre-treatment sample using fake cutoffs: September 2017 with a symmetric window, and March 2017. If a spurious trend were driving the main results, these placebos should pick it up. Table~\ref{tab:placebo} reports them.
 
 \input{../output/tables/tab_placebo.tex}
 
@@ -142,12 +142,12 @@ Non-SME firms excluded from Group-65 auctions after March 2018 may have redirect
 \input{../output/tables/tab_spillover.tex}
 
 \paragraph{Staggered-DiD corroboration.}
-To directly address the concern that the headline coefficient might be sensitive to the DiD framing, I re-estimate all four outcomes with two alternative estimators from the staggered-DiD literature that bracket the identification concern. Table~\ref{tab:cs2021} reports the~\citet{callaway2021} group-time average treatment effect on the treated, estimated on a \texttt{codigogrupo}$\times$month panel with the 76 never-treated groups as the comparison set and a multiplier-bootstrap variance. Table~\ref{tab:sunab} adds the~\citet{sun2021} interaction-weighted estimator at the item level, which for a single treated cohort is algebraically equivalent to the headline DiD specification. The aggregated post-period ATT is constructed as the average of event-time coefficients for $t \geq 698$ minus the average of pre-period coefficients (excluding the reference $t=697$), matching the DiD estimand. The three estimators converge: log prices are $0.108$ (Sun-Abraham) versus $0.133$ (DiD sign-flipped) versus $0.237$ (Callaway-Sant'Anna); log firms are $-0.099$, $-0.100$, and $-0.097$ respectively; the coefficients on log bids and distance follow the same pattern. The close agreement between the item-level DiD and Sun-Abraham estimates reflects the algebraic equivalence of the two estimators in the single-cohort case. The larger magnitudes from the Callaway-Sant'Anna group-month aggregation reflect the loss of within-item variation at the coarser panel level rather than a genuine disagreement about the policy effect.
+Is the headline sensitive to the DiD framing? To find out, I re-estimate all four outcomes with two alternative estimators from the staggered-DiD literature that bracket the identification concern. Table~\ref{tab:cs2021} reports the~\citet{callaway2021} group-time average treatment effect on the treated, estimated on a \texttt{codigogrupo}$\times$month panel with the 76 never-treated groups as the comparison set and a multiplier-bootstrap variance. Table~\ref{tab:sunab} adds the~\citet{sun2021} interaction-weighted estimator at the item level, which for a single treated cohort is algebraically equivalent to the headline DiD specification. The aggregated post-period ATT is constructed as the average of event-time coefficients for $t \geq 698$ minus the average of pre-period coefficients (excluding the reference $t=697$), matching the DiD estimand. The three estimators converge: log prices are $0.108$ (Sun-Abraham) versus $0.133$ (DiD sign-flipped) versus $0.237$ (Callaway-Sant'Anna); log firms are $-0.099$, $-0.100$, and $-0.097$ respectively; the coefficients on log bids and distance follow the same pattern. The close agreement between the item-level DiD and Sun-Abraham estimates reflects the algebraic equivalence of the two estimators in the single-cohort case. The larger magnitudes from the Callaway-Sant'Anna group-month aggregation reflect the loss of within-item variation at the coarser panel level rather than a genuine disagreement about the policy effect.
 
 \input{../output/tables/tab_cs2021.tex}
 \input{../output/tables/tab_sunab.tex}
 
-As a further check on the internal structure of the TWFE DiD, Table~\ref{tab:bacon} reports the~\citet{goodmanbacon2021} decomposition of the pooled DiD coefficient into its constituent $2{\times}2$ comparisons. Because the design has a single treated cohort and a never-treated control set within the sample window, the decomposition collapses to a single comparison type (``Treated vs Untreated''), which carries 100\% of the weight; no ``forbidden'' treated-vs-already-treated comparisons enter. This directly confirms that the TWFE coefficient is not distorted by the negative-weighting issues raised by the heterogeneous-effects literature.
+Table~\ref{tab:bacon} opens the TWFE coefficient with the~\citet{goodmanbacon2021} decomposition into its constituent $2{\times}2$ comparisons. With a single treated cohort and a never-treated control set within the sample window, the decomposition collapses to a single comparison type (``Treated vs Untreated''), which carries 100\% of the weight; no ``forbidden'' treated-vs-already-treated comparisons enter. The TWFE coefficient is therefore not distorted by the negative-weighting issues raised in the heterogeneous-effects literature.
 
 \input{../output/tables/tab_bacon.tex}
 
@@ -156,7 +156,7 @@ Four further specifications reported in the Online Appendix reinforce the headli
 
 \subsection{Fiscal Cost Quantification}
 
-The regression estimates above measure the \emph{percentage} price premium attributable to the SME-only tender restriction, but policymakers need to understand these costs in absolute terms. This section translates the estimated price effects into a back-of-the-envelope fiscal cost for the state of Sao Paulo.
+The regressions above measure the \emph{percentage} price premium, but policymakers work in absolute terms. This section converts the estimated price effects into a back-of-the-envelope fiscal cost for the state of Sao Paulo.
 
 Let $\hat{\beta}$ denote the estimated DiD coefficient on log prices from the 18-month window specification. Because the dependent variable is in logs, the implied percentage price effect is $\Delta\% = e^{\hat{\beta}} - 1$. Applying this percentage to the total procurement value of Group 65 completed items in the pre-period (September 2016 to February 2018) yields the estimated fiscal cost:
 \begin{equation}
