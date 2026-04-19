@@ -1,0 +1,67 @@
+\begin{table}[htbp]
+\centering
+\caption{Pharmaceuticals (CMED-Regulated) vs.~Non-Pharma Medical Supplies}
+\label{tab:pharma}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & Pharma (class 6531) & Non-pharma (other 65) & Interaction \\
+ & split sample & split sample & full sample \\
+\midrule
+\multicolumn{4}{l}{\textit{Log prices}} \\
+$g65 \times Pre$                 & -0.1573*** & -0.0973*** & -0.0988*** \\
+                                  & (0.0117) & (0.0086) & (0.0087) \\
+$g65 \times Pre \times$ Pharma   & -- & -- & -0.0742*** \\
+                                  & -- & -- & (0.0190) \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Log firms}} \\
+$g65 \times Pre$                 & 0.1661*** & 0.0504*** & 0.0510*** \\
+                                  & (0.0099) & (0.0057) & (0.0057) \\
+$g65 \times Pre \times$ Pharma   & -- & -- & 0.1081*** \\
+                                  & -- & -- & (0.0114) \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Log bids}} \\
+$g65 \times Pre$                 & 0.1355*** & 0.0056 & 0.0058 \\
+                                  & (0.0129) & (0.0081) & (0.0081) \\
+$g65 \times Pre \times$ Pharma   & -- & -- & 0.1193*** \\
+                                  & -- & -- & (0.0153) \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Distance (km)}} \\
+$g65 \times Pre$                 & 7.8602* & 2.1939 & 1.9921 \\
+                                  & (4.3790) & (1.8406) & (1.8420) \\
+$g65 \times Pre \times$ Pharma   & -- & -- & 7.1415 \\
+                                  & -- & -- & (4.6229) \\
+\addlinespace
+\midrule
+Obs. (Log prices) & 55,794 & 593,920 & 649,714 \\
+Obs. (Log firms)  & 67,647 & 705,616 & 773,263 \\
+Obs. (Log bids)   & 67,647 & 705,616 & 773,263 \\
+Obs. (Distance)   & 55,794 & 593,920 & 649,714 \\
+Item FE + PBU FE & YES & YES & YES \\
+\midrule
+\multicolumn{4}{l}{\textit{Implied fiscal cost (pre-period, nominal)}} \\
+Value of Group-65 procurement (R\$M) & 293.1 & 395.9 & 689.0 \\
+Fiscal cost (R\$M) & 42.7 & 36.7 & 79.3 \\
+Share of total cost & 54\% & 46\% & 100\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} 18-month window; log prices and distance conditioned on completion.
+Class 6531 identifies medications (Group 65's pharmaceutical subcategory)
+subject to \emph{CMED} (C\^amara de Regula\c{c}\~ao do Mercado de Medicamentos)
+list-price ceilings. Remaining Group-65 classes (non-pharma medical supplies) are
+unregulated. The first two columns estimate the headline DiD separately within
+each subsample. The third column estimates the interaction specification
+$y = \eta_i + \beta_1 (g65 \times Pre) + \beta_2 (g65 \times Pre \times Pharma) + x\delta$
+where $\beta_2$ is the differential pharma effect relative to non-pharma and the main
+pharma dummy is absorbed by item FE. SEs clustered at the item level.
+The implied fiscal cost applies the class-specific $\hat\beta$ on log prices to the
+pre-period Group-65 procurement value within that class.
+*** \textit{p}$<$0.01, ** \textit{p}$<$0.05, * \textit{p}$<$0.1.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
