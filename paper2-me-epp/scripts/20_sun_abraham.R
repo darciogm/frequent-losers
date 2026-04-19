@@ -148,7 +148,7 @@ for (k in names(ddr_specs)) {
   sp <- ddr_specs[[k]]
   d  <- dt_win
   if (sp$completed) d <- d[oc_item_status == 1L]
-  fml <- as.formula(sprintf("%s ~ g65_pre + convite + lquantidade | item_alt + pbu_alt",
+  fml <- as.formula(sprintf("%s ~ g65_pre + convite + lquantidade | item_alt + pbu_alt + data_oc_numb",
                             sp$dv))
   mm <- suppressMessages(feols(fml, data = d, cluster = ~item_alt, fixef.rm = "none"))
   ddr_tab[[k]] <- list(

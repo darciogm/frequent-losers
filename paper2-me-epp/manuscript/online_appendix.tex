@@ -80,7 +80,7 @@ Figures~OA.1 through OA.4 display the unconditional monthly means of each outcom
 
 \section{Randomization Inference}
 
-Figure~OA.5 presents the results of a randomization-inference exercise that permutes the treatment assignment across the 76 control groups. The two-sided permutation $p$-value is 0.317, reflecting the inherently low power of permutation tests when treatment is assigned to a single unit out of 77 product groups.
+Figure~OA.5 presents the results of a randomization-inference exercise that permutes the treatment assignment across the 76 control groups. The two-sided permutation $p$-value is 0.342, reflecting the inherently low power of permutation tests when treatment is assigned to a single unit out of 77 product groups.
 
 \begin{figure}[htbp]
 \centering
@@ -210,7 +210,7 @@ Figure~\ref{fig:cf-level-oa} reprints the residual-fiscal-cost schedule as a fun
 
 \IfFileExists{../output/tables/tab_pharma.tex}{\input{../output/tables/tab_pharma.tex}}{}
 
-The pharma decomposition splits Group 65 into class~6531 (medications subject to CMED price ceilings) and the remaining classes (non-pharma medical supplies). Split-sample DiD estimates are $-0.1573$ for pharma and $-0.0973$ for non-pharma; the differential is confirmed by an interaction specification within the full 18-month sample ($\hat\beta_\text{g65\_pre $\times$ pharma}=-0.074$, $p<0.01$). Pharma bears 54\% of the total fiscal cost despite only 43\% of the procurement value, because the per-unit distortion is 62\% larger. Implementation details are in \texttt{scripts/24\_pharma.R}.
+The pharma decomposition splits Group 65 into class~6531 (medications subject to CMED price ceilings) and the remaining classes (non-pharma medical supplies). Split-sample DiD estimates---with controls included in both subsamples so that $\hat\beta$ is identified against the never-treated groups in each case---are $-0.156$ for pharma and $-0.075$ for non-pharma; the differential is confirmed by an interaction specification within the full 18-month sample. Pharma bears 60\% of the total fiscal cost despite 42\% of the procurement value, because the per-unit distortion is roughly double that of the non-pharma subsegment. A direct look at prices (Figure~\ref{fig:cmed} in the main text) shows that 96\% of pharma transactions clear below the CMED-referenced cap, so the cap is slack and the SME-only rule compresses competition within the residual below-cap range. Implementation details are in \texttt{scripts/24\_pharma.R}.
 
 \section{Real Prices (IPCA-Deflated)}
 
