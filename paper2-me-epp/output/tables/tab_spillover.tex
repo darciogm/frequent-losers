@@ -1,0 +1,55 @@
+\begin{table}[htbp]
+\centering
+\caption{Formal Spillover Test: Controls-Only DiD with Pre-Period Exposure}
+\label{tab:spillover}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & Log prices & Log firms & Log bids & Distance \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel A: Main spillover test (controls, 18m window)}} \\
+Post & 0.0238** & 0.0145 & 0.0384 & 0.0465 \\
+ & (0.0097) & (0.0182) & (0.0454) & (2.5172) \\
+Post $\times$ Exposure & 0.0377 & 0.0655 & -0.3860 & 49.4069 \\
+ & (0.1829) & (0.2837) & (0.5541) & (48.4185) \\
+Observations & 517,278 & 610,883 & 610,883 & 517,278 \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel B: Pre-period placebo (fake cutoff March 2017)}} \\
+FakePost17 & -0.0229* & 0.0359** & 0.0613** & -2.6283 \\
+ & (0.0134) & (0.0172) & (0.0240) & (2.1056) \\
+FakePost17 $\times$ Exposure & -0.0158 & -0.3217 & -0.5265* & 83.1027** \\
+ & (0.1663) & (0.2261) & (0.3000) & (34.5318) \\
+Observations & 246,277 & 287,295 & 287,295 & 246,277 \\
+\midrule
+Item FE + PBU FE & YES & YES & YES & YES \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Sample restricted to the 76 never-treated product groups
+(Group 65 excluded). Outcomes conditioned on completion for prices and distance.
+\textit{Exposure} is the group-level share of pre-period completed items
+whose winning CNPJ raiz also won at least one Group-65 item in the pre-period.
+Mean exposure across groups is 3.1\%, i.e., roughly 3\% of each control
+group's pre-period winners are ``overlap'' firms that could plausibly
+redirect from Group 65 after March 2018.
+\textit{Panel A}: $Post \times Exposure$ tests the spillover prediction. A
+negative coefficient on log prices (not observed here: estimate is $+0.04$
+with SE $0.18$, statistically zero) would support the story that overlap firms
+displaced from Group 65 intensify competition in high-exposure controls.
+\textit{Panel B}: pre-period placebo with a fake March-2017 cutoff inside
+the pre-treatment sample.
+\textit{Implied bias on the headline DiD price coefficient}: the Panel~A
+coefficient $\times$ mean exposure is $+0.0012$ log-points---less than $1\%$
+of the headline $\hat\beta = -0.133$. Bias-corrected estimate: $-0.134$.
+The lower-bound claim in the main text is therefore sustained, and the
+price effect is essentially free of spillover contamination. The null
+coefficient also holds under the stricter placebo in Panel~B.
+SEs clustered at the product group level.
+*** \textit{p}$<$0.01, ** \textit{p}$<$0.05, * \textit{p}$<$0.1.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

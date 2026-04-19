@@ -1,0 +1,28 @@
+=== Spillover test diagnostic ===
+Sample: 517,280 obs (18m, controls-only, completed, exposure non-missing)
+Mean pre-period exposure (non-SME share): 0.0308
+
+Main Post x Exposure coefficients (controls only):
+  Log prices:   0.0377
+  Log firms:    0.0655
+  Log bids:     -0.3860
+  Distance:     49.4069
+
+Pre-period placebo (FakePost17 x Exposure):
+  Log prices:   -0.0158
+  Log firms:    -0.3217
+  Log bids:     -0.5265
+  Distance:     83.1027
+
+Implied bias on DiD price coefficient:
+  DiD beta (g65 x Pre):          -0.1330
+  Spillover coef (Post x expo):  0.0377
+  Mean exposure:                  0.0308
+  Implied bias (= coef * mean):  0.0012 (log-points)
+  Bias-corrected DiD beta:       -0.1342 (100.87% of headline)
+
+Interpretation: if Post x Exposure on log prices is NEGATIVE, high-exposure
+controls saw bigger price drops post-2018, suggesting non-SME firms
+redirected there. The bias implied is the amount by which the DiD price
+effect should be widened (made more negative) to recover the pure policy
+cost. If the placebo coefficient is near zero, the test is clean.
