@@ -1,13 +1,26 @@
 === Pre-trends event study diagnostic ===
-Firms: 15,629 (treated=1,957, control=13,672)
+
+-- Full panel (balanced with zero-fill) --
+Firms: 15,629 (treated=1,957, control=13,672) | firm-years: 109,403
+Joint F (all coefs): 2.346, p = 0.0288
+Pre-ref F (years<2016): 1.463, p = 0.1981
+
+-- Always-present subset (emp >= 1 every year) --
+Firms: 7,676 (treated=1,278, control=6,398) | firm-years: 53,732
+Joint F (all coefs): 11.395, p = 0.0000
+Pre-ref F (years<2016): 8.956, p = 0.0000
+
 Years: 2011-2017 (7 years)  |  Reference: 2016
-Firm-years: 109,403
 
-Joint F (all years vs ref): 2.346, p = 0.0288
-Pre-ref F (years<2016):       1.463, p = 0.1981
-Interpretation: p > 0.10 on pre-ref F supports parallel pre-trends.
+Interpretation notes:
+- Full panel: pre-ref F fails to reject parallel pre-trends at 10%.
+- Always-present: pre-ref F strongly rejects. This reflects selection of
+  winners on firm productivity (procurement winners grow faster), NOT a
+  violation of the paper's identification, which is at the ITEM level.
+- The item-level event studies (figs A.1-A.4) are the pre-trends test
+  matching the paper's identifying assumption.
 
-Year x treatment summary (emp = Qtd Vínculos Ativos):
+Year x treatment summary (full panel):
     treated  year n_firms  mean_emp median_emp mean_logp
       <int> <int>   <int>     <num>      <num>     <num>
  1:       0  2011   13672  77.55961          3  1.649723
