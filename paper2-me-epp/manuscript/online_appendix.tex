@@ -17,21 +17,36 @@
 \renewcommand{\thetable}{OA.\arabic{table}}
 
 \title{\textbf{Online Appendix}\\[6pt]
-\large The Price of Protecting Small Firms: Evidence from Public Procurement}
+\large The Intensive Margin of Small-Firm Protection: Bidding, Rents, and the Fiscal Cost of Public Procurement Set-Asides}
 \author{Darcio Genicolo-Martins\\Insper Institute of Education and Research}
 \date{April 2026}
 
 \begin{document}
 \maketitle
 
-\noindent This Online Appendix provides supplementary results for ``The Price of Protecting Small Firms: Evidence from Public Procurement.'' All table and figure numbers are prefixed with OA to distinguish them from the main text.
+\tableofcontents
+\clearpage
+
+\noindent This Online Appendix provides supplementary results for ``The Intensive Margin of Small-Firm Protection.'' All table and figure numbers are prefixed with OA to distinguish them from the main text. The appendix is organized in five parts: Part~I extends the identification robustness (OA.1--OA.7); Part~II develops the mechanism decomposition (OA.8--OA.12); Part~III documents policy-design extensions (OA.13--OA.18); Part~IV documents the RAIS matched employer-employee linkage and its role in robustness and heterogeneity (OA.19--OA.27); Part~V reports the synthetic control estimator (OA.28). Replication code and diagnostic files are deposited at the paper's online repository; every numerical claim in the main text and this appendix is traceable to a table or diagnostic file produced by \texttt{scripts/01\_clean.R} through \texttt{scripts/25\_bid\_moments.R}.
+
+\clearpage
 
 %% ====================================================================
-%% OA.A — Raw Monthly Trends
+%% PART I: DATA AND IDENTIFICATION ROBUSTNESS
 %% ====================================================================
+\part{Data and Identification Robustness}
+
+\section{Data Cleaning and Construction}
+
+The primary data source is the full-census microdata of \emph{Bolsa Eletr\^onica de Compras} (BEC), the Sao Paulo state procurement platform, covering January 2016 through December 2019. The raw CSV file contains 3{,}670{,}741 records across 373 columns, encoded in Latin-1 and semicolon-delimited. The cleaning pipeline (\texttt{scripts/01\_clean.R}) selects 76 variables needed for the empirical analysis, casts string-valued columns (CNPJ, municipio, UF) to character to preserve leading zeros and the ``Sem Vencedor'' sentinel, and derives derived variables including \texttt{g65} (indicator for product group~65), \texttt{Pre} (indicator for $t<$March~2018), the 6-, 12-, and 18-month window masks, item and PBU factor encodings, and the CNPJ raiz (first 8 digits of the winning firm's 14-digit CNPJ). The cleaned data is cached as Parquet (\texttt{data/processed/paper2\_me\_epp.parquet}, version~3, compressed Snappy) and as an R data.table RDS (\texttt{/tmp/p2\_prepared.rds}). Subsequent analyses consume this RDS for speed.
+
+The Parquet cache is regenerated whenever \texttt{PARQUET\_VERSION} in \texttt{scripts/utils.R} is incremented; version~3 corresponds to the CNPJ-retained build used for all RAIS-linked analyses.
+
+\clearpage
+
 \section{Raw Monthly Trends}
 
-Figures~OA.1 through OA.4 display the unconditional monthly means of each outcome variable, separately for Group 65 and all other groups. The raw trends are broadly consistent with the event study estimates, showing a narrowing of the gap between the two groups after the policy change.
+Figures~OA.1 through OA.4 display the unconditional monthly means of each outcome variable, separately for Group~65 and all other product groups. The raw trends are broadly consistent with the event-study estimates, showing a narrowing of the gap between the two groups after the March~2018 policy change.
 
 \begin{figure}[htbp]
 \centering
@@ -57,12 +72,15 @@ Figures~OA.1 through OA.4 display the unconditional monthly means of each outcom
 \caption{Raw Trends: Mean Distance (km) by Month (Group 65 vs.\ Other Groups)}
 \end{figure}
 
-%% ====================================================================
-%% OA.B — Randomization Inference
-%% ====================================================================
+\clearpage
+
+\section{Pre-Treatment Balance Test}
+
+\IfFileExists{../output/tables/tab_balance.tex}{\input{../output/tables/tab_balance.tex}}{}
+
 \section{Randomization Inference}
 
-Figure~OA.5 presents the results of a randomization inference exercise. The two-sided permutation $p$-value is 0.317, reflecting the inherently low power of permutation tests when treatment is assigned to a single unit out of 76 product groups.
+Figure~OA.5 presents the results of a randomization-inference exercise that permutes the treatment assignment across the 76 control groups. The two-sided permutation $p$-value is 0.317, reflecting the inherently low power of permutation tests when treatment is assigned to a single unit out of 77 product groups.
 
 \begin{figure}[htbp]
 \centering
@@ -70,107 +88,217 @@ Figure~OA.5 presents the results of a randomization inference exercise. The two-
 \caption{Randomization Inference: Distribution of Permuted Coefficients (Log Prices, 18-month window)}
 \end{figure}
 
+\section{Excluding Last Post-Period Semester}
+
+As a test of the partial reversal observed in the final post-period semester, Table~OA.5 re-estimates the main specification excluding March--August 2019. The resulting coefficient is essentially unchanged, ruling out the hypothesis that the effect is dissipating.
+
+\IfFileExists{../output/tables/tab_excl_lastpost.tex}{\input{../output/tables/tab_excl_lastpost.tex}}{}
+
+\clearpage
+
+\section{Staggered-DiD Alternative Estimators}
+
+This section reports the two staggered-DiD estimators that complement the item-level DiD in the main text: \citet{callaway2021} and \citet{sun2021}, together with the \citet{goodmanbacon2021} decomposition.
+
+\subsection*{OA.6.1 Callaway-Sant'Anna (2021)}
+Table~\ref{tab:cs2021-oa} reports the overall Average Treatment Effect on the Treated, estimated on a \texttt{codigogrupo}$\times$month panel with the 76 never-treated groups as the comparison set. The estimator uses \texttt{did::att\_gt} with outcome-regression and a multiplier-bootstrap variance (999 iterations). The dynamic event study (Figure~\ref{fig:cs2021-event}) traces the ATT from 18 months pre- to 17 months post-treatment and visualizes the convergence of Group-65 outcomes toward the never-treated baseline.
+
+\IfFileExists{../output/tables/tab_cs2021.tex}{\begin{table}[htbp]\centering\caption{Callaway-Sant'Anna ATT (reprinted from main text)}\label{tab:cs2021-oa}\end{table}}{}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_cs2021_event.pdf}{\includegraphics[width=0.7\textwidth]{fig_cs2021_event.pdf}}
+\caption{Callaway-Sant'Anna Dynamic Event Study: Log Prices Around March 2018}
+\label{fig:cs2021-event}
+\end{figure}
+
+\subsection*{OA.6.2 Sun-Abraham (2021) Interaction-Weighted Estimator}
+Sun-Abraham reduces to a cohort $\times$ event-time interaction specification for a single treated cohort. Table~\ref{tab:sunab-oa} reports the aggregated ATT constructed as the mean of post-period event-time coefficients minus the mean of pre-period coefficients (excluding the reference $t=697$), matching the DiD estimand. The item-level SA estimates are numerically equivalent to the headline DiD.
+
+\IfFileExists{../output/tables/tab_sunab.tex}{\begin{table}[htbp]\centering\caption{Sun-Abraham Event-Study ATT (reprinted)}\label{tab:sunab-oa}\end{table}}{}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_sunab_event.pdf}{\includegraphics[width=0.7\textwidth]{fig_sunab_event.pdf}}
+\caption{Sun-Abraham Event Study: Log Prices Around March 2018}
+\end{figure}
+
+\subsection*{OA.6.3 Goodman-Bacon (2021) Decomposition}
+With a single treated cohort and 76 never-treated controls within the sample window, the \citet{goodmanbacon2021} decomposition collapses to a single comparison type (``Treated vs Untreated''), which carries 100\% of the TWFE weight. No ``forbidden'' treated-vs-already-treated comparisons enter, so the DiD coefficient is not distorted by the heterogeneous-effects biases that motivate the staggered-DiD literature.
+
+\clearpage
+
+\section{Formal Cross-Group Spillover Test}
+
+\IfFileExists{../output/tables/tab_spillover.tex}{\input{../output/tables/tab_spillover.tex}}{}
+
+The spillover test regresses control-group outcomes on $\mathit{Post} \times \mathit{Exposure}$, where $\mathit{Exposure}_c$ is the pre-period share of control group~$c$'s winners whose CNPJ raiz also won at least one Group-65 item in the same pre-period. The coefficient on the interaction is $+0.04$ with a standard error of $0.18$, statistically indistinguishable from zero; the pre-period placebo coefficient is also null. Multiplied by the mean exposure across groups (3.1\%), the implied bias on the headline price coefficient is $+0.001$ log-points, or approximately 1\% of the $-0.133$ estimate. The full diagnostic is in \texttt{output/tables/diag\_spillover.txt}.
+
+\clearpage
+
 %% ====================================================================
-%% OA.C — SME Participation Trends
+%% PART II: MECHANISM
 %% ====================================================================
-\section{SME Participation Trends}
+\part{Mechanism and Decomposition}
+
+\section{Gelbach (2016) Mediation Decomposition}
+
+\IfFileExists{../output/figures/fig_15_mediation.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}\end{figure}}{}
+
+\IfFileExists{../output/tables/tab_mediation.tex}{\input{../output/tables/tab_mediation.tex}}{}
+
+\section{Phase-2 Bid-Distribution Moments}
+
+The central mechanism finding of the paper draws on the minimum, maximum, mean, and standard deviation of phase-2 electronic-auction bids. Phase~2 is the iterative bidding stage in which registered suppliers submit progressively lower offers in real time; phase-1 sealed bids are sparse in the Sao Paulo data (under 1\% non-zero in min\_bid\_ph1) and are not used. Phase-2 bid moments are extracted ad-hoc from the raw CSV by \texttt{scripts/25\_bid\_moments.R}; 74.8\% of CSV rows have valid phase-2 moments.
+
+Table~\ref{tab:bid-moments-oa} reports the DiD on three bid-distribution outcomes: \textit{discount from reference} $=(p_\text{ref}-\min_\text{bid})/p_\text{ref}$, \textit{log SD of ph-2 bids}, and \textit{normalized bid range}. Each outcome is estimated in the full sample and in subsamples with exactly 2, exactly 3, or five-plus participating firms. The discount-from-reference coefficient is $+0.104$ in the full sample and remains at $+0.074$ to $+0.098$ when firm count is held fixed. The log SD coefficient is $-0.087$ full and grows monotonically to $-0.224$ at $N\!\geq\!5$.
+
+\IfFileExists{../output/tables/tab_bid_moments.tex}{\begin{table}[htbp]\centering\caption{Phase-2 Bid Moments (reprinted from main text)}\label{tab:bid-moments-oa}\end{table}}{}
+
+\section{Conditioning on Firm Count}
+
+Table~OA.11 holds the extensive margin fixed by restricting the sample to items with exactly 2, 3, or 5+ participating firms and re-estimating the main price regression. The coefficient ranges from $-0.108$ to $-0.151$, all at $p<0.01$.
+
+\IfFileExists{../output/tables/tab_bid_aggressiveness.tex}{\input{../output/tables/tab_bid_aggressiveness.tex}}{}
+
+\section{Causal Forest}
+
+\IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}\caption{Causal Forest: Variable Importance for Treatment-Effect Heterogeneity}\end{figure}}{}
+
+\IfFileExists{../output/figures/fig_13_cforest_gate.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_13_cforest_gate.pdf}\caption{Causal Forest: Group Average Treatment Effects by CATE Quartile}\end{figure}}{}
+
+\IfFileExists{../output/tables/tab_cforest.tex}{\input{../output/tables/tab_cforest.tex}}{}
+
+\section{Quantile Difference-in-Differences}
+
+\IfFileExists{../output/figures/fig_14_quantile_did.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}\end{figure}}{}
+
+\IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
+
+\clearpage
+
+%% ====================================================================
+%% PART III: POLICY DESIGN AND EXTENSIONS
+%% ====================================================================
+\part{Policy Design and Extensions}
+
+\section{Value-Threshold Counterfactual}
+
+Table~\ref{tab:cf-oa} reports the per-quartile DiD coefficients used in the value-threshold counterfactual simulation. The simulation splits Group-65 pre-period items into quartiles of reference value (cutoffs R\$500, R\$1{,}875, R\$7{,}623), estimates the DiD within each quartile, and computes the fiscal cost recovered by exempting the top~$k$ quartiles. Because 92\% of pre-period Group-65 procurement value concentrates in the top quartile, exempting Q4 alone recovers 90\% of the counterfactual baseline fiscal cost.
+
+\IfFileExists{../output/tables/tab_counterfactual.tex}{\begin{table}[htbp]\centering\caption{Counterfactual Policy Designs (reprinted)}\label{tab:cf-oa}\end{table}}{}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_counterfactual.pdf}{\includegraphics[width=0.7\textwidth]{fig_counterfactual.pdf}}
+\caption{Residual Fiscal Cost as a Function of the Exemption Percentile}
+\end{figure}
+
+\section{CMED-Regulated Pharmaceuticals vs.\ Non-Pharma Medical Supplies}
+
+\IfFileExists{../output/tables/tab_pharma.tex}{\input{../output/tables/tab_pharma.tex}}{}
+
+The pharma decomposition splits Group 65 into class~6531 (medications subject to CMED price ceilings) and the remaining classes (non-pharma medical supplies). Split-sample DiD estimates are $-0.1573$ for pharma and $-0.0973$ for non-pharma; the differential is confirmed by an interaction specification within the full 18-month sample ($\hat\beta_\text{g65\_pre $\times$ pharma}=-0.074$, $p<0.01$). Pharma bears 54\% of the total fiscal cost despite only 43\% of the procurement value, because the per-unit distortion is 62\% larger. Implementation details are in \texttt{scripts/24\_pharma.R}.
+
+\section{Real Prices (IPCA-Deflated)}
+
+\IfFileExists{../output/tables/tab_prices_real.tex}{\input{../output/tables/tab_prices_real.tex}}{}
+
+\section{Extensive Margin and Procurement Efficiency}
+
+\IfFileExists{../output/tables/tab_extensive.tex}{\input{../output/tables/tab_extensive.tex}}{}
+\IfFileExists{../output/tables/tab_efficiency.tex}{\input{../output/tables/tab_efficiency.tex}}{}
+
+\section{Heterogeneity by PBU Type}
+
+\IfFileExists{../output/tables/tab_heterog_pbu.tex}{\input{../output/tables/tab_heterog_pbu.tex}}{}
+
+\section{SME Winner Composition}
+
+\IfFileExists{../output/tables/tab_sme_winner.tex}{\input{../output/tables/tab_sme_winner.tex}}{}
+
+Figure~\ref{fig:sme-share} displays the monthly share of completed items where the winning firm is self-classified as an SME.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_10_sme_share.pdf}
 \caption{SME Winner Share (Completed Items) by Month}
+\label{fig:sme-share}
 \end{figure}
 
-%% ====================================================================
-%% OA.D — Extension Tables
-%% ====================================================================
-\section{Extension Analyses}
-
-\input{../output/tables/tab_prices_real.tex}
-\input{../output/tables/tab_extensive.tex}
-\input{../output/tables/tab_efficiency.tex}
-\input{../output/tables/tab_sme_winner.tex}
-\input{../output/tables/tab_heterog_pbu.tex}
+\clearpage
 
 %% ====================================================================
-%% OA.E — Causal Forest
+%% PART IV: RAIS
 %% ====================================================================
-\section{Heterogeneous Treatment Effects (Causal Forest)}
+\part{RAIS Matched Employer-Employee Linkage}
 
-\IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{
+Brazil's \emph{Rela\c{c}\~ao Anual de Informa\c{c}\~oes Sociais} (RAIS) is a matched employer-employee registry covering the universe of formal-sector employment relationships. This part links the winning firms in BEC to their RAIS profiles at the CNPJ-raiz (8-digit firm identifier) level, using the establishment-level (ESTB) files for 2011--2017. Of 17{,}857 distinct winning CNPJ raízes in the Paper-2 sample, 14{,}755 match RAIS 2017 nationwide (82.6\% coverage); within Sao Paulo state alone, 12{,}533 match (70.2\%). The link is produced by \texttt{scripts/05\_link\_rais.py}, a DuckDB-based ETL.
+
+\section{Validation of the Self-Declared ME/EPP Label}
+
+The BEC data includes a self-declared \texttt{fornec\_enquad} (firm-enquadramento) variable. Table~\ref{tab:rais-val} tests whether the headline DiD is sensitive to the label's classification noise by restricting the estimation sample to firms with (i) a RAIS match, (ii) active employment at most 49 (ME/EPP ceiling), (iii) active employment at most 9 (micro ceiling), and (iv) active employment strictly below 100 (excluding the top of the RAIS size distribution). The price coefficient is essentially invariant across these subsamples.
+
+\IfFileExists{../output/tables/tab_rais_validation.tex}{\begin{table}[htbp]\centering\caption{RAIS-Validated Winner Subsamples}\label{tab:rais-val}\end{table}}{}
+
+\section{Winner Composition: RAIS-Validated SME}
+
+Table~\ref{tab:winner-rais-oa} uses a RAIS-validated SME flag (winner active employment $\leq 49$) as the dependent variable. The DiD on this outcome estimates how the SME-only rule shifts the probability of a genuinely small winner; the mechanism prediction is a positive post-policy shift.
+
+\IfFileExists{../output/tables/tab_winner_rais.tex}{\begin{table}[htbp]\centering\caption{Winner Composition: RAIS-Validated SME}\label{tab:winner-rais-oa}\end{table}}{}
+
+\IfFileExists{../output/tables/tab_winner_rais_alt.tex}{\input{../output/tables/tab_winner_rais_alt.tex}}{}
+
+\section{Main DiD with RAIS Firm-Level Controls}
+
+Table~\ref{tab:rais-controls-oa} augments the headline DiD with RAIS firm-level controls---$\log(1+\text{v\'inculos})$, $\log(1+\text{firm age at 2018})$, and CNAE 2-digit fixed effects. The $g65 \times Pre$ coefficient is invariant, confirming that the price effect is not explained by observable differences in winner size, age, or sector.
+
+\IfFileExists{../output/tables/tab_rais_controls.tex}{\begin{table}[htbp]\centering\caption{Main DiD with RAIS Firm-Level Controls}\label{tab:rais-controls-oa}\end{table}}{}
+
+\section{Enforcement Heterogeneity}
+
+Table~\ref{tab:enforcement-oa} tests whether the price effect is larger in PBUs that were historically more exposed to non-SME winners. The exposure measure is the pre-period share of each PBU's winners with RAIS employment $\geq 100$. Weighted median is 6.9\%; PBUs above median show a $-0.049$ ($p<0.05$) larger price distortion.
+
+\IfFileExists{../output/tables/tab_enforcement.tex}{\begin{table}[htbp]\centering\caption{Enforcement Heterogeneity by PBU Exposure}\label{tab:enforcement-oa}\end{table}}{}
+
+\section{Firm-Level Employment Pre-Trends (RAIS 2011--2017)}
+
+Figure~\ref{fig:pretrends-oa} plots the event-study coefficients on $\log(1+\text{v\'inculos})$ for treated firms (ever won a group-65 item in the BEC pre-period) versus controls (won only non-group-65 items in the same period). Pre-reference joint $F$-test is 1.46 ($p=0.198$) in the balanced panel with zero-fill, failing to reject parallel pre-trends. The always-present subset (firms with $\geq 1$ employment link every year 2011--2017) rejects more strongly; this reflects the selection of procurement winners on firm productivity and growth rather than a violation of the paper's item-level identification.
+
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}
-\caption{Causal Forest: Variable Importance for Treatment Effect Heterogeneity}
+\IfFileExists{../output/figures/fig_pretrends.pdf}{\includegraphics[width=0.7\textwidth]{fig_pretrends.pdf}}
+\caption{Firm-Level Employment Pre-Trends (RAIS 2011--2017)}
+\label{fig:pretrends-oa}
 \end{figure}
-}{}
 
-\IfFileExists{../output/figures/fig_13_cforest_gate.pdf}{
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_13_cforest_gate.pdf}
-\caption{Causal Forest: Group Average Treatment Effects by CATE Quartile}
-\end{figure}
-}{}
+\IfFileExists{../output/tables/tab_pretrends.tex}{\begin{table}[htbp]\centering\caption{Pre-Trends Event Study}\end{table}}{}
 
-\IfFileExists{../output/tables/tab_cforest.tex}{\input{../output/tables/tab_cforest.tex}}{}
+\section{Firm Age Heterogeneity}
 
-%% ====================================================================
-%% OA.F — Quantile DiD
-%% ====================================================================
-\section{Distributional Effects (Quantile DiD)}
+Table~\ref{tab:firm-age-oa} interacts $g65 \times Pre$ with a young-firm indicator (age at 2018 $\leq 9$ years, the median of pre-period winners). The price effect is uniform across age within the ME/EPP-eligible pool; the apparent differences reported by naive age splits are driven by firm-size composition (see Section~OA.27).
 
-\IfFileExists{../output/figures/fig_14_quantile_did.pdf}{
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}
-\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}
-\end{figure}
-}{}
+\IfFileExists{../output/tables/tab_firm_age.tex}{\begin{table}[htbp]\centering\caption{Heterogeneity by Winner Firm Age}\label{tab:firm-age-oa}\end{table}}{}
 
-\IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
+\section{CNAE 2-Digit Sector Heterogeneity}
+
+Table~\ref{tab:cnae-oa} re-estimates the DiD within each of the top-6 CNAE 2.0 divisions (wholesale 46, retail 47, vehicle wholesale 45, chemicals 20, food manufacturing 10, other manufacturing 32) and reports the coefficient on $g65 \times Pre$.
+
+\IfFileExists{../output/tables/tab_cnae_het.tex}{\begin{table}[htbp]\centering\caption{Heterogeneity by Winner CNAE 2-Digit Sector}\label{tab:cnae-oa}\end{table}}{}
+
+\section{Winner Age $\times$ Size Quadrants}
+
+Table~\ref{tab:age-size-oa} crosses winner age (young/mature, median split at 9 years) with RAIS-observed size (SME/large, cut at the 49-v\'inculos ME/EPP ceiling) to form four quadrants. Within eligible firms (SME), the price effect is essentially identical for young and mature firms ($-0.129$ vs $-0.128$)---the rent transfer from the SME-only rule is uniform within eligibility and concentrated on the geographic/competition margins rather than on firm maturity per se.
+
+\IfFileExists{../output/tables/tab_age_size.tex}{\begin{table}[htbp]\centering\caption{Heterogeneity by Age $\times$ Size Quadrants}\label{tab:age-size-oa}\end{table}}{}
+
+\clearpage
 
 %% ====================================================================
-%% OA.G — Gelbach Decomposition
+%% PART V: COMPLEMENTARY ESTIMATORS
 %% ====================================================================
-\section{Mechanism Decomposition (Gelbach)}
+\part{Complementary Estimators}
 
-\IfFileExists{../output/figures/fig_15_mediation.pdf}{
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}
-\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}
-\end{figure}
-}{}
-
-\IfFileExists{../output/tables/tab_mediation.tex}{\input{../output/tables/tab_mediation.tex}}{}
-
-%% ====================================================================
-%% OA.H — Balance Test
-%% ====================================================================
-\section{Pre-Treatment Balance Test}
-
-\IfFileExists{../output/tables/tab_balance.tex}{\input{../output/tables/tab_balance.tex}}{}
-
-%% ====================================================================
-%% OA.I — Excluding Last Post-Period
-%% ====================================================================
-\section{Excluding Last Post-Period Semester}
-
-\IfFileExists{../output/tables/tab_excl_lastpost.tex}{\input{../output/tables/tab_excl_lastpost.tex}}{}
-
-%% ====================================================================
-%% OA.J — Mechanism Evidence
-%% ====================================================================
-\section{Mechanism Evidence}
-
-\input{../output/tables/tab_dose_response.tex}
-\input{../output/tables/tab_entry_margin.tex}
-\input{../output/tables/tab_within_g65.tex}
-
-%% ====================================================================
-%% OA.K — Synthetic Control
-%% ====================================================================
 \section{Synthetic Control}
 
 \IfFileExists{../output/tables/tab_synth.tex}{
@@ -194,6 +322,20 @@ Figure~OA.5 presents the results of a randomization inference exercise. The two-
 
 \input{../output/tables/tab_synth.tex}
 }{}
+
+\section{HonestDiD Sensitivity Analysis}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_11_honestdid.pdf}{\includegraphics[width=0.7\textwidth]{fig_11_honestdid.pdf}}
+\caption{HonestDiD Sensitivity Analysis of the Log-Price Effect}
+\end{figure}
+
+\section{Lee (2009) Bounds}
+
+\IfFileExists{../output/tables/tab_lee_bounds.tex}{\input{../output/tables/tab_lee_bounds.tex}}{}
+
+\clearpage
 
 \bibliographystyle{aea}
 \bibliography{References}
