@@ -1,0 +1,33 @@
+\begin{table}[htbp]
+\centering
+\caption{Goodman-Bacon (2021) Decomposition of the TWFE DiD Coefficient}
+\label{tab:bacon}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{llcc}
+\toprule
+Outcome & Comparison type & Weight & Weighted avg. estimate \\
+\midrule
+Log prices & Treated vs Untreated & 1.000 & 0.3697 \\
+Log firms & Treated vs Untreated & 1.000 & -0.0409 \\
+Log bids & Treated vs Untreated & 1.000 & 0.0373 \\
+Distance & Treated vs Untreated & 1.000 & -37.9898 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Decomposition of the pooled two-way fixed-effects
+DiD coefficient $\hat\beta^{\mathrm{DD}}$ into weighted average of all
+possible $2{\times}2$ comparisons implicit in the TWFE estimator~\citep{goodmanbacon2021}.
+In a single-cohort design with never-treated controls, only two comparison types arise:
+\textit{Treated vs Untreated}, the clean 2$\times$2 comparison between group~65 and the
+never-treated 76 groups; and \textit{Within}, a time-variation component
+that bacondecomp reports separately. No ``forbidden'' comparisons---treated-vs-already-treated
+of the sort that motivate the \citet{callaway2021} and \citet{sun2021} corrections---enter
+the decomposition because there is no variation in treatment timing among controls.
+Weights and weighted estimates are reported by \texttt{bacondecomp::bacon}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
