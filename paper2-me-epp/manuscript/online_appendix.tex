@@ -146,7 +146,7 @@ The spillover test regresses control-group outcomes on $\mathit{Post} \times \ma
 
 \section{Gelbach (2016) Mediation Decomposition}
 
-This section documents the full Gelbach decomposition summarized by the stacked-bar figure in the main text (Figure~\ref{fig:gelbach}). Figure~\ref{fig:gelbach-oa} displays the per-channel $\delta$ contributions and their standard errors; Table~OA below reports the underlying coefficients.
+Figure~\ref{fig:gelbach} in the main text stacks the 93/7 split at a glance. This section unpacks it: Figure~\ref{fig:gelbach-oa} plots the per-channel $\delta$ contributions with standard errors, and the table below reports the underlying coefficients and auxiliary regressions.
 
 \IfFileExists{../output/figures/fig_15_mediation.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}\label{fig:gelbach-oa}\end{figure}}{}
 
@@ -154,9 +154,9 @@ This section documents the full Gelbach decomposition summarized by the stacked-
 
 \section{Phase-2 Bid-Distribution Moments}
 
-The central mechanism finding of the paper draws on the minimum, maximum, mean, and standard deviation of phase-2 electronic-auction bids. Phase~2 is the iterative bidding stage in which registered suppliers submit progressively lower offers in real time; phase-1 sealed bids are sparse in the Sao Paulo data (under 1\% non-zero in min\_bid\_ph1) and are not used. Phase-2 bid moments are extracted ad-hoc from the raw CSV by \texttt{scripts/25\_bid\_moments.R}; 74.8\% of CSV rows have valid phase-2 moments.
+The paper's mechanism finding rests on the minimum, maximum, mean, and standard deviation of the bids submitted in phase~2 of each electronic auction---the iterative stage in which registered suppliers progressively lower their offers in real time. Phase-1 sealed bids are too sparse in the Sao Paulo data to be usable (fewer than 1\% of rows have a non-zero min\_bid\_ph1), so the paper relies on phase~2 throughout. The moments are extracted ad-hoc from the raw CSV by \texttt{scripts/25\_bid\_moments.R}; 74.8\% of rows carry valid phase-2 data.
 
-Table~\ref{tab:bid-moments-oa} reports the DiD on three bid-distribution outcomes: \textit{discount from reference} $=(p_\text{ref}-\min_\text{bid})/p_\text{ref}$, \textit{log SD of ph-2 bids}, and \textit{normalized bid range}. Each outcome is estimated in the full sample and in subsamples with exactly 2, exactly 3, or five-plus participating firms. The discount-from-reference coefficient is $+0.104$ in the full sample and remains at $+0.074$ to $+0.098$ when firm count is held fixed. The log SD coefficient is $-0.087$ full and grows monotonically to $-0.224$ at $N\!\geq\!5$.
+Table~\ref{tab:bid-moments-oa} reports the DiD on three bid-distribution outcomes: \textit{discount from reference} $=(p_\text{ref}-\min_\text{bid})/p_\text{ref}$, \textit{log SD of ph-2 bids}, and \textit{normalized bid range}. Each is estimated on the full sample and on the 2-, 3-, and $\geq\!5$-firm subsamples. The discount coefficient is $+0.104$ in the full sample and stays between $+0.074$ and $+0.098$ when firm count is held fixed. The log-SD coefficient starts at $-0.087$ and deepens monotonically to $-0.224$ at $N\!\geq\!5$.
 
 \IfFileExists{../output/tables/tab_bid_moments.tex}{\begin{table}[htbp]\centering\caption{Phase-2 Bid Moments (reprinted from main text)}\label{tab:bid-moments-oa}\end{table}}{}
 
@@ -168,7 +168,7 @@ Table~OA.11 holds the extensive margin fixed by restricting the sample to items 
 
 \section{Causal Forest}
 
-The \citet{athey2019,wager2018} causal-forest estimator locates where treatment effects concentrate across the covariate space. I train the forest on the 18-month completed-items sample with log reference value, log quantity, class dummies, sealed-bid indicator, and PBU type as inputs. Figure~\ref{fig:cforest-varimp} reports the variable-importance diagnostic: item quantity dominates with an importance of 0.486, roughly an order of magnitude above the next covariate. Figure~\ref{fig:cforest-gate} plots the group-average treatment effect (GATE) across quartiles of the estimated conditional-average treatment effect (CATE); the monotone decline from Q1 to Q4 provides the heterogeneity signal that motivates the value-threshold counterfactual.
+The \citet{athey2019,wager2018} causal forest locates where treatment effects concentrate across the covariate space. I train the forest on the 18-month completed-items sample using log reference value, log quantity, class dummies, the sealed-bid indicator, and PBU type as inputs. Figure~\ref{fig:cforest-varimp} shows the variable-importance diagnostic: item quantity dominates with an importance of 0.486, roughly an order of magnitude above the next covariate. Figure~\ref{fig:cforest-gate} then plots the group-average treatment effect (GATE) across quartiles of the estimated conditional-average treatment effect (CATE). The monotone decline from Q1 to Q4 is the heterogeneity signal that motivates the value-threshold counterfactual in Section~4.6.
 
 \IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}\caption{Causal Forest: Variable Importance for Treatment-Effect Heterogeneity}\label{fig:cforest-varimp}\end{figure}}{}
 
@@ -178,7 +178,7 @@ The \citet{athey2019,wager2018} causal-forest estimator locates where treatment 
 
 \section{Quantile Difference-in-Differences}
 
-A parallel check comes from the \citet{canay2011} quantile DiD estimator on the residualized log-price distribution. Figure~\ref{fig:quantile-did-oa} plots the coefficient at each decile. The effect is strongly negative at the lower quantiles ($\tau=0.10$: $-0.623$; $\tau=0.25$: $-0.543$) and turns positive at the upper tail ($\tau=0.90$: $+0.445$). At the lower quantiles---where items are more standardized and multiple capable suppliers exist---open competition drives prices down sharply; at the upper tail, items tend to be more specialized with thinner markets. The pattern is the quantile-regression counterpart of the causal-forest GATE curve in Figure~\ref{fig:cforest-gate}, and is also visible in Figure~\ref{fig:qte} (residualized quantile regression). The complementary bid-level QTE from the main text (Figure~\ref{fig:qte} in Section~OA.C) delivers the same conclusion using a different estimator.
+The \citet{canay2011} quantile DiD on the residualized log-price distribution delivers a parallel check. Figure~\ref{fig:quantile-did-oa} plots the coefficient at each decile. The effect is strongly negative at the lower quantiles ($\tau=0.10$: $-0.623$; $\tau=0.25$: $-0.543$) and turns positive at the upper tail ($\tau=0.90$: $+0.445$). At the lower quantiles---where items are standardized and multiple capable suppliers exist---open competition drives prices down sharply; at the upper tail, items tend to be specialized with thinner markets, and the pattern reverses. The curve is the quantile-regression twin of the causal-forest GATE in Figure~\ref{fig:cforest-gate}, and of the residualized-QR diagnostic in Figure~\ref{fig:qte}. Three different estimators deliver the same heterogeneity story.
 
 \IfFileExists{../output/figures/fig_14_quantile_did.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}\label{fig:quantile-did-oa}\end{figure}}{}
 
@@ -313,7 +313,7 @@ Table~\ref{tab:age-size-oa} crosses winner age (young/mature, median split at 9 
 
 \section{Synthetic Control}
 
-As an external check that does not rely on the DiD framing, I build a synthetic control for Group~65 using the 76 never-treated product groups as donors~\citep{abadie2010,ben2021}. The donor weights are chosen to match the Group-65 pre-period trajectory in log prices. Figure~\ref{fig:synth-levels} overlays actual Group-65 log prices against the synthetic counterfactual, demonstrating near-exact fit in the pre-period and a visible gap opening after March~2018. Figure~\ref{fig:synth-gap} plots the gap directly, and Figure~\ref{fig:synth-placebo} reports the in-space placebo distribution of post-treatment ATTs across donor groups: the Group-65 post-switch gap sits in the extreme tail of the placebo distribution, consistent with a non-spurious treatment effect.
+As an external check that does not lean on the DiD framing, I build a synthetic control for Group~65 using the 76 never-treated product groups as donors~\citep{abadie2010,ben2021}. Donor weights are chosen to match the Group-65 pre-period trajectory in log prices. Figure~\ref{fig:synth-levels} overlays actual Group-65 log prices against the synthetic counterfactual: the pre-period fit is near-exact, and a visible gap opens after March~2018. Figure~\ref{fig:synth-gap} plots that gap directly. Figure~\ref{fig:synth-placebo} reports the in-space placebo distribution of post-treatment ATTs across donor groups---the Group-65 post-switch gap sits in the extreme tail of the placebo distribution, so the effect is not a product of random noise.
 
 \IfFileExists{../output/tables/tab_synth.tex}{
 \begin{figure}[htbp]
@@ -342,7 +342,7 @@ As an external check that does not rely on the DiD framing, I build a synthetic 
 
 \section{HonestDiD Sensitivity Analysis}
 
-Figure~\ref{fig:honestdid-oa} reprints the \citet{rambachan2023} sensitivity diagnostic from the main appendix. The figure plots robust 95\% confidence intervals for the price effect under post-treatment deviations from parallel trends up to $\bar M$ times the largest pre-period violation. The interval excludes zero for $\bar M \leq 2$, so the price effect survives substantial departures from strict parallel trends.
+Figure~\ref{fig:honestdid-oa} reprints the \citet{rambachan2023} sensitivity diagnostic from the main appendix, which reports robust 95\% confidence intervals for the price effect under post-treatment deviations from parallel trends up to $\bar M$ times the largest pre-period violation. The interval excludes zero for $\bar M \leq 2$: the price effect survives substantial departures from strict parallel trends.
 
 \begin{figure}[htbp]
 \centering
@@ -362,7 +362,7 @@ Figure~\ref{fig:honestdid-oa} reprints the \citet{rambachan2023} sensitivity dia
 
 \subsection{Monthly Bid-Discount Densities}
 
-Figure~\ref{fig:ridgeline} stacks the monthly kernel densities of the winning-bid discount for Group-65 items across the 18-month estimation window. The March-2018 implementation of the SME-only regime produces a visible leftward shift: post-cutoff months concentrate near a zero discount, while pre-cutoff months place meaningful mass on discounts of twenty percent or more.
+Figure~\ref{fig:ridgeline} stacks the monthly kernel densities of the winning-bid discount for Group-65 items through the 18-month window. The regime change lands visibly in March~2018: post-cutoff months bunch near a zero discount, while pre-cutoff months keep meaningful mass on discounts of twenty percent or more.
 
 \begin{figure}[htbp]
 \centering
@@ -374,7 +374,7 @@ Figure~\ref{fig:ridgeline} stacks the monthly kernel densities of the winning-bi
 
 \subsection{Winner-to-PBU Distance Density}
 
-Figure~\ref{fig:distance_density} overlays the kernel density of the kilometer distance from the winning firm to the buying PBU, by regime. The median winner sits 7.6~km further from the buyer under open tenders---the geographic counterpart of the conditional-mean distance estimates in Table~\ref{tab:distance}.
+Figure~\ref{fig:distance_density} plots the empirical CDF of the kilometer distance from the winning firm to the buying PBU, by regime. The 50\% line sits 8~km further out under open tenders---the geographic counterpart of the conditional-mean distance estimates in Table~\ref{tab:distance}.
 
 \begin{figure}[htbp]
 \centering
@@ -386,7 +386,7 @@ Figure~\ref{fig:distance_density} overlays the kernel density of the kilometer d
 
 \subsection{Quantile Treatment Effect on Log Prices}
 
-Figure~\ref{fig:qte} reports the quantile treatment effect of $g65 \times \mathit{Pre}$ on log prices across twelve quantiles of the within-item price distribution, computed via residualized quantile regression. The effect is strongly negative at the lower quantiles and attenuates toward zero near the upper tail, consistent with the heterogeneity results in Section~4.4.
+Figure~\ref{fig:qte} reports the quantile treatment effect of $g65 \times \mathit{Pre}$ on log prices across twelve quantiles of the within-item price distribution, computed via residualized quantile regression. The effect is strongly negative at the lower quantiles and fades toward zero at the upper tail---the same heterogeneity pattern documented in Section~4.4 and in the Canay quantile DiD of Section~OA.B.
 
 \begin{figure}[htbp]
 \centering
