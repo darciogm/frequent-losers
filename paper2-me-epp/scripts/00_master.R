@@ -73,7 +73,8 @@ if (rais_src_ok && !file.exists(rais_link_parq)) {
 # ---- Run scripts as separate processes (prevents OOM on 15 GB RAM) ----------
 scripts <- c("01_clean.R", "02_analysis.R", "05_robustness.R",
              "06_extensions.R", "07_advanced.R", "03_tables.R", "04_figures.R")
-if (file.exists(rais_link_parq)) scripts <- c(scripts, "11_rais_validation.R")
+if (file.exists(rais_link_parq)) scripts <- c(scripts, "11_rais_validation.R",
+                                               "12_rais_winner.R")
 timings <- data.frame(script = character(), seconds = numeric(), status = character(),
                       stringsAsFactors = FALSE)
 
