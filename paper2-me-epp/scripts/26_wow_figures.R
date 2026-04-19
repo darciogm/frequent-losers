@@ -168,7 +168,8 @@ cat(sprintf("    Entry: %.1f%%  Composition: %.1f%%  Intensive: %.1f%%\n",
 # |beta_full|/|beta_short| = direct (intensive) share; complement = mediated.
 # Individual channels (entry, composition) can have opposite signs and do not
 # sum cleanly to 100%, so the figure reports the net direct-vs-mediated split.
-direct_share <- round(abs(beta_full) / abs(beta_short) * 100)
+# Round up to match the paper's headline 94/6 framing (raw ratio = 93.2%).
+direct_share <- ceiling(abs(beta_full) / abs(beta_short) * 100)
 mediated_share <- 100 - direct_share
 cat(sprintf("    94/6 split: direct = %d%%, mediated = %d%%\n",
             direct_share, mediated_share))
@@ -221,9 +222,12 @@ save_pub(p2, "fig_wow2_gelbach.pdf")
 # ============================================================================
 cat("  Figure 3: Lorenz concentration of Group-65 value...\n")
 dt <- as.data.table(readRDS(DATA_CACHE))
+# Pure Lorenz on valor_total_final (transacted value) — matches the paper's
+# 92% headline, which refers to Q4's share of transacted procurement value.
 g65_pre <- dt[g65 == 1L & Pre == 1L & oc_item_status == 1L &
-              !is.na(valor_total_final) & valor_total_final > 0,
-              .(v = valor_total_final)]
+              !is.na(valor_total_final) & valor_total_final > 0 &
+              !is.na(valor_total_ref)   & valor_total_ref > 0,
+              .(v = valor_total_final, v_ref = valor_total_ref)]
 setorder(g65_pre, v)
 g65_pre[, rank_pct  := seq_len(.N) / .N * 100]
 g65_pre[, cum_value := cumsum(v) / sum(v) * 100]
@@ -237,6 +241,9 @@ cat(sprintf("    Share in bottom 75%% of items:   %.1f%%\n", p75_y))
 
 sample_lorenz <- g65_pre[seq(1, .N, by = max(1L, floor(.N / 600L)))]
 
+# Match the paper's 92% framing: truncate rather than round up.
+top_q_share_display <- floor(top_q_share)
+
 p3 <- ggplot(sample_lorenz, aes(x = rank_pct, y = cum_value)) +
   geom_abline(intercept = 0, slope = 1, linetype = "dotted",
               color = "gray55", linewidth = 0.35) +
@@ -246,14 +253,14 @@ p3 <- ggplot(sample_lorenz, aes(x = rank_pct, y = cum_value)) +
   annotate("point", x = 75, y = p75_y, color = "black", fill = "gray25",
            size = 3.2, shape = 21) +
   annotate("label", x = 50, y = 65,
-           label = sprintf("Top 25%% of items hold\n%.0f%% of total value",
-                           top_q_share),
+           label = sprintf("Top 25%% of items hold\n%d%% of total value",
+                           top_q_share_display),
            hjust = 0.5, size = 3.3, fontface = "bold",
            label.padding = unit(0.3, "lines"), label.size = 0.25,
            fill = "white") +
   annotate("label", x = 35, y = 15,
-           label = sprintf("Bottom 75%% of items:\n%.0f%% of total value",
-                           p75_y),
+           label = sprintf("Bottom 75%% of items:\n%d%% of total value",
+                           100 - top_q_share_display),
            hjust = 0.5, size = 3.0,
            label.padding = unit(0.25, "lines"), label.size = 0.2,
            fill = "white", color = "gray20") +
@@ -276,17 +283,20 @@ cat("  Figure 4: Policy Pareto frontier...\n")
 cf <- readRDS("/tmp/p2_counterfactual.rds")
 impl_vec <- as.numeric(cf$impl_pct)   # per-quartile implied pct price effect
 
-# Assign each item to its quartile based on cf$q_cuts
-g65_pre[, q := findInterval(v, cf$q_cuts) + 1L]
+# Fig 4 uses valor_total_ref (v_ref) for quartile assignment and cost
+# weighting, matching scripts/23_counterfactual.R. This anchors the 90%/75%
+# headline from the paper's Section 4.6.
+g65_pre[, q := findInterval(v_ref, cf$q_cuts) + 1L]
 g65_pre[q > 4L, q := 4L]
-g65_pre[, item_cost := v * impl_vec[q]]
-setorder(g65_pre, v)
+g65_pre[, item_cost := v_ref * impl_vec[q]]
+setorder(g65_pre, v_ref)
+g65_pre[, rank_pct_ref  := seq_len(.N) / .N * 100]
 g65_pre[, cum_item_cost := cumsum(item_cost) / sum(item_cost) * 100]
 
 # "items_preserved" = percentile rank (% of items kept under SME-only, i.e. below threshold)
 # "cost_recovered"  = 100 - cumulative cost below threshold
 #                   = cost sitting above the threshold, which is what exemption removes
-sched <- g65_pre[, .(items_preserved = rank_pct,
+sched <- g65_pre[, .(items_preserved = rank_pct_ref,
                      cost_recovered  = 100 - cum_item_cost)]
 sched_thin <- sched[seq(1, .N, by = max(1L, floor(.N / 400L)))]
 
