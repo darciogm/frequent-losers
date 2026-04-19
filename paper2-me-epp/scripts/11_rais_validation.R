@@ -31,7 +31,7 @@ cat("  Cache rows:", pfmt_int(nrow(dt)),
 # ---- Merge RAIS supplier aggregates ---------------------------------------
 rais <- as.data.table(read_parquet(RAIS_LINK))
 keep <- c("cnpj_raiz", "rais_match", "has_sp_estab", "n_estab",
-          "vinc_ativos_sum", "any_simples", "data_abertura_min",
+          "vinc_ativos_sum", "any_simples", "year_abertura_min",
           "cnae20_modal", "uf_modal")
 rais <- rais[, ..keep]
 setkey(rais, cnpj_raiz)
@@ -61,7 +61,7 @@ run_sub <- function(dv, data, sub_mask) {
   d <- data[data_oc_numb >= WIN_18M[1] & data_oc_numb <= WIN_18M[2] &
             oc_item_status == 1L]
   if (!is.null(sub_mask)) d <- d[eval(sub_mask)]
-  fml <- as.formula(paste0(dv, " ~ g65_pre + convite + lquantidade | item_alt"))
+  fml <- as.formula(paste0(dv, " ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb"))
   feols(fml, data = d, cluster = ~item_alt, fixef.rm = "none")
 }
 
