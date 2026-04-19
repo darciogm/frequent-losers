@@ -175,7 +175,7 @@ advanced$lee_bounds <- tryCatch({
     trimmed_excess <- excess_cell[keep_idx]
     trimmed_data <- rbind(other_cells, trimmed_excess)
 
-    fe_fml <- paste0(dv, " ~ g65_pre + convite + lquantidade | item_alt")
+    fe_fml <- paste0(dv, " ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb")
     feols(as.formula(fe_fml), data = trimmed_data, cluster = ~item_alt,
           fixef.rm = "none")
   }
