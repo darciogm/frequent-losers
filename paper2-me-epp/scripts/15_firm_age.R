@@ -72,7 +72,7 @@ run_het <- function(dv, data, completed = FALSE, add_pbu = FALSE) {
   d <- data[data_oc_numb >= WIN_18M[1] & data_oc_numb <= WIN_18M[2] &
             !is.na(young)]
   if (completed) d <- d[oc_item_status == 1L]
-  fe <- if (add_pbu) "item_alt + pbu_alt" else "item_alt"
+  fe <- paste0(if (add_pbu) "item_alt + pbu_alt" else "item_alt", " + data_oc_numb")
   fml <- as.formula(paste0(dv,
     " ~ g65_pre + g65_pre:young + convite + lquantidade | ", fe))
   feols(fml, data = d, cluster = ~item_alt, fixef.rm = "none")

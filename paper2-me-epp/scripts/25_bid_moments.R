@@ -92,7 +92,7 @@ run_bid <- function(dv, sub_mask = NULL) {
   d <- if (is.null(sub_mask)) d_win else d_win[eval(sub_mask)]
   if (nrow(d) < 500L) return(NULL)
   fml <- as.formula(paste0(dv,
-    " ~ g65_pre + convite + lquantidade | item_alt_f + pbu_alt_f"))
+    " ~ g65_pre + convite + lquantidade | item_alt_f + pbu_alt_f + data_oc_numb"))
   tryCatch(
     feols(fml, data = d, cluster = ~item_alt_f, fixef.rm = "none"),
     error = function(e) NULL)

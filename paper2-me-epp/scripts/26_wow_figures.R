@@ -135,14 +135,14 @@ if (!is.null(adv) && !is.null(adv$gelbach)) {
                     !is.na(lpreco_final) & !is.na(lnum_firms) &
                     !is.na(sme_winner)   & !is.na(convite) &
                     !is.na(lquantidade)]
-  m_short_ <- feols(lpreco_final ~ g65_pre + convite + lquantidade | item_alt,
+  m_short_ <- feols(lpreco_final ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb,
                     data = gel_dt, cluster = ~item_alt, fixef.rm = "none")
   m_full_  <- feols(lpreco_final ~ g65_pre + convite + lquantidade +
-                    lnum_firms + sme_winner | item_alt,
+                    lnum_firms + sme_winner | item_alt + data_oc_numb,
                     data = gel_dt, cluster = ~item_alt, fixef.rm = "none")
-  m_aux_firms <- feols(lnum_firms ~ g65_pre + convite + lquantidade | item_alt,
+  m_aux_firms <- feols(lnum_firms ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb,
                        data = gel_dt, cluster = ~item_alt, fixef.rm = "none")
-  m_aux_sme   <- feols(sme_winner ~ g65_pre + convite + lquantidade | item_alt,
+  m_aux_sme   <- feols(sme_winner ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb,
                        data = gel_dt, cluster = ~item_alt, fixef.rm = "none")
   beta_short <- coef(m_short_)["g65_pre"]
   beta_full  <- coef(m_full_)["g65_pre"]

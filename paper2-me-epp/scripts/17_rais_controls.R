@@ -69,13 +69,13 @@ writeLines(diag, file.path(OUT_TAB, "diag_rais_controls.txt"))
 # (C) +log_emp +log_age +CNAE-2 FE. Always +PBU FE (headline preferred spec).
 specs <- list(
   A = list(rhs = "g65_pre + convite + lquantidade",
-           fe  = "item_alt + pbu_alt",
+           fe  = "item_alt + pbu_alt + data_oc_numb",
            label = "Baseline"),
   B = list(rhs = "g65_pre + convite + lquantidade + log_emp + log_age",
-           fe  = "item_alt + pbu_alt",
+           fe  = "item_alt + pbu_alt + data_oc_numb",
            label = "+ RAIS firm controls"),
   C = list(rhs = "g65_pre + convite + lquantidade + log_emp + log_age",
-           fe  = "item_alt + pbu_alt + cnae2_f",
+           fe  = "item_alt + pbu_alt + cnae2_f + data_oc_numb",
            label = "+ CNAE-2 FE")
 )
 

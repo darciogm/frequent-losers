@@ -73,7 +73,7 @@ run_spill <- function(dv, data, key, placebo = FALSE, completed = FALSE) {
   d <- if (completed) data[oc_item_status == 1L] else data
   if (placebo) d <- d[data_oc_numb < TREAT_DATE]
   rhs <- if (placebo) "FakePost17 + FakeXexp" else "Post + PostXexp"
-  fml <- as.formula(sprintf("%s ~ %s + convite + lquantidade | item_alt + pbu_alt",
+  fml <- as.formula(sprintf("%s ~ %s + convite + lquantidade | item_alt + pbu_alt + data_oc_numb",
                             dv, rhs))
   feols(fml, data = d, cluster = ~codigogrupo, fixef.rm = "none")
 }
@@ -111,7 +111,7 @@ implied_bias <- price_spill_main * mean_expo
 
 # Reference: DiD headline from v11
 ddr_price_mm <- suppressMessages(feols(
-  lpreco_final ~ g65_pre + convite + lquantidade | item_alt + pbu_alt,
+  lpreco_final ~ g65_pre + convite + lquantidade | item_alt + pbu_alt + data_oc_numb,
   data = dt[data_oc_numb >= WIN_18M[1] & data_oc_numb <= WIN_18M[2] &
             oc_item_status == 1L],
   cluster = ~item_alt))

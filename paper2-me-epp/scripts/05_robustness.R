@@ -141,7 +141,7 @@ for (i in seq_len(N_PERM)) {
   perm_sub[, g65_pre_perm := g65_perm * Pre]
 
   m <- tryCatch({
-    feols(lpreco_final ~ g65_pre_perm + convite + lquantidade | item_alt,
+    feols(lpreco_final ~ g65_pre_perm + convite + lquantidade | item_alt + data_oc_numb,
           data = perm_sub, cluster = ~item_alt, fixef.rm = "none")
   }, error = function(e) NULL)
 

@@ -492,17 +492,17 @@ advanced$gelbach <- tryCatch({
   cat("    Observations:", pfmt_int(nrow(gel_data)), "\n")
   cat("    Available mediators:", paste(available_mediators, collapse = ", "), "\n")
 
-  # Short regression: y ~ treatment + controls | FE
+  # Short regression: y ~ treatment + controls | item + month FE
   cat("    Running short regression...\n")
-  m_short <- feols(lpreco_final ~ g65_pre + convite + lquantidade | item_alt,
+  m_short <- feols(lpreco_final ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb,
                    data = gel_data, cluster = ~item_alt, fixef.rm = "none")
   beta_short <- coef(m_short)["g65_pre"]
   se_short   <- sqrt(vcov(m_short)["g65_pre", "g65_pre"])
 
-  # Full regression: y ~ treatment + controls + mediators | FE
+  # Full regression: y ~ treatment + controls + mediators | item + month FE
   mediator_str <- paste(available_mediators, collapse = " + ")
   full_fml <- paste0("lpreco_final ~ g65_pre + convite + lquantidade + ",
-                     mediator_str, " | item_alt")
+                     mediator_str, " | item_alt + data_oc_numb")
   cat("    Running full regression...\n")
   m_full <- feols(as.formula(full_fml), data = gel_data, cluster = ~item_alt,
                   fixef.rm = "none")
@@ -535,8 +535,8 @@ advanced$gelbach <- tryCatch({
     gamma_k <- coef(m_full)[med]
     gamma_se_k <- sqrt(vcov(m_full)[med, med])
 
-    # π_k: regress mediator on treatment + controls | FE
-    aux_fml <- paste0(med, " ~ g65_pre + convite + lquantidade | item_alt")
+    # π_k: regress mediator on treatment + controls | item + month FE
+    aux_fml <- paste0(med, " ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb")
     m_aux <- feols(as.formula(aux_fml), data = gel_data, cluster = ~item_alt,
                    fixef.rm = "none")
     pi_k <- coef(m_aux)["g65_pre"]

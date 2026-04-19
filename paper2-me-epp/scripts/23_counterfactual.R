@@ -56,7 +56,7 @@ for (q in 1:4) {
     next
   }
   m <- suppressMessages(feols(
-    lpreco_final ~ g65_pre + convite + lquantidade | item_alt + pbu_alt,
+    lpreco_final ~ g65_pre + convite + lquantidade | item_alt + pbu_alt + data_oc_numb,
     data = d, cluster = ~item_alt, fixef.rm = "none"))
   betas[[q]] <- list(
     b  = coef(m)["g65_pre"],

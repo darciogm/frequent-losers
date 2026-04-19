@@ -88,7 +88,7 @@ run_q <- function(dv, quadrant_name) {
           !is.na(quadrant) & quadrant == quadrant_name]
   if (nrow(d) < 500L) return(NULL)
   fml <- as.formula(paste0(dv,
-    " ~ g65_pre + convite + lquantidade | item_alt"))
+    " ~ g65_pre + convite + lquantidade | item_alt + data_oc_numb"))
   tryCatch(
     feols(fml, data = d, cluster = ~item_alt, fixef.rm = "none"),
     error = function(e) NULL)

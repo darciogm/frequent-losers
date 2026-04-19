@@ -50,7 +50,7 @@ run_split <- function(dv, sub_mask, completed = FALSE) {
   d <- d[eval(sub_mask)]
   if (nrow(d) < 500L) return(NULL)
   fml <- as.formula(paste0(dv,
-    " ~ g65_pre + convite + lquantidade | item_alt + pbu_alt"))
+    " ~ g65_pre + convite + lquantidade | item_alt + pbu_alt + data_oc_numb"))
   tryCatch(
     feols(fml, data = d, cluster = ~item_alt, fixef.rm = "none"),
     error = function(e) NULL)
@@ -69,13 +69,20 @@ mods_nonph  <- list()
 mods_int    <- list()
 for (o in outcomes) {
   # Split samples
-  mods_pharma[[o$dv]] <- run_split(o$dv, quote(pharma == 1L), o$completed)
+  # Pharma sample: controls + pharma-g65 items (DiD identified vs. controls).
+  # Non-pharma sample: controls + non-pharma-g65 items (DiD likewise).
+  # Previous spec used quote(pharma == 1L) alone, which collapsed to a
+  # pre-vs-post comparison within the always-treated pharma subsample;
+  # adding data_oc_numb FE made g65_pre collinear. Including controls in
+  # both subsets identifies each coefficient as a proper two-way FE DiD.
+  mods_pharma[[o$dv]] <- run_split(o$dv,
+    quote((g65 == 0L) | (g65 == 1L & pharma == 1L)), o$completed)
   mods_nonph[[o$dv]]  <- run_split(o$dv,
     quote((g65 == 0L) | (g65 == 1L & pharma == 0L)), o$completed)
   # Interaction within full 18m sample: treat = g65_pre; differential = g65_pre:pharma
   d <- if (o$completed) dt_c else dt_win
   fml <- as.formula(paste0(o$dv,
-    " ~ g65_pre + g65_pre:pharma + convite + lquantidade | item_alt + pbu_alt"))
+    " ~ g65_pre + g65_pre:pharma + convite + lquantidade | item_alt + pbu_alt + data_oc_numb"))
   mods_int[[o$dv]] <- suppressMessages(
     feols(fml, data = d, cluster = ~item_alt, fixef.rm = "none"))
   cat(sprintf("    %-16s done\n", o$dv))
