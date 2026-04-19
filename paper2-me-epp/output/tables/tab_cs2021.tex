@@ -1,0 +1,44 @@
+\begin{table}[htbp]
+\centering
+\caption{Staggered DiD (Callaway \& Sant'Anna 2021) vs.~DiDiR Headline}
+\label{tab:cs2021}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcc}
+\toprule
+ & CS2021 ATT & DDR (sign-flipped) \\
+ & (group $\times$ month panel) & (18m + PBU FE) \\
+\midrule
+Log prices & 0.2371* & 0.1330*** \\
+ & (0.1414) & (0.0094) \\
+Log firms & -0.0965** & -0.1004*** \\
+ & (0.0419) & (0.0060) \\
+Log bids & -0.0351 & -0.0603*** \\
+ & (0.0673) & (0.0078) \\
+Distance (km) & -31.9519*** & -5.2865** \\
+ & (8.8135) & (2.2277) \\
+\midrule
+Groups (never-treated / treated) & \multicolumn{2}{c}{76 / 1} \\
+Months (panel) & \multicolumn{2}{c}{36} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} CS2021 column reports the overall Average Treatment
+Effect on the Treated (ATT) from \texttt{did::att\_gt} followed by
+\texttt{aggte(type="group")}, estimated on a codigogrupo $\times$ month
+panel of means (completed items for price and distance; all items for firms
+and bids). Control group: never-treated (68 product groups never subject to
+a regime change within the sample window; they were already under ME/EPP
+rules pre-2014). Standard errors from multiplier bootstrap (999 iterations).
+DDR column reproduces the 18-month +PBU FE coefficient on $g65 \times Pre$
+from Table~\ref{tab:prices} and analogous tables, with the sign flipped
+because the DDR parameter measures the open-tender period (inverse of the
+ME/EPP regime that CS2021 treats as the policy). Magnitudes should coincide
+up to aggregation noise and estimator differences.
+*** \textit{p}$<$0.01, ** \textit{p}$<$0.05, * \textit{p}$<$0.1.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
