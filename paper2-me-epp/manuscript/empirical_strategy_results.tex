@@ -207,9 +207,44 @@ G65 pre-period total value (US\$ millions) & $196.9$ & $196.9$ & $196.9$ & $196.
 \end{adjustbox}
 \end{table}
 
-The estimated fiscal cost of the SME-only rule for Group 65 alone is R\$71.0--73.8 million (US\$20.3--21.1 million) nominal over the 18-month window, or R\$50.5--52.6 million (US\$14.4--15.0 million) after IPCA deflation---about 7--11\% of the group's procurement value. That is small in absolute terms only because Group~65 is one product group in one state. For context, BEC processes roughly R\$13 billion (US\$3.7 billion) of Sao Paulo procurement per year, and total Brazilian public procurement exceeds R\$1.5 trillion (US\$429 billion) annually, about 10\% of GDP. Applying the Group-65 premium proportionally to the Brazilian procurement categories subject to SME-only rules implies fiscal costs on the order of several billion reais (over a billion dollars) per year. This is an upper bound---the counterfactual analysis below shows that the per-item percentage distortion is roughly uniform across quartiles but that procurement \emph{value} is extremely concentrated in the top quartile, so the fiscal cost concentrates mechanically, and heterogeneity across product groups is substantial---but the right order of magnitude for the aggregate policy footprint.
+The estimated fiscal cost of the SME-only rule for Group 65 alone is R\$71.0--73.8 million (US\$20.3--21.1 million) nominal over the 18-month window, or R\$50.5--52.6 million (US\$14.4--15.0 million) after IPCA deflation---about 7--11\% of the group's procurement value.
 
-This extrapolation must be read as an order of magnitude rather than a point estimate---the heterogeneity documented above cautions against uniform application of the Group-65 coefficient to all categories---but it indicates that the mechanism documented in this paper is fiscally first-order once aggregated across Brazilian procurement.
+\paragraph{Aggregate extrapolation (with explicit heterogeneity bounds).}
+Extrapolating the Group-65 coefficient to the full Brazilian public procurement envelope is arithmetic, not causal estimation. The exercise requires two inputs: (i) a representative price coefficient, $\bar\beta$, for product groups other than Group~65; and (ii) the fraction of Brazilian procurement actually subject to SME-only rules, $f$. Both are uncertain. Within Group~65 I can bracket (i): the pharma/non-pharma split documents substantial between-segment heterogeneity ($-0.156$ vs.\ $-0.075$), while the quartile-by-reference-value split documents near-uniform within-segment heterogeneity ($-0.074$ to $-0.092$). A plausible range for $\bar\beta$ across Brazilian product groups is therefore roughly $[-0.15, -0.05]$. For $f$, the R\$80{,}000 item-value threshold in federal law~\citep{bosio2022} covers roughly 30--50\% of BEC-style standardized procurement in Sao Paulo; I use that range as a conservative proxy for the national fraction.
+
+Table~\ref{tab:aggregate_bounds} reports implied annual fiscal cost under three scenarios built from these bounds, applied to the R\$1.5~trillion (US\$429~billion) annual Brazilian public procurement envelope. The conservative scenario ($\bar\beta = -0.05$, $f = 0.30$) implies R\$22~billion (US\$6.3~billion) per year; the central scenario ($\bar\beta = -0.08$, $f = 0.40$) implies R\$46~billion (US\$13~billion); the upper bound ($\bar\beta = -0.15$, $f = 0.50$) implies R\$105~billion (US\$30~billion). Every scenario puts the aggregate fiscal cost in the \emph{tens of billions of reais per year}---one order of magnitude higher than the paper's single-coefficient extrapolation would deliver. The exact point estimate is not defensible, but the order-of-magnitude conclusion---that SME-only procurement preferences constitute a fiscally first-order distortion in Brazilian public spending---is robust to wide variation in the extrapolation assumptions.
+
+\begin{table}[htbp]
+\centering
+\caption{Aggregate-extrapolation scenarios for the Brazilian fiscal cost of SME-only procurement rules}
+\label{tab:aggregate_bounds}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+Scenario & $\bar\beta$ & $f$ & Implied annual cost \\
+\midrule
+Conservative & $-0.05$ & $0.30$ & R\$22~B (US\$6.3~B) \\
+Central      & $-0.08$ & $0.40$ & R\$46~B (US\$13~B)  \\
+Upper bound  & $-0.15$ & $0.50$ & R\$105~B (US\$30~B) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Annual Brazilian public procurement is R\$1.5~trillion (US\$429~billion).
+$\bar\beta$ is the representative log-price coefficient assumed to apply across
+product groups subject to SME-only rules; the range $[-0.15, -0.05]$ brackets
+the within-Group-65 heterogeneity (pharma $-0.156$; non-pharma $-0.075$;
+quartile-by-reference-value $-0.074$ to $-0.092$). $f$ is the fraction of
+Brazilian public procurement actually subject to SME-only rules, set by the
+R\$80{,}000 item-value threshold in federal law; a 30--50\% range is used as
+a conservative proxy for the national fraction. Implied annual cost is
+$f \times \text{R\$1.5~T} \times |e^{\bar\beta} - 1|$.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
 
 \paragraph{Counterfactual policy design: a value-threshold exemption.}
 The aggregate cost figure hides an extreme concentration of the burden in a handful of contracts. Figure~\ref{fig:lorenz} is the motivating picture: a Lorenz curve of Group-65 procurement value sorted by reference price places 92.9\% of the total in the top quartile and only 7.1\% in the bottom 75\% of items. Table~\ref{tab:counterfactual} re-estimates the DiD price coefficient within each quartile and uses those quartile-specific $\hat\beta_q$ to simulate the fiscal cost of an alternative rule under which the SME-only preference applies only below a reference-value threshold.
