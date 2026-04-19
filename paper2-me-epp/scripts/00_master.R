@@ -76,7 +76,8 @@ scripts <- c("01_clean.R", "02_analysis.R", "05_robustness.R",
 if (file.exists(rais_link_parq)) scripts <- c(scripts, "11_rais_validation.R",
                                                "12_rais_winner.R",
                                                "13_enforcement.R",
-                                               "15_firm_age.R")
+                                               "15_firm_age.R",
+                                               "16_cnae_heterogeneity.R")
 timings <- data.frame(script = character(), seconds = numeric(), status = character(),
                       stringsAsFactors = FALSE)
 
