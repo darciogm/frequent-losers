@@ -5,22 +5,22 @@ hide:
 
 <div class="hero-section" markdown>
 
-# SMEs and Public Procurement
+# The Intensive Margin of Small-Firm Protection
 
-<p class="subtitle">The Costs of Restricting Tenders</p>
+<p class="subtitle">Bidding, Rents, and the Fiscal Cost of Public Procurement Set-Asides</p>
 <p class="authors">Darcio Genicolo-Martins</p>
 <p class="affiliation">Insper Institute of Education and Research, Sao Paulo, Brazil</p>
 
 </div>
 
 <div class="key-result" markdown>
-<span class="number">R$ 50--85 million</span>
-<span class="label">Fiscal cost of SME-only tender restrictions for Group 65 alone over 18 months (R$ 50 M real, R$ 85 M nominal)</span>
+<span class="number">94%</span>
+<span class="label">of the price effect of SME set-asides operates through intensive-margin bid aggressiveness, not entry (Gelbach decomposition with direct phase-2 bid-distribution evidence)</span>
 </div>
 
 ## Abstract
 
-Governments worldwide restrict public tenders to small and medium-sized enterprises (SMEs), but the fiscal cost is virtually unknown. A March 2018 policy change extended Sao Paulo's SME-only procurement regime to medical supplies (Group 65), the only previously exempt product group, creating a single-cohort staggered difference-in-differences with 76 never-treated controls within the 18-month sample window. Sign and significance are preserved under the Callaway-Sant'Anna (2021), Sun-Abraham (2021), and Goodman-Bacon (2021) estimators; item-level Sun-Abraham is numerically equivalent to the headline DiD, while group-month aggregations differ in magnitude as expected. SME-only tenders raise procurement prices by 12--13% nominal (7--10% real) and reduce participating firms by 8--10%; phase-2 bid moments show the winning bid reaches 10 percentage points deeper below the reference price under open tenders even when firm count is held fixed, and a Gelbach decomposition attributes 94% of the price effect to intensive-margin aggressiveness rather than entry. The fiscal cost for Group 65 alone is R$ 50--85 million over 18 months. Because 92% of procurement value concentrates in the top quartile, a value-threshold exemption recovers 90% of the cost while preserving the SME preference on 75% of items by count. CMED-regulated pharmaceuticals bear 62% larger distortion than non-pharma supplies, revealing a perverse interaction between two Brazilian price-regulation regimes.
+Set-asides for small and medium-sized enterprises (SMEs) are the most widespread procurement-preference instrument worldwide, yet evidence on *how* they raise prices is thin. I establish that the dominant channel is the intensive margin of bidding, not entry. When the March 2018 reinterpretation of Brazilian procurement law extended Sao Paulo's SME-only regime to medical supplies (Group 65, the only previously exempt product group), phase-2 electronic-auction moments show that the winning bid immediately moved ten percentage points closer to the buyer's reference price, and the standard deviation of submitted bids shrank monotonically in the number of participating firms---with these effects persisting when firm count is held fixed at two, three, or five-plus. A Gelbach (2016) decomposition assigns only six percent of the resulting 12--13% price increase (7--10% real) to entry and winner composition; ninety-four percent reflects changes in bidding behavior within auctions. Identification exploits a single-cohort staggered design with 76 never-treated controls; sign and significance survive the Callaway-Sant'Anna, Sun-Abraham, and Goodman-Bacon estimators, a formal spillover test (implied bias <1%), and RAIS-based firm-size controls. The fiscal cost for Group 65 alone is R$ 50--85 million over 18 months, but 92% of procurement value concentrates in the top quartile: a simple value-threshold exemption recovers 90% of the cost while preserving the SME preference on 75% of items. The distortion is 62% larger in the CMED price-regulated pharmaceutical subsegment, exposing a perverse interaction between two Brazilian regulatory regimes.
 
 **JEL Classification:**
 <span class="badge">H32</span>
