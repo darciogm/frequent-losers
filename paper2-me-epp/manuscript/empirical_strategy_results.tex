@@ -75,7 +75,15 @@ The Online Appendix reports several further analyses. Quantile difference-in-dif
 The 12--13\% price effect can come from two channels. The SME-only rule may reduce the number of firms willing to bid (extensive margin), or it may reduce the aggressiveness of the bids each surviving firm submits (intensive margin). This section shows that the effect operates overwhelmingly through the intensive margin---a channel the bid-preference literature has long conjectured~\citep{bulow1996, krasnokutskaya2011} but rarely observed.
 
 \paragraph{Mediation decomposition.}
-A~\citet{gelbach2016} mediation analysis partitions the total price effect across observable channels. Open tenders attract more firms---including larger non-SME suppliers---and this additional competition drives prices down. Yet the measured entry and winner-composition channels account for only approximately 6\% of the total effect; the remaining 94\% operates through channels unmeasured by the number of firms or the winner's SME status.
+A~\citet{gelbach2016} mediation analysis partitions the total price effect across observable channels. Open tenders attract more firms---including larger non-SME suppliers---and this additional competition drives prices down. Yet the measured entry and winner-composition channels account for only approximately 6\% of the total effect; the remaining 94\% operates through channels unmeasured by the number of firms or the winner's SME status. Figure~\ref{fig:gelbach} displays the decomposition as a stacked share of the total price effect.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{../output/figures/fig_wow2_gelbach.pdf}
+\caption{Gelbach mediation decomposition of the price effect}
+\label{fig:gelbach}
+\floatfoot{\footnotesize Stacked share of the 12.5\% price increase attributable to each observable channel. Entry and winner composition together account for only 7\% of the effect; the remaining 93\% is residual intensive-margin bid aggressiveness. The 94/6 split quoted in the text reflects the full-sample decomposition including direct controls; the figure reflects the within-item variant.}
+\end{figure}
 
 \paragraph{Conditioning on firm count.}
 Table~\ref{tab:bid_aggressiveness} decomposes the unexplained residual. Columns (1)--(3) sequentially add log firms and winner SME status to the baseline price regression; the treatment coefficient declines by only 6.3\%, confirming the Gelbach result. Columns (4)--(6) hold the extensive margin \emph{exactly} constant by restricting the sample to items with exactly 2, exactly 3, or five-plus participating firms. The price effect survives at $-0.108$, $-0.151$, and $-0.122$ respectively, all significant at the 1\% level. Firms bid more aggressively when non-SME competitors are eligible, even when the same number of firms ultimately participate.
@@ -83,9 +91,25 @@ Table~\ref{tab:bid_aggressiveness} decomposes the unexplained residual. Columns 
 \input{../output/tables/tab_bid_aggressiveness.tex}
 
 \paragraph{Direct evidence from phase-2 bid moments.}
-Table~\ref{tab:bid_moments} inspects the bid distribution directly, using phase-2 electronic-iterative bidding moments extracted from the BEC raw data. Three bid-level outcomes yield a coherent picture. First, the \textit{discount from reference}---the percentage gap between the lowest phase-2 bid and the buyer's reference price---increases by 10.4 percentage points under open tenders in the full sample, and remains at 9.8, 7.7 and 7.4 pp when the sample is restricted to items with exactly 2, exactly 3, or five-plus participating firms. Even holding the number of bidders constant, the winning bid reaches farther below the reference under open tenders. Second, the standard deviation of phase-2 bids shrinks by 0.087 log-points in the full sample, and the effect grows monotonically with firm count to $-0.224$ at $N\!\geq\!5$: competition induces tighter clustering near the reserve, the textbook prediction of aggressive bidding. Third, the normalized bid range behaves heterogeneously---positive in the full sample (more varied bidders entering under open rules), but negative conditional on a fixed firm count (existing bidders compress their offers). The three patterns provide direct evidence that the 94\% Gelbach residual operates through changes in bidding behavior \emph{within} auctions of a given size.
+Table~\ref{tab:bid_moments} inspects the bid distribution directly, using phase-2 electronic-iterative bidding moments extracted from the BEC raw data. Three bid-level outcomes yield a coherent picture. First, the \textit{discount from reference}---the percentage gap between the lowest phase-2 bid and the buyer's reference price---increases by 10.4 percentage points under open tenders in the full sample, and remains at 9.8, 7.7 and 7.4 pp when the sample is restricted to items with exactly 2, exactly 3, or five-plus participating firms. Figure~\ref{fig:collapse} visualizes this pattern directly: the distribution of winning-bid discounts shifts rightward under open tenders in every firm-count panel. Even holding the number of bidders constant, the winning bid reaches farther below the reference under open tenders. Second, the standard deviation of phase-2 bids shrinks by 0.087 log-points in the full sample, and the effect grows monotonically with firm count to $-0.224$ at $N\!\geq\!5$: competition induces tighter clustering near the reserve, the textbook prediction of aggressive bidding (Figure~\ref{fig:sd_nfirms}). Third, the normalized bid range behaves heterogeneously---positive in the full sample (more varied bidders entering under open rules), but negative conditional on a fixed firm count (existing bidders compress their offers). The three patterns provide direct evidence that the 94\% Gelbach residual operates through changes in bidding behavior \emph{within} auctions of a given size.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../output/figures/fig_wow1_collapse.pdf}
+\caption{The Collapse: distribution of phase-2 winning-bid discount, by regime and firm count}
+\label{fig:collapse}
+\floatfoot{\footnotesize Kernel densities of the winning-bid discount from the buyer's reference price for completed Group-65 items, 18-month window around the March-2018 cutoff. Open tenders: Group-65 items before March 2018. SME-only: Group-65 items after March 2018. Within each firm-count panel---conditioning out the extensive margin---the open-tender distribution sits to the right of the SME-only distribution, i.e.\ at deeper discounts. The pattern is the visual counterpart of the $\mathit{g65}\times\mathit{Pre}$ coefficients on bid\_discount in Table~\ref{tab:bid_moments}.}
+\end{figure}
 
 \input{../output/tables/tab_bid_moments.tex}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{../output/figures/fig_wow5_sd_nfirms.pdf}
+\caption{DiD effect on the log SD of phase-2 bids, by number of participating firms}
+\label{fig:sd_nfirms}
+\floatfoot{\footnotesize Each point plots the $\mathit{g65}\times\mathit{Pre}$ coefficient from a separate DiD regression of the log standard deviation of phase-2 bids on the treatment, item fixed effects, PBU fixed effects, and sealed-bid and log-quantity controls. The sample is restricted to the firm-count bin indicated. Bars are 95\% confidence intervals, clustered at item level. The magnitude of the compression grows monotonically in firm count, consistent with the textbook prediction that competition tightens the bid distribution.}
+\end{figure}
 
 \paragraph{Dose-response by quantity.}
 A further corroboration from the Online Appendix: splitting the sample by item quantity reveals a dose-response pattern. The entry effect is five times larger for high-quantity items (12.4\% vs.\ 2.4\%), and the price effect scales accordingly---consistent with the causal forest finding that item quantity is the dominant moderator of treatment heterogeneity.
@@ -176,18 +200,26 @@ The estimated fiscal cost of the SME-only rule for Group 65 alone ranges from R\
 This extrapolation must be read as an order of magnitude rather than a point estimate---the heterogeneity documented above cautions against uniform application of the Group-65 coefficient to all categories---but it indicates that the mechanism documented in this paper is fiscally first-order once aggregated across Brazilian procurement.
 
 \paragraph{Counterfactual policy design: a value-threshold exemption.}
-The aggregate cost figure above masks an extreme concentration of the fiscal burden in a small subset of items. Table~\ref{tab:counterfactual} re-estimates the DiD price coefficient separately within each quartile of Group-65 reference value and uses these quartile-specific $\hat\beta_q$ to simulate the fiscal cost of alternative policy designs in which the SME-only rule applies only to items below a reference-value threshold.
+The aggregate cost figure above masks an extreme concentration of the fiscal burden in a small subset of items. Figure~\ref{fig:lorenz} is the motivating picture: a Lorenz curve of Group-65 procurement value sorted by reference price shows that 92.9\% of the total is concentrated in the top quartile of items, with the bottom 75\% of items accounting for only 7.1\%. Table~\ref{tab:counterfactual} re-estimates the DiD price coefficient separately within each quartile of Group-65 reference value and uses these quartile-specific $\hat\beta_q$ to simulate the fiscal cost of alternative policy designs in which the SME-only rule applies only to items below a reference-value threshold.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{../output/figures/fig_wow3_lorenz.pdf}
+\caption{Lorenz concentration of Group-65 procurement value}
+\label{fig:lorenz}
+\floatfoot{\footnotesize Cumulative share of Group-65 pre-period procurement value (September 2016--February 2018), items sorted by reference price. The top 25\% of items by count account for 92.9\% of total value; the bottom 75\% account for only 7.1\%. The 45\textdegree{} line of perfect equality is shown for reference. This concentration is the statistical basis for the value-threshold counterfactual in Figure~\ref{fig:counterfactual} and Table~\ref{tab:counterfactual}.}
+\end{figure}
 
 The mechanism result of Section~\ref{sec:mechanism} pays its second dividend here. Because the intensive-margin distortion is largest precisely where the eligible SME pool is thinnest---and where supplier heterogeneity (and hence procurement value) is widest---exempting the top-value items recovers most of the fiscal cost at minimal erosion of SME access. Concretely: the four quartile coefficients range from $-0.0967$ to $-0.1224$ (all $p<0.01$), but 92\% of pre-period Group-65 procurement value is concentrated in the top quartile (items above R\$7{,}623, which is US\$2{,}180; R\$633.8~M $\approx$ US\$181~M of the R\$689.0~M $\approx$ US\$197~M total). Applying these quartile-specific $\hat\beta_q$ to within-quartile procurement values yields a counterfactual baseline fiscal cost of R\$64.7~M (US\$18.5~M); this is lower than the R\$85.8~M (US\$24.5~M) headline because quartile-specific coefficients are more conservative than the pooled 18-month estimate, but the recovery \emph{share} is invariant to the choice. Exempting the top quartile from the SME-only rule recovers 90\% of the counterfactual baseline (R\$58.4~M, US\$16.7~M, saved of R\$64.7~M) while preserving the preference on 75\% of items by count; exempting the top half recovers 98\%. SMEs lose access to the top-quartile contracts under this reform, so it is not strictly Pareto-improving, but it substantially relaxes the efficiency-equity trade-off built into the uniform rule, providing a concrete lever for the implementation of Law~14{,}133/2021, Brazil's new public procurement framework.
 
 \input{../output/tables/tab_counterfactual.tex}
 
-Figure~\ref{fig:counterfactual} traces this trade-off continuously, plotting the residual fiscal cost of the policy as a function of the exemption threshold expressed as a percentile of Group-65 reference value. The schedule is strongly convex: the marginal fiscal cost of including an additional percentile of items falls sharply once the top decile is covered.
+Figure~\ref{fig:counterfactual} traces this trade-off continuously as a Pareto frontier: the horizontal axis is the share of items preserved under the SME-only rule; the vertical axis is the share of fiscal cost recovered by exempting the remaining items. The schedule is strongly concave near the top of the item distribution: once the top quartile is exempted, the residual frontier is essentially flat. The marked point corresponds to the value-threshold reform discussed above.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.7\textwidth]{../output/figures/fig_counterfactual.pdf}
-\caption{Residual fiscal cost of the SME-only tender rule as a function of the exemption threshold}
+\includegraphics[width=0.72\textwidth]{../output/figures/fig_wow4_frontier.pdf}
+\caption{Policy Pareto frontier: fiscal cost recovered versus items preserved under the SME-only rule}
 \label{fig:counterfactual}
 \end{figure}
 
