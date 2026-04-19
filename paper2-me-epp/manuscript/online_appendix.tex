@@ -156,13 +156,13 @@ Figure~\ref{fig:gelbach} in the main text stacks the 93/7 split at a glance. Thi
 
 The paper's mechanism finding rests on the minimum, maximum, mean, and standard deviation of the bids submitted in phase~2 of each electronic auction---the iterative stage in which registered suppliers progressively lower their offers in real time. Phase-1 sealed bids are too sparse in the Sao Paulo data to be usable (fewer than 1\% of rows have a non-zero min\_bid\_ph1), so the paper relies on phase~2 throughout. The moments are extracted ad-hoc from the raw CSV by \texttt{scripts/25\_bid\_moments.R}; 74.8\% of rows carry valid phase-2 data.
 
-Table~\ref{tab:bid-moments-oa} reports the DiD on three bid-distribution outcomes: \textit{discount from reference} $=(p_\text{ref}-\min_\text{bid})/p_\text{ref}$, \textit{log SD of ph-2 bids}, and \textit{normalized bid range}. Each is estimated on the full sample and on the 2-, 3-, and $\geq\!5$-firm subsamples. The discount coefficient is $+0.104$ in the full sample and stays between $+0.074$ and $+0.098$ when firm count is held fixed. The log-SD coefficient starts at $-0.087$ and deepens monotonically to $-0.224$ at $N\!\geq\!5$.
+Table~\ref{tab:bid-moments-oa} reports the DiD on three bid-distribution outcomes: \textit{discount from reference} $=(p_\text{ref}-\min_\text{bid})/p_\text{ref}$, \textit{log SD of ph-2 bids}, and \textit{normalized bid range}. Each is estimated on the full sample and on the 2-, 3-, and $\geq\!5$-firm subsamples, under the two-way fixed-effects specification (item and month FE, PBU FE). The discount coefficient is $+0.058$ in the full sample and stays between $+0.025$ and $+0.065$ when firm count is held fixed---positive and significant, but smaller than the no-time-FE estimates previously reported. The log-SD coefficient is $+0.090$ in the full sample and is not monotonic across firm-count subsamples; the bid-SD compression story does not survive the two-way fixed-effects specification. The paper's intensive-margin interpretation rests on the bid-discount shift and the Gelbach residual, not on the SD pattern.
 
 \IfFileExists{../output/tables/tab_bid_moments.tex}{\begin{table}[htbp]\centering\caption{Phase-2 Bid Moments (reprinted from main text)}\label{tab:bid-moments-oa}\end{table}}{}
 
 \section{Conditioning on Firm Count}
 
-Table~OA.11 holds the extensive margin fixed by restricting the sample to items with exactly 2, 3, or 5+ participating firms and re-estimating the main price regression. The coefficient ranges from $-0.108$ to $-0.151$, all at $p<0.01$.
+Table~OA.11 holds the extensive margin fixed by restricting the sample to items with exactly 2, 3, or 5+ participating firms and re-estimating the main price regression under the two-way fixed-effects specification. The coefficient ranges from $-0.093$ to $-0.108$, all at $p<0.01$; the price effect is therefore not a pure headcount artefact.
 
 \IfFileExists{../output/tables/tab_bid_aggressiveness.tex}{\input{../output/tables/tab_bid_aggressiveness.tex}}{}
 
