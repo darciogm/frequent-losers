@@ -16,7 +16,7 @@ BASE     <- normalizePath(file.path(.script_dir, ".."), mustWork = FALSE)
 DATA_RAW <- file.path(BASE, "data", "raw")
 DATA_PARQ <- file.path(BASE, "data", "processed", "paper2_me_epp.parquet")
 DATA_PARQ_VER <- paste0(DATA_PARQ, ".version")
-PARQUET_VERSION <- 2L
+PARQUET_VERSION <- 3L
 DATA_CACHE <- "/tmp/p2_prepared.rds"
 OUT_TAB  <- file.path(BASE, "output", "tables")
 OUT_FIG  <- file.path(BASE, "output", "figures")

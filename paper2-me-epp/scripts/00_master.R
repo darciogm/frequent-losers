@@ -61,9 +61,19 @@ if (is.null(script_dir) || is.na(script_dir) || script_dir == "" || script_dir =
   script_dir <- file.path(getwd(), "scripts")
 }
 
+# ---- Run RAIS linkage (Python / DuckDB) if parquet is missing --------------
+rais_link_parq <- "data/processed/paper2_suppliers_rais_linked.parquet"
+rais_src_ok <- file.exists("../paper4-thresholds/RAIS/parquet/estb/BR_2017_ESTB.parquet")
+if (rais_src_ok && !file.exists(rais_link_parq)) {
+  cat("\n--- Running: 05_link_rais.py (DuckDB linkage) ---\n")
+  rc_py <- system("python3 scripts/05_link_rais.py")
+  if (rc_py != 0) cat("  WARN: RAIS linkage failed — 11_rais_validation.R will be skipped\n")
+}
+
 # ---- Run scripts as separate processes (prevents OOM on 15 GB RAM) ----------
 scripts <- c("01_clean.R", "02_analysis.R", "05_robustness.R",
              "06_extensions.R", "07_advanced.R", "03_tables.R", "04_figures.R")
+if (file.exists(rais_link_parq)) scripts <- c(scripts, "11_rais_validation.R")
 timings <- data.frame(script = character(), seconds = numeric(), status = character(),
                       stringsAsFactors = FALSE)
 

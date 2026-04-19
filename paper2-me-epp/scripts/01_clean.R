@@ -47,13 +47,30 @@ if (parq_current) {
     # Item classification
     "class_alt$", "codigoclasse$",
     # Reference / total values
-    "valor_total_ref$", "valor_total_final$"
+    "valor_total_ref$", "valor_total_final$",
+    # RAIS link (supplier identifiers) — added v3
+    # ASCII-only suffixes to stay encoding-robust
+    "digofornecedor$", "piofornecedor$", "uffornecedor$"
   )
   keep_idx <- unique(unlist(lapply(keep_patterns, function(p) grep(p, hdr))))
   keep_names <- hdr[sort(keep_idx)]
   cat("  Selecting", length(keep_names), "columns\n")
 
-  dt <- fread(csv_path, sep = ";", encoding = "Latin-1", select = keep_names)
+  # Force string columns (CNPJ has leading zeros + sentinel "Sem Vencedor")
+  str_cols <- keep_names[grepl("digofornecedor$|piofornecedor$|uffornecedor$", keep_names)]
+  cclasses <- setNames(rep("character", length(str_cols)), str_cols)
+
+  dt <- fread(csv_path, sep = ";", encoding = "Latin-1", select = keep_names,
+              colClasses = cclasses)
+
+  # Normalize supplier column names via ASCII suffix match
+  rename_one <- function(pattern, new_name) {
+    hit <- grep(pattern, names(dt), value = TRUE)
+    if (length(hit) == 1 && hit != new_name) setnames(dt, hit, new_name)
+  }
+  rename_one("digofornecedor$", "cnpj_fornecedor")
+  rename_one("piofornecedor$",  "municipio_forn")
+  rename_one("uffornecedor$",   "uf_forn")
 
   # Normalize column names: find the codigogrupo column (may have encoding artifacts)
   grupo_col <- grep("digogrupo$", names(dt), value = TRUE)
@@ -94,12 +111,27 @@ num_cols <- c("data_oc_numb", "item_alt", "pbu_alt", "convite",
               "valor_total_ref", "valor_total_final")
 for (col in num_cols) {
   if (col %in% names(dt) && is.character(dt[[col]])) {
-    dt[, (col) := as.numeric(get(col))]
+    # Latin-1 CSV fields may contain stray non-numeric tokens ("Sem Vencedor",
+    # "", whitespace). Silence the expected NAs-by-coercion warning.
+    dt[, (col) := suppressWarnings(as.numeric(get(col)))]
   }
 }
 
 # codigogrupo: normalize to character for comparison
 dt[, codigogrupo := as.character(codigogrupo)]
+
+# ---- Supplier CNPJ raiz (first 8 digits) for RAIS linkage ------------------
+if ("cnpj_fornecedor" %in% names(dt)) {
+  # Clean: keep only 14-digit numeric strings; sentinel "Sem Vencedor" → NA
+  dt[, cnpj_fornecedor := trimws(cnpj_fornecedor)]
+  dt[, cnpj_fornecedor := fifelse(grepl("^[0-9]{14}$", cnpj_fornecedor),
+                                  cnpj_fornecedor, NA_character_)]
+  dt[, cnpj_raiz := substr(cnpj_fornecedor, 1L, 8L)]
+  n_forn <- dt[!is.na(cnpj_fornecedor), .N]
+  n_distinct <- dt[!is.na(cnpj_raiz), uniqueN(cnpj_raiz)]
+  cat("  Supplier CNPJ: rows with valid 14-digit =", pfmt_int(n_forn),
+      "| distinct cnpj_raiz =", pfmt_int(n_distinct), "\n")
+}
 
 # ---- Create treatment variables --------------------------------------------
 dt[, g65 := as.integer(codigogrupo == "65")]
