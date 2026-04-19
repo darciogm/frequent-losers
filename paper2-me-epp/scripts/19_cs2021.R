@@ -3,7 +3,7 @@
 # ============================================================================
 # Re-estimates the headline results by reframing the design as staggered
 # DiD with group 65 as the single treated cohort (first treated March 2018 =
-# data_oc_numb 698) and the other 69 product groups as never-treated within
+# data_oc_numb 698) and the other 76 product groups as never-treated within
 # the sample window. CS2021 with the never-treated comparison group therefore
 # applies directly and delivers identification under standard parallel-trends
 # assumptions without relying on already-treated comparisons.
@@ -225,7 +225,8 @@ lines <- c(lines,
   "Effect on the Treated (ATT) from \\texttt{did::att\\_gt} followed by",
   "\\texttt{aggte(type=\"group\")}, estimated on a codigogrupo $\\times$ month",
   "panel of means (completed items for price and distance; all items for firms",
-  "and bids). Control group: never-treated (68 product groups never subject to",
+  sprintf("and bids). Control group: never-treated (%d product groups never subject to",
+          n_groups - 1L),
   "a regime change within the sample window; they were already under ME/EPP",
   "rules pre-2014). Standard errors from multiplier bootstrap (999 iterations).",
   "DDR column reproduces the 18-month +PBU FE coefficient on $g65 \\times Pre$",

@@ -1,7 +1,8 @@
 # ============================================================================
 # 09_synth_control.R — Synthetic Control Method for Paper 2
 #
-# Uses 75 product groups as donor pool to construct synthetic group 65.
+# Uses the 68 balanced product groups as the donor pool for synthetic Group 65
+# (69 groups appear in all 6 semesters, of which one is Group 65 itself).
 # Treatment date: March 2018 (semester 4; group 65 loses open-tender exemption).
 # Pre-treatment gap shows the price advantage under open tenders.
 # Post-treatment near-zero gap validates parallel trends assumption.
