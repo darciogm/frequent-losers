@@ -23,10 +23,10 @@ Other 76 groups (never-treated)  & SME-only (opt-out costs $>$ 0) & SME-only (op
 
 Using subindex $p$ for purchase offer, $i$ for items, $t$ for months, and $g$ for groups, the estimating equation is:
 \begin{equation}
-y_{pigt} = \eta_i + \beta\,\bigl(g65_{pgt}\times \text{Pre}_t\bigr) + x_{pigt}\,\delta + \varepsilon_{pigt}
+y_{pigt} = \eta_i + \lambda_t + \beta\,\bigl(g65_{pgt}\times \text{Pre}_t\bigr) + x_{pigt}\,\delta + \varepsilon_{pigt}
 \label{eq:did}
 \end{equation}
-where $y$ is an outcome, $\eta_i$ is item fixed effects, $\text{Pre}_t$ is a dummy equal to one before March~2018, $g65_{pgt}$ is a dummy for Group~65, and $x_{pigt}$ collects the sealed-bid and log-quantity controls. Standard errors are clustered at the item level.
+where $y$ is an outcome, $\eta_i$ is item fixed effects, $\lambda_t$ is month fixed effects, $\text{Pre}_t$ is a dummy equal to one before March~2018, $g65_{pgt}$ is a dummy for Group~65, and $x_{pigt}$ collects the sealed-bid and log-quantity controls. The month fixed effects $\lambda_t$ absorb all common time-varying shocks across groups; without them, the coefficient on the interaction would confound the treatment effect with any post-2018 aggregate movement. Standard errors are clustered at the item level.
 
 The coefficient $\beta$ is the difference-in-differences estimate of the March-2018 policy change: it compares the change in outcomes for Group~65 between the open-tender and SME-only periods to the contemporaneous change in the 76 never-treated groups. The sign convention is that $\beta < 0$ for prices indicates that prices in Group~65 were lower under open tenders than they would have been under the SME-only rule---equivalently, that imposing the SME-only restriction raises prices by $|\beta|$ log points. For a single treated cohort, this specification is algebraically equivalent to the interaction-weighted estimator of~\citet{sun2021}; Section~4.4 confirms this equivalence numerically and corroborates the estimate with the~\citet{callaway2021} group-time ATT.
 
@@ -50,10 +50,10 @@ where $\eta_g$ is the group fixed effects, and \textit{Semester} is a set of dum
 Even with only three post-policy semesters, the pattern is clear: the gap between the two groups narrows sharply once the rule binds. The first two post-period semesters post near-zero coefficients, consistent with parallel trends. The final semester (March--August 2019) shows a positive, marginally significant coefficient---a partial reversal that admits three interpretations: PBU learning (buyers gradually mitigate efficiency costs as they adapt to the SME-only regime), a Group-65-specific shock in 2019, or a genuine dissipation of the policy effect. The first is the most consistent with the data. The DiD coefficients are stable across the 6-, 12-, and 18-month windows (Table~\ref{tab:prices}), and dropping the final semester leaves the estimates virtually unchanged (Online Appendix). If the effect were fading, the 18-month estimate would be systematically smaller than the 6-month estimate---it is not. Figures~A.1--A.3 (Appendix) report the corresponding event studies for distance, participating firms, and valid bids.
 
 \subsection{Results}
-Equation~\eqref{eq:did} is estimated on three nested windows---6, 12, and 18 months around the March 2018 cutoff---and under two specifications: item fixed effects alone, and item plus buyer-unit (PBU) fixed effects. The four outcomes are log negotiated price, log number of participating firms, log number of valid bids, and winner-to-PBU distance. Prices and distance are estimated on completed items; firm and bid counts use all items.
+Equation~\eqref{eq:did} is estimated on three nested windows---6, 12, and 18 months around the March 2018 cutoff---and under two specifications: item plus month fixed effects, and item plus month plus buyer-unit (PBU) fixed effects. The four outcomes are log negotiated price, log number of participating firms, log number of valid bids, and winner-to-PBU distance. Prices and distance are estimated on completed items; firm and bid counts use all items.
 \input{../output/tables/tab_participants.tex}
 
-Table~\ref{tab:participants} shows a consistent increase in companies participating in Group 65 bids when PBUs used open tenders. In the short term (6-month window), the number of participants is approximately 19--20\% higher (coefficient of 0.178, implying $e^{0.178}-1 = 19.4\%$), attenuating to approximately 10\% at 18 months (coefficient of 0.093)---consistent with PBUs gradually adapting to the new regime. The pattern for valid bids is similar (Table~\ref{tab:validbids}, Appendix).
+Table~\ref{tab:participants} shows a consistent rise in firm participation in Group 65 under open tenders. In the short term (6-month window), the number of participants is approximately 23--25\% higher (coefficient of 0.211, implying $e^{0.211}-1 = 23.5\%$), attenuating to roughly 10--11\% at 18 months (coefficients of 0.098 and 0.107)---consistent with PBUs gradually adapting to the new regime. The pattern for valid bids is similar (Table~\ref{tab:validbids}, Appendix).
 
 These competition effects should be interpreted with caution: the placebo tests (Section~4.4) show significant pre-trends for both firms and bids, likely reflecting the secular rollout of SME restrictions across other groups in earlier periods. The price placebo passes cleanly, so the competition results are best read as suggestive evidence consistent with the price findings rather than independently identified causal effects.
 
@@ -61,9 +61,9 @@ The competition effects documented above are reflected in lower prices. Table~\r
 
 \input{../output/tables/tab_prices.tex}
 
-The coefficients range from $-0.131$ to $-0.144$ log points, implying that negotiated prices are 12--13\% lower under open tenders than they would have been under the SME-only rule (using the exact transformation $e^{\hat{\beta}}-1$). This is an order of magnitude larger than the 3.8\% preference penalty \citet{marion2007} reports for California highway contracts or the comparable trade-offs \citet{krasnokutskaya2011} document in US highway auctions. Two features explain the gap. First, the Brazilian SME-only rule excludes non-SME bidders entirely rather than applying a bid discount. Second---as Section~\ref{sec:mechanism} establishes directly from the bid distribution---the thicker candidate pool for Brazilian medical procurement amplifies the intensive-margin channel that preference rules dampen. The larger coefficients are therefore not just a quantitative finding: exclusion-based set-asides deliver a qualitatively different welfare loss than bid-preference policies.
+The 18-month coefficients are $-0.109$ and $-0.113$, implying that negotiated prices are 10--11\% lower under open tenders than they would have been under the SME-only rule (using the exact transformation $e^{\hat{\beta}}-1$). The 6-month window yields larger coefficients ($-0.142$ and $-0.148$, or 13--14\%) reflecting the sharpest immediate impact before PBUs adapt. This is still an order of magnitude larger than the 3.8\% preference penalty \citet{marion2007} reports for California highway contracts or the comparable trade-offs \citet{krasnokutskaya2011} document in US highway auctions. Two features explain the gap. First, the Brazilian SME-only rule excludes non-SME bidders entirely rather than applying a bid discount. Second---as Section~\ref{sec:mechanism} establishes directly from the bid distribution---the thicker candidate pool for Brazilian medical procurement amplifies the intensive-margin channel that preference rules dampen. The larger coefficients are therefore not just a quantitative finding: exclusion-based set-asides deliver a qualitatively different welfare loss than bid-preference policies.
 
-The distance from PBUs to winner firms provides evidence on the distributional dimension of the policy: before the policy change, winning suppliers for Group 65 were located approximately 5--11 km further from PBUs, depending on the time window and specification (Table~\ref{tab:distance}, Appendix). The 6-month estimate (4.9 km) is not statistically significant, but the 12-month (9.7 km) and 18-month (10.9 km) baseline estimates are highly significant. With PBU fixed effects, the distance effect ranges from 4.6 to 5.3 km in the 12- and 18-month windows. This indicates that the SME restriction does encourage participation from more local suppliers.
+The distance from PBUs to winner firms speaks to the distributional dimension of the policy: before the policy change, winning suppliers for Group 65 were located 6--14 km further from PBUs, depending on the time window and specification (Table~\ref{tab:distance}, Appendix). The 6-month baseline estimate (6.6 km) is marginally significant; the 12-month (13.8 km) and 18-month (14.2 km) baseline estimates are highly significant. Adding PBU fixed effects shrinks the distance effect to 5.7--6.2 km in the 12- and 18-month windows, but it remains economically meaningful. The SME restriction does encourage participation from more local suppliers.
 
 Two external checks on the price estimate deserve mention here; both reinforce the baseline. \citet{lee2009} bounds correct for potential sample selection: after trimming 8.82\% of the outcome distribution, the bounds range from $-0.131$ to $-0.123$, both highly significant, indicating negligible selection bias (Table~\ref{tab:lee_bounds}). The HonestDiD sensitivity analysis of~\citet{rambachan2023} shows the price effect remains statistically significant under substantial violations of the parallel-trends assumption (Figure~\ref{fig:honestdid}).
 
@@ -72,7 +72,7 @@ The Online Appendix reports several further analyses. Quantile difference-in-dif
 \subsection{Mechanism: The Intensive Margin of Bidding}
 \label{sec:mechanism}
 
-The 12--13\% price effect can come from two channels. The SME-only rule may reduce the number of firms willing to bid (extensive margin), or it may reduce the aggressiveness of the bids each surviving firm submits (intensive margin). This section shows that the effect operates overwhelmingly through the intensive margin---a channel the bid-preference literature has long conjectured~\citep{bulow1996, krasnokutskaya2011} but rarely observed.
+The 10--11\% price effect can come from two channels. The SME-only rule may reduce the number of firms willing to bid (extensive margin), or it may reduce the aggressiveness of the bids each surviving firm submits (intensive margin). This section shows that the effect operates overwhelmingly through the intensive margin---a channel the bid-preference literature has long conjectured~\citep{bulow1996, krasnokutskaya2011} but rarely observed.
 
 \paragraph{Mediation decomposition.}
 A~\citet{gelbach2016} decomposition splits the total price effect into its observable channels. Open tenders attract more firms---including larger non-SME suppliers---and that extra competition does pull prices down. But the entry and winner-composition channels together explain only about 6\% of the total effect; the remaining 94\% sits in what is left over once firm count and winner-SME status are accounted for. Figure~\ref{fig:gelbach} stacks the shares.
@@ -82,7 +82,7 @@ A~\citet{gelbach2016} decomposition splits the total price effect into its obser
 \includegraphics[width=0.85\textwidth]{../output/figures/fig_wow2_gelbach.pdf}
 \caption{Gelbach mediation decomposition of the price effect}
 \label{fig:gelbach}
-\floatfoot{\footnotesize Share of the 12.5\% price increase attributable to the two observable channels. Entry and winner composition together account for six percent of the effect; the remaining ninety-four percent is intensive-margin bid aggressiveness unmeasured by the number of firms or the winner's SME status.}
+\floatfoot{\footnotesize Share of the 10--11\% 18-month price increase attributable to the two observable channels. Entry and winner composition together account for six percent of the effect; the remaining ninety-four percent is intensive-margin bid aggressiveness unmeasured by the number of firms or the winner's SME status.}
 \end{figure}
 
 \paragraph{Conditioning on firm count.}
@@ -178,13 +178,13 @@ Table~\ref{tab:fiscal_cost} presents the results for both the baseline specifica
  \cmidrule(lr){2-3} \cmidrule(lr){4-5}
  & Baseline & PBU FE & Baseline & PBU FE \\
 \midrule
-Price coefficient ($\hat{\beta}$, 18-month) & $-0.1309$ & $-0.1330$ & $-0.0762$ & $-0.0795$ \\
-Implied price effect ($e^{\hat{\beta}} - 1$) & $-12.27\%$ & $-12.45\%$ & $-7.33\%$ & $-7.64\%$ \\
+Price coefficient ($\hat{\beta}$, 18-month) & $-0.1087$ & $-0.1133$ & $-0.0762$ & $-0.0795$ \\
+Implied price effect ($e^{\hat{\beta}} - 1$) & $-10.30\%$ & $-10.71\%$ & $-7.33\%$ & $-7.64\%$ \\
 G65 pre-period total value (R\$ millions) & $689.0$ & $689.0$ & $689.0$ & $689.0$ \\
 G65 pre-period total value (US\$ millions) & $196.9$ & $196.9$ & $196.9$ & $196.9$ \\
 \midrule
-\textbf{Estimated fiscal saving (R\$ millions)} & \textbf{84.5} & \textbf{85.8} & \textbf{50.5} & \textbf{52.6} \\
-\textbf{Estimated fiscal saving (US\$ millions)} & \textbf{24.1} & \textbf{24.5} & \textbf{14.4} & \textbf{15.0} \\
+\textbf{Estimated fiscal saving (R\$ millions)} & \textbf{71.0} & \textbf{73.8} & \textbf{50.5} & \textbf{52.6} \\
+\textbf{Estimated fiscal saving (US\$ millions)} & \textbf{20.3} & \textbf{21.1} & \textbf{14.4} & \textbf{15.0} \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -195,7 +195,7 @@ G65 pre-period total value (US\$ millions) & $196.9$ & $196.9$ & $196.9$ & $196.
 \end{adjustbox}
 \end{table}
 
-The estimated fiscal cost of the SME-only rule for Group 65 alone is R\$84.5--85.8 million (US\$24.1--24.5 million) nominal over the 18-month window, or R\$50.5--52.6 million (US\$14.4--15.0 million) after IPCA deflation---about 7--12\% of the group's procurement value. That is small in absolute terms only because Group~65 is one product group in one state. For context, BEC processes roughly R\$13 billion (US\$3.7 billion) of Sao Paulo procurement per year, and total Brazilian public procurement exceeds R\$1.5 trillion (US\$429 billion) annually, about 10\% of GDP. Applying the Group-65 premium proportionally to the Brazilian procurement categories subject to SME-only rules implies fiscal costs on the order of several billion reais (over a billion dollars) per year. This is an upper bound---the counterfactual analysis below shows that the per-item distortion is concentrated in high-value items and heterogeneous across groups---but the right order of magnitude for the aggregate policy footprint.
+The estimated fiscal cost of the SME-only rule for Group 65 alone is R\$71.0--73.8 million (US\$20.3--21.1 million) nominal over the 18-month window, or R\$50.5--52.6 million (US\$14.4--15.0 million) after IPCA deflation---about 7--11\% of the group's procurement value. That is small in absolute terms only because Group~65 is one product group in one state. For context, BEC processes roughly R\$13 billion (US\$3.7 billion) of Sao Paulo procurement per year, and total Brazilian public procurement exceeds R\$1.5 trillion (US\$429 billion) annually, about 10\% of GDP. Applying the Group-65 premium proportionally to the Brazilian procurement categories subject to SME-only rules implies fiscal costs on the order of several billion reais (over a billion dollars) per year. This is an upper bound---the counterfactual analysis below shows that the per-item distortion is concentrated in high-value items and heterogeneous across groups---but the right order of magnitude for the aggregate policy footprint.
 
 This extrapolation must be read as an order of magnitude rather than a point estimate---the heterogeneity documented above cautions against uniform application of the Group-65 coefficient to all categories---but it indicates that the mechanism documented in this paper is fiscally first-order once aggregated across Brazilian procurement.
 

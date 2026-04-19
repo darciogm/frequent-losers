@@ -55,12 +55,19 @@ SEM_LABELS <- c("Sep16-Feb17", "Mar17-Aug17", "Sep17-Feb18",
 #' @param window integer(2): [start, end] Stata monthly dates
 #' @param add_pbu logical: if TRUE, add pbu_alt FE
 #' @param completed logical: if TRUE, filter to oc_item_status == 1
-run_didir <- function(dv, data, window, add_pbu = FALSE, completed = FALSE) {
+#' @param time_fe logical: if TRUE (default), add data_oc_numb (month) FE.
+#'   The month FE absorbs common time-varying shocks across all groups and
+#'   is necessary to interpret g65_pre as a standard two-way FE DiD estimate.
+run_didir <- function(dv, data, window, add_pbu = FALSE, completed = FALSE,
+                      time_fe = TRUE) {
   dt <- data[data_oc_numb >= window[1] & data_oc_numb <= window[2]]
   if (completed) dt <- dt[oc_item_status == 1L]
 
-  fe <- if (add_pbu) "item_alt + pbu_alt" else "item_alt"
-  fml <- as.formula(paste0(dv, " ~ g65_pre + convite + lquantidade | ", fe))
+  fe_parts <- c("item_alt",
+                if (add_pbu)  "pbu_alt",
+                if (time_fe)  "data_oc_numb")
+  fml <- as.formula(paste0(dv, " ~ g65_pre + convite + lquantidade | ",
+                           paste(fe_parts, collapse = " + ")))
   feols(fml, data = dt, cluster = ~item_alt, fixef.rm = "none")
 }
 
@@ -115,11 +122,15 @@ run_didir_custom <- function(fml_str, data, window, completed = FALSE) {
 
 # ---- Run DiDiR with alternative clustering ---------------------------------
 run_didir_altcluster <- function(dv, data, window, add_pbu = FALSE,
-                                  completed = FALSE, cluster_var) {
+                                  completed = FALSE, cluster_var,
+                                  time_fe = TRUE) {
   dt <- data[data_oc_numb >= window[1] & data_oc_numb <= window[2]]
   if (completed) dt <- dt[oc_item_status == 1L]
-  fe <- if (add_pbu) "item_alt + pbu_alt" else "item_alt"
-  fml <- as.formula(paste0(dv, " ~ g65_pre + convite + lquantidade | ", fe))
+  fe_parts <- c("item_alt",
+                if (add_pbu)  "pbu_alt",
+                if (time_fe)  "data_oc_numb")
+  fml <- as.formula(paste0(dv, " ~ g65_pre + convite + lquantidade | ",
+                           paste(fe_parts, collapse = " + ")))
   feols(fml, data = dt, cluster = as.formula(paste0("~", cluster_var)),
         fixef.rm = "none")
 }

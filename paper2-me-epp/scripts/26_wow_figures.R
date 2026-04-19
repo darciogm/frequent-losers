@@ -208,7 +208,7 @@ p2 <- ggplot(wbars) +
                      breaks = seq(0, 100, 20),
                      limits = c(0, 100), expand = c(0, 0)) +
   coord_cartesian(ylim = c(0, 1.2), clip = "off") +
-  labs(x = "Share of the 12.5% price effect", y = NULL) +
+  labs(x = "Share of the 10.5% price effect", y = NULL) +
   theme_pub() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),

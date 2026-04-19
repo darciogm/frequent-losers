@@ -69,6 +69,7 @@ write_didir_table <- function(mlist, caption, label, dv_label,
 
   # FE indicators
   lines <- c(lines, "Item Fixed Effects & YES & YES & YES & YES & YES & YES \\\\")
+  lines <- c(lines, "Month Fixed Effects & YES & YES & YES & YES & YES & YES \\\\")
   lines <- c(lines, "Controlling for PBU & NO & YES & NO & YES & NO & YES \\\\")
 
   lines <- c(lines,
