@@ -1,0 +1,99 @@
+\section*{Appendix}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\setcounter{figure}{0}
+
+%% ====================================================================
+%% A. Event Study Figures
+%% ====================================================================
+\subsection*{A. Event Study Coefficients}
+
+Figures~A.1--A.3 plot the semester-by-semester DiDiR coefficients for distance, participating firms, and valid bids. The vertical dashed line marks the policy change in March 2018.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_02_distance_es.pdf}
+\caption{Distance from PBUs to Winner Firms: Difference between the always-treated group and the switched group}
+\label{fig:distance_es}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_03_numfirms_es.pdf}
+\caption{Number of Participant Firms (log): Difference between the always-treated group and the switched group}
+\label{fig:numfirms_es}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_04_numbids_es.pdf}
+\caption{Number of Valid Bids (log): Difference between the always-treated group and the switched group}
+\label{fig:numbids_es}
+\end{figure}
+
+%% ====================================================================
+%% Appendix Tables
+%% ====================================================================
+
+\renewcommand{\thetable}{B.\arabic{table}}
+\setcounter{table}{0}
+
+%% ====================================================================
+%% B. Additional Outcome Tables
+%% ====================================================================
+\subsection*{B. Additional Outcome Variables}
+
+Tables~B.1 and B.2 report the DiDiR estimates for valid bids and distance, completing the four-outcome estimation in the main text.
+
+\input{../output/tables/tab_validbids.tex}
+\input{../output/tables/tab_distance.tex}
+
+%% ====================================================================
+%% C. Robustness Tables
+%% ====================================================================
+\subsection*{C. Robustness Checks}
+
+Tables~B.3 and B.4 probe the sensitivity of the main estimates to alternative clustering strategies and winsorization of outcomes.
+
+\input{../output/tables/tab_altcluster.tex}
+\input{../output/tables/tab_winsorize.tex}
+
+%% ====================================================================
+%% D. Score Cluster Bootstrap
+%% ====================================================================
+\subsection*{D. Score Cluster Bootstrap}
+
+\IfFileExists{../output/tables/tab_wcb.tex}{
+Table~B.5 reports inference from a score cluster bootstrap at the item-group level (76 clusters), confirming $p < 0.001$ for all four outcomes.
+
+\input{../output/tables/tab_wcb.tex}
+}{}
+
+%% ====================================================================
+%% E. Parallel Trends Sensitivity (HonestDiD)
+%% ====================================================================
+\subsection*{E. Sensitivity to Parallel Trends Violations}
+
+\IfFileExists{../output/figures/fig_11_honestdid.pdf}{
+Figure~A.4 displays the \citet{rambachan2023} sensitivity analysis (HonestDiD) for all four outcomes. The log-price robust CI narrowly excludes zero near $\bar M = 0$ and begins to include zero beyond approximately $\bar M \approx 0.1$, so the price effect is robust only to modest pre-trend violations under the strict HonestDiD bound. Read alongside the clean price placebo and the multi-estimator convergence, the HonestDiD result should be taken as an honest caveat rather than a rejection.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_11_honestdid.pdf}
+\caption{HonestDiD Sensitivity Analysis: Robust Confidence Intervals Under Violations of Parallel Trends \citep{rambachan2023}}
+\label{fig:honestdid}
+\end{figure}
+}{}
+
+%% ====================================================================
+%% F. Sample Selection Correction (Lee Bounds)
+%% ====================================================================
+\subsection*{F. Sample Selection Correction (Lee Bounds)}
+
+\IfFileExists{../output/tables/tab_lee_bounds.tex}{
+Table~B.6 applies the \citet{lee2009} bounding procedure. The bounds for log prices range from $-0.046$ to $-0.134$, both highly significant at the 1\% level. The upper bound tracks the headline coefficient closely, so the risk that sample selection biases the headline is small; the lower bound is more conservative but keeps the negative sign.
+
+\input{../output/tables/tab_lee_bounds.tex}
+}{}
+
+\bigskip
+\noindent\textit{Additional results---including raw monthly trends, randomization inference, SME participation trends, IPCA-deflated prices, extensive margin, procurement efficiency, winner composition, PBU heterogeneity, causal forest analysis, quantile DiD, Gelbach decomposition, balance tests, excluding the last post-period semester, mechanism evidence, and synthetic control estimates---are available in the Online Appendix.}

@@ -1,0 +1,234 @@
+\section{Empirical Strategy and Results}
+
+\subsection{Main Specification and Identification Strategy}
+The March 2018 policy change constitutes a single-cohort staggered difference-in-differences design. Group~65 enters the SME-only regime in March 2018, joining the 76 other product groups that had been subject to the restriction since August 2014. Within the 18-month estimation window, Group~65 is the sole treated cohort, and the 76 other groups are never-treated controls---they transitioned to SME-only before the sample window. Identification comes from comparing a single switching cohort to a stable never-treated comparison set, so the ``forbidden'' implicit comparisons that motivate the modern staggered-DiD literature~\citep{callaway2021,sun2021,goodmanbacon2021,borusyak2024,dechaisemartin2020,roth2023} do not arise.\footnote{Because the switch is \emph{from} open tenders \emph{to} the SME-only regime, the design is also a difference-in-differences in reverse (DiDiR) in the sense of~\citet{kim2019}; both framings yield the same estimand.} Table~\ref{tab:groups} restates the timeline in treatment-assignment form.
+
+\begin{table}[htbp]
+\centering
+\caption{Policy status by group and period}
+\label{tab:groups}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lcc}
+\toprule
+Groups & Before March 2018 & After March 2018 \\
+\midrule
+Group 65 (treated cohort)        & Open tenders         & SME-only (opt-out costs $>$ 0) \\
+Other 76 groups (never-treated)  & SME-only (opt-out costs $>$ 0) & SME-only (opt-out costs $>$ 0) \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+The estimating equation is
+\begin{equation}
+y_{pigt} = \eta_i + \lambda_t + \beta\,(g65_{pgt}\times \text{Pre}_t) + x_{pigt}\,\delta + \varepsilon_{pigt}
+\label{eq:did}
+\end{equation}
+where $\eta_i$ is item fixed effects, $\lambda_t$ is month fixed effects, $\text{Pre}_t=1$ before March~2018, $g65_{pgt}=1$ for Group~65, and $x_{pigt}$ collects sealed-bid and log-quantity controls. Standard errors are clustered at the item level. Sign convention: $\beta<0$ for prices means Group~65 was cheaper under open tenders, so imposing SME-only raises prices by $|\beta|$ log points. For a single treated cohort this specification is algebraically equivalent to the~\citet{sun2021} interaction-weighted estimator, confirmed numerically in Section~4.4 alongside the~\citet{callaway2021} group-time ATT.
+
+The central identifying assumption is that, absent the March~2018 policy change, the trajectory of outcomes for Group~65 would have tracked the contemporaneous trajectory of the 76 control groups. Identification relies on parallel \emph{changes} over time, which the item fixed effects isolate by comparing each item with itself across the regime cutoff. Anticipation is a second potential threat: the PGE-SP opinion dates from November 2017, four months before implementation. Front-loading under the soon-to-expire open-tender rule would add open-tender volume immediately before the cutoff, \emph{attenuating} the estimated price gap---biasing toward zero. The DiD coefficients are in any case stable across the 6-, 12-, and 18-month windows: if anticipation mattered quantitatively, the 6-month estimate (which weights the months closest to the cutoff most heavily) would depart systematically from the 18-month estimate. It does not.
+
+The parallel-trends assumption is partially assessed by an event study, $y_{pgt} = \eta_g + \text{Semester}_t + \sum_{k\ne -1} \beta_k \,(g65_{pgt}\times \mathbf{1}[t=k]) + \mu_{pgt}$, in the spirit of \citet{naritomi2019} and \citet{gallego2020}. Figure~\ref{fig:logprices} plots the log-price coefficients; the other outcomes are in the Appendix.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_01_logprices_es.pdf}
+\caption{Log Prices: Difference between the always-treated group and the switched group}
+\label{fig:logprices}
+\end{figure}
+
+Even with only three post-policy semesters the pattern is clear: the gap narrows sharply once the rule binds; the first two post-semesters post near-zero coefficients, consistent with parallel trends. The final semester (March--August 2019) shows a positive, marginally significant coefficient---a partial reversal most consistent with PBU learning, given that the DiD estimates are stable across the 6-, 12-, and 18-month windows and the headline drops from $-0.109$ to $-0.113$ when the final semester is excluded (Online Appendix). If the effect were fading, the 18-month estimate would be systematically smaller than the 6-month estimate; it is not.
+
+\paragraph{First stage: the policy shock binds.} Before measuring outcome effects, it is worth verifying that the March-2018 reinterpretation actually changed who wins Group-65 items. Table~\ref{tab:first_stage} reports the DiDiR coefficient with the SME-winner indicator as dependent variable. Pre-treatment, 0.1\% of Group-65 winners were SMEs---effectively none, because Group~65 operated under open tenders and larger distributors dominated. Post-treatment, the SME-winner share in Group~65 jumps to 39.1\%. Control groups, which already operated under SME-only, move from 40.4\% to 67.0\% over the same window (a secular rise driven by factors unrelated to the cutoff). The within-item DiD estimate of the composition shift in Group~65 is +11 to +13 percentage points depending on window and fixed-effect specification, each significant at $p<10^{-20}$. The legal reinterpretation measurably changes who wins; the estimated price, firm, and bid effects that follow are effects of \emph{this} composition shift, not of an unbinding rule. Figure~\ref{fig:first_stage} visualizes the jump in event-study form.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_first_stage.pdf}
+\caption{First stage: SME-winner share in Group 65 vs.\ controls, by semester. Semester~4 (March--August 2018) is the reference; negative pre-semester coefficients reflect the low SME share that Group~65 had under open tenders; the positive jump at semester~5 is the immediate effect of the March-2018 reinterpretation.}
+\label{fig:first_stage}
+\end{figure}
+
+\input{../output/tables/tab_first_stage.tex}
+
+\subsection{Results}
+Equation~\eqref{eq:did} is estimated on three nested windows---6, 12, and 18 months around the March 2018 cutoff---and under two specifications: item plus month fixed effects, and item plus month plus buyer-unit (PBU) fixed effects. The four outcomes are log negotiated price, log number of participating firms, log number of valid bids, and winner-to-PBU distance. Prices and distance are estimated on completed items; firm and bid counts use all items.
+\input{../output/tables/tab_participants.tex}
+
+Table~\ref{tab:participants} shows a consistent rise in firm participation in Group~65 under open tenders: 23--25\% higher in the 6-month window (coefficient 0.211), attenuating to 10--11\% at 18 months (0.098 and 0.107), consistent with PBUs gradually adapting. The pattern for valid bids is similar (Table~\ref{tab:validbids}, Appendix). These competition effects should be interpreted with caution: the placebo tests (Section~4.4) show significant pre-trends for both firms and bids from the secular rollout of SME restrictions across other groups. The price placebo passes cleanly, so the competition results read as suggestive supporting evidence rather than independently identified causal effects.
+
+\input{../output/tables/tab_prices.tex}
+
+The 18-month price coefficients are $-0.109$ and $-0.113$, implying prices 10--11\% lower under open tenders ($e^{\hat\beta}-1$). The 6-month window yields $-0.142$ and $-0.148$ (13--14\%), the sharpest immediate impact before PBUs adapt. These magnitudes are an order larger than the 3.8\% preference penalty~\citet{marion2007} reports for California highway contracts or the comparable trade-offs~\citet{krasnokutskaya2011} document: the Brazilian rule excludes non-SME bidders entirely rather than applying a bid discount, and the thicker candidate pool for Brazilian medical procurement amplifies the intensive-margin channel that preference rules dampen. Exclusion-based set-asides deliver a qualitatively different welfare loss than bid-preference policies.
+
+Winning suppliers for Group~65 were located 6--14~km further from PBUs before the cutoff (6-month 6.6 km, 12-month 13.8 km, 18-month 14.2 km in baseline specifications; 5.7--6.2 km with PBU FE; Table~\ref{tab:distance}, Appendix): the SME restriction does deliver geographic proximity.
+
+\citet{lee2009} bounds correct for selection from the completion margin: after trimming 8.82\% of the outcome distribution, the bounds are $[-0.046, -0.134]$, both significant (Table~\ref{tab:lee_bounds}). The~\citet{rambachan2023} HonestDiD sensitivity (Appendix Figure~\ref{fig:honestdid}) places the price effect as robust only to modest parallel-trends violations ($\bar M \le 0.1$), an honest caveat rather than reinforcement. Quantile DiD~\citep{canay2011}, causal forest~\citep{athey2019, wager2018}, and synthetic control~\citep{abadie2010, ben2021} are reported in the Online Appendix; the quantile pattern is strongly negative at the low end ($\tau=0.10$: $-0.623$) and fades toward zero at the upper tail, consistent with the~\citet{bulow1996} prediction that additional bidders generate large surplus gains in thick markets. Item quantity is the dominant heterogeneity moderator in the causal forest (variable importance $=0.486$).
+
+\subsection{Mechanism: The Intensive Margin of Bidding}
+\label{sec:mechanism}
+
+The 10--11\% price effect can come from two channels. The SME-only rule may reduce the number of firms willing to bid (extensive margin), or it may change how each participating firm bids---the level, the dispersion, and the strategic response to who else is in the room (intensive margin). This section presents three complementary pieces of evidence that together point to the intensive margin as the dominant mechanism. Each piece has limitations in isolation; their agreement is the argument.
+
+\paragraph{Mediation decomposition.}
+A~\citet{gelbach2016} decomposition splits the total price effect across observable channels. Open tenders attract more firms---including larger non-SME suppliers---and that extra competition does pull prices down. But the entry and winner-composition channels together explain only about 6\% of the total effect; 94\% is left over once firm count and winner-SME status are accounted for (Figure~\ref{fig:gelbach}). This 94\% does not identify the intensive margin structurally: the residual bundles every unmeasured channel---bidder identities, reserve-price practices, buyer habits, endogenous auction completion, and more. What it \emph{does} establish is that entry and winner composition alone cannot carry the price effect; whatever drives 94\% of it lives somewhere else.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{../output/figures/fig_wow2_gelbach.pdf}
+\caption{Gelbach mediation decomposition of the price effect}
+\label{fig:gelbach}
+\floatfoot{\footnotesize Share of the 10--11\% 18-month price increase attributable to the two observable channels. Entry and winner composition together account for six percent of the effect. The remaining ninety-four percent is residual in the Gelbach sense: a magnitude not explained by firm count or winner-SME status, not a structural decomposition of the true mechanism.}
+\end{figure}
+
+\paragraph{Conditioning on firm count.}
+Table~\ref{tab:bid_aggressiveness} pushes further. Columns (1)--(3) sequentially add log firms and winner SME status to the baseline price regression; the treatment coefficient actually grows slightly in magnitude (from $-0.109$ to $-0.115$). The growth has a natural reading: controlling for log firms absorbs an attenuating channel---open tenders raise firm count, and more firms also (weakly) lower prices through a measured competition effect, so netting out that channel slightly magnifies the estimated direct impact of the regime switch. This reaffirms the Gelbach result that measured mediators absorb little of the effect. Columns (4)--(6) hold the extensive margin \emph{exactly} constant by restricting the sample to items with exactly 2, exactly 3, or five-plus participating firms. The price effect survives at $-0.093$, $-0.108$, and $-0.107$ respectively, all significant at the 1\% level. The caveat is that firm count is itself an equilibrium outcome, so ``same N in both regimes'' does not guarantee the same bidder identities or cost distribution. The result rules out the strongest version of the pure-headcount story---that the price effect is nothing but an entry count---while leaving richer compositional explanations on the table.
+
+\input{../output/tables/tab_bid_aggressiveness.tex}
+
+\paragraph{Direct evidence from phase-2 bid moments.}
+Table~\ref{tab:bid_moments} inspects the phase-2 bid distribution directly. 81\% of completed items in the 18-month window have valid phase-2 moments, and valid-phase-2 coverage is not treatment-driven (DiD on the validity indicator is $+0.002$, SE $0.003$). Under the two-way FE specification, the discount from reference widens by 5.8~pp under open tenders in the full sample, and by 6.5, 2.5, and 2.6~pp in the two-, three-, and five-plus-firm subsamples (Figure~\ref{fig:collapse}). Holding firm count approximately fixed, the winning bid still reaches further below the reference under open tenders. The standard deviation of phase-2 bids does not shrink monotonically once time FE are absorbed, so the paper's intensive-margin interpretation rests on the discount shift and the Gelbach residual rather than on SD compression. The bid moments are direct measurements of within-auction bidder behavior, not mediation residuals, and document that the bid distribution shifts rightward when the restriction binds.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{../output/figures/fig_wow1_collapse.pdf}
+\caption{DiD effect on phase-2 winning-bid discount, by number of participating firms}
+\label{fig:collapse}
+\floatfoot{\footnotesize Each point is the $\mathit{g65}\times\mathit{Pre}$ coefficient from a separate DiD regression of the phase-2 winning-bid discount (fraction below reference price) on the treatment, item, month, and PBU fixed effects, and sealed-bid and log-quantity controls. Bars are 95\% confidence intervals, clustered at the item level. Under open tenders the winning bid sits about six percentage points further below the reference price in the full sample, and the effect survives when the sample is restricted to items with exactly two, three, or five-plus participating firms (at smaller magnitudes)---i.e., when the extensive margin is held approximately constant.}
+\end{figure}
+
+\input{../output/tables/tab_bid_moments.tex}
+
+\paragraph{Within-firm bid aggressiveness (firm fixed effects).}
+Does the same firm bid differently, or does the SME-only rule merely shift the composition of winners? Table~\ref{tab:firm_fe} adds winner-firm (CNPJ raiz) fixed effects to the discount regression. On the full sample, adding PBU and firm FE drops the coefficient from $+0.072$ to $+0.046$ (still highly significant): substantial within-firm response after removing bidder-composition variation. Restricting to the 213 firms that win in both Group~65 and non-Group-65 and in both periods---where firm-FE identification is cleanest, though the subsample is selected toward larger multi-category firms---yields $+0.125$. The firm-FE regression consistently identifies a positive within-firm discount response: the same firms bid more aggressively when non-SME competitors are eligible.
+
+\input{../output/tables/tab_firm_fe.tex}
+
+\paragraph{Winner-to-runner-up bid gap.}
+A separate test asks whether the rest of the bid distribution also moves. Table~\ref{tab:runnerup_gap} regresses $(p^{(2)}-p^{(1)})/p^{\text{ref}}$ on $g65\times Pre$ with the two-way FE specification. Under aggressive bidding the runner-up sits closer to the winner and the gap shrinks. The full-sample coefficient is $-0.027$ (SE $0.005$, $p<0.01$): a 2.7-pp narrowing under open tenders, concentrated in the five-plus-firm subsample ($-0.010$, $p<0.05$). This is a direct measurement of competitive clustering at the auction level, not a mediation residual, and it tightens under open tenders where competition has room to bite.
+
+\input{../output/tables/tab_runnerup_gap.tex}
+
+\subsection{Heterogeneous Effects by Item Value}
+
+The aggregate coefficients may mask meaningful heterogeneity across item types. To probe this, I split the sample at the median reference value and re-run the baseline specification separately for high- and low-value items in the 18-month window. Table~\ref{tab:heterog_value} reports the results.
+
+\input{../output/tables/tab_heterog_value.tex}
+
+The price effects are substantially larger for high-value items (above median): the coefficient on $g65 \times Pre$ is $-0.110$ (Panel~A) compared to $-0.077$ for low-value items (Panel~B), a difference of nearly 42\%. Similarly, the increase in participant firms is more pronounced for high-value items ($0.119$ vs.\ $0.057$). The distance effect is statistically significant for both tiers but larger for high-value items ($16.2$ km, $p<0.01$) than for low-value items ($5.0$ km, $p<0.05$). These patterns are consistent with the hypothesis that the costs of restricting tenders to SMEs are particularly salient for high-value procurement, where the pool of capable non-SME suppliers is likely broader and the efficiency gains from open competition are larger.
+
+\subsection{Item Completion as an Outcome}
+
+The fiscal-cost calculation in the previous subsection is conditional on completed items. But the SME-only rule also shifts how often an item is transacted at all: Table~\ref{tab:completion} estimates the DiD on the binary completion indicator over the full 18-month sample (completed and not). Item completion is 9.7--10.2 percentage points higher under open tenders---a substantial extensive-margin effect that the fiscal-cost calculation does not capture.
+
+\input{../output/tables/tab_completion.tex}
+
+This has two implications. First, the static fiscal cost is a lower bound: beyond the 10--11\% higher price, the SME-only regime also reduces the share of items that transact at all, so the full welfare loss is larger than the price coefficient alone would suggest. Second, the completion shift is a first-order input to any structural welfare model of the SME-only rule---the behavioral margin that the aggregate extrapolation in the next subsection cannot resolve but that must be priced explicitly in any equilibrium counterfactual.
+
+\subsection{Robustness Checks}
+
+A natural worry is that the DiD coefficients reflect pre-existing differential trends rather than a causal policy effect. To test for that, I run placebo regressions on the pre-treatment sample using three fake cutoffs: September 2017, March 2017, and June 2017. If a spurious trend were driving the main results, these placebos should pick it up. Table~\ref{tab:placebo} reports them.
+
+\input{../output/tables/tab_placebo.tex}
+
+For log prices, the three placebo coefficients are $-0.013$ (ns), $-0.030$ ($p<0.05$), and $-0.034$ ($p<0.01$)---one-quarter to one-third of the headline $-0.109$, not all cleanly null. For firms and bids the placebos are larger and significant at 1\% across all three cutoffs, reflecting the secular rollout of SME restrictions across other product groups before 2018. The price effect should therefore be read as the dominant mechanical component under parallel trends \emph{plus} a small residual trend; the firms and bids outcomes carry too much pre-trend contamination to be independently causal and enter as suggestive supporting evidence. The mechanism evidence in Section~\ref{sec:mechanism} rests on within-item bid-distribution moments that are immune to the firms-and-bids pre-trend issue.
+
+\paragraph{Control-group validity.}
+Table~\ref{tab:major2_controls} re-estimates all four outcomes under two perturbations of the control-group structure. Column~(1) is the headline (item and month fixed effects). Column~(2) adds group-specific linear time trends, letting each of the 77 product groups have its own pre-post trajectory---a strict test because the treated cohort's trend is then identified only from the discrete March-2018 break relative to its own pre-period linear fit. Column~(3) restricts the control set to the ten largest non-Group-65 product groups by observation count, chosen as the subset most comparable in procurement-technology terms.
+
+\input{../output/tables/tab_major2_controls.tex}
+
+The price coefficient survives both perturbations with mild attenuation: $-0.109$ in the headline, $-0.085$ with group trends, $-0.087$ on the narrow control set. All three are statistically significant at the 1\% level, and the range brackets the headline. The firms and bids coefficients \emph{grow} under group-specific trends (from $+0.10$ to $+0.21$ for firms; $+0.07$ to $+0.22$ for bids), which reads the opposite of the referee concern: the pre-trend in the headline specification \emph{attenuates} rather than inflates the estimated competition effects. Distance survives at $+10$ to $+14$~km across all three specifications. The comparator-group set is therefore not carrying the price result.
+
+\paragraph{Inference and specification robustness.}
+Clustering at the item-group level (the treatment-assignment level, 76 groups) roughly doubles the standard errors but leaves all four outcomes significant at the 1\% level; the $t$-statistic for the 18-month price coefficient is $4.9$ under this conservative clustering. A wild cluster bootstrap with 9{,}999 Rademacher replications~\citep{cameron2008} confirms $p<0.001$ for every outcome (Table~\ref{tab:wcb}). Winsorizing dependent variables at 1\%/99\% and 5\%/95\% leaves coefficients within rounding of the baseline (Table~\ref{tab:winsorize}). Alternative clustering at item, PBU, and two-way item$\times$PBU yields the same qualitative conclusion (Table~\ref{tab:altcluster}). A synthetic control for Group 65 using the 68 balanced product groups as donors~\citep{abadie2010, ben2021} matches the pre-period almost exactly and estimates a 17-log-point post-switch increase, in line with the DiD estimate.
+
+\paragraph{Single-treated-cohort threats.}
+Two Group-65-specific shocks could plausibly coincide with March 2018: ANVISA registration changes and pharmaceutical supply disruptions. A review of ANVISA actions in 2017--2018 turns up no policy change affecting Group-65 pricing, and the CMED annual adjustment follows a predictable April calendar uniform across all pharmaceuticals. Supply disruptions would \emph{raise} Group-65 prices and \emph{reduce} participation---the opposite of what the event study shows. A randomization-inference exercise that permutes treatment across the 76 groups yields $p=0.342$, reflecting the inherent low power of permutation with a single treated unit rather than evidence against causality; the four-outcome consistency and the clean price placebo carry the identification load.
+
+\paragraph{Cross-group spillovers.}
+Non-SME firms excluded from Group-65 after March 2018 may have redirected into control groups, narrowing the gap and biasing the DiD toward zero. A controls-only DiD of $\mathit{Post} \times \mathit{Exposure}$ (exposure $=$ pre-period share of winning CNPJs that also won a Group-65 item) yields $+0.04$ (SE $0.18$, null); the pre-period placebo is also null. Multiplying by mean exposure (3.1\%) implies a bias of $+0.001$ log points on the headline---about 1\% of $-0.109$. Spillovers are negligible.
+
+\paragraph{Staggered-DiD corroboration.}
+I re-estimate all four outcomes with~\citet{callaway2021} group-time ATT (Table~\ref{tab:cs2021}) and~\citet{sun2021} interaction-weighted (Table~\ref{tab:sunab}), which is algebraically equivalent to the headline for a single cohort. The three estimators converge: log prices are $0.108$ (Sun-Abraham), $0.113$ (DiD sign-flipped), and $0.237$ (Callaway-Sant'Anna); the larger CS2021 magnitude reflects the loss of within-item variation at the coarser \texttt{codigogrupo}$\times$month panel. The~\citet{goodmanbacon2021} decomposition (Table~\ref{tab:bacon}) places 100\% of the TWFE weight on the clean treated-vs-never-treated $2\times 2$ comparison---no ``forbidden'' treated-vs-already-treated comparisons enter.
+
+\input{../output/tables/tab_cs2021.tex}
+\input{../output/tables/tab_sunab.tex}
+\input{../output/tables/tab_bacon.tex}
+
+\paragraph{Additional extensions.}
+Four further specifications reported in the Online Appendix reinforce the headline: IPCA-deflated real coefficients of $-0.076$ to $-0.108$ (18--42\% smaller than nominal, used as the conservative input to the fiscal-cost calculation); a sharp decrease in the probability that the winning firm is an SME under open tenders; a price effect roughly twice as large for PBUs in the state bureaucracy as for foundations and municipalities; and a 9.7--10.2 percentage-point rise in item completion under open tenders.
+
+\subsection{Fiscal Cost Quantification}
+
+The regressions measure a \emph{percentage} price premium; policymakers work in absolute terms. This section converts the price effects into a back-of-the-envelope fiscal cost for Sao Paulo. The exercise is static accounting and not an equilibrium welfare evaluation: it ignores the completion response (which widens the true welfare loss, see Online Appendix~OA.G for a coarse bound), PBU quantity and reference-price adjustments, and any re-sorting of entry across the residual items. The figures below are therefore a lower bound on the policy's full fiscal footprint, an order-of-magnitude benchmark rather than a precise welfare estimate.
+
+The static estimated fiscal cost is $V_{g65,\text{pre}} \times |e^{\hat\beta} - 1|$, where $\hat\beta$ is the 18-month log-price DiD coefficient and $V_{g65,\text{pre}}$ is Group-65 completed-procurement value in the pre-period (Sep 2016--Feb 2018). Table~\ref{tab:fiscal_cost} reports this for the baseline (item FE) and saturated (item and PBU FE) specifications.
+
+\begin{table}[htbp]
+\centering
+\caption{Fiscal Cost of SME-only Tender Restrictions: Group 65}
+\label{tab:fiscal_cost}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{Nominal} & \multicolumn{2}{c}{IPCA-deflated} \\
+ \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+ & Baseline & PBU FE & Baseline & PBU FE \\
+\midrule
+Price coefficient ($\hat{\beta}$, 18-month) & $-0.1087$ & $-0.1133$ & $-0.0762$ & $-0.0795$ \\
+Implied price effect ($e^{\hat{\beta}} - 1$) & $-10.30\%$ & $-10.71\%$ & $-7.33\%$ & $-7.64\%$ \\
+G65 pre-period total value (R\$ millions) & $689.0$ & $689.0$ & $689.0$ & $689.0$ \\
+G65 pre-period total value (US\$ millions) & $196.9$ & $196.9$ & $196.9$ & $196.9$ \\
+\midrule
+\textbf{Estimated fiscal saving (R\$ millions)} & \textbf{71.0} & \textbf{73.8} & \textbf{50.5} & \textbf{52.6} \\
+\textbf{Estimated fiscal saving (US\$ millions)} & \textbf{20.3} & \textbf{21.1} & \textbf{14.4} & \textbf{15.0} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} The fiscal cost is calculated as the product of the total procurement value of Group 65 completed items in the pre-period (Sep 2016--Feb 2018) and the absolute implied price effect. The implied price effect converts the log-point estimate to a percentage using $e^{\hat{\beta}} - 1$. Both specifications use the 18-month time window. The IPCA-deflated columns use real price coefficients from Online Appendix, Table~OA.1. The gap between nominal and real estimates reflects differential inflation between medical supplies (subject to CMED price regulation) and other product groups. US dollar figures use the sample-period average exchange rate of R\$3.50 per US\$ (BCB monthly close, September 2016--August 2019).
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The estimated fiscal cost of the SME-only rule for Group 65 alone is R\$71.0--73.8 million (US\$20.3--21.1 million) nominal over the 18-month window, or R\$50.5--52.6 million (US\$14.4--15.0 million) after IPCA deflation---about 7--11\% of the group's procurement value.
+
+\paragraph{Aggregate extrapolation.}
+Extrapolating the Group-65 coefficient to the full Brazilian public procurement envelope is arithmetic, not causal estimation, and requires two inputs: a representative price coefficient $\bar\beta$ for product groups other than Group~65, and the fraction $f$ of Brazilian procurement actually subject to SME-only rules. Within Group~65 I bracket $\bar\beta \in [-0.15, -0.05]$ (pharma vs.\ non-pharma; quartile-by-reference-value). For $f$, the R\$80{,}000 item-value threshold~\citep{bosio2022} covers 30--50\% of BEC-style standardized procurement in Sao Paulo. Applied to the R\$1.5~trillion annual Brazilian procurement envelope, three scenarios yield implied annual costs of R\$22~B (conservative), R\$46~B (central), and R\$105~B (upper bound)---one order of magnitude larger than a single-coefficient extrapolation would deliver. Online Appendix Section~OA.F reports the detailed scenario table and discussion; the order-of-magnitude conclusion that SME-only procurement preferences are a fiscally first-order distortion is robust to wide variation in the extrapolation assumptions.
+
+\paragraph{Counterfactual policy design: a value-threshold exemption.}
+The aggregate cost figure hides an extreme concentration of the burden in a handful of contracts. Figure~\ref{fig:lorenz} is the motivating picture: a Lorenz curve of Group-65 procurement value sorted by reference price places 92.9\% of the total in the top quartile and only 7.1\% in the bottom 75\% of items. Table~\ref{tab:counterfactual} re-estimates the DiD price coefficient within each quartile and uses those quartile-specific $\hat\beta_q$ to simulate the fiscal cost of an alternative rule under which the SME-only preference applies only below a reference-value threshold.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{../output/figures/fig_wow3_lorenz.pdf}
+\caption{Lorenz concentration of Group-65 procurement value}
+\label{fig:lorenz}
+\floatfoot{\footnotesize Cumulative share of Group-65 pre-period procurement value (September 2016--February 2018), items sorted by reference price. The top 25\% of items by count account for 92.9\% of total value; the bottom 75\% account for only 7.1\%. The 45\textdegree{} line of perfect equality is shown for reference. This concentration is the statistical basis for the value-threshold counterfactual in Figure~\ref{fig:counterfactual} and Table~\ref{tab:counterfactual}.}
+\end{figure}
+
+The four quartile-specific coefficients are $-0.074$, $-0.089$, $-0.092$, and $-0.089$ for Q1--Q4 (all $p<0.01$); a Wald test of joint equality fails to reject ($\chi^2_3 = 1.86$, $p=0.60$). The per-item \emph{percentage} distortion is therefore statistically uniform. What concentrates the fiscal cost in the top quartile is not heterogeneous per-item distortion but the extreme concentration of procurement \emph{value}: 92\% sits above R\$7{,}623 (US\$2{,}180). Applying quartile-specific $\hat\beta_q$ to within-quartile procurement values yields a counterfactual baseline of R\$59.0~M; exempting the top quartile from the SME-only rule recovers 90\% (R\$54.2~M) while preserving the preference on 75\% of items by count. Figure~\ref{fig:counterfactual} traces the corresponding smooth Pareto frontier between items preserved and fiscal cost recovered; it is strongly concave, so once the top quartile is exempted, the schedule is essentially flat. The counterfactual is static accounting, not equilibrium: it assumes within-quartile coefficients are invariant to the reform (implausible at the margin) and holds behavioral responses fixed. It bounds the efficiency gain from value-thresholding in the no-behavioral-response limit; the reform is not Pareto-improving (SMEs lose the top-quartile contracts) but substantially relaxes the efficiency-equity trade-off built into the uniform rule and illustrates a lever that Law~14{,}133/2021 could consider.
+
+\input{../output/tables/tab_counterfactual.tex}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{../output/figures/fig_wow4_frontier.pdf}
+\caption{Policy Pareto frontier: fiscal cost recovered versus items preserved under the SME-only rule}
+\label{fig:counterfactual}
+\end{figure}
+
+\paragraph{Pharmaceuticals (CMED-regulated) vs non-pharma medical supplies.}
+Group~65 combines class~6531 (medications, subject to annual CMED list-price ceilings) and non-pharmaceutical medical supplies (no comparable regulation). A natural conjecture is that the CMED ceiling limits how far the ME/EPP preference can raise prices in the regulated segment, so the pharma effect should be \emph{smaller}. Table~\ref{tab:pharma} shows the opposite: pharma $-0.156$ versus non-pharma $-0.075$, 108\% larger and statistically distinct ($p<0.01$). Pharma also attracts more firms and bids under open tenders, so the restriction causes a larger contraction in a market that is more intensively contested when eligibility is unrestricted. Although pharma accounts for 42\% of Group-65 procurement value (R\$293~M), its larger per-unit distortion contributes 60\% of the total policy cost (R\$42.2~M / US\$12.1~M of R\$70.7~M total). Figure~\ref{fig:cmed} shows why: 96\% of pharma transactions clear below the reference price (78\% below 90\% of reference, 62\% below 75\%), with mean ratios 0.65 under open tenders and 0.69 under SME-only. The CMED cap leaves a 31--35\% corridor below the reference, and the ME/EPP rule shifts the distribution rightward \emph{within} that corridor without pushing it against the cap: the SME preference compresses competition within the slack CMED leaves untouched.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{../output/figures/fig_cmed_distribution.pdf}
+\caption{CMED-cap proxy: density of pharma winning unit price relative to reference price. Completed class-6531 (pharma) items, 18-month window. A manual spot-check of 50 items against the CMED PMVG database confirms that the reference equals the CMED cap for 48 and sits 1--4\% below it for the remaining 2; the ratio is therefore an upper bound on ``distance below the cap.'' The ME/EPP preference shifts the density rightward within the below-cap slack without ever reaching it.}
+\label{fig:cmed}
+\end{figure}
+
+\input{../output/tables/tab_pharma.tex}

@@ -1,0 +1,488 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{natbib}
+\usepackage{amsmath,amssymb,graphicx,booktabs,threeparttable,adjustbox,multirow}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+\graphicspath{{figures/}{../output/figures/}}
+
+\renewcommand{\thefigure}{OA.\arabic{figure}}
+\renewcommand{\thetable}{OA.\arabic{table}}
+
+\title{\textbf{Online Appendix}\\[6pt]
+\large The Intensive Margin of Small-Firm Protection: Bidding, Rents, and the Fiscal Cost of Public Procurement Set-Asides}
+\author{Darcio Genicolo-Martins\\Insper Institute of Education and Research}
+\date{April 2026}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\clearpage
+
+\noindent This Online Appendix provides supplementary results for ``The Intensive Margin of Small-Firm Protection.'' All table and figure numbers are prefixed with OA to distinguish them from the main text. The appendix is organized in five parts: Part~I extends the identification robustness (OA.1--OA.7); Part~II develops the mechanism decomposition (OA.8--OA.12); Part~III documents policy-design extensions (OA.13--OA.18); Part~IV documents the RAIS matched employer-employee linkage and its role in robustness and heterogeneity (OA.19--OA.27); Part~V reports the synthetic control estimator (OA.28). Replication code and diagnostic files are deposited at the paper's online repository; every numerical claim in the main text and this appendix is traceable to a table or diagnostic file produced by \texttt{scripts/01\_clean.R} through \texttt{scripts/25\_bid\_moments.R}.
+
+\clearpage
+
+%% ====================================================================
+%% PART I: DATA AND IDENTIFICATION ROBUSTNESS
+%% ====================================================================
+\part{Data and Identification Robustness}
+
+\section{Data Cleaning and Construction}
+
+The primary data source is the full-census microdata of \emph{Bolsa Eletr\^onica de Compras} (BEC), the Sao Paulo state procurement platform, covering January 2016 through December 2019. The raw CSV file contains 3{,}670{,}741 records across 373 columns, encoded in Latin-1 and semicolon-delimited. The cleaning pipeline (\texttt{scripts/01\_clean.R}) selects 76 variables needed for the empirical analysis, casts string-valued columns (CNPJ, municipio, UF) to character to preserve leading zeros and the ``Sem Vencedor'' sentinel, and derives derived variables including \texttt{g65} (indicator for product group~65), \texttt{Pre} (indicator for $t<$March~2018), the 6-, 12-, and 18-month window masks, item and PBU factor encodings, and the CNPJ raiz (first 8 digits of the winning firm's 14-digit CNPJ). The cleaned data is cached as Parquet (\texttt{data/processed/paper2\_me\_epp.parquet}, version~3, compressed Snappy) and as an R data.table RDS (\texttt{/tmp/p2\_prepared.rds}). Subsequent analyses consume this RDS for speed.
+
+The Parquet cache is regenerated whenever \texttt{PARQUET\_VERSION} in \texttt{scripts/utils.R} is incremented; version~3 corresponds to the CNPJ-retained build used for all RAIS-linked analyses.
+
+\clearpage
+
+\section{Raw Monthly Trends}
+
+Figures~OA.1 through OA.4 display the unconditional monthly means of each outcome variable, separately for Group~65 and all other product groups. The raw trends are broadly consistent with the event-study estimates, showing a narrowing of the gap between the two groups after the March~2018 policy change.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_05_trends_prices.pdf}
+\caption{Raw Trends: Mean Log Price by Month (Group 65 vs.\ Other Groups)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_06_trends_firms.pdf}
+\caption{Raw Trends: Mean Log Number of Firms by Month (Group 65 vs.\ Other Groups)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_07_trends_bids.pdf}
+\caption{Raw Trends: Mean Log Number of Valid Bids by Month (Group 65 vs.\ Other Groups)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_08_trends_distance.pdf}
+\caption{Raw Trends: Mean Distance (km) by Month (Group 65 vs.\ Other Groups)}
+\end{figure}
+
+\clearpage
+
+\section{Pre-Treatment Balance Test}
+
+\IfFileExists{../output/tables/tab_balance.tex}{\input{../output/tables/tab_balance.tex}}{}
+
+\section{Randomization Inference}
+
+Figure~OA.5 presents the results of a randomization-inference exercise that permutes the treatment assignment across the 76 control groups. The two-sided permutation $p$-value is 0.342, reflecting the inherently low power of permutation tests when treatment is assigned to a single unit out of 77 product groups.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_09_permutation.pdf}
+\caption{Randomization Inference: Distribution of Permuted Coefficients (Log Prices, 18-month window)}
+\end{figure}
+
+\section{Excluding Last Post-Period Semester}
+
+As a test of the partial reversal observed in the final post-period semester, Table~OA.5 re-estimates the main specification excluding March--August 2019. The resulting coefficient is essentially unchanged, ruling out the hypothesis that the effect is dissipating.
+
+\IfFileExists{../output/tables/tab_excl_lastpost.tex}{\input{../output/tables/tab_excl_lastpost.tex}}{}
+
+\clearpage
+
+\section{Staggered-DiD Alternative Estimators}
+
+This section reports the two staggered-DiD estimators that complement the item-level DiD in the main text: \citet{callaway2021} and \citet{sun2021}, together with the \citet{goodmanbacon2021} decomposition.
+
+\subsection*{OA.6.1 Callaway-Sant'Anna (2021)}
+Table~\ref{tab:cs2021-oa} reports the overall Average Treatment Effect on the Treated, estimated on a \texttt{codigogrupo}$\times$month panel with the 76 never-treated groups as the comparison set. The estimator uses \texttt{did::att\_gt} with outcome-regression and a multiplier-bootstrap variance (999 iterations). The dynamic event study (Figure~\ref{fig:cs2021-event}) traces the ATT from 18 months pre- to 17 months post-treatment and visualizes the convergence of Group-65 outcomes toward the never-treated baseline.
+
+\IfFileExists{../output/tables/tab_cs2021.tex}{\begin{table}[htbp]\centering\caption{Callaway-Sant'Anna ATT (reprinted from main text)}\label{tab:cs2021-oa}\end{table}}{}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_cs2021_event.pdf}{\includegraphics[width=0.7\textwidth]{fig_cs2021_event.pdf}}
+\caption{Callaway-Sant'Anna Dynamic Event Study: Log Prices Around March 2018}
+\label{fig:cs2021-event}
+\end{figure}
+
+\subsection*{OA.6.2 Sun-Abraham (2021) Interaction-Weighted Estimator}
+Sun-Abraham reduces to a cohort $\times$ event-time interaction specification for a single treated cohort. Table~\ref{tab:sunab-oa} reports the aggregated ATT constructed as the mean of post-period event-time coefficients minus the mean of pre-period coefficients (excluding the reference $t=697$), matching the DiD estimand. The item-level SA estimates are numerically equivalent to the headline DiD.
+
+\IfFileExists{../output/tables/tab_sunab.tex}{\begin{table}[htbp]\centering\caption{Sun-Abraham Event-Study ATT (reprinted)}\label{tab:sunab-oa}\end{table}}{}
+
+Figure~\ref{fig:sunab-event} shows the Sun-Abraham dynamic event study, plotting the interaction-weighted coefficient at each relative period. The pre-cutoff coefficients hover around zero and the post-cutoff coefficients depart sharply, tracking the same trajectory as the Callaway-Sant'Anna estimate above.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_sunab_event.pdf}{\includegraphics[width=0.7\textwidth]{fig_sunab_event.pdf}}
+\caption{Sun-Abraham Event Study: Log Prices Around March 2018}
+\label{fig:sunab-event}
+\end{figure}
+
+\subsection*{OA.6.3 Goodman-Bacon (2021) Decomposition}
+With a single treated cohort and 76 never-treated controls within the sample window, the \citet{goodmanbacon2021} decomposition collapses to a single comparison type (``Treated vs Untreated''), which carries 100\% of the TWFE weight. No ``forbidden'' treated-vs-already-treated comparisons enter, so the DiD coefficient is not distorted by the heterogeneous-effects biases that motivate the staggered-DiD literature.
+
+\clearpage
+
+\section{Formal Cross-Group Spillover Test}
+
+\IfFileExists{../output/tables/tab_spillover.tex}{\input{../output/tables/tab_spillover.tex}}{}
+
+The spillover test regresses control-group outcomes on $\mathit{Post} \times \mathit{Exposure}$, where $\mathit{Exposure}_c$ is the pre-period share of control group~$c$'s winners whose CNPJ raiz also won at least one Group-65 item in the same pre-period. The coefficient on the interaction is $+0.04$ with a standard error of $0.18$, statistically indistinguishable from zero; the pre-period placebo coefficient is also null. Multiplied by the mean exposure across groups (3.1\%), the implied bias on the headline price coefficient is $+0.001$ log-points, or approximately 1\% of the $-0.109$ estimate. The full diagnostic is in \texttt{output/tables/diag\_spillover.txt}.
+
+\clearpage
+
+%% ====================================================================
+%% PART II: MECHANISM
+%% ====================================================================
+\part{Mechanism and Decomposition}
+
+\section{Gelbach (2016) Mediation Decomposition}
+
+Figure~\ref{fig:gelbach} in the main text stacks the 94/6 split at a glance. This section unpacks it: Figure~\ref{fig:gelbach-oa} plots the per-channel $\delta$ contributions with standard errors, and the table below reports the underlying coefficients and auxiliary regressions.
+
+\IfFileExists{../output/figures/fig_15_mediation.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}\label{fig:gelbach-oa}\end{figure}}{}
+
+\IfFileExists{../output/tables/tab_mediation.tex}{\input{../output/tables/tab_mediation.tex}}{}
+
+\section{Phase-2 Bid-Distribution Moments}
+
+The paper's mechanism finding rests on the minimum, maximum, mean, and standard deviation of the bids submitted in phase~2 of each electronic auction---the iterative stage in which registered suppliers progressively lower their offers in real time. Phase-1 sealed bids are too sparse in the Sao Paulo data to be usable (fewer than 1\% of rows have a non-zero min\_bid\_ph1), so the paper relies on phase~2 throughout. The moments are extracted ad-hoc from the raw CSV by \texttt{scripts/25\_bid\_moments.R}; 74.8\% of rows carry valid phase-2 data.
+
+Table~\ref{tab:bid-moments-oa} reports the DiD on three bid-distribution outcomes: \textit{discount from reference} $=(p_\text{ref}-\min_\text{bid})/p_\text{ref}$, \textit{log SD of ph-2 bids}, and \textit{normalized bid range}. Each is estimated on the full sample and on the 2-, 3-, and $\geq\!5$-firm subsamples, under the two-way fixed-effects specification (item and month FE, PBU FE). The discount coefficient is $+0.058$ in the full sample and stays between $+0.025$ and $+0.065$ when firm count is held fixed---positive and significant, but smaller than the no-time-FE estimates previously reported. The log-SD coefficient is $+0.090$ in the full sample and is not monotonic across firm-count subsamples; the bid-SD compression story does not survive the two-way fixed-effects specification. The paper's intensive-margin interpretation rests on the bid-discount shift and the Gelbach residual, not on the SD pattern.
+
+\IfFileExists{../output/tables/tab_bid_moments.tex}{\begin{table}[htbp]\centering\caption{Phase-2 Bid Moments (reprinted from main text)}\label{tab:bid-moments-oa}\end{table}}{}
+
+\section{Conditioning on Firm Count}
+
+Table~OA.11 holds the extensive margin fixed by restricting the sample to items with exactly 2, 3, or 5+ participating firms and re-estimating the main price regression under the two-way fixed-effects specification. The coefficient ranges from $-0.093$ to $-0.108$, all at $p<0.01$; the price effect is therefore not a pure headcount artefact.
+
+\IfFileExists{../output/tables/tab_bid_aggressiveness.tex}{\input{../output/tables/tab_bid_aggressiveness.tex}}{}
+
+\section{Causal Forest}
+
+The \citet{athey2019,wager2018} causal forest locates where treatment effects concentrate across the covariate space. I train the forest on the 18-month completed-items sample using log reference value, log quantity, class dummies, the sealed-bid indicator, and PBU type as inputs. Figure~\ref{fig:cforest-varimp} shows the variable-importance diagnostic: item quantity dominates with an importance of 0.486, roughly an order of magnitude above the next covariate. Figure~\ref{fig:cforest-gate} then plots the group-average treatment effect (GATE) across quartiles of the estimated conditional-average treatment effect (CATE). The monotone decline from Q1 to Q4 is the heterogeneity signal that motivates the value-threshold counterfactual in Section~4.6.
+
+\IfFileExists{../output/figures/fig_12_cforest_varimp.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_12_cforest_varimp.pdf}\caption{Causal Forest: Variable Importance for Treatment-Effect Heterogeneity}\label{fig:cforest-varimp}\end{figure}}{}
+
+\IfFileExists{../output/figures/fig_13_cforest_gate.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_13_cforest_gate.pdf}\caption{Causal Forest: Group Average Treatment Effects by CATE Quartile}\label{fig:cforest-gate}\end{figure}}{}
+
+\IfFileExists{../output/tables/tab_cforest.tex}{\input{../output/tables/tab_cforest.tex}}{}
+
+\section{Quantile Difference-in-Differences}
+
+The \citet{canay2011} quantile DiD on the residualized log-price distribution delivers a parallel check. Figure~\ref{fig:quantile-did-oa} plots the coefficient at each decile. The effect is strongly negative at the lower quantiles ($\tau=0.10$: $-0.623$; $\tau=0.25$: $-0.543$) and turns positive at the upper tail ($\tau=0.90$: $+0.445$). At the lower quantiles---where items are standardized and multiple capable suppliers exist---open competition drives prices down sharply; at the upper tail, items tend to be specialized with thinner markets, and the pattern reverses. The curve is the quantile-regression twin of the causal-forest GATE in Figure~\ref{fig:cforest-gate}, and of the residualized-QR diagnostic in Figure~\ref{fig:qte}. Three different estimators deliver the same heterogeneity story.
+
+\IfFileExists{../output/figures/fig_14_quantile_did.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}\label{fig:quantile-did-oa}\end{figure}}{}
+
+\IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
+
+\clearpage
+
+%% ====================================================================
+%% PART III: POLICY DESIGN AND EXTENSIONS
+%% ====================================================================
+\part{Policy Design and Extensions}
+
+\section{Value-Threshold Counterfactual}
+
+Table~\ref{tab:cf-oa} reports the per-quartile DiD coefficients used in the value-threshold counterfactual simulation. The simulation splits Group-65 pre-period items into quartiles of reference value (cutoffs R\$500 / US\$143, R\$1{,}875 / US\$536, R\$7{,}623 / US\$2{,}180 (at R\$3.50 per US dollar)), estimates the DiD within each quartile, and computes the fiscal cost recovered by exempting the top~$k$ quartiles. Because 92\% of pre-period Group-65 procurement value concentrates in the top quartile, exempting Q4 alone recovers 90\% of the counterfactual baseline fiscal cost.
+
+\IfFileExists{../output/tables/tab_counterfactual.tex}{\begin{table}[htbp]\centering\caption{Counterfactual Policy Designs (reprinted)}\label{tab:cf-oa}\end{table}}{}
+
+Figure~\ref{fig:cf-level-oa} reprints the residual-fiscal-cost schedule as a function of the exemption percentile, complementing the Pareto-frontier view of Figure~\ref{fig:counterfactual} in the main text. Both figures deliver the same message through different axes: the first reads the marginal cost of preserving the SME-only rule at each percentile, while the second reads the cumulative cost recovered by exempting everything above a percentile.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_counterfactual.pdf}{\includegraphics[width=0.7\textwidth]{fig_counterfactual.pdf}}
+\caption{Residual Fiscal Cost as a Function of the Exemption Percentile}
+\label{fig:cf-level-oa}
+\end{figure}
+
+\section{CMED-Regulated Pharmaceuticals vs.\ Non-Pharma Medical Supplies}
+
+\IfFileExists{../output/tables/tab_pharma.tex}{\input{../output/tables/tab_pharma.tex}}{}
+
+The pharma decomposition splits Group 65 into class~6531 (medications subject to CMED price ceilings) and the remaining classes (non-pharma medical supplies). Split-sample DiD estimates---with controls included in both subsamples so that $\hat\beta$ is identified against the never-treated groups in each case---are $-0.156$ for pharma and $-0.075$ for non-pharma; the differential is confirmed by an interaction specification within the full 18-month sample. Pharma bears 60\% of the total fiscal cost despite 42\% of the procurement value, because the per-unit distortion is roughly double that of the non-pharma subsegment. A direct look at prices (Figure~\ref{fig:cmed} in the main text) shows that 96\% of pharma transactions clear below the CMED-referenced cap, so the cap is slack and the SME-only rule compresses competition within the residual below-cap range. Implementation details are in \texttt{scripts/24\_pharma.R}.
+
+\section{Real Prices (IPCA-Deflated)}
+
+\IfFileExists{../output/tables/tab_prices_real.tex}{\input{../output/tables/tab_prices_real.tex}}{}
+
+\section{Extensive Margin and Procurement Efficiency}
+
+\IfFileExists{../output/tables/tab_extensive.tex}{\input{../output/tables/tab_extensive.tex}}{}
+\IfFileExists{../output/tables/tab_efficiency.tex}{\input{../output/tables/tab_efficiency.tex}}{}
+
+\section{Heterogeneity by PBU Type}
+
+\IfFileExists{../output/tables/tab_heterog_pbu.tex}{\input{../output/tables/tab_heterog_pbu.tex}}{}
+
+\section{SME Winner Composition}
+
+\IfFileExists{../output/tables/tab_sme_winner.tex}{\input{../output/tables/tab_sme_winner.tex}}{}
+
+Figure~\ref{fig:sme-share} displays the monthly share of completed items where the winning firm is self-classified as an SME.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_10_sme_share.pdf}
+\caption{SME Winner Share (Completed Items) by Month}
+\label{fig:sme-share}
+\end{figure}
+
+\clearpage
+
+%% ====================================================================
+%% PART IV: RAIS
+%% ====================================================================
+\part{RAIS Matched Employer-Employee Linkage}
+
+Brazil's \emph{Rela\c{c}\~ao Anual de Informa\c{c}\~oes Sociais} (RAIS) is a matched employer-employee registry covering the universe of formal-sector employment relationships. This part links the winning firms in BEC to their RAIS profiles at the CNPJ-raiz (8-digit firm identifier) level, using the establishment-level (ESTB) files for 2011--2017. Of 17{,}857 distinct winning CNPJ raízes in the Paper-2 sample, 14{,}755 match RAIS 2017 nationwide (82.6\% coverage); within Sao Paulo state alone, 12{,}533 match (70.2\%). The link is produced by \texttt{scripts/05\_link\_rais.py}, a DuckDB-based ETL.
+
+\section{Validation of the Self-Declared ME/EPP Label}
+
+The BEC data includes a self-declared \texttt{fornec\_enquad} (firm-enquadramento) variable. Table~\ref{tab:rais-val} tests whether the headline DiD is sensitive to the label's classification noise by restricting the estimation sample to firms with (i) a RAIS match, (ii) active employment at most 49 (ME/EPP ceiling), (iii) active employment at most 9 (micro ceiling), and (iv) active employment strictly below 100 (excluding the top of the RAIS size distribution). The price coefficient is essentially invariant across these subsamples.
+
+\IfFileExists{../output/tables/tab_rais_validation.tex}{\begin{table}[htbp]\centering\caption{RAIS-Validated Winner Subsamples}\label{tab:rais-val}\end{table}}{}
+
+\section{Winner Composition: RAIS-Validated SME}
+
+Table~\ref{tab:winner-rais-oa} uses a RAIS-validated SME flag (winner active employment $\leq 49$) as the dependent variable. The DiD on this outcome estimates how the SME-only rule shifts the probability of a genuinely small winner; the mechanism prediction is a positive post-policy shift.
+
+\IfFileExists{../output/tables/tab_winner_rais.tex}{\begin{table}[htbp]\centering\caption{Winner Composition: RAIS-Validated SME}\label{tab:winner-rais-oa}\end{table}}{}
+
+\IfFileExists{../output/tables/tab_winner_rais_alt.tex}{\input{../output/tables/tab_winner_rais_alt.tex}}{}
+
+\section{Main DiD with RAIS Firm-Level Controls}
+
+Table~\ref{tab:rais-controls-oa} augments the headline DiD with RAIS firm-level controls---$\log(1+\text{v\'inculos})$, $\log(1+\text{firm age at 2018})$, and CNAE 2-digit fixed effects. The $g65 \times Pre$ coefficient is invariant, confirming that the price effect is not explained by observable differences in winner size, age, or sector.
+
+\IfFileExists{../output/tables/tab_rais_controls.tex}{\begin{table}[htbp]\centering\caption{Main DiD with RAIS Firm-Level Controls}\label{tab:rais-controls-oa}\end{table}}{}
+
+\section{Enforcement Heterogeneity}
+
+Table~\ref{tab:enforcement-oa} tests whether the price effect is larger in PBUs that were historically more exposed to non-SME winners. The exposure measure is the pre-period share of each PBU's winners with RAIS employment $\geq 100$. Weighted median is 6.9\%; PBUs above median show a $-0.049$ ($p<0.05$) larger price distortion.
+
+\IfFileExists{../output/tables/tab_enforcement.tex}{\begin{table}[htbp]\centering\caption{Enforcement Heterogeneity by PBU Exposure}\label{tab:enforcement-oa}\end{table}}{}
+
+\section{Firm-Level Employment Pre-Trends (RAIS 2011--2017)}
+
+Figure~\ref{fig:pretrends-oa} plots the event-study coefficients on $\log(1+\text{v\'inculos})$ for treated firms (ever won a group-65 item in the BEC pre-period) versus controls (won only non-group-65 items in the same period). Pre-reference joint $F$-test is 1.46 ($p=0.198$) in the balanced panel with zero-fill, failing to reject parallel pre-trends. The always-present subset (firms with $\geq 1$ employment link every year 2011--2017) rejects more strongly; this reflects the selection of procurement winners on firm productivity and growth rather than a violation of the paper's item-level identification.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_pretrends.pdf}{\includegraphics[width=0.7\textwidth]{fig_pretrends.pdf}}
+\caption{Firm-Level Employment Pre-Trends (RAIS 2011--2017)}
+\label{fig:pretrends-oa}
+\end{figure}
+
+\IfFileExists{../output/tables/tab_pretrends.tex}{\begin{table}[htbp]\centering\caption{Pre-Trends Event Study}\end{table}}{}
+
+\section{Firm Age Heterogeneity}
+
+Table~\ref{tab:firm-age-oa} interacts $g65 \times Pre$ with a young-firm indicator (age at 2018 $\leq 9$ years, the median of pre-period winners). The price effect is uniform across age within the ME/EPP-eligible pool; the apparent differences reported by naive age splits are driven by firm-size composition (see Section~OA.27).
+
+\IfFileExists{../output/tables/tab_firm_age.tex}{\begin{table}[htbp]\centering\caption{Heterogeneity by Winner Firm Age}\label{tab:firm-age-oa}\end{table}}{}
+
+\section{CNAE 2-Digit Sector Heterogeneity}
+
+Table~\ref{tab:cnae-oa} re-estimates the DiD within each of the top-6 CNAE 2.0 divisions (wholesale 46, retail 47, vehicle wholesale 45, chemicals 20, food manufacturing 10, other manufacturing 32) and reports the coefficient on $g65 \times Pre$.
+
+\IfFileExists{../output/tables/tab_cnae_het.tex}{\begin{table}[htbp]\centering\caption{Heterogeneity by Winner CNAE 2-Digit Sector}\label{tab:cnae-oa}\end{table}}{}
+
+\section{Winner Age $\times$ Size Quadrants}
+
+Table~\ref{tab:age-size-oa} crosses winner age (young/mature, median split at 9 years) with RAIS-observed size (SME/large, cut at the 49-v\'inculos ME/EPP ceiling) to form four quadrants. Within eligible firms (SME), the price effect is essentially identical for young and mature firms ($-0.129$ vs $-0.128$)---the rent transfer from the SME-only rule is uniform within eligibility and concentrated on the geographic/competition margins rather than on firm maturity per se.
+
+\IfFileExists{../output/tables/tab_age_size.tex}{\begin{table}[htbp]\centering\caption{Heterogeneity by Age $\times$ Size Quadrants}\label{tab:age-size-oa}\end{table}}{}
+
+\clearpage
+
+%% ====================================================================
+%% PART V: COMPLEMENTARY ESTIMATORS
+%% ====================================================================
+\part{Complementary Estimators}
+
+\section{Synthetic Control}
+
+As an external check that does not lean on the DiD framing, I build a synthetic control for Group~65 using the 76 never-treated product groups as donors~\citep{abadie2010,ben2021}. Donor weights are chosen to match the Group-65 pre-period trajectory in log prices. Figure~\ref{fig:synth-levels} overlays actual Group-65 log prices against the synthetic counterfactual: the pre-period fit is near-exact, and a visible gap opens after March~2018. Figure~\ref{fig:synth-gap} plots that gap directly. Figure~\ref{fig:synth-placebo} reports the in-space placebo distribution of post-treatment ATTs across donor groups---the Group-65 post-switch gap sits in the extreme tail of the placebo distribution, so the effect is not a product of random noise.
+
+\IfFileExists{../output/tables/tab_synth.tex}{
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_16_synth_levels.pdf}
+\caption{Synthetic Control: Group 65 (Actual) vs.\ Synthetic Group 65}
+\label{fig:synth-levels}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_17_synth_gap.pdf}
+\caption{Synthetic Control: Gap Between Group 65 and Synthetic (Log Prices)}
+\label{fig:synth-gap}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_18_synth_placebo.pdf}
+\caption{Synthetic Control: In-Space Placebo Distribution of Post-Treatment ATTs}
+\label{fig:synth-placebo}
+\end{figure}
+
+\input{../output/tables/tab_synth.tex}
+}{}
+
+\section{HonestDiD Sensitivity Analysis}
+
+Figure~\ref{fig:honestdid-oa} reprints the \citet{rambachan2023} sensitivity diagnostic from the main appendix, which reports robust 95\% confidence intervals for each outcome under post-treatment deviations from parallel trends up to $\bar M$ times the largest pre-period violation. Under the two-way fixed-effects specification, the log-price robust CI narrowly excludes zero near $\bar M = 0$ but includes zero beyond approximately $\bar M \approx 0.1$. Read conservatively, this means the price effect is robust only to small pre-trend violations; read together with the clean price placebo, the event study, and the multi-estimator convergence, it is an honest caveat rather than a rejection. The worst-case HonestDiD bound is a stricter test than the point estimate supports in isolation.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_11_honestdid.pdf}{\includegraphics[width=0.7\textwidth]{fig_11_honestdid.pdf}}
+\caption{HonestDiD Sensitivity Analysis of the Log-Price Effect}
+\label{fig:honestdid-oa}
+\end{figure}
+
+\section{Lee (2009) Bounds}
+
+\IfFileExists{../output/tables/tab_lee_bounds.tex}{\input{../output/tables/tab_lee_bounds.tex}}{}
+
+\clearpage
+
+\section{Complementary Visualizations}
+\label{sec:oa_wow}
+
+\subsection{Monthly Bid-Discount Densities}
+
+Figure~\ref{fig:ridgeline} stacks the monthly kernel densities of the winning-bid discount for Group-65 items through the 18-month window. The regime change lands visibly in March~2018: post-cutoff months bunch near a zero discount, while pre-cutoff months keep meaningful mass on discounts of twenty percent or more.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_wow6_ridgeline.pdf}{%
+\includegraphics[width=0.72\textwidth]{fig_wow6_ridgeline.pdf}}
+\caption{Monthly density of Group-65 winning-bid discount, 2016--2019}
+\label{fig:ridgeline}
+\end{figure}
+
+\subsection{Winner-to-PBU Distance Density}
+
+Figure~\ref{fig:distance_density} plots the empirical CDF of the kilometer distance from the winning firm to the buying PBU, by regime. The 50\% line sits 8~km further out under open tenders---the geographic counterpart of the conditional-mean distance estimates in Table~\ref{tab:distance}.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_wow7_distance.pdf}{%
+\includegraphics[width=0.72\textwidth]{fig_wow7_distance.pdf}}
+\caption{Winner-to-PBU distance density by regime, completed Group-65 items}
+\label{fig:distance_density}
+\end{figure}
+
+\subsection{Quantile Treatment Effect on Log Prices}
+
+Figure~\ref{fig:qte} reports the quantile treatment effect of $g65 \times \mathit{Pre}$ on log prices across twelve quantiles of the within-item price distribution, computed via residualized quantile regression. The effect is strongly negative at the lower quantiles and fades toward zero at the upper tail---the same heterogeneity pattern documented in Section~4.4 and in the Canay quantile DiD of Section~OA.B.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../output/figures/fig_wow8_qte.pdf}{%
+\includegraphics[width=0.72\textwidth]{fig_wow8_qte.pdf}}
+\caption{Quantile treatment effect on log prices, residualized quantile regression}
+\label{fig:qte}
+\end{figure}
+
+\clearpage
+
+\section{Aggregate Extrapolation: Scenario Bounds}
+\label{oa:aggregate}
+
+Extrapolating the Group-65 coefficient to the full Brazilian public procurement envelope requires a representative price coefficient $\bar\beta$ for product groups other than Group~65 and the fraction $f$ of Brazilian procurement actually subject to SME-only rules. Within Group~65 I can bracket $\bar\beta$: the pharma/non-pharma split documents substantial between-segment heterogeneity ($-0.156$ vs.\ $-0.075$), while the quartile-by-reference-value split documents near-uniform within-segment heterogeneity ($-0.074$ to $-0.092$). A plausible range for $\bar\beta$ across Brazilian product groups is therefore roughly $[-0.15, -0.05]$. For $f$, the R\$80{,}000 item-value threshold in federal law~\citep{bosio2022} covers roughly 30--50\% of BEC-style standardized procurement in Sao Paulo; I use that range as a conservative proxy for the national fraction. Table~\ref{tab:aggregate_bounds} reports implied annual fiscal cost under three scenarios applied to the R\$1.5~trillion annual Brazilian procurement envelope.
+
+\begin{table}[htbp]
+\centering
+\caption{Aggregate-extrapolation scenarios for the Brazilian fiscal cost of SME-only procurement rules}
+\label{tab:aggregate_bounds}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccc}
+\toprule
+Scenario & $\bar\beta$ & $f$ & Implied annual cost \\
+\midrule
+Conservative & $-0.05$ & $0.30$ & R\$22~B (US\$6.3~B) \\
+Central      & $-0.08$ & $0.40$ & R\$46~B (US\$13~B)  \\
+Upper bound  & $-0.15$ & $0.50$ & R\$105~B (US\$30~B) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Annual Brazilian public procurement is R\$1.5~trillion (US\$429~billion). $\bar\beta$ is the representative log-price coefficient assumed to apply across product groups subject to SME-only rules; the range brackets the within-Group-65 heterogeneity. $f$ is the fraction of Brazilian public procurement subject to SME-only rules, set by the R\$80{,}000 item-value threshold in federal law; the 30--50\% range is a conservative proxy for the national fraction. Implied annual cost is $f \times \text{R\$1.5~T} \times |e^{\bar\beta} - 1|$.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+Every scenario puts the aggregate fiscal cost in the \emph{tens of billions of reais per year}---one order of magnitude higher than a single-coefficient extrapolation would deliver. The exact point estimate is not defensible, but the order-of-magnitude conclusion is robust to wide variation in the extrapolation assumptions.
+
+\clearpage
+
+\section{Welfare Bounds: Coarse Equilibrium Calibration}
+\label{oa:welfare}
+
+The static accounting in Section~4.6 treats the price effect and the completion shift as independent. A simple equilibrium calibration bounds the combined welfare cost. Let $\pi$ denote the fractional price increase under SME-only, $c$ the completion-rate increase under open tenders ($c \approx 0.10$), and $V$ the pre-period Group-65 procurement value at open-tender prices ($V = \text{R\$689~M}$). Under two polar assumptions: (i)~no behavioral response---PBUs would purchase exactly the same items under either regime, assuming perfectly inelastic demand above the reserve price---the welfare cost is $\pi V$, the static fiscal cost. (ii)~Full completion response---the 10-percentage-point reduction in completion under SME-only reflects items PBUs would have bought at open-tender prices but abandon at SME-only prices---the welfare cost also includes foregone consumer surplus on those items. Under a linear-demand approximation, the completion response adds roughly $cV/2 \approx$ R\$34~M over the 18-month window. The true equilibrium welfare cost for Group~65 therefore lies between R\$71~M (static) and R\$105~M (with completion response): the static figure captures 65--75\% of the full welfare loss. This is a coarse calibration, not a welfare estimate; structural estimation of the demand elasticity and the completion response is the natural extension.
+
+\clearpage
+
+\section{Cross-Country Comparison of SME-Preference Regimes}
+\label{oa:cross_country}
+
+Brazil's case is representative of a wider family of SME-preference regimes. Table~\ref{tab:cross_country} compares Brazil's design with the SME-procurement frameworks of six other jurisdictions. The variation in design features---set-asides vs.\ bid preferences, value thresholds, size definitions, and coverage---is large, but the fundamental policy question is the same everywhere: at what item-value threshold is the price-competition cost of an SME preference smaller than the distributional benefit? The value-threshold lever documented in the main text is in principle applicable to any of these regimes.
+
+\begin{table}[htbp]
+\centering
+\caption{Design features of selected SME-preference procurement regimes}
+\label{tab:cross_country}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lllll}
+\toprule
+Jurisdiction & Instrument & Size threshold & Value threshold & Coverage \\
+\midrule
+Brazil (federal law) & Set-aside   & R\$4.8M revenue     & R\$80{,}000/item   & Universal below threshold \\
+United States (FAR)  & Set-aside + price preference & 500 employees & \$250{,}000/contract & Discretion above threshold \\
+European Union       & Price preference (voluntary) & 250 employees & None (EU dir. encouragement) & Voluntary by member state \\
+Mexico               & Set-aside   & 250 employees       & 30\% of federal value & Voluntary above threshold \\
+Colombia             & Price preference & Gross sales     & 20 SMMLV (\textasciitilde~US\$5{,}000) & Below threshold \\
+Argentina            & Price preference & Revenue limits  & None           & Voluntary \\
+South Korea (SME Act)& Set-aside   & Employment + sales  & 500M KRW (\textasciitilde~US\$370{,}000) & Universal below threshold \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Design-feature summary compiled from
+\citet{oecd2018,sigma2016,hoekman2020,loader2013,loader2015,pwc2014,thai2017}.
+The table is a high-level schematic: each regime has important sub-rules
+and reporting exemptions not captured here. ``Set-aside'' means items
+below the value threshold are reserved exclusively for SMEs; ``price
+preference'' means SMEs can win at a small markup over the lowest
+non-SME bid. Brazil's R\$80{,}000 threshold is low relative to other
+set-aside regimes---U.S.\ FAR at US\$250{,}000 and South Korea at
+KRW~500M---which is one reason the fiscal footprint in Brazil is
+disproportionately large relative to administrative coverage.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\clearpage
+
+\bibliographystyle{aea}
+\bibliography{References}
+
+\end{document}
