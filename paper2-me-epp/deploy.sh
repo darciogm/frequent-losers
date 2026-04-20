@@ -17,7 +17,12 @@ echo "📄 Copying current manuscript PDF into site/"
 if [ -f manuscript/main.pdf ]; then
   mkdir -p site/assets
   cp manuscript/main.pdf site/assets/paper.pdf
-  echo "  copied main.pdf -> site/assets/paper.pdf"
+  echo "  copied main.pdf -> site/assets/paper.pdf (v1 reduced-form)"
+fi
+if [ -f v2-structural/manuscript/paper_v2.pdf ]; then
+  mkdir -p site/assets
+  cp v2-structural/manuscript/paper_v2.pdf site/assets/paper_v2.pdf
+  echo "  copied paper_v2.pdf -> site/assets/paper_v2.pdf (v2 structural)"
 fi
 
 echo ""
