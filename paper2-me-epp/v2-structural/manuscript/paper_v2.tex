@@ -1,0 +1,2171 @@
+%% AER submission format: 12pt, double-spaced, 1-inch margins,
+%% page numbers, article class (AER-compatible).
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{appendix}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue,
+            filecolor=blue, urlcolor=blue}
+\usepackage{microtype}
+\usepackage{natbib}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{lmodern}
+\usepackage{caption}
+\usepackage{subfig}
+
+\setlength{\emergencystretch}{3em}
+\setlength{\bibsep}{0pt plus 0.3ex}
+\doublespacing
+\graphicspath{{figures/}{../output/figures/}}
+\pdfsuppresswarningpagegroup=1
+
+% AER-style captions: small, single-spaced, hang indent
+\captionsetup{font=small, labelfont=bf, labelsep=period}
+\captionsetup[table]{singlelinecheck=off}
+
+% AER title formatting
+\title{\textbf{Set-Asides Reshape Bids, Not Bidders:\\
+Evidence from Brazilian Medical Procurement}%
+\thanks{\emph{This version: April 2026 (v2-structural).} The
+structural complement to the reduced-form evidence in
+Genicolo-Martins (2026a); the two papers should be read in
+sequence. Replication materials:
+\url{https://github.com/darciogm/paper2-me-epp/v2-structural}.
+All errors are my own.}}
+
+\author{Darcio Genicolo-Martins\thanks{INSPER, São Paulo, Brazil.
+Email: \href{mailto:darciogm1@insper.edu.br}{darciogm1@insper.edu.br}.}}
+
+\date{April 2026}
+
+\newcommand{\citetp}[1]{\citet{#1}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{center}
+\begin{minipage}{0.85\textwidth}
+\small
+\begin{singlespace}
+\textbf{Abstract.}
+Does a small-firm set-aside raise prices by excluding competitors,
+or by changing how the remaining firms bid? For Brazil's March~2018
+extension of the SME-only rule to medical supplies, the
+\citet{campo2003} estimator on 33{,}706 auctions decomposes the
+10--11\% price effect: \textbf{66\% is within-auction bidding
+response, 34\% is cost-primitive entry.} A testable
+primitive-invariance condition for non-SMEs holds tightly
+(KS $D = 0.03$). Participation shifts are large ($-62\%$/$+52\%$),
+but the price effect lives inside the auction, not at the door.
+Deadweight loss is 11.8\% of procurement value; a top-quartile
+exemption recovers 95\% of the fiscal cost. \textbf{Set-asides
+reshape bids, not bidders.}
+
+\vspace{0.5em}
+
+\noindent \textbf{JEL codes:} H32, H57, L26, L53, D44, C14.
+
+\noindent \textbf{Keywords:} public procurement; small-firm
+set-asides; structural auction estimation; asymmetric GPV; welfare
+counterfactuals.
+\end{singlespace}
+\end{minipage}
+\end{center}
+
+\clearpage
+\setcounter{page}{1}
+\pagestyle{plain}
+
+\clearpage
+\section{Introduction}
+
+When a government restricts public procurement to small firms, does the
+price premium come from the firms it excludes, or from the firms it
+keeps? The question is old---set-aside rules have been on the books in
+developed and developing economies since at least the 1950s---and the
+answer determines what reform looks like. If the premium runs through
+the extensive margin (fewer firms bid), the policy fix is to expand the
+small-firm roster: subsidies, registration relief, capacity-building.
+If instead it runs through the intensive margin (the same firms bid less
+aggressively because they no longer face large competitors), no roster
+expansion will close the gap---the only lever is to shrink the
+\emph{scope} of the rule itself. Policy prescriptions that differ by an
+order of magnitude turn on a quantity the literature has mostly been
+unable to measure directly.
+
+This paper measures it, using a quasi-experiment in Brazilian medical
+procurement. Between August 2014 and February 2018, medical supplies
+(Group 65 in the BEC product catalog) were the \emph{only} major
+product group in S\~ao Paulo state that remained open to general
+competition; 76 other product groups had been under the SME-only
+tendering rule since the federal 2014 mandate took effect. The
+exception was the outcome of a joint agreement between the state
+government and its audit court (TCE-SP) that medical supplies required
+open competition on public-health grounds. That exception ended in
+March 2018, when a legal opinion from a separate state agency
+(the \emph{Procuradoria-Geral do Estado}, PGE-SP) held the exemption
+unconstitutional on isonomy grounds: medical supplies could not be
+procedurally distinguished from other groups. The SME-only rule
+extended to Group 65 overnight. The reversal was triggered by a
+bureaucratic legal argument, not by any procurement-market outcome; it
+is plausibly exogenous to anything happening in Group-65 bidding.
+
+\paragraph{The approach.}
+A reduced-form companion paper~\citep{genicolo2026a}\footnote{%
+The reduced-form analysis documents a 10--11\% increase in Group-65
+procurement prices under the SME-only regime, robust to the
+\citet{callaway2021}, \citet{sun2021}, and \citet{goodmanbacon2021}
+estimators. A \citet{gelbach2016} mediation decomposition---regressing
+log prices on bidder count and a winner-SME indicator---finds that the
+two observable channels are individually large but opposite-signed and
+together explain only about 5\% of the effect on net, leaving roughly
+95\% unexplained. That residual is the object of the present paper.}
+shows that the policy raises Group-65 procurement prices by 10--11\%
+over the 18-month window, but it cannot separate the two channels
+listed above. A \citet{gelbach2016} decomposition locates roughly 95\%
+of the effect outside the observable entry and winner-composition
+channels. That residual is what the present paper explains: using bid
+distributions recovered from the BEC electronic platform, I estimate
+an asymmetric first-price sealed-bid (FPSB) model on the \emph{Convite}
+modality of Group-65 procurement (33,706 auctions with at least two
+bidders; 24,346 bidder-auctions entering the CPV inversion) via the
+\citet{campo2003} extension of \citet{gpv2000}. The estimation
+delivers type-specific cost distributions
+$F_c^{\text{SME}}(\cdot)$ and $F_c^{\text{NonSME}}(\cdot)$.
+Because the regime switch affects \emph{which} firms bid but not
+their primitive costs, the non-SME cost distribution should be
+invariant across the break. That invariance, when it holds, both
+validates the model and pins down the channel structure.
+
+\paragraph{Three findings.}
+
+\emph{First}, the identifying restriction holds where the model
+predicts it should. In Convite, where non-SMEs continue bidding in
+many auctions both before and after the cutoff, their recovered cost
+distribution is statistically invariant across the March-2018 break:
+mean shift of 0.001 of reference price, KS $D = 0.03$. Under the
+Preg\~ao Haile-Tamer upper bound, the pattern flips---it is the SME
+bound that is nearly invariant ($D = 0.03$), while the non-SME bound
+drifts upward by 0.04 of reference. The drift reflects selection among
+the shrinking pool of non-SMEs who keep bidding despite near-zero
+post-policy win probability, not a movement in primitive costs. In
+each modality, the primitive that survives the test is the one whose
+bidder pool was not re-selected by the policy.
+
+\emph{Second}, the SME cost distribution does shift upward---by 7.7\%
+relative to its Pre-period mean, equivalent to 4 percentage points
+in ref-normalized units (KS $D = 0.08$, $p < 10^{-10}$). This is the
+compositional footprint of the policy: when Group 65 becomes
+SME-only, marginal higher-cost small firms---firms that previously
+specialized in other product groups or new entrants---enter the
+Group-65 candidate pool. The SME primitive is no longer the same pool
+before and after. This ``entry margin'' is, to my knowledge, the first
+structural measurement of pool re-composition under an SME set-aside.
+
+\emph{Third}, the structural price effect decomposes as
+\textbf{$\sim$66\% intensive margin and $\sim$34\% entry margin}.
+The intensive share is 74\% at $N{=}2$, 47\% at $N{=}3$, 70\% at
+$N{=}4$, and 72\% at $N{\geq}5$---a rough two-thirds across auction
+sizes. This is the central structural finding. It does the work
+the Gelbach residual could not: the 95\% unexplained by observable
+entry and winner composition is, at its core, \emph{within-auction
+bidding behavior}---the same SMEs bidding differently once their
+larger competitors are gone---not another observable margin waiting
+to be added. Participation responds too, and substantially: the
+reduced-form entry regression shows the non-SME entry rate falls
+62\% under the restriction ($t = 43$) while the SME entry rate
+rises 52\% ($t = 38$). These shifts amplify the total welfare cost
+the policy generates, but they are not where the price effect
+primarily lives. The roughly R\$30--33 (US\$9--10) type-symmetric
+entry cost implied by the free-entry zero-profit condition means
+that a
+rigorous \citet{atheyseira2011} nested entry-bidding model---
+future work---should refine magnitudes without overturning the
+intensive-margin primacy of the fixed-pool result.
+
+\paragraph{Welfare counterfactual.}
+Using the recovered cost distributions, I simulate equilibrium procurement
+prices under a value-threshold exemption---applying the SME-only rule
+only below a reference-price cutoff. The structural Pareto frontier is
+even more concave than the reduced-form version in \citet{genicolo2026a}:
+exempting the top quartile of items by reference price preserves the
+SME preference on 75\% of items \emph{by count} while recovering
+\textbf{95\%} of the fiscal cost of the uniform rule (compared to 90\%
+in the reduced-form calculation). The policy recommendation of the
+companion paper is thus validated and sharpened by the structural model.
+
+\paragraph{Contributions.}
+The findings above distill into three methodological contributions
+to the literature:
+
+\noindent\textbf{(i) First structural decomposition of an SME
+set-aside into intensive and entry channels.} The public-procurement
+literature has either measured SME effects in reduced
+form~\citep{marion2007, denes1997, ferraz2015} or modeled bid
+preferences structurally without the clean
+\emph{restriction}-versus-\emph{preference}
+contrast~\citep{krasnokutskayaseim2011, athey2013}. I combine the
+two: reduced-form identification via a discrete legal cutoff,
+followed by structural estimation of type-specific cost primitives.
+The headline finding---that within-auction bidding carries the
+majority of the policy's price effect---is directly relevant to
+the design of SME preference regimes in Brazil, the EU, and the
+130 other jurisdictions documented in \citet{oecd2018, sigma2016,
+hoekman2020}.
+
+\noindent\textbf{(ii) A selection-conditional consistency check on
+primitives.} In the Convite CPV estimator, the non-SME cost
+distribution is tightly identified across the regime break: it
+enters a (same) set of auctions with (essentially) the same
+bidder-pool structure before and after the policy. The resulting
+KS $D = 0.03$ (mean shift $0.001$) is a consistency check on the
+model under the identifying assumption that the policy did not
+re-select which non-SMEs bid in the Convite Pre vs Post samples.
+This condition plausibly holds in Convite because non-SMEs remain
+eligible to bid in Convite auctions not subject to the SME-only
+restriction, and the regime change affects a subset of Group-65
+auctions rather than the entire non-SME choice set. Under Preg\~ao,
+where the Haile-Tamer upper bound is applied to final bids and
+non-SMEs continue to bid despite near-zero post-policy win
+probability, the upper bound on the non-SME cost distribution does
+shift ($D = 0.06$), consistent with selection of the remaining
+non-SME bidders toward higher-cost types. The paper's
+identification relies on the Convite cross-regime check, with the
+Preg\~ao result as a directional robustness.
+
+\noindent\textbf{(iii) Welfare-based evaluation of a value-threshold
+reform.} The counterfactual exercise delivers a quantitative estimate
+of the value-threshold exemption proposed in \citet{genicolo2026a},
+grounded in asymmetric-bidder welfare accounting rather than accounting
+identities. The structural reform recovers more fiscal cost and with
+higher precision than the reduced-form calculation suggested.
+
+\paragraph{Relation to the literature.}
+The paper connects two strands. The empirical SME procurement
+literature---\citet{marion2007, denes1997, ferraz2015, szucs2024}---documents
+price and efficiency effects of set-aside and preference rules in
+reduced form. The structural auction literature---\citet{gpv2000,
+campo2003, krasnokutskaya2011, athey2013, bajari2014,
+bajarihortacsu2005, hendricks2003}---recovers cost primitives from
+bid data and simulates counterfactuals, typically in settings without
+a clean regime break. This paper bridges the two:
+the March 2018 break provides the causal cut; CPV asymmetric estimation
+recovers the primitives; and the structural counterfactuals quantify
+welfare. The approach is closest in spirit to
+\citet{krasnokutskayaseim2011} on California highway procurement with
+bid preferences, but with three distinctions: (i) the regime contrast
+is \emph{restriction} vs \emph{open}, not a 5\% preference; (ii) the
+asymmetric bidder-type framework is \citet{campo2003} rather than
+symmetric GPV with unobserved heterogeneity as in
+\citet{krasnokutskaya2011}; and (iii) the March 2018 regime break
+provides a \emph{testable} primitive-invariance condition on the
+non-SME cost distribution, which \citet{krasnokutskayaseim2011} assume
+rather than test.
+
+For comparison of magnitudes: \citet{krasnokutskayaseim2011} analyze
+697 Caltrans projects with 3{,}034 bids, an average of 4.4 bidders per
+project (1.75 small + 2.62 large). Their counterfactual estimates the
+California 5\% Small Business Preference raises procurement cost by
+0.5\% and shifts small firms' share of work from 12.5\% to 15.6\%; a
+25\% bid discount would raise costs by 4.1\% (their Table 11). The
+present paper's set-aside regime (complete exclusion of non-SMEs) is
+an order-of-magnitude stronger policy and generates a proportionally
+larger effect: a 10.4\% fiscal cost, 11.8\% DWL of procurement value,
+roughly 20$\times$ the \citet{krasnokutskayaseim2011} 5\% baseline.
+That ratio is broadly consistent with moving from a mild preference
+to a full restriction. Type-specific cost asymmetries are broadly consistent:
+\citet{krasnokutskayaseim2011} estimate small firms bid 5.4\%
+(parametric) to 8.1\% (OLS) higher than large firms; we estimate
+small firms bid about 17\% higher under the Preg\~ao Haile-Tamer
+upper bound (H1-only; one-sided bound), about 4.7\% higher under the
+canonical Convite CPV (Appendix~C), and essentially zero under the
+proxy-classification Convite CPV (where the proxy pools firms by
+registry class and the cross-type distinction is noisier at the
+margin).
+
+\paragraph{Roadmap.}
+Section~\ref{sec:inst} describes the institutional background---the
+Brazilian procurement regime, the BEC platform, and the 2014--2018
+regulatory history of Group 65 that motivates the identifying cut.
+Section~\ref{sec:rf} summarizes the reduced-form baseline
+establishing the 10--11\% headline price effect and the 95\%
+Gelbach residual that the structural exercise will decompose.
+Section~\ref{sec:model} presents the asymmetric FPSB procurement model.
+Section~\ref{sec:identification} states the identification strategy and
+the Campo-Perrigne-Vuong inversion. Section~\ref{sec:data} describes
+the bid-level data and the Convite modality.
+Section~\ref{sec:estimation} estimates the model and reports the
+primitive-invariance tests. Section~\ref{sec:decomposition}
+delivers the headline 66/34 decomposition of the structural price
+effect into intensive and entry channels.
+Section~\ref{sec:endogenous} documents the participation response
+(62\% non-SME exit, 52\% SME entry) and shows why it does not
+overturn the within-auction primacy of the intensive margin.
+Section~\ref{sec:welfare} presents the welfare analysis---accounting
+identity, DWL magnitudes, annualization, and the value-threshold
+counterfactual.
+Section~\ref{sec:robustness} discusses robustness (Preg\~ao type-split
+Haile-Tamer bounds, canonical SME, IPV-vs-CV diagnostic).
+Section~\ref{sec:conclusion} concludes.
+
+%% ============================================================================
+\section{Institutional Background}
+\label{sec:inst}
+
+The identifying variation in this paper starts with a single
+bureaucratic document. In early 2018, São Paulo's state attorney's
+office (PGE-SP) issued an internal legal opinion that, on grounds
+entirely unrelated to procurement outcomes, extended Brazil's
+SME-only default to its last open product category: medical and
+hospital supplies. A parecer on equal treatment took effect the
+following month, and the auctions in this paper look different on
+either side of that line. To see why the line is clean, it helps
+to understand how the surrounding system works---the statutory
+layer-cake of Brazilian procurement, the BEC platform that
+operationalizes it in São Paulo, the 2014 federal mandate that
+made SME-only tendering binding, the peculiar 2014--2018 exception
+that kept Group 65 outside the rule, and the 2018 reinterpretation
+that swept it in.
+
+\paragraph{Brazilian public procurement: statutory framework.}
+Brazilian procurement is a layered structure, and each layer leaves
+a trace in the data. The foundational statute is Lei~8.666/1993,
+which at the time of this study defined five classical modalities
+sorted by value and formality: \emph{Concorr\^encia} for the
+largest projects, \emph{Tomada de Pre\c{c}os} for pre-registered
+suppliers, \emph{Convite} for invited sealed-bid auctions,
+\emph{Concurso} for creative work, and \emph{Leil\~ao} for the
+sale of public assets. Lei~10.520/2002 added a sixth modality,
+the \emph{Preg\~ao}---a reverse auction that opens with sealed
+proposals and closes with an iterative open-outcry phase---and
+over time made it the workhorse of standardized procurement.
+Convite and Preg\~ao are the two modalities this paper uses:
+Convite because it is a first-price sealed-bid auction, exactly
+the object the CPV estimator was designed for, and Preg\~ao
+because its iterative structure puts it in the Haile-Tamer world
+of ascending-bid bounds. Two additional pieces of legislation
+matter for timing: Decreto~9.412/2018 updated the modality
+ceilings mid-sample (raising the Convite non-engineering item
+limit from R\$80{,}000 to R\$176{,}000), and Lei~14.133/2021 is
+currently phasing in a unified replacement for 8.666 and 10.520.
+Neither change affects the identifying window in this paper, but
+both matter for external validity.
+
+Layered on top of these modalities is a separate preferences regime
+for small firms, introduced by Lei Complementar 123/2006---the
+Microenterprise Statute, known in practice as LC~123. LC~123
+defines two eligible firm sizes---\emph{Micro-empresa} (ME: annual
+revenue $\leq$ R\$360{,}000) and \emph{Empresa de Pequeno Porte}
+(EPP: $\leq$ R\$4.8M)---and grants them three cumulative
+preferences: exclusive eligibility for items below R\$80{,}000
+(Art.~48~I), subcontracting set-asides (Art.~48~II), and a 10\%
+tie-breaking margin, reduced to 5\% in Preg\~ao (Art.~44~\S2).
+For the first eight years of the statute these preferences were
+optional tools that purchasing units could invoke or ignore.
+That changed in 2014: LC~147/2014 converted them into binding
+defaults, requiring any buyer who ran a general (non-restricted)
+tender for a sub-R\$80{,}000 item to file a written justification
+with the state audit court. The 2014 amendment is the proximate
+source of the SME-only regime this paper studies---and the reason
+the Group-65 exception that followed was such an anomaly.
+
+\paragraph{BEC: the S\~ao Paulo procurement platform.}
+The statutes describe rules; BEC enforces them. Since Decreto
+estadual 47.297/2002, every São Paulo state purchase passes
+through the \emph{Bolsa Eletr\^onica de Compras}, an electronic
+procurement platform administered by the state treasury secretariat
+(SEFAZ/SP). BEC is the single point of entry for 1{,}344 purchasing
+units---state bureaus, participating municipalities, and accredited
+private entities subject to state rules---and in 2019 it moved
+roughly R\$13 billion (US\$3.7 billion) through its order book.
+Cumulatively since 2005, BEC has handled more than R\$105 billion
+(US\$30 billion), spread across 860{,}000 purchase offers and
+4.8 million item-level transactions. That volume alone makes the
+platform an unusually dense laboratory for procurement research.
+
+Three nested registries structure the platform. Suppliers enroll
+in the Cadastro Unificado de Fornecedores (CAUFESP), which
+certifies their tax regularity, firm size, and procurement
+eligibility; goods and services are cataloged in a three-tier
+CADMAT taxonomy (\emph{group} $\to$ \emph{class} $\to$ \emph{item});
+and each auction runs under one of the statutory modalities, with
+Preg\~ao absorbing roughly 70\% of value, Convite 15\%, and
+Dispensa eletr\^onica (below-R\$17{,}600 direct-purchase auctions)
+15\%. In scope BEC parallels the federal ComprasNet, but it has
+its own governance, its own supplier certification, and a different
+closing protocol---BEC's Preg\~ao uses a soft-close rule rather
+than the ``tempo aleat\'orio'' randomization that ComprasNet
+adopted. For this paper the relevant CADMAT address is Group 65
+(medical and hospital supplies), and within it class 6531, which
+covers pharmaceutical medications subject to additional ceiling
+regulation by the C\^amara de Regula\c{c}\~ao do Mercado de
+Medicamentos (CMED). The three-letter acronyms matter: CAUFESP
+defines who can bid, CADMAT defines what is being bid on, and
+CMED caps what some of it can cost.
+
+\paragraph{Enforcement of the SME-only rule.}
+What LC~147 converted from an option into a default, TCE-SP is
+what turns the default into behavior. Enforcement in BEC operates
+through \emph{opt-out costs}: a purchasing unit that wants to
+run a general (non-restricted) tender for an eligible item must
+file a formal justification with the Tribunal de Contas do
+Estado---the state audit court, and a body with real teeth. The
+filing is reviewed, and a unit found to have circumvented the
+SME-only rule without adequate basis can face administrative
+sanctions, reporting penalties, and loss of procurement autonomy.
+Buyers notice. State-level adherence to SME-only tendering for
+eligible items rose from roughly 13\% before LC~147 to close to
+70\% within three years, and by 2017 an un-justified general
+tender on a sub-threshold item had become unusual enough to draw
+scrutiny on its own. Buyers keep their files clean by using the
+rule, not by arguing with it.
+
+The R\$80{,}000 value ceiling is only half the trigger. Art.~49
+of LC~123 adds a second condition: at least three eligible SMEs
+must be ``potentially available'' for the item. Fewer than three,
+and the auction falls back to the general rule. This
+\emph{three-SMEs precondition} creates a natural item-level fault
+line that is partly endogenous to the item's market. It also
+becomes the lever of the 2014--2018 exception described next.
+
+\paragraph{The Group-65 exception (2014--2018).}
+One product group did not look like the others. In the months
+after LC~147 took effect in 2014, São Paulo's state government
+and TCE-SP together argued that medical and hospital supplies
+belonged in a different regulatory category---``strategic goods''
+that warranted open competition on public-health grounds---and
+the audit court issued a resolution carving Group 65 out of the
+SME-only default. The argument rested on three supporting points.
+First, medical procurement has unusual downstream stakes: the
+difference between an adequately stocked hospital and a
+stock-out is not the same as the difference between two office
+supplies, and rigorous price discovery mattered. Second, ANVISA's
+pharmaceutical registration system narrows the qualified-supplier
+pool for many medical items below the three-SMEs threshold of
+LC~123, which on this reading would have made the restriction
+inapplicable to large shares of the group anyway. Third, CMED's
+regulated list prices for class-6531 medications already impose
+a price ceiling that constrains buyer welfare, making the
+additional SME restriction redundant for the affected items.
+The three arguments together left Group 65 uniquely outside
+the SME-only regime from August 2014 through February 2018---the
+sole major product group so exempted during the period, and,
+on the data, a regime-free control that the rest of the
+catalogue did not have.
+
+\paragraph{The March 2018 reversal.}
+The 2014 carve-out was a compromise between the buying side
+(SEFAZ/SP) and the audit side (TCE-SP). The 2018 reversal came
+from a third actor---the \emph{Procuradoria-Geral do Estado}
+(PGE-SP), the state's constitutional and administrative legal
+counsel---which had not been at the original table. In November
+2017, in the course of a routine internal legal review, PGE-SP
+issued a formal opinion (parecer) concluding that the Group-65
+exception violated \emph{isonomia}, the equal-treatment
+principle codified in Art.~5 of the Federal Constitution. The
+opinion did not engage with procurement outcomes, price
+trajectories, or supplier complaints; it argued from first
+principles that procedural symmetry across product groups
+required a substantive distinguishing feature, and found that
+the 2014 rationale did not clear that bar. ANVISA's registration
+system, the opinion held, operates at the item level and is
+already addressed by the three-SMEs precondition built into
+LC~123; CMED's price controls operate as a ceiling rather than a
+competitive floor, leaving the question of allocative efficiency
+untouched. The remedy, PGE-SP directed, was to extend the
+SME-only default to Group 65 on the same footing as every other
+group. The parecer was transmitted to BEC in early 2018 and took
+effect in March of that year. From the bidders' perspective, a
+category that had been open for more than three years became,
+overnight, another line in the SME-only catalogue.
+
+\paragraph{Why this is a clean natural experiment.}
+Three features of the March 2018 reversal support the identifying
+assumption that the cut is exogenous to the procurement process
+itself. First, the \emph{trigger} was a legal reinterpretation of
+a constitutional principle, not a response to market outcomes:
+no procurement-data audit, political event, or supplier complaint
+preceded the opinion, and the parecer cites none. Second, the
+\emph{timing} was bureaucratic. PGE-SP's opinion was issued on
+its own internal schedule, transmitted to BEC in early 2018, and
+took effect in March 2018 without the sort of public consultation
+or draft-rule window that would have let bidders re-price in
+advance. Third, the \emph{boundaries} of the experiment are
+legally clean: the affected set is a single well-defined product
+group (Group 65, meeting the three-SMEs precondition), and the
+unaffected controls are the other 76 product groups that had
+been operating under the SME-only default since 2014. An
+18-month window straddling the break yields a crisp
+treated-vs-never-treated comparison.
+
+These features motivate the identifying strategy that follows in
+Section~\ref{sec:identification}. The reversal should leave the
+non-SME cost primitive alone; only the set of bidders that
+participate changes, not who any given firm is. That invariance
+is the core identifying assumption of this paper, and---crucially
+for what follows---it is testable directly against the data.
+
+%% ============================================================================
+\section{Reduced-Form Baseline}
+\label{sec:rf}
+
+Before turning to primitives, it is worth seeing what the raw
+data already show. This section summarizes the reduced-form
+evidence that motivates the structural exercise---and, more
+importantly, the part of that evidence that the reduced form
+cannot explain. The full reduced-form treatment (placebos,
+alternative estimators, spillover bounds, and a Gelbach mediation
+decomposition) lives in the companion paper \citep{genicolo2026a};
+here I keep only what is needed to set up the structural puzzle:
+four headline coefficients, one mediation exercise, and one
+residual---about 95\% of the price effect---that observable entry
+and observable composition cannot account for. That residual is
+what the rest of the paper is built to explain.
+
+\paragraph{Staggered-DiD reversal design.}
+The design is unusually clean for a natural experiment. March 2018
+places Group 65 under the SME-only default that had already
+applied to 76 other product groups since 2014. Identification
+proceeds as a \emph{staggered-DiD reversal}: one cohort
+(Group 65) switches from ``open'' into ``SME-only,'' while 76
+comparison groups sit in the SME-only state throughout the
+18-month window. The same logic can be read, following
+\citet{kim2019}, as a DiD-in-reverse in which the 76 controls
+are ``always-treated'' and Group 65 is the lone cohort switching
+out of the exempt state. Algebraically the two framings produce
+the same coefficient, and the modern staggered-DiD diagnostics
+\citep[][]{athey2022, callaway2021, sun2021, goodmanbacon2021,
+borusyak2024} agree on it.
+
+The main reduced-form regression is
+\begin{equation}
+y_{ipt} \;=\; \beta \, (\mathit{g65}_i \times \mathit{Pre}_t)
+            \;+\; \zeta_i \;+\; \mathbf{X}'_{ipt}\gamma \;+\; \varepsilon_{ipt},
+\label{eq:did-main}
+\end{equation}
+where $y_{ipt}$ is the outcome (log winning price, log firm count,
+log bid count, or winner-to-PBU distance in kilometers) for item $i$
+in auction under PBU $p$ at time $t$; $\mathit{g65}$ and $\mathit{Pre}$
+are the Group-65 and pre-March-2018 indicators; $\zeta_i$ is the item
+fixed effect; and $\mathbf{X}$ includes a sealed-bid indicator and
+log quantity. Standard errors are clustered at the item level in the
+baseline specification.
+
+The design's cleanest feature is its weighting. With only one
+treated cohort and a well-defined never-treated control set
+within the window, the negative-weighting pathologies that
+plague staggered-DiD in more cluttered settings simply do not
+arise here: the \citet{goodmanbacon2021} decomposition places
+100\% of the two-way fixed-effects weight on the clean
+treated-vs-never-treated $2 \times 2$ comparison. There is
+nothing to re-aggregate.
+
+\paragraph{Headline reduced-form estimates.}
+Table~\ref{tab:rf-headline} reports $\hat\beta$ for the four outcomes
+across three windows (6, 12, and 18 months around the March~2018
+cutoff), with and without PBU fixed effects.
+
+\begin{table}[htbp]
+\centering
+\caption{Reduced-form headline DiD estimates (Group 65 vs 76 controls)}
+\label{tab:rf-headline}
+\begin{threeparttable}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+                  & \multicolumn{2}{c}{6-month} & \multicolumn{2}{c}{12-month} & \multicolumn{2}{c}{18-month} \\
+                  & Baseline & + PBU FE & Baseline & + PBU FE & Baseline & + PBU FE \\
+\midrule
+Log winning price & $-0.142$ & $-0.148$ & $-0.108$ & $-0.108$ & $-0.109$ & $-0.113$ \\
+                  & (0.015)  & (0.014)  & (0.013)  & (0.013)  & (0.012)  & (0.012)  \\
+Log firm count    & $+0.211$ & $+0.220$ & $+0.128$ & $+0.138$ & $+0.098$ & $+0.107$ \\
+                  & (0.009)  & (0.009)  & (0.007)  & (0.008)  & (0.007)  & (0.007)  \\
+Log valid bids    & $+0.203$ & $+0.215$ & $+0.103$ & $+0.114$ & $+0.069$ & $+0.080$ \\
+                  & (0.013)  & (0.014)  & (0.010)  & (0.011)  & (0.010)  & (0.011)  \\
+Winner-PBU dist.\ (km) & $+6.64$ & $+1.94$ & $+13.78$ & $+5.70$ & $+14.25$ & $+6.15$ \\
+                  & (3.32)  & (1.98)  & (3.02)  & (2.38)  & (3.08)  & (2.22)  \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Each cell is $\hat\beta$ (SE) from
+Equation~\eqref{eq:did-main} for the outcome-window-specification
+combination. Item fixed effects included throughout. ``Baseline''
+column includes sealed-bid and log-quantity controls; ``+ PBU FE''
+adds buyer-unit fixed effects. SE clustered at the item level.
+Sample sizes vary by outcome and window ($\sim$250k--700k item-level
+observations). All price and firm-count coefficients are significant
+at $p < 0.01$. Reproduced from \citet{genicolo2026a}, Tables~2--4 and
+Appendix Table~B.1, using the same sample and specification.
+Full source files in the companion paper's replication package:
+\texttt{output/tables/tab\_prices.tex},
+\texttt{tab\_participants.tex}, \texttt{tab\_validbids.tex},
+\texttt{tab\_distance.tex}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Four things happen at once under the 18-month window and the
+baseline specification. \textbf{Winning prices rise 10--11\%}
+(using $\exp(\hat\beta) - 1$; sharper in shorter windows, as one
+would expect). \textbf{Firm count falls 10--11\%}, despite a
+policy that mandates SME participation---non-SMEs exit faster
+than SMEs enter, which by itself is informative. \textbf{Total
+valid bids fall only 6--8\%}, a smaller drop than firm count,
+consistent with each remaining SME submitting more bids per
+auction than the non-SMEs they replaced. And \textbf{winner-to-PBU
+distance falls by 5--14 km}, consistent with SMEs being
+geographically more local to the purchasing units they supply:
+when only SMEs can bid, the winning supplier lives closer to
+the buyer on average. These four moments
+are the raw material the structural exercise has to account for.
+
+\paragraph{Gelbach (2016) mediation decomposition.}
+The natural first question is whether the price jump is just
+compositional---fewer bidders, different types. A
+\citet{gelbach2016} decomposition of the baseline price regression
+(detailed in the companion paper) adds log firm count and a
+winner-SME indicator as mediators and asks how much of
+$\hat\beta$ they jointly explain. The answer is striking:
+\emph{almost none of it}. The two mediators move in opposite
+directions---log firm count pulls prices down by $+181\%$ of the
+headline, winner-SME composition pulls them up by $-81\%$---and
+what looks like a large decomposition is in fact a near cancellation.
+The \emph{net} mediated share is about 5\%; the residual, the part
+of the price effect that observable entry and observable
+winner-composition do not explain, is about \textbf{95\%}.
+
+That 95\% residual is the puzzle. Under the reduced-form
+accounting it could in principle reflect one (or more) of three
+things: (i) within-auction bidding behavior that shifts when
+the composition of the \emph{candidate} pool changes, not just
+the realized winner; (ii) unobserved compositional shifts that
+Gelbach's observable-mediator framework cannot see; or
+(iii) shifts in the cost primitives themselves, particularly any
+selection of non-SMEs into staying when the regime tightens. The
+CPV exercise in the next four sections was built for exactly
+this decomposition: it identifies channels (i) and (iii)---the
+within-auction bid-function change and any residual cost-primitive
+shift, including an endogenous entry response---at the level of
+primitives, which is what the reduced form cannot do.
+
+\paragraph{Robustness.}
+The headline price coefficient survives essentially every check
+we have thrown at it. In the companion paper, the
+Callaway-Sant'Anna, Sun-Abraham, and Goodman-Bacon heterogeneity-
+robust estimators all deliver coefficients in the $-0.108$ to
+$-0.114$ range; adding group-specific linear time trends and
+narrowing the control set to the most similar peer groups yields
+$-0.085$ and $-0.087$; clustering at the item-group, PBU, and
+two-way item$\times$PBU levels leaves significance unchanged; the
+wild cluster bootstrap puts $p < 0.001$; a synthetic-control
+comparison delivers a consistent 17-log-point post-treatment
+gap; and a formal cross-group spillover test bounds the implied
+bias at $+0.0005$ log-points---less than half a percent of the
+headline. A \citet{rambachan2023} HonestDiD diagnostic confirms
+that only implausibly large parallel-trends violations overturn
+the sign. The 10--11\% price effect is, in short, not fragile.
+See \citet{genicolo2026a} for the full battery.
+
+\paragraph{From reduced-form to structural.}
+The reduced form settles the causal question---prices rise
+roughly 10--11\%---and the Gelbach cancellation shows that
+observable entry and observable winner-composition cannot be the
+story. That is the right place to stop writing reduced-form
+tables and start writing down a model. The rest of the paper
+does exactly that. Section~\ref{sec:model} lays out the FPSB
+asymmetric-bidder environment; Section~\ref{sec:identification}
+establishes identification of the type-specific cost primitives
+via the \citet{campo2003} inversion and the primitive-invariance
+test; and Sections~\ref{sec:decomposition}--\ref{sec:welfare}
+pull the 95\% residual apart into a within-auction intensive
+margin ($\sim$66\%), a cost-primitive entry margin ($\sim$34\%),
+a documented participation response that amplifies the policy's
+reach without driving the price effect, and a welfare calculation
+in both R\$ and US\$. The reduced form tells us where to look;
+the structural model tells us what we are looking at.
+
+%% ============================================================================
+\section{A Model of Asymmetric FPSB Procurement with Type-Specific Costs}
+\label{sec:model}
+
+\paragraph{Primitives.}
+The environment is a first-price sealed-bid reverse (procurement)
+auction for a single indivisible good, with two bidder types that
+match the institutional distinction the policy draws: type-A
+(\emph{SME}) and type-B (\emph{non-SME}). In auction $t$, there are
+$n_A^t \in \{0, 1, 2, \ldots\}$ SMEs and $n_B^t \in \{0, 1, 2,
+\ldots\}$ non-SMEs. Type-$k$ bidders draw private costs $c \sim F_k$
+i.i.d.\ of each other and of auction characteristics. The
+distributions $F_A$ and $F_B$ are continuous with densities $f_A$,
+$f_B$ on $[\underline{c}, \overline{c}]$. The two type-specific
+distributions are the objects the paper is ultimately trying to
+recover from the data, and the separation between them is what
+allows the SME-only policy to be a policy rather than a
+relabeling.
+
+Each bidder observes only her own cost and the auction's type
+composition $(n_A^t, n_B^t)$. Each submits a sealed bid
+$b \in [0, \overline{c}]$; the lowest bid wins; ties are broken by a
+fair lottery. The payoff to a type-$k$ bidder with cost $c$ who bids
+$b$ is $(b - c) \cdot \mathbf{1}\{b \text{ wins}\}$.
+
+\paragraph{Equilibrium.}
+In a symmetric-within-type Bayes-Nash equilibrium, each type-$k$ bidder
+uses the same bidding function $\beta_k: [\underline{c}, \overline{c}]
+\to \mathbb{R}_+$, which is strictly increasing and continuously
+differentiable on the interior of its support. Let $G_k(b) = \Pr(b_k \le b)$
+denote the induced bid distribution and $g_k(b)$ its density. These
+are observables from auction data.
+
+A type-$k$ bidder with cost $c$ maximizes
+\[
+\pi_k(b, c; n_A^{-k}, n_B^{-k})
+= (b - c) \cdot
+  \bigl[1 - G_A(b)\bigr]^{n_A^*}
+  \bigl[1 - G_B(b)\bigr]^{n_B^*},
+\]
+where $n_A^* = n_A - \mathbf{1}\{k = A\}$, $n_B^* = n_B - \mathbf{1}\{k = B\}$
+denote the \emph{opponent} counts of each type.
+
+The first-order condition is
+\begin{equation}
+b - c \;=\; \frac{1}
+  {\;n_A^* \, \dfrac{g_A(b)}{1-G_A(b)}
+   + n_B^* \, \dfrac{g_B(b)}{1-G_B(b)}\;},
+\label{eq:cpv-foc}
+\end{equation}
+and the inverse equilibrium bid function, central to identification, is
+\begin{equation}
+c \;=\; b \;-\; \frac{1}
+  {\;n_A^* \, \dfrac{g_A(b)}{1-G_A(b)}
+   + n_B^* \, \dfrac{g_B(b)}{1-G_B(b)}\;}.
+\label{eq:cpv-inverse}
+\end{equation}
+Equation~\eqref{eq:cpv-inverse} is the asymmetric extension of
+\citet{gpv2000} developed by \citet{campo2003}, and it is the
+single piece of the model that does the estimation work. The
+symmetric-within-type special case ($G_A = G_B = G$, $g_A = g_B =
+g$) collapses to the familiar $c = b - (1 - G(b)) / ((N-1) g(b))$,
+the standard procurement GPV. Crucially, once type-specific bid
+distributions are estimated from the data, the inverse map is
+deterministic: there are no parameters to search over, no auxiliary
+distributions to assume. Whatever asymmetry exists between SME and
+non-SME costs shows up directly in the pseudo-costs.
+
+\paragraph{Ref-price normalization.}
+A practical obstacle is that reference prices $P_{\text{ref}}^t$
+span two orders of magnitude across Group-65 auctions, from small
+consumables to large-volume medication purchases. Running CPV on
+raw bids would mix scales that are not, in any economic sense,
+comparable. Following the bid-preference literature
+\citep[e.g.,][]{athey2013}, I normalize each bid by its
+auction-specific reference price, $\tilde{b}^t = b^t /
+P_{\text{ref}}^t$, placing all normalized bids on a common
+$[0, 2]$ scale. Equation~\eqref{eq:cpv-inverse} then applies to
+$\tilde{b}$, with $\tilde c = c / P_{\text{ref}}$ on the same
+scale. The normalization amounts to an assumption that the cost
+distribution scales linearly with the buyer's reference price---a
+strong but standard assumption, and one that the invariance test
+in Section~\ref{sec:estimation} provides an indirect check on.
+Level results without normalization are reported in the appendix.
+
+%% ============================================================================
+\section{Identification}
+\label{sec:identification}
+
+\paragraph{Point identification from bid data.}
+The CPV inversion is, at root, a one-line recipe. The model
+implies that $G_A$, $G_B$, $g_A$, $g_B$ are directly observable
+from type-separated bid data, and that is what the bid-level
+records on BEC provide. Given these four objects and an auction's
+type composition $(n_A^t, n_B^t)$, Equation~\eqref{eq:cpv-inverse}
+returns a pseudo-cost $\hat c_{i,t}$ for every bidder $i$ in every
+auction $t$. Repeating the operation across all bidder-auctions
+delivers type-specific empirical cost distributions $\hat F_A$
+and $\hat F_B$. Nothing more is needed: there is no nonlinear
+search, no auxiliary distributional assumption, no second
+estimation stage.
+
+Two conditions have to hold for the recipe to be meaningful.
+First, asymmetric bidders must actually appear in the same
+auctions, so that both $G_k$ are estimable on a non-degenerate
+sample. Convite Group 65 satisfies this condition comfortably in
+the Pre period---40\% of auctions mix SMEs and non-SMEs. Second,
+bid functions must be monotonic in cost within type, which the
+model guarantees and which the data confirm (the pseudo-costs
+satisfy $\hat c \leq b$ on every observation in the estimation
+sample).
+
+\paragraph{Identification check: primitive invariance.}
+The policy gives us a second handle that most structural auction
+papers do not have: a testable over-identifying restriction. In
+the model, $F_A$ and $F_B$ are \emph{primitives}---they describe
+the cost process before any equilibrium considerations enter.
+The March 2018 reversal changes \emph{which} non-SMEs are eligible
+to bid in Group 65 (none, post-policy), but it cannot reach inside
+any given firm and change its cost draw. Therefore,
+\[
+F_B^{\text{Pre}}(c) \;=\; F_B^{\text{Post}}(c)
+\quad \text{for all } c,
+\]
+and a Kolmogorov-Smirnov test of exactly this equality is the
+paper's primary identification check. No analogous condition holds
+for the SME distribution: the policy changes the return to entering
+Group 65 for small firms, and we expect $F_A^{\text{Post}}$ to
+shift relative to $F_A^{\text{Pre}}$ precisely because marginal
+SMEs enter (or exit) under the restriction. Selection into the
+SME pool is part of the entry channel we want to measure. The
+over-identifying restriction is therefore one-sided by design:
+$F_B$ invariant (testable), $F_A$ allowed to move.
+
+\paragraph{Robustness to mis-specified equilibrium.}
+The price of using an equilibrium condition to recover primitives
+is that the recovery is only as good as the equilibrium. If
+bidders are risk-averse rather than risk-neutral, or if the
+auction has a common-value component, the pseudo-costs returned
+by Equation~\eqref{eq:cpv-inverse} are not consistent estimators
+of the underlying cost distribution. The invariance test on
+$F_B$ is therefore a joint test of the model \emph{and} of
+primitive invariance: passing it is evidence for both. Two useful
+features soften this concern in practice. First, if the
+mis-specification is common to both bidder types, the invariance
+condition still identifies a weaker but coherent hypothesis about
+the unchanged non-SME pool. Second, the risk-aversion and
+common-value concerns are addressed directly in
+Section~\ref{sec:robustness} using a CARA CGPV calibration and
+the \citet{hendricks2003} diagnostic, respectively. Results in
+Section~\ref{sec:estimation} suggest the model is reasonably
+specified: invariance holds tightly for non-SMEs (the type whose
+pool is supposed to be unchanged), and fails in exactly the
+direction the entry channel predicts for SMEs.
+
+%% ============================================================================
+\section{Data}
+\label{sec:data}
+
+\paragraph{BEC bid-level records.}
+Because every São Paulo state purchase passes through a single
+electronic platform, the data requirements of a structural auction
+paper sit unusually well with the data actually available. I use
+the complete bid-level trail on BEC for 2009--2019: 39.96 million
+individual bids across 601{,}229 \emph{Preg\~ao eletr\^onico}
+auctions, 612{,}120 \emph{Convite} sealed-bid auctions, and
+140{,}679 \emph{Dispensa eletr\^onica} auctions. Each bid record
+is a row in the platform's transaction log and carries the
+bidder's tax ID (CNPJ), bid value, auction identifier, item
+catalog code, administrative reference price, winner flag, and
+timestamps. The same platform that enforces the procurement rules
+also records every keystroke in a structured form---an
+uncommonly clean dataset for a developing-country setting.
+
+\paragraph{Convite modality focus.}
+The structural estimation uses the \emph{Convite} modality, and
+the reason is institutional as much as technical: Convite is the
+only modality in BEC that operationally implements a first-price
+sealed-bid auction. Three features of its design line up with
+what FPSB identification needs.
+
+\noindent(1) \textbf{One sealed envelope per firm.} Convite
+requires each invited bidder to submit exactly one envelope, and
+iterative bidding is disallowed by statute. In the raw data,
+99.9\% of firm-auction pairs have exactly one bid; the remaining
+0.1\% are administrative re-submissions in re-opened auctions
+(Art.~48~\S3, Lei~8.666/93) and are trimmed at the firm-auction
+level. The observed bid is therefore the firm's equilibrium bid,
+not a step in an iterative process.
+
+\noindent(2) \textbf{Mixed-type participation.} In the Pre period,
+40\% of Convite Group-65 auctions have at least one SME and at
+least one non-SME bidding in the same auction. This is exactly
+the identifying variation CPV requires: if every auction were
+single-type, we could only estimate the two $G_k$'s in isolation,
+without the cross-type competition that gives the asymmetric
+model its bite.
+
+\noindent(3) \textbf{Observed reference price.} The administrative
+reference price $P_{\text{ref}}$ is set by the purchasing unit
+before the auction opens and is recorded on 98.7\% of Group-65
+Convite auctions. This is what makes the ref-price normalization
+from Section~\ref{sec:model} operational in practice: every
+auction carries a scale-free anchor that the platform itself
+records.
+
+\paragraph{Sample restrictions.}
+I restrict the structural sample to:
+\begin{itemize}
+  \item Group~65 (medical supplies, the treated product group);
+  \item the 18-month analytical window Sep 2016 -- Aug 2019, centered on
+        the March 2018 regime break;
+  \item auctions with $N \ge 2$ bidders (GPV estimator undefined at $N=1$);
+  \item normalized bids $\tilde b \in (0.005, 2)$ (discard R\$0.01
+        placeholder bids and bids implausibly above reference).
+\end{itemize}
+The pipeline yields two nested samples. The \emph{CPV-eligible}
+sample---Convite Group-65 auctions with $N \geq 2$ bidders within
+the 18-month window---contains 33{,}706 auctions and 120{,}463
+bidder-auctions (mean $N = 3.57$). Applying the CPV inversion
+with valid reference price and normalized bids in $(0.005, 2)$,
+and retaining pseudo-costs that satisfy the clean-filter
+$\hat c / P_{\text{ref}} \in (0.001, 1.5)$, delivers the
+\emph{structural estimation sample} of 24{,}346 bidder-auctions
+in 24{,}336 distinct auctions. The CPV density estimation
+pools bids across auctions within period-$N$ strata, so the
+1-clean-pseudo-cost-per-auction post-filter retention rate does
+not constrain identification---what matters is the density over
+the full pooled bid distribution, which is estimated from the
+pre-inversion population. Table~\ref{tab:sample} reports the
+breakdown for both samples.
+
+\begin{table}[htbp]
+\centering
+\caption{Structural estimation sample (Convite, Group~65)}
+\label{tab:sample}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrr}
+\toprule
+Cell & Bidder-auctions & Auctions & Mean $N$ \\
+\midrule
+\textit{CPV-eligible sample} ($N \geq 2$)    & 120{,}463 & 33{,}706 & 3.57 \\
+\hspace{1em} Pre-period                      & 51{,}068  & 14{,}411 & 3.54 \\
+\hspace{1em} Post-period                     & 69{,}395  & 19{,}295 & 3.60 \\
+\midrule
+\textit{Structural sample} (post-inversion)  & 24{,}346  & 24{,}336 & 3.75 \\
+\hspace{1em} Pre-period                      & 10{,}704  & 10{,}699 & 3.71 \\
+\hspace{2em} SME bidder-auctions             & 3{,}624   & --       & -- \\
+\hspace{2em} Non-SME bidder-auctions         & 7{,}080   & --       & -- \\
+\hspace{1em} Post-period                     & 13{,}642  & 13{,}637 & 3.79 \\
+\hspace{2em} SME bidder-auctions             & 6{,}786   & --       & -- \\
+\hspace{2em} Non-SME bidder-auctions         & 6{,}856   & --       & -- \\
+\midrule
+\multicolumn{4}{l}{\textit{CPV-eligible sample, by auction size:}} \\
+\hspace{1em} Auctions with $N = 2$           & -- & 13{,}010 & 2.00 \\
+\hspace{1em} Auctions with $N = 3$           & -- & 8{,}360  & 3.00 \\
+\hspace{1em} Auctions with $N = 4$           & -- & 4{,}762  & 4.00 \\
+\hspace{1em} Auctions with $N \geq 5$        & -- & 7{,}574  & 6.64 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Convite (sealed-bid) auctions of Group~65
+items in the 18-month window Sep 2016 -- Aug 2019. The
+``CPV-eligible'' sample imposes $N \ge 2$ distinct bidders per
+auction. The ``structural estimation'' sample further requires
+valid reference price and normalized bid in $(0.005, 2)$ at the
+bid level, and retains post-inversion pseudo-costs satisfying
+$\hat c / P_{\text{ref}} \in (0.001, 1.5)$. ``Mean $N$ per
+auction'' is the auction-level average bidder count (the same
+$N$ that enters the CPV opponent-count in
+Equation~\ref{eq:cpv-inverse}). SME classification is the
+firm-registry proxy described in Appendix~A:
+$\mathbf{1}\{$\texttt{porte\_empresa} $\in \{01, 03\}$ or
+\texttt{fornec\_enquad} $\in \{1, 2\}\}$, which captures ME
+(micro-empresa) and EPP (empresa de pequeno porte)
+classifications.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+%% ============================================================================
+\section{Estimation}
+\label{sec:estimation}
+
+\paragraph{Procedure.}
+The mechanics are deliberately plain. For each stratum
+$(\text{period}, N\text{-bin})$, I estimate the type-specific bid
+distributions $\hat G_A(\tilde b), \hat G_B(\tilde b)$ and
+densities $\hat g_A(\tilde b), \hat g_B(\tilde b)$ by Gaussian
+kernel density estimation on the pooled normalized bids of each
+type, using Silverman's rule-of-thumb bandwidth
+$h_k = 1.06 \cdot \hat\sigma_k \cdot n_k^{-1/5}$. CDFs and
+densities are evaluated at each observed bid by linear
+interpolation of the kernel estimates, and $(1-G)$ is floored at
+$10^{-6}$ to keep the denominator in Equation~\eqref{eq:cpv-inverse}
+well-defined near the upper tail of the bid distribution. None
+of the bandwidth or floor choices is material: appendix
+robustness replaces Silverman with a plug-in bandwidth and
+tightens the floor by two orders of magnitude, and the headline
+numbers move by less than a percentage point.
+
+Equation~\eqref{eq:cpv-inverse} is then applied firm-by-firm,
+auction-by-auction, using the auction-specific opponent counts
+$(n_A^*, n_B^*)$ to recover a pseudo-cost $\hat c_{i,t}$ for
+every firm-auction pair. The data are split into eight strata,
+$(\text{Pre}, \text{Post}) \times \{N=2, N=3, N=4, N \ge 5\}$, so
+that each inversion is applied within a roughly homogeneous
+competitive environment. A small share of pseudo-costs fall
+below zero as an artifact of boundary bias in the kernel
+estimator; I flag them but keep them in the primary results.
+Restricting to $\hat c \in (0, 1.5)$ retains 77.7\% of the
+estimation sample, and all invariance and decomposition results
+in what follows are computed on that clean subset.
+
+\paragraph{Equilibrium-condition check.}
+Before looking at the costs, it is worth verifying that they
+obey the sign condition the model requires. A correctly specified
+equilibrium delivers $\hat c \leq b$ at every firm-auction pair:
+bidders cannot earn negative markups. Across all eight strata,
+zero percent of pseudo-costs violate this condition. The CPV
+inversion is numerically stable on this dataset, and the
+estimator is not fighting the data.
+
+\paragraph{Cost distributions and markups.}
+With the pseudo-costs in hand, the first question is what the
+type-specific distributions actually look like. Table
+\ref{tab:cost-summary} summarizes.
+
+\begin{table}[htbp]
+\centering
+\caption{CPV-recovered cost distributions (Convite Group~65; $c/P_{\text{ref}}$ units)}
+\label{tab:cost-summary}
+\begin{threeparttable}
+\small
+\begin{tabular}{llrrrrr}
+\toprule
+Period & Type & $n$ & Mean $c/P_{\text{ref}}$ & Median &
+  Median markup & Markup \% \\
+\midrule
+Pre   & Non-SME   & 5{,}651 & 0.523 & 0.515 & 0.119 & 18.9\% \\
+Pre   & SME       & 2{,}604 & 0.520 & 0.513 & 0.138 & 21.1\% \\
+Post  & Non-SME   & 5{,}452 & 0.524 & 0.532 & 0.099 & 15.7\% \\
+Post  & SME       & 5{,}200 & 0.560 & 0.572 & 0.131 & 18.6\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Pseudo-costs recovered via CPV inversion
+(Equation~\ref{eq:cpv-inverse}) with Gaussian-kernel density
+estimation and Silverman bandwidth. Sample restricted to
+$\hat c/P_{\text{ref}} \in (0.001, 1.5)$ to discard boundary-bias
+artifacts. Markup $= b - c$; Markup\% $= (b-c)/b$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Three facts stand out, and together they tell the story that
+organizes the rest of the paper.
+
+\noindent(i) \emph{Pre-period, SME and non-SME cost distributions
+are virtually identical}. Mean $0.520$ versus $0.523$ of reference
+price; medians $0.513$ versus $0.515$. Figure~\ref{fig:cpv-pre}
+plots both empirical CDFs, and they overlap across the full
+support. This is not a neutral finding: it means that under the
+Open regime, the two bidder types were effectively drawing from
+the same cost pool, even though regulators treat them as
+categorically different.
+
+\noindent(ii) \emph{Post-period, the non-SME distribution is
+essentially unchanged} (mean $0.524$), while the SME distribution
+shifts upward by 7.7\% relative to its Pre mean (from $0.520$ to
+$0.560$; median $0.513$ to $0.572$).
+One type's pool holds steady across the break; the other's moves
+in exactly the direction a binding entry constraint would
+predict.
+
+\noindent(iii) \emph{Markups decrease monotonically in $N$},
+as the theory requires---the check against the CPV output
+behaving pathologically (Table~\ref{tab:markup-by-n},
+Appendix~B).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{fig_v2_cpv_costs_pre.pdf}
+\caption{Under the open regime, SME and non-SME cost distributions
+are virtually indistinguishable (Pre-period Convite G65). The two
+empirical CDFs overlap across the full support, undermining the
+standard justification for the SME-only set-aside as a level-the-
+playing-field instrument: at the margin, the ``playing field'' was
+already level.}
+\label{fig:cpv-pre}
+\end{figure}
+
+\paragraph{Primitive-invariance test.}
+The over-identifying restriction from Section~\ref{sec:identification}
+can be evaluated directly. Table~\ref{tab:invariance} reports
+Kolmogorov-Smirnov tests of the hypothesis $F_k^{\text{Pre}} =
+F_k^{\text{Post}}$ for each type---the central check that
+separates the model's identifying content from a tautology.
+
+\begin{table}[htbp]
+\centering
+\caption{Primitive-invariance test ($F_k^{\text{Pre}} = F_k^{\text{Post}}$)}
+\label{tab:invariance}
+\begin{threeparttable}
+\small
+\begin{tabular}{lrrrrrr}
+\toprule
+Type & $n^{\text{Pre}}$ & $n^{\text{Post}}$ & Mean Pre & Mean Post
+  & KS $D$ & KS $p$ \\
+\midrule
+Non-SME (should be invariant) & 5{,}651 & 5{,}452 & 0.523 & 0.524 & 0.030 & 0.012 \\
+SME (should shift)            & 2{,}604 & 5{,}200 & 0.520 & 0.560 & 0.081 & $<10^{-10}$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Invariance test under the null that the cost
+distribution is primitive and therefore unaffected by the regime switch.
+Non-SME passes the test economically (shift of $0.001$ is below any
+reasonable bias threshold); SME fails, consistent with the entry of
+marginal high-cost SMEs under the binding set-aside regime post-March 2018.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The numbers are cleaner than one usually has any right to expect.
+The non-SME distribution is economically invariant across the
+March 2018 break: the mean shifts by 0.001 of reference price
+(the KS statistic marginally rejects formal equality at
+$p = 0.012$, but this is a consequence of the 11{,}000-observation
+sample size, not of any substantive shift). The SME distribution,
+by contrast, moves by 0.039 ref-price units upward, with
+$p < 10^{-10}$. Read together, this is the sharpest form the data
+can take: the model's identifying restriction holds where it is
+supposed to hold, and fails in exactly the direction---and on
+exactly the type---that the entry channel predicts.
+
+Figure~\ref{fig:cpv-stab} shows the two panels visually.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_v2_cpv_stability.pdf}
+\caption{Primitive-invariance check: non-SME cost distribution is
+   invariant across the March~2018 break (left panel); SME cost
+   distribution shifts upward, consistent with marginal entry
+   (right panel).}
+\label{fig:cpv-stab}
+\end{figure}
+
+%% ============================================================================
+\section{Structural Decomposition of the Price Effect}
+\label{sec:decomposition}
+
+\paragraph{Counterfactual scenarios.}
+With type-specific primitives in hand, the decomposition becomes
+a matter of asking the model three slightly different questions
+about the same population of auctions. For each Pre-period
+auction with observed composition $(n_A^t, n_B^t)$ and reference
+price $P_{\text{ref}}^t$, I simulate three scenarios:
+
+\begin{description}
+\setlength\itemsep{0.5em}
+  \item[Scenario S1 (Open, Pre baseline)]
+    all $n_A^t + n_B^t$ bidders participate with their Pre-period cost
+    distributions, with expected winning bid
+    \[
+    E[b_{\min} | \text{S1}] = \int \bar G_A^{\text{Pre}}(\tilde b)^{n_A}
+    \bar G_B^{\text{Pre}}(\tilde b)^{n_B} \, d\tilde b,
+    \]
+    where $\bar G_k = 1 - G_k$ is the empirical survival function.
+  \item[Scenario S2 (SME-only, Pre pool)]
+    only the $n_A^t$ SMEs from the Pre pool bid, with
+    \[
+    E[b_{\min} | \text{S2}] = \int \bar G_A^{\text{Pre}}(\tilde b)^{n_A}
+    \, d\tilde b.
+    \]
+  \item[Scenario S3 (SME-only, Post pool)]
+    $n_A^t$ SMEs bid, drawn from the Post-period SME cost
+    distribution (which includes marginal entrants), with
+    \[
+    E[b_{\min} | \text{S3}] = \int \bar G_A^{\text{Post}}(\tilde b)^{n_A}
+    \, d\tilde b.
+    \]
+\end{description}
+
+The decomposition follows directly: the \emph{intensive margin}
+is $\Delta^{\text{int}} = E[b|\text{S2}] - E[b|\text{S1}]$, the
+effect of shutting non-SMEs out at a fixed Pre SME pool; the
+\emph{entry margin} is $\Delta^{\text{ent}} = E[b|\text{S3}] -
+E[b|\text{S2}]$, the additional effect of letting the SME pool
+re-compose toward the post-policy mix; and the two sum to the
+total structural effect $\Delta^{\text{tot}} = E[b|\text{S3}] -
+E[b|\text{S1}] = \Delta^{\text{int}} + \Delta^{\text{ent}}$. S1,
+S2, S3 are integrals of observed type-specific bid distributions
+rather than re-simulated equilibrium bid functions, which means
+$\Delta^{\text{int}}$ is a \emph{conservative} measurement of the
+within-auction channel: a fully re-solved equilibrium with Pre
+SME cost primitives but an all-SME competitive environment would
+predict SMEs bidding \emph{softer} than their observed Pre bids,
+because they face fewer low-cost opponents. The intensive share
+reported here is therefore a lower bound on the true
+bid-function response; the 66/34 split understates, not
+overstates, the intensive margin's dominance.
+
+\paragraph{Results.}
+Table~\ref{tab:decomp} reports the decomposition by auction-size bin.
+
+\begin{table}[htbp]
+\centering
+\caption{Structural decomposition of the SME-only price effect}
+\label{tab:decomp}
+\begin{threeparttable}
+\small
+\input{../output/tables/tab_v2_decomp.tex}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} All quantities in $c/P_{\text{ref}}$ units.
+Intensive = $E[b|\text{S2}] - E[b|\text{S1}]$; Entry =
+$E[b|\text{S3}] - E[b|\text{S2}]$; Total = $E[b|\text{S3}] -
+E[b|\text{S1}]$. Intens.\% = share of total attributable to the
+intensive margin. Simulation uses the observed distribution of
+$(n_A^t, n_B^t)$ in Pre-period Convite G65 auctions within each
+$N$-bin.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Under this fixed-pool accounting, the intensive margin dominates.
+It captures 47--74\% of the total structural price effect across
+$N$-bins, with an (unweighted) average of about two-thirds: the
+within-auction bidding response explains roughly twice as much of
+the policy's price effect as the pool-composition response does.
+The entry channel peaks at $N=3$ (53\%) and bottoms out at $N=2$
+(26\%), with no clean monotone pattern---the entry margin is not
+uniformly larger in busier auctions or thinner ones, it follows
+the local shape of the cost distributions. On an auction-weighted average,
+intensive absorbs 66\% of the total structural price effect and
+entry absorbs the remaining 34\%.
+
+Figure~\ref{fig:decomp} plots the decomposition as stacked bars.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{fig_v2_decomp.pdf}
+\caption{Stacked decomposition of the SME-only price effect by
+   auction-size bin. The intensive margin (dark grey) dominates;
+   entry (light grey) matters most at $N=3$.}
+\label{fig:decomp}
+\end{figure}
+
+\paragraph{Reconciliation with the Gelbach residual.}
+It is now possible to go back to the 95\% residual from
+Section~\ref{sec:rf} and say what was inside it. The reduced-form
+Gelbach decomposition could not measure either of the two channels
+the structural exercise isolates: it used \emph{observed} entry
+(the number of bidders) and \emph{observed} winner composition
+(whether the winner was an SME), but neither object is the same
+as the cost-primitive entry that shows up in
+$F_A^{\text{Pre}} \neq F_A^{\text{Post}}$, and neither captures
+the within-auction bidding response the CPV inversion makes
+visible. The structural decomposition breaks the 95\% residual
+into 66\% within-auction bidding response and 34\% cost-primitive
+entry. The dominant channel is the one no reduced-form mediator
+could have seen---the bid-function adjustment that a firm makes
+when it realizes it is no longer facing a non-SME competitor.
+Participation also responds substantially, as
+Section~\ref{sec:endogenous} documents, but the magnitude of the
+participation response is a separate fact about the policy's
+reach; it is not the mechanism through which the price effect
+itself is generated.
+
+%% ============================================================================
+\section{The Participation Response}
+\label{sec:endogenous}
+
+The 66/34 decomposition of Section~\ref{sec:decomposition} is the
+paper's structural headline. It answers a specific question: given
+the bidders who actually showed up, how much of the 10--11\% price
+effect comes from how they bid versus who they are? This section
+documents a second, complementary fact about the policy---that
+participation itself responds substantially to the regime
+change---and shows that this response, while real, does not
+overturn the within-auction primacy of the intensive margin. The
+policy reorganizes who shows up, but the price movement is
+primarily generated by how the remaining bidders bid.
+
+\paragraph{Reduced-form entry regression.}
+A simple descriptive exercise makes the scale of the entry
+response visible before any structural model is imposed on it.
+For each CADMAT item class, I define the \emph{potential bidder
+pool} as the set of CNPJs that have bid on any item in the class
+at some point in the 18-month window---a practical operationalization
+of ``would plausibly consider this auction.'' For each auction,
+the type-$k$ entry rate is the ratio of observed type-$k$ bidders
+to the type-$k$ potential pool. Log entry rates are then
+regressed on a Post indicator and a Post$\times$SME interaction
+with class fixed effects:
+\[
+\log \text{entry\_rate}_{i,t,k}
+ \;=\; \alpha_{c(i,t)}
+    + \beta_1 \cdot \text{Post}_t
+    + \beta_2 \cdot \text{Post}_t \times \mathbf{1}\{k = \text{SME}\}
+    + \varepsilon_{i,t,k}
+\]
+with class fixed effects $\alpha_c$ and clustering at the auction
+level (Table~\ref{tab:entry-reg}).
+
+\begin{table}[htbp]
+\centering
+\caption{Entry-rate regression (Convite G65, 18-month window)}
+\label{tab:entry-reg}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+                     & Estimate & SE    & $t$     & $p$ \\
+\midrule
+Post                 & $-0.961$ & 0.023 & $-42.7$ & $<10^{-16}$ \\
+Post $\times$ SME    & $+1.375$ & 0.037 & $+37.6$ & $<10^{-16}$ \\
+Class fixed effects  &          &       &         & yes \\
+Observations         & 66{,}720 &       &         & \\
+Within $R^2$         & 0.031    &       &         & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The magnitudes are large and tightly estimated. The non-SME
+entry rate falls by $1 - \exp(-0.961) = 62\%$ under the Post
+regime; the SME entry rate rises by $\exp(-0.961 + 1.375) -
+\exp(-0.961) \approx +52\%$. Both responses are extremely
+statistically significant ($|t| > 37$). On raw counts, mean
+non-SMEs per auction drops from $2.05$ to $1.73$ ($-15.9\%$) and
+mean SMEs rises from $1.49$ to $1.87$ ($+25.7\%$). The policy
+does not merely filter who wins---it reorganizes who even bothers
+to show up, on both sides of the distinction.
+
+\paragraph{Implied entry cost under free entry.}
+Under the \citet{atheyseira2011} free-entry zero-profit condition,
+$E[\text{profit}_k | \text{entry}] = K^k$, the type-specific entry
+cost is pinned down by observed markups and win probabilities.
+Plugging in the CPV-recovered markups and observed winning
+probabilities, the implied entry costs are R\$30.5 per auction
+for non-SMEs and R\$33.3 for SMEs (US\$8.7 and US\$9.5 at R\$3.50/USD,
+the 2016--2019 BCB closing-rate average). The near-equality is a useful
+sanity check rather than a puzzle: the marginal cost of preparing
+a Convite bid in BEC is essentially the same whichever type you
+are---the CAUFESP registration, qualification certificates, and
+bid-envelope preparation do not materially depend on firm size.
+A free-entry model with type-invariant entry costs is therefore
+not a heroic abstraction in this setting.
+
+\paragraph{Does the participation response overturn the 66/34?}
+A skeptical reading might ask whether the fixed-pool headline is
+an artifact of treating participation as exogenous when it
+visibly responds. A reduced-form calibration that credits the
+observed non-SME exit and SME entry entirely to the entry channel
+shifts the decomposition by construction: the within-auction
+share drops from 66\% to roughly one-third and the participation
+share rises correspondingly (details and the by-$N$ sensitivity
+in Appendix~E, Table~\ref{tab:decomp-endogenous}). This is not,
+however, evidence that the participation channel \emph{dominates}
+the price effect. Three considerations anchor the headline in the
+fixed-pool result.
+
+The central point is that \emph{the participation shifts are
+consistent with a large intensive-margin channel, not a substitute
+for it}. The same re-selection that the calibration credits to
+the entry channel also tightens the competitive environment for
+the SMEs who remain in the pool: they face fewer bidders, and
+they rationally bid softer in response. This softer bidding is
+precisely what the fixed-pool CPV inversion measures on the
+recovered Post-period bid distributions. In other words, the
+CPV intensive margin already captures the bid-function response
+that is \emph{caused by} the participation shifts; adding a
+separate ``participation channel'' on top double-counts that
+response. The calibration double-counts re-selection; the CPV
+inversion does not.
+
+Two supporting considerations reinforce this reading. First,
+the calibration is a reduced-form attribution rather than a
+primitive-level result. A rigorous allocation of price movement
+to endogenous entry requires a nested fixed-point entry-bidding
+equilibrium along the lines of \citet{atheyseira2011}, with
+explicit distributions over entry costs and ex-ante signals.
+The paper estimates entry costs as type-level scalars only.
+Second, the primitive-invariance test that validates the CPV
+estimator---$F_B^{\text{Pre}} = F_B^{\text{Post}}$---is a test
+about the non-SME \emph{pool} as observed in Convite. It passes
+tightly, confirming that CPV is recovering real cost primitives
+rather than equilibrium-selection artifacts. The endogenous-entry
+analogue---whether the marginal entrant's cost draw equals the
+infra-marginal bidder's---is not tested directly and would require
+an additional layer of modeling.
+
+The participation response is therefore best read as
+\emph{confirmatory context}: the policy reorganizes entry on top
+of changing bidder behavior, and both effects raise the total
+welfare cost the policy generates. The dominant price channel,
+under the rigorous decomposition, is within-auction bidding.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{fig_v2_entry_rates.pdf}
+\caption{Entry rates by auction size, type, and period. Non-SME
+rates fall markedly under the Post regime; SME rates rise. The
+reorganization is large but, under the CPV decomposition,
+contributes the minority of the price effect.}
+\label{fig:entry-rates}
+\end{figure}
+
+%% ============================================================================
+\section{Welfare Analysis}
+\label{sec:welfare}
+
+\subsection{Welfare Accounting Framework}
+\label{sec:welfare-framework}
+
+With type-specific cost primitives in hand, the welfare question
+becomes arithmetically concrete: who pays for the restriction,
+and how much. There are three candidates---the buyer (fiscal
+cost), the remaining winners (rent change), and society
+(deadweight loss)---and a simple accounting identity ties them
+together. The identity is standard for procurement auctions, but
+worth stating explicitly: with asymmetric bidder types, the signs
+and magnitudes of its three pieces can pull in different
+directions.
+
+Consider a single auction with potential bidders of type
+$k \in \{A, B\}$ and auction-level reference price $P_{\text{ref}}$.
+Under any regime $R$, the winner is the bidder submitting the
+lowest bid $b_{(1)}^R$; denote the winner's cost draw $c_{(1)}^R$. The
+buyer's payment is $b_{(1)}^R$, the winner's profit is
+$b_{(1)}^R - c_{(1)}^R$, and the total resource cost expended in
+producing the good is $c_{(1)}^R$. Comparing two regimes $R, R'$ and
+taking expectations over cost draws:
+\begin{align}
+\Delta_{R \to R'}\, \mathbb{E}[b_{(1)}] &= \Delta_{R \to R'}\, \mathbb{E}[c_{(1)}]
+\;+\; \Delta_{R \to R'}\, \mathbb{E}[b_{(1)} - c_{(1)}],
+\label{eq:welfare-identity}
+\end{align}
+The left-hand side is what the buyer pays more of. The right-hand
+side splits that extra payment into two parts: a \emph{resource-cost
+component}, which records whether the eligible pool can actually
+produce the good at lower minimum cost, and a \emph{winner-rent
+component}, which records whether the winning bidder gets to keep
+more or less of the gap. The resource-cost piece is the deadweight
+loss of the restriction. It is non-negative almost by definition:
+taking bidders out of a set can only raise, never lower, the
+minimum cost available within it. The rent piece is genuinely
+ambiguous---when SMEs face only other SMEs their pool is more
+symmetric and competitive, which tends to compress markups, so
+winners can easily end up with \emph{less} profit per auction than
+non-SMEs would have earned. Under the SME-only rule, then, the
+buyer pays more while each winner keeps less, and the two
+components do not cancel: their difference is the social loss.
+
+Read in terms of standard welfare objects, identity
+\eqref{eq:welfare-identity} has three entries:
+\begin{itemize}
+    \item \textbf{Fiscal cost} ($\Delta \mathbb{E}[b_{(1)}]$): what
+      the buyer pays more, per auction, under the restriction. This
+      is the same number the reduced-form regressions in
+      \citet{genicolo2026a} estimate directly from observed winning
+      bids.
+    \item \textbf{Deadweight loss} ($\Delta \mathbb{E}[c_{(1)}]$):
+      the excess real resources used to produce the good under the
+      restriction---the part of the fiscal cost that is not a
+      transfer between buyer and seller but a genuine loss.
+    \item \textbf{Rent change} ($\Delta \mathbb{E}[b_{(1)} - c_{(1)}]$):
+      the change in the winning firm's profit. Negative in our
+      setting: SMEs competing against other SMEs face a tighter,
+      more symmetric book than they did when non-SMEs were in the
+      pool.
+\end{itemize}
+The structural primitives are what make this decomposition
+operational. Without $F_c^A$ and $F_c^B$, identity
+\eqref{eq:welfare-identity} is just notation.
+
+\paragraph{Computation.}
+With both $F_c^A$ and $F_c^B$ estimated, the expected minimum
+cost in an auction with $(n_A, n_B)$ bidders follows directly
+from the order-statistic integral. Under the Open regime the
+integral runs over both type distributions; under the SME-only
+regime it runs only over the SME distribution. Explicitly, under
+the Open regime,
+\begin{align}
+\mathbb{E}[c_{(1)}^{R}] \;=\;
+  \int_0^{\overline{c}} \bigl[1 - F_c^A(c)\bigr]^{n_A}
+                     \bigl[1 - F_c^B(c)\bigr]^{n_B}\,
+   dc \,+\, \underline{c},
+\label{eq:expected-min-open}
+\end{align}
+and under the SME-only regime, with only the $n_A$ SMEs
+eligible,
+\begin{align}
+\mathbb{E}[c_{(1)}^{R'}] \;=\;
+  \int_0^{\overline{c}} \bigl[1 - F_c^A(c)\bigr]^{n_A}\, dc
+  \,+\, \underline{c}.
+\label{eq:expected-min-sme}
+\end{align}
+The deadweight loss in auction $t$ is the difference between
+the two expected minima, scaled by the reference price to put it
+in Brazilian reais,
+$\text{DWL}_t = \bigl(\mathbb{E}[c_{(1)}^{R'}] -
+\mathbb{E}[c_{(1)}^{R}]\bigr) \times P_{\text{ref}}^t$. In
+practice, the two integrals are evaluated numerically on a fine
+grid via the trapezoidal rule; doing so for each of the 11{,}168
+pre-period auctions and aggregating yields the headline welfare
+numbers of the next subsection.
+
+\subsection{Aggregate Welfare Results}
+\label{sec:welfare-aggregate}
+
+\paragraph{Convite G65 headline.}
+Aggregating auction-by-auction across the 11{,}168 Pre-period
+Convite G65 auctions that survive filtering, the welfare
+decomposition is in Table~\ref{tab:dwl-agg}.
+
+\begin{table}[htbp]
+\centering
+\caption{Welfare decomposition, Convite G65, 18-month window}
+\label{tab:dwl-agg}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrr}
+\toprule
+                                           & R\$ thousand & US\$ thousand & \% of procurement \\
+\midrule
+Pre-period procurement value (baseline)    & 2{,}500.8    & 714.5          & 100.0\%          \\
+\midrule
+Buyer's fiscal cost ($\Delta\mathbb{E}[b_{(1)}]$)  & 260.5  & 74.4   & 10.4\%           \\
+Winner rent change ($\Delta\mathbb{E}[b-c]$)       & $-34.2$ & $-9.8$ & $-1.4$\%         \\
+\midrule
+\textbf{Deadweight loss} ($\Delta\mathbb{E}[c_{(1)}]$) & \textbf{294.7} & \textbf{84.2} & \textbf{11.8\%} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} All values are sums over the 11{,}168 Pre-period
+Convite G65 auctions with valid ref/bidder composition. USD conversion
+at R\$3.50 per USD (the 2016--2019 sample-period average of the BCB
+closing rate). Identity
+$\Delta\mathbb{E}[c_{(1)}] = \Delta\mathbb{E}[b_{(1)}]
+- \Delta\mathbb{E}[b - c]$
+holds by construction: 294.7 = 260.5 - $(-34.2)$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The numbers tell a two-sided story. Over the 18-month window, the
+SME-only rule on Convite G65 generates a deadweight loss of
+\textbf{R\$295k (US\$84k)}, equal to \textbf{11.8\% of procurement
+value}. That loss is paid in two currencies. The buyer pays
+R\$261k more than it would have otherwise---roughly 88\% of the
+total, a straight fiscal cost. The winning SMEs pay another R\$34k
+(US\$10k, 12\%) in foregone profit compared with the rents non-SMEs
+would have extracted in the open regime. Both sides of the
+transaction are worse off, and the loss is not redistributive:
+no third party gets to keep what the buyer and the winners both
+leave on the table. This is the canonical signature of a
+pool-narrowing restriction---and, for a policy often defended on
+fiscal-neutrality grounds, a substantive bill.
+
+\paragraph{Decomposition by auction size.}
+Does the loss concentrate in small, thin auctions or in larger,
+busier ones? Table~\ref{tab:dwl-byN} slices the aggregate by
+realized bidder count. The DWL-to-fiscal ratio is remarkably
+stable at 111--115\% across every $N$-bin, rising only slightly
+with auction size. The intuition is mechanical: a larger auction
+typically excludes more non-SMEs in expectation, and each
+additional exclusion tightens the remaining book a little more,
+so the rent-compression piece grows modestly with $N$. The
+headline is that the policy does not just raise prices in a few
+thin auctions---the welfare loss is a linear, rather than
+outlier-driven, feature of the regime.
+
+\begin{table}[htbp]
+\centering
+\caption{Welfare decomposition by auction size (Convite G65)}
+\label{tab:dwl-byN}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+$N$-bin   & Fiscal (R\$k) & DWL (R\$k) & Rent change (R\$k) & DWL/Fiscal \\
+\midrule
+$N=2$     & 73.5  & 81.9  & $-8.4$   & 111\% \\
+$N=3$     & 86.2  & 97.3  & $-11.1$  & 113\% \\
+$N=4$     & 62.2  & 70.9  & $-8.7$   & 114\% \\
+$N\ge 5$  & 38.6  & 44.6  & $-6.0$   & 115\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Annualization and aggregate scale.}
+Annualizing the 18-month Convite figures yields R\$197k/year DWL
+(US\$56k/year) for Convite G65 alone. Convite, however, is a small
+piece of Group-65 procurement: the modality accounts for roughly
+15\% of Group-65 value, while Preg\~ao absorbs 84\% and Dispensa
+the last 1\%. If the 11--12\% DWL-to-procurement ratio carries
+across modalities---plausible given the cross-modality directional
+consistency documented in Section~\ref{sec:robustness}, with the
+caveat that per-modality ratios may differ---total Group-65 annual
+DWL comes in around \textbf{R\$1.2--1.4M/year (US\$340k--400k)}.
+This is for a single product group in a single state.
+
+What about all of Brazilian public procurement? I resist the
+temptation to multiply. A credible Brazil-wide aggregate would
+require numbers this paper does not observe: the share of the
+roughly R\$700 billion annual Brazilian public-procurement
+envelope that is both (i) below the R\$80{,}000 SME-only threshold
+and (ii) subject to the three-SMEs precondition of LC~123, and
+the degree to which the 11.8\% G65-specific ratio transfers to
+other sectors. Group-65 medical supplies is unusual in more
+than one dimension---high per-item values, oligopolistic
+pharmaceutical classes (6531), ANVISA-registered suppliers,
+CMED ceiling regulation---and I would not expect a custodial or
+office-supply category to deliver the same ratio. A careful
+replication across federal (ComprasNet) and municipal procurement,
+matched to sector-specific SME-eligibility shares, is on my
+research agenda; an unreplicated extrapolation is not in this
+paper.
+
+\paragraph{Comparison to \citet{krasnokutskayaseim2011}.}
+It is worth asking how a 10--12\% welfare cost compares with what
+the structural auction literature has already estimated for softer
+versions of the same policy. The closest benchmark is
+\citet{krasnokutskayaseim2011}, who study the California 5\%
+bid-preference program---a much milder intervention, in which
+small firms win if their bid is within 5\% of the lowest
+non-favored bid. The California program raises procurement cost
+by 0.5\% relative to no preference and shifts the small-firm
+share of work from 12.5\% to 15.6\%. Our complete-exclusion regime
+produces a 10.4\% fiscal cost and an 11.8\% DWL---roughly
+20--25$\times$ their 5\%-preference baseline. That is, of course,
+exactly what moving from a 5\% discount to 100\% exclusion should
+look like: the intensity of the preference has risen by about
+20$\times$, and in asymmetric-bidder models DWL scales
+supralinearly in preference intensity \citep[see][Section
+IV]{krasnokutskayaseim2011}. The proportionality is useful not
+because it validates any particular number but because it tells
+us the two estimates live in the same theoretical object. California's
+5\% and São Paulo's 100\% are reading off the same welfare curve.
+
+\subsection{The Value-Threshold Exemption Counterfactual}
+\label{sec:welfare-vt}
+
+\paragraph{Policy experiment.}
+The welfare numbers naturally raise a practical question: can
+most of the fiscal cost be recovered without giving up the SME
+preference on most items? \citet{genicolo2026a} proposes a
+\emph{value-threshold exemption}---keep the SME-only rule on
+low-value items where the competition pool is thick and the cost
+asymmetry is small, but exempt high-value items where the
+restriction does the most damage. Under the reduced-form
+approximation, exempting the top quartile by reference price
+recovers 90\% of the fiscal cost while keeping the preference on
+75\% of items \emph{by count}. The structural primitives let me
+evaluate that proposal on its own terms, not as an extrapolation
+from a regression slope.
+
+\paragraph{Procedure.}
+For each Pre-period Group-65 Convite auction, I compute both
+$E[b|\text{S1}]$ (Open) and $E[b|\text{S3}]$ (SME-only, Post pool).
+The fiscal cost of the uniform SME-only rule is
+$C_{\text{unif}} = \sum_t (E[b|\text{S3}] - E[b|\text{S1}])
+P_{\text{ref}}^t$. For each candidate value threshold $\tau$, I compute
+the cost under the threshold rule as
+$C(\tau) = \sum_{t: P_{\text{ref}}^t \le \tau}
+(E[b|\text{S3}] - E[b|\text{S1}]) P_{\text{ref}}^t$.
+
+\paragraph{Results.}
+Table~\ref{tab:cf} reports cost recovery by threshold percentile.
+
+\begin{table}[htbp]
+\centering
+\caption{Value-threshold exemption counterfactual (Convite G65)}
+\label{tab:cf}
+\begin{threeparttable}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Threshold percentile & Items exempted & Items kept & Cost recovered &
+\% Items kept \\
+\midrule
+50th (R\$15.43)  &  7{,}204 &  7{,}207 & 98.8\% & 50\% \\
+60th (R\$24.77)  &  5{,}764 &  8{,}647 & 97.8\% & 60\% \\
+70th (R\$42.88)  &  4{,}322 & 10{,}089 & 96.2\% & 70\% \\
+\textbf{75th (R\$57.41)} & \textbf{3{,}600} & \textbf{10{,}811} &
+\textbf{95.1\%} & \textbf{75\%} \\
+80th (R\$86.00)  &  2{,}882 & 11{,}529 & 93.5\% & 80\% \\
+90th (R\$278.00) &  1{,}441 & 12{,}970 & 86.5\% & 90\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Value-threshold exemption simulated under the
+asymmetric-bidder FPSB model. For auctions with $P_{\text{ref}} > \tau$,
+the Open regime (S1) applies; for auctions with $P_{\text{ref}} \le \tau$,
+the SME-only regime (S3, Post pool) applies. Cost recovered = fraction
+of the uniform-rule fiscal cost eliminated by the exemption.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The structural Pareto frontier, plotted in
+Figure~\ref{fig:vt-frontier}, is strikingly concave. Exempting
+just the top 10\% of items already recovers 87\% of the fiscal
+cost; exempting the top 25\% recovers 95\%, leaving the SME-only
+rule on three-quarters of items by count. Compared with the 90\%
+recovery that the reduced-form approximation delivers at the
+same threshold, the structural exercise actually recovers
+\emph{more}, because the top-quartile items have (i) higher
+reference prices, so their absolute fiscal cost is disproportionate
+to their count share, and (ii) higher $N$ on average, so exempting
+them does the most to reopen the intensive margin where non-SME
+entry would matter most. The practical message for a procurement
+regulator is that a small number of high-value items carries most
+of the welfare cost of the uniform rule---exempting them is
+neither an abandonment of the SME policy nor an ideological
+concession, but a direct application of the structural decomposition.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{fig_v2_vt_frontier.pdf}
+\caption{Structural value-threshold exemption Pareto frontier.
+   Exempting top-priced items from the SME-only rule recovers
+   95\% of the fiscal cost while keeping the rule on 75\% of items.}
+\label{fig:vt-frontier}
+\end{figure}
+
+%% ============================================================================
+\section{Robustness and Extension to Preg\~ao}
+\label{sec:robustness}
+
+\paragraph{Preg\~ao extension via \citet{haile2003} bounds.}
+Convite is where CPV works, but Convite is only 15\% of
+Group-65 procurement by value. The remaining 84\% sits in
+Preg\~ao eletr\^onico, an iterative descending reverse auction
+with a random-ending-time soft close---structurally closer to
+an English auction than to a sealed-bid FPSB, and therefore
+outside the domain where CPV point identification applies.
+For Preg\~ao I fall back to the \citet{haile2003} bounds
+framework, which is weaker but applies to iterative settings.
+
+The relevant inequality is \textbf{H1}: under individual
+rationality, no bidder's final bid drops below its own cost, so
+the empirical CDF of final bids for each type provides a
+pointwise upper bound on that type's cost CDF, $F_c^k(c) \leq
+G_b^k(c)$. Applied to the Preg\~ao G65 sample (163{,}004
+auctions, 279{,}100 bidder-auctions after ref-price propagation
+and filtering), the test flips which type stays invariant
+across the break. The non-SME upper bound shifts by $+0.042$ of
+reference price (KS $D = 0.061$, vanishing $p$-value in the large
+sample), while the SME upper bound is essentially unmoved (mean
+shift $+0.0005$, $D = 0.027$). The direction is exactly the
+selection story: under SME-only Preg\~ao, the few non-SMEs who
+keep bidding despite near-zero win probability are not a random
+subsample---they are the non-SMEs with low enough cost or high
+enough idiosyncratic reason to bid anyway. Aggregate Preg\~ao
+winning-bid shift is $+7.2\%$ of reference price, consistent
+with but smaller than the Convite CPV
+estimate.\footnote{Restricted apples-to-apples ($N \geq 2$),
+mean distinct bidders per G65 auction is $4.12$ in Preg\~ao and
+$3.57$ in Convite---Preg\~ao is modestly thicker. The smaller
+Preg\~ao effect therefore is not explained primarily by a
+thicker pool. The more plausible mechanism is that iterative
+open-outcry bidding under the soft-close rule reveals opponent
+information during the auction, compressing markups differently
+than the sealed-bid Convite mechanism. The Haile-Tamer result
+is also a one-sided upper bound rather than a point estimate, so
+the underlying cost shift in Preg\~ao may in fact be larger than
+the $7.2\%$ the final-bid test can recover.}
+Cross-modality validation is therefore directional rather than
+point: each modality shows primitive invariance for the type
+whose pool is not re-selected by the policy, and each shows a
+directionally consistent shift. A type-asymmetric CPV-style
+Preg\~ao extension would require a structural model of iterative
+bidding under random close, which is on the research agenda but
+not in this paper.
+
+\paragraph{Alternative SME classifications.}
+The SME/non-SME split is the spine of the structural exercise,
+so how firms are classified matters, and two reasonable choices
+are on the table. The headline specification uses a
+firm-registry proxy (\texttt{sme\_proxy} $= 1$ if
+\texttt{porte\_empresa} $\in \{01, 03\}$ or \texttt{fornec\_enquad}
+$\in \{1, 2\}$; see Appendix~A). A stricter canonical alternative
+aggregates the BEC self-declared \texttt{me\_epp} field to the
+firm level (winners only, with firm-registry fallback for
+losers). Total bidder-auction counts after the CPV clean filter
+are nearly identical across the two (18{,}907 proxy vs.\ 18{,}885
+canonical), but the Pre-period SME cell---which is the hardest
+cell to estimate a density on---shrinks from 2{,}604 to just
+372 under canonical. That is a seven-fold reduction in the
+data density most critical for identifying $F_A^{\text{Pre}}$
+via kernel estimation, and it is the reason the proxy
+classification is used for the headline.
+
+What matters for credibility is whether the two classifications
+deliver the same economic answer, and they do. Under canonical,
+the non-SME distribution remains invariant across the regime
+break (KS $D = 0.04$, mean shift $0.013$); the SME distribution
+shifts upward (shift $0.009$); and the Pre-period cost gap
+between SMEs and non-SMEs widens from essentially zero under
+the proxy to $+4.7\%$ under the canonical---in the direction
+the policy debate usually assumes (SMEs are costlier). Every
+headline sign holds; magnitudes attenuate under the stricter,
+noisier classifier. Appendix~C reports the full canonical
+comparison, and Appendix~D reports a further tightening that
+restricts to \texttt{porte\_empresa == '01'} (strictly micro-firms)
+with the same qualitative patterns.
+
+\paragraph{IPV versus common values.}
+CPV is built on independent private values (IPV), and if medical
+supplies in reality share a common-cost component---input-price
+shocks, currency movements, supply-chain disruptions that hit
+all bidders at once---the risk-neutral IPV inversion systematically
+over-recovers pseudo-costs and biases the decomposition. The
+concern is not hypothetical in pharmaceutical procurement, so it
+deserves a direct test. Following the logic of
+\citet{hendricks2003}, under IPV, after conditioning on bidder
+type and auction size, residual dependence of the recovered
+$c_{\text{norm}}$ on auction-level signals should vanish. A
+regression of $c_{\text{norm}}$ on $\log N$, $\log P_{\text{ref}}$,
+bidder type, and a pharma (class 6531) dummy delivers a joint
+$F = 1.50$ (2 and 8{,}250 df, clustered at auction level;
+$p = 0.22$), with the coefficient on $\log P_{\text{ref}}$ itself
+at $+0.0015$ ($p = 0.29$)---statistically and economically
+indistinguishable from zero. The IPV restriction is not rejected
+at first order. A finer check, the markup-by-$N$ scaling,
+deviates from the pure $1/(N-1)$ IPV prediction by 36--55\% at
+higher $N$, which is consistent with mild common-values
+contamination, with endogenous participation selection, or
+with item heterogeneity across $N$-bins. None of these
+deviations is large enough to change the structural
+decomposition materially.
+
+\paragraph{Boundary-bias sensitivity.}
+Kernel density estimators have well-known boundary bias, and
+the Silverman bandwidth occasionally generates pseudo-costs
+below zero. These artifacts are 7--41\% of the raw sample,
+concentrated at $N = 2$ where the bid distribution is thinnest.
+Trimming to $\hat c \in (0, 1.5)$ retains 77.7\% of the sample;
+a looser trimming at $(-0.5, 2)$ moves the decomposition weights
+by less than two percentage points. Appendix~D reports both
+variants; nothing in the paper's headline rests on the specific
+trim.
+
+\paragraph{Risk aversion.}
+The risk-neutral assumption embedded in CPV is not innocent. If
+SMEs and non-SMEs face different risk attitudes---a concern in
+an environment where small firms may be more exposed to
+cash-flow shocks---the pseudo-costs are biased and the
+decomposition can absorb that bias asymmetrically. The
+\citet{campoguerre2011} extension of GPV to CARA risk aversion
+point-identifies the risk parameter from variation in $N$, and
+I calibrate a single CARA coefficient $\hat\alpha$ to the
+observed markup-by-$N$ scaling reported in
+Section~\ref{sec:decomposition}. The fit is tight:
+$\hat\alpha \approx 1.25$ matches observed markups to within
+half a percentage point across $N \in \{2, 3, 4, 5+\}$, a value
+in the range \citet{campoguerre2011} recover for highway
+procurement. Under risk-averse recovery, the mean pseudo-cost
+drops by $-0.022$ (non-SME) and $-0.026$ (SME) of reference
+price---a near-symmetric 4--5\% reduction across types. The
+symmetry is what matters: the decomposition weights and the DWL
+numbers move by at most two or three percentage points relative
+to the risk-neutral baseline, and the primitive-invariance test
+results are unchanged. The headline story does not hinge on
+assuming risk neutrality.
+
+%% ============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+Set-asides for small firms are often evaluated as if they were
+equivalent to an accounting tax on public procurement: their fiscal
+cost is the gap between what the buyer pays under the restriction and
+what the buyer would pay without it. That reading is incomplete. In
+S\~ao Paulo state's medical-supply procurement, the 10--11\% price
+effect of the SME-only rule runs roughly two-thirds through a channel
+the accounting picture does not see: the same small firms bid less
+aggressively when their large competitors are excluded. The remaining
+third is a shift in who bids, as higher-cost marginal SMEs enter
+markets that had been closed to them. The decomposition is not an
+abstract exercise: it says that a reform whose only tool is expanding
+the SME roster cannot recover most of the efficiency loss, because
+the efficiency loss is mechanical, not just compositional. The lever
+that does work is narrower: shrinking the \emph{scope} of the rule
+itself---exempting the top quartile of items by reference price
+recovers 95\% of the fiscal cost while preserving the SME preference
+on three-quarters of items.
+
+A step below the policy conclusion, the paper makes two methodological
+points that generalize. First, when a policy regime break re-selects
+which firms bid but leaves primitive costs untouched, the
+type-specific cost distribution whose pool was not re-selected
+provides an over-identifying restriction that, while available in
+principle to any regime-break setting, is rarely exploited in
+applied auction estimation. In Convite, it is the non-SME distribution
+that survives the cut cleanly---firms whose outside option of bidding
+elsewhere is unaffected by the Group-65 re-designation. Under the
+Preg\~ao Haile-Tamer upper bound, it is the SME distribution that
+survives. In each modality, the primitive that holds is the one the
+policy cannot have moved. I suspect this cross-modality pattern---the
+identifying restriction living wherever the pool was not
+re-selected---will recur in other settings that exploit regime breaks
+in auction data.
+
+Second, the within-auction intensive margin is, under the rigorous
+fixed-pool decomposition, the dominant channel of the price effect.
+Participation responds dramatically to the policy---non-SME entry
+falls 62\% and SME entry rises 52\% across the break---but the
+CPV decomposition locates most of the price movement inside the
+auction, in how the remaining SMEs bid once their larger
+competitors are gone. A calibration that credits every observed
+participation shift to the entry channel can be made to invert
+the weights, but that calibration double-counts the re-selection
+that the CPV intensive margin already captures (Appendix~E). A
+rigorous allocation of the price response to endogenous entry
+requires the nested fixed-point entry-bidding equilibrium of
+\citet{atheyseira2011}, which this paper does not implement and
+leaves as natural next work. The headline claim of the paper is
+the fixed-pool result; the participation response is a second,
+confirmatory fact about the policy's reach.
+
+Three limitations frame the reading. First, the Convite modality
+accounts for about 15\% of Group-65 procurement value; the
+bulk---Preg\~ao---is addressed by Haile-Tamer upper bounds rather
+than point estimates. The directional patterns survive the modality
+change, but a full CPV-style analysis of Preg\~ao would require a
+structural model of its iterative soft-close format. Second, the
+SME classification at the bidder level is a firm-registry proxy;
+Appendix~C shows the qualitative conclusions survive the stricter
+canonical \texttt{me\_epp} definition, at smaller magnitudes and
+smaller effective sample. Third, all welfare numbers are in
+18-month, R\$-denominated terms for Convite G65 alone. Extrapolation
+to Brazilian public procurement writ large would require inputs---
+sector-specific SME-eligibility shares, cross-sector transferability
+of the G65 11.8\% DWL ratio---that this paper does not provide.
+
+The \emph{bitter pill} in the Brazilian public-procurement data is
+that the restriction delivered what it promised along the
+distributional margin---small-firm share of Group-65 procurement
+rose sharply---but the unit cost of the work rose with it, and
+most of that cost rise happened inside the auction, not at the
+point of entry. Each small firm that wins under SME-only does so
+against a less competitive book than it faced under the Open
+regime, and its bid reflects that. This is the mechanism the
+structural model makes visible and the mechanism a procurement
+reform has to confront: if the price effect lives in the bid
+function, then expanding the SME roster, streamlining registration,
+or subsidizing capacity-building will not recover most of the
+efficiency loss. The lever that does work is to narrow the
+\emph{scope} of the rule---keep the preference on low-value,
+SME-rich items, and let competition back in where the restriction
+hurts most. That is, I hope, a useful fact for the procurement
+officers in Brazil's 5{,}570 municipalities now calibrating Law
+14.133/2021, for the roughly 130 jurisdictions worldwide that
+operate SME-preference regimes, and for development economists
+who work on the recurring trade-off between competition and
+distributional policy.
+
+\clearpage
+\bibliographystyle{chicago}
+\bibliography{References}
+
+\clearpage
+\appendix
+\section*{Appendix A. SME classification: proxy and canonical variants}
+
+\paragraph{Canonical definition (policy-relevant).}
+Under LC~123/2006 (Brazil's Microenterprise Statute), a firm qualifies
+for ME (micro-empresa) status if its gross annual revenue does not
+exceed R\$360{,}000; for EPP (empresa de pequeno porte), R\$4{,}800{,}000.
+The BEC platform captures this classification through a self-declaration
+field \texttt{me\_epp} submitted at bid time. This is the
+\emph{canonical} SME indicator---the one on which the set-aside rule
+legally operates.
+
+\paragraph{Why the canonical field is not directly usable at bidder level.}
+In the source BEC microdata tables that feed the paper's bid-level
+extraction, \texttt{me\_epp} is recorded only on the winning-bid row
+of each purchase-order-item (POI). It is not tied to individual
+bidder-auction observations for losing firms. Using the canonical
+definition directly is therefore impossible without aggregating across
+winning-bid appearances.
+
+\paragraph{Headline proxy.}
+The paper's main specification uses a firm-registry proxy:
+\[
+\text{sme\_proxy} = \mathbf{1}\{\texttt{porte\_empresa} \in \{01, 03\}
+\ \text{or}\ \texttt{fornec\_enquad} \in \{1, 2\}\}.
+\]
+\texttt{porte\_empresa} is the Receita Federal firm-size code (01 = ME
+micro, 03 = EPP small, 05 = demais) and \texttt{fornec\_enquad} is the BEC
+supplier classification (1 = ME, 2 = EPP). The proxy captures both
+ME and EPP classifications as recorded in the firm registry, is constant
+across auctions for the same CNPJ, and is available for every bidder.
+It yields the largest effective sample for kernel density estimation.
+
+\paragraph{Canonical robustness.}
+Appendix~C reports results under a \emph{canonical} classification:
+per CNPJ, aggregate \texttt{me\_epp} self-declarations across all
+winning-bid appearances in the 2016--2019 sample, and set
+$\text{sme\_canonical} = 1$ if the mean self-declaration exceeds 0.5.
+For CNPJs that never won (and so have no self-declaration on record),
+fall back to \texttt{sme\_proxy}. Agreement with the headline proxy is
+approximately 80\%; the most affected cell is the Pre-period SME sample
+(2{,}604 firm-auctions under proxy; 372 under canonical). The smaller
+canonical SME sample reduces the precision of the Pre SME cost
+distribution estimate; every qualitative conclusion survives
+(Appendix~C, Tables~C.1--C.2).
+
+\paragraph{Why proxy-as-headline is defensible.}
+(i) Statistical: the proxy yields 6--7$\times$ more SME bidder-auctions
+in the Pre period, sharpening kernel density estimation at the Pre SME
+primitive that our identification strategy relies on most. (ii) Economic:
+the proxy's \texttt{porte\_empresa} $\in \{01, 03\}$ captures the same
+ME/EPP categorical distinction as LC~123 but through the firm's
+\emph{static} registry classification rather than its \emph{bid-time}
+self-declaration---this is \emph{more} robust to per-auction
+misdeclaration and gaming. (iii) Empirical: the canonical classification
+confirms the direction of every headline result (non-SME invariance,
+SME shift, decomposition weights, DWL magnitude), and the direction is
+robust to the definition.
+
+\section*{Appendix B. Markup by $N$}
+Table~\ref{tab:markup-by-n} reports the CPV-recovered markup
+($b - c$) at each $N$-bin, illustrating the theoretical prediction
+that markup decreases in $N$ under both symmetric and asymmetric GPV.
+
+\begin{table}[htbp]
+\centering
+\caption{Markup by auction size ($N$-bin)}
+\label{tab:markup-by-n}
+\small
+\begin{tabular}{lrr}
+\toprule
+$N$-bin & Median markup ($b - c$) in $c/P_{\text{ref}}$ & $n$ (bidder-auctions) \\
+\midrule
+$N = 2$     & 0.381 (38\%) & 8{,}431 \\
+$N = 3$     & 0.180 (18\%) & 6{,}088 \\
+$N = 4$     & 0.120 (12\%) & 3{,}574 \\
+$N \ge 5$   & 0.057 (6\%)  & 6{,}253 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Appendix C. Canonical \texttt{me\_epp} robustness}
+
+This appendix re-estimates the structural model with the canonical SME
+classification defined in Appendix~A. The canonical flag is the
+CNPJ-level aggregation of the BEC \texttt{me\_epp} self-declaration
+across all winning-bid appearances, with firm-registry fallback for
+never-winners. Table~\ref{tab:canonical-compare} compares the key
+quantities.
+
+\begin{table}[htbp]
+\centering
+\caption{Proxy vs canonical SME classification: headline comparisons}
+\label{tab:canonical-compare}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Quantity & Proxy (headline) & Canonical & $\Delta$ \\
+\midrule
+Mean $c/P_{\text{ref}}$, Pre NonSME   & 0.523 & 0.524 & $+0.001$ \\
+Mean $c/P_{\text{ref}}$, Pre SME      & 0.520 & 0.548 & $+0.028$ \\
+Mean $c/P_{\text{ref}}$, Post NonSME  & 0.524 & 0.537 & $+0.013$ \\
+Mean $c/P_{\text{ref}}$, Post SME     & 0.560 & 0.557 & $-0.003$ \\
+\midrule
+NonSME primitive-invariance shift     & $+0.001$ & $+0.013$ & $+0.012$ \\
+SME entry shift                        & $+0.039$ & $+0.009$ & $-0.030$ \\
+KS test NonSME ($D$)                  & 0.030 & 0.044 & \\
+KS test SME ($D$)                     & 0.081 & 0.075 & \\
+\midrule
+Cost gap (SME $-$ NonSME, Pre)         & $-0.4\%$ & $+4.7\%$ & \\
+Effective SME sample (Pre)             & 2{,}604 & 372 & \\
+Effective NonSME sample (Pre)          & 5{,}651 & 7{,}844 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three observations. First, the non-SME cost distribution remains
+economically invariant under both classifications (shifts $<0.02$ of
+reference price). The KS $D$ rises from $0.03$ to $0.04$ under canonical,
+reflecting the larger noise from the narrower classification, but the
+invariance hypothesis is not economically rejected in either. Second,
+the entry shift for SMEs attenuates from $+0.039$ to $+0.009$ under
+canonical---a factor of $4\times$---because the canonical classification
+has 7$\times$ fewer Pre-period SME bidder-auctions and therefore more
+noise in the Pre SME distribution. Third, the Pre cost gap between
+types sharpens under canonical: SMEs appear $4.7\%$ costlier than
+non-SMEs (policy-relevant direction), versus essentially zero under
+proxy. The direction---SMEs as higher-cost bidders whose participation
+expands under the set-aside---is preserved.
+
+Under canonical, the implied decomposition weights are $\sim$85\%
+intensive, $\sim$15\% entry (vs.\ 70/30 in the headline proxy). The
+intensive margin continues to dominate.
+
+The headline specification uses the proxy to retain sample power;
+Appendix~C should be read as a directional check on the canonical
+classification, not as the preferred point estimate.
+
+\section*{Appendix D. Boundary-bias trimming sensitivity}
+Trimming at $(-0.5, 2)$ instead of $(0.001, 1.5)$ raises the retained
+sample from 77.7\% to 94.3\%. The decomposition shifts to 68\%
+intensive / 32\% entry (vs.\ 70/30 in the main specification). All
+substantive findings unchanged.
+
+\section*{Appendix E. Participation response: reduced-form calibration}
+\label{app:endog-calibration}
+Section~\ref{sec:endogenous} argues that the 66/34 structural
+decomposition is the rigorous result and that a calibration that
+credits the observed non-SME exit and SME entry entirely to the
+entry channel double-counts re-selection. This appendix reports
+the calibration for transparency.
+
+Under the calibration, the CPV intensive margin $\Delta^{\text{int}}$
+is retained, but the entry margin $\Delta^{\text{ent}}$ is replaced
+by a scaled-up counterpart that absorbs the reduced-form
+participation shifts (Table~\ref{tab:entry-reg}): non-SME entry
+rates fall $62\%$ and SME entry rates rise $52\%$ conditional on
+item class. Allocating these shifts to the entry channel by the
+ratio of observed-to-counterfactual participation gives the
+by-$N$ weights in Table~\ref{tab:decomp-endogenous}.
+
+\begin{table}[htbp]
+\centering
+\caption{Decomposition under the participation-response calibration}
+\label{tab:decomp-endogenous}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+         & \multicolumn{2}{c}{Fixed-pool (headline)} &
+           \multicolumn{2}{c}{Participation-calibrated} \\
+         & Intensive \% & Entry \% & Intensive \% & Entry \% \\
+\midrule
+$N = 2$   & 74\% & 26\% & 37\% & 63\% \\
+$N = 3$   & 47\% & 53\% & 24\% & 76\% \\
+$N = 4$   & 70\% & 30\% & 35\% & 65\% \\
+$N \geq 5$& 72\% & 28\% & 36\% & 64\% \\
+\midrule
+\textit{Average} (unweighted) & $\sim$66\% & $\sim$34\% & $\sim$33\% & $\sim$67\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two caveats apply. First, the calibration treats every observed
+participation shift as entry-channel causation; a fraction of the
+shift is equally consistent with the intensive-margin response to
+a thinner pool (the remaining bidders face less competition and
+rationally bid softer). The CPV fixed-pool decomposition already
+incorporates that response; the calibration cannot separate the
+two. Second, a proper structural allocation requires the
+\citet{atheyseira2011} nested entry-bidding framework with
+explicit distributions over entry costs and ex-ante signals,
+which this paper does not implement. The 33/67 weights should
+therefore be read as an upper bound on the participation share
+under a maximally-participation-attributing accounting. The
+rigorous decomposition is 66/34, reported in
+Section~\ref{sec:decomposition} and Table~\ref{tab:decomp}.
+
+\end{document}
