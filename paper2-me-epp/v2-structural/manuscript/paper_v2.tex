@@ -124,18 +124,12 @@ bureaucratic legal argument, not by any procurement-market outcome; it
 is plausibly exogenous to anything happening in Group-65 bidding.
 
 \paragraph{The approach.}
-A reduced-form companion paper~\citep{genicolo2026a}\footnote{%
-The reduced-form analysis documents a 10--11\% increase in Group-65
-procurement prices under the SME-only regime, robust to the
+Section~\ref{sec:rf} establishes via difference-in-differences
+that the policy raises Group-65 procurement prices by 10--11\%
+over the 18-month window, a figure robust to the
 \citet{callaway2021}, \citet{sun2021}, and \citet{goodmanbacon2021}
-estimators. A \citet{gelbach2016} mediation decomposition---regressing
-log prices on bidder count and a winner-SME indicator---finds that the
-two observable channels are individually large but opposite-signed and
-together explain only about 5\% of the effect on net, leaving roughly
-95\% unexplained. That residual is the object of the present paper.}
-shows that the policy raises Group-65 procurement prices by 10--11\%
-over the 18-month window, but it cannot separate the two channels
-listed above. A \citet{gelbach2016} decomposition locates roughly 95\%
+estimators. Reduced-form mediation, however, cannot separate the
+two channels of interest. A \citet{gelbach2016} decomposition locates roughly 95\%
 of the effect outside the observable entry and winner-composition
 channels. That residual is what the present paper explains: using bid
 distributions recovered from the BEC electronic platform, I estimate
@@ -197,15 +191,16 @@ future work---should refine magnitudes without overturning the
 intensive-margin primacy of the fixed-pool result.
 
 \paragraph{Welfare counterfactual.}
-Using the recovered cost distributions, I simulate equilibrium procurement
-prices under a value-threshold exemption---applying the SME-only rule
-only below a reference-price cutoff. The structural Pareto frontier is
-even more concave than the reduced-form version in \citet{genicolo2026a}:
-exempting the top quartile of items by reference price preserves the
-SME preference on 75\% of items \emph{by count} while recovering
-\textbf{95\%} of the fiscal cost of the uniform rule (compared to 90\%
-in the reduced-form calculation). The policy recommendation of the
-companion paper is thus validated and sharpened by the structural model.
+Using the recovered cost distributions, I simulate equilibrium
+procurement prices under a \emph{value-threshold exemption}---
+applying the SME-only rule only below a reference-price cutoff.
+The structural Pareto frontier is strikingly concave: exempting
+the top quartile of items by reference price preserves the SME
+preference on 75\% of items \emph{by count} while recovering
+\textbf{95\%} of the fiscal cost of the uniform rule. This reform
+is not just arithmetic---the structural model shows that the
+top-quartile items are where the intensive margin bites hardest,
+so reopening them is also where cost recovery is largest.
 
 \paragraph{Contributions.}
 The findings above distill into three methodological contributions
@@ -246,12 +241,15 @@ non-SME bidders toward higher-cost types. The paper's
 identification relies on the Convite cross-regime check, with the
 Preg\~ao result as a directional robustness.
 
-\noindent\textbf{(iii) Welfare-based evaluation of a value-threshold
-reform.} The counterfactual exercise delivers a quantitative estimate
-of the value-threshold exemption proposed in \citet{genicolo2026a},
-grounded in asymmetric-bidder welfare accounting rather than accounting
-identities. The structural reform recovers more fiscal cost and with
-higher precision than the reduced-form calculation suggested.
+\noindent\textbf{(iii) Welfare-based structural evaluation of a
+value-threshold reform.} I simulate a concrete policy alternative
+---exempting high-reference-price items from the SME-only rule
+while keeping the preference on the rest---and show that the
+structural primitives deliver a Pareto frontier considerably more
+concave than an accounting-identity calculation would suggest.
+The top-quartile exemption recovers 95\% of the fiscal cost on
+25\% of items, grounded in asymmetric-bidder welfare accounting
+rather than mechanical extrapolation.
 
 \paragraph{Relation to the literature.}
 The paper connects two strands. The empirical SME procurement
@@ -519,64 +517,34 @@ is the core identifying assumption of this paper, and---crucially
 for what follows---it is testable directly against the data.
 
 %% ============================================================================
-\section{Reduced-Form Baseline}
+\section{Reduced-Form Context}
 \label{sec:rf}
 
-Before turning to primitives, it is worth seeing what the raw
-data already show. This section summarizes the reduced-form
-evidence that motivates the structural exercise---and, more
-importantly, the part of that evidence that the reduced form
-cannot explain. The full reduced-form treatment (placebos,
-alternative estimators, spillover bounds, and a Gelbach mediation
-decomposition) lives in the companion paper \citep{genicolo2026a};
-here I keep only what is needed to set up the structural puzzle:
-four headline coefficients, one mediation exercise, and one
-residual---about 95\% of the price effect---that observable entry
-and observable composition cannot account for. That residual is
-what the rest of the paper is built to explain.
+Before turning to primitives, two reduced-form facts motivate the
+structural exercise: the March~2018 regime switch causes a 10--11\%
+price increase, and a Gelbach mediation decomposition locates
+\emph{95\%} of it outside any observable channel. This section
+establishes both.
 
-\paragraph{Staggered-DiD reversal design.}
-The design is unusually clean for a natural experiment. March 2018
-places Group 65 under the SME-only default that had already
-applied to 76 other product groups since 2014. Identification
-proceeds as a \emph{staggered-DiD reversal}: one cohort
-(Group 65) switches from ``open'' into ``SME-only,'' while 76
-comparison groups sit in the SME-only state throughout the
-18-month window. The same logic can be read, following
-\citet{kim2019}, as a DiD-in-reverse in which the 76 controls
-are ``always-treated'' and Group 65 is the lone cohort switching
-out of the exempt state. Algebraically the two framings produce
-the same coefficient, and the modern staggered-DiD diagnostics
-\citep[][]{athey2022, callaway2021, sun2021, goodmanbacon2021,
-borusyak2024} agree on it.
-
-The main reduced-form regression is
+\paragraph{Design and estimate.}
+March 2018 places Group~65 (the treated cohort) under the
+SME-only default that had already applied to 76 other product
+groups since 2014. Identification proceeds via a staggered-DiD
+reversal: Group~65 switches from ``open'' into ``SME-only'' while
+the 76 comparison groups remain SME-only throughout an 18-month
+window. The \citet{goodmanbacon2021} decomposition places 100\%
+of the two-way-fixed-effects weight on the clean
+treated-vs-never-treated 2$\times$2 comparison---there is nothing
+to re-aggregate. The main regression is
 \begin{equation}
-y_{ipt} \;=\; \beta \, (\mathit{g65}_i \times \mathit{Pre}_t)
-            \;+\; \zeta_i \;+\; \mathbf{X}'_{ipt}\gamma \;+\; \varepsilon_{ipt},
+y_{ipt} \;=\; \beta\,(\mathit{g65}_i \times \mathit{Pre}_t)
+\;+\; \zeta_i \;+\; \mathbf{X}'_{ipt}\gamma \;+\; \varepsilon_{ipt},
 \label{eq:did-main}
 \end{equation}
-where $y_{ipt}$ is the outcome (log winning price, log firm count,
-log bid count, or winner-to-PBU distance in kilometers) for item $i$
-in auction under PBU $p$ at time $t$; $\mathit{g65}$ and $\mathit{Pre}$
-are the Group-65 and pre-March-2018 indicators; $\zeta_i$ is the item
-fixed effect; and $\mathbf{X}$ includes a sealed-bid indicator and
-log quantity. Standard errors are clustered at the item level in the
-baseline specification.
-
-The design's cleanest feature is its weighting. With only one
-treated cohort and a well-defined never-treated control set
-within the window, the negative-weighting pathologies that
-plague staggered-DiD in more cluttered settings simply do not
-arise here: the \citet{goodmanbacon2021} decomposition places
-100\% of the two-way fixed-effects weight on the clean
-treated-vs-never-treated $2 \times 2$ comparison. There is
-nothing to re-aggregate.
-
-\paragraph{Headline reduced-form estimates.}
-Table~\ref{tab:rf-headline} reports $\hat\beta$ for the four outcomes
-across three windows (6, 12, and 18 months around the March~2018
-cutoff), with and without PBU fixed effects.
+with item fixed effects $\zeta_i$, controls $\mathbf{X}$ including
+a sealed-bid indicator and log quantity, and standard errors
+clustered at the item level. Table~\ref{tab:rf-headline} reports
+$\hat\beta$ across four outcomes and three windows.
 
 \begin{table}[htbp]
 \centering
@@ -605,99 +573,68 @@ Winner-PBU dist.\ (km) & $+6.64$ & $+1.94$ & $+13.78$ & $+5.70$ & $+14.25$ & $+6
 \item \textit{Notes:} Each cell is $\hat\beta$ (SE) from
 Equation~\eqref{eq:did-main} for the outcome-window-specification
 combination. Item fixed effects included throughout. ``Baseline''
-column includes sealed-bid and log-quantity controls; ``+ PBU FE''
-adds buyer-unit fixed effects. SE clustered at the item level.
-Sample sizes vary by outcome and window ($\sim$250k--700k item-level
-observations). All price and firm-count coefficients are significant
-at $p < 0.01$. Reproduced from \citet{genicolo2026a}, Tables~2--4 and
-Appendix Table~B.1, using the same sample and specification.
-Full source files in the companion paper's replication package:
-\texttt{output/tables/tab\_prices.tex},
-\texttt{tab\_participants.tex}, \texttt{tab\_validbids.tex},
-\texttt{tab\_distance.tex}.
+columns include sealed-bid and log-quantity controls; ``+ PBU FE''
+columns add buyer-unit fixed effects. SE clustered at the item
+level. Sample sizes vary by outcome and window
+($\sim$250k--700k item-level observations). All price and
+firm-count coefficients are significant at $p < 0.01$. Own
+calculation on BEC bid-level data; replication scripts in the
+supplementary materials.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-Four things happen at once under the 18-month window and the
-baseline specification. \textbf{Winning prices rise 10--11\%}
-(using $\exp(\hat\beta) - 1$; sharper in shorter windows, as one
-would expect). \textbf{Firm count falls 10--11\%}, despite a
-policy that mandates SME participation---non-SMEs exit faster
-than SMEs enter, which by itself is informative. \textbf{Total
-valid bids fall only 6--8\%}, a smaller drop than firm count,
+Four patterns emerge from the 18-month baseline.
+\textbf{Winning prices rise 10--11\%} (using $\exp(\hat\beta) - 1$;
+sharper in shorter windows). \textbf{Firm count falls 10--11\%}
+despite a policy mandating SME participation---non-SMEs exit
+faster than SMEs enter. \textbf{Valid bids fall only 6--8\%},
 consistent with each remaining SME submitting more bids per
-auction than the non-SMEs they replaced. And \textbf{winner-to-PBU
-distance falls by 5--14 km}, consistent with SMEs being
-geographically more local to the purchasing units they supply:
-when only SMEs can bid, the winning supplier lives closer to
-the buyer on average. These four moments
-are the raw material the structural exercise has to account for.
+auction than the non-SMEs they replaced. \textbf{Winner-to-PBU
+distance falls 5--14 km}, consistent with SMEs being more
+geographically local. The price coefficient is stable across the
+Callaway-Sant'Anna, Sun-Abraham, and Goodman-Bacon
+heterogeneity-robust estimators ($-0.108$ to $-0.114$);
+cluster-robust to item-group, PBU, and two-way clustering; wild
+cluster bootstrap delivers $p < 0.001$; a synthetic-control
+comparison confirms the post-treatment gap; a formal spillover
+test bounds implied bias at $+0.0005$ log-points; a
+\citet{rambachan2023} HonestDiD diagnostic rules out plausible
+parallel-trends violations.
 
-\paragraph{Gelbach (2016) mediation decomposition.}
-The natural first question is whether the price jump is just
+\paragraph{Gelbach (2016) decomposition: the puzzle.}
+The natural first question is whether the price jump is
 compositional---fewer bidders, different types. A
-\citet{gelbach2016} decomposition of the baseline price regression
-(detailed in the companion paper) adds log firm count and a
-winner-SME indicator as mediators and asks how much of
-$\hat\beta$ they jointly explain. The answer is striking:
-\emph{almost none of it}. The two mediators move in opposite
-directions---log firm count pulls prices down by $+181\%$ of the
-headline, winner-SME composition pulls them up by $-81\%$---and
-what looks like a large decomposition is in fact a near cancellation.
-The \emph{net} mediated share is about 5\%; the residual, the part
-of the price effect that observable entry and observable
-winner-composition do not explain, is about \textbf{95\%}.
+\citet{gelbach2016} decomposition of the price regression adds
+log firm count and a winner-SME indicator as mediators, asking
+how much of $\hat\beta$ they jointly explain. The answer is
+striking: \emph{almost none of it}. The two mediators move in
+opposite directions---log firm count pulls prices down by
+$+181\%$ of the headline, winner-SME composition pulls them up
+by $-81\%$---and what looks like a large decomposition is a near
+cancellation. The net mediated share is about 5\%; the
+residual---the share of the price effect that observable entry
+and observable composition cannot explain---is about
+\textbf{95\%}. That residual is the puzzle the rest of the paper
+addresses.
 
-That 95\% residual is the puzzle. Under the reduced-form
-accounting it could in principle reflect one (or more) of three
-things: (i) within-auction bidding behavior that shifts when
-the composition of the \emph{candidate} pool changes, not just
-the realized winner; (ii) unobserved compositional shifts that
-Gelbach's observable-mediator framework cannot see; or
-(iii) shifts in the cost primitives themselves, particularly any
-selection of non-SMEs into staying when the regime tightens. The
-CPV exercise in the next four sections was built for exactly
-this decomposition: it identifies channels (i) and (iii)---the
-within-auction bid-function change and any residual cost-primitive
-shift, including an endogenous entry response---at the level of
-primitives, which is what the reduced form cannot do.
-
-\paragraph{Robustness.}
-The headline price coefficient survives essentially every check
-we have thrown at it. In the companion paper, the
-Callaway-Sant'Anna, Sun-Abraham, and Goodman-Bacon heterogeneity-
-robust estimators all deliver coefficients in the $-0.108$ to
-$-0.114$ range; adding group-specific linear time trends and
-narrowing the control set to the most similar peer groups yields
-$-0.085$ and $-0.087$; clustering at the item-group, PBU, and
-two-way item$\times$PBU levels leaves significance unchanged; the
-wild cluster bootstrap puts $p < 0.001$; a synthetic-control
-comparison delivers a consistent 17-log-point post-treatment
-gap; and a formal cross-group spillover test bounds the implied
-bias at $+0.0005$ log-points---less than half a percent of the
-headline. A \citet{rambachan2023} HonestDiD diagnostic confirms
-that only implausibly large parallel-trends violations overturn
-the sign. The 10--11\% price effect is, in short, not fragile.
-See \citet{genicolo2026a} for the full battery.
-
-\paragraph{From reduced-form to structural.}
-The reduced form settles the causal question---prices rise
-roughly 10--11\%---and the Gelbach cancellation shows that
-observable entry and observable winner-composition cannot be the
-story. That is the right place to stop writing reduced-form
-tables and start writing down a model. The rest of the paper
-does exactly that. Section~\ref{sec:model} lays out the FPSB
-asymmetric-bidder environment; Section~\ref{sec:identification}
-establishes identification of the type-specific cost primitives
-via the \citet{campo2003} inversion and the primitive-invariance
-test; and Sections~\ref{sec:decomposition}--\ref{sec:welfare}
-pull the 95\% residual apart into a within-auction intensive
-margin ($\sim$66\%), a cost-primitive entry margin ($\sim$34\%),
-a documented participation response that amplifies the policy's
-reach without driving the price effect, and a welfare calculation
-in both R\$ and US\$. The reduced form tells us where to look;
-the structural model tells us what we are looking at.
+\paragraph{From reduced form to structural.}
+The Gelbach cancellation rules out easy compositional stories.
+What remains must be one (or more) of: (i) within-auction
+bidding behavior that shifts with the candidate pool, (ii)
+unobserved compositional shifts, or (iii) selection of firms
+into bidding with different cost primitives. The reduced form
+cannot separate these; the CPV inversion can. The rest of the
+paper pulls the 95\% residual apart into a within-auction
+intensive margin ($\sim$66\%), a cost-primitive entry margin
+($\sim$34\%), a documented participation response that amplifies
+the policy's reach without driving the price effect, and a
+welfare calculation in both R\$ and US\$. Extended reduced-form
+analysis---placebos, spillover bounds, policy-design variants---
+is developed in a parallel paper~\citep{genicolo2026a}; the
+present paper is self-contained on all quantities it uses. The
+reduced form tells us where to look; the structural model tells
+us what we are looking at.
 
 %% ============================================================================
 \section{A Model of Asymmetric FPSB Procurement with Type-Specific Costs}
@@ -1463,8 +1400,8 @@ Read in terms of standard welfare objects, identity
 \begin{itemize}
     \item \textbf{Fiscal cost} ($\Delta \mathbb{E}[b_{(1)}]$): what
       the buyer pays more, per auction, under the restriction. This
-      is the same number the reduced-form regressions in
-      \citet{genicolo2026a} estimate directly from observed winning
+      is the same quantity the reduced-form regression in
+      Section~\ref{sec:rf} estimates directly from observed winning
       bids.
     \item \textbf{Deadweight loss} ($\Delta \mathbb{E}[c_{(1)}]$):
       the excess real resources used to produce the good under the
@@ -1652,16 +1589,17 @@ us the two estimates live in the same theoretical object. California's
 \paragraph{Policy experiment.}
 The welfare numbers naturally raise a practical question: can
 most of the fiscal cost be recovered without giving up the SME
-preference on most items? \citet{genicolo2026a} proposes a
-\emph{value-threshold exemption}---keep the SME-only rule on
-low-value items where the competition pool is thick and the cost
-asymmetry is small, but exempt high-value items where the
-restriction does the most damage. Under the reduced-form
-approximation, exempting the top quartile by reference price
-recovers 90\% of the fiscal cost while keeping the preference on
-75\% of items \emph{by count}. The structural primitives let me
-evaluate that proposal on its own terms, not as an extrapolation
-from a regression slope.
+preference on most items? I consider a \emph{value-threshold
+exemption}---keep the SME-only rule on low-value items where the
+competition pool is thick and the cost asymmetry is small, but
+exempt high-value items where the restriction does the most
+damage. A reduced-form approximation on the same data suggests
+that exempting the top quartile by reference price recovers
+roughly 90\% of the fiscal cost while keeping the preference on
+75\% of items \emph{by count}~\citep{genicolo2026a}. The
+structural primitives recovered here let me evaluate this design
+on its own terms rather than as an extrapolation from a
+regression slope.
 
 \paragraph{Procedure.}
 For each Pre-period Group-65 Convite auction, I compute both
