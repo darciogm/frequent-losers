@@ -5,23 +5,23 @@ STATA="stata-se -b -q do"
 BASEDIR="/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills"
 cd "$BASEDIR"
 
-echo "=== V3 Analysis Pipeline ==="
+echo "V3 analysis pipeline"
 echo "Started: $(date)"
 echo ""
 
-# Phase 1: Data Preparation (must complete first)
-echo "=== Phase 1: Data Preparation ==="
+# Phase 1: data prep must finish before anything else runs
+echo "Phase 1: data preparation"
 $STATA v3/analysis/00_prepare_data.do
 if grep -q "^r(" 00_prepare_data.log 2>/dev/null; then
-    echo "ERROR in data preparation! Aborting."
+    echo "ERROR in data preparation. Aborting."
     cat 00_prepare_data.log | tail -20
     exit 1
 fi
 echo "Data preparation complete."
 echo ""
 
-# Phase 2: All analyses in parallel
-echo "=== Phase 2: Running all analyses in parallel ==="
+# Phase 2: fire all analyses in parallel
+echo "Phase 2: running analyses in parallel"
 
 $STATA v3/analysis/01_desc_stats.do &
 PID1=$!
@@ -57,8 +57,8 @@ wait
 echo "All analyses finished."
 echo ""
 
-# Phase 3: Check for errors
-echo "=== Phase 3: Error Check ==="
+# Phase 3: scan each log for Stata error codes
+echo "Phase 3: error check"
 ERRORS=0
 for f in 00_prepare_data.log 01_desc_stats.log 02_balance_table.log \
          03_main_regressions.log 04_heterogeneity.log 05_fiscal_costs.log \
@@ -79,14 +79,14 @@ done
 
 echo ""
 if [ $ERRORS -eq 0 ]; then
-    echo "=== ALL SCRIPTS COMPLETED SUCCESSFULLY ==="
+    echo "All scripts completed successfully."
 else
-    echo "=== $ERRORS SCRIPT(S) HAD ERRORS ==="
+    echo "$ERRORS script(s) had errors."
 fi
 
-# Phase 4: Verify outputs
+# Phase 4: spot-check the output directories
 echo ""
-echo "=== Output Verification ==="
+echo "Output verification"
 echo "RTF files:"
 ls -la v3/results/*.rtf 2>/dev/null | wc -l
 echo " RTF files found"

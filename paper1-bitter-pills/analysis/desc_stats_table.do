@@ -1,17 +1,12 @@
-********************************************************************************
 * Descriptive Statistics Table
-* Paper: Bitter Pills to Swallow
 * Generates Table 1: Descriptive Statistics by Purchase Type
-********************************************************************************
 
 clear all
 set more off
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Create purchase type categories
-* --------------------------------------------------------------------------
 gen purchase_type = 0
 replace purchase_type = 1 if adm == 2
 replace purchase_type = 2 if jud == 1
@@ -22,9 +17,7 @@ label values purchase_type ptype
 * Urgent indicator (admin + litigated)
 gen urgent = (purchase_type > 0)
 
-* --------------------------------------------------------------------------
 * 2. Ensure log variables exist
-* --------------------------------------------------------------------------
 capture drop bid_qty_log
 capture drop bid_price_ref_log
 capture drop bid_price_log
@@ -36,9 +29,7 @@ gen bid_price_log = ln(bid_price)
 gen ln_n_firms = ln(n_firms_bids)
 gen ln_n_bids = ln(n_bids_bids)
 
-* --------------------------------------------------------------------------
 * 3. Generate LaTeX table
-* --------------------------------------------------------------------------
 capture file close tex
 file open tex using "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/manuscript/table_desc_stats.tex", write replace
 
@@ -57,9 +48,7 @@ file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel A: Levels}} \\" _n
 file write tex "    [3pt]" _n
 
-* --------------------------------------------------------------------------
 * 4. Helper program to write one row
-* --------------------------------------------------------------------------
 capture program drop write_row
 program define write_row
     args varname label fhandle fmt
@@ -123,9 +112,7 @@ program define write_row
     file write `fhandle' "    [3pt]" _n
 end
 
-* --------------------------------------------------------------------------
 * 5. Write Panel A: Levels
-* --------------------------------------------------------------------------
 write_row bid_price_ref "Reference Price" tex %12.2f
 write_row bid_price "Negotiated Price" tex %12.2f
 write_row bid_qty "Quantity" tex %12.0f
@@ -138,9 +125,7 @@ file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel B: Log Transformations (used in regressions)}} \\" _n
 file write tex "    [3pt]" _n
 
-* --------------------------------------------------------------------------
 * 6. Write Panel B: Log Transformations
-* --------------------------------------------------------------------------
 write_row bid_price_ref_log "Log Reference Price" tex %12.4f
 write_row bid_price_log "Log Negotiated Price" tex %12.4f
 write_row bid_qty_log "Log Quantity" tex %12.4f
@@ -153,15 +138,11 @@ file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel C: Tender Characteristics}} \\" _n
 file write tex "    [3pt]" _n
 
-* --------------------------------------------------------------------------
 * 7. Write Panel C: Tender Characteristics
-* --------------------------------------------------------------------------
 write_row po_firm_winner "Successful Tender (\%)" tex %12.4f
 write_row pregao "Preg\~ao Auction (\%)" tex %12.4f
 
-* --------------------------------------------------------------------------
 * 8. Observations row and footer
-* --------------------------------------------------------------------------
 * Get Ns
 quietly count if purchase_type == 0
 local n0 : di %12.0gc r(N)
@@ -192,13 +173,9 @@ file write tex "\end{table}" _n
 
 file close tex
 
-* --------------------------------------------------------------------------
 * 9. Also generate an RTF version for easy viewing
-* --------------------------------------------------------------------------
 di ""
-di "=============================================="
 di "  DESCRIPTIVE STATISTICS BY PURCHASE TYPE"
-di "=============================================="
 di ""
 
 di "--- Panel A: Levels ---"
@@ -234,6 +211,4 @@ foreach v in bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids bid_price_
 }
 
 di ""
-di "=============================================="
 di "  LaTeX table saved to: manuscript/table_desc_stats.tex"
-di "=============================================="

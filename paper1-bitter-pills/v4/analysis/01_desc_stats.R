@@ -1,9 +1,5 @@
-# =============================================================================
-# 01_desc_stats.R — Descriptive Statistics Table
-# Bitter Pills to Swallow — v4 (R/fixest)
-# =============================================================================
+# Descriptive Statistics Table
 
-cat("=== 01_desc_stats.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -16,19 +12,19 @@ cat("=== 01_desc_stats.R ===\n")
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# --- Load data ---------------------------------------------------------------
+# Load data
 dt <- readRDS(DATA_CACHE)
 
-# --- Sample restriction: items with both litigated and ordinary --------------
+# Sample restriction: items with both litigated and ordinary
 dt <- dt[has_litigated == TRUE & has_ordinary == TRUE]
 cat("Analysis sample:", nrow(dt), "obs\n")
 
-# --- Winsorize 1%/99% -------------------------------------------------------
+# Winsorize 1%/99%
 win_vars <- c("bid_price", "bid_price_ref", "bid_qty", "n_firms_bids")
 winsorize_dt(dt, win_vars, 0.01, 0.99)
 gen_log_vars(dt)
 
-# --- Helper: compute stats for one variable ----------------------------------
+# Helper: compute stats for one variable
 desc_row <- function(dt, varname, label) {
   # Split by purchase_type: 0=Ordinary, 1=Admin, 2=Litigated
   # Filter out NA and non-finite values (protects against -Inf from log(0))
@@ -68,7 +64,7 @@ desc_row <- function(dt, varname, label) {
   )
 }
 
-# --- Build table rows --------------------------------------------------------
+# Build table rows
 # Panel A: Levels
 panel_a <- list(
   desc_row(dt[po_firm_winner == 1], "bid_price_ref", "Reference Price"),
@@ -90,7 +86,7 @@ panel_c <- list(
   desc_row(dt, "po_firm_winner", "Successful Tender (%)")
 )
 
-# --- Format LaTeX table ------------------------------------------------------
+# Format LaTeX table
 fmt <- function(x, d = 3) formatC(x, format = "f", digits = d, big.mark = ",")
 fmt_int <- function(x) formatC(x, format = "d", big.mark = ",")
 
@@ -149,7 +145,7 @@ tex_file <- file.path(MANU, "table_desc_stats.tex")
 writeLines(tex_lines, tex_file)
 cat("Saved:", tex_file, "\n")
 
-# --- HTML version via modelsummary datasummary -------------------------------
+# HTML version via modelsummary datasummary
 # Build a summary data.frame for HTML output
 all_rows <- c(panel_a, panel_b, panel_c)
 html_df <- data.frame(
@@ -172,4 +168,3 @@ html_content <- knitr::kable(html_df, format = "html",
 writeLines(as.character(html_content), html_file)
 cat("Saved:", html_file, "\n")
 
-cat("=== 01_desc_stats.R complete ===\n")

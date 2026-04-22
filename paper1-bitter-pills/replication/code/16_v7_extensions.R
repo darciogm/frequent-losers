@@ -1,17 +1,9 @@
-# =============================================================================
-# 16_v7_extensions.R — V7 Extensions: UTG Missing Outcomes + Litigated-Only
-# Bitter Pills to Swallow — Replication Package
+# V7 Extensions: UTG Missing Outcomes + Litigated-Only
 #
-# TASK 1: Under the Gun with ALL outcomes (ref_price, qty, firms, success)
-# TASK 2: Urgent Purchases with litigated-only IV (excluding administrative)
-# TASK 3: Publication-ready tables + coefficient plot figures
-# =============================================================================
 
-cat("=== 16_v7_extensions.R — V7 Extensions ===\n")
 cat("Started:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 t_start <- proc.time()
 
-# --- Boilerplate: find script dir, source utils ---
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -24,9 +16,7 @@ t_start <- proc.time()
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# =============================================================================
 # FORMATTING HELPERS (pub-ready tables: threeparttable + booktabs)
-# =============================================================================
 
 pfmt     <- function(x, d = 3) formatC(x, format = "f", digits = d, big.mark = ",")
 pfmt_int <- function(x) formatC(x, format = "d", big.mark = ",")
@@ -65,7 +55,7 @@ coef_labels_v7 <- c(
   "litigated:large_pbu"        = "Litigated $\\times$ Large PBU"
 )
 
-# --- write single-panel pub table ---
+# write single-panel pub table
 write_reg_table_pub <- function(models, coef_vars, coef_labs, title, label,
                                 filename, note = NULL, fe_labels = NULL,
                                 digits = 3, show_wr2 = TRUE) {
@@ -115,7 +105,7 @@ write_reg_table_pub <- function(models, coef_vars, coef_labs, title, label,
   cat("    Pub table:", basename(filepath), "\n")
 }
 
-# --- write two-panel pub table ---
+# write two-panel pub table
 write_panel_reg_table_pub <- function(models_a, models_b,
                                       coef_vars_a, coef_vars_b, coef_labs,
                                       panel_a_title, panel_b_title,
@@ -182,11 +172,9 @@ write_panel_reg_table_pub <- function(models_a, models_b,
   cat("    Pub table:", basename(filepath), "\n")
 }
 
-# =============================================================================
 # LOAD DATA & PREPARE SAMPLES
-# =============================================================================
 
-cat("\n=== Loading data ===\n")
+cat("\nLoading data\n")
 dt_raw <- readRDS(DATA_CACHE)
 dt_raw <- dt_raw[has_litigated == TRUE & has_ordinary == TRUE]
 
@@ -213,10 +201,7 @@ cat("Analysis sample:", nrow(dt), "| Winners:", nrow(dt_win), "\n")
 cat("UTG:", nrow(dt_utg), "| UTG winners:", nrow(dt_utg_win), "\n")
 cat("Litigated-only:", nrow(dt_lit), "| Lit winners:", nrow(dt_lit_win), "\n")
 
-# =============================================================================
-# TASK 1: UNDER THE GUN — MISSING OUTCOMES
-# =============================================================================
-cat("\n=== TASK 1: UTG Missing Outcomes ===\n")
+cat("\nTASK 1: UTG Missing Outcomes\n")
 
 # T1.1: UTG Reference Prices
 t1_ref <- run_feols4("bid_price_ref_log", "is_admin", dt_utg_win, cluster = ~pbu_id)
@@ -248,10 +233,7 @@ write_panel_reg_table_pub(t1_succ_t, t1_succ_d, "is_admin", c("is_admin", "bid_q
   "Under the Gun: Tender Success (LPM)", "t1_utg_success", "t1_tab_utg_success.tex",
   note = paste0("Dependent variable: successful tender (LPM). UTG sample (urgent, all obs). ", default_note))
 
-# =============================================================================
-# TASK 2: LITIGATED-ONLY (vs Ordinary)
-# =============================================================================
-cat("\n=== TASK 2: Litigated vs Ordinary ===\n")
+cat("\nTASK 2: Litigated vs Ordinary\n")
 
 # T2.1: Ref Prices
 t2_ref <- run_feols4("bid_price_ref_log", "litigated", dt_lit_win, cluster = ~pbu_id)
@@ -291,10 +273,8 @@ write_panel_reg_table_pub(t2_succ_t, t2_succ_d, "litigated", c("litigated", "bid
   "Litigated vs Ordinary: Tender Success (LPM)", "t2_lit_success", "t2_tab_success.tex",
   note = paste0("Dependent variable: successful tender (LPM). Litigated+Ordinary only, all obs. ", default_note))
 
-# =============================================================================
 # COEFFICIENT PLOT FIGURES
-# =============================================================================
-cat("\n=== Generating coefficient plots ===\n")
+cat("\nGenerating coefficient plots\n")
 
 extract_coef <- function(models, var, label) {
   m <- models[["Item+Year+PBU"]]
@@ -363,8 +343,6 @@ cairo_pdf(file.path(PUB_FIG, "fig_10_litigated_coefplot_v7.pdf"), width = 6.5, h
 print(p2); dev.off()
 cat("  Saved: fig_10_litigated_coefplot_v7.pdf\n")
 
-# =============================================================================
 # SUMMARY
-# =============================================================================
 t_total <- (proc.time() - t_start)[["elapsed"]]
-cat(sprintf("\n=== 16_v7_extensions.R complete in %.0f seconds ===\n", t_total))
+cat(sprintf("\n16_v7_extensions.R complete in %.0f seconds\n", t_total))

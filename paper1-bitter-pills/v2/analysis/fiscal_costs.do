@@ -1,13 +1,10 @@
-********************************************************************************
 * Aggregate Fiscal Cost of Health Litigation
-* Paper: Bitter Pills to Swallow
 * Referee Suggestion 7: Back-of-the-envelope fiscal cost calculation
 *
 * Approach: use estimated price premiums to compute counterfactual prices
 * for urgent purchases, then aggregate excess costs.
 *   counterfactual price = observed price × exp(-β)
 *   excess cost per transaction = price × qty × (1 - exp(-β))
-********************************************************************************
 
 clear all
 set more off
@@ -15,9 +12,7 @@ set max_memory 14g
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Setup: same sample and variables as regression analysis
-* --------------------------------------------------------------------------
 gen purchase_type = 0
 replace purchase_type = 1 if adm == 2
 replace purchase_type = 2 if jud == 1
@@ -47,13 +42,9 @@ if _rc != 0 {
 gen total_spend = bid_price * bid_qty if po_firm_winner == 1
 
 di ""
-di "=================================================================="
 di "  AGGREGATE FISCAL COST OF HEALTH LITIGATION"
-di "=================================================================="
 
-* --------------------------------------------------------------------------
 * 2. Descriptive overview of spending
-* --------------------------------------------------------------------------
 di ""
 di "--- Overview of procurement spending (winners only) ---"
 
@@ -93,14 +84,10 @@ local year_max = r(max)
 local n_years = `year_max' - `year_min' + 1
 di "Period: `year_min' - `year_max' (`n_years' years)"
 
-* --------------------------------------------------------------------------
 * 3. Fiscal cost using TOTAL EFFECT (no quantity control)
 *    This captures the full price impact of urgency, including via quantity
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  A. FISCAL COST — TOTAL EFFECT (urgency premium on prices)"
-di "=================================================================="
 
 * Estimate preferred specifications and compute costs
 foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
@@ -157,14 +144,10 @@ foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 }
 
 
-* --------------------------------------------------------------------------
 * 4. Fiscal cost using DIRECT EFFECT (controlling for quantity)
 *    This isolates the per-unit price premium, holding quantity fixed
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  B. FISCAL COST — DIRECT EFFECT (per-unit price premium)"
-di "=================================================================="
 
 foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 
@@ -206,15 +189,11 @@ foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 }
 
 
-* --------------------------------------------------------------------------
 * 5. "Under the gun" fiscal cost: judicial vs administrative
 *    How much of the urgent premium is due to the sanction channel?
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  C. FISCAL COST — 'UNDER THE GUN' (sanction channel)"
 di "  Excess cost of litigated vs. administrative purchases"
-di "=================================================================="
 
 preserve
 keep if purchase_type == 1 | purchase_type == 2
@@ -280,13 +259,9 @@ foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 restore
 
 
-* --------------------------------------------------------------------------
 * 6. Summary table
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  SUMMARY"
-di "=================================================================="
 di ""
 di "Period: `year_min'-`year_max' (`n_years' years)"
 di "Total procurement spending (sample): R$ " %20.2fc `total_all'

@@ -1,4 +1,3 @@
-********************************************************************************
 * replicate_paper.do
 *
 * Replication of Published Manuscript Table Specifications
@@ -23,7 +22,6 @@
 *   - Manuscript tables: manuscript/EmpiricalStrategy.tex
 *   - Original code: analysis/Final Code.do
 *   - v2 analysis: v2/analysis/clustered_regressions.do
-********************************************************************************
 
 clear all
 set more off
@@ -34,24 +32,18 @@ timer clear
 timer on 1
 
 
-* ==========================================================================
 * 1. LOAD DATA
-* ==========================================================================
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
 di ""
-di "==========================================="
 di "  DATA LOADED"
-di "==========================================="
 di "Total observations: " _N
 
 
-* ==========================================================================
 * 2. VARIABLE CREATION & VERIFICATION
-* ==========================================================================
 
-* --- Recreate log variables (ensure consistency) ---
+* Recreate log variables (ensure consistency)
 capture drop bid_qty_log bid_price_ref_log bid_price_log
 gen bid_qty_log = ln(bid_qty)
 gen bid_price_ref_log = ln(bid_price_ref)
@@ -60,7 +52,7 @@ label var bid_qty_log "lquantity"
 label var bid_price_ref_log "log reference price"
 label var bid_price_log "log negotiated price"
 
-* --- type_mgmt: dummy for non-direct-administration entities ---
+* type_mgmt: dummy for non-direct-administration entities
 * pbu_type_mgmt_code == "1" means Direct Administration
 capture drop type_mgmt
 capture confirm string variable pbu_type_mgmt_code
@@ -72,26 +64,26 @@ else {
 }
 label var type_mgmt "type\_mgmt"
 
-* --- pregao: sealed-bid (electronic auction) dummy ---
+* pregao: sealed-bid (electronic auction) dummy
 capture drop pregao
 gen pregao = (po_proc_code == 3)
 label var pregao "sealed-bid"
 
-* --- ln_n_firms: log number of participant firms ---
+* ln_n_firms: log number of participant firms
 capture drop ln_n_firms
 gen ln_n_firms = ln(n_firms_bids)
 label var ln_n_firms "ln(firms)"
 
-* --- is_admin: for Table 10 (admin=1 within urgent purchases) ---
+* is_admin: for Table 10 (admin=1 within urgent purchases)
 * adm coding: 0 = ordinary/judicial, 2 = administrative
 capture drop is_admin
 gen is_admin = (adm == 2)
 label var is_admin "administrative"
 
-* --- Label treatment variable to match manuscript ---
+* Label treatment variable to match manuscript
 label var jud_adm "urgent"
 
-* --- month: derived from m_y (Stata monthly date format) ---
+* month: derived from m_y (Stata monthly date format)
 capture drop month
 gen dm_temp = m_y
 format dm_temp %10.0g
@@ -102,9 +94,7 @@ drop dm_temp date_dm_temp
 label var month "Calendar month"
 
 
-* ==========================================================================
 * 3. RECREATE DUMMY VARIABLES (fresh from current data)
-* ==========================================================================
 
 * Drop any existing dummies
 foreach prefix in ditem dpbu_code dyear dm_y dmonth {
@@ -121,21 +111,17 @@ quietly tab month, gen(dmonth)
 * Drop first dummy of each group (reference category)
 drop ditem1 dpbu_code1 dyear1 dm_y1 dmonth1
 
-* --- Encode item for xtreg panel ---
+* Encode item for xtreg panel
 capture drop item_id
 encode item, gen(item_id)
 xtset item_id
 label var item_id "Item panel ID"
 
 
-* ==========================================================================
 * 4. DIAGNOSTIC SUMMARY
-* ==========================================================================
 
 di ""
-di "==========================================="
 di "  SAMPLE DIAGNOSTICS"
-di "==========================================="
 
 di "Total observations: " _N
 quietly count if po_firm_winner == 1
@@ -167,31 +153,21 @@ quietly tab pbu_code
 di "  " r(r) " unique PBUs"
 
 
-* ==========================================================================
 * 5. OUTPUT DIRECTORY
-* ==========================================================================
 
 local outdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/replication/results"
 capture mkdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/replication"
 capture mkdir "`outdir'"
 
 
-********************************************************************************
-********************************************************************************
 *                          TABLE REPLICATIONS
-********************************************************************************
-********************************************************************************
 
 
-********************************************************************************
 * TABLE 4: REFERENCE PRICES — Urgent vs. Ordinary
 * DV: bid_price_ref_log | Treatment: jud_adm | Sample: winners only
 * Manuscript: beta(urgent) = 0.4988, 0.5243, 0.4967, 0.4725; N = 59,708
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 4: REFERENCE PRICES"
-di "==========================================="
 
 eststo clear
 
@@ -244,15 +220,11 @@ esttab t4c1 t4c2 t4c3 t4c4 using "`outdir'/table4_ref_prices.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 5: QUANTITIES — Urgent vs. Ordinary
 * DV: bid_qty_log | Treatment: jud_adm | Sample: winners only
 * Manuscript: beta(urgent) = -0.8128, -0.8811, -0.8272, -0.9402; N = 59,708
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 5: QUANTITIES"
-di "==========================================="
 
 * Col 1 (OLS)
 eststo t5c1: quietly reg bid_qty_log jud_adm type_mgmt ditem* dpbu_code* ///
@@ -303,16 +275,12 @@ esttab t5c1 t5c2 t5c3 t5c4 using "`outdir'/table5_quantities.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 6: NEGOTIATED PRICES — Urgent vs. Ordinary
 * DV: bid_price_log | Treatment: jud_adm | Sample: winners only
 * Additional control: bid_qty_log (lquantity)
 * Manuscript: beta(urgent) = 0.3672, 0.3526, 0.3568, 0.2680; N = 38,440
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 6: NEGOTIATED PRICES"
-di "==========================================="
 
 * Col 1 (OLS)
 eststo t6c1: quietly reg bid_price_log jud_adm bid_qty_log type_mgmt ditem* dpbu_code* ///
@@ -363,16 +331,12 @@ esttab t6c1 t6c2 t6c3 t6c4 using "`outdir'/table6_neg_prices.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 7: PARTICIPANT FIRMS — Urgent vs. Ordinary
 * DV: ln_n_firms | Treatment: jud_adm | Sample: winners only
 * Additional control: bid_qty_log (lquantity)
 * Manuscript: beta(urgent) = -0.3887, -0.3831, -0.3811, -0.3373; N = 38,430
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 7: PARTICIPANT FIRMS"
-di "==========================================="
 
 * Col 1 (OLS)
 eststo t7c1: quietly reg ln_n_firms jud_adm bid_qty_log type_mgmt ditem* dpbu_code* ///
@@ -423,7 +387,6 @@ esttab t7c1 t7c2 t7c3 t7c4 using "`outdir'/table7_firms.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 9: SUCCESSFUL TENDERS — Urgent vs. Ordinary (Logit)
 * DV: po_firm_winner | Treatment: jud_adm | Sample: ALL bids (no winner restriction)
 * Additional control: bid_qty_log (lquantity)
@@ -431,11 +394,8 @@ esttab t7c1 t7c2 t7c3 t7c4 using "`outdir'/table7_firms.rtf", ///
 *
 * Note: Cols 1 and 2 are identical in the manuscript (same spec, same N).
 * Col 4 uses year + month dummies (not year-month) for logit tractability.
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 9: SUCCESSFUL TENDERS (Logit)"
-di "==========================================="
 
 * Col 1 (LOGIT): Item dummies only + lquantity
 di "  Running Col 1 (logit with item dummies)..."
@@ -486,7 +446,6 @@ esttab t9c1 t9c2 t9c3 t9c4 using "`outdir'/table9_success.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 10: UNDER THE GUN — Litigated vs. Administrative
 * DV: bid_price_log | Treatment: is_admin | Sample: jud_adm==1 & winners
 * Additional control: bid_qty_log (lquantity)
@@ -495,11 +454,8 @@ esttab t9c1 t9c2 t9c3 t9c4 using "`outdir'/table9_success.rtf", ///
 * Note: Manuscript uses "all public bid data, including SUS-list and non-SUS-list
 * medicines" for Table 10. Our data only contains SUS-list. We replicate the
 * specification on the available data and document the N discrepancy.
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 10: UNDER THE GUN"
-di "==========================================="
 
 * Use preserve/restore to handle subsample cleanly
 preserve
@@ -592,19 +548,11 @@ local t10_c4 = _b[is_admin]
 restore
 
 
-********************************************************************************
-********************************************************************************
 *              COEFFICIENT COMPARISON: Replication vs. Manuscript
-********************************************************************************
-********************************************************************************
 
 di ""
-di "==========================================="
-di "==========================================="
 di "  COEFFICIENT COMPARISON"
 di "  Replication vs. Published Manuscript"
-di "==========================================="
-di "==========================================="
 
 di ""
 di "NOTE: N discrepancies are expected. Our dataset has ~35K winners"
@@ -612,11 +560,9 @@ di "      vs. manuscript's ~60K. Coefficient direction and significance"
 di "      should match; magnitudes may differ due to smaller sample."
 di ""
 
-* --- Table 4: Reference Prices ---
-di "==========================================="
+* Table 4: Reference Prices
 di "  TABLE 4: Reference Prices"
 di "  DV: log(reference price)"
-di "==========================================="
 di "  Col | Replication | Manuscript | Sign Match"
 di "  ----|-------------|------------|----------"
 estimates restore t4c1
@@ -629,12 +575,10 @@ estimates restore t4c4
 di "  4   | " %10.4f _b[jud_adm] " |    0.4725  | " cond(_b[jud_adm] > 0, "YES (+)", "NO")
 di "  N   | " %10.0f e(N) "  |   59708    |"
 
-* --- Table 5: Quantities ---
+* Table 5: Quantities
 di ""
-di "==========================================="
 di "  TABLE 5: Quantities"
 di "  DV: log(quantity)"
-di "==========================================="
 di "  Col | Replication | Manuscript | Sign Match"
 di "  ----|-------------|------------|----------"
 estimates restore t5c1
@@ -647,12 +591,10 @@ estimates restore t5c4
 di "  4   | " %10.4f _b[jud_adm] " |   -0.9402  | " cond(_b[jud_adm] < 0, "YES (-)", "NO")
 di "  N   | " %10.0f e(N) "  |   59708    |"
 
-* --- Table 6: Negotiated Prices ---
+* Table 6: Negotiated Prices
 di ""
-di "==========================================="
 di "  TABLE 6: Negotiated Prices"
 di "  DV: log(negotiated price)"
-di "==========================================="
 di "  Col | Replication | Manuscript | Sign Match"
 di "  ----|-------------|------------|----------"
 estimates restore t6c1
@@ -665,12 +607,10 @@ estimates restore t6c4
 di "  4   | " %10.4f _b[jud_adm] " |    0.2680  | " cond(_b[jud_adm] > 0, "YES (+)", "NO")
 di "  N   | " %10.0f e(N) "  |   38440    |"
 
-* --- Table 7: Participant Firms ---
+* Table 7: Participant Firms
 di ""
-di "==========================================="
 di "  TABLE 7: Participant Firms"
 di "  DV: log(number of firms)"
-di "==========================================="
 di "  Col | Replication | Manuscript | Sign Match"
 di "  ----|-------------|------------|----------"
 estimates restore t7c1
@@ -683,12 +623,10 @@ estimates restore t7c4
 di "  4   | " %10.4f _b[jud_adm] " |   -0.3373  | " cond(_b[jud_adm] < 0, "YES (-)", "NO")
 di "  N   | " %10.0f e(N) "  |   38430    |"
 
-* --- Table 9: Successful Tenders ---
+* Table 9: Successful Tenders
 di ""
-di "==========================================="
 di "  TABLE 9: Successful Tenders (Logit)"
 di "  DV: po_firm_winner (0/1)"
-di "==========================================="
 di "  Col | Replication | Manuscript | Sign Match"
 di "  ----|-------------|------------|----------"
 estimates restore t9c1
@@ -701,13 +639,11 @@ estimates restore t9c4
 di "  4   | " %10.4f _b[jud_adm] " |   -0.5471  | " cond(_b[jud_adm] < 0, "YES (-)", "NO")
 di "  N   | " %10.0f e(N) "  |   59672    |"
 
-* --- Table 10: Under the Gun ---
+* Table 10: Under the Gun
 di ""
-di "==========================================="
 di "  TABLE 10: Under the Gun"
 di "  DV: log(negotiated price)"
 di "  Treatment: is_admin (1=admin, 0=litigated)"
-di "==========================================="
 di "  Col | Replication | Manuscript | Sign Match"
 di "  ----|-------------|------------|----------"
 di "  1   | " %10.4f `t10_c1' " |   -0.0950  | " cond(`t10_c1' < 0, "YES (-)", "NO")
@@ -716,13 +652,9 @@ di "  3   | " %10.4f `t10_c3' " |   -0.0859  | " cond(`t10_c3' < 0, "YES (-)", "
 di "  4   | " %10.4f `t10_c4' " |   -0.0846  | " cond(`t10_c4' < 0, "YES (-)", "NO")
 
 
-********************************************************************************
 * SUMMARY
-********************************************************************************
 di ""
-di "==========================================="
 di "  REPLICATION COMPLETE"
-di "==========================================="
 di ""
 di "Output tables saved to:"
 di "  replication/results/table4_ref_prices.rtf"

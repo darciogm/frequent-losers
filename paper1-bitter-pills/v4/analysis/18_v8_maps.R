@@ -1,6 +1,4 @@
-# =============================================================================
-# 18_v8_maps.R — V8 Maps: Ordinary Demand + Enhanced Admin + Comparison Panel
-# Bitter Pills to Swallow — v4 (R)
+# V8 Maps: Ordinary Demand + Enhanced Admin + Comparison Panel
 #
 # Produces:
 #   1. Ordinary demand maps (per capita, total, ratio) — NEW
@@ -9,13 +7,10 @@
 #   4. Comparison panel: litigated | admin | ordinary (same color scale) — NEW
 #
 # Output: v4/pub/figures/fig_map_*_v8.pdf
-# =============================================================================
 
-cat("=== 18_v8_maps.R — V8 Maps ===\n")
 cat("Started:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 t_start <- proc.time()
 
-# --- Boilerplate: find script dir, source utils ---
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -40,21 +35,19 @@ if (!requireNamespace("ggspatial", quietly = TRUE)) {
 }
 library(ggspatial)
 
-# --- Hardware detection -------------------------------------------------------
+# Hardware detection
 n_cores <- parallel::detectCores(logical = TRUE)
 setDTthreads(n_cores)
 cat(sprintf("  Cores: %d | data.table threads: %d\n", n_cores, n_cores))
 
-# --- Output directory ---------------------------------------------------------
+# Output directory
 PUB_FIG <- file.path(V4, "pub", "figures")
 dir.create(PUB_FIG, recursive = TRUE, showWarnings = FALSE)
 
 FIG_W <- 7      # double-column width
 FIG_H <- 5.5
 
-# =============================================================================
 # 1. LOAD SHARED DATA
-# =============================================================================
 cat("\n--- Loading shared data ---\n")
 t0 <- proc.time()
 
@@ -123,9 +116,7 @@ mun_data[, ord_ratio := n_ordinary / total]
 elapsed <- (proc.time() - t0)[["elapsed"]]
 cat(sprintf("  Data loading: %.1f sec\n", elapsed))
 
-# =============================================================================
 # 2. MAP THEME AND HELPERS
-# =============================================================================
 
 # Quintile break function — returns a factor with 5 categories + NA
 make_quintile_var <- function(x, lab_prefix = "") {
@@ -205,12 +196,8 @@ plot_choropleth_v8 <- function(sf_data, fill_var, legend_title,
   p
 }
 
-# =============================================================================
 # 3. ORDINARY DEMAND MAPS (NEW)
-# =============================================================================
-cat("\n", strrep("=", 60), "\n")
 cat("ORDINARY DEMAND MAPS\n")
-cat(strrep("=", 60), "\n")
 
 sp_ord <- merge(sp_mun, mun_data[, .(code_muni, n_ordinary, ord_per_1k, ord_ratio)],
                 by = "code_muni", all.x = TRUE)
@@ -239,12 +226,8 @@ out <- file.path(PUB_FIG, "fig_map_ordinary_ratio_v8.pdf")
 ggsave(out, p_ord_rat, width = FIG_W, height = FIG_H, device = cairo_pdf)
 cat(sprintf("    Saved: %s\n", out))
 
-# =============================================================================
 # 4. ENHANCED ADMIN DEMAND MAPS (v8 — SIRGAS + quintile breaks)
-# =============================================================================
-cat("\n", strrep("=", 60), "\n")
 cat("ENHANCED ADMINISTRATIVE DEMAND MAPS (v8)\n")
-cat(strrep("=", 60), "\n")
 
 sp_adm <- merge(sp_mun, mun_data[, .(code_muni, n_admin, adm_per_1k, adm_ratio)],
                 by = "code_muni", all.x = TRUE)
@@ -273,12 +256,8 @@ out <- file.path(PUB_FIG, "fig_map_admin_ratio_v8.pdf")
 ggsave(out, p_adm_rat, width = FIG_W, height = FIG_H, device = cairo_pdf)
 cat(sprintf("    Saved: %s\n", out))
 
-# =============================================================================
 # 5. ENHANCED LITIGATED DEMAND MAPS (v8 — SIRGAS + quintile breaks)
-# =============================================================================
-cat("\n", strrep("=", 60), "\n")
 cat("ENHANCED LITIGATED DEMAND MAPS (v8)\n")
-cat(strrep("=", 60), "\n")
 
 sp_lit <- merge(sp_mun, mun_data[, .(code_muni, n_litigated, lit_per_1k, lit_ratio)],
                 by = "code_muni", all.x = TRUE)
@@ -307,12 +286,8 @@ out <- file.path(PUB_FIG, "fig_map_litigated_ratio_v8.pdf")
 ggsave(out, p_lit_rat, width = FIG_W, height = FIG_H, device = cairo_pdf)
 cat(sprintf("    Saved: %s\n", out))
 
-# =============================================================================
 # 6. COMPARISON PANEL: PER CAPITA (litigated | admin | ordinary)
-# =============================================================================
-cat("\n", strrep("=", 60), "\n")
 cat("COMPARISON PANEL MAP\n")
-cat(strrep("=", 60), "\n")
 
 # Build combined data for common scale
 all_pc <- c(mun_data$lit_per_1k, mun_data$adm_per_1k, mun_data$ord_per_1k)
@@ -380,13 +355,9 @@ out <- file.path(PUB_FIG, "fig_map_panel_comparison_v8.pdf")
 ggsave(out, p_comparison, width = 10, height = 4.5, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out))
 
-# =============================================================================
 # 7. SUMMARY
-# =============================================================================
 elapsed_total <- (proc.time() - t_start)[["elapsed"]]
-cat("\n", strrep("=", 60), "\n")
 cat("18_v8_maps.R COMPLETE\n")
-cat(strrep("=", 60), "\n")
 cat(sprintf("  Total time: %.1f sec\n", elapsed_total))
 cat(sprintf("  Maps generated: 10\n"))
 cat(sprintf("    Ordinary: 3 (per capita, total, ratio)\n"))

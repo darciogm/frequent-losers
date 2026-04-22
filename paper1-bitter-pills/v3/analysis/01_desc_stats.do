@@ -1,9 +1,6 @@
-********************************************************************************
 * V3 Descriptive Statistics Table
-* Paper: Bitter Pills to Swallow
 * Source: /tmp/v3_prepared.dta (full BEC_JUD sample, CONVITE + PREGÃO)
 * Sample: Items with at least one ordinary AND one litigated purchase
-********************************************************************************
 
 clear all
 set more off
@@ -15,15 +12,11 @@ timer on 1
 
 use "/tmp/v3_prepared.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Restrict sample: items with both ordinary and litigated
-* --------------------------------------------------------------------------
 keep if has_litigated == 1 & has_ordinary == 1
 di "After keeping items with both ordinary and litigated: " _N
 
-* --------------------------------------------------------------------------
 * 2. Winsorize continuous variables at 1%/99%
-* --------------------------------------------------------------------------
 foreach v in bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids {
     capture confirm variable `v'
     if _rc == 0 {
@@ -35,9 +28,7 @@ foreach v in bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids {
     }
 }
 
-* --------------------------------------------------------------------------
 * 3. Regenerate log variables after winsorization
-* --------------------------------------------------------------------------
 capture drop bid_qty_log bid_price_ref_log bid_price_log ln_n_firms
 gen bid_qty_log = ln(bid_qty)
 gen bid_price_ref_log = ln(bid_price_ref)
@@ -49,15 +40,11 @@ if _rc == 0 {
     gen ln_n_bids = ln(n_bids_bids)
 }
 
-* --------------------------------------------------------------------------
 * 4. Output directories
-* --------------------------------------------------------------------------
 local texdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v3/manuscript"
 local rtfdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v3/results"
 
-* --------------------------------------------------------------------------
 * 5. Generate LaTeX table
-* --------------------------------------------------------------------------
 capture file close tex
 file open tex using "`texdir'/table_desc_stats.tex", write replace
 
@@ -74,9 +61,7 @@ file write tex "    \cmidrule(lr){2-4} \cmidrule(lr){5-6}" _n
 file write tex "    & (1) Ordinary & (2) Administrative & (3) Litigated & (1)--(3) & (2)--(3) \\" _n
 file write tex "    \hline" _n
 
-* --------------------------------------------------------------------------
 * 6. Helper program
-* --------------------------------------------------------------------------
 capture program drop write_row
 program define write_row
     args varname label fhandle fmt
@@ -128,9 +113,7 @@ program define write_row
     file write `fhandle' "    & (`sd0') & (`sd1') & (`sd2') & [`p_ol_fmt'] & [`p_al_fmt'] \\[3pt]" _n
 end
 
-* --------------------------------------------------------------------------
 * 7. Panel A: Levels
-* --------------------------------------------------------------------------
 file write tex "    \multicolumn{6}{l}{\textit{Panel A: Levels}} \\[3pt]" _n
 write_row bid_price_ref "Reference~Price" tex %12.2f
 write_row bid_price "Negotiated~Price" tex %12.2f
@@ -142,9 +125,7 @@ if _rc == 0 {
     write_row n_bids_bids "No.~Bids" tex %12.2f
 }
 
-* --------------------------------------------------------------------------
 * 8. Panel B: Log Transformations
-* --------------------------------------------------------------------------
 file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel B: Log Transformations (used in regressions)}} \\[3pt]" _n
 write_row bid_price_ref_log "Log~Reference~Price" tex %12.3f
@@ -157,16 +138,12 @@ if _rc == 0 {
     write_row ln_n_bids "Log~No.~Bids" tex %12.3f
 }
 
-* --------------------------------------------------------------------------
 * 9. Panel C: Tender Characteristics
-* --------------------------------------------------------------------------
 file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel C: Tender Characteristics}} \\[3pt]" _n
 write_row po_firm_winner "Successful~Tender~(\%)" tex %12.3f
 
-* --------------------------------------------------------------------------
 * 10. Observations and footer
-* --------------------------------------------------------------------------
 quietly count if purchase_type == 0
 local n0 : di %12.0gc r(N)
 local n0 = strtrim("`n0'")
@@ -199,9 +176,7 @@ file write tex "\end{table}" _n
 
 file close tex
 
-* --------------------------------------------------------------------------
 * 11. RTF output via esttab
-* --------------------------------------------------------------------------
 * Create a summary stats RTF using tabstat output
 quietly {
     estpost tabstat bid_price_ref bid_price bid_qty n_firms_bids ///
@@ -233,20 +208,15 @@ esttab using "`rtfdir'/desc_stats.rtf", ///
     title("Descriptive Statistics — Litigated Purchases") ///
     noobs compress append
 
-* --------------------------------------------------------------------------
 * 12. Console summary
-* --------------------------------------------------------------------------
 di ""
-di "=============================================="
 di "  SAMPLE SUMMARY"
-di "=============================================="
 di "  Items with >= 1 ordinary and >= 1 litigated purchase"
 di "  Total observations: " _N
 di "  Ordinary: `n0'"
 di "  Administrative: `n1'"
 di "  Litigated: `n2'"
 di "  Unique items: `n_items'"
-di "=============================================="
 di ""
 
 tabstat bid_price_ref bid_price bid_qty n_firms_bids, ///

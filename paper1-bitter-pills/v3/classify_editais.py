@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 
-# --- Judicial keywords ---
+# Judicial keywords
 # These patterns indicate judicial procurement (ação judicial, mandado de segurança, etc.)
 JUDICIAL_PATTERNS = [
     r'a[çc][ãa]o\s+judicial',          # ação judicial / acao judicial
@@ -43,7 +43,7 @@ JUDICIAL_PATTERNS = [
 # Compile combined judicial pattern (case-insensitive)
 JUDICIAL_RE = re.compile('|'.join(JUDICIAL_PATTERNS), re.IGNORECASE)
 
-# --- Administrative keywords ---
+# Administrative keywords
 # These patterns indicate administrative (non-judicial, non-ordinary) procurement
 ADMIN_PATTERNS = [
     r'demanda[s]?\s+administrat',       # demanda administrativa / demandas administrativas
@@ -55,7 +55,7 @@ ADMIN_PATTERNS = [
 
 ADMIN_RE = re.compile('|'.join(ADMIN_PATTERNS), re.IGNORECASE)
 
-# --- Boilerplate exclusion ---
+# Boilerplate exclusion
 # Lines containing these patterns are legal boilerplate and should be excluded
 # from admin keyword matching (they contain "administrativa" in a non-procurement context)
 BOILERPLATE_PATTERNS = [

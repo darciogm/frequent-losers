@@ -1,10 +1,6 @@
-# =============================================================================
-# 17_v7_figures.R — V7 Coefficient Plots
-# Bitter Pills to Swallow — v4 (R/fixest)
+# V7 Coefficient Plots
 # Output: 2 PDF figures in v4/pub/figures/
-# =============================================================================
 
-cat("=== 17_v7_figures.R ===\n")
 
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
@@ -23,7 +19,7 @@ library(ggplot2)
 PUB_FIG <- file.path(V4, "pub", "figures")
 CHECKPOINT <- file.path(V4, "checkpoints_v7")
 
-# --- Helper: extract coef from preferred spec (Item+Year+PBU) ---------------
+# Helper: extract coef from preferred spec (Item+Year+PBU)
 extract_coef <- function(models, var, label) {
   m <- models[["Item+Year+PBU"]]
   b  <- coef(m)[var]
@@ -40,7 +36,7 @@ extract_coef <- function(models, var, label) {
   )
 }
 
-# --- Grayscale theme for publication ----------------------------------------
+# Grayscale theme for publication
 theme_pub <- function(base_size = 9) {
   theme_bw(base_size = base_size) +
     theme(
@@ -55,10 +51,8 @@ theme_pub <- function(base_size = 9) {
     )
 }
 
-# =============================================================================
 # FIGURE 1: Under the Gun — Extended Outcomes (Task 1)
-# =============================================================================
-cat("--- Figure: UTG Extended Outcomes (Task 1) ---\n")
+cat("Figure: UTG Extended Outcomes (Task 1)\n")
 
 t1_ref     <- readRDS(file.path(CHECKPOINT, "t1_ref_total.rds"))
 t1_qty     <- readRDS(file.path(CHECKPOINT, "t1_qty_total.rds"))
@@ -108,10 +102,8 @@ print(p1)
 dev.off()
 cat("  Saved: fig_09_utg_coefplot_v7.pdf\n")
 
-# =============================================================================
 # FIGURE 2: Litigated vs Ordinary — All Outcomes (Task 2)
-# =============================================================================
-cat("--- Figure: Litigated vs Ordinary (Task 2) ---\n")
+cat("Figure: Litigated vs Ordinary (Task 2)\n")
 
 t2_ref     <- readRDS(file.path(CHECKPOINT, "t2_ref.rds"))
 t2_qty     <- readRDS(file.path(CHECKPOINT, "t2_qty.rds"))
@@ -149,4 +141,4 @@ print(p2)
 dev.off()
 cat("  Saved: fig_10_litigated_coefplot_v7.pdf\n")
 
-cat("\n=== 17_v7_figures.R complete ===\n")
+cat("\n17_v7_figures.R complete\n")

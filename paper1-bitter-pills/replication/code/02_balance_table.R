@@ -1,9 +1,5 @@
-# =============================================================================
-# 02_balance_table.R — Balance Table (Admin vs Litigated, urgent subsample)
-# Bitter Pills to Swallow — v4 (R/fixest)
-# =============================================================================
+# Balance Table (Admin vs Litigated, urgent subsample)
 
-cat("=== 02_balance_table.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -16,10 +12,10 @@ cat("=== 02_balance_table.R ===\n")
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# --- Load data ---------------------------------------------------------------
+# Load data
 dt <- readRDS(DATA_CACHE)
 
-# --- Sample: items with litigated + ordinary, urgent only --------------------
+# Sample: items with litigated + ordinary, urgent only
 dt <- dt[has_litigated == TRUE & has_ordinary == TRUE]
 dt <- dt[purchase_type == 1 | purchase_type == 2]  # urgent only
 
@@ -29,12 +25,12 @@ dt[, has_lit2   := any(purchase_type == 2), by = item]
 dt <- dt[has_admin2 == TRUE & has_lit2 == TRUE]
 cat("UTG balance sample:", nrow(dt), "obs\n")
 
-# --- Winsorize 1%/99% -------------------------------------------------------
+# Winsorize 1%/99%
 win_vars <- c("bid_price", "bid_price_ref", "bid_qty", "n_firms_bids")
 winsorize_dt(dt, win_vars, 0.01, 0.99)
 gen_log_vars(dt)
 
-# --- Helper: balance row -----------------------------------------------------
+# Helper: balance row
 balance_row <- function(dt, varname, label) {
   adm <- dt[is_admin == 1 & !is.na(get(varname)), get(varname)]
   lit <- dt[is_admin == 0 & !is.na(get(varname)), get(varname)]
@@ -63,7 +59,7 @@ balance_row <- function(dt, varname, label) {
   )
 }
 
-# --- Build rows --------------------------------------------------------------
+# Build rows
 # Panel A: Procurement Outcomes
 panel_a <- list(
   balance_row(dt[po_firm_winner == 1], "bid_price_ref",     "Reference Price"),
@@ -86,7 +82,7 @@ panel_c <- list(
   balance_row(dt, "pregao", "Electronic Auction (Pregão)")
 )
 
-# --- Format LaTeX table ------------------------------------------------------
+# Format LaTeX table
 fmt <- function(x, d = 3) formatC(x, format = "f", digits = d, big.mark = ",")
 fmt_int <- function(x) formatC(x, format = "d", big.mark = ",")
 
@@ -142,7 +138,7 @@ tex_file <- file.path(MANU, "table_balance.tex")
 writeLines(tex_lines, tex_file)
 cat("Saved:", tex_file, "\n")
 
-# --- HTML version ------------------------------------------------------------
+# HTML version
 all_rows <- c(panel_a, panel_b, panel_c)
 html_df <- data.frame(
   Variable = sapply(all_rows, `[[`, "label"),
@@ -162,4 +158,3 @@ html_content <- knitr::kable(html_df, format = "html",
 writeLines(as.character(html_content), html_file)
 cat("Saved:", html_file, "\n")
 
-cat("=== 02_balance_table.R complete ===\n")

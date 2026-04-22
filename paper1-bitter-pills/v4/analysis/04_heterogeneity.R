@@ -1,9 +1,5 @@
-# =============================================================================
-# 04_heterogeneity.R — Heterogeneous Effects (4 dimensions)
-# Bitter Pills to Swallow — v4 (R/fixest)
-# =============================================================================
+# Heterogeneous Effects (4 dimensions)
 
-cat("=== 04_heterogeneity.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -16,10 +12,10 @@ cat("=== 04_heterogeneity.R ===\n")
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# --- Load data ---------------------------------------------------------------
+# Load data
 dt <- readRDS(DATA_CACHE)
 
-# --- Analysis sample: items with both litigated and ordinary, winners --------
+# Analysis sample: items with both litigated and ordinary, winners
 dt <- dt[has_litigated == TRUE & has_ordinary == TRUE]
 win_vars <- c("bid_price", "bid_price_ref", "bid_qty", "n_firms_bids")
 winsorize_dt(dt, win_vars, 0.01, 0.99)
@@ -28,12 +24,12 @@ gen_log_vars(dt)
 dt_win <- dt[po_firm_winner == 1]
 cat("Winners sample:", nrow(dt_win), "obs\n")
 
-# --- Base spec: bid_price_log ~ urgent | item_id + year_n + pbu_id ----------
+# Base spec: bid_price_log ~ urgent | item_id + year_n + pbu_id
 # Preferred specification from Table 6A
 
-# --- Helper: run split-sample + interaction for one dimension ----------------
+# Helper: run split-sample + interaction for one dimension
 run_heterogeneity <- function(dt_win, split_var, split_label, file_prefix) {
-  cat("\n--- Heterogeneity:", split_label, "---\n")
+  cat("\nHeterogeneity by", split_label, "\n")
 
   # Ensure the split variable has no NAs for this analysis
   dt_sub <- dt_win[!is.na(get(split_var))]
@@ -100,28 +96,20 @@ run_heterogeneity <- function(dt_win, split_var, split_label, file_prefix) {
   invisible(list(split = split_models, interaction = interact_models))
 }
 
-# =============================================================================
 # Dimension 1: SUS Component (Basic vs Specialized)
-# =============================================================================
 het_sus <- run_heterogeneity(dt_win, "sus_basic", "SUS Component",
                               "heterogeneity_sus")
 
-# =============================================================================
 # Dimension 2: Time Period (Early vs Late)
-# =============================================================================
 het_period <- run_heterogeneity(dt_win, "late_period", "Time Period (2014+)",
                                  "heterogeneity_period")
 
-# =============================================================================
 # Dimension 3: Market Competition (Low vs High)
-# =============================================================================
 het_comp <- run_heterogeneity(dt_win, "high_competition", "Market Competition",
                                "heterogeneity_competition")
 
-# =============================================================================
 # Dimension 4: PBU Size (Small vs Large)
-# =============================================================================
 het_pbu <- run_heterogeneity(dt_win, "large_pbu", "PBU Size",
                               "heterogeneity_pbu_size")
 
-cat("\n=== 04_heterogeneity.R complete ===\n")
+cat("\n04_heterogeneity.R complete\n")

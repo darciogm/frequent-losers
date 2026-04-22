@@ -1,6 +1,4 @@
-********************************************************************************
 * V3 Visualizations
-* Paper: Bitter Pills to Swallow
 * Source: /tmp/v3_prepared.dta (full BEC_JUD sample, CONVITE + PREGÃO)
 *
 * 8 figures:
@@ -12,7 +10,6 @@
 *   6. Bar chart: mean success rate by purchase type
 *   7. Line plot: mean log negotiated price by year-month
 *   8. Coefficient plot: treatment effects from Tables 4-7
-********************************************************************************
 
 clear all
 set more off
@@ -24,9 +21,7 @@ timer on 1
 
 use "/tmp/v3_prepared.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Restrict to analysis sample
-* --------------------------------------------------------------------------
 keep if has_litigated == 1 & has_ordinary == 1
 
 local graphdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v3/graphs"
@@ -36,9 +31,7 @@ set scheme s2color
 di "Analysis sample: " _N
 
 
-* --------------------------------------------------------------------------
 * 2. Figure 1: Kernel density — Log Reference Price
-* --------------------------------------------------------------------------
 di "Creating fig_price_density..."
 twoway ///
     (kdensity bid_price_ref_log if purchase_type == 0 & po_firm_winner == 1, ///
@@ -55,9 +48,7 @@ twoway ///
 graph export "`graphdir'/fig_price_density.pdf", replace
 
 
-* --------------------------------------------------------------------------
 * 3. Figure 2: Kernel density — Log Negotiated Price
-* --------------------------------------------------------------------------
 di "Creating fig_negprice_density..."
 twoway ///
     (kdensity bid_price_log if purchase_type == 0 & po_firm_winner == 1, ///
@@ -74,9 +65,7 @@ twoway ///
 graph export "`graphdir'/fig_negprice_density.pdf", replace
 
 
-* --------------------------------------------------------------------------
 * 4. Figure 3: Kernel density — Log Quantity
-* --------------------------------------------------------------------------
 di "Creating fig_qty_density..."
 twoway ///
     (kdensity bid_qty_log if purchase_type == 0 & po_firm_winner == 1, ///
@@ -93,9 +82,7 @@ twoway ///
 graph export "`graphdir'/fig_qty_density.pdf", replace
 
 
-* --------------------------------------------------------------------------
 * 5. Figure 4: Kernel density — Log Number of Firms
-* --------------------------------------------------------------------------
 di "Creating fig_firms_density..."
 twoway ///
     (kdensity ln_n_firms if purchase_type == 0 & po_firm_winner == 1, ///
@@ -112,9 +99,7 @@ twoway ///
 graph export "`graphdir'/fig_firms_density.pdf", replace
 
 
-* --------------------------------------------------------------------------
 * 6. Figure 5: Kernel density — Admin vs Litigated (urgent only)
-* --------------------------------------------------------------------------
 di "Creating fig_utg_density..."
 twoway ///
     (kdensity bid_price_log if purchase_type == 1 & po_firm_winner == 1, ///
@@ -130,9 +115,7 @@ twoway ///
 graph export "`graphdir'/fig_utg_density.pdf", replace
 
 
-* --------------------------------------------------------------------------
 * 7. Figure 6: Bar chart — Mean success rate by purchase type
-* --------------------------------------------------------------------------
 di "Creating fig_success_bar..."
 preserve
 collapse (mean) success_rate = po_firm_winner (count) n = po_firm_winner, by(purchase_type)
@@ -147,9 +130,7 @@ graph export "`graphdir'/fig_success_bar.pdf", replace
 restore
 
 
-* --------------------------------------------------------------------------
 * 8. Figure 7: Time trends — Mean log negotiated price by year-month
-* --------------------------------------------------------------------------
 di "Creating fig_time_trends..."
 preserve
 gen urgent_label = cond(urgent == 1, "Urgent", "Ordinary")
@@ -168,9 +149,7 @@ graph export "`graphdir'/fig_time_trends.pdf", replace
 restore
 
 
-* --------------------------------------------------------------------------
 * 9. Figure 8: Coefficient plot — Treatment effects from Tables 4-7
-* --------------------------------------------------------------------------
 di "Creating fig_coefplot..."
 
 * Run preferred specification (Item+Year+PBU FE) for each table
@@ -228,13 +207,9 @@ else {
 }
 
 
-********************************************************************************
 * Summary
-********************************************************************************
 di ""
-di "==========================================="
 di "  ALL GRAPHS CREATED"
-di "==========================================="
 di ""
 di "Output files in v3/graphs/:"
 di "  fig_price_density.pdf"

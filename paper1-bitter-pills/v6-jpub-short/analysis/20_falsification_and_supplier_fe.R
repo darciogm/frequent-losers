@@ -1,4 +1,3 @@
-# =============================================================================
 # 20_falsification_and_supplier_fe.R
 # Darcio Genicolo-Martins — INSPER, 2026
 #
@@ -7,9 +6,7 @@
 #   (2) Supplier FE: add firm FE to separate demand vs supply side
 #
 # Uses cached data from 00_prepare_data.R (/tmp/v4_prepared.rds)
-# =============================================================================
 
-cat("=== 20_falsification_and_supplier_fe.R ===\n")
 
 library(data.table)
 library(fixest)
@@ -28,14 +25,11 @@ OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
 
-# ============================================================================
 # EXERCISE 1: PLACEBO — Items never litigated
-# ============================================================================
 # If our identification is correct, the "urgent" coefficient should be
 # zero or much smaller for items that are never subject to court orders.
 # These items have no reason to show an urgency premium — any non-zero
 # coefficient would indicate confounding.
-# ============================================================================
 
 cat("\n--- Exercise 1: Placebo (never-litigated items) ---\n")
 
@@ -69,7 +63,7 @@ if (nrow(placebo_dt) > 100) {
                     data = main_dt[po_firm_winner == 1],
                     cluster = ~pbu_id)
 
-  cat("\n  === Placebo vs Main: Negotiated Price ===\n")
+  cat("\n  Placebo vs main, negotiated price:\n")
   if (!is.null(placebo_neg)) {
     cat("  Placebo (never-litigated): coef =", round(coef(placebo_neg)["urgent"], 4),
         " SE =", round(sqrt(vcov(placebo_neg)["urgent","urgent"]), 4),
@@ -90,7 +84,7 @@ if (nrow(placebo_dt) > 100) {
                     data = main_dt,
                     cluster = ~pbu_id)
 
-  cat("\n  === Placebo vs Main: Reference Price ===\n")
+  cat("\n  Placebo vs main, reference price:\n")
   if (!is.null(placebo_ref)) {
     cat("  Placebo (never-litigated): coef =", round(coef(placebo_ref)["urgent"], 4),
         " SE =", round(sqrt(vcov(placebo_ref)["urgent","urgent"]), 4),
@@ -126,14 +120,11 @@ if (nrow(placebo_dt) > 100) {
 }
 
 
-# ============================================================================
 # EXERCISE 2: SUPPLIER FIXED EFFECTS
-# ============================================================================
 # When the SAME firm sells the SAME item, does it charge more in urgent
 # tenders? Adding firm FE separates demand-side pressure (official accepts
 # higher price) from supply-side exploitation (firm charges more because
 # it knows the government is desperate).
-# ============================================================================
 
 cat("\n--- Exercise 2: Supplier Fixed Effects ---\n")
 
@@ -154,7 +145,7 @@ if (!all(is.na(win_dt$firm_f))) {
   m_firm_fe <- feols(bid_price_log ~ urgent | item_id + year_n + pbu_id + firm_f,
                      data = win_dt, cluster = ~pbu_id)
 
-  cat("\n  === Negotiated Price: Baseline vs Firm FE ===\n")
+  cat("\n  Negotiated price, baseline vs firm FE:\n")
   cat("  Baseline (no firm FE):  coef =", round(coef(m_baseline)["urgent"], 4),
       " SE =", round(sqrt(vcov(m_baseline)["urgent","urgent"]), 4),
       " N =", m_baseline$nobs, "\n")
@@ -196,4 +187,4 @@ if (!all(is.na(win_dt$firm_f))) {
   cat("  Saved:", file.path(OUT, "tab_supplier_fe.tex"), "\n")
 }
 
-cat("\n=== 20_falsification_and_supplier_fe.R complete ===\n")
+cat("\n20_falsification_and_supplier_fe.R complete\n")

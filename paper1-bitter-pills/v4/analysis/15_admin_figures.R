@@ -1,11 +1,7 @@
-# =============================================================================
-# 15_admin_figures.R — 5 figures for administrative demand cases
-# Bitter Pills to Swallow — v4 (R)
+# 5 figures for administrative demand cases
 # Analogs of fig_00/00b/00c/00d/00e for administrative (purchase_type == 1)
 # Output: v4/pub/figures/fig_00{_,b_,c_,d_,e_}admin_*.pdf
-# =============================================================================
 
-cat("=== 15_admin_figures.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -24,14 +20,14 @@ library(geobr)
 library(sidrar)
 library(arrow)
 
-# --- Output directory ---------------------------------------------------------
+# Output directory
 PUB_FIG <- file.path(V4, "pub", "figures")
 dir.create(PUB_FIG, recursive = TRUE, showWarnings = FALSE)
 
 FIG_W <- 6.5
 FIG_H <- 5
 
-# --- Shared data loading ------------------------------------------------------
+# Shared data loading
 cat("\n--- Downloading SP municipality shapefile (geobr) ---\n")
 sp_mun <- geobr::read_municipality(code_muni = "SP", year = 2010)
 cat(sprintf("  Shapefile: %d municipalities\n", nrow(sp_mun)))
@@ -78,9 +74,7 @@ adm_pbu <- adm_pbu[!is.na(pbu_latit) & !is.na(pbu_longit)]
 cat(sprintf("  Admin PBUs with coordinates: %d / %d\n",
             nrow(adm_pbu), uniqueN(dt[purchase_type == 1]$pbu_code)))
 
-# =============================================================================
 # Figure 1: Admin per 1,000 inhabitants (analog of fig_00_litigation_map)
-# =============================================================================
 cat("\n--- Figure 1: Admin per 1,000 inhabitants ---\n")
 
 merged1 <- merge(adm_mun, pop, by = "code_muni", all.x = TRUE)
@@ -110,9 +104,7 @@ out1 <- file.path(PUB_FIG, "fig_00_admin_map.pdf")
 ggsave(out1, p1, width = FIG_W, height = FIG_H, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out1))
 
-# =============================================================================
 # Figure 2: PBU point map with admin volume (analog of fig_00b_pbu_map)
-# =============================================================================
 cat("\n--- Figure 2: Admin PBU point map ---\n")
 
 adm_pbu_sf <- st_as_sf(adm_pbu, coords = c("pbu_longit", "pbu_latit"), crs = 4326)
@@ -137,9 +129,7 @@ out2 <- file.path(PUB_FIG, "fig_00b_admin_pbu_map.pdf")
 ggsave(out2, p2, width = FIG_W, height = FIG_H, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out2))
 
-# =============================================================================
 # Figure 3: Admin vs Litigated comparison table (analog of fig_00c_purchase_types)
-# =============================================================================
 cat("\n--- Figure 3: Admin vs Litigated comparison table ---\n")
 
 tbl <- data.frame(
@@ -220,9 +210,7 @@ out3 <- file.path(PUB_FIG, "fig_00c_admin_types.pdf")
 ggsave(out3, p3, width = FIG_W, height = 2.5, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out3))
 
-# =============================================================================
 # Figure 4: Total admin purchases per municipality (analog of fig_00d)
-# =============================================================================
 cat("\n--- Figure 4: Total admin purchases ---\n")
 
 sp_map4 <- merge(sp_mun, adm_mun[, c("code_muni", "n_admin")],
@@ -251,9 +239,7 @@ out4 <- file.path(PUB_FIG, "fig_00d_admin_total_map.pdf")
 ggsave(out4, p4, width = FIG_W, height = FIG_H, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out4))
 
-# =============================================================================
 # Figure 5: Admin / total purchases ratio (analog of fig_00e)
-# =============================================================================
 cat("\n--- Figure 5: Admin / total purchases ratio ---\n")
 
 merged5 <- merge(adm_mun, all_mun, by = "code_muni", all.x = TRUE)
@@ -284,8 +270,6 @@ out5 <- file.path(PUB_FIG, "fig_00e_admin_ratio_map.pdf")
 ggsave(out5, p5, width = FIG_W, height = FIG_H, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out5))
 
-# =============================================================================
 # SUMMARY
-# =============================================================================
-cat("\n=== 15_admin_figures.R complete ===\n")
+cat("\n15_admin_figures.R complete\n")
 cat(sprintf("  5 figures saved to %s\n", PUB_FIG))

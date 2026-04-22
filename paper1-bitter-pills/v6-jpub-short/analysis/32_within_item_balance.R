@@ -1,4 +1,3 @@
-#  =============================================================================
 #  32_within_item_balance.R --- Within-item balance between administrative and
 #  litigated purchases on pre-determined item attributes.
 #
@@ -12,9 +11,7 @@
 #  purchases). A small beta means that within a given item, admin and lit
 #  draws are balanced on x --- supporting the "same item, different penalty"
 #  reading.
-#  =============================================================================
 
-cat("=== 32_within_item_balance.R ===\n")
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -26,9 +23,7 @@ setDTthreads(12L)
 OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output"
 dir.create(file.path(OUT, "tables"), recursive = TRUE, showWarnings = FALSE)
 
-# ---------------------------------------------------------------------------
 # Build UTG matched sample
-# ---------------------------------------------------------------------------
 cat("Loading cache...\n")
 dt <- readRDS("/tmp/v4_prepared.rds")
 dt <- dt[has_admin == TRUE & has_litigated == TRUE & urgent == 1]
@@ -44,10 +39,8 @@ winz <- function(x, p = c(0.01, 0.99)) {
 dt[, bid_qty_log_w        := winz(bid_qty_log)]
 dt[, bid_price_ref_log_w  := winz(bid_price_ref_log)]
 
-# ---------------------------------------------------------------------------
 # Covariates to test. "Composition" = item attributes that differ across cases
 # for the *same* item; "Procurement design" = mechanism variables.
-# ---------------------------------------------------------------------------
 cov_list <- list(
   list(name = "SUS basic (MEDICAMENTO flag)",           var = "sus_basic",              group = "Composition"),
   list(name = "Electronic auction (preg\\~{a}o)",       var = "pregao",                 group = "Procurement"),
@@ -102,9 +95,7 @@ for (cov in cov_list) {
 tab <- rbindlist(results)
 print(tab)
 
-# ---------------------------------------------------------------------------
 # Emit LaTeX table
-# ---------------------------------------------------------------------------
 fmt <- function(x, d = 3) formatC(x, format = "f", digits = d)
 fmt_se <- function(x, d = 3) sprintf("(%s)", fmt(x, d))
 
@@ -165,13 +156,11 @@ sprintf("    Items        & \\multicolumn{5}{c}{%s}\\\\",
 writeLines(tex, file.path(OUT, "tables", "tab_balance_within.tex"))
 cat("  Saved: tab_balance_within.tex\n")
 
-# ---------------------------------------------------------------------------
 # One-line summary for the §Empirical Strategy paragraph
-# ---------------------------------------------------------------------------
 sig_rows <- tab[abs(within_coef) > 0 & p_val < 0.05]
 cat(sprintf("\nOf %d covariates, %d show a statistically significant (p<0.05) within-item imbalance.\n",
             nrow(tab), nrow(sig_rows)))
 cat("Largest within-item coefficient (absolute):\n")
 print(tab[which.max(abs(within_coef)), .(name, within_coef, within_se, p_val)])
 
-cat("\n=== 32_within_item_balance.R complete ===\n")
+cat("\n32_within_item_balance.R complete\n")

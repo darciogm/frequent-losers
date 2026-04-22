@@ -1,9 +1,5 @@
-# =============================================================================
-# 06_robustness.R — Robustness Checks
-# Bitter Pills to Swallow — v4 (R/fixest)
-# =============================================================================
+# Robustness Checks
 
-cat("=== 06_robustness.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -16,14 +12,12 @@ cat("=== 06_robustness.R ===\n")
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# --- Load fresh data (will re-winsorize per panel) ---------------------------
+# Load fresh data (will re-winsorize per panel)
 dt_raw <- readRDS(DATA_CACHE)
 dt_raw <- dt_raw[has_litigated == TRUE & has_ordinary == TRUE]
 
-# =============================================================================
 # PART A: Under the Gun with Progressive Controls × 3 Winsorization Panels
-# =============================================================================
-cat("\n=== PART A: UTG Progressive Controls ===\n")
+cat("\nPART A: UTG Progressive Controls\n")
 
 run_utg_progressive <- function(dt, panel_label, file_suffix) {
   # UTG subsample
@@ -107,10 +101,8 @@ winsorize_dt(dt_w5, c("bid_price", "bid_price_ref", "bid_qty", "n_firms_bids"), 
 gen_log_vars(dt_w5)
 run_utg_progressive(dt_w5, "Winsorized 5/95", "w05")
 
-# =============================================================================
 # PART B: All Main Tables × 3 Winsorization Levels
-# =============================================================================
-cat("\n=== PART B: Main Tables × Winsorization ===\n")
+cat("\nPART B: Main Tables × Winsorization\n")
 
 run_all_tables_winsor <- function(dt, panel_label, file_suffix) {
   dt_win <- dt[po_firm_winner == 1]
@@ -196,4 +188,4 @@ run_all_tables_winsor(dt_w1, "Winsorized 1/99", "w01")
 # 5%/95%
 run_all_tables_winsor(dt_w5, "Winsorized 5/95", "w05")
 
-cat("\n=== 06_robustness.R complete ===\n")
+cat("\n06_robustness.R complete\n")

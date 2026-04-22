@@ -1,11 +1,8 @@
-********************************************************************************
 * V3 Robustness: UTG Progressive Controls + All-Table Winsorization Sensitivity
-* Paper: Bitter Pills to Swallow
 * Source: /tmp/v3_prepared.dta (full BEC_JUD sample, CONVITE + PREGÃO)
 *
 * PART A: Under the Gun with progressive controls × 3 winsorization panels
 * PART B: All main tables (4-10) × 3 winsorization levels
-********************************************************************************
 
 clear all
 set more off
@@ -17,9 +14,7 @@ timer on 1
 
 use "/tmp/v3_prepared.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Restrict to analysis sample
-* --------------------------------------------------------------------------
 keep if has_litigated == 1 & has_ordinary == 1
 
 local outdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v3/results"
@@ -31,11 +26,9 @@ tempfile full_sample
 save `full_sample'
 
 
-********************************************************************************
 * PROGRAMS
-********************************************************************************
 
-* --- Winsorize level variables and regenerate logs ---
+* Winsorize level variables and regenerate logs
 capture program drop do_winsorize
 program define do_winsorize
     args plo phi
@@ -53,7 +46,7 @@ program define do_winsorize
     gen ln_n_firms = ln(n_firms_bids)
 end
 
-* --- 4-column reghdfe (Item, Item+Year, Item+Year+PBU, Item+YM+PBU) ---
+* 4-column reghdfe (Item, Item+Year, Item+Year+PBU, Item+YM+PBU)
 capture program drop run_reghdfe4
 program define run_reghdfe4
     args pfx depvar controls
@@ -68,7 +61,7 @@ program define run_reghdfe4
         absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
 end
 
-* --- 4-column LPM via reghdfe (same FE structure as other tables) ---
+* 4-column LPM via reghdfe (same FE structure as other tables)
 capture program drop run_lpm4
 program define run_lpm4
     args pfx controls
@@ -83,7 +76,7 @@ program define run_lpm4
         absorb(item_id2 ym pbu_id) vce(cluster pbu_id)
 end
 
-* --- UTG progressive controls (5 columns) ---
+* UTG progressive controls (5 columns)
 capture program drop run_progressive
 program define run_progressive
     args prefix
@@ -114,7 +107,7 @@ program define run_progressive
     di "`prefix' Col (5) is_admin = " %9.4f _b[is_admin] "  SE = " %9.4f _se[is_admin]
 end
 
-* --- UTG time interaction (4 columns) ---
+* UTG time interaction (4 columns)
 capture program drop run_interaction
 program define run_interaction
     args prefix
@@ -141,9 +134,7 @@ program define run_interaction
 end
 
 
-********************************************************************************
 * PART A: UNDER THE GUN ROBUSTNESS — 3 winsorization panels
-********************************************************************************
 
 eststo clear
 
@@ -161,37 +152,31 @@ tempfile utg_sample
 save `utg_sample'
 
 
-* --- Panel A: No winsorization ---
+* Panel A: No winsorization
 di ""
-di "==========================================="
 di "  UTG PANEL A: NO WINSORIZATION"
-di "==========================================="
 use `utg_sample', clear
 run_progressive "a"
 run_interaction "ia"
 
-* --- Panel B: Winsorization at 1%/99% ---
+* Panel B: Winsorization at 1%/99%
 di ""
-di "==========================================="
 di "  UTG PANEL B: WINSORIZATION 1%/99%"
-di "==========================================="
 use `utg_sample', clear
 do_winsorize 1 99
 run_progressive "b"
 run_interaction "ib"
 
-* --- Panel C: Winsorization at 5%/95% ---
+* Panel C: Winsorization at 5%/95%
 di ""
-di "==========================================="
 di "  UTG PANEL C: WINSORIZATION 5%/95%"
-di "==========================================="
 use `utg_sample', clear
 do_winsorize 5 95
 run_progressive "c"
 run_interaction "ic"
 
 
-* --- Output UTG progressive controls tables ---
+* Output UTG progressive controls tables
 esttab a1 a2 a3 a4 a5 using "`outdir'/underthegun_robustness.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Under the Gun — Progressive Controls: Panel A (No Winsorization)") ///
@@ -218,7 +203,7 @@ esttab c1 c2 c3 c4 c5 using "`outdir'/underthegun_robustness.rtf", ///
     compress append
 
 
-* --- Output UTG time interaction tables ---
+* Output UTG time interaction tables
 esttab ia1 ia2 ia3 ia4 using "`outdir'/underthegun_time_interaction.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     keep(1.is_admin 1.late_period 1.is_admin#1.late_period bid_qty_log bid_price_ref_log ln_n_firms) ///
@@ -249,18 +234,12 @@ esttab ic1 ic2 ic3 ic4 using "`outdir'/underthegun_time_interaction.rtf", ///
     compress append
 
 
-********************************************************************************
 * PART B: ALL-TABLE WINSORIZATION SENSITIVITY
-********************************************************************************
 
 eststo clear
 
-* =========================================================================
 * PANEL A: NO WINSORIZATION
-* =========================================================================
-di _n "==========================================="
 di "  WINSOR PANEL A: NO WINSORIZATION"
-di "==========================================="
 
 use `full_sample', clear
 
@@ -300,12 +279,8 @@ run_reghdfe4 t10Ba bid_price_log "is_admin bid_qty_log"
 restore
 
 
-* =========================================================================
 * PANEL B: WINSORIZED 1%/99%
-* =========================================================================
-di _n "==========================================="
 di "  WINSOR PANEL B: WINSORIZED 1%/99%"
-di "==========================================="
 
 use `full_sample', clear
 do_winsorize 1 99
@@ -346,12 +321,8 @@ run_reghdfe4 t10Bb bid_price_log "is_admin bid_qty_log"
 restore
 
 
-* =========================================================================
 * PANEL C: WINSORIZED 5%/95%
-* =========================================================================
-di _n "==========================================="
 di "  WINSOR PANEL C: WINSORIZED 5%/95%"
-di "==========================================="
 
 use `full_sample', clear
 do_winsorize 5 95
@@ -392,17 +363,13 @@ run_reghdfe4 t10Bc bid_price_log "is_admin bid_qty_log"
 restore
 
 
-********************************************************************************
 * OUTPUT ALL WINSORIZATION SENSITIVITY TABLES
-********************************************************************************
-di _n "==========================================="
 di "  WRITING WINSORIZATION OUTPUT TABLES"
-di "==========================================="
 
 local fe_titles `" "Item FE" "Item+Year" "Item+Year+PBU" "Item+YM+PBU" "'
 local fe_note "SE clustered at PBU level. *** p<0.01, ** p<0.05, * p<0.1"
 
-* --- TABLE 4: REFERENCE PRICES ---
+* TABLE 4: REFERENCE PRICES
 esttab t4a1 t4a2 t4a3 t4a4 using "`outdir'/table4_ref_prices_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 4: Reference Prices — Panel A (No Winsorization)") ///
@@ -419,7 +386,7 @@ esttab t4c1 t4c2 t4c3 t4c4 using "`outdir'/table4_ref_prices_winsor.rtf", ///
     mtitles(`fe_titles') note("`fe_note'") compress append
 
 
-* --- TABLE 5: QUANTITIES ---
+* TABLE 5: QUANTITIES
 esttab t5a1 t5a2 t5a3 t5a4 using "`outdir'/table5_quantities_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 5: Quantities — Panel A (No Winsorization)") ///
@@ -436,7 +403,7 @@ esttab t5c1 t5c2 t5c3 t5c4 using "`outdir'/table5_quantities_winsor.rtf", ///
     mtitles(`fe_titles') note("`fe_note'") compress append
 
 
-* --- TABLE 6A: NEGOTIATED PRICES — TOTAL EFFECT ---
+* TABLE 6A: NEGOTIATED PRICES — TOTAL EFFECT
 esttab t6Aa1 t6Aa2 t6Aa3 t6Aa4 using "`outdir'/table6a_neg_prices_total_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 6A: Negotiated Prices (Total Effect) — Panel A (No Winsorization)") ///
@@ -453,7 +420,7 @@ esttab t6Ac1 t6Ac2 t6Ac3 t6Ac4 using "`outdir'/table6a_neg_prices_total_winsor.r
     mtitles(`fe_titles') note("`fe_note'") compress append
 
 
-* --- TABLE 6B: NEGOTIATED PRICES — DIRECT EFFECT ---
+* TABLE 6B: NEGOTIATED PRICES — DIRECT EFFECT
 esttab t6Ba1 t6Ba2 t6Ba3 t6Ba4 using "`outdir'/table6b_neg_prices_direct_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 6B: Negotiated Prices (Direct Effect) — Panel A (No Winsorization)") ///
@@ -470,7 +437,7 @@ esttab t6Bc1 t6Bc2 t6Bc3 t6Bc4 using "`outdir'/table6b_neg_prices_direct_winsor.
     mtitles(`fe_titles') note("`fe_note'") compress append
 
 
-* --- TABLE 7A: PARTICIPANT FIRMS — TOTAL EFFECT ---
+* TABLE 7A: PARTICIPANT FIRMS — TOTAL EFFECT
 esttab t7Aa1 t7Aa2 t7Aa3 t7Aa4 using "`outdir'/table7a_firms_total_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 7A: Participant Firms (Total Effect) — Panel A (No Winsorization)") ///
@@ -487,7 +454,7 @@ esttab t7Ac1 t7Ac2 t7Ac3 t7Ac4 using "`outdir'/table7a_firms_total_winsor.rtf", 
     mtitles(`fe_titles') note("`fe_note'") compress append
 
 
-* --- TABLE 7B: PARTICIPANT FIRMS — DIRECT EFFECT ---
+* TABLE 7B: PARTICIPANT FIRMS — DIRECT EFFECT
 esttab t7Ba1 t7Ba2 t7Ba3 t7Ba4 using "`outdir'/table7b_firms_direct_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 7B: Participant Firms (Direct Effect) — Panel A (No Winsorization)") ///
@@ -504,7 +471,7 @@ esttab t7Bc1 t7Bc2 t7Bc3 t7Bc4 using "`outdir'/table7b_firms_direct_winsor.rtf",
     mtitles(`fe_titles') note("`fe_note'") compress append
 
 
-* --- TABLE 9A: SUCCESS LPM — TOTAL EFFECT ---
+* TABLE 9A: SUCCESS LPM — TOTAL EFFECT
 esttab t9Aa1 t9Aa2 t9Aa3 t9Aa4 using "`outdir'/table9a_success_total_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 9A: Success (LPM, Total Effect) — Panel A (No Winsorization)") ///
@@ -523,7 +490,7 @@ esttab t9Ac1 t9Ac2 t9Ac3 t9Ac4 using "`outdir'/table9a_success_total_winsor.rtf"
     compress append
 
 
-* --- TABLE 9B: SUCCESS LPM — DIRECT EFFECT ---
+* TABLE 9B: SUCCESS LPM — DIRECT EFFECT
 esttab t9Ba1 t9Ba2 t9Ba3 t9Ba4 using "`outdir'/table9b_success_direct_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 9B: Success (LPM, Direct Effect) — Panel A (No Winsorization)") ///
@@ -542,7 +509,7 @@ esttab t9Bc1 t9Bc2 t9Bc3 t9Bc4 using "`outdir'/table9b_success_direct_winsor.rtf
     compress append
 
 
-* --- TABLE 10A: UNDER THE GUN — TOTAL EFFECT ---
+* TABLE 10A: UNDER THE GUN — TOTAL EFFECT
 esttab t10Aa1 t10Aa2 t10Aa3 t10Aa4 using "`outdir'/table10a_underthegun_total_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 10A: Under the Gun (Total Effect) — Panel A (No Winsorization)") ///
@@ -561,7 +528,7 @@ esttab t10Ac1 t10Ac2 t10Ac3 t10Ac4 using "`outdir'/table10a_underthegun_total_wi
     compress append
 
 
-* --- TABLE 10B: UNDER THE GUN — DIRECT EFFECT ---
+* TABLE 10B: UNDER THE GUN — DIRECT EFFECT
 esttab t10Ba1 t10Ba2 t10Ba3 t10Ba4 using "`outdir'/table10b_underthegun_direct_winsor.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Table 10B: Under the Gun (Direct Effect) — Panel A (No Winsorization)") ///
@@ -580,12 +547,8 @@ esttab t10Bc1 t10Bc2 t10Bc3 t10Bc4 using "`outdir'/table10b_underthegun_direct_w
     compress append
 
 
-********************************************************************************
 * SUMMARY
-********************************************************************************
-di _n "==========================================="
 di "  ALL ROBUSTNESS TABLES WRITTEN"
-di "==========================================="
 di ""
 di "UTG Robustness files:"
 di "  underthegun_robustness.rtf (progressive controls, 3 panels)"

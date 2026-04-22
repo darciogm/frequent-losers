@@ -1,6 +1,4 @@
-********************************************************************************
 * Heterogeneity Analyses — Referee Suggestion 6
-* Paper: Bitter Pills to Swallow
 * Explores how the urgency price premium varies across subgroups:
 *   1. SUS component type (Basic vs Specialized)
 *   2. Time period (Early 2009-2013 vs Late 2014-2019)
@@ -10,7 +8,6 @@
 * Base specification: Table 6 total effect (Item+Year+PBU FE, cluster PBU)
 *   reghdfe bid_price_log urgent if po_firm_winner==1,
 *       absorb(item_id2 year pbu_id) vce(cluster pbu_id)
-********************************************************************************
 
 clear all
 set more off
@@ -21,9 +18,7 @@ timer on 1
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Setup: variables and sample (mirrors clustered_regressions.do)
-* --------------------------------------------------------------------------
 gen purchase_type = 0
 replace purchase_type = 1 if adm == 2
 replace purchase_type = 2 if jud == 1
@@ -57,11 +52,9 @@ capture mkdir "`outdir'"
 
 di "Analysis sample size: " _N
 
-* --------------------------------------------------------------------------
 * 2. Construct heterogeneity dimensions
-* --------------------------------------------------------------------------
 
-* --- 2a. SUS component type ---
+* 2a. SUS component type
 * padronizadosus classifies drugs into SUS components
 * "Componente Básico" = basic/standard drugs (~89%)
 * Others = specialized, strategic, hospital use, pharma inputs (~11%)
@@ -69,12 +62,12 @@ gen sus_basic = (padronizadosus == "Componente Básico")
 label var sus_basic "1 = Basic SUS component, 0 = Specialized/Strategic/Other"
 tab sus_basic
 
-* --- 2b. Time period ---
+* 2b. Time period
 gen late_period = (year_num >= 2014)
 label var late_period "1 = Late period (2014-2019), 0 = Early (2009-2013)"
 tab late_period
 
-* --- 2c. Market concentration ---
+* 2c. Market concentration
 * Compute item-level median number of bidding firms
 bysort item: egen item_med_firms = median(n_firms_bids)
 * Overall median of the item-level medians
@@ -85,7 +78,7 @@ label var high_competition "1 = Above-median item-level competition"
 di "Median of item-level median firms: `overall_med_firms'"
 tab high_competition
 
-* --- 2d. PBU size ---
+* 2d. PBU size
 * Total transactions per PBU
 bysort pbu_code: egen pbu_size = count(pbu_code)
 quietly summarize pbu_size, detail
@@ -96,15 +89,11 @@ di "Median PBU size (transactions): `med_pbu_size'"
 tab large_pbu
 
 
-********************************************************************************
 * 3. HETEROGENEITY 1: SUS COMPONENT TYPE (Basic vs Specialized)
-********************************************************************************
 di ""
-di "==========================================="
 di "  HETEROGENEITY 1: SUS COMPONENT TYPE"
-di "==========================================="
 
-* --- 3a. Split-sample regressions ---
+* 3a. Split-sample regressions
 eststo clear
 
 * Basic SUS component
@@ -128,7 +117,7 @@ esttab basic special using "`outdir'/heterogeneity_sus_split.rtf", ///
     note("Standard errors clustered at PBU level. *** p<0.01, ** p<0.05, * p<0.1. FE: Item, Year, PBU.") ///
     compress replace
 
-* --- 3b. Pooled interaction model ---
+* 3b. Pooled interaction model
 eststo clear
 eststo interaction: reghdfe bid_price_log urgent##sus_basic if po_firm_winner==1, ///
     absorb(item_id2 year pbu_id) vce(cluster pbu_id)
@@ -147,15 +136,11 @@ di "  Specialized: coef = " %9.4f `b_special' "  SE = " %9.4f `se_special' "  N 
 di "  Interaction p-value: " %9.4f (2*ttail(e(df_r), abs(_b[1.urgent#1.sus_basic]/_se[1.urgent#1.sus_basic])))
 
 
-********************************************************************************
 * 4. HETEROGENEITY 2: TIME PERIOD (Early vs Late)
-********************************************************************************
 di ""
-di "==========================================="
 di "  HETEROGENEITY 2: TIME PERIOD"
-di "==========================================="
 
-* --- 4a. Split-sample regressions ---
+* 4a. Split-sample regressions
 eststo clear
 
 * Early period (2009-2013)
@@ -179,7 +164,7 @@ esttab early late using "`outdir'/heterogeneity_period_split.rtf", ///
     note("Standard errors clustered at PBU level. *** p<0.01, ** p<0.05, * p<0.1. FE: Item, Year, PBU.") ///
     compress replace
 
-* --- 4b. Pooled interaction model ---
+* 4b. Pooled interaction model
 eststo clear
 eststo interaction: reghdfe bid_price_log urgent##late_period if po_firm_winner==1, ///
     absorb(item_id2 year pbu_id) vce(cluster pbu_id)
@@ -198,15 +183,11 @@ di "  Late  (2014-2019): coef = " %9.4f `b_late' "  SE = " %9.4f `se_late' "  N 
 di "  Interaction p-value: " %9.4f (2*ttail(e(df_r), abs(_b[1.urgent#1.late_period]/_se[1.urgent#1.late_period])))
 
 
-********************************************************************************
 * 5. HETEROGENEITY 3: MARKET CONCENTRATION (High vs Low Competition)
-********************************************************************************
 di ""
-di "==========================================="
 di "  HETEROGENEITY 3: MARKET CONCENTRATION"
-di "==========================================="
 
-* --- 5a. Split-sample regressions ---
+* 5a. Split-sample regressions
 eststo clear
 
 * Low competition (below-median firms)
@@ -230,7 +211,7 @@ esttab low_comp high_comp using "`outdir'/heterogeneity_competition_split.rtf", 
     note("Standard errors clustered at PBU level. *** p<0.01, ** p<0.05, * p<0.1. FE: Item, Year, PBU. Split at median of item-level median bidders.") ///
     compress replace
 
-* --- 5b. Pooled interaction model ---
+* 5b. Pooled interaction model
 eststo clear
 eststo interaction: reghdfe bid_price_log urgent##high_competition if po_firm_winner==1, ///
     absorb(item_id2 year pbu_id) vce(cluster pbu_id)
@@ -249,15 +230,11 @@ di "  High competition: coef = " %9.4f `b_high' "  SE = " %9.4f `se_high' "  N =
 di "  Interaction p-value: " %9.4f (2*ttail(e(df_r), abs(_b[1.urgent#1.high_competition]/_se[1.urgent#1.high_competition])))
 
 
-********************************************************************************
 * 6. HETEROGENEITY 4: PBU SIZE (Large vs Small)
-********************************************************************************
 di ""
-di "==========================================="
 di "  HETEROGENEITY 4: PBU SIZE"
-di "==========================================="
 
-* --- 6a. Split-sample regressions ---
+* 6a. Split-sample regressions
 eststo clear
 
 * Small PBUs (below-median transactions)
@@ -281,7 +258,7 @@ esttab small_pbu large_pbu using "`outdir'/heterogeneity_pbu_size_split.rtf", //
     note("Standard errors clustered at PBU level. *** p<0.01, ** p<0.05, * p<0.1. FE: Item, Year, PBU. Split at median PBU transaction count.") ///
     compress replace
 
-* --- 6b. Pooled interaction model ---
+* 6b. Pooled interaction model
 eststo clear
 eststo interaction: reghdfe bid_price_log urgent##large_pbu if po_firm_winner==1, ///
     absorb(item_id2 year pbu_id) vce(cluster pbu_id)
@@ -300,13 +277,9 @@ di "  Large PBU: coef = " %9.4f `b_large' "  SE = " %9.4f `se_large' "  N = " `n
 di "  Interaction p-value: " %9.4f (2*ttail(e(df_r), abs(_b[1.urgent#1.large_pbu]/_se[1.urgent#1.large_pbu])))
 
 
-********************************************************************************
 * 7. Summary table
-********************************************************************************
 di ""
-di "=================================================================="
 di "  HETEROGENEITY SUMMARY"
-di "=================================================================="
 di ""
 di "Dimension                  | Group 1 (coef)  | Group 2 (coef)  | Interaction p"
 di "---------------------------+-----------------+-----------------+---------------"

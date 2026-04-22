@@ -1,23 +1,17 @@
-# =============================================================================
-# utils.R — Shared infrastructure for replication package
-# Bitter Pills to Swallow — G65 analysis
-#
-# This is a self-contained version that uses paths relative to the
-# replication/ directory. All outputs go to replication/output/.
-# =============================================================================
+# Shared helpers for the replication package.
+# Paths resolve relative to the replication/ directory; all outputs land in
+# replication/output/.
 
 library(data.table)
 library(fixest)
 library(modelsummary)
 library(ggplot2)
 
-# --- Thread settings (use all available cores) ------------------------------
 n_cores <- as.integer(Sys.getenv("NCORES", parallel::detectCores()))
 setFixest_nthreads(n_cores)
 setDTthreads(n_cores)
 cat(sprintf("Using %d threads for fixest and data.table.\n", n_cores))
 
-# --- Path constants ----------------------------------------------------------
 .get_script_dir <- function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -34,8 +28,7 @@ cat(sprintf("Using %d threads for fixest and data.table.\n", n_cores))
 .script_dir <- .get_script_dir()
 REPL <- normalizePath(file.path(.script_dir, ".."), mustWork = FALSE)
 
-# Output directories (within replication package)
-V4       <- REPL  # compatibility alias
+V4       <- REPL
 BASE     <- REPL
 MANU     <- file.path(REPL, "output", "tables_modelsummary")
 RESU     <- file.path(REPL, "output", "results_html")
@@ -43,17 +36,15 @@ GRAP     <- file.path(REPL, "output", "figures_working")
 PUB_TAB  <- file.path(REPL, "output", "tables")
 PUB_FIG  <- file.path(REPL, "output", "figures")
 
-# Data paths
 DATA_RAW   <- file.path(REPL, "data", "BEC-G65-WORK1.parquet")
 DATA_CACHE <- file.path(REPL, "output", "v4_prepared.rds")
 
-# Ensure output dirs exist
 for (d in c(MANU, RESU, GRAP, PUB_TAB, PUB_FIG,
             file.path(REPL, "output", "results_txt"))) {
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
 }
 
-# --- Winsorization -----------------------------------------------------------
+# Winsorize one vector to (p_lo, p_hi) quantiles.
 winsorize <- function(x, p_lo = 0.01, p_hi = 0.99) {
   qs <- quantile(x, probs = c(p_lo, p_hi), na.rm = TRUE)
   x[x < qs[1] & !is.na(x)] <- qs[1]
@@ -70,7 +61,7 @@ winsorize_dt <- function(dt, vars, p_lo = 0.01, p_hi = 0.99) {
   invisible(dt)
 }
 
-# --- Regenerate log variables after winsorization ----------------------------
+# Regenerate log-transformed variables after winsorization.
 gen_log_vars <- function(dt) {
   if ("bid_price" %in% names(dt)) {
     dt[, bid_price_log := NA_real_]
@@ -91,7 +82,7 @@ gen_log_vars <- function(dt) {
   invisible(dt)
 }
 
-# --- Run 4 FE specifications ------------------------------------------------
+# Estimate the four FE specifications used throughout the paper.
 run_feols4 <- function(dv, controls = NULL, data, cluster = ~pbu_id,
                        sample_expr = NULL) {
   rhs <- if (is.null(controls) || length(controls) == 0) {
@@ -116,7 +107,7 @@ run_feols4 <- function(dv, controls = NULL, data, cluster = ~pbu_id,
   models
 }
 
-# --- Save tables via modelsummary --------------------------------------------
+# Write a LaTeX + HTML table for a named list of fitted models.
 save_table <- function(models, title, filename,
                        coef_map = NULL, gof_map = NULL,
                        add_rows = NULL, notes = NULL) {
@@ -150,7 +141,7 @@ save_table <- function(models, title, filename,
   invisible(NULL)
 }
 
-# --- ggplot2 theme -----------------------------------------------------------
+# ggplot2 theme used across all paper figures.
 theme_paper <- function(base_size = 11) {
   theme_minimal(base_size = base_size) +
     theme(
@@ -165,7 +156,6 @@ theme_paper <- function(base_size = 11) {
     )
 }
 
-# --- Coefficient label dictionary --------------------------------------------
 coef_labels <- c(
   "urgent"                    = "Urgent Purchase",
   "is_admin"                  = "Administrative (vs Litigated)",
@@ -183,7 +173,6 @@ coef_labels <- c(
   "large_pbu"                 = "Large PBU"
 )
 
-# --- FE row labels for modelsummary ------------------------------------------
 fe_rows <- function(specs = c("Item", "Item+Year", "Item+Year+PBU", "Item+YM+PBU")) {
   n <- length(specs)
   item_row <- c("Item FE", ifelse(grepl("Item", specs), "Yes", "No"))
@@ -193,4 +182,4 @@ fe_rows <- function(specs = c("Item", "Item+Year", "Item+Year+PBU", "Item+YM+PBU
   as.data.frame(rbind(item_row, year_row, ym_row, pbu_row), stringsAsFactors = FALSE)
 }
 
-cat("utils.R loaded (replication package version).\n")
+cat("utils.R loaded (replication package).\n")

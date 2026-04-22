@@ -1,10 +1,6 @@
-# =============================================================================
-# 09_pub_figures.R — Publication-ready figures
-# Bitter Pills to Swallow — v4 (R/fixest)
+# Publication-ready figures
 # Output: v4/pub/figures/ (8 .pdf files, grayscale, 6.5x4in, cairo PDF)
-# =============================================================================
 
-cat("=== 09_pub_figures.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -17,11 +13,11 @@ cat("=== 09_pub_figures.R ===\n")
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# --- Output directory --------------------------------------------------------
+# Output directory
 PUB_FIG <- file.path(V4, "pub", "figures")
 dir.create(PUB_FIG, recursive = TRUE, showWarnings = FALSE)
 
-# --- Publication settings ----------------------------------------------------
+# Publication settings
 FIG_W <- 6.5   # width in inches (elsarticle 12pt page width)
 FIG_H <- 4     # height in inches
 BASE_SIZE <- 9  # font size
@@ -58,7 +54,7 @@ save_pub <- function(plot, filename) {
   cat("  Saved:", filepath, "\n")
 }
 
-# --- Load data ---------------------------------------------------------------
+# Load data
 cat("\n--- Loading data ---\n")
 dt <- readRDS(DATA_CACHE)
 dt <- dt[has_litigated == TRUE & has_ordinary == TRUE]
@@ -80,9 +76,7 @@ dt[, type_label := factor(
   levels = c("Ordinary", "Administrative", "Litigated")
 )]
 
-# =============================================================================
 # Figure 1: Kernel Density — Log Reference Price
-# =============================================================================
 cat("Figure 1: Log reference price density\n")
 p1 <- ggplot(dt_win[!is.na(bid_price_ref_log)],
              aes(x = bid_price_ref_log, color = type_label, linetype = type_label)) +
@@ -93,9 +87,7 @@ p1 <- ggplot(dt_win[!is.na(bid_price_ref_log)],
   theme_pub()
 save_pub(p1, "fig_01_ref_price_density.pdf")
 
-# =============================================================================
 # Figure 2: Kernel Density — Log Negotiated Price
-# =============================================================================
 cat("Figure 2: Log negotiated price density\n")
 p2 <- ggplot(dt_win[!is.na(bid_price_log)],
              aes(x = bid_price_log, color = type_label, linetype = type_label)) +
@@ -106,9 +98,7 @@ p2 <- ggplot(dt_win[!is.na(bid_price_log)],
   theme_pub()
 save_pub(p2, "fig_02_negprice_density.pdf")
 
-# =============================================================================
 # Figure 3: Kernel Density — Log Quantity
-# =============================================================================
 cat("Figure 3: Log quantity density\n")
 p3 <- ggplot(dt_win[!is.na(bid_qty_log)],
              aes(x = bid_qty_log, color = type_label, linetype = type_label)) +
@@ -119,9 +109,7 @@ p3 <- ggplot(dt_win[!is.na(bid_qty_log)],
   theme_pub()
 save_pub(p3, "fig_03_qty_density.pdf")
 
-# =============================================================================
 # Figure 4: Kernel Density — Log Number of Bidding Firms
-# =============================================================================
 cat("Figure 4: Log firms density\n")
 p4 <- ggplot(dt[!is.na(ln_n_firms)],
              aes(x = ln_n_firms, color = type_label, linetype = type_label)) +
@@ -132,9 +120,7 @@ p4 <- ggplot(dt[!is.na(ln_n_firms)],
   theme_pub()
 save_pub(p4, "fig_04_firms_density.pdf")
 
-# =============================================================================
 # Figure 5: Kernel Density — Admin vs Litigated (Urgent Only)
-# =============================================================================
 cat("Figure 5: UTG density (admin vs litigated)\n")
 dt_urg_win <- dt_win[purchase_type %in% c(1, 2)]
 p5 <- ggplot(dt_urg_win[!is.na(bid_price_log)],
@@ -146,9 +132,7 @@ p5 <- ggplot(dt_urg_win[!is.na(bid_price_log)],
   theme_pub()
 save_pub(p5, "fig_05_utg_density.pdf")
 
-# =============================================================================
 # Figure 6: Bar Chart — Success Rate by Purchase Type
-# =============================================================================
 cat("Figure 6: Success rate bar chart\n")
 success_dt <- dt[, .(success_rate = mean(po_firm_winner, na.rm = TRUE)), by = type_label]
 p6 <- ggplot(success_dt, aes(x = type_label, y = success_rate, fill = type_label)) +
@@ -163,9 +147,7 @@ p6 <- ggplot(success_dt, aes(x = type_label, y = success_rate, fill = type_label
   theme(legend.position = "none")
 save_pub(p6, "fig_06_success_bar.pdf")
 
-# =============================================================================
 # Figure 7: Time Trends — Mean Log Negotiated Price by Year-Month
-# =============================================================================
 cat("Figure 7: Time trends\n")
 dt_win[, ym_date := as.Date(m_y)]
 dt_win[, urg_label := ifelse(urgent == 1, "Urgent", "Ordinary")]
@@ -185,9 +167,7 @@ p7 <- ggplot(trends_dt, aes(x = ym_date, y = mean_price,
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 save_pub(p7, "fig_07_time_trends.pdf")
 
-# =============================================================================
 # Figure 8: Coefficient Plot — Treatment Effects from Tables 4-7
-# =============================================================================
 cat("Figure 8: Coefficient plot\n")
 
 spec_fe <- "item_id + year_n + pbu_id"
@@ -230,8 +210,6 @@ p8 <- ggplot(coef_df, aes(y = table, x = coef, xmin = ci_lo, xmax = ci_hi)) +
   theme_pub()
 save_pub(p8, "fig_08_coefplot.pdf")
 
-# =============================================================================
 # SUMMARY
-# =============================================================================
 n_files <- length(list.files(PUB_FIG, pattern = "\\.pdf$"))
-cat(sprintf("\n=== 09_pub_figures.R complete: %d .pdf files in %s ===\n", n_files, PUB_FIG))
+cat(sprintf("\n09_pub_figures.R complete: %d .pdf files in %s\n", n_files, PUB_FIG))

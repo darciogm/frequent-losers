@@ -1,9 +1,6 @@
-********************************************************************************
 * Regressions with Clustered Standard Errors
-* Paper: Bitter Pills to Swallow
 * Suggestion 3: Cluster SE at PBU level + robustness at item level
 * Uses reghdfe for efficient multi-way FE estimation
-********************************************************************************
 
 clear all
 set more off
@@ -14,9 +11,7 @@ timer on 1
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Setup: variables and sample
-* --------------------------------------------------------------------------
 gen purchase_type = 0
 replace purchase_type = 1 if adm == 2
 replace purchase_type = 2 if jud == 1
@@ -64,13 +59,9 @@ di r(r) " unique PBUs"
 local outdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v2/analysis/results"
 capture mkdir "`outdir'"
 
-********************************************************************************
 * TABLE 4: REFERENCE PRICES — Urgent vs. Ordinary
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 4: REFERENCE PRICES"
-di "==========================================="
 
 eststo clear
 
@@ -142,13 +133,9 @@ esttab using "`outdir'/table4_ref_prices_cluster_twoway.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 5: QUANTITIES — Urgent vs. Ordinary
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 5: QUANTITIES"
-di "==========================================="
 
 eststo clear
 
@@ -172,17 +159,13 @@ esttab using "`outdir'/table5_quantities_cluster_pbu.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 6: NEGOTIATED PRICES — Urgent vs. Ordinary
 * Panel A: Total effect (without quantity control)
 * Panel B: Direct effect (with quantity control)
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 6: NEGOTIATED PRICES"
-di "==========================================="
 
-* --- Panel A: Total effect (without quantity control) ---
+* Panel A: Total effect (without quantity control)
 eststo clear
 
 eststo: reghdfe bid_price_log urgent if po_firm_winner==1, ///
@@ -204,7 +187,7 @@ esttab using "`outdir'/table6a_neg_prices_total_effect.rtf", ///
     note("Standard errors clustered at PBU level in parentheses. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
-* --- Panel B: Direct effect (with quantity control) ---
+* Panel B: Direct effect (with quantity control)
 eststo clear
 
 eststo: reghdfe bid_price_log urgent bid_qty_log if po_firm_winner==1, ///
@@ -227,17 +210,13 @@ esttab using "`outdir'/table6b_neg_prices_direct_effect.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 7: PARTICIPANT FIRMS — Urgent vs. Ordinary
 * Panel A: Total effect (without quantity control)
 * Panel B: Direct effect (with quantity control)
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 7: PARTICIPANT FIRMS"
-di "==========================================="
 
-* --- Panel A: Total effect (without quantity control) ---
+* Panel A: Total effect (without quantity control)
 eststo clear
 
 eststo: reghdfe ln_n_firms urgent if po_firm_winner==1, ///
@@ -259,7 +238,7 @@ esttab using "`outdir'/table7a_firms_total_effect.rtf", ///
     note("Standard errors clustered at PBU level in parentheses. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
-* --- Panel B: Direct effect (with quantity control) ---
+* Panel B: Direct effect (with quantity control)
 eststo clear
 
 eststo: reghdfe ln_n_firms urgent bid_qty_log if po_firm_winner==1, ///
@@ -282,17 +261,13 @@ esttab using "`outdir'/table7b_firms_direct_effect.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 9: SUCCESS/FAILURE — Urgent vs. Ordinary (Logit)
 * Panel A: Total effect (without quantity control)
 * Panel B: Direct effect (with quantity control)
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 9: SUCCESS/FAILURE (Logit)"
-di "==========================================="
 
-* --- Panel A: Total effect (without quantity control) ---
+* Panel A: Total effect (without quantity control)
 eststo clear
 
 eststo: logit po_firm_winner urgent i.item_id2, ///
@@ -313,7 +288,7 @@ esttab using "`outdir'/table9a_success_total_effect.rtf", ///
     note("Standard errors clustered at PBU level in parentheses. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
-* --- Panel B: Direct effect (with quantity control) ---
+* Panel B: Direct effect (with quantity control)
 eststo clear
 
 eststo: logit po_firm_winner urgent bid_qty_log i.item_id2, ///
@@ -335,13 +310,9 @@ esttab using "`outdir'/table9b_success_direct_effect.rtf", ///
     compress replace
 
 
-********************************************************************************
 * TABLE 10: "UNDER THE GUN" — Litigated vs. Administrative
-********************************************************************************
 di ""
-di "==========================================="
 di "  TABLE 10: UNDER THE GUN EFFECT"
-di "==========================================="
 
 * Restrict to urgent purchases only
 preserve
@@ -357,7 +328,7 @@ keep if has_admin == 1 & has_lit == 1
 
 di "Under the Gun sample: " _N
 
-* --- Panel A: Total effect (without quantity control) ---
+* Panel A: Total effect (without quantity control)
 eststo clear
 
 eststo: reghdfe bid_price_log is_admin if po_firm_winner==1, ///
@@ -379,7 +350,7 @@ esttab using "`outdir'/table10a_underthegun_total_effect.rtf", ///
     note("Standard errors clustered at PBU level in parentheses. Admin=1 if administrative, 0 if litigated. Total effect: quantity not controlled. *** p<0.01, ** p<0.05, * p<0.1") ///
     compress replace
 
-* --- Panel B: Direct effect (with quantity control) ---
+* Panel B: Direct effect (with quantity control)
 eststo clear
 
 eststo: reghdfe bid_price_log is_admin bid_qty_log if po_firm_winner==1, ///
@@ -426,13 +397,9 @@ esttab using "`outdir'/table10_underthegun_cluster_twoway.rtf", ///
 restore
 
 
-********************************************************************************
 * COMPARISON TABLE: Original SE vs Clustered SE for key coefficients
-********************************************************************************
 di ""
-di "==========================================="
 di "  COMPARISON: Original vs Clustered SE"
-di "==========================================="
 
 * Table 4 spec (3): Reference prices, Item+Year+PBU FE
 di "--- Table 4 (Reference Prices) ---"

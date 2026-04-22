@@ -1,9 +1,6 @@
-********************************************************************************
 * Balance Table: Administrative vs Litigated Purchases
-* Paper: Bitter Pills to Swallow
 * Suggestion 2: Compare observable characteristics between admin and litigated
 * to validate the "under the gun" identification
-********************************************************************************
 
 clear all
 set more off
@@ -11,9 +8,7 @@ set max_memory 14g
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Create purchase type and restrict sample
-* --------------------------------------------------------------------------
 gen purchase_type = 0
 replace purchase_type = 1 if adm == 2
 replace purchase_type = 2 if jud == 1
@@ -37,9 +32,7 @@ count if is_admin == 1
 di "Sample: Litigated = "
 count if is_admin == 0
 
-* --------------------------------------------------------------------------
 * 2. Winsorize continuous variables at 1%/99%
-* --------------------------------------------------------------------------
 foreach v in bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids {
     quietly summarize `v', detail
     local p1 = r(p1)
@@ -48,9 +41,7 @@ foreach v in bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids {
     replace `v' = `p99' if `v' > `p99' & `v' != .
 }
 
-* --------------------------------------------------------------------------
 * 3. Generate variables
-* --------------------------------------------------------------------------
 capture drop bid_qty_log bid_price_ref_log bid_price_log
 gen bid_qty_log = ln(bid_qty)
 gen bid_price_ref_log = ln(bid_price_ref)
@@ -71,9 +62,7 @@ capture destring year, replace
 * Number of items per PO
 bysort po: gen n_items_po = _N
 
-* --------------------------------------------------------------------------
 * 4. Generate LaTeX balance table
-* --------------------------------------------------------------------------
 capture file close tex
 file open tex using "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v2/manuscript/table_balance.tex", write replace
 
@@ -89,9 +78,7 @@ file write tex "    & (1) & (2) & (3) & (4) & (5) \\" _n
 file write tex "    & Administrative & Litigated & Difference & \textit{t}-stat & \textit{p}-value \\" _n
 file write tex "    \hline" _n
 
-* --------------------------------------------------------------------------
 * 5. Helper program
-* --------------------------------------------------------------------------
 capture program drop write_balance_row
 program define write_balance_row
     args varname label fhandle fmt
@@ -129,9 +116,7 @@ program define write_balance_row
     file write `fhandle' "    & (`sd1') & (`sd0') & & & \\[3pt]" _n
 end
 
-* --------------------------------------------------------------------------
 * 6. Panel A: Procurement Outcomes
-* --------------------------------------------------------------------------
 file write tex "    \multicolumn{6}{l}{\textit{Panel A: Procurement Outcomes}} \\[3pt]" _n
 write_balance_row bid_price_ref "Reference~Price" tex %12.2f
 write_balance_row bid_price "Negotiated~Price" tex %12.2f
@@ -140,9 +125,7 @@ write_balance_row bid_price_ref_log "Log~Reference~Price" tex %12.3f
 write_balance_row bid_price_log "Log~Negotiated~Price" tex %12.3f
 write_balance_row bid_qty_log "Log~Quantity" tex %12.3f
 
-* --------------------------------------------------------------------------
 * 7. Panel B: Market Structure
-* --------------------------------------------------------------------------
 file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel B: Market Structure}} \\[3pt]" _n
 write_balance_row n_firms_bids "No.~Participant~Firms" tex %12.2f
@@ -151,17 +134,13 @@ write_balance_row ln_n_firms "Log~No.~Firms" tex %12.3f
 write_balance_row ln_n_bids "Log~No.~Bids" tex %12.3f
 write_balance_row po_firm_winner "Successful~Tender~(\%)" tex %12.3f
 
-* --------------------------------------------------------------------------
 * 8. Panel C: Purchase Characteristics
-* --------------------------------------------------------------------------
 file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel C: Purchase Characteristics}} \\[3pt]" _n
 write_balance_row sp_city "S\~ao~Paulo~Capital~(\%)" tex %12.3f
 write_balance_row n_items_po "Items~per~Purchase~Order" tex %12.2f
 
-* --------------------------------------------------------------------------
 * 9. Observations and footer
-* --------------------------------------------------------------------------
 quietly count if is_admin == 1
 local n1 : di %12.0gc r(N)
 local n1 = strtrim("`n1'")
@@ -188,17 +167,12 @@ file write tex "\end{table}" _n
 
 file close tex
 
-* --------------------------------------------------------------------------
 * 10. Console summary
-* --------------------------------------------------------------------------
 di ""
-di "=============================================="
 di "  BALANCE TABLE: ADMIN vs LITIGATED"
-di "=============================================="
 di "  Administrative: `n1'"
 di "  Litigated: `n0'"
 di "  Unique items: `n_items'"
-di "=============================================="
 di ""
 
 foreach v in bid_price_ref bid_price bid_qty bid_price_ref_log bid_price_log bid_qty_log n_firms_bids n_bids_bids ln_n_firms ln_n_bids po_firm_winner sp_city n_items_po {

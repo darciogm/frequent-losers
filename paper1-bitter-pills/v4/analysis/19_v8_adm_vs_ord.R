@@ -1,6 +1,4 @@
-# =============================================================================
-# 19_v8_adm_vs_ord.R — V8: Administrative vs Ordinary Regressions
-# Bitter Pills to Swallow — v4 (R/fixest)
+# V8: Administrative vs Ordinary Regressions
 #
 # Replicates ALL 8 outcome specifications from the urgent analysis for the
 # administrative vs ordinary comparison (purchase_type 1 vs 0).
@@ -12,13 +10,10 @@
 #   - 9 checkpoint .rds files
 #
 # Output directories: v4/pub/tables_v8/, v4/manuscript_v8/, v4/results_v8/
-# =============================================================================
 
-cat("=== 19_v8_adm_vs_ord.R — V8: Administrative vs Ordinary ===\n")
 cat("Started:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 t_start <- proc.time()
 
-# --- Boilerplate ---
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -31,10 +26,8 @@ t_start <- proc.time()
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# =============================================================================
 # HARDWARE DETECTION & MAX PERFORMANCE
-# =============================================================================
-cat("=== Hardware Detection ===\n")
+cat("Hardware Detection\n")
 n_cores <- parallel::detectCores(logical = TRUE)
 ram_gb  <- as.numeric(system("free -b | awk '/Mem:/{print $2}'", intern = TRUE)) / 1e9
 cat(sprintf("  CPU cores (logical): %d\n", n_cores))
@@ -45,7 +38,7 @@ setDTthreads(n_cores)
 cat(sprintf("  fixest threads: %d\n", n_cores))
 cat(sprintf("  data.table threads: %d\n", n_cores))
 
-# --- Output directories -------------------------------------------------------
+# Output directories
 PUB_TAB_V8 <- file.path(V4, "pub", "tables_v8")
 PUB_FIG_V8 <- file.path(V4, "pub", "figures")
 MANU_V8    <- file.path(V4, "manuscript_v8")
@@ -55,7 +48,7 @@ for (d in c(PUB_TAB_V8, PUB_FIG_V8, MANU_V8, RESU_V8, CHECKPOINT)) {
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
 }
 
-# --- Timing log ---------------------------------------------------------------
+# Timing log
 timing_log <- list()
 log_time <- function(label, t0) {
   elapsed <- (proc.time() - t0)[["elapsed"]]
@@ -63,9 +56,7 @@ log_time <- function(label, t0) {
   cat(sprintf("  [%s] %.1f sec\n", label, elapsed))
 }
 
-# =============================================================================
 # FORMATTING HELPERS (from 16_v7_extensions.R)
-# =============================================================================
 pfmt     <- function(x, d = 3) formatC(x, format = "f", digits = d, big.mark = ",")
 pfmt_int <- function(x) formatC(x, format = "d", big.mark = ",")
 pstars   <- function(p) {
@@ -94,7 +85,7 @@ default_note <- paste0(
   "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1."
 )
 
-# --- save_table_v8 ---
+# save_table_v8
 save_table_v8 <- function(models, title, filename,
                           coef_map = NULL, gof_map = NULL,
                           add_rows = NULL, notes = NULL) {
@@ -117,7 +108,7 @@ save_table_v8 <- function(models, title, filename,
   cat("    Saved:", basename(tex_file), "+", basename(html_file), "\n")
 }
 
-# --- write_reg_table_v8: publication-ready single-panel table ---
+# write_reg_table_v8: publication-ready single-panel table
 write_reg_table_v8 <- function(models, coef_vars, coef_labs, title, label,
                                filename, note = NULL, fe_labels = NULL,
                                digits = 3, show_wr2 = TRUE) {
@@ -190,7 +181,7 @@ write_reg_table_v8 <- function(models, coef_vars, coef_labs, title, label,
   cat("    Pub table:", basename(filepath), "\n")
 }
 
-# --- write_panel_reg_table_v8: two-panel pub table ---
+# write_panel_reg_table_v8: two-panel pub table
 write_panel_reg_table_v8 <- function(models_a, models_b,
                                      coef_vars_a, coef_vars_b,
                                      coef_labs,
@@ -292,11 +283,9 @@ write_panel_reg_table_v8 <- function(models_a, models_b,
   cat("    Pub table:", basename(filepath), "\n")
 }
 
-# =============================================================================
 # LOAD DATA & PREPARE SAMPLE
-# =============================================================================
 
-cat("\n=== Loading data ===\n")
+cat("\nLoading data\n")
 t0 <- proc.time()
 dt_raw <- readRDS(DATA_CACHE)
 cat("Full dataset:", nrow(dt_raw), "obs\n")
@@ -331,15 +320,11 @@ if (!"bid_qty_log" %in% names(coef_labels_v8)) {
   coef_labels_v8 <- c(coef_labels_v8, "bid_qty_log" = "Log Quantity")
 }
 
-# =============================================================================
 # REGRESSIONS: ADMINISTRATIVE vs ORDINARY
-# =============================================================================
 
-cat("\n", strrep("=", 70), "\n")
 cat("REGRESSIONS: Administrative vs Ordinary\n")
-cat(strrep("=", 70), "\n")
 
-# --- 1. Reference Prices (DV: bid_price_ref_log) ----------------------------
+# 1. Reference Prices (DV: bid_price_ref_log)
 cat("\n--- 1. Reference Prices ---\n")
 t0 <- proc.time()
 m_ref <- run_feols4("bid_price_ref_log", "admin", dt_ao_win, cluster = ~pbu_id)
@@ -352,7 +337,7 @@ write_reg_table_v8(m_ref, "admin", coef_labels_v8,
                    "v8_adm_ref_prices", "tab_adm_vs_ord_ref_prices_v8.tex")
 log_time("Ref prices", t0)
 
-# --- 2. Quantities (DV: bid_qty_log) ----------------------------------------
+# 2. Quantities (DV: bid_qty_log)
 cat("\n--- 2. Quantities ---\n")
 t0 <- proc.time()
 m_qty <- run_feols4("bid_qty_log", "admin", dt_ao_win, cluster = ~pbu_id)
@@ -365,7 +350,7 @@ write_reg_table_v8(m_qty, "admin", coef_labels_v8,
                    "v8_adm_quantities", "tab_adm_vs_ord_quantities_v8.tex")
 log_time("Quantities", t0)
 
-# --- 3. Negotiated Prices (DV: bid_price_log) — Total + Direct --------------
+# 3. Negotiated Prices (DV: bid_price_log) — Total + Direct
 cat("\n--- 3. Negotiated Prices ---\n")
 t0 <- proc.time()
 m_neg_total  <- run_feols4("bid_price_log", "admin", dt_ao_win, cluster = ~pbu_id)
@@ -388,7 +373,7 @@ write_panel_reg_table_v8(
 )
 log_time("Neg prices", t0)
 
-# --- 4. Bidder Participation (DV: ln_n_firms) — Total + Direct ---------------
+# 4. Bidder Participation (DV: ln_n_firms) — Total + Direct
 cat("\n--- 4. Bidder Participation ---\n")
 t0 <- proc.time()
 m_firms_total  <- run_feols4("ln_n_firms", "admin", dt_ao_win, cluster = ~pbu_id)
@@ -411,7 +396,7 @@ write_panel_reg_table_v8(
 )
 log_time("Firms", t0)
 
-# --- 5. Tender Success (DV: po_firm_winner, LPM) — Total + Direct -----------
+# 5. Tender Success (DV: po_firm_winner, LPM) — Total + Direct
 cat("\n--- 5. Tender Success ---\n")
 t0 <- proc.time()
 # Success uses ALL obs (not winners only)
@@ -435,12 +420,8 @@ write_panel_reg_table_v8(
 )
 log_time("Success", t0)
 
-# =============================================================================
 # COEFFICIENT PLOT
-# =============================================================================
-cat("\n", strrep("=", 70), "\n")
 cat("COEFFICIENT PLOT\n")
-cat(strrep("=", 70), "\n")
 
 # Use preferred spec (Item+Year+PBU, col 3) for all outcomes
 spec_idx <- 3  # Item+Year+PBU
@@ -515,14 +496,10 @@ out_png <- file.path(PUB_FIG_V8, "fig_coef_adm_vs_ord_v8.png")
 ggsave(out_png, p_coef, width = 6.5, height = 4, dpi = 300)
 cat(sprintf("  PNG saved: %s\n", out_png))
 
-# =============================================================================
 # SUMMARY
-# =============================================================================
 elapsed_total <- (proc.time() - t_start)[["elapsed"]]
 
-cat("\n", strrep("=", 70), "\n")
 cat("19_v8_adm_vs_ord.R COMPLETE\n")
-cat(strrep("=", 70), "\n")
 cat(sprintf("  Total time: %.1f sec\n", elapsed_total))
 cat(sprintf("  Regressions: 40 models (8 outcomes × 4 FE specs + 2 LPM variants)\n"))
 cat(sprintf("  Pub tables: 5 (.tex in %s)\n", PUB_TAB_V8))
@@ -534,8 +511,8 @@ cat(sprintf("  Checkpoints: %d (.rds in %s)\n",
             length(list.files(CHECKPOINT, pattern = "\\.rds$")), CHECKPOINT))
 cat(sprintf("  Coefficient plot: %s\n", out_coef))
 
-# --- Print key results for manuscript ---
-cat("\n=== KEY RESULTS (Preferred Spec: Item+Year+PBU) ===\n")
+# Print key results for manuscript
+cat("\nKEY RESULTS (Preferred Spec: Item+Year+PBU)\n")
 outcomes <- list(
   "Ref Price"       = m_ref[[3]],
   "Quantity"        = m_qty[[3]],

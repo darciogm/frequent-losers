@@ -1,10 +1,6 @@
-# =============================================================================
-# 08_pub_tables.R — Publication-ready LaTeX tables
-# Bitter Pills to Swallow — v4 (R/fixest)
+# Publication-ready LaTeX tables
 # Output: v4/pub/tables/ (17 .tex files, threeparttable + booktabs format)
-# =============================================================================
 
-cat("=== 08_pub_tables.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -17,13 +13,11 @@ cat("=== 08_pub_tables.R ===\n")
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# --- Output directory --------------------------------------------------------
+# Output directory
 PUB_TAB <- file.path(V4, "pub", "tables")
 dir.create(PUB_TAB, recursive = TRUE, showWarnings = FALSE)
 
-# =============================================================================
 # FORMATTING HELPERS
-# =============================================================================
 
 pfmt <- function(x, d = 3) formatC(x, format = "f", digits = d, big.mark = ",")
 pfmt_int <- function(x) formatC(x, format = "d", big.mark = ",")
@@ -56,11 +50,9 @@ default_note <- paste0(
   "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1."
 )
 
-# =============================================================================
 # TABLE WRITERS
-# =============================================================================
 
-# --- write_reg_table: single-panel regression table --------------------------
+# write_reg_table: single-panel regression table
 write_reg_table <- function(models, coef_vars, coef_labs, title, label,
                             filename, note = NULL, fe_labels = NULL,
                             digits = 3, show_wr2 = TRUE) {
@@ -133,7 +125,7 @@ write_reg_table <- function(models, coef_vars, coef_labs, title, label,
   cat("  Saved:", filepath, "\n")
 }
 
-# --- write_panel_reg_table: two-panel (A/B) regression table -----------------
+# write_panel_reg_table: two-panel (A/B) regression table
 write_panel_reg_table <- function(models_a, models_b,
                                   coef_vars_a, coef_vars_b,
                                   coef_labs,
@@ -235,7 +227,7 @@ write_panel_reg_table <- function(models_a, models_b,
   cat("  Saved:", filepath, "\n")
 }
 
-# --- write_panel3_reg_table: three-panel regression table --------------------
+# write_panel3_reg_table: three-panel regression table
 write_panel3_reg_table <- function(models_a, models_b, models_c,
                                    coef_vars, coef_labs,
                                    panel_titles, title, label, filename,
@@ -327,7 +319,7 @@ write_panel3_reg_table <- function(models_a, models_b, models_c,
   cat("  Saved:", filepath, "\n")
 }
 
-# --- write_het_table: heterogeneity (split + interaction) --------------------
+# write_het_table: heterogeneity (split + interaction)
 write_het_table <- function(models_lo, models_hi, models_int,
                             split_var, lo_label, hi_label,
                             coef_labs, title, label, filename,
@@ -436,9 +428,7 @@ write_het_table <- function(models_lo, models_hi, models_int,
   cat("  Saved:", filepath, "\n")
 }
 
-# =============================================================================
 # LOAD DATA & PREPARE SAMPLES
-# =============================================================================
 
 cat("\n--- Loading data ---\n")
 dt_raw <- readRDS(DATA_CACHE)
@@ -462,9 +452,7 @@ dt_utg <- dt_utg[has_admin2 == TRUE & has_lit2 == TRUE]
 dt_utg_win <- dt_utg[po_firm_winner == 1]
 cat("UTG winners sample:", nrow(dt_utg_win), "obs\n")
 
-# =============================================================================
 # TABLE 1: DESCRIPTIVE STATISTICS
-# =============================================================================
 cat("\n--- Table 1: Descriptive Statistics ---\n")
 
 desc_row <- function(data, varname, label) {
@@ -568,9 +556,7 @@ desc_lines <- c(desc_lines,
 writeLines(desc_lines, file.path(PUB_TAB, "tab_desc_stats.tex"))
 cat("  Saved: tab_desc_stats.tex\n")
 
-# =============================================================================
 # TABLE 2: BALANCE TABLE
-# =============================================================================
 cat("\n--- Table 2: Balance Table ---\n")
 
 balance_row <- function(data, varname, label) {
@@ -660,9 +646,7 @@ bal_lines <- c(bal_lines,
 writeLines(bal_lines, file.path(PUB_TAB, "tab_balance.tex"))
 cat("  Saved: tab_balance.tex\n")
 
-# =============================================================================
 # REGRESSION TABLES (3–8)
-# =============================================================================
 
 cat("\n--- Running regressions ---\n")
 
@@ -690,7 +674,7 @@ t10b <- run_feols4("bid_price_log", c("is_admin", "bid_qty_log"), dt_utg_win, cl
 
 cat("  All regressions done.\n")
 
-# --- Table 3: Reference Prices -----------------------------------------------
+# Table 3: Reference Prices
 cat("\n--- Table 3: Reference Prices ---\n")
 
 ref_note <- paste0(
@@ -703,8 +687,8 @@ write_reg_table(t4, "urgent", coef_labels,
                 "Reference Prices", "ref_prices", "tab_ref_prices.tex",
                 note = ref_note)
 
-# --- Table 4: Quantities -----------------------------------------------------
-cat("--- Table 4: Quantities ---\n")
+# Table 4: Quantities
+cat("Table 4: Quantities\n")
 
 qty_note <- paste0(
   "Dependent variable: log quantity. Sample: winners only. Winsorized at 1\\%/99\\%. ",
@@ -715,8 +699,8 @@ write_reg_table(t5, "urgent", coef_labels,
                 "Quantities", "quantities", "tab_quantities.tex",
                 note = qty_note)
 
-# --- Table 5: Negotiated Prices (Panel A: Total, Panel B: Direct) ------------
-cat("--- Table 5: Negotiated Prices ---\n")
+# Table 5: Negotiated Prices (Panel A: Total, Panel B: Direct)
+cat("Table 5: Negotiated Prices\n")
 
 neg_note <- paste0(
   "Dependent variable: log negotiated price. Sample: winners only. ",
@@ -732,8 +716,8 @@ write_panel_reg_table(t6a, t6b,
                       "Negotiated Prices", "neg_prices", "tab_neg_prices.tex",
                       note = neg_note)
 
-# --- Table 6: Firms (Panel A: Total, Panel B: Direct) ------------------------
-cat("--- Table 6: Participant Firms ---\n")
+# Table 6: Firms (Panel A: Total, Panel B: Direct)
+cat("Table 6: Participant Firms\n")
 
 firms_note <- paste0(
   "Dependent variable: log number of bidding firms. Sample: winners only. ",
@@ -749,8 +733,8 @@ write_panel_reg_table(t7a, t7b,
                       "Participant Firms", "firms", "tab_firms.tex",
                       note = firms_note)
 
-# --- Table 7: Success LPM (Panel A: Total, Panel B: Direct) ------------------
-cat("--- Table 7: Success LPM ---\n")
+# Table 7: Success LPM (Panel A: Total, Panel B: Direct)
+cat("Table 7: Success LPM\n")
 
 success_note <- paste0(
   "Dependent variable: successful tender (LPM). Sample: all observations. ",
@@ -766,8 +750,8 @@ write_panel_reg_table(t9a, t9b,
                       "Tender Success (LPM)", "success", "tab_success.tex",
                       note = success_note)
 
-# --- Table 8: Under the Gun (Panel A: Total, Panel B: Direct) ----------------
-cat("--- Table 8: Under the Gun ---\n")
+# Table 8: Under the Gun (Panel A: Total, Panel B: Direct)
+cat("Table 8: Under the Gun\n")
 
 utg_note <- paste0(
   "Dependent variable: log negotiated price. Sample: urgent purchases only ",
@@ -785,9 +769,7 @@ write_panel_reg_table(t10a, t10b,
                       "underthegun", "tab_underthegun.tex",
                       note = utg_note)
 
-# =============================================================================
 # HETEROGENEITY TABLES (9–12)
-# =============================================================================
 cat("\n--- Heterogeneity regressions ---\n")
 
 run_het <- function(dt_win, split_var) {
@@ -847,9 +829,7 @@ write_het_table(het_pbu$lo, het_pbu$hi, het_pbu$int,
                 coef_labels,
                 "Heterogeneity: PBU Size", "het_pbu", "tab_het_pbu.tex")
 
-# =============================================================================
 # ROBUSTNESS TABLE 13: UTG PROGRESSIVE CONTROLS (3 winsor panels)
-# =============================================================================
 cat("\n--- Robustness: UTG Progressive ---\n")
 
 run_utg_prog <- function(dt_base, p_lo, p_hi) {
@@ -908,9 +888,7 @@ write_panel3_reg_table(utg_nowin, utg_w01, utg_w05,
                        "rob_utg", "tab_rob_utg.tex",
                        note = utg_rob_note, fe_labels = utg_prog_fe)
 
-# =============================================================================
 # ROBUSTNESS TABLES 14–17: MAIN TABLES × 3 WINSORIZATION LEVELS
-# =============================================================================
 cat("\n--- Robustness: Main tables × winsorization ---\n")
 
 run_main_winsor <- function(dt_base, p_lo, p_hi) {
@@ -984,8 +962,6 @@ write_panel3_reg_table(
   "Robustness: Tender Success (LPM)", "rob_success", "tab_rob_success.tex",
   note = rob_note_fn("successful tender (LPM)"))
 
-# =============================================================================
 # SUMMARY
-# =============================================================================
 n_files <- length(list.files(PUB_TAB, pattern = "\\.tex$"))
-cat(sprintf("\n=== 08_pub_tables.R complete: %d .tex files in %s ===\n", n_files, PUB_TAB))
+cat(sprintf("\n08_pub_tables.R complete: %d .tex files in %s\n", n_files, PUB_TAB))

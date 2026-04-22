@@ -1,32 +1,23 @@
-# =============================================================================
-# utils.R — Shared infrastructure for v4 R pipeline
-# Bitter Pills to Swallow — G65 analysis
-# =============================================================================
+# Shared helpers for the v4 R pipeline.
 
 library(data.table)
 library(fixest)
 library(modelsummary)
 library(ggplot2)
 
-# --- Thread settings ---------------------------------------------------------
 setFixest_nthreads(16)
 setDTthreads(16)
 
-# --- Path constants ----------------------------------------------------------
-# Robust script directory detection
 .get_script_dir <- function() {
-  # When sourced from another script
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
     if (!is.null(f)) return(normalizePath(dirname(f), mustWork = FALSE))
   }
-  # When run via Rscript with --file
   args <- commandArgs(trailingOnly = FALSE)
   file_arg <- grep("^--file=", args, value = TRUE)
   if (length(file_arg) > 0) {
     return(normalizePath(dirname(sub("^--file=", "", file_arg[1])), mustWork = FALSE))
   }
-  # Fallback: working directory
   getwd()
 }
 
@@ -42,10 +33,9 @@ GRAP      <- file.path(V4, "graphs")
 DATA_RAW  <- file.path(BASE, "datasets", "BEC-G65-WORK1.parquet")
 DATA_CACHE <- "/tmp/v4_prepared.rds"
 
-# Ensure output dirs exist
 for (d in c(MANU, RESU, GRAP)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
 
-# --- Winsorization -----------------------------------------------------------
+# Winsorize one vector to (p_lo, p_hi) quantiles.
 winsorize <- function(x, p_lo = 0.01, p_hi = 0.99) {
   qs <- quantile(x, probs = c(p_lo, p_hi), na.rm = TRUE)
   x[x < qs[1] & !is.na(x)] <- qs[1]
@@ -62,7 +52,7 @@ winsorize_dt <- function(dt, vars, p_lo = 0.01, p_hi = 0.99) {
   invisible(dt)
 }
 
-# --- Regenerate log variables after winsorization ----------------------------
+# Regenerate log-transformed variables after winsorization.
 gen_log_vars <- function(dt) {
   if ("bid_price" %in% names(dt)) {
     dt[, bid_price_log := NA_real_]
@@ -83,18 +73,16 @@ gen_log_vars <- function(dt) {
   invisible(dt)
 }
 
-# --- Run 4 FE specifications ------------------------------------------------
-# Returns a named list of 4 fixest models
+# Estimate the four FE specifications used throughout the paper.
+# Returns a named list of fitted fixest models.
 run_feols4 <- function(dv, controls = NULL, data, cluster = ~pbu_id,
                        sample_expr = NULL) {
-  # Build RHS
   rhs <- if (is.null(controls) || length(controls) == 0) {
     ""
   } else {
     paste(controls, collapse = " + ")
   }
 
-  # 4 FE specs
   fe_specs <- list(
     "Item"          = "item_id",
     "Item+Year"     = "item_id + year_n",
@@ -111,7 +99,7 @@ run_feols4 <- function(dv, controls = NULL, data, cluster = ~pbu_id,
   models
 }
 
-# --- Save tables via modelsummary --------------------------------------------
+# Write a LaTeX + HTML table for a named list of fitted models.
 save_table <- function(models, title, filename,
                        coef_map = NULL, gof_map = NULL,
                        add_rows = NULL, notes = NULL) {
@@ -121,7 +109,6 @@ save_table <- function(models, title, filename,
                  "within.r.squared" = "Within R²")
   }
 
-  # LaTeX
   tex_file <- file.path(MANU, paste0(filename, ".tex"))
   modelsummary(models, output = tex_file,
                title = title,
@@ -132,7 +119,6 @@ save_table <- function(models, title, filename,
                stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
                escape = FALSE)
 
-  # HTML
   html_file <- file.path(RESU, paste0(filename, ".html"))
   modelsummary(models, output = html_file,
                title = title,
@@ -147,7 +133,7 @@ save_table <- function(models, title, filename,
   invisible(NULL)
 }
 
-# --- ggplot2 theme -----------------------------------------------------------
+# ggplot2 theme used across all paper figures.
 theme_paper <- function(base_size = 11) {
   theme_minimal(base_size = base_size) +
     theme(
@@ -162,7 +148,6 @@ theme_paper <- function(base_size = 11) {
     )
 }
 
-# --- Coefficient label dictionary --------------------------------------------
 coef_labels <- c(
   "urgent"                    = "Urgent Purchase",
   "is_admin"                  = "Administrative (vs Litigated)",
@@ -180,7 +165,6 @@ coef_labels <- c(
   "large_pbu"                 = "Large PBU"
 )
 
-# --- FE row labels for modelsummary ------------------------------------------
 fe_rows <- function(specs = c("Item", "Item+Year", "Item+Year+PBU", "Item+YM+PBU")) {
   n <- length(specs)
   item_row <- c("Item FE", ifelse(grepl("Item", specs), "Yes", "No"))

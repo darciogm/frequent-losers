@@ -66,7 +66,6 @@ gen month=month(date_dm)
 quietly tab month, generate(dmonth)
 
 
-
 drop ditem1 dpbu_code1 dyear1 dmonth1 dm_y1
 
 gen sp_city=0
@@ -158,8 +157,6 @@ eststo: quietly reg bid_qty_log jud ditem* dpbu* dyear* dmonth* pregao if po_fir
 esttab using quantity.rtf, b(%9.4f) se(%9.4f) ar2 drop(ditem* dpbu* dyear* dmonth* _cons) label title(Effect of Litigation on Quantity (Dep. Var.: Log Quantity)) nomtitles indicate("Item Codes = ditem2" "PBU = dpbu_code2" "Year = dyear2" "Month = dmonth2") compress  replace
 
 
-
-
 * 2) DECOMPOSING EFFECTS: INVERSE BULK AND STRICT LIABILITY EFFECTS
 
 
@@ -205,14 +202,7 @@ eststo: quietly reg fitted_bid_price_ref_log jud ditem* dpbu* dyear* pregao sp_c
 esttab using strict_liability.rtf, b(%9.4f) se(%9.4f) ar2 drop(ditem* dpbu* dyear* _cons) label title(Strict Liability Effect (Dep. Variable: Log Fitted Reserve Price)) nomtitles indicate("Item Codes = ditem2" "PBU = dpbu_code2" "Year = dyear2") compress  replace
 
 
-
-
-
-
-
-
 special_strategic hospitals
-
 
 
 * 1) TOTAL EFFECT (ONLY PREGAO)
@@ -285,8 +275,6 @@ eststo: quietly xtreg bid_qty_log jud_adm $controls4 if po_firm_winner==1 & po_p
 esttab using quantity.rtf, b(%9.4f) se(%9.4f) ar2 keep($show) title(Effect of Litigation on Quantity (Dep. Var.: Log Quantity)) mtitles("OLS" "OLS" "OLS" "Fixed Effects") indicate("Item Codes = ditem2" "PBU = dpbu_code2" "Year = dyear2" "Month = dmonth2" "Time Trend = dm_y2") compress  replace
 
 
-
-
 * 2) DECOMPOSING EFFECTS: INVERSE BULK AND STRICT LIABILITY EFFECTS
 
 
@@ -338,8 +326,6 @@ predict fitted_bid_price_ref_order_6
 esttab using res_prices_fitted_panel.rtf, b(%9.4f) se(%9.4f) ar2 title(Fitting Quantities for Litigated Bids) indicate("PBU = dpbu_code2" "Time Trend = dm_y2") compress  replace
 
 
-
-
 ********* Estimating Strict Liabilities Effect (Panel)
 
 eststo clear
@@ -352,7 +338,6 @@ eststo: quietly xtreg fitted_bid_price_ref_order_6 jud_adm $controls4 if po_firm
 
 
 esttab using strict_liability_panel.rtf, b(%9.4f) se(%9.4f) keep($show) title(Strict Liability Effect (Dep. Variable: Log Fitted Reserve Price)) mtitles("Order 2" "Order 3" "Order 4" "Order 5" "Order 6") indicate("PBU = dpbu_code2" "Time Trend = dm_y2") compress  replace
-
 
 
 eststo clear
@@ -368,15 +353,11 @@ est sto RE
 hausman FE RE, sigmaless
 
 
-
-
 twoway__histogram_gen bid_price_ref_log if jud_adm ==1, frequency gen(h0 x0)
 
 twoway__histogram_gen fitted_bid_price_ref_log if jud_adm ==1, frequency gen(h1 x1)
 
 twoway(bar h0 x0, barw(1)) (bar h1 x1, barw(1)), legend(order(1 "Observed" 2 "Fitted") col(1) pos(1) ring(0))
-
-
 
 
 *** Decomposing effects (2nd choice)
@@ -404,9 +385,6 @@ eststo: quietly xtreg reserve_price_hat jud_adm $controls4 if po_firm_winner==1 
 esttab using watchdog_effect.rtf, b(%9.4f) se(%9.4f) ar2  title(Watchdog Effect) indicate("PBU = dpbu_code2" "Time Trend = dm_y2") compress  replace
 
 
-
-
-
 *** Decomposing effects (3rd choice)
 
 * 2) DECOMPOSING EFFECTS: INVERSE BULK AND STRICT LIABILITY EFFECTS - ALTERNATIVE
@@ -427,9 +405,7 @@ gen bid_qty_log5=bid_qty_log^5
 gen bid_qty_log6=bid_qty_log^6
 
 
-
 drop fit_qty_watch* aux_bid_qty_log*
-
 
 
 gen aux_bid_qty_log=bid_qty_log
@@ -578,7 +554,6 @@ replace aux_bid_qty_log5=bid_qty_log5 if jud_adm==1
 replace aux_bid_qty_log6=bid_qty_log6 if jud_adm==1
 
 esttab using price_ALT_FITTED.rtf, b(%9.4f) se(%9.4f) ar2 keep($qty6) title(Fitting Prices for Litigated Bids) indicate("PBU = dpbu_code2" "Time Trend = dm_y2") compress  replace
-
 
 
 ********* Estimating Strict Liabilities Effect (Panel)

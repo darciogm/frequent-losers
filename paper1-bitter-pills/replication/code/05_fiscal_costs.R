@@ -1,9 +1,5 @@
-# =============================================================================
-# 05_fiscal_costs.R — Aggregate Fiscal Cost Estimates
-# Bitter Pills to Swallow — v4 (R/fixest)
-# =============================================================================
+# Aggregate Fiscal Cost Estimates
 
-cat("=== 05_fiscal_costs.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -16,10 +12,10 @@ cat("=== 05_fiscal_costs.R ===\n")
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# --- Load data ---------------------------------------------------------------
+# Load data
 dt <- readRDS(DATA_CACHE)
 
-# --- Analysis sample ---------------------------------------------------------
+# Analysis sample
 dt <- dt[has_litigated == TRUE & has_ordinary == TRUE]
 win_vars <- c("bid_price", "bid_price_ref", "bid_qty", "n_firms_bids")
 winsorize_dt(dt, win_vars, 0.01, 0.99)
@@ -27,11 +23,11 @@ gen_log_vars(dt)
 
 dt_win <- dt[po_firm_winner == 1]
 
-# --- Compute total spending --------------------------------------------------
+# Compute total spending
 dt_win[, total_spend := bid_price * bid_qty]
 
 # Spending summaries
-cat("\n=== Spending Summary ===\n")
+cat("\nSpending Summary\n")
 spend_by_type <- dt_win[, .(
   n_obs = .N,
   total_spend = sum(total_spend, na.rm = TRUE),
@@ -47,7 +43,7 @@ cat("Period:", year_min, "-", year_max, "(", n_years, "years)\n")
 cat("Total urgent spending: R$", formatC(total_urgent_spend, format = "f",
                                           digits = 0, big.mark = ","), "\n")
 
-# --- Helper: extract fiscal costs from a model ------------------------------
+# Helper: extract fiscal costs from a model
 fiscal_from_model <- function(model, var_name, urgent_spend, n_years, label) {
   beta <- coef(model)[var_name]
   se <- sqrt(vcov(model)[var_name, var_name])
@@ -82,18 +78,14 @@ fiscal_from_model <- function(model, var_name, urgent_spend, n_years, label) {
   )
 }
 
-# --- Open log file -----------------------------------------------------------
+# Open log file
 log_file <- file.path(RESU, "fiscal_costs_log.txt")
 sink(log_file, split = TRUE)
 
-cat("=============================================================================\n")
-cat("FISCAL COST ESTIMATES — Bitter Pills v4 (G65 dataset)\n")
-cat("=============================================================================\n")
+cat("Fiscal cost estimates (G65 dataset)\n")
 
-# =============================================================================
 # SECTION A: Total Effect (Price Impact)
-# =============================================================================
-cat("\n\n=== SECTION A: TOTAL PRICE EFFECT ===\n")
+cat("\n\nSection A: total price effect\n")
 cat("DV: bid_price_log ~ urgent | FE\n")
 
 fe_specs <- list(
@@ -110,10 +102,8 @@ for (nm in names(fe_specs)) {
                                         paste("Section A:", nm))
 }
 
-# =============================================================================
 # SECTION B: Direct Effect (Controlling for Quantity)
-# =============================================================================
-cat("\n\n=== SECTION B: DIRECT PRICE EFFECT (qty control) ===\n")
+cat("\n\nSection B: direct price effect (with quantity control)\n")
 cat("DV: bid_price_log ~ urgent + bid_qty_log | FE\n")
 
 results_b <- list()
@@ -124,10 +114,8 @@ for (nm in names(fe_specs)) {
                                         paste("Section B:", nm))
 }
 
-# =============================================================================
 # SECTION C: Under the Gun — Sanction Channel
-# =============================================================================
-cat("\n\n=== SECTION C: UNDER THE GUN (Sanction Channel) ===\n")
+cat("\n\nSection C: under the gun (sanction channel)\n")
 cat("DV: bid_price_log ~ is_admin | FE, urgent subsample\n")
 
 # UTG subsample
@@ -177,11 +165,10 @@ for (nm in names(fe_specs)) {
   )
 }
 
-# --- Summary table -----------------------------------------------------------
-cat("\n\n=== SUMMARY TABLE ===\n")
+# Summary table
+cat("\n\nSummary table\n")
 cat(sprintf("%-35s %10s %10s %15s %15s\n",
             "Specification", "Beta", "Premium%", "Total Excess", "Annual"))
-cat(strrep("-", 90), "\n")
 
 for (r in c(results_a, results_b)) {
   cat(sprintf("%-35s %10.4f %9.2f%% %15s %15s\n",
@@ -199,4 +186,3 @@ for (r in results_c) {
 sink()
 cat("\nFiscal costs log saved to:", log_file, "\n")
 
-cat("=== 05_fiscal_costs.R complete ===\n")

@@ -1,17 +1,9 @@
-# =============================================================================
-# 16_v7_extensions.R — V7 Extensions: UTG Missing Outcomes + Litigated-Only
-# Bitter Pills to Swallow — v4 (R/fixest)
+# V7 Extensions: UTG Missing Outcomes + Litigated-Only
 #
-# TASK 1: Under the Gun with ALL outcomes (ref_price, qty, firms, success)
-# TASK 2: Urgent Purchases with litigated-only IV (excluding administrative)
-# TASK 3: Publication-ready tables for all new estimates
-# =============================================================================
 
-cat("=== 16_v7_extensions.R — V7 Extensions ===\n")
 cat("Started:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 t_start <- proc.time()
 
-# --- Boilerplate: find script dir, source utils ---
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -24,10 +16,7 @@ t_start <- proc.time()
 })()
 source(file.path(.this_dir, "utils.R"))
 
-# =============================================================================
-# TASK 4: HARDWARE DETECTION & MAX PERFORMANCE
-# =============================================================================
-cat("=== Hardware Detection ===\n")
+cat("Hardware Detection\n")
 n_cores <- parallel::detectCores(logical = TRUE)
 ram_gb  <- as.numeric(system("free -b | awk '/Mem:/{print $2}'", intern = TRUE)) / 1e9
 cat(sprintf("  CPU cores (logical): %d\n", n_cores))
@@ -39,7 +28,7 @@ setDTthreads(n_cores)
 cat(sprintf("  fixest threads: %d\n", n_cores))
 cat(sprintf("  data.table threads: %d\n", n_cores))
 
-# --- Output directories -------------------------------------------------------
+# Output directories
 PUB_TAB_V7 <- file.path(V4, "pub", "tables_v7")
 MANU_V7    <- file.path(V4, "manuscript_v7")
 RESU_V7    <- file.path(V4, "results_v7")
@@ -48,7 +37,7 @@ for (d in c(PUB_TAB_V7, MANU_V7, RESU_V7, CHECKPOINT)) {
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
 }
 
-# --- Timing log ---------------------------------------------------------------
+# Timing log
 timing_log <- list()
 log_time <- function(label, t0) {
   elapsed <- (proc.time() - t0)[["elapsed"]]
@@ -56,9 +45,7 @@ log_time <- function(label, t0) {
   cat(sprintf("  [%s] %.1f sec\n", label, elapsed))
 }
 
-# =============================================================================
 # FORMATTING HELPERS (from 08_pub_tables.R)
-# =============================================================================
 pfmt     <- function(x, d = 3) formatC(x, format = "f", digits = d, big.mark = ",")
 pfmt_int <- function(x) formatC(x, format = "d", big.mark = ",")
 pstars   <- function(p) {
@@ -86,7 +73,7 @@ default_note <- paste0(
   "*** \\textit{p}$<$0.01, ** \\textit{p}$<$0.05, * \\textit{p}$<$0.1."
 )
 
-# --- V7 save_table: saves to v7 directories ---
+# V7 save_table: saves to v7 directories
 save_table_v7 <- function(models, title, filename,
                           coef_map = NULL, gof_map = NULL,
                           add_rows = NULL, notes = NULL) {
@@ -109,7 +96,7 @@ save_table_v7 <- function(models, title, filename,
   cat("    Saved:", basename(tex_file), "+", basename(html_file), "\n")
 }
 
-# --- write_reg_table_v7: publication-ready single-panel table ---
+# write_reg_table_v7: publication-ready single-panel table
 write_reg_table_v7 <- function(models, coef_vars, coef_labs, title, label,
                                filename, note = NULL, fe_labels = NULL,
                                digits = 3, show_wr2 = TRUE) {
@@ -182,7 +169,7 @@ write_reg_table_v7 <- function(models, coef_vars, coef_labs, title, label,
   cat("    Pub table:", basename(filepath), "\n")
 }
 
-# --- write_panel_reg_table_v7: two-panel pub table ---
+# write_panel_reg_table_v7: two-panel pub table
 write_panel_reg_table_v7 <- function(models_a, models_b,
                                      coef_vars_a, coef_vars_b,
                                      coef_labs,
@@ -284,11 +271,9 @@ write_panel_reg_table_v7 <- function(models_a, models_b,
   cat("    Pub table:", basename(filepath), "\n")
 }
 
-# =============================================================================
 # LOAD DATA & PREPARE SAMPLES
-# =============================================================================
 
-cat("\n=== Loading data ===\n")
+cat("\nLoading data\n")
 t0 <- proc.time()
 dt_raw <- readRDS(DATA_CACHE)
 dt_raw <- dt_raw[has_litigated == TRUE & has_ordinary == TRUE]
@@ -331,15 +316,10 @@ coef_labels_v7 <- c(
   "litigated:large_pbu"        = "Litigated $\\times$ Large PBU"
 )
 
-# =============================================================================
-# TASK 1: UNDER THE GUN — MISSING OUTCOMES
-# =============================================================================
 
-cat("\n", strrep("=", 70), "\n")
 cat("TASK 1: Under the Gun — Missing Outcomes\n")
-cat(strrep("=", 70), "\n")
 
-# --- T1.1: UTG Reference Prices (DV: bid_price_ref_log) --------------------
+# T1.1: UTG Reference Prices (DV: bid_price_ref_log)
 cat("\n--- T1.1: UTG Reference Prices ---\n")
 t0 <- proc.time()
 
@@ -361,7 +341,7 @@ write_reg_table_v7(t1_ref_total, "is_admin", coef_labels_v7,
 log_time("T1.1 UTG Ref Prices", t0)
 saveRDS(t1_ref_total, file.path(CHECKPOINT, "t1_ref_total.rds"))
 
-# --- T1.2: UTG Quantities (DV: bid_qty_log) --------------------------------
+# T1.2: UTG Quantities (DV: bid_qty_log)
 cat("\n--- T1.2: UTG Quantities ---\n")
 t0 <- proc.time()
 
@@ -383,7 +363,7 @@ write_reg_table_v7(t1_qty_total, "is_admin", coef_labels_v7,
 log_time("T1.2 UTG Quantities", t0)
 saveRDS(t1_qty_total, file.path(CHECKPOINT, "t1_qty_total.rds"))
 
-# --- T1.3: UTG Firms — Total & Direct (DV: ln_n_firms) ---------------------
+# T1.3: UTG Firms — Total & Direct (DV: ln_n_firms)
 cat("\n--- T1.3: UTG Participant Firms ---\n")
 t0 <- proc.time()
 
@@ -416,7 +396,7 @@ log_time("T1.3 UTG Firms", t0)
 saveRDS(list(total = t1_firms_total, direct = t1_firms_direct),
         file.path(CHECKPOINT, "t1_firms.rds"))
 
-# --- T1.4: UTG Success/Failure LPM — Total & Direct (DV: po_firm_winner) ---
+# T1.4: UTG Success/Failure LPM — Total & Direct (DV: po_firm_winner)
 cat("\n--- T1.4: UTG Success LPM ---\n")
 t0 <- proc.time()
 
@@ -452,15 +432,10 @@ saveRDS(list(total = t1_success_total, direct = t1_success_direct),
 
 cat("\n--- TASK 1 COMPLETE ---\n")
 
-# =============================================================================
-# TASK 2: URGENT PURCHASES — LITIGATED ONLY (vs Ordinary)
-# =============================================================================
 
-cat("\n", strrep("=", 70), "\n")
 cat("TASK 2: Urgent Purchases — Litigated Only (vs Ordinary)\n")
-cat(strrep("=", 70), "\n")
 
-# --- T2.1: Reference Prices (DV: bid_price_ref_log) ------------------------
+# T2.1: Reference Prices (DV: bid_price_ref_log)
 cat("\n--- T2.1: Litigated — Reference Prices ---\n")
 t0 <- proc.time()
 
@@ -483,7 +458,7 @@ write_reg_table_v7(t2_ref, "litigated", coef_labels_v7,
 log_time("T2.1 Lit Ref Prices", t0)
 saveRDS(t2_ref, file.path(CHECKPOINT, "t2_ref.rds"))
 
-# --- T2.2: Quantities (DV: bid_qty_log) ------------------------------------
+# T2.2: Quantities (DV: bid_qty_log)
 cat("\n--- T2.2: Litigated — Quantities ---\n")
 t0 <- proc.time()
 
@@ -505,7 +480,7 @@ write_reg_table_v7(t2_qty, "litigated", coef_labels_v7,
 log_time("T2.2 Lit Quantities", t0)
 saveRDS(t2_qty, file.path(CHECKPOINT, "t2_qty.rds"))
 
-# --- T2.3: Negotiated Prices — Total (DV: bid_price_log) -------------------
+# T2.3: Negotiated Prices — Total (DV: bid_price_log)
 cat("\n--- T2.3: Litigated — Negotiated Prices (Total) ---\n")
 t0 <- proc.time()
 
@@ -516,8 +491,8 @@ save_table_v7(t2_neg_total, "Litigated vs Ordinary: Negotiated Prices — Total"
 
 log_time("T2.3 Lit Neg Prices Total", t0)
 
-# --- T2.4: Negotiated Prices — Direct (DV: bid_price_log, ctrl: bid_qty_log)
-cat("\n--- T2.4: Litigated — Negotiated Prices (Direct) ---\n")
+# T2.4: Negotiated Prices, Direct effect (DV: bid_price_log, ctrl: bid_qty_log)
+cat("\nT2.4: Litigated, negotiated prices (direct)\n")
 t0 <- proc.time()
 
 t2_neg_direct <- run_feols4("bid_price_log", c("litigated", "bid_qty_log"),
@@ -545,7 +520,7 @@ log_time("T2.4 Lit Neg Prices Direct", t0)
 saveRDS(list(total = t2_neg_total, direct = t2_neg_direct),
         file.path(CHECKPOINT, "t2_neg.rds"))
 
-# --- T2.5: Firms — Total (DV: ln_n_firms) ----------------------------------
+# T2.5: Firms — Total (DV: ln_n_firms)
 cat("\n--- T2.5: Litigated — Participant Firms (Total) ---\n")
 t0 <- proc.time()
 
@@ -556,7 +531,7 @@ save_table_v7(t2_firms_total, "Litigated vs Ordinary: Firms — Total",
 
 log_time("T2.5 Lit Firms Total", t0)
 
-# --- T2.6: Firms — Direct (DV: ln_n_firms, ctrl: bid_qty_log) --------------
+# T2.6: Firms — Direct (DV: ln_n_firms, ctrl: bid_qty_log)
 cat("\n--- T2.6: Litigated — Participant Firms (Direct) ---\n")
 t0 <- proc.time()
 
@@ -585,7 +560,7 @@ log_time("T2.6 Lit Firms Direct", t0)
 saveRDS(list(total = t2_firms_total, direct = t2_firms_direct),
         file.path(CHECKPOINT, "t2_firms.rds"))
 
-# --- T2.7: Success — Total (DV: po_firm_winner, LPM) -----------------------
+# T2.7: Success — Total (DV: po_firm_winner, LPM)
 cat("\n--- T2.7: Litigated — Success LPM (Total) ---\n")
 t0 <- proc.time()
 
@@ -597,7 +572,7 @@ save_table_v7(t2_success_total, "Litigated vs Ordinary: Success — Total",
 
 log_time("T2.7 Lit Success Total", t0)
 
-# --- T2.8: Success — Direct (DV: po_firm_winner, ctrl: bid_qty_log) --------
+# T2.8: Success — Direct (DV: po_firm_winner, ctrl: bid_qty_log)
 cat("\n--- T2.8: Litigated — Success LPM (Direct) ---\n")
 t0 <- proc.time()
 
@@ -628,13 +603,9 @@ saveRDS(list(total = t2_success_total, direct = t2_success_direct),
 
 cat("\n--- TASK 2 COMPLETE ---\n")
 
-# =============================================================================
 # KEY COEFFICIENTS SUMMARY
-# =============================================================================
 
-cat("\n", strrep("=", 70), "\n")
 cat("KEY COEFFICIENTS — Preferred spec: Item+Year+PBU FE\n")
-cat(strrep("=", 70), "\n")
 
 print_coef_v7 <- function(label, model, var) {
   b  <- coef(model)[var]
@@ -663,22 +634,18 @@ print_coef_v7("T2.6 Lit Firms (direct)",            t2_firms_direct[["Item+Year+
 print_coef_v7("T2.7 Lit Success (total)",           t2_success_total[["Item+Year+PBU"]], "litigated")
 print_coef_v7("T2.8 Lit Success (direct)",          t2_success_direct[["Item+Year+PBU"]],"litigated")
 
-# =============================================================================
 # FINAL SUMMARY
-# =============================================================================
 
 t_total <- (proc.time() - t_start)[["elapsed"]]
 
-cat("\n", strrep("=", 70), "\n")
 cat("EXECUTION SUMMARY\n")
-cat(strrep("=", 70), "\n")
 cat(sprintf("Total execution time: %.1f seconds (%.1f min)\n", t_total, t_total / 60))
 cat("\nTiming breakdown:\n")
 for (nm in names(timing_log)) {
   cat(sprintf("  %-35s  %.1f sec\n", nm, timing_log[[nm]]))
 }
 
-# --- List output files ---
+# List output files
 cat("\nOutput files generated:\n")
 cat("\n  Publication-ready tables (v7):\n")
 v7_pub <- list.files(PUB_TAB_V7, pattern = "\\.tex$", full.names = FALSE)
@@ -696,7 +663,7 @@ cat("\n  Checkpoints:\n")
 v7_ckpt <- list.files(CHECKPOINT, pattern = "\\.rds$", full.names = FALSE)
 for (f in v7_ckpt) cat("    ", f, "\n")
 
-# --- Generate markdown summary ---
+# Generate markdown summary
 md_lines <- c(
   "# V7 Extensions — Execution Summary",
   "",
@@ -774,5 +741,5 @@ md_file <- file.path(V4, "v7_summary.md")
 writeLines(md_lines, md_file)
 cat("\nSummary written to:", md_file, "\n")
 
-cat("\n=== 16_v7_extensions.R COMPLETE ===\n")
+cat("\n16_v7_extensions.R COMPLETE\n")
 cat("Finished:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")

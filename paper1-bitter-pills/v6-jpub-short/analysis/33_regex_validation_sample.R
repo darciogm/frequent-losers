@@ -1,4 +1,3 @@
-#  =============================================================================
 #  33_regex_validation_sample.R --- Stratified sample of tender-notice subjects
 #  for hand-labeling the regex-based purchase-type classifier.
 #
@@ -14,27 +13,25 @@
 #  After labeling, run 34_regex_validation_f1.R to compute precision, recall,
 #  and F1 per class plus the confusion matrix, and to emit tab_regex_f1.tex
 #  for Online Appendix A.8.
-#  =============================================================================
 
-cat("=== 33_regex_validation_sample.R ===\n")
 
 suppressPackageStartupMessages({
   library(data.table)
 })
 setDTthreads(12L)
 
-# --- Reproducibility --------------------------------------------------------
+# Reproducibility
 SEED <- 20260417L
 set.seed(SEED)
 
-# --- Target sample size -----------------------------------------------------
+# Target sample size
 TARGET_PER_CLASS <- 167L   # 167 + 167 + 167 = 501, capped to 500 below
 N_CAP            <- 500L
 
 OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output/validation"
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
-# --- Load & deduplicate at subject level ------------------------------------
+# Load & deduplicate at subject level
 # The regex classifier operates on tender-notice text (po_subject). Multiple
 # POIs share the same notice, so we sample unique (subject, predicted_class)
 # pairs --- each row is one classification decision.
@@ -56,7 +53,7 @@ subject_predictions <- dt[, .(
 cat("\nUnique subjects by predicted class:\n")
 print(subject_predictions[, .N, keyby = predicted_class])
 
-# --- Stratified sample ------------------------------------------------------
+# Stratified sample
 take_sample <- function(df, k) {
   if (nrow(df) <= k) return(df)
   df[sample(.N, k)]
@@ -72,7 +69,7 @@ sampled <- rbindlist(list(
 sampled <- sampled[sample(.N)][seq_len(min(.N, N_CAP))]
 sampled[, sample_id := seq_len(.N)]
 
-# --- Human-readable class labels + empty true_class ------------------------
+# Human-readable class labels + empty true_class
 class_name <- c("0" = "ordinary", "1" = "administrative", "2" = "litigated")
 sampled[, predicted_name := class_name[as.character(predicted_class)]]
 sampled[, true_class     := NA_integer_]
@@ -81,7 +78,7 @@ sampled[, notes          := NA_character_]
 setcolorder(sampled, c("sample_id", "po_subject", "predicted_class",
                        "predicted_name", "true_class", "notes", "n_pois"))
 
-# --- Write ------------------------------------------------------------------
+# Write
 out_path <- file.path(OUT, "validation_sample.csv")
 fwrite(sampled, out_path)
 cat(sprintf("\nWrote %d rows to: %s\n", nrow(sampled), out_path))
@@ -89,9 +86,8 @@ cat(sprintf("\nWrote %d rows to: %s\n", nrow(sampled), out_path))
 cat("\nPredicted-class distribution in sample:\n")
 print(sampled[, .N, keyby = predicted_class])
 
-# Pretty instructions --------------------------------------------------------
-cat("\nNEXT STEPS\n",
-    "----------\n",
+# Instructions for the human grader
+cat("\nNext steps\n",
     "1. Open validation_sample.csv in a spreadsheet (Excel, LibreOffice, Numbers).\n",
     "2. For each row, read po_subject and fill true_class with:\n",
     "     0 = ordinary (ordinary procurement, no court order, no admin mechanism)\n",
@@ -103,4 +99,4 @@ cat("\nNEXT STEPS\n",
     "   to compute F1 per class and emit tab_regex_f1.tex for OA A.8.\n",
     sep = "")
 
-cat("\n=== 33_regex_validation_sample.R complete ===\n")
+cat("\n33_regex_validation_sample.R complete\n")

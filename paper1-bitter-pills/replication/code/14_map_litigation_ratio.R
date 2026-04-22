@@ -1,10 +1,6 @@
-# =============================================================================
-# 14_map_litigation_ratio.R — Choropleth: litigation cases / total purchases (SP)
-# Bitter Pills to Swallow — v4 (R)
+# Choropleth: litigation cases / total purchases (SP)
 # Output: v4/pub/figures/fig_00e_litigation_ratio_map.pdf (6.5x5in, cairo PDF)
-# =============================================================================
 
-cat("=== 14_map_litigation_ratio.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -22,16 +18,16 @@ library(sf)
 library(geobr)
 library(arrow)
 
-# --- Output directory ---------------------------------------------------------
+# Output directory
 # PUB_FIG defined in utils.R
 # dir.create(PUB_FIG, recursive = TRUE, showWarnings = FALSE)
 
-# --- 1. Shapefile (IBGE via geobr) -------------------------------------------
+# 1. Shapefile (IBGE via geobr)
 cat("\n--- Downloading SP municipality shapefile (geobr) ---\n")
 sp_mun <- geobr::read_municipality(code_muni = "SP", year = 2010)
 cat(sprintf("  Shapefile: %d municipalities\n", nrow(sp_mun)))
 
-# --- 2. Litigation data -------------------------------------------------------
+# 2. Litigation data
 cat("\n--- Loading litigation data ---\n")
 lit_path <- file.path(BASE, "..", "supporting", "exploratory",
                       "Mapa_SP_Casos_jud_INSPER.dta")
@@ -39,7 +35,7 @@ lit <- haven::read_dta(lit_path)
 lit$code_muni <- as.integer(lit$CD_GEOCMU)
 cat(sprintf("  Litigation rows: %d\n", nrow(lit)))
 
-# --- 3. Total purchases per municipality from BEC data ------------------------
+# 3. Total purchases per municipality from BEC data
 cat("\n--- Computing total purchases per municipality ---\n")
 dt <- as.data.table(arrow::read_parquet(
   DATA_RAW, col_select = c("pbu_ibge_cod_cidade", "purchase_type")
@@ -47,7 +43,7 @@ dt <- as.data.table(arrow::read_parquet(
 purch <- dt[, .(total_purchases = .N), by = .(code_muni = as.integer(pbu_ibge_cod_cidade))]
 cat(sprintf("  Municipalities with purchases: %d\n", nrow(purch)))
 
-# --- 4. Merge and compute ratio -----------------------------------------------
+# 4. Merge and compute ratio
 cat("\n--- Merging data ---\n")
 merged <- merge(lit[, c("code_muni", "jud_total")], purch, by = "code_muni", all = TRUE)
 merged$ratio <- merged$jud_total / merged$total_purchases
@@ -61,7 +57,7 @@ print(summary(merged$ratio[!is.na(merged$ratio)]))
 sp_merged <- merge(sp_mun, merged[, c("code_muni", "ratio")],
                    by = "code_muni", all.x = TRUE)
 
-# --- 5. Choropleth map --------------------------------------------------------
+# 5. Choropleth map
 cat("\n--- Generating choropleth map (litigation / purchases ratio) ---\n")
 
 p <- ggplot(sp_merged) +
@@ -87,4 +83,3 @@ out_path <- file.path(PUB_FIG, "fig_00e_litigation_ratio_map.pdf")
 ggsave(out_path, p, width = 6.5, height = 5, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out_path))
 
-cat("=== 14_map_litigation_ratio.R complete ===\n")

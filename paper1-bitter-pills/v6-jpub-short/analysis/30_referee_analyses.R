@@ -1,12 +1,9 @@
-# ============================================================================
-# 30_referee_analyses.R — Analyses for referee response (J-PubE short)
+# Analyses for referee response (J-PubE short)
 # 1A. Event study around first court order
 # 1B. Cinelli-Hazlett sensitivity (sensemakr)
 # 1C. Bulk-discount elasticity reality check
 # 1D. Supplier FE: selection vs exploitation (overlap count)
-# ============================================================================
 
-cat("=== 30_referee_analyses.R ===\n")
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -21,7 +18,7 @@ OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/
 dir.create(file.path(OUT, "tables"), recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(OUT, "figures"), recursive = TRUE, showWarnings = FALSE)
 
-# ---- Load data ---------------------------------------------------------------
+# Load data
 cat("Loading cache...\n")
 dt <- readRDS("/tmp/v4_prepared.rds")
 cat("  Rows:", nrow(dt), "\n")
@@ -31,10 +28,8 @@ d_main <- dt[has_litigated == TRUE & has_ordinary == TRUE & po_firm_winner == 1 
              !is.na(bid_price_log)]
 cat("  Main sample (winners, both types):", nrow(d_main), "\n")
 
-# ============================================================================
 # 1A. Event Study Around First Court Order
-# ============================================================================
-cat("\n=== 1A: Event study ===\n")
+cat("\n1A: Event study\n")
 
 # For each item, find year of first litigated purchase
 first_lit <- dt[purchase_type == 2, .(first_lit_year = min(year_n, na.rm = TRUE)), by = item]
@@ -95,10 +90,8 @@ ggsave(file.path(OUT, "figures", "fig_event_study_item.pdf"),
        p_es, width = 6.5, height = 4, device = cairo_pdf)
 cat("  Saved: fig_event_study_item.pdf\n")
 
-# ============================================================================
 # 1B. Cinelli-Hazlett Sensitivity
-# ============================================================================
-cat("\n=== 1B: Cinelli-Hazlett sensitivity ===\n")
+cat("\n1B: Cinelli-Hazlett sensitivity\n")
 
 # OLS version (sensemakr requires lm, not feols)
 # Use de-meaned approach: residualize on FE, then run OLS
@@ -127,10 +120,8 @@ summary(sens)
 sink()
 cat("  Saved: sensemakr_summary.txt\n")
 
-# ============================================================================
 # 1C. Bulk-Discount Elasticity Reality Check
-# ============================================================================
-cat("\n=== 1C: Bulk-discount elasticity ===\n")
+cat("\n1C: Bulk-discount elasticity\n")
 
 # Urgent subsample for under-the-gun
 d_utg <- dt[urgent == 1 & has_admin == TRUE & has_litigated == TRUE &
@@ -164,10 +155,8 @@ cat(sprintf("  Items with BOTH: %d (%.1f%% of union)\n",
             length(overlap),
             100 * length(overlap) / length(union(items_admin, items_litig))))
 
-# ============================================================================
 # 1D. Supplier FE: Selection vs Exploitation
-# ============================================================================
-cat("\n=== 1D: Supplier FE overlap ===\n")
+cat("\n1D: Supplier FE overlap\n")
 
 # How many (item, firm) pairs appear in both ordinary and urgent?
 d_firm <- dt[po_firm_winner == 1 & has_litigated == TRUE & has_ordinary == TRUE &
@@ -208,4 +197,4 @@ if (length(firm_col) > 0) {
   cat("  WARNING: No firm column found. Skipping overlap analysis.\n")
 }
 
-cat("\n=== All referee analyses complete ===\n")
+cat("\nAll referee analyses complete\n")

@@ -1,17 +1,12 @@
-********************************************************************************
 * Descriptive Statistics Table (v2)
-* Paper: Bitter Pills to Swallow
 * Sample: Pregão only + items with at least one ordinary AND one litigated purchase
-********************************************************************************
 
 clear all
 set more off
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Create purchase type categories
-* --------------------------------------------------------------------------
 gen purchase_type = 0
 replace purchase_type = 1 if adm == 2
 replace purchase_type = 2 if jud == 1
@@ -19,15 +14,11 @@ replace purchase_type = 2 if jud == 1
 label define ptype 0 "Ordinary" 1 "Administrative" 2 "Litigated"
 label values purchase_type ptype
 
-* --------------------------------------------------------------------------
 * 2. Restrict sample: Pregão only
-* --------------------------------------------------------------------------
 keep if po_proc_code == 3
 di "After keeping pregão only: " _N
 
-* --------------------------------------------------------------------------
 * 3. Restrict sample: items with at least one ordinary AND one litigated
-* --------------------------------------------------------------------------
 * Flag items with at least one litigated purchase
 bysort item: egen has_litigated = max(purchase_type == 2)
 * Flag items with at least one ordinary purchase
@@ -36,9 +27,7 @@ bysort item: egen has_ordinary = max(purchase_type == 0)
 keep if has_litigated == 1 & has_ordinary == 1
 di "After keeping items with both ordinary and litigated: " _N
 
-* --------------------------------------------------------------------------
 * 4. Winsorize continuous variables at 5th/95th percentiles
-* --------------------------------------------------------------------------
 foreach v in bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids {
     quietly summarize `v', detail
     local p1 = r(p1)
@@ -47,9 +36,7 @@ foreach v in bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids {
     replace `v' = `p99' if `v' > `p99' & `v' != .
 }
 
-* --------------------------------------------------------------------------
 * 5. Ensure log variables exist
-* --------------------------------------------------------------------------
 capture drop bid_qty_log
 capture drop bid_price_ref_log
 capture drop bid_price_log
@@ -60,9 +47,7 @@ gen bid_price_log = ln(bid_price)
 gen ln_n_firms = ln(n_firms_bids)
 gen ln_n_bids = ln(n_bids_bids)
 
-* --------------------------------------------------------------------------
 * 5. Generate LaTeX table
-* --------------------------------------------------------------------------
 capture file close tex
 file open tex using "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/manuscript/table_desc_stats.tex", write replace
 
@@ -79,9 +64,7 @@ file write tex "    \cmidrule(lr){2-4} \cmidrule(lr){5-6}" _n
 file write tex "    & (1) Ordinary & (2) Administrative & (3) Litigated & (1)--(3) & (2)--(3) \\" _n
 file write tex "    \hline" _n
 
-* --------------------------------------------------------------------------
 * 6. Helper program
-* --------------------------------------------------------------------------
 capture program drop write_row
 program define write_row
     args varname label fhandle fmt
@@ -133,9 +116,7 @@ program define write_row
     file write `fhandle' "    & (`sd0') & (`sd1') & (`sd2') & [`p_ol_fmt'] & [`p_al_fmt'] \\[3pt]" _n
 end
 
-* --------------------------------------------------------------------------
 * 7. Panel A: Levels
-* --------------------------------------------------------------------------
 file write tex "    \multicolumn{6}{l}{\textit{Panel A: Levels}} \\[3pt]" _n
 write_row bid_price_ref "Reference~Price" tex %12.2f
 write_row bid_price "Negotiated~Price" tex %12.2f
@@ -143,9 +124,7 @@ write_row bid_qty "Quantity" tex %12.0f
 write_row n_firms_bids "No.~Participant~Firms" tex %12.2f
 write_row n_bids_bids "No.~Bids" tex %12.2f
 
-* --------------------------------------------------------------------------
 * 8. Panel B: Log Transformations
-* --------------------------------------------------------------------------
 file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel B: Log Transformations (used in regressions)}} \\[3pt]" _n
 write_row bid_price_ref_log "Log~Reference~Price" tex %12.3f
@@ -154,16 +133,12 @@ write_row bid_qty_log "Log~Quantity" tex %12.3f
 write_row ln_n_firms "Log~No.~Firms" tex %12.3f
 write_row ln_n_bids "Log~No.~Bids" tex %12.3f
 
-* --------------------------------------------------------------------------
 * 9. Panel C: Tender Characteristics
-* --------------------------------------------------------------------------
 file write tex "    \hline" _n
 file write tex "    \multicolumn{6}{l}{\textit{Panel C: Tender Characteristics}} \\[3pt]" _n
 write_row po_firm_winner "Successful~Tender~(\%)" tex %12.3f
 
-* --------------------------------------------------------------------------
 * 10. Observations and footer
-* --------------------------------------------------------------------------
 quietly count if purchase_type == 0
 local n0 : di %12.0gc r(N)
 local n0 = strtrim("`n0'")
@@ -197,20 +172,15 @@ file write tex "\end{table}" _n
 
 file close tex
 
-* --------------------------------------------------------------------------
 * 11. Summary output
-* --------------------------------------------------------------------------
 di ""
-di "=============================================="
 di "  SAMPLE SUMMARY"
-di "=============================================="
 di "  Pregão only, items with >= 1 ordinary and >= 1 litigated purchase"
 di "  Total observations: " _N
 di "  Ordinary: `n0'"
 di "  Administrative: `n1'"
 di "  Litigated: `n2'"
 di "  Unique items: `n_items'"
-di "=============================================="
 di ""
 
 tabstat bid_price_ref bid_price bid_qty n_firms_bids n_bids_bids, by(purchase_type) statistics(mean sd N) format(%12.2f) columns(statistics)

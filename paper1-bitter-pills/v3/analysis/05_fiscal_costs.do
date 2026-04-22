@@ -1,13 +1,10 @@
-********************************************************************************
 * V3 Aggregate Fiscal Cost of Health Litigation
-* Paper: Bitter Pills to Swallow
 * Source: /tmp/v3_prepared.dta (full BEC_JUD sample, CONVITE + PREGÃO)
 *
 * Three channels:
 *   A. Total effect (price impact including via quantity)
 *   B. Direct effect (per-unit price premium, holding quantity fixed)
 *   C. Under the Gun (sanction channel: litigated vs administrative)
-********************************************************************************
 
 clear all
 set more off
@@ -19,9 +16,7 @@ timer on 1
 
 use "/tmp/v3_prepared.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Restrict to analysis sample
-* --------------------------------------------------------------------------
 keep if has_litigated == 1 & has_ordinary == 1
 
 local outdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v3/results"
@@ -30,13 +25,9 @@ local outdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v3/resul
 gen total_spend = bid_price * bid_qty if po_firm_winner == 1
 
 di ""
-di "=================================================================="
 di "  AGGREGATE FISCAL COST OF HEALTH LITIGATION"
-di "=================================================================="
 
-* --------------------------------------------------------------------------
 * 2. Descriptive overview of spending
-* --------------------------------------------------------------------------
 di ""
 di "--- Overview of procurement spending (winners only) ---"
 
@@ -75,13 +66,9 @@ local year_max = r(max)
 local n_years = `year_max' - `year_min' + 1
 di "Period: `year_min' - `year_max' (`n_years' years)"
 
-* --------------------------------------------------------------------------
 * 3. Fiscal cost using TOTAL EFFECT (no quantity control)
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  A. FISCAL COST — TOTAL EFFECT (urgency premium on prices)"
-di "=================================================================="
 
 foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 
@@ -136,13 +123,9 @@ foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 }
 
 
-* --------------------------------------------------------------------------
 * 4. Fiscal cost using DIRECT EFFECT (controlling for quantity)
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  B. FISCAL COST — DIRECT EFFECT (per-unit price premium)"
-di "=================================================================="
 
 foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 
@@ -184,14 +167,10 @@ foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 }
 
 
-* --------------------------------------------------------------------------
 * 5. "Under the gun" fiscal cost: judicial vs administrative
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  C. FISCAL COST — 'UNDER THE GUN' (sanction channel)"
 di "  Excess cost of litigated vs. administrative purchases"
-di "=================================================================="
 
 preserve
 keep if purchase_type == 1 | purchase_type == 2
@@ -252,13 +231,9 @@ foreach fe_label in "Item+Year" "Item+Year+PBU" "Item+YM+PBU" {
 restore
 
 
-* --------------------------------------------------------------------------
 * 6. Summary
-* --------------------------------------------------------------------------
 di ""
-di "=================================================================="
 di "  SUMMARY"
-di "=================================================================="
 di ""
 di "Period: `year_min'-`year_max' (`n_years' years)"
 di "Total procurement spending (sample): R$ " %20.2fc `total_all'

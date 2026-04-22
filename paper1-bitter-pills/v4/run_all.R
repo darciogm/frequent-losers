@@ -1,16 +1,7 @@
-# =============================================================================
-# run_all.R — Orchestrator for v4 R pipeline
-# Bitter Pills to Swallow — G65 analysis with R/fixest
-# =============================================================================
-
-cat("=============================================================\n")
-cat("  Bitter Pills v4 — Full R Pipeline\n")
-cat("  Dataset: BEC-G65-WORK1.parquet (Group 65)\n")
-cat("=============================================================\n\n")
+# Orchestrator for the v4 R pipeline.
 
 t_start <- Sys.time()
 
-# --- Check/install packages --------------------------------------------------
 required_pkgs <- c("data.table", "fixest", "modelsummary", "ggplot2",
                    "arrow", "knitr", "scales",
                    "haven", "sf", "geobr", "sidrar")
@@ -20,7 +11,6 @@ if (length(missing) > 0) {
   install.packages(missing, repos = "https://cloud.r-project.org")
 }
 
-# --- Script directory --------------------------------------------------------
 script_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -32,7 +22,6 @@ script_dir <- (function() {
   "paper1-bitter-pills/v4/analysis"
 })()
 
-# --- Sequential execution (fixest uses OpenMP internally) --------------------
 scripts <- c(
   "00_prepare_data.R",
   "01_desc_stats.R",
@@ -54,9 +43,7 @@ timings <- data.frame(script = scripts, seconds = NA_real_,
 
 for (i in seq_along(scripts)) {
   script_path <- file.path(script_dir, scripts[i])
-  cat("\n=============================================================\n")
-  cat(sprintf("  [%d/%d] Running: %s\n", i, length(scripts), scripts[i]))
-  cat("=============================================================\n")
+  cat(sprintf("\n[%d/%d] %s\n", i, length(scripts), scripts[i]))
 
   t_script <- Sys.time()
   tryCatch({
@@ -64,40 +51,31 @@ for (i in seq_along(scripts)) {
     elapsed <- as.numeric(difftime(Sys.time(), t_script, units = "secs"))
     timings$seconds[i] <- elapsed
     timings$status[i] <- "OK"
-    cat(sprintf("  [%d/%d] %s completed in %.1f seconds\n",
-                i, length(scripts), scripts[i], elapsed))
+    cat(sprintf("  done in %.1fs\n", elapsed))
   }, error = function(e) {
     elapsed <- as.numeric(difftime(Sys.time(), t_script, units = "secs"))
     timings$seconds[i] <<- elapsed
     timings$status[i] <<- paste("ERROR:", conditionMessage(e))
-    cat(sprintf("  [%d/%d] %s FAILED after %.1f seconds: %s\n",
-                i, length(scripts), scripts[i], elapsed, conditionMessage(e)))
+    cat(sprintf("  FAILED after %.1fs: %s\n", elapsed, conditionMessage(e)))
   })
 }
 
-# --- Summary -----------------------------------------------------------------
 t_total <- as.numeric(difftime(Sys.time(), t_start, units = "secs"))
 
-cat("\n\n=============================================================\n")
-cat("  PIPELINE SUMMARY\n")
-cat("=============================================================\n\n")
-
+cat("\nPipeline summary\n")
 cat(sprintf("%-25s %10s %10s\n", "Script", "Time (s)", "Status"))
-cat(strrep("-", 50), "\n")
 for (i in seq_along(scripts)) {
   cat(sprintf("%-25s %10.1f %10s\n",
               scripts[i], timings$seconds[i], timings$status[i]))
 }
-cat(strrep("-", 50), "\n")
 cat(sprintf("%-25s %10.1f\n", "TOTAL", t_total))
 
-# --- Output verification ----------------------------------------------------
 v4_dir <- file.path(dirname(script_dir))
 
-n_tex  <- length(list.files(file.path(v4_dir, "manuscript"), pattern = "\\.tex$"))
-n_html <- length(list.files(file.path(v4_dir, "results"),    pattern = "\\.html$"))
-n_pdf  <- length(list.files(file.path(v4_dir, "graphs"),     pattern = "\\.pdf$"))
-n_txt  <- length(list.files(file.path(v4_dir, "results"),    pattern = "\\.txt$"))
+n_tex     <- length(list.files(file.path(v4_dir, "manuscript"),     pattern = "\\.tex$"))
+n_html    <- length(list.files(file.path(v4_dir, "results"),        pattern = "\\.html$"))
+n_pdf     <- length(list.files(file.path(v4_dir, "graphs"),         pattern = "\\.pdf$"))
+n_txt     <- length(list.files(file.path(v4_dir, "results"),        pattern = "\\.txt$"))
 n_pub_tex <- length(list.files(file.path(v4_dir, "pub", "tables"),  pattern = "\\.tex$"))
 n_pub_pdf <- length(list.files(file.path(v4_dir, "pub", "figures"), pattern = "\\.pdf$"))
 
@@ -107,10 +85,9 @@ cat(sprintf("Pub-ready: %d .tex tables, %d .pdf figures\n", n_pub_tex, n_pub_pdf
 
 n_errors <- sum(grepl("ERROR", timings$status))
 if (n_errors > 0) {
-  cat(sprintf("\nWARNING: %d script(s) failed! Check errors above.\n", n_errors))
+  cat(sprintf("\nWARNING: %d script(s) failed.\n", n_errors))
 } else {
-  cat("\nAll scripts completed successfully.\n")
+  cat("\nAll scripts completed.\n")
 }
 
-cat(sprintf("Total time: %.1f seconds (%.1f minutes)\n", t_total, t_total / 60))
-cat("=============================================================\n")
+cat(sprintf("Total time: %.1fs (%.1f min)\n", t_total, t_total / 60))

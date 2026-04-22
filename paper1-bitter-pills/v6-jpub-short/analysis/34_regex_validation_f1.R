@@ -1,4 +1,3 @@
-#  =============================================================================
 #  34_regex_validation_f1.R --- Compute precision, recall, F1 per class from
 #  the hand-labeled validation_sample.csv.
 #
@@ -10,9 +9,7 @@
 #            precision, recall, F1)
 #            Also prints a summary to stdout for quick copy into the body
 #            footnote in DataAndSample.tex.
-#  =============================================================================
 
-cat("=== 34_regex_validation_f1.R ===\n")
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -51,18 +48,14 @@ if (nrow(valid) < nrow(d)) {
 }
 d <- valid
 
-# ---------------------------------------------------------------------------
 # Confusion matrix
-# ---------------------------------------------------------------------------
 class_name <- c("Ordinary", "Administrative", "Litigated")
 cm <- table(predicted = factor(d$predicted_class, levels = 0:2, labels = class_name),
             truth     = factor(d$true_class,      levels = 0:2, labels = class_name))
 cat("\nConfusion matrix (rows = predicted, cols = truth):\n")
 print(cm)
 
-# ---------------------------------------------------------------------------
 # Per-class precision, recall, F1
-# ---------------------------------------------------------------------------
 metrics <- function(cm, k) {
   tp <- cm[k, k]
   fp <- sum(cm[k, ]) - tp   # predicted k, truth not k
@@ -92,9 +85,7 @@ print(results[, .(class, precision = round(precision, 3),
 cat(sprintf("\nMacro-average F1: %.3f\n", macro_f1))
 cat(sprintf("Overall accuracy: %.3f\n", acc))
 
-# ---------------------------------------------------------------------------
 # Emit LaTeX table
-# ---------------------------------------------------------------------------
 fmt <- function(x) formatC(x, format = "f", digits = 3)
 tex <- c(
 "\\begin{table}[ht]",
@@ -141,13 +132,11 @@ sprintf("    \\multicolumn{6}{r}{Overall accuracy:} & %s \\\\", fmt(acc)),
 writeLines(tex, file.path(OUT, "tab_regex_f1.tex"))
 cat("\nSaved: ", file.path(OUT, "tab_regex_f1.tex"), "\n", sep = "")
 
-# ---------------------------------------------------------------------------
 # Body-footnote one-liner for DataAndSample.tex
-# ---------------------------------------------------------------------------
 cat("\nFootnote text for DataAndSample.tex (copy into existing F1 footnote):\n")
 cat(sprintf('"A hand-labeled validation sample of %d notices yields F1 = %s (ordinary), %s (administrative), %s (litigated); macro-average F1 = %s; overall accuracy = %s. Details in Online Appendix Table~\\ref{tab:regex_f1}."\n',
             sum(cm),
             fmt(results$f1[1]), fmt(results$f1[2]), fmt(results$f1[3]),
             fmt(macro_f1), fmt(acc)))
 
-cat("\n=== 34_regex_validation_f1.R complete ===\n")
+cat("\n34_regex_validation_f1.R complete\n")

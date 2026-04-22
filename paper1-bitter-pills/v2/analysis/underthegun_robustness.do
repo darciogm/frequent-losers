@@ -1,6 +1,4 @@
-********************************************************************************
 * Under the Gun Robustness: Additional Controls + Winsorization Sensitivity
-* Paper: Bitter Pills to Swallow
 *
 * Progressively adds controls to the litigated vs administrative comparison
 * to check whether the null result in Table 10 is robust.
@@ -17,7 +15,6 @@
 * Also: time-period interaction (is_admin##late_period) with same panels
 *
 * Base spec: Item+Year+PBU FE, cluster PBU (preferred from Table 10)
-********************************************************************************
 
 clear all
 set more off
@@ -28,9 +25,7 @@ timer on 1
 
 use "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/datasets/3_BEC_PAPER_1_JUD_FINAL.dta", clear
 
-* --------------------------------------------------------------------------
 * 1. Setup: variables and sample (mirrors clustered_regressions.do)
-* --------------------------------------------------------------------------
 gen purchase_type = 0
 replace purchase_type = 1 if adm == 2
 replace purchase_type = 2 if jud == 1
@@ -66,9 +61,7 @@ label var late_period "1 = Late period (2014-2019), 0 = Early (2009-2013)"
 local outdir "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v2/analysis/results"
 capture mkdir "`outdir'"
 
-* --------------------------------------------------------------------------
 * 2. Restrict to Under the Gun sample: litigated vs administrative only
-* --------------------------------------------------------------------------
 keep if purchase_type == 1 | purchase_type == 2
 
 gen is_admin = (purchase_type == 1)
@@ -83,10 +76,8 @@ di "Under the Gun sample: " _N
 tab purchase_type
 
 
-********************************************************************************
 * PROGRAM: Winsorize variables and regenerate logs
 * Arguments: lower percentile, upper percentile (e.g., 1 99 or 5 95)
-********************************************************************************
 capture program drop winsorize_and_regen
 program define winsorize_and_regen
     args plo phi
@@ -106,10 +97,8 @@ program define winsorize_and_regen
 end
 
 
-********************************************************************************
 * PROGRAM: Run 5 progressive-control regressions and store estimates
 * Arguments: prefix for eststo names (e.g., "raw" "w1" "w5")
-********************************************************************************
 capture program drop run_progressive
 program define run_progressive
     args prefix
@@ -141,10 +130,8 @@ program define run_progressive
 end
 
 
-********************************************************************************
 * PROGRAM: Run 4 time-interaction regressions and store estimates
 * Arguments: prefix for eststo names
-********************************************************************************
 capture program drop run_interaction
 program define run_interaction
     args prefix
@@ -171,38 +158,30 @@ program define run_interaction
 end
 
 
-********************************************************************************
 * 3. RUN ALL PANELS
-********************************************************************************
 
 eststo clear
 
-* --- Panel A: No winsorization ---
+* Panel A: No winsorization
 di ""
-di "==========================================="
 di "  PANEL A: NO WINSORIZATION"
-di "==========================================="
 preserve
 run_progressive "a"
 run_interaction "ia"
 restore
 
-* --- Panel B: Winsorization at 1%/99% ---
+* Panel B: Winsorization at 1%/99%
 di ""
-di "==========================================="
 di "  PANEL B: WINSORIZATION 1%/99%"
-di "==========================================="
 preserve
 winsorize_and_regen 1 99
 run_progressive "b"
 run_interaction "ib"
 restore
 
-* --- Panel C: Winsorization at 5%/95% ---
+* Panel C: Winsorization at 5%/95%
 di ""
-di "==========================================="
 di "  PANEL C: WINSORIZATION 5%/95%"
-di "==========================================="
 preserve
 winsorize_and_regen 5 95
 run_progressive "c"
@@ -210,11 +189,9 @@ run_interaction "ic"
 restore
 
 
-********************************************************************************
 * 4. OUTPUT TABLES
-********************************************************************************
 
-* --- Progressive controls: Panel A (no winsor) ---
+* Progressive controls: Panel A (no winsor)
 esttab a1 a2 a3 a4 a5 using "`outdir'/underthegun_robustness.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Under the Gun — Progressive Controls: Panel A (No Winsorization)") ///
@@ -222,7 +199,7 @@ esttab a1 a2 a3 a4 a5 using "`outdir'/underthegun_robustness.rtf", ///
     order(is_admin bid_qty_log bid_price_ref_log ln_n_firms) ///
     note("") compress replace
 
-* --- Progressive controls: Panel B (1%/99%) ---
+* Progressive controls: Panel B (1%/99%)
 esttab b1 b2 b3 b4 b5 using "`outdir'/underthegun_robustness.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Panel B (Winsorized 1%/99%)") ///
@@ -230,7 +207,7 @@ esttab b1 b2 b3 b4 b5 using "`outdir'/underthegun_robustness.rtf", ///
     order(is_admin bid_qty_log bid_price_ref_log ln_n_firms) ///
     note("") compress append
 
-* --- Progressive controls: Panel C (5%/95%) ---
+* Progressive controls: Panel C (5%/95%)
 esttab c1 c2 c3 c4 c5 using "`outdir'/underthegun_robustness.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     title("Panel C (Winsorized 5%/95%)") ///
@@ -243,7 +220,7 @@ esttab c1 c2 c3 c4 c5 using "`outdir'/underthegun_robustness.rtf", ///
     compress append
 
 
-* --- Time interaction: Panel A (no winsor) ---
+* Time interaction: Panel A (no winsor)
 esttab ia1 ia2 ia3 ia4 using "`outdir'/underthegun_time_interaction.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     keep(1.is_admin 1.late_period 1.is_admin#1.late_period bid_qty_log bid_price_ref_log ln_n_firms) ///
@@ -252,7 +229,7 @@ esttab ia1 ia2 ia3 ia4 using "`outdir'/underthegun_time_interaction.rtf", ///
     mtitles("No Controls" "+Quantity" "+All Controls" "+YM FE") ///
     note("") compress replace
 
-* --- Time interaction: Panel B (1%/99%) ---
+* Time interaction: Panel B (1%/99%)
 esttab ib1 ib2 ib3 ib4 using "`outdir'/underthegun_time_interaction.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     keep(1.is_admin 1.late_period 1.is_admin#1.late_period bid_qty_log bid_price_ref_log ln_n_firms) ///
@@ -261,7 +238,7 @@ esttab ib1 ib2 ib3 ib4 using "`outdir'/underthegun_time_interaction.rtf", ///
     mtitles("No Controls" "+Quantity" "+All Controls" "+YM FE") ///
     note("") compress append
 
-* --- Time interaction: Panel C (5%/95%) ---
+* Time interaction: Panel C (5%/95%)
 esttab ic1 ic2 ic3 ic4 using "`outdir'/underthegun_time_interaction.rtf", ///
     b(%9.4f) se(%9.4f) ar2 ///
     keep(1.is_admin 1.late_period 1.is_admin#1.late_period bid_qty_log bid_price_ref_log ln_n_firms) ///
@@ -276,13 +253,9 @@ esttab ic1 ic2 ic3 ic4 using "`outdir'/underthegun_time_interaction.rtf", ///
     compress append
 
 
-********************************************************************************
 * Summary
-********************************************************************************
 di ""
-di "==========================================="
 di "  SUMMARY"
-di "==========================================="
 di ""
 di "Progressive controls table (3 panels) saved to:"
 di "  `outdir'/underthegun_robustness.rtf"

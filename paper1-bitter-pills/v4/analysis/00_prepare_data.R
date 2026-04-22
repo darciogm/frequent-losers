@@ -1,9 +1,5 @@
-# =============================================================================
-# 00_prepare_data.R — Prepare BEC-G65-WORK1 parquet for analysis
-# Bitter Pills to Swallow — v4 (R/fixest)
-# =============================================================================
+# Prepare BEC-G65-WORK1 parquet for analysis
 
-cat("=== 00_prepare_data.R ===\n")
 .this_dir <- (function() {
   for (i in seq_len(sys.nframe())) {
     f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
@@ -18,29 +14,29 @@ source(file.path(.this_dir, "utils.R"))
 
 library(arrow)
 
-# --- Load parquet ------------------------------------------------------------
+# Load parquet
 cat("Reading parquet:", DATA_RAW, "\n")
 dt <- as.data.table(read_parquet(DATA_RAW))
 cat("  Raw dimensions:", nrow(dt), "×", ncol(dt), "\n")
 
-# --- Rename winner variable --------------------------------------------------
+# Rename winner variable
 # v3 uses po_firm_winner; v4 parquet has po_item_winner
 if ("po_item_winner" %in% names(dt) && !"po_firm_winner" %in% names(dt)) {
   setnames(dt, "po_item_winner", "po_firm_winner")
   cat("  Renamed po_item_winner -> po_firm_winner\n")
 }
 
-# --- Treatment variables -----------------------------------------------------
+# Treatment variables
 # purchase_type already exists as int8: 0=Ordinary, 1=Administrative, 2=Litigated
 dt[, urgent  := as.integer(purchase_type > 0)]
 dt[, is_admin := as.integer(purchase_type == 1)]
 cat("  Purchase type distribution:\n")
 print(dt[, .N, keyby = .(purchase_type, urgent, is_admin)])
 
-# --- Procurement procedure ---------------------------------------------------
+# Procurement procedure
 dt[, pregao := as.integer(po_proc_code == 3)]
 
-# --- Time variables ----------------------------------------------------------
+# Time variables
 # year is string in parquet → convert to integer
 dt[, year_n := as.integer(year)]
 cat("  Year range:", range(dt$year_n, na.rm = TRUE), "\n")
@@ -52,18 +48,18 @@ dt[, ym_f := as.factor(ym_int)]
 # Late period indicator
 dt[, late_period := as.integer(year_n >= 2014)]
 
-# --- Log transformations -----------------------------------------------------
+# Log transformations
 # Protect against log(0) or log(negative)
 dt[bid_price > 0,     bid_price_log     := log(bid_price)]
 dt[bid_price_ref > 0, bid_price_ref_log := log(bid_price_ref)]
 dt[bid_qty > 0,       bid_qty_log       := log(bid_qty)]
 dt[n_firms_bids > 0,  ln_n_firms        := log(n_firms_bids)]
 
-# --- Factor IDs for fixed effects --------------------------------------------
+# Factor IDs for fixed effects
 dt[, item_id := as.factor(item)]
 dt[, pbu_id  := as.factor(pbu_code)]
 
-# --- Item-level flags --------------------------------------------------------
+# Item-level flags
 # has_litigated: item has at least one litigated purchase (type 2)
 dt[, has_litigated := any(purchase_type == 2), by = item]
 # has_ordinary: item has at least one ordinary purchase (type 0)
@@ -73,7 +69,7 @@ dt[, has_admin     := any(purchase_type == 1), by = item]
 
 cat("  Items with litigated+ordinary:", dt[has_litigated == TRUE & has_ordinary == TRUE, uniqueN(item)], "\n")
 
-# --- Heterogeneity variables -------------------------------------------------
+# Heterogeneity variables
 
 # high_competition: above-median item-level median number of firms
 item_med_firms <- dt[!is.na(n_firms_bids), .(med_firms = median(n_firms_bids, na.rm = TRUE)), by = item]
@@ -102,7 +98,7 @@ if ("class_item_descr" %in% names(dt)) {
   cat("  WARNING: class_item_descr not found, sus_basic set to NA\n")
 }
 
-# --- Summary -----------------------------------------------------------------
+# Summary
 cat("\nFinal dataset:", nrow(dt), "obs ×", ncol(dt), "cols\n")
 cat("Key variable missingness:\n")
 for (v in c("bid_price_log", "bid_price_ref_log", "bid_qty_log", "ln_n_firms",
@@ -111,9 +107,8 @@ for (v in c("bid_price_log", "bid_price_ref_log", "bid_qty_log", "ln_n_firms",
   cat(sprintf("  %-20s  %d missing (%.1f%%)\n", v, n_na, 100 * n_na / nrow(dt)))
 }
 
-# --- Save cache --------------------------------------------------------------
+# Save cache
 cat("Saving prepared data to:", DATA_CACHE, "\n")
 saveRDS(dt, DATA_CACHE, compress = FALSE)
 cat("  Done. File size:", round(file.size(DATA_CACHE) / 1e6, 1), "MB\n")
 
-cat("=== 00_prepare_data.R complete ===\n")

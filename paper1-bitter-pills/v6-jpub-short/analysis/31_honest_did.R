@@ -1,4 +1,3 @@
-#  =============================================================================
 #  31_honest_did.R --- Honest DiD event study around first court order
 #  Callaway-Sant'Anna (2021, JoE) + Borusyak-Jaravel-Spiess (2024, REStud)
 #  + Rambachan-Roth (2023, REStud) HonestDiD sensitivity
@@ -8,9 +7,7 @@
 #  clean parallel-trends test. CS and BJS control for heterogeneous, staggered
 #  adoption; HonestDiD bounds the post-treatment ATT under plausible pre-trend
 #  violations.
-#  =============================================================================
 
-cat("=== 31_honest_did.R ===\n")
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -26,9 +23,7 @@ OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/
 dir.create(file.path(OUT, "figures"), recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(OUT, "tables"),  recursive = TRUE, showWarnings = FALSE)
 
-# ---------------------------------------------------------------------------
 # 1.  Build item-year panel
-# ---------------------------------------------------------------------------
 cat("Loading cache...\n")
 dt <- readRDS("/tmp/v4_prepared.rds")
 cat("  Rows:", nrow(dt), "\n")
@@ -62,9 +57,7 @@ cat("  Panel:", nrow(panel), "item-years;",
     uniqueN(panel[g > 0, item_id_num]), "treated items;",
     uniqueN(panel[g == 0, item_id_num]), "never-treated items.\n")
 
-# ---------------------------------------------------------------------------
 # 2.  Callaway-Sant'Anna (2021) ATT(g,t) + dynamic aggregation
-# ---------------------------------------------------------------------------
 cat("\n-- Callaway-Sant'Anna ATT(g,t) --\n")
 att_cs <- att_gt(
   yname         = "bid_price_log",
@@ -91,9 +84,7 @@ cs_df <- data.table(
 )
 cs_df[, `:=`(ci_lo = coef - 1.96 * se, ci_hi = coef + 1.96 * se)]
 
-# ---------------------------------------------------------------------------
 # 3.  Borusyak-Jaravel-Spiess (2024) imputation estimator
-# ---------------------------------------------------------------------------
 cat("\n-- BJS imputation via fixest::feols (DID2S-style) --\n")
 # First stage: on untreated obs, predict outcome with unit + time FE
 panel[, treated := as.integer(g > 0 & year_n >= g)]
@@ -113,9 +104,7 @@ setnames(bjs_df, "event_time", "event_time")
 bjs_df[, method := "Borusyak-Jaravel-Spiess (imputation)"]
 bjs_df[, `:=`(ci_lo = coef - 1.96 * se, ci_hi = coef + 1.96 * se)]
 
-# ---------------------------------------------------------------------------
 # 4.  TWFE (for comparison with existing Figure A.?)
-# ---------------------------------------------------------------------------
 cat("\n-- TWFE event study for reference --\n")
 panel_es <- panel[!is.na(event_time) & event_time >= -5 & event_time <= 5]
 panel_es[, et_f := relevel(factor(event_time), ref = "-1")]
@@ -130,9 +119,7 @@ twfe_df <- rbind(twfe_df, data.table(event_time = -1L, coef = 0, se = 0))
 twfe_df[, method := "Two-way FE (reference)"]
 twfe_df[, `:=`(ci_lo = coef - 1.96 * se, ci_hi = coef + 1.96 * se)]
 
-# ---------------------------------------------------------------------------
 # 5.  Combine + plot
-# ---------------------------------------------------------------------------
 combined <- rbindlist(list(bjs_df, cs_df, twfe_df), use.names = TRUE, fill = TRUE)
 combined[, method := factor(method, levels = c("Two-way FE (naive, for reference)",
                                                "Callaway-Sant'Anna (never-treated control)",
@@ -182,9 +169,7 @@ ggsave(file.path(OUT, "figures", "fig_event_study_honest.pdf"),
        p, width = 6.5, height = 4.2, device = cairo_pdf)
 cat("  Saved: fig_event_study_honest.pdf\n")
 
-# ---------------------------------------------------------------------------
 # 6.  HonestDiD sensitivity (Rambachan-Roth 2023)
-# ---------------------------------------------------------------------------
 cat("\n-- HonestDiD sensitivity on CS estimates --\n")
 betahat  <- dyn_cs$att.egt
 sigma    <- diag(dyn_cs$se.egt^2)   # diagonal approximation (conservative)
@@ -215,9 +200,7 @@ if (!is.null(sens)) {
   print(sens)
 }
 
-# ---------------------------------------------------------------------------
 # 7.  Text summary for §A.5 rewrite
-# ---------------------------------------------------------------------------
 summary_txt <- sprintf(
 "Honest DiD summary (item-year panel, winner-only obs).
 
@@ -249,4 +232,4 @@ twfe_df[event_time == 5, coef]
 writeLines(summary_txt, file.path(OUT, "tables", "honestdid_summary.txt"))
 cat(summary_txt)
 
-cat("\n=== 31_honest_did.R complete ===\n")
+cat("\n31_honest_did.R complete\n")
