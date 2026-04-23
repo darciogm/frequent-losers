@@ -182,7 +182,7 @@ for (i in seq_len(nrow(cmp_tab))) {
 }
 tex <- c(tex,
   "\\midrule",
-  "\\multicolumn{7}{l}{\\textit{Cross-modality gap (Pregão − Convite), median:}} \\\\"
+  "\\multicolumn{7}{l}{\\textit{Cross-modality gap (Preg\\~ao $-$ Convite), median:}} \\\\"
 )
 for (i in seq_len(nrow(gap_tab))) {
   r <- gap_tab[i]
