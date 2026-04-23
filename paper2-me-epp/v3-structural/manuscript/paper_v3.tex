@@ -1,0 +1,106 @@
+\documentclass[12pt]{elsarticle}
+
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{subfig}
+\usepackage{setspace}
+\usepackage{appendix}
+\usepackage{threeparttable}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    filecolor=magenta,
+    urlcolor=blue,
+    pdftitle={Set-Asides at Work: Structural Welfare Cost of SME Procurement Preferences},
+    pdfauthor={Darcio Genicolo-Martins}
+}
+\usepackage{color}
+\usepackage{lscape}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{chngcntr}
+\usepackage{etoolbox}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{adjustbox}
+\usepackage{natbib}
+
+\makeatletter
+\def\ps@pprintTitle{%
+ \let\@oddhead\@empty
+ \let\@evenhead\@empty
+ \def\@oddfoot{\reset@font\hfil\thepage\hfil}
+ \let\@evenfoot\@oddfoot}
+\makeatother
+\setlength{\bibsep}{0pt plus 0.3ex}
+\doublespacing
+\biboptions{authoryear}
+
+\usepackage{silence}\WarningFilter{titlesec}{Non standard}
+\usepackage{titlesec}
+\titleformat*{\section}{\Large\bfseries}
+\titleformat*{\subsection}{\large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+\titleformat{\paragraph}[runin]{\normalfont\bfseries}{\theparagraph}{1em}{}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+
+\geometry{left=28mm,right=30mm,top=28mm,bottom=28mm}
+\interfootnotelinepenalty=50000
+\setlength{\emergencystretch}{3em}
+\newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+\hyphenation{eco-no-me-tric re-gres-sion dif-fer-ence-in-dif-fer-ences
+             en-do-ge-nei-ty het-e-ro-sce-das-tic-i-ty
+             Krasno-kut-ska-ya Hong-Shum}
+
+\graphicspath{{figures/}{../output/figures/}}
+
+\begin{document}
+
+\begin{frontmatter}
+\title{\textbf{Set-Asides at Work: Structural Welfare Cost of SME Procurement Preferences\tnoteref{tfoot}}}
+\tnotetext[tfoot]{\emph{This version: April 2026. Earlier reduced-form results appeared in v1 (\emph{The Intensive Margin of Small-Firm Protection}). v3 replaces the reduced-form evidence with a full structural model and welfare analysis. I thank Paulo Furquim de Azevedo for early discussions. Replication code and data dictionary at the project repository.}}
+\author[INSPER]{Darcio Genicolo-Martins}\ead{darciogm1@insper.edu.br}
+\address[INSPER]{INSPER, S\~ao Paulo}
+
+\begin{abstract}
+Brazilian law reserves most low-value public procurement for small firms through set-asides backed by costly opt-out. The welfare cost of that preference has been studied as a reduced-form markup on winning prices; the structure behind the markup has not. I estimate an asymmetric independent-private-values model of S\~ao Paulo's BEC electronic procurement platform and decompose the price effect of an exogenous 2018 extension of the SME-only rule to medical supplies into an intensive margin (how each bidder bids) and an extensive margin (who enters). Cost distributions are identified from Preg\~ao drop-out bids under the English-reverse logic, corrected for auction-level unobserved heterogeneity via Krasnokutskaya-style shrinkage. Endogenous entry is modeled Athey-Levin-Seira-style; winners are treated as left-censored in a Turnbull NPMLE for robustness. Prices rise 23\% in non-pharma and 33\% in pharma classes; roughly three quarters of the effect is intensive. Including Brazil's marginal cost of public funds ($\lambda \approx 0.30$), total welfare loss is 28\% of procurement value in non-pharma (95\% CI 21--35\%) and 46\% in pharma (95\% CI 35--56\%)---two to four times earlier reduced-form estimates. A counterfactual 10\% SME price preference achieves comparable SME win-rate gains at essentially zero price cost, suggesting that full set-asides are Pareto-inferior to preference rules absent implausibly large distributional weights.
+\end{abstract}
+\end{frontmatter}
+
+\textbf{Keywords:} public procurement, SME set-asides, asymmetric auctions, structural estimation, welfare, marginal cost of public funds.\\
+\textbf{JEL codes:} H32, H57, L26, L53, D44.
+
+\input{00_introduction.tex}
+\input{01_institutional_background.tex}
+\input{02_data.tex}
+\input{03_model.tex}
+\input{04_identification.tex}
+\input{05_results.tex}
+\input{06_welfare.tex}
+\input{07_robustness.tex}
+\input{08_discussion.tex}
+\input{09_conclusion.tex}
+
+\clearpage
+\bibliographystyle{chicago}
+\bibliography{References}
+
+\input{10_tables.tex}
+
+\end{document}

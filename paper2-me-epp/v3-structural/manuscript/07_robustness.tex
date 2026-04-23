@@ -1,0 +1,27 @@
+\section{Robustness}\label{sec:robustness}
+
+Four dimensions of robustness feed directly into the headline: the identifying assumption for $F_c$ (losers-only vs.\ all-bidders vs.\ Turnbull point-ID), the kernel bandwidth in Convite GPV inversion, the bid-level sample filter, and the temporal window. A fifth---alternative policy variants---quantifies how the headline moves under different counterfactual specifications and feeds the policy discussion in Section~\ref{sec:discussion}.
+
+\subsection{$F_c$ regime: losers-only, all-bidders, Turnbull NPMLE}
+
+Table~\ref{tab:v3_sensitivity_fc} reports the BNE decomposition under each of the three regimes. The all-bidders regime is the v3 baseline, losers-only is the v2-style proxy, and Turnbull is the point-identified NPMLE. The total price effect ranges narrowly: in non-pharma, 0.23 (all), 0.25 (losers), 0.24 (Turnbull); in pharma, 0.33 (all), 0.34 (losers), 0.34 (Turnbull). The all-bidders approximation---used throughout the main text---is indistinguishable from Turnbull within 5\% in both classes, and well within the bootstrap CI of either. The share intensive in pharma under Turnbull is 81\%, six percentage points above the all-bidders estimate; in non-pharma it is 74\%, three points below. Both qualitatively agree that the intensive margin dominates.
+
+\subsection{Bandwidth grid in Convite GPV}
+
+The cross-modality consistency check uses GPV inversion on Convite bids, which depends on a kernel density estimator for the bid distribution $g(b)$. The Silverman rule-of-thumb bandwidth $h = 1.06 \hat\sigma n^{-1/5}$ is the baseline; I vary $h$ by factors $\{0.5, 0.75, 1.0, 1.5, 2.0\}$ (Table~\ref{tab:v3_bandwidth_grid}). The resulting range of $c_{0.5}$ (median cost) is 1.2\% to 5.2\% of baseline across the eight (period $\times$ pharma $\times$ SME) strata, second-order to the BNE MC noise of 1--2\%. The $c_{0.75}$ range is tighter, 0.1--1.2\%. Kernel bandwidth is not a first-order concern for the identification.
+
+\subsection{Bid-level sample filter}
+
+Three alternative filter configurations are tested against the baseline (c $\le$ 3, n $\ge$ 2): tight (c $\le$ 2, n $\ge$ 3), very tight (c $\le$ 1.5, n $\ge$ 3), and loose (c $\le$ 5). Table~\ref{tab:v3_filter_sensitivity} shows $\Delta_{\text{total}}$ between 0.19 and 0.24 under any reasonable cut in non-pharma; 0.25 to 0.39 in pharma. The loose filter inflates the pharma number by 27\% relative to baseline---pharma outliers above $3\times$ reference price have meaningful weight and motivate the baseline cut. The very-tight filter shrinks pharma intensive-margin to 99\% of effect by truncating the tail where the entry-channel bites; this is a revealing diagnostic rather than a robustness challenge. Baseline is defensible; extremes bracket the plausible range.
+
+\subsection{Temporal window}
+
+The 18-month window (September~2016 to August~2019) is the baseline. Narrowing to 12 months or 6 months (symmetric around March~2018) gives $\Delta_{\text{total}}$ in the range 0.22--0.28 (non-pharma) and 0.30--0.37 (pharma), Table~\ref{tab:v3_window_sensitivity}. The intensive share rises monotonically as the window shortens---77\% at 6m vs.\ 68\% at 18m in non-pharma; 78\% vs.\ 67\% in pharma---consistent with entry response being gradual. Short-window estimates capture the immediate price shock before SMEs have adjusted their participation; the 18m window is the mature, steady-state number and is the one the paper reports in main text.
+
+\subsection{Alternative policy variants}
+
+Table~\ref{tab:v3_apv} reports four counterfactual regimes against the open-regime baseline. V0 is the main-text set-aside at 100\%; V1 is a partial 50\% mix of SME-only and open auctions; V2 is SME-only with the Pre-period pool (no entry response); V3 is the open regime with a 10\% SME price preference.
+
+V1 delivers 30--45\% of V0's price effect: roughly half, but not exactly, because set-aside is non-linear in coverage. V2 delivers 162--170\% of V0: the entry-response absorbs 60--70\% of the intensive-margin price rise, making endogenous entry the government's single largest source of relief under the full set-aside. V3 delivers essentially zero price effect ($+0.015$ non-pharma, $-0.004$ pharma): a 10\% SME price preference achieves a similar SME win-rate gain to V0 without subjecting the government to the 24--29\% price premium of the set-aside.
+
+V3 is subject to two caveats I flag explicitly. First, my implementation treats the price preference in a Vickrey-equivalent framework, so winners are paid the second-lowest \emph{actual} cost; in a first-price sealed-bid setting, equilibrium bidding with preference would differ \citep{maskinriley2000}. Second, V3 is not bootstrapped for CI; the 0.015 point estimate has sampling noise but the direction (near-zero) is robust. The result that the 10\% preference is Pareto-closer to the open regime than to the full set-aside is the material takeaway; the precise magnitude of the welfare gain from switching is subject to the caveats above and the discussion in Section~\ref{sec:discussion}.
