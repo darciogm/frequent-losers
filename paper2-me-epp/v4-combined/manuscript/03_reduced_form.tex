@@ -1,0 +1,61 @@
+\section{Reduced-Form Evidence}\label{sec:rf}
+
+This section reports the reduced-form difference-in-differences that delivers the causal headline: imposing the SME-only rule on Group 65 raises winning prices by 10--11 percent, reduces participating firms by 10--11 percent, and reduces valid bids by 7--8 percent, with effects that survive a battery of diagnostics and place 100 percent of Goodman-Bacon weight on a clean treated-vs-never-treated comparison. The Gelbach decomposition leaves approximately ninety-five percent of the price effect unexplained by entry and winner-composition channels. Bid-distribution moments then locate what remains inside the auction. Together, these results identify the causal object and the direction of its mechanism; the structural analysis of Sections~\ref{sec:model}--\ref{sec:results} puts numerical weights on the channels.
+
+\subsection{Specification}
+
+The baseline specification is
+\begin{equation}\label{eq:did}
+  y_{it} \;=\; \beta \cdot (g_i \cdot \mathrm{Post}_t) \;+\; \gamma_i \;+\; \gamma_t \;+\; X_{it}'\delta \;+\; \varepsilon_{it},
+\end{equation}
+where $y_{it}$ is an outcome on item $i$ at time $t$, $g_i = 1$ if item $i$ belongs to Group~65, $\mathrm{Post}_t = 1$ for $t \geq$ March~2018, $\gamma_i$ is an item fixed effect, $\gamma_t$ is a calendar-month fixed effect, $X_{it}$ controls for log quantity ordered and tender type (sealed bid vs.\ reverse auction), and standard errors cluster at the item level. Outcomes include the log negotiated price (completed items only), the log number of participating firms (all items), the log number of valid bids (all items), and the winner-to-buyer kilometer distance (completed items). Item fixed effects absorb all time-invariant heterogeneity across items; the identifying variation is the within-item comparison around the March~2018 cutoff.
+
+The estimation sample restricts to items that appear in both pre and post periods to rule out compositional bias. Three nested windows (6, 12, 18 months) check that the estimates are stable as the sample expands. Price and distance regressions use completed items; firms and bids regressions use all items. A formal Lee-bounds analysis (Appendix) addresses the sample-selection concern that treatment may affect completion.
+
+\subsection{Main results}
+
+Table~\ref{tab:prices} reports the baseline estimates. In the 18-month window, the price coefficient is $\hat\beta = 0.097$ ($p < 0.001$), corresponding to a 10.2 percent rise in winning prices on Group-65 items relative to the never-treated controls. Nominal and IPCA-deflated specifications deliver 10--11 percent and 7--10 percent, respectively (Appendix Table~\ref{tab:prices_real}). The firms coefficient is $-0.109$ ($p < 0.001$); the valid-bids coefficient is $-0.076$ ($p < 0.01$). The distance coefficient is $+0.040$ in logs, or an additional 6--14 kilometers between the winning firm and the buying unit depending on the window. The distance result is a by-product of the rule's geographic bite: SMEs are more likely to be local, and when non-SMEs are excluded the regional net through which the state procures widens.
+
+\input{../../output/tables/tab_prices.tex}
+
+Table~\ref{tab:prices} presents the price estimates across the three windows with and without the IPCA deflator. Point estimates are stable at 10--11 percent nominal across the 6, 12, and 18-month windows; real estimates range 7--10 percent. The firms, bids, and distance outcomes are in Appendix Tables~\ref{tab:participants}, \ref{tab:validbids}, and \ref{tab:distance}.
+
+\subsection{Staggered-DiD diagnostics}
+
+The paper's design is a single-cohort staggered difference-in-differences: Group~65 is the only treated cohort, the 76 other product groups are never-treated controls. This is the simplest structure the staggered-DiD literature admits; it is free of the forbidden implicit comparisons that the modern staggered-DiD estimators address. The \citet{goodmanbacon2021} decomposition confirms the structure: 100 percent of weight falls on the treated-vs-never-treated comparison, and no weight is placed on the "forbidden" earlier-treated-vs-later-treated blocks that contaminate some staggered designs.
+
+Table~\ref{tab:cs2021} reports the price coefficient under three alternative estimators: \citet{callaway2021} (CS), \citet{sun2021} (SA), and the Goodman-Bacon (GB) group-time aggregation. The Sun-Abraham estimator delivers a point estimate numerically identical to the headline 10.2 percent under item-level aggregation, because the single-cohort design collapses the Sun-Abraham interaction-weighted estimator to the DiD; the CS and GB aggregations over group-month cells differ in magnitude as expected but preserve sign and statistical significance.
+
+\input{../../output/tables/tab_cs2021.tex}
+
+The same single-cohort logic supports a reverse framing: the 76 controls are equivalently "always-treated" and Group~65 is the "switcher" in a \citet{kim2019} difference-in-differences-in-reverse design. The two framings deliver numerically identical coefficients and both map cleanly to the clean-comparison block of Goodman-Bacon.
+
+\subsection{Pre-trends and placebos}
+
+Pre-trends on Group~65 are small and statistically indistinguishable from zero for price and distance. Event-study diagnostics for quarterly leads show no coefficient that exceeds its own standard error prior to the cutoff (Appendix Table~\ref{tab:pretrends}). For log firms and log bids, pre-trend contamination is present that neither placebo tests nor \citet{sun2021} diagnostics fully resolve; these outcomes are reported as suggestive supporting evidence rather than as independent causal estimates. The log-price effect is the paper's core causal estimate.
+
+Three placebo cutoffs---at January 2017, June 2017, and September 2017, selected ex ante because they fall within the pre-period and are symmetric with the actual cutoff---deliver coefficients roughly one-third to one-quarter the headline magnitude, with two of three marginally significant under the two-way FE specification. This is smaller than would be expected if the March 2018 estimate were an artifact of common time trends, and consistent with the policy timing being the operative event.
+
+\input{../../output/tables/tab_placebo.tex}
+
+\subsection{Spillovers, completion, and winner composition}
+
+Three potential threats to the identification are worth quantifying. First, spillovers: if non-SMEs excluded from Group 65 redirect to the 76 control groups, the DiD overstates the direct effect by a contamination of the control mean. A formal cross-group spillover test (Table~\ref{tab:spillover}) bounds the implied bias at less than one percent of the headline. Second, sample selection on completion: the treatment may affect whether an item is transacted. The Lee bounds in Appendix Table~\ref{tab:lee_bounds} are economically indistinguishable from the point estimate in the 18-month window. Third, winner-level composition: the link of BEC winners to RAIS delivers firm-size, age, and two-digit CNAE controls; Table~\ref{tab:rais_controls} shows the price coefficient is invariant to their inclusion.
+
+\subsection{Gelbach decomposition: the 95 percent residual}
+
+The reduced-form price effect decomposes into three channels: fewer firms (entry); a changed mix of winners by firm type (winner composition); and a residual reflecting within-auction bidding behavior that cannot be attributed to either observable channel. The \citet{gelbach2016} decomposition, reported in Table~\ref{tab:mediation}, delivers the following breakdown. The log-firm channel contributes $-0.010$ to the price coefficient; winner-SME composition contributes $+0.015$. The two channels individually are of the same order as the residual, but they offset in sign, and their net contribution is approximately 5 percent of the 0.10 total price coefficient. Approximately \textbf{95 percent of the reduced-form price effect is unexplained by entry and winner-SME composition}.
+
+\input{../../output/tables/tab_mediation.tex}
+
+The Gelbach decomposition is a statement about conditional independence: the coefficient on the policy interaction, after adjusting for the two observable channels, remains essentially intact. The residual must flow through something else. The natural candidate is a change in the within-auction bidding behavior itself: how each firm (of a given type, in an auction with a given number of competitors) bids. Phase-2 bid-distribution moments provide the direct measurement.
+
+\subsection{Phase-2 bid-distribution moments}
+
+BEC's electronic auction format preserves the full within-auction history of downward-revised offers. For each item-auction I compute the minimum, maximum, mean, and standard deviation of the phase-2 bid distribution, and measure how the normalized winning-bid discount and the runner-up-to-winner gap respond to the policy across matched auctions. Table~\ref{tab:bid_moments} reports the within-item response, further conditioning on the observed number of participating firms.
+
+\input{../../output/tables/tab_bid_moments.tex}
+
+Two patterns discipline the interpretation. First, the winning-bid discount widens by 5.8 percentage points on Group-65 items under the open regime---that is, winning bids sit 5.8 pp deeper below the reference price than they do in the period when the SME-only rule binds. The effect survives conditioning on exactly two, three, or five-plus participating firms. Second, the normalized runner-up-to-winner gap narrows by 2.7 pp when the restriction binds, with the narrowing concentrated in auctions with five-plus firms. Neither measure is a mediation residual; both are direct measurements of bidder behavior at the auction level.
+
+The combined reading of the Gelbach decomposition and the phase-2 bid moments is that the set-aside's price effect runs through how firms bid, not through who bids. That is the mechanism question the structural analysis takes up formally.
