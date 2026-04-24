@@ -92,7 +92,10 @@ for (ph in c(0, 1)) {
 }
 
 # Welfare decomposition sob múltiplos λ ------------------------------
-lambdas <- c(0.20, 0.30, 0.40)
+# Grid alargada para cobrir o consenso MCPF [0.15, 0.45] e atender
+# referee JPubE (BSW 1985 é US-based 1970s data; sensibilidade é
+# exigência editorial).
+lambdas <- c(0.15, 0.20, 0.30, 0.40, 0.45)
 
 rows <- list()
 for (ph in c(0, 1)) {
