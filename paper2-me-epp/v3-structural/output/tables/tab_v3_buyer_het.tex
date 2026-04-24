@@ -1,34 +1,37 @@
 \begin{table}[!htbp]
 \centering
 \small
-\caption{DiD price coefficient by buyer type}
+\caption{DiD price coefficient by buyer-unit type}
 \label{tab:v3_buyer_het}
 \begin{threeparttable}
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrr}
 \toprule
-Buyer type & $N$ & $\hat\beta$ & SE & $p$-value \\
+Buyer type & $N$ & $n_{g65 \times Pre}$ & $\hat\beta_{g65\_pre}$ & SE & $p$-value \\
 \midrule
-Pooled (all buyers) & 625,629 & 0.0243 & 0.0054 & $<0.001$ \\
-\quad Direct admin & 562,226 & 0.0302 & 0.0055 & $<0.001$ \\
-\quad Indirect admin & 79,825 & -0.0351 & 0.0160 & 0.028 \\
+\textbf{Pooled (all buyer types)} & 625,627 & 65,606 & -0.1087 & 0.0120 & $<0.001$ \\
+\midrule
+\quad Direct admin & 545,419 & 58,920 & -0.1065 & 0.0125 & $<0.001$ \\
+\quad Indirect admin & 62,285 & 6,215 & -0.0931 & 0.0315 & 0.003 \\
+\quad Convenied & 3,730 & 471 & 0.1190 & 0.1813 & 0.512 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
-\item Specification: $\log(\text{price}_{it}) = \beta \cdot
-\text{Group65}_i \cdot \text{Post}_t + \text{Post}_t + 
-\log(\text{quantity}_{it}) + \gamma_i + \varepsilon_{it}$, item
-fixed effects $\gamma_i$, standard errors clustered by item.
-Sample: 18-month symmetric window around the March 2018 cutoff,
-completed items only. Buyer types: \textit{Direct admin}
-(state secretariats, code 1); \textit{Indirect admin}
-(autarquias, funda\c{c}\~oes, state companies, codes 3--6);
-\textit{Convenied} (entities subject to procurement under
-convention with the state, code 80). The pooled coefficient
-is the headline estimate of Table~\ref{tab:prices}; the by-group
-estimates show whether the price effect varies systematically
-across buyer types. The estimates are quantitatively comparable
-across direct and indirect administration; smaller-cell groups
-may show larger sampling variation.
+\item Specification: $\log p_{\mathit{final},\,it} = \beta \cdot
+(\mathit{g65}_i \cdot \mathit{Pre}_t) + \delta \cdot \mathit{convite}_{it}
++ \theta \cdot \log q_{it} + \gamma_i + \gamma_t + \varepsilon_{it}$,
+with item ($\gamma_i$) and month ($\gamma_t$) fixed effects, and
+standard errors clustered by item. Sample: 18-month symmetric
+window around the March 2018 cutoff, completed items only. The
+coefficient $\hat\beta_{g65\_pre}$ on $g65 \times Pre$ is the
+DiD effect of being in Group~65 \emph{during the open period}
+(when the SME-only rule did not yet bind); a negative coefficient
+thus indicates that prices were lower in the open period than
+after March 2018, i.e., the SME-only rule raises winning prices.
+Buyer types: \textit{Direct admin} (state secretariats, code 1);
+\textit{Indirect admin} (autarquias, funda\c{c}\~oes, state companies,
+codes 3--6); only buyer groups with $\geq 200$ treated observations
+are reported. The pooled estimate exactly replicates the headline of
+Table~\ref{tab:prices}.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}

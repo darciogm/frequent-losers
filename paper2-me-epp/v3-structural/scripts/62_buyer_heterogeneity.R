@@ -2,8 +2,8 @@
 # Splits buyers by pbu_type_mgmt_code into "direct administration"
 # (state secretariats, code 1), "indirect" (autarquias, fundações,
 # state companies; codes 3-6), and "convenied entities" (code 80).
-# Runs the headline DiD interacted with buyer type and reports the
-# coefficient by group.
+# Replicates the v1 baseline spec g65_pre + convite + lquantidade |
+# item_alt + data_oc_numb and reports the coefficient by group.
 
 source("/home/darciogm1/projetos/bitter-pills/paper2-me-epp/v3-structural/scripts/utils_v3.R")
 
@@ -15,137 +15,136 @@ suppressPackageStartupMessages({
 
 logf <- file(path_v3("logs/62_buyer_heterogeneity.log"), open = "wt")
 on.exit(close(logf), add = TRUE)
-log_step("62", "start: buyer heterogeneity", logf)
+log_step("62", "start: buyer heterogeneity (corrected spec)", logf)
 
 con <- con_duck()
 on.exit(dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
 bec_path <- "/home/darciogm1/projetos/bitter-pills/paper2-me-epp/data/processed/paper2_me_epp.parquet"
 
-# Load 18-month window, completed items, with buyer type
 dat <- dbGetQuery(con, sprintf("
-  SELECT log(preco_final) AS lprice,
+  SELECT lpreco_final, lquantidade, convite, item_alt, data_oc_numb,
+         pbu_type_mgmt_code,
          CASE WHEN codigogrupo = 65 THEN 1 ELSE 0 END AS g65,
-         CASE WHEN data_oc_numb >= 698 THEN 1 ELSE 0 END AS post,
+         CASE WHEN data_oc_numb < 698 THEN 1 ELSE 0 END AS Pre,
          CASE WHEN pbu_type_mgmt_code = 1 THEN 'Direct admin'
               WHEN pbu_type_mgmt_code BETWEEN 3 AND 6 THEN 'Indirect admin'
               WHEN pbu_type_mgmt_code = 80 THEN 'Convenied'
-              ELSE 'Other' END AS buyer_grp,
-         pbu_type_mgmt_code,
-         item_alt,
-         data_oc_numb,
-         log(GREATEST(1, COALESCE(numfornecs_type_me_ph2, 0)
-                       + COALESCE(numfornecs_type_epp_ph2, 0)
-                       + COALESCE(numfornecs_type_oth_ph2, 0))) AS lqty
+              ELSE 'Other' END AS buyer_grp
   FROM read_parquet('%s')
   WHERE oc_item_status = 1
-    AND preco_final > 0
     AND data_oc_numb BETWEEN 680 AND 715
     AND item_alt IS NOT NULL
     AND pbu_type_mgmt_code IS NOT NULL
 ", bec_path)) |> setDT()
 
-log_step("62", sprintf("loaded %d completed item-rows", nrow(dat)), logf)
+dat[, g65_pre := g65 * Pre]
+log_step("62", sprintf("loaded %d rows", nrow(dat)), logf)
 
-dat[, treat := g65 * post]
-dat[, lprice_w := pmin(pmax(lprice, quantile(lprice, 0.005, na.rm = TRUE)),
-                       quantile(lprice, 0.995, na.rm = TRUE))]
-
-# Sample sizes by buyer group
-sz <- dat[, .(N = .N, n_g65 = sum(g65), n_post = sum(post),
-              n_g65post = sum(treat)), by = buyer_grp][order(-N)]
+# Sample by buyer group
+sz <- dat[, .(N = .N, n_g65 = sum(g65), n_g65_pre = sum(g65_pre)),
+          by = buyer_grp][order(-N)]
 cat("\n--- sample by buyer group ---\n", file = logf)
 sink(logf, append = TRUE); print(sz); sink()
 
-# Restrict to groups with enough cell counts (at least 1000 G65×Post)
-keep_grps <- sz[n_g65post >= 500, buyer_grp]
-log_step("62", sprintf("groups kept (>= 500 treated obs): %s",
+# v1 spec: g65_pre + convite + lquantidade | item_alt + data_oc_numb
+fit_pool <- feols(lpreco_final ~ g65_pre + convite + lquantidade |
+                  item_alt + data_oc_numb,
+                  data = dat, cluster = ~item_alt)
+b_pool <- coef(fit_pool)["g65_pre"]
+s_pool <- se(fit_pool)["g65_pre"]
+p_pool <- pvalue(fit_pool)["g65_pre"]
+log_step("62", sprintf("pooled g65_pre = %.4f (se %.4f)",
+                       b_pool, s_pool), logf)
+
+keep_grps <- sz[n_g65_pre >= 200, buyer_grp]
+log_step("62", sprintf("groups kept (>= 200 g65_pre obs): %s",
                        paste(keep_grps, collapse = ", ")), logf)
 
-# Pooled DiD as benchmark
-fit_pool <- feols(lprice ~ treat + post + lqty | item_alt,
-                  data = dat, cluster = ~item_alt)
-log_step("62", sprintf("pooled treat coef = %.4f (se %.4f)",
-                       coef(fit_pool)["treat"],
-                       se(fit_pool)["treat"]), logf)
-
-# By-group DiD
 res <- list()
 for (grp in keep_grps) {
   sub <- dat[buyer_grp == grp]
   if (nrow(sub) < 5000) next
-  fit <- feols(lprice ~ treat + post + lqty | item_alt,
+  fit <- feols(lpreco_final ~ g65_pre + convite + lquantidade |
+               item_alt + data_oc_numb,
                data = sub, cluster = ~item_alt)
   res[[grp]] <- data.table(
     buyer_grp = grp,
-    n = nrow(sub),
-    n_treat = sum(sub$treat),
-    coef = round(coef(fit)["treat"], 4),
-    se   = round(se(fit)["treat"], 4),
-    p    = round(pvalue(fit)["treat"], 4))
+    n        = nobs(fit),
+    n_g65pre = sub[, sum(g65_pre)],
+    coef     = round(coef(fit)["g65_pre"], 4),
+    se       = round(se(fit)["g65_pre"], 4),
+    p        = round(pvalue(fit)["g65_pre"], 4))
 }
 res_dt <- rbindlist(res)
 
 cat("\n--- DiD by buyer group ---\n", file = logf)
 sink(logf, append = TRUE); print(res_dt); sink()
 
-# Interaction test: g65 × post × buyer_grp
-dat[, buyer_f := factor(buyer_grp, levels = keep_grps)]
-fit_inter <- feols(lprice ~ treat * buyer_f + post + lqty | item_alt,
-                   data = dat[buyer_grp %in% keep_grps],
-                   cluster = ~item_alt)
+# Interaction model for chow-style equality test
+sub_int <- dat[buyer_grp %in% keep_grps]
+sub_int[, buyer_f := factor(buyer_grp, levels = keep_grps)]
+fit_inter <- feols(lpreco_final ~ g65_pre * buyer_f + convite + lquantidade |
+                   item_alt + data_oc_numb,
+                   data = sub_int, cluster = ~item_alt)
 log_step("62", "interaction model fitted", logf)
 
+# Wald test: are interaction coefficients zero?
+wald_res <- wald(fit_inter, "g65_pre:")
+
 # LaTeX table
+fmt_p <- function(p) ifelse(p < 0.001, "$<0.001$", sprintf("%.3f", p))
 tex <- c(
   "\\begin{table}[!htbp]",
   "\\centering",
   "\\small",
-  "\\caption{DiD price coefficient by buyer type}",
+  "\\caption{DiD price coefficient by buyer-unit type}",
   "\\label{tab:v3_buyer_het}",
   "\\begin{threeparttable}",
-  "\\begin{tabular}{lrrrr}",
+  "\\begin{tabular}{lrrrrr}",
   "\\toprule",
-  "Buyer type & $N$ & $\\hat\\beta$ & SE & $p$-value \\\\",
+  "Buyer type & $N$ & $n_{g65 \\times Pre}$ & $\\hat\\beta_{g65\\_pre}$ & SE & $p$-value \\\\",
   "\\midrule",
-  sprintf("Pooled (all buyers) & %s & %.4f & %.4f & %s \\\\",
+  sprintf("\\textbf{Pooled (all buyer types)} & %s & %s & %.4f & %.4f & %s \\\\",
           format(nobs(fit_pool), big.mark = ","),
-          coef(fit_pool)["treat"], se(fit_pool)["treat"],
-          ifelse(pvalue(fit_pool)["treat"] < 0.001, "$<0.001$",
-                 sprintf("%.3f", pvalue(fit_pool)["treat"])))
-)
+          format(dat[, sum(g65_pre)], big.mark = ","),
+          b_pool, s_pool, fmt_p(p_pool)),
+  "\\midrule")
 
 for (i in seq_len(nrow(res_dt))) {
   r <- res_dt[i]
   tex <- c(tex, sprintf(
-    "\\quad %s & %s & %.4f & %.4f & %s \\\\",
-    r$buyer_grp, format(r$n, big.mark = ","),
-    r$coef, r$se,
-    ifelse(r$p < 0.001, "$<0.001$", sprintf("%.3f", r$p))))
+    "\\quad %s & %s & %s & %.4f & %.4f & %s \\\\",
+    r$buyer_grp,
+    format(r$n,        big.mark = ","),
+    format(r$n_g65pre, big.mark = ","),
+    r$coef, r$se, fmt_p(r$p)))
 }
 
 tex <- c(tex,
   "\\bottomrule",
   "\\end{tabular}",
   "\\begin{tablenotes}\\footnotesize",
-  "\\item Specification: $\\log(\\text{price}_{it}) = \\beta \\cdot",
-  "\\text{Group65}_i \\cdot \\text{Post}_t + \\text{Post}_t + ",
-  "\\log(\\text{quantity}_{it}) + \\gamma_i + \\varepsilon_{it}$, item",
-  "fixed effects $\\gamma_i$, standard errors clustered by item.",
-  "Sample: 18-month symmetric window around the March 2018 cutoff,",
-  "completed items only. Buyer types: \\textit{Direct admin}",
-  "(state secretariats, code 1); \\textit{Indirect admin}",
-  "(autarquias, funda\\c{c}\\~oes, state companies, codes 3--6);",
-  "\\textit{Convenied} (entities subject to procurement under",
-  "convention with the state, code 80). The pooled coefficient",
-  "is the headline estimate of Table~\\ref{tab:prices}; the by-group",
-  "estimates show whether the price effect varies systematically",
-  "across buyer types. The estimates are quantitatively comparable",
-  "across direct and indirect administration; smaller-cell groups",
-  "may show larger sampling variation.",
+  "\\item Specification: $\\log p_{\\mathit{final},\\,it} = \\beta \\cdot",
+  "(\\mathit{g65}_i \\cdot \\mathit{Pre}_t) + \\delta \\cdot \\mathit{convite}_{it}",
+  "+ \\theta \\cdot \\log q_{it} + \\gamma_i + \\gamma_t + \\varepsilon_{it}$,",
+  "with item ($\\gamma_i$) and month ($\\gamma_t$) fixed effects, and",
+  "standard errors clustered by item. Sample: 18-month symmetric",
+  "window around the March 2018 cutoff, completed items only. The",
+  "coefficient $\\hat\\beta_{g65\\_pre}$ on $g65 \\times Pre$ is the",
+  "DiD effect of being in Group~65 \\emph{during the open period}",
+  "(when the SME-only rule did not yet bind); a negative coefficient",
+  "thus indicates that prices were lower in the open period than",
+  "after March 2018, i.e., the SME-only rule raises winning prices.",
+  "Buyer types: \\textit{Direct admin} (state secretariats, code 1);",
+  "\\textit{Indirect admin} (autarquias, funda\\c{c}\\~oes, state companies,",
+  "codes 3--6); only buyer groups with $\\geq 200$ treated observations",
+  "are reported. The pooled estimate exactly replicates the headline of",
+  "Table~\\ref{tab:prices}.",
   "\\end{tablenotes}",
   "\\end{threeparttable}",
   "\\end{table}")
+
 writeLines(tex, path_v3("output/tables/tab_v3_buyer_het.tex"))
 log_step("62", "saved tab_v3_buyer_het.tex", logf)
 log_step("62", "done", logf)
