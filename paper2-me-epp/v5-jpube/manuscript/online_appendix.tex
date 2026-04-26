@@ -1,0 +1,89 @@
+\documentclass[12pt]{elsarticle}
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usepackage{geometry}\geometry{margin=1in}
+\usepackage{subfig}
+\usepackage{setspace}
+\usepackage{appendix}
+\usepackage{threeparttable}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=red, citecolor=black, urlcolor=cyan}
+\usepackage{natbib}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{chngcntr}
+
+% Renumber tables/figures with OA prefix
+\renewcommand{\thetable}{OA.\arabic{table}}
+\renewcommand{\thefigure}{OA.\arabic{figure}}
+
+\graphicspath{{figures/}{../output/figures/}}
+
+\title{\textbf{Online Appendix to \emph{The Cost of Inclusion: Decomposing Bidder Exclusion in Public Procurement}}}
+\author{Darcio Genicolo-Martins\thanks{INSPER, S\~ao Paulo. Email: \href{mailto:darciogm1@insper.edu.br}{darciogm1@insper.edu.br}.}}
+\date{This version: April 2026}
+
+\begin{document}
+\maketitle
+
+\noindent This Online Appendix accompanies the main manuscript and reports two robustness exercises and four supplementary figures referenced in the body text. Cross-references to main-text sections, equations, tables, and figures follow the numbering of the main manuscript.
+
+\section{Sensitivity to cost affiliation}\label{oa:affiliation}
+
+Section~7 of the main text reports a Gaussian-copula relaxation of the IPV restriction. Table~OA.1 below provides the full numerical detail.
+
+\input{../output/tables/tab_affiliation_sensitivity.tex}
+
+The within-auction share moves by less than 5 percentage points in either class as $\rho_c$ varies from 0 to 0.3, and the total simulated effect $p_{S_3} - p_{S_1}$ moves by less than 10 percent of the IPV baseline. The 73--85 percent within-auction share range claimed in the main text remains valid for $\rho_c \le 0.3$. Higher affiliation levels are inconsistent with the cross-modality consistency check reported in main-text Table~B.6 (Convite GPV vs.\ Preg\~ao drop-out), which would reject under strong common-values contamination.
+
+\section{Maskin-Riley FPSB calibration of V3}\label{oa:maskinriley}
+
+Section~7 of the main text reports a Maskin-Riley FPSB equilibrium adjustment for V3 (10 percent SME price preference). Table~OA.2 below provides the full numerical detail and the underlying derivation.
+
+\input{../output/tables/tab_maskinriley_v3.tex}
+
+The calibration uses the asymmetric FPSB-with-preference closed form derived in \citet[Section 5]{maskinriley2000} for two type classes (SME with preference rate $k$, non-SME without), evaluated on the recovered $F_c^{\text{SME}}$ and $F_c^{\neg}$ marginals at $k = 0.10$. The closed form delivers each type's equilibrium markup-over-cost as a function of the rival type's distribution and the preference rate; the SME markup falls (because the preference reduces the marginal cost of a higher bid) and the non-SME markup rises (because non-SMEs face a competitive disadvantage at score level). The plug-in approach is exact in the asymmetric FPSB equilibrium under the IPV restriction maintained throughout the paper; it is not a fully solved nested entry-bidding equilibrium under FPSB (entry remains taken from the observed Vickrey-equivalent simulation), but the bidding-stage equilibrium adjustment is derived rather than approximated.
+
+\section{Supplementary figures}\label{oa:figures}
+
+The four figures below complement the identification and diagnostic checks discussed in main-text Sections~4--7. Figure~OA.1 plots the raw (pre-UH) Convite GPV versus Preg\~ao drop-out comparison, illustrating how much of the cross-modality gap the Krasnokutskaya UH correction absorbs. Figure~OA.2 plots the Preg\~ao drop-out point-identified $F_c^k$ by stratum. Figure~OA.3 overlays the Haile-Tamer upper-bound refinement on the same estimates, documenting that the point-ID recoveries lie within the Haile-Tamer bounds. Figure~OA.4 plots the simulated BNE price ECDFs by counterfactual scenario, the distributional counterpart to the means reported in main-text Table~C.14.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{../output/figures/fig_v3_cross_modality.pdf}
+\caption[Cross-modality $F_c^k$ before the UH correction.]{\textit{Cross-modality $F_c^k$ before the UH correction.} Convite GPV (solid) versus Preg\~ao drop-out (dashed) cost distribution estimates by (period $\times$ pharma $\times$ type) panel, computed on the raw reference-normalized bids without the Krasnokutskaya-style shrinkage. The residual gap visible here is what the UH correction absorbs; the corrected version is main-text Figure~1.}
+\label{fig:oa_cross_modality_raw}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{../output/figures/fig_v3_pregao_fc_by_stratum.pdf}
+\caption[Preg\~ao drop-out point-identified $F_c^k$ by stratum.]{\textit{Preg\~ao drop-out point-identified $F_c^k$ by stratum.} The empirical distribution of losers' drop-out prices, normalized by the reference price, in each (period $\times$ pharma $\times$ type) cell. Under main-text Assumption~1 and the English-reverse interpretation \citep{haile2003}, each loser's drop-out equals her private cost, so these ECDFs are point estimates of $F_c^k$.}
+\label{fig:oa_pregao_fc_by_stratum}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{../output/figures/fig_v3_pregao_ht_bands.pdf}
+\caption[Haile-Tamer bounds on Preg\~ao $F_c^k$.]{\textit{Haile-Tamer upper-bound refinement on Preg\~ao $F_c^k$.} The point-identified drop-out estimate (centre) is plotted alongside its \citet{haile2003} upper-bound envelope. The gap narrows when the auction has many bidders and widens in thin strata, consistent with the weaker identifying variation available in those cells.}
+\label{fig:oa_pregao_ht_bands}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{../output/figures/fig_v3_bne_prices.pdf}
+\caption[BNE simulated price distribution by counterfactual scenario.]{\textit{BNE simulated price distribution by counterfactual scenario.} Empirical CDFs of the simulated $c_{(2)}$ under each of the three counterfactuals: $S_1$ open regime with Pre-period pool, $S_2$ SME-only restriction at the Pre-period SME pool (intensive-only), and $S_3$ SME-only equilibrium at the observed Post-period pool (full effect with endogenous entry). Distributions visibly separate in both classes, with the $S_2 \to S_3$ pullback documenting the entry offset. This is the distributional view of the means reported in main-text Table~C.14 and summarized in main-text Figure~2.}
+\label{fig:oa_bne_prices}
+\end{figure}
+
+\bibliographystyle{chicago}
+\bibliography{References}
+
+\end{document}

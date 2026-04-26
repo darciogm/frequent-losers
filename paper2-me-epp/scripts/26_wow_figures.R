@@ -164,44 +164,68 @@ cat(sprintf("    Short beta = %.4f; Full beta = %.4f\n", beta_short, beta_full))
 cat(sprintf("    Entry: %.1f%%  Composition: %.1f%%  Intensive: %.1f%%\n",
             entry_pct, comp_pct, direct_pct))
 
-# Two-segment stacked bar showing the paper's headline 94/6 split:
-# |beta_full|/|beta_short| = direct (intensive) share; complement = mediated.
-# Individual channels (entry, composition) can have opposite signs and do not
-# sum cleanly to 100%, so the figure reports the net direct-vs-mediated split.
-# Round up to match the paper's headline 94/6 framing (raw ratio = 93.2%).
-direct_share <- ceiling(abs(beta_full) / abs(beta_short) * 100)
-mediated_share <- 100 - direct_share
-cat(sprintf("    94/6 split: direct = %d%%, mediated = %d%%\n",
+# Two-segment stacked bar showing the net mediation split.
+# Gelbach identity: beta_short = beta_full + sum(delta_k).
+# Net mediated share  = |sum(delta_k)| / |beta_short|
+# Direct (residual)   = 1 - net mediated share, clamped to [0, 1]
+# With current data: channels partially offset (competition +181%, composition -81%)
+# yielding a near-zero net mediated contribution and direct share ~= 100%.
+net_mediated_raw <- abs(beta_short - beta_full) / abs(beta_short) * 100
+raw_ratio <- abs(beta_full) / abs(beta_short) * 100
+mediated_share <- max(0, min(100, round(net_mediated_raw)))
+direct_share   <- 100 - mediated_share
+cat(sprintf("    Raw direct ratio |beta_full|/|beta_short| = %.1f%%\n", raw_ratio))
+cat(sprintf("    Net mediated share |sum(delta)|/|beta_short| = %.1f%%\n", net_mediated_raw))
+cat(sprintf("    Plotted split: direct = %d%%, mediated = %d%%\n",
             direct_share, mediated_share))
 
+# Bar goes first (mediated segment on the left, intensive on the right) so the
+# scale is guaranteed to be on [0, 100].
 wbars <- data.table(
-  channel = c("Mediated", "Intensive"),
+  channel = factor(c("Mediated", "Intensive"),
+                   levels = c("Mediated", "Intensive")),
   pct     = c(mediated_share, direct_share)
 )
 wbars[, xmax := cumsum(pct)]
 wbars[, xmin := shift(xmax, fill = 0)]
 wbars[, xmid := (xmin + xmax) / 2]
 
+# Labels: always draw the bold "direct" label inside the intensive bar; if the
+# mediated bar is too narrow (<8pp) to carry its own inside-label cleanly,
+# push its percentage above the bar with a leader line.
+mediated_inside <- mediated_share >= 12
+
 p2 <- ggplot(wbars) +
   geom_rect(aes(xmin = xmin, xmax = xmax, ymin = 0.35, ymax = 0.85,
                 fill = channel), color = "black", linewidth = 0.45) +
+  # Intensive (right) — big bold % inside the dark bar
   annotate("text", x = wbars[channel == "Intensive", xmid], y = 0.60,
            label = sprintf("%d%%", direct_share),
            size = 8, fontface = "bold", color = "white") +
-  annotate("text", x = wbars[channel == "Mediated", xmid], y = 1.05,
-           label = sprintf("%d%%", mediated_share),
-           size = 5, fontface = "bold", color = "black") +
   annotate("text", x = wbars[channel == "Intensive", xmid], y = 0.18,
            label = "Intensive margin (bid aggressiveness)",
            size = 3.3, color = "black", fontface = "bold") +
-  annotate("segment",
-           x = wbars[channel == "Mediated", xmid],
-           xend = wbars[channel == "Mediated", xmid],
-           y = 0.95, yend = 1.00,
-           linewidth = 0.3, color = "gray40") +
-  annotate("text", x = 22, y = 1.05,
-           label = "Mediated (entry + composition)",
-           hjust = 0, size = 3.1, color = "gray25") +
+  # Mediated (left)
+  {if (mediated_inside)
+     annotate("text", x = wbars[channel == "Mediated", xmid], y = 0.60,
+              label = sprintf("%d%%", mediated_share),
+              size = 5, fontface = "bold", color = "black")
+   else
+     annotate("text", x = wbars[channel == "Mediated", xmid], y = 1.05,
+              label = sprintf("%d%%", mediated_share),
+              size = 5, fontface = "bold", color = "black")} +
+  {if (!mediated_inside)
+     annotate("segment",
+              x = wbars[channel == "Mediated", xmid],
+              xend = wbars[channel == "Mediated", xmid],
+              y = 0.95, yend = 1.00,
+              linewidth = 0.3, color = "gray40")} +
+  annotate("text",
+           x = if (mediated_inside) wbars[channel == "Mediated", xmid] else max(12, wbars[channel == "Mediated", xmax] + 2),
+           y = if (mediated_inside) 0.18 else 1.05,
+           label = "Mediated (entry + composition, net)",
+           hjust = if (mediated_inside) 0.5 else 0,
+           size = 3.1, color = "gray25") +
   scale_fill_manual(values = c("Mediated"  = "gray82",
                                "Intensive" = "gray18")) +
   scale_x_continuous(labels = percent_format(scale = 1),
