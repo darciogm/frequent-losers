@@ -310,8 +310,8 @@ log_step("58", "fig4 cross-modality regenerated with clean title", logf)
 
 # 5. Figure: welfare-weight identity (non-pharma, pharma, strict) -----
 # Claim: The implicit weight to justify V0 over V3 is 2.4-3.0 under
-# main and falls to 0.7 in pharma under strict. Brazil social policy
-# weights cluster in 1.2-1.5.
+# main and falls to 0.7 in pharma under strict. Bolsa Familia MVPF band
+# (Bergstrom-Dodds-Rios 2025 AEJ:Pol): 0.90-1.12.
 
 weight_df <- date.table(
   pharma_lbl = c("non-pharma", "pharma",
@@ -330,11 +330,11 @@ weight_df[, ypos := as.numeric(spec)]
 fig5 <- ggplot(weight_df,
                aes(x = w_star, y = ypos,
                    colour = spec, shape = spec)) +
-  annotate("rect", xmin = 1.2, xmax = 1.5,
+  annotate("rect", xmin = 0.90, xmax = 1.12,
            ymin = 0.4, ymax = 2.6,
            alpha = 0.22, fill = "grey60") +
-  annotate("text", x = 1.35, y = 2.48,
-           label = "Brazilian transfer\nprogram weights",
+  annotate("text", x = 1.01, y = 2.48,
+           label = "Bolsa Familia MVPF\n(Bergstrom et al. 2025)",
            size = 2.6, lineheight = 0.9, colour = "grey30") +
   geom_vline(xintercept = 1.0, linetype = "dashed",
              colour = "grey35", linewidth = 0.3) +
