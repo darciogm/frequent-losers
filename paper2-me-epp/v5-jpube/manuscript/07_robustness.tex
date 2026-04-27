@@ -1,6 +1,6 @@
 \section{Robustness}\label{sec:robustness}
 
-Six dimensions of robustness feed into the headline: the strict-invariance limiting case; the cost-distribution estimator ($F_c^k$ regime); the kernel bandwidth used in the Convite GPV cross-check; the bid-level sample filter; the temporal window; and the set of alternative policy variants considered. The first five test the identification and equilibrium-selection assumptions; the sixth feeds the policy discussion in Section~\ref{sec:discussion}. The central findings survive them: the within-auction component of the simulated total effect remains the larger of the two components in both classes, with the share remaining in the 73--85 percent range across cost-distribution estimators and across the two specifications of the post-policy SME pool, and the welfare comparison against the 10 percent price preference remains conditional on goods characteristics rather than universal.
+Nine dimensions of robustness feed into the headline: the strict-invariance limiting case; the cost-distribution estimator ($F_c^k$ regime); the kernel bandwidth used in the Convite GPV cross-check; the bid-level sample filter; the temporal window; the phased BEC enablement check on the cutoff date; the set of alternative policy variants considered; bid-coordination diagnostics; and the Maskin-Riley FPSB upper bound on the V3 expected price. The central findings survive: the within-auction component of the simulated total effect remains the larger of the two components in both classes, with the share remaining in the 73--85 percent range across cost-distribution estimators and across the two specifications of the post-policy SME pool; the welfare ranking V3 $\succ$ V0 is preserved in thick standardized markets under cost-affiliation up to $\rho_c = 0.3$ and under the FPSB upper bound; and the conditional reading in pharmaceutical markets is itself the diagnostic of where equilibrium-selection vs.\ primitive-invariance treatment of the protected pool is first-order.
 
 \subsection{Strict-primitive-invariance benchmark}
 
@@ -10,22 +10,9 @@ What changes is the policy ranking in the thin, heterogeneous pharma market. In 
 
 \subsection{Cost-distribution regime}
 
-The baseline all-bidders estimator biases the upper tail of $F_c^k$ slightly downward; losers-only biases it materially upward; a Turnbull NPMLE that treats the winner as left-censored delivers point identification. Table~\ref{tab:v3_sensitivity_fc} runs the BNE decomposition under each. The three point estimates for $p_{S_3} - p_{S_1}$ are:
-\begin{center}
-\begin{tabular}{lccc}
-\toprule
-Class      & Losers-only & All-bidders (baseline) & Turnbull \\
-\midrule
-Non-pharma & 0.275 & 0.259 & 0.246 \\
-Pharma     & 0.347 & 0.308 & 0.357 \\
-\bottomrule
-\end{tabular}
-\end{center}
-All cells lie within 16 percent of the all-bidders point estimate (non-pharmaceutical losers-only $+6$ percent; non-pharmaceutical Turnbull $-5$ percent; pharmaceutical losers-only $+13$ percent; pharmaceutical Turnbull $+16$ percent). The bootstrap CIs (Table~\ref{tab:v3_bootstrap_ci}) overlap materially across regimes. Turnbull raises the within-auction share in pharmaceuticals from 73 percent (all-bidders) to 82 percent---if anything strengthening the main interpretation. The all-bidders approximation used throughout the paper is defensible without the Turnbull machinery; readers who prefer point identification should see Turnbull and the same decomposition.
+The baseline all-bidders estimator biases the upper tail of $F_c^k$ slightly downward; losers-only biases it materially upward; a Turnbull NPMLE that treats the winner as left-censored delivers point identification. Table~\ref{tab:v3_sensitivity_fc} runs the BNE decomposition under each. The three point estimates for $p_{S_3} - p_{S_1}$ are 0.275/0.347 (losers-only), 0.259/0.308 (all-bidders, baseline), and 0.246/0.357 (Turnbull) for non-pharma and pharma respectively. All cells lie within 16 percent of the all-bidders point estimate (non-pharmaceutical losers-only $+6$ percent; non-pharmaceutical Turnbull $-5$ percent; pharmaceutical losers-only $+13$ percent; pharmaceutical Turnbull $+16$ percent). The bootstrap CIs (Table~\ref{tab:v3_bootstrap_ci}) overlap materially across regimes. Turnbull raises the within-auction share in pharmaceuticals from 73 percent (all-bidders) to 82 percent---if anything strengthening the main interpretation. The all-bidders approximation used throughout the paper is defensible without the Turnbull machinery; readers who prefer point identification should see Turnbull and the same decomposition.
 
 \paragraph{Sensitivity to cost affiliation.} A Gaussian-copula relaxation of the IPV restriction (Online Appendix, Table~OA.1) couples the type-specific cost marginals at within-auction correlation $\rho_c \in \{0, 0.1, 0.2, 0.3\}$. The within-auction share moves by less than 5 percentage points in either class, and the total simulated effect $p_{S_3} - p_{S_1}$ moves by less than 10 percent of the IPV baseline. The 73--85 percent within-auction share range remains valid for $\rho_c \le 0.3$. Higher affiliation levels are inconsistent with the cross-modality consistency check of Table~\ref{tab:v3_cross_modality}, which would reject GPV-vs-drop-out convergence under strong common-values contamination.
-
-\paragraph{Maskin-Riley FPSB calibration of V3.} The 10 percent SME price preference V3 is computed under Vickrey-equivalent translation in the main specification. The Online Appendix (Table~OA.2) reports the equivalent under \citet{maskinriley2000} FPSB equilibrium adjustment: SME bid-function shifts of $-0.05$ and non-SME bid-function shifts of $+0.02$ deliver a net effect on the second-order statistic of $0.22$--$0.27$ percent of $p^{\mathrm{ref}}$, well within Monte Carlo noise of the BNE simulation. The V3 vs.\ V0 policy ranking is preserved in both classes; the conditional welfare ranking is robust to the FPSB adjustment. The entry margin under FPSB is held at the Vickrey-equivalent observed values and is not jointly resolved with the FPSB bidding equilibrium; a fully solved nested entry-bidding equilibrium under FPSB-with-preference is outside the scope of this paper.
 
 \subsection{Kernel bandwidth}
 
@@ -45,24 +32,13 @@ The baseline sits between tight and loose in both classes, is inside the bootstr
 
 Table~\ref{tab:v3_window_sensitivity} varies the symmetric window around the March 2018 cutoff. ``18m'' is the baseline (18 months on each side, 36 months total); the 12m and 6m alternatives are 12 and 6 months on each side respectively. The total effect is $p_{S_3} - p_{S_1} = +0.272$ (non-pharma 18m), $+0.267$ (12m), and $+0.269$ (6m); $+0.292$ (pharma 18m), $+0.310$ (12m), $+0.338$ (6m). The non-pharmaceutical effect is essentially flat across windows; the pharmaceutical effect is monotonically increasing as the window shrinks, consistent with a transitional period in which the within-auction adjustment establishes more quickly than the participation-margin adjustment.
 
-The within-auction share is comparably stable:
-\begin{center}
-\begin{tabular}{lccc}
-\toprule
-Class      & 18m    & 12m    & 6m \\
-\midrule
-Non-pharma & 79.7\% & 75.4\% & 76.4\% \\
-Pharma     & 67.0\% & 73.0\% & 73.6\% \\
-\bottomrule
-\end{tabular}
-\end{center}
-The 18m baseline sits at the upper end of the non-pharma within-auction range and at the lower end of the pharma range. The within-auction share varies by 4.3 percentage points in non-pharma (75.4--79.7 percent) and 6.6 percentage points in pharma (67.0--73.6 percent) across the three windows, and the within-auction component remains the larger of the two components in all six (class $\times$ window) cells. 18m is the mature, steady-state choice, with shorter windows providing a corroborating short-run check.
+The within-auction share is comparably stable: 79.7/75.4/76.4\% in non-pharma and 67.0/73.0/73.6\% in pharma across the 18m/12m/6m windows. The 18m baseline sits at the upper end of the non-pharma within-auction range and at the lower end of the pharma range. The share varies by 4.3 percentage points in non-pharma and 6.6 percentage points in pharma across the three windows, and the within-auction component remains the larger of the two components in all six (class $\times$ window) cells. 18m is the mature, steady-state choice, with shorter windows providing a corroborating short-run check.
 
 \subsection{Phased adoption}
 
 The institutional timeline of \S\ref{sec:institutional} documents that BEC operationalized the SME-only functionality in two acts (COMUNICADO BEC 02/2017 in July 2017 and COMUNICADO BEC 03/2017 in November 2017) before the empirical cutoff of March 2018, which captures the moment of mass take-up by Group-65 PBUs rather than formal regulatory enablement. As a robustness check, Table~\ref{tab:phased_adoption} re-estimates the headline DiD coefficient on the sample with the eight months $m \in [690, 697]$ excluded---i.e., dropping the BEC enablement window between July 2017 and February 2018, the period during which the new functionality was technically available but not yet broadly used in Group 65.
 
-The DiD coefficient on $g65 \times \text{Pre}$ is $-0.087$ (s.e.\ $0.012$) on the truncated sample, versus $-0.109$ on the full sample. The 22\% reduction in magnitude is consistent with the BEC enablement window contributing to but not dominating the headline; the effect remains highly significant on a sample that excludes the transitional months entirely. The structural counterfactual, which is identified from cross-regime cost-distribution differences pooled within the 18-month post window rather than from a single discrete event, is invariant to this temporal restriction by construction.
+The DiD coefficient on $g65 \times \text{Pre}$ is $-0.087$ (s.e.\ $0.012$) on the truncated sample, versus $-0.109$ on the full sample, both significant at the 1 percent level on standard errors clustered at the item level. The 22 percent reduction in magnitude is consistent with the BEC enablement window contributing to but not dominating the headline; the effect remains highly significant on a sample that excludes the transitional months entirely. The structural counterfactual, which is identified from cross-regime cost-distribution differences pooled within the 18-month post window rather than from a single discrete event, is invariant to this temporal restriction by construction.
 
 \input{../output/tables/tab_phased_adoption.tex}
 
@@ -71,7 +47,7 @@ The DiD coefficient on $g65 \times \text{Pre}$ is $-0.087$ (s.e.\ $0.012$) on th
 The 10 percent price preference in Section~\ref{sec:pareto} is informative partly because the alternative variants reveal what bidder exclusion is buying. Table~\ref{tab:v3_apv} also reports two intermediate variants that serve as policy-design sensitivities:
 
 \begin{itemize}
-\item \emph{V1} (partial set-aside): 50 percent of auctions run SME-only at the Post pool, 50 percent open at the Pre pool. $\Delta p$ is 33--36 percent of V0's---roughly a third, reflecting the non-linearity of pool restriction. A partial rule buys roughly proportional fiscal savings but at the cost of a more complex administrative rule.
+\item \emph{V1} (partial set-aside, purely diagnostic): 50 percent of auctions run SME-only at the Post pool, 50 percent open at the Pre pool. V1 is not a policy proposal in current legislation; it serves to demonstrate the non-linearity of pool restriction. $\Delta p$ is 33--36 percent of V0's---roughly a third, indicating that a partial rule buys roughly proportional fiscal savings at the cost of a more complex administrative rule.
 \item \emph{V2} (entry-isolated counterfactual): full set-aside with the SME pool held at pre-period size (no participation response). $\Delta p$ is 152--157 percent of V0. Without endogenous entry the simulated policy effect would be materially larger; the participation-margin component absorbs 50--60 percent of what would otherwise be a heavier within-auction shock. This is why Section~\ref{sec:results} reads the participation response as a partial offset to a larger latent within-auction shock.
 \end{itemize}
 
