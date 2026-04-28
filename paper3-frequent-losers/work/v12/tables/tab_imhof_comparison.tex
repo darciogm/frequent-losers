@@ -8,11 +8,11 @@
 \toprule
 Screen & AUC & Data required & DeLong $p$ \\
 \midrule
-FL screen (this paper) & 0.940 & Participation only & --- \\
+FL screen (this paper) & 0.94 & Participation only & --- \\
 Imhof CV only & 0.758 & Bid values & \\
 Imhof spread only & 0.789 & Bid values & \\
 Imhof composite & 0.788 & Bid values & 0.0000 \\
-Combined (FL + Imhof) & 0.502 & Both & 0.0000 \\
+Combined (FL + Imhof, logistic) & 0.836 & Both & 0.0000 \\
 Random classifier & 0.500 & None & --- \\
 \bottomrule
 \end{tabular}
@@ -24,6 +24,9 @@ Ground truth: co-participation with CADE-convicted cartelists.
 FL screen score: tender participation count (higher $=$ more suspicious).
 Imhof composite: standardized mean of within-tender CV, excess kurtosis,
 skewness, and normalized bid spread across all tenders the firm participates in.
+Combined (FL + Imhof) is fit by logistic regression of CADE co-bidding on
+$z_{\mathrm{FL}}$ and the four Imhof $z$-features, with AUC reported on
+held-out 5-fold cross-validation predictions.
 DeLong $p$-value tests the null that the AUC difference from FL screen equals zero.
 \end{tablenotes}
 \end{threeparttable}

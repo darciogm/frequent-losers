@@ -165,10 +165,11 @@ truth. The FL screen achieves an AUC of 0.94
 (Table~\ref{tab:roc_detection} in Appendix~\ref{app:robustness}).
 The data-driven optimal threshold (Youden's $J = 0.84$) corresponds
 to 1.45$\times$IQR---nearly identical to the 1.5$\times$ baseline
-rule---achieving TPR~$= 1.00$ with FPR~$= 0.16$. Despite the small number of CADE positives (98), the bootstrapped 95\%
-percentile CI is $[0.91, 0.94]$ (1,000 replications); the point
-estimate of 0.94 falls at the CI upper bound, reflecting slight upward
-skew in the bootstrap distribution. The AUC may
+rule---achieving TPR~$= 1.00$ with FPR~$= 0.15$. With 193 CADE
+co-bidders among the 16,843 always-losers, the AUC point estimate is
+0.9389, with a 95\% DeLong CI of $[0.932, 0.946]$; stratified
+percentile and BCa bootstrap intervals (B = 5{,}000 and 2{,}000)
+agree to three decimals. The AUC may
 overstate detection performance because the ROC varies the
 participation-count threshold, and higher counts mechanically
 increase co-participation opportunities with any firm, including
@@ -177,21 +178,32 @@ CADE cartelists. The permutation test
 participation quartile, provides an independent check on the
 FL--cartel association (3.5$\times$, $p < 0.001$).
 
-\paragraph{Complementarity with Imhof-style screens.}
+\paragraph{Comparison with bid-level screens.}
 Against the same CADE ground truth, the FL screen achieves
-AUC~$= 0.94$ versus 0.79 for a \citet{imhof2019detecting}-style
-bid-level proxy (CV median split; DeLong $p < 0.001$;
+AUC~$= 0.94$, materially above the 0.79 obtained by a
+\citet{imhof2019detecting}-style bid-level composite (within-tender
+CV, kurtosis, skewness, and normalized spread; DeLong $p < 0.001$;
 Table~\ref{tab:imhof_comparison},
 Figure~\ref{fig:roc_comparison} in Appendix~\ref{app:robustness}).
-The comparison is indicative: our Imhof proxy is coarser than the
-full implementation (which combines CV, kurtosis, spread, and a
-trained classifier), the two screens operate at different levels
-(firm vs.\ tender), and the ground truth mechanically favors
-participation-based screens. What FL adds is reach: it works where
-bid-level records are unavailable and produces firm-level flags that
-can triage investigations before detailed bid analysis begins.
-Precision is low (3.6\%) at a 0.58\% base rate---FL is a
-high-recall triage tool, not a standalone classifier.
+A logistic-regression combiner that uses both screens together
+($z_{\mathrm{FL}}$ plus the four Imhof $z$-features) reaches
+AUC~$= 0.84$ on held-out 5-fold cross-validation predictions:
+strictly above any individual Imhof feature but below FL alone,
+because Imhof features add noise relative to the participation
+signal in this setting. The 15-point AUC gap between FL and the
+best bid-level alternative is the headline detection finding.
+Three caveats apply but do not erase the gap. First, the ground
+truth (firm-level CADE co-bidding) tilts toward firm-level screens
+that operate over many tenders rather than tender-level screens
+that operate over one tender at a time. Second, our Imhof
+implementation uses tender statistics aggregated to firm-level means,
+not the trained classifier in \citet{huber2019machine}; the latter
+likely closes part of the gap. Third, precision is low (7.1\%) at
+a 1.1\% base rate---FL is a high-recall triage tool, not a
+standalone classifier. The screen's value is its data
+requirements: it works where bid-level records are unavailable
+and produces firm-level flags that can triage investigations
+before detailed bid analysis begins.
 
 \paragraph{Horse-race regression.}
 To test whether FL adds incremental information beyond bid-level
