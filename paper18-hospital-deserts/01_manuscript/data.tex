@@ -1,0 +1,133 @@
+\section{Data}
+\label{sec:data}
+
+We assemble a panel covering the universe of Brazilian municipalities,
+their public hospital network, and an extended window of inpatient
+admissions ($2010$ through $2024$, $15$ years) and mortality outcomes
+($2010$ through $2023$, $14$ years; the latter ends in $2023$, the last fully consolidated SIM vintage at the time of
+writing). All sources are administrative microdata maintained by the
+Brazilian Ministry of Health (DATASUS) and the IBGE statistical office.
+
+\subsection{Hospital Admissions: SIH-AIH}
+
+The Sistema de Informações Hospitalares do SUS (SIH-AIH) records every
+inpatient admission billed to the federal SUS reimbursement system.
+Each Autorização de Internação Hospitalar (AIH) corresponds to one
+hospital stay. Unique linkage uses the AIH-1 (principal hospitalization)
+record; AIH-5 (continuation) records are excluded to avoid
+double-counting. Variables include the patient's $6$-digit
+municipality of residence (\texttt{MUNIC\_RES}), the establishment's
+CNES identifier, the principal ICD-10 diagnosis (\texttt{DIAG\_PRINC}),
+the realized procedure code (\texttt{PROC\_REA}), in-hospital death
+flag (\texttt{MORTE}), age and sex, dates of admission and discharge,
+and the federally-paid amount.
+
+We retain $179{,}499{,}614$ admissions with non-missing residence
+municipality, hospital CNES, and competence year over $2010\text{--}2024$.
+We restrict to admissions in establishments classified as hospitals in
+the CNES master file (excluding non-hospital types such as primary care
+units, clinics, and specialty offices), retaining
+$179{,}420{,}885$ admissions ($\approx 100\%$ of the gross). A small
+fraction is lost to ineligible non-hospital codes.
+
+For graph construction (Section \ref{sec:method}), we aggregate the
+admission-level data to the municipality--hospital--year level, recording
+the count of admissions, the count of in-hospital deaths, and the
+average length of stay and reimbursement value. The resulting bipartite
+edge list contains $2{,}703{,}889$ municipality-hospital-year cells; the
+period-pooled version aggregating $2010\text{--}2024$ contains
+$648{,}973$ unique municipality-hospital edges.
+
+\subsection{Mortality: SIM}
+
+The Sistema de Informação sobre Mortalidade (SIM) records every death
+certificate issued in Brazil. Variables include the underlying ICD-10
+cause of death (\texttt{CAUSABAS}), municipality of residence
+(\texttt{CODMUNRES}), municipality of occurrence (\texttt{CODMUNOCO}),
+age (encoded with a leading hint character distinguishing days, months,
+and years), sex, race, and educational attainment of the mother (for
+infant deaths). Coverage of total mortality is estimated by the
+Ministry of Health to be $\approx 95\text{--}99\%$ in the South and
+Southeast and $\approx 85\text{--}95\%$ in the North; ill-defined causes
+(R-codes) range from $\approx 5\%$ in the South to $\approx 15\%$ in
+the rural Northeast.
+
+\paragraph{Amenable mortality.}
+We construct the rate of amenable mortality at the municipality-year
+level using the consensus list of \citet{nolteMckee2008}, updated by
+the OECD \citep{oecd2019}, of conditions for which death below age $75$
+is considered avoidable through timely and effective medical care.
+The list comprises $\approx 60$ ICD-10 categories spanning
+ischemic heart disease, stroke, sepsis, perforated appendix, treatable
+cancers, complications of childbirth, and other conditions. We follow
+the standard convention of restricting to deaths under age $75$ and
+expressing the rate per $100{,}000$ population.
+
+Over $2010\text{--}2023$, the SIM records $18{,}878{,}605$ deaths total,
+of which $5{,}362{,}418$ ($28.4\%$) are amenable under our definition.
+Population denominators come from IBGE annual estimates (Tabela 6579 of
+SIDRA for $2010\text{--}2021$ and the $2022$ Census plus
+$2023\text{--}2024$ estimates from \texttt{estimativa\_dou}); for years
+without SIDRA estimates we use the IBGE annual interpolations.
+
+\subsection{Hospital Master and Habilitations: CNES}
+
+The Cadastro Nacional de Estabelecimentos de Saúde (CNES) records the
+universe of healthcare facilities at monthly granularity. We construct
+two derived tables.
+
+The first is a hospital master file aggregating CNES record
+characteristics across $2005\text{--}2025$, retaining for each CNES the
+modal municipality of operation, modal facility type
+(\texttt{CO\_TIPO\_ESTABELECIMENTO}), modal management sphere (federal,
+state, municipal, or private contract), and the first and last
+competence months observed. We retain establishments classified as
+hospitals: general hospital (\texttt{05}), specialty hospital
+(\texttt{07}), and day hospital (\texttt{62}). The resulting universe
+contains $15{,}316$ hospital CNES.
+
+The second is a habilitation panel constructed from the CNES habilitation
+files (\texttt{HB} layer). Each row records a hospital--habilitation--
+month observation. We classify habilitations into the seven
+high-complexity categories listed in Section \ref{sec:setting} using a
+lookup table from the SIGTAP procedure-group codes (\texttt{SGRUPHAB})
+to our category labels. A hospital is classified as
+\emph{high-complexity active} in our panel if it holds at least one
+high-complexity habilitation that is active in any month during
+$2010\text{--}2024$. This identifies $10{,}690$ hospitals
+($69.8\%$ of the master universe).
+
+\subsection{Spatial and Auxiliary Data}
+
+Municipality centroids and shapefiles come from the IBGE
+\texttt{municipios\_2010} layer ($5{,}565$ municipalities; we use the
+$6$-digit IBGE code for SIH/SIM compatibility). State shapefiles come
+from \texttt{estados\_2010}. Both layers are projected on SIRGAS 2000
+(EPSG:4674) for distance computations and reprojected to a Lambert
+azimuthal equal-area for visualization.
+
+GDP at the municipality level is from IBGE Tabela $5938$ (Produto
+Interno Bruto dos Municípios) for $2010\text{--}2021$ in current
+nominal reais, deflated to $2020$ R\$ using the IPCA. Population is
+from Tabela $6579$ for $2010\text{--}2021$ and the $2022$ Census plus
+official annual estimates for $2023\text{--}2024$.
+
+\subsection{Final Sample}
+
+After matching, $5{,}588$ municipalities of residence appear in
+SIH-AIH $2010\text{--}2024$. Joining to the IBGE $2010$ shapefile
+($5{,}565$ municipalities) yields $5{,}565$ municipalities with valid
+centroids, non-missing population and GDP, and at least one neighbor
+in the patient-flow graph. This is the analysis sample for the
+divergence map and the descriptive results; the $23$ residual
+municipalities (recently created codes not in the $2010$ IBGE layer
+or with incomplete digital records) drop out. Of the $15{,}316$ hospital CNES,
+$6{,}710$ ($43.8\%$) participate in the bipartite graph after the SIH
+universe filter, and $3{,}488$ ($32.6\%$ of the $10{,}686$
+high-complexity hospitals) hold a high-complexity habilitation
+\emph{and} appear in the embedding. The hospital coverage gap is one of the limitations
+discussed in Section \ref{sec:discussion}: hospitals with active
+SIGTAP habilitations but no SUS-billed admissions during the panel
+window---typically philanthropic and small private hospitals serving
+non-SUS clients---are not embedded and therefore are excluded from the
+network metric.

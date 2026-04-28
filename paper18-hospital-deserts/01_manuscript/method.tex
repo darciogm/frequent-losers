@@ -1,0 +1,139 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{Bipartite Patient Flow Graph}
+
+We construct a weighted bipartite graph $G = (M \cup H, E, w)$ in which
+$M$ is the set of $|M| = 5{,}588$ Brazilian municipalities of residence,
+$H$ is the set of $|H| = 6{,}710$ public hospital CNES participating in
+the SIH inpatient flow during $2010\text{--}2024$, and $E \subseteq M
+\times H$ contains a weighted edge $(m, h)$ whenever municipality $m$
+sends at least one SUS-billed admission to hospital $h$ in the panel
+window. The edge weight $w_{mh}$ is the cumulative number of admissions
+$n_{mh}^{\text{int}}$ over the period.
+
+The pooled graph contains $|E| = 648{,}973$ edges out of a possible
+$|M| \times |H| = 37.5\,\text{million}$, for a density of $1.7\%$. The
+mean weighted degree of a municipality is $32{,}108$ admissions over
+15 years; the median is $1{,}960$. Hospital weighted degrees are far
+more right-skewed: the top-$10$ hospitals each receive admissions from
+hundreds of distinct municipalities of residence, reflecting the hub
+structure of metropolitan tertiary care (Table \ref{tab:tophosp}).
+\input{tables/tab_tophosp} We retain the bipartite structure rather than collapsing
+to a directed flow because random walks across the bipartition naturally
+encode second-order proximity (two municipalities are similar if they
+share many hospitals; two hospitals are similar if they share many
+referring municipalities).
+
+\subsection{Bipartite Embedding via node2vec}
+
+We compute a $128$-dimensional vector representation $\mathbf{e}_v \in
+\mathbb{R}^{128}$ for every node $v \in M \cup H$ using a sparse,
+on-the-fly implementation of node2vec \citep{grover2016} from the
+\texttt{pecanpy} library \citep{liu2021pecanpy}, which runs the
+biased random walks in compiled \texttt{numba} code with no Python-level
+materialization of walk sequences. This was a non-trivial implementation
+choice: the canonical Python \texttt{node2vec} package
+\citep{eliorc2017} pre-computes alias tables for every node-neighbor
+pair, materializes the entire walk corpus in RAM, and exhausted our
+$16$\,GB memory budget within $10$ minutes of execution on a graph of
+this size. The \texttt{pecanpy SparseOTF} variant peaks at $0.55$\,GB
+RSS for the full embedding step.
+
+The hyperparameter configuration follows defaults known to perform well
+on bipartite graphs of similar density:
+\begin{itemize}
+    \item Walk length $\ell = 20$, walks per node $r = 10$, yielding
+        a corpus of $r |V| = 122{,}980$ walks.
+    \item Return parameter $p = 1$, in-out parameter $q = 1$ (unbiased
+        walks); both calibrated against neighborhood-recovery sanity
+        checks (Section \ref{sec:results-sanity}).
+    \item Window size $w = 10$, embedding dimension $d = 128$,
+        skip-gram with negative sampling ($k = 10$ negatives), $5$
+        training epochs.
+    \item Edge weights $w_{mh}$ control transition probabilities
+        proportionally; we apply no log-transform of weights, after
+        verifying that the alternative does not change top-$k$
+        neighborhood structure for the canonical sanity cases.
+    \item Random seed fixed at $42$ for reproducibility; we report
+        seed-stability robustness in Appendix \ref{app:robustness}.
+\end{itemize}
+Training takes $17.2$ seconds on a $12$-thread CPU; we forgo GPU
+acceleration as it is unnecessary at this scale.
+
+\subsection{Municipality-Only Projection}
+
+The bipartite embedding places municipalities and hospitals in a
+common space, but the structure of node2vec random walks ensures that
+walks alternate between the two partitions. As a consequence, in
+the bipartite embedding a municipality's nearest neighbors tend to be
+its directly-connected hospitals, with municipality-to-municipality
+cosine similarity attenuated by walk parity. To obtain a clean
+municipality-to-municipality similarity space, we additionally
+construct a TF--IDF-weighted projection.
+
+Let $A \in \mathbb{R}^{|M| \times |H|}$ denote the patient-flow matrix,
+with $A_{mh} = w_{mh}$. We row-normalize ($\widetilde{A}_{mh} = A_{mh} /
+\sum_{h'} A_{mh'}$, so each row is a probability simplex over hospitals)
+and apply IDF weights to columns ($\mathrm{idf}_h = \log(|M| / df_h)$,
+where $df_h$ is the number of municipalities with $A_{mh} > 0$). The
+resulting weighted matrix is $\widetilde{A}_w = \widetilde{A} \cdot
+\mathrm{diag}(\mathrm{idf})$. Co-patiency similarity between
+municipalities is given by the symmetric matrix
+\(
+\widetilde{A}_w \widetilde{A}_w^\top.
+\)
+We threshold each row to its top-$30$ largest values, symmetrize
+($\max(s_{ij}, s_{ji})$), and obtain a sparse municipality-only graph
+$G_M$ with $|V| = 5{,}588$ nodes, $\approx 207{,}000$ edges,
+average degree $37.3$, on which we run a second node2vec instance with
+identical hyperparameters. The TF--IDF step is essential to suppress
+the spurious similarity that hub hospitals (HC-USP, INCOR, etc.) would
+otherwise induce between distant municipalities that send a small
+share of patients to the same national center.
+
+\subsection{Isolation Metrics}
+
+For each municipality $m$ and the set $H^* \subseteq H$ of $3{,}488$
+high-complexity hospitals embedded in our bipartite space (Section
+\ref{sec:setting}), we define two scalar isolation measures:
+\begin{align}
+\isokm_m  &= \min_{h \in H^*} \mathrm{km}(m, h),
+    \label{eq:iso-km}\\
+\isoemb_m &= \min_{h \in H^*}\,\bigl[\,1 - \cos(\mathbf{e}_m, \mathbf{e}_h)\,\bigr],
+    \label{eq:iso-emb}
+\end{align}
+where $\mathrm{km}(m, h)$ is the centroid-to-centroid haversine
+distance and $\cos(\cdot, \cdot)$ is cosine similarity. We log-transform
+$\isokm$ to handle right-skewness (median $16$\,km, $p_{99} \approx 200$\,km)
+and standardize both to $z$-scores. The \emph{divergence} is then
+\begin{equation}
+\divz_m = z\bigl(\isoemb_m\bigr) - z\bigl(\log(1 + \isokm_m)\bigr).
+\label{eq:divz}
+\end{equation}
+
+Equation \eqref{eq:divz} is the central object of Section
+\ref{sec:results}. Its sign indicates the direction of disagreement
+between the network-revealed and geographic views; its magnitude
+indicates how strongly they disagree.
+
+\subsection{Outcome and Predictive Specifications}
+
+To probe whether the divergence is informative about realized health
+outcomes, we estimate ridge regressions of the period-pooled amenable
+mortality rate on combinations of $\isokm$, $\isoemb$, $\divz$, and
+controls. The dependent variable is the average annual amenable
+mortality rate per $100{,}000$ residents over $2010\text{--}2023$,
+winsorized at the $1\%$ and $99\%$ tails. Controls are log mean
+population, log mean GDP, and a vector of $26$ state fixed effects.
+Out-of-sample $R^2$ and mean absolute error are computed with $5$-fold
+cross-validation, $80/20$ split per fold, ridge penalty $\alpha = 1$,
+random seed $42$. We restrict the predictive sample to municipalities
+with mean population $\geq 10{,}000$ to dampen the Poisson noise that
+dominates small-$N$ amenable death counts. The resulting estimation
+sample is $n = 3{,}112$ municipalities.
+
+This specification is intentionally simple: our primary result is
+descriptive (the divergence map, Section \ref{sec:results-divergence}),
+and the predictive regression serves to falsify a causal interpretation
+of the divergence in cross-section, rather than to estimate one.

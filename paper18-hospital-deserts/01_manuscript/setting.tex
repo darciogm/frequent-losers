@@ -1,0 +1,97 @@
+\section{Institutional Setting}
+\label{sec:setting}
+
+The Brazilian Sistema Único de Saúde (SUS), established by the 1988
+Constitution and operationalized by the 1990 Lei Orgânica da Saúde
+(Laws 8.080 and 8.142), is a publicly financed, universal, and
+hierarchically organized healthcare system. It covers the entire
+resident population in principle, with $\approx 71\%$ of the population
+relying exclusively on it and an additional $\approx 25\%$ using it as
+a complement to private health insurance. Federal financing flows
+through state and municipal health funds; service delivery is
+predominantly through municipally-owned units for primary care, and
+through a mix of municipal, state, philanthropic, and private
+contracted providers for secondary and tertiary inpatient care.
+
+\paragraph{Regionalization.}
+Throughout the paper we refer to the standard IBGE macro-regional
+partition---North, Northeast, Center-West, Southeast, and South
+(Figure \ref{fig:regional-map})---which underlies the geographic
+patterns documented in Section \ref{sec:results}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../04_figures/fig_regional_map.png}
+    \caption{IBGE macro-regions of Brazil. The North (\textsc{n})
+    encompasses the seven states of the Amazon basin; the Northeast
+    (\textsc{ne}) the nine states of the semi-arid hinterland and
+    Atlantic littoral; the Southeast (\textsc{se}) the four states
+    that hold the bulk of national GDP and tertiary care infrastructure;
+    the South (\textsc{s}) the three states with the most calibrated
+    SUS regionalization in our analysis; and the Center-West
+    (\textsc{co}) the cerrado states plus the Federal District.}
+    \label{fig:regional-map}
+\end{figure}
+
+SUS organizes inpatient care along a hub-and-spoke logic codified in
+the National Pact for Health (2006) and the Decree 7.508/2011, which
+introduces the figure of the \emph{Região de Saúde}---a coordinated
+group of municipalities sharing a referral network for primary,
+secondary, and tertiary care. There are $438$ Regiões de Saúde as of
+$2023$, nested into $26$ states and the Federal District. Patients are
+expected to receive primary care in their municipality of residence
+and to be referred up the hierarchy for procedures requiring more
+complex inputs.
+
+In practice, the actual flow of patients deviates substantially from
+the formal regionalization. Cross-region referrals are common,
+particularly when the formal hub lacks specific specialties.
+Cross-state flows are systematic in metropolitan areas straddling state
+borders (e.g., Petrolina-PE/Juazeiro-BA), in the southern fringe of
+Amazonas where Manaus draws patients from Rondônia and Roraima, and
+along the BR-364 corridor through Acre and Rondônia. Informal flows
+follow ad-hoc personal networks, employer health-plan arrangements (in
+the small fraction of Northeastern municipalities with significant
+formal employment), and---in remote Amazonian municipalities---air and
+river transport links that often take patients directly to a state
+capital, bypassing intermediate hubs.
+
+\paragraph{High-complexity care.}
+The SUS habilitation framework, administered by the Ministry of
+Health and recorded in the Cadastro Nacional de Estabelecimentos de
+Saúde (CNES), grants individual hospitals the legal and financial
+authorization to perform specific high-complexity procedures. Categories
+include cardiology (\textsc{cardio}), oncology (\textsc{onco}),
+neurology and neurosurgery (\textsc{neuro}), nephrology and dialysis
+(\textsc{renal}), perinatology (\textsc{perinat}), trauma and
+orthopedics (\textsc{trauma\_orto}), and transplantation
+(\textsc{transplante}). Habilitation requires meeting structural,
+human-resource, and procedural standards verified through periodic
+audits, and it carries a higher reimbursement schedule under the SUS
+fee-for-service table (Tabela SIGTAP) than non-habilitated equivalents.
+We use a hospital's possession of any high-complexity habilitation
+during $2010\text{--}2024$ as our operational definition of
+``high-complexity hospital''. Of the $15{,}316$ hospitals in our
+universe, $10{,}690$ ($69.8\%$) hold at least one such habilitation
+during the panel.
+
+\paragraph{Distance and travel time.}
+The geographic literature on Brazilian healthcare access typically uses
+either centroid-to-centroid haversine distance \citep{macinkoHarris2015}
+or road network travel time computed over the OpenStreetMap layer
+\citep{rochaSoares2010}. Both approaches share a common limitation: they
+encode the road network and ignore the air, river, and rail-bus
+intermodal flows that are non-trivial precisely in the regions where
+the regionalization framework is weakest. Within Amazônia, no all-weather
+roads connect, e.g., Caroebe-RR or Bagre-PA to their state capitals;
+patients reach high-complexity care via subsidized municipal flights
+or commercial river boats. In the semi-arid Northeast, paved highways
+connect virtually all municipalities to small local hospitals, but the
+relevant access decision is to the regional teaching hospital one to
+three hours' drive away---and that decision is made on quality grounds
+that no road metric captures.
+
+This setting motivates an access measure built directly on observed
+patient flows, rather than on the infrastructure that those flows
+nominally use. We turn to the construction of such a measure in the
+next two sections.

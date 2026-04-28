@@ -1,0 +1,177 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Why the Cross-Sectional Mortality Null is Misleading}
+
+The natural reading of Table \ref{tab:cv-mortality} would be that
+network-revealed isolation ``does not matter'' for mortality, since
+adding it to a regression already containing geographic isolation
+yields no gain. We argue this reading is incorrect, and that the
+correct interpretation is that the cross-sectional, residential-
+municipality-level amenable mortality rate is the wrong outcome to
+detect what the divergence captures.
+
+Two confounders operate in the same direction.
+
+\paragraph{SIM under-reporting.}
+Vital registration coverage in Brazil is uneven. The Northern region
+has historically estimated coverage of $85\text{--}95\%$, vs
+$95\text{--}99\%$ in the South \citep{ms2014, franca2017}. Within the
+North, ill-defined-cause deaths (R-codes) range from $7\%$ to $25\%$
+across municipalities, and ill-defined cardiovascular deaths in
+particular are concentrated in remote ribeirinho municipalities where
+death certification is performed by lay personnel rather than
+attending physicians. Many deaths that would be classified as
+``amenable'' under the Nolte--McKee list are instead recorded under
+\texttt{R99} (ill-defined and unknown causes of mortality). The result
+is mechanical: the more isolated a municipality is from physician-
+attended care, the lower its observed amenable mortality
+\emph{rate}---not because it is in fact lower, but because deaths are
+either not registered or not classified as amenable. This bias
+attenuates and may even invert the sign of the access-mortality
+relationship.
+
+\paragraph{Cross-border death recording.}
+A second mechanism operates in the opposite spatial regime, the
+Northeastern semi-arid hinterland. There, patients with conditions
+ranging from acute myocardial infarction to obstetric complications are
+routinely transferred from local hospitals (where the divergence-
+positive cases reside) to teaching hospitals in state capitals such as
+Recife, Salvador, Fortaleza, and Teresina. Per the SIM coding
+convention, when a patient dies in a hospital, the death is registered
+in that hospital's municipality (\texttt{CODMUNOCO}), not in the
+patient's residential municipality (\texttt{CODMUNRES}). Although the
+SIM database records both fields, our outcome---and the standard
+practice in the access literature---uses \texttt{CODMUNRES}. The
+consequence is that amenable deaths originating in the highly-divergent
+sertão are partially attributed to the receiving capital, which
+typically has \emph{negative} divergence (well-equipped and well-
+calibrated). The cross-section thus correlates positive divergence
+with anomalously \emph{low} residential mortality, again attenuating
+the access-mortality relationship.
+
+\paragraph{Empirical test of the under-reporting hypothesis.}
+We can test the SIM-coverage hypothesis directly by computing each
+municipality's fraction of deaths recorded with an ill-defined
+underlying cause (ICD-10 codes R96 through R99) over $2010\text{--}2023$
+and using it as a control in the mortality regression. If the
+hypothesis is correct, this fraction should (i) correlate positively
+with isolation, (ii) load with a strongly negative coefficient on
+amenable mortality (more ill-defined deaths $\Rightarrow$ fewer
+classified as amenable), and (iii) absorb a substantial share of the
+residual variance once added to the model.
+
+All three predictions are confirmed (Figure \ref{fig:r99-hypothesis}).
+The cross-sectional Pearson correlation of \texttt{frac\_R96\_R99}
+with $\isokm$ is $+0.089$ and with $\isoemb$ is $+0.063$ (panels (a)
+and (b)). Geographic and embedding isolation both predict more
+ill-defined coding, with km the slightly stronger predictor. The
+regional breakdown (panel c) shows the South with the lowest median
+ill-defined fraction (median $2.1\%$), as expected for the
+best-resourced regional vital-registration system, and the North,
+Northeast and Southeast all clustered between $4\%$ and $5.4\%$ at
+the median---surprisingly little raw heterogeneity, consistent with
+secular improvements in SIM coverage but with substantial within-
+region variance.
+
+The augmented regression (panel d) adds the $z$-scored ill-defined
+fraction to the model with $\isokm$. The coefficient is
+$-11.17$ (out-of-sample standard deviation $1.0$): a one-standard-
+deviation increase in ill-defined coding (roughly $5$ percentage
+points) is associated with a $11$ amenable-deaths-per-$100{,}000$
+\emph{decrease} in the observed rate. The out-of-sample $R^2$ rises
+from $0.409$ to $0.451$ (a $+0.042$ gain), comparable to the
+$+0.012$ gain from $\isokm$ over the controls-only model. R99 is
+quantitatively a more important confounder than $\isokm$ for this
+outcome.
+
+After controlling for R99, the embedding still does not improve
+predictive performance over geographic distance ($\Delta R^2 =
+-0.001$ from $0.451$ to $0.450$). The implication is more nuanced
+than ``the embedding works, the SIM is broken.'' The embedding does
+\emph{not} provide additional cross-sectional predictive content
+beyond geographic distance, even after the most direct under-reporting
+proxy is partialled out, because $\isokm$ and $\isoemb$ co-vary along
+the same underlying SIM-coverage gradient. Both metrics inherit the
+gradient. What our analysis shows is that the cross-sectional
+amenable-mortality regression at the residential-municipality level
+is a poor specification for testing access measures of any kind in
+Brazil: the appropriate test is causal, exploiting within-municipality
+variation, which we discuss next.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../04_figures/fig_r99_hypothesis.pdf}
+    \caption{Empirical test of the SIM under-reporting hypothesis.
+    (a)~Bivariate density of ill-defined-cause fraction (ICD-10
+    R96--R99 codes among all deaths, pooled $2010\text{--}2023$) against
+    geographic isolation $z(\log \isokm)$. The positive correlation
+    indicates that more isolated municipalities record more deaths
+    with poorly-specified causes. (b)~Same against embedding isolation
+    $z(\isoemb)$. (c)~Distribution of the ill-defined fraction by
+    macro-region (boxplot). (d)~Out-of-sample $R^2$ across four ridge
+    specifications: only $\isokm$, only $\isokm + \isoemb$, $\isokm +$
+    R99 fraction, $\isokm + \isoemb +$ R99 fraction. Adding the R99
+    fraction substantially improves $R^2$ in both specifications;
+    adding $\isoemb$ does not.}
+    \label{fig:r99-hypothesis}
+\end{figure}
+
+\subsection{The Closure Event-Study Path Forward}
+
+The natural way to break the under-reporting confounder is to switch to
+a within-municipality identification strategy. Hospital closures
+provide such variation: a closure at time $t$ in municipality $m$
+generates a discrete shock to $\isoemb_m$ (rerouting patient flow to
+more distant hubs) and to $\isokm_m$ (changing the kilometer-nearest
+hospital). The CNES habilitation panel allows us to identify
+$\approx 350$ exogenously-driven hospital closures in $2010\text{--}2024$
+(filtering to administrative or fiscal motives, excluding closures
+preceded by a $50\%$+ admission decline that signals demand-driven
+exit). Applying the staggered-treatment estimator of \citet{cs2021} to
+the resulting event-study allows three quantities of interest:
+\begin{enumerate}
+    \item the average treatment effect of closure on amenable
+        mortality, controlling for residential SIM under-reporting via
+        municipality-and-year fixed effects;
+    \item the heterogeneity of that effect by pre-closure $\divz$, which
+        identifies whether the effect is concentrated in poorly-
+        calibrated systems (as theory would predict);
+    \item the marginal mortality cost of one unit of network-distance
+        increase, mapping directly to the policy question of whether
+        SUS regionalization rules should weight network proximity over
+        kilometer proximity in their referral allocation.
+\end{enumerate}
+We treat this as the natural extension of the present descriptive paper
+and the focus of a companion manuscript. The data for the analysis is
+already constructed (\texttt{hospital\_closures.parquet} in our
+intermediate layer); we defer the empirical implementation to ensure
+that the descriptive contribution is positioned and reviewed first.
+
+\subsection{Policy Implications}
+
+Three implications follow from the descriptive findings, conditional
+on the caveat that the present analysis does not establish causality.
+
+First, the nominal hub-and-spoke regionalization codified in the
+$438$-Região-de-Saúde framework is heterogeneously aligned with realized
+patient flows. The Northeast and the North both deviate from
+the formal hierarchy, but in opposite directions: the Northeast
+overstates the local network's effective capacity (red on the
+divergence map), while the North understates it (blue). The South
+emerges as the calibrated benchmark.
+
+Second, distance-based access measures used in the
+academic and policy literature systematically misclassify access in
+exactly the regions where access deficits are most epidemiologically
+consequential. Our embedding offers a low-cost diagnostic: any
+municipality with $|\divz| > 1.0$ should be flagged for review by
+both the regionalization authority and the resource allocation
+formula.
+
+Third, the embedding---built from SUS-billed admissions---necessarily
+omits private flows. In states with high private-sector penetration
+(São Paulo, Rio de Janeiro, Distrito Federal), the divergence reflects
+SUS patient routing only. In states with negligible private penetration
+(most of the North and rural Northeast), the divergence is closer to
+universal. This asymmetry should be kept in mind when reading the map.

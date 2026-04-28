@@ -1,0 +1,152 @@
+\section{Introduction}
+\label{sec:intro}
+
+Distance to the nearest hospital is one of the most widely used
+measures of healthcare access in applied economics. It motivates the
+literature on hospital closures \citep{avdic2016, gujralBasu2019, carroll2019},
+on rural healthcare deserts \citep{germack2019, lindrooth2018}, and
+on the spatial allocation of health resources \citep{gaynorTown2011}. Empirical work uses haversine kilometers, road
+travel time \citep{doyle2011}, or driving time over OpenStreetMap as
+inputs to demand systems, instrumental variables for utilization, or
+exposure measures in event studies of facility entry and exit. Yet
+geographic distance is, at best, a noisy proxy for the medically
+meaningful concept of \emph{network access}---the actual ease with which
+patients reach the appropriate level of care.
+
+This gap between geography and access is particularly stark in Brazil,
+where the public Sistema Único de Saúde (SUS) covers $\approx 75\%$ of
+the population through a hub-and-spoke regionalization built atop a
+$5{,}570$-municipality administrative grid. Many patients in Amazonian
+municipalities reach high-complexity care exclusively by river boat or
+chartered plane; many in the semi-arid Northeast bypass nominally
+nearest hospitals because those facilities lack qualified specialists,
+ICU beds, or suitable equipment. In both cases, the metric ``kilometers
+to the nearest hospital'' fundamentally misses the structure of
+realized access. The error is not random: it is concentrated in the
+poorest and most epidemiologically vulnerable regions of the country.
+
+\paragraph{This paper.}
+We provide a graph-based, data-driven measure of healthcare access for
+the universe of Brazilian municipalities, and use it to map where the
+geographic and the network-revealed views of access agree and where
+they sharply diverge. Our object of analysis is the bipartite patient
+flow graph linking $5{,}588$ municipalities of residence to $5{,}828$
+public hospitals through $\approx 100$ million federal hospital
+admissions (AIH) over $2010\text{--}2024$, the entire universe of SUS
+inpatient activity in the period. We learn a $128$-dimensional
+representation of each node using a sparse implementation of node2vec
+\citep{grover2016} that encodes second-order random walks with
+edge-weight bias. Two embeddings are produced: a bipartite embedding
+in which municipalities and hospitals share a common space (allowing
+direct municipality-to-hospital cosine distance), and a TF--IDF-weighted
+co-patiency projection of the bipartite graph onto the
+municipality-only space.
+
+For each municipality, we compute two scalar measures of isolation
+relative to the set of high-complexity hospitals---those with active
+SUS habilitation in cardiology, oncology, neurology, nephrology,
+perinatology, trauma-orthopedics, or transplantation:
+\[
+\isokm_i = \text{haversine km to nearest high-complexity hospital},\qquad
+\isoemb_i = 1 - \cos(\mathbf{e}_i, \mathbf{e}_{h^*(i)}),
+\]
+Standardizing each to a $z$-score and taking the difference yields the
+\emph{divergence}
+\(
+\divz_i = z(\isoemb_i) - z(\isokm_i).
+\)
+A positive divergence indicates that the embedding sees a municipality
+as \emph{more} isolated than the map does---patients leapfrog the
+nominally nearest hospital because it is inadequate. A negative
+divergence indicates the opposite: the geography overstates isolation
+because patients reach a distant hub via channels (river, air, informal
+referral pathways across state lines) that road geography ignores.
+
+\paragraph{Findings.}
+Three patterns emerge.
+
+First, the divergence is large. The cross-sectional standard deviation
+of $\divz$ is $0.91$, with $9\%$ of municipalities exhibiting
+$|\divz| > 1.5$. Roughly $56.7\%$ of municipalities have a different
+nearest high-complexity hospital under the embedding metric than under
+the geographic metric.
+
+Second, the divergence is geographically organized into recognizable
+macro-regional patterns. Northern (Amazonian) Brazil is dominantly
+\emph{negatively} divergent: $\bar{\divz}_{\text{N}} = -0.22$, with
+median geographic distance to the nearest high-complexity hospital of
+$30$\,km but embedding-revealed connections that pull these municipalities
+toward Manaus, Boa Vista, and Belém despite distances often exceeding
+$200$\,km by air or river. Northeastern semi-arid municipalities show
+the opposite signature in pockets of Piauí, Maranhão, and Bahia interior:
+nominal hospital proximity (medians $\approx 19$\,km) coexists with high
+embedding-isolation, as patients route around inadequate local
+facilities to reach state-capital tertiary care. The Southeast and
+Center-West show positively-skewed but moderate divergence, consistent
+with metropolitan saturation effects in Greater São Paulo and the
+Brasília corridor. The South emerges as the most well-calibrated region:
+geographic and network-revealed access are closely aligned, with
+$\bar{\divz}_{\text{S}} = -0.10$ and the lowest cross-sectional dispersion.
+
+Third, despite the strong descriptive signal, we cannot detect a
+robust cross-sectional association between divergence and amenable
+mortality once standard controls (state fixed effects, log population,
+log GDP) are included. Adding our network isolation measure to a
+ridge regression already containing $\isokm$ produces a $\Delta R^2$
+of $-0.0002$, statistically indistinguishable from zero. We argue this
+\emph{null} reflects two well-documented confounders of vital
+registration in Brazil: (i) under-reporting of deaths due to
+ill-defined causes (R-codes) in the Northern and rural Northeastern
+SIM strata exactly where divergence is largest, and (ii) cross-border
+death recording, in which patients referred from semi-arid municipalities
+die at the receiving capital and have their death registered in the
+hospital's municipality rather than the residential one. Both biases
+attenuate the mechanical link between access deficit and observed
+mortality at the residential-municipality level. We treat the null as
+a methodological warning---one that, to our knowledge, the existing
+hospital-access literature using SIM aggregates has not articulated---
+rather than as evidence that network access does not matter for
+mortality, and outline in the discussion a closure event-study design
+that sidesteps the confounders by relying on within-municipality
+variation.
+
+\paragraph{Contributions and related literature.}
+We contribute to three strands of literature.
+
+First, on \emph{hospital closures and outcomes}, the existing literature
+\citep{avdic2016, gujralBasu2019, carroll2019, joynt2015} estimates
+the average effect of facility loss on local mortality, typically using
+distance-to-nearest as the treatment intensity. Our embedding offers a
+more granular treatment metric---revealed exposure---that we will exploit
+in a companion event-study (Pivot B in our research roadmap, beyond the
+scope of the current draft).
+
+Second, on \emph{healthcare deserts and access measurement}
+\citep{germack2019, gaynorVogt2003}, we provide the
+first nationwide application of patient-flow embeddings to define
+hospital deserts, and propose the divergence metric as a falsification
+device for any access measure based purely on physical distance. The
+$56.7\%$ disagreement rate between geographic and network-revealed
+nearest hospital is, to our knowledge, the largest such estimate documented.
+
+Third, on \emph{representation learning for economic networks}
+\citep{kelly2021, acemoglu2024, bonhomme2019}, we show that node2vec
+applied to a tractable, mid-sized bipartite graph ($\approx 11{,}000$
+nodes, $\approx 500{,}000$ edges) yields embeddings that pass strong
+sanity checks (top-10 nearest neighbors of São Paulo recover the entire
+metropolitan ABC; top-10 of Manaus recover its peri-urban ribeirinho
+catchment) while retaining a useful $0.30$ Pearson correlation with
+geographic distance---enough to track real spatial structure without
+collapsing into a redundant geography.
+
+\paragraph{Roadmap.}
+Section \ref{sec:setting} describes the Brazilian institutional
+setting. Section \ref{sec:data} introduces the data: SIH-AIH for hospital
+flows, SIM for mortality, CNES habilitations for hospital quality, and
+IBGE for spatial overlays. Section \ref{sec:method} formalizes the
+graph construction, the node2vec specification, and the divergence
+metric. Section \ref{sec:results} presents the headline divergence map,
+the regional decomposition, the canonical-case taxonomy, and the
+mortality null with its diagnosis. Section \ref{sec:discussion}
+discusses policy implications and the planned causal extension.
+Section \ref{sec:conclusion} concludes.

@@ -1,0 +1,111 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{rotating}
+\usepackage{setspace}
+\usepackage[round, semicolon, authoryear]{natbib}
+\bibliographystyle{plainnat}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MidnightBlue,
+  citecolor=MidnightBlue,
+  urlcolor=MidnightBlue,
+  pdftitle={Beyond the Kilometer: Network-Revealed Healthcare Access in Brazil},
+  pdfauthor={Darcio Genicolo-Martins}
+}
+\usepackage{microtype}
+
+% spacing
+\onehalfspacing
+\setlength{\parskip}{0.4em}
+
+% commands
+\newcommand{\divz}{\widetilde{\Delta}}
+\newcommand{\isokm}{\mathrm{iso}^{km}}
+\newcommand{\isoemb}{\mathrm{iso}^{emb}}
+
+\title{\textbf{Beyond the Kilometer:\\
+Network-Revealed Healthcare Access in Brazil}}
+
+\author{Darcio Genicolo-Martins\thanks{Insper. Email: \texttt{darcio.g.martins@gmail.com}.
+Submission to ETH/UZH Workshop in AI \& Applied Economics (May 2026).
+Replication code and data documentation:
+\url{https://github.com/darciogm/bitter-pills/tree/main/paper18-hospital-deserts}.}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Geographic distance is the standard metric for measuring healthcare access,
+yet it ignores how patients actually traverse the hospital network: through
+referrals, informal flows, and transport modes that roads do not encode.
+We build a bipartite graph of $5{,}588$ Brazilian municipalities and
+$6{,}710$ public hospitals from $179.5$ million federal SUS
+hospital admissions ($2010\text{--}2024$), and learn $128$-dimensional node embeddings
+via a sparse-on-the-fly node2vec implementation. Defining each
+municipality's network-revealed isolation as the embedding distance to its
+nearest high-complexity hospital---and comparing it to the haversine
+distance to the same set---we find systematic and geographically coherent
+divergence in roughly half of all municipalities. The Northern region of
+Brazil is more connected than the map suggests, as river and air transport
+funnel patients to the Manaus and Boa Vista hubs along corridors invisible
+to road-based metrics. Conversely, the Northeastern semi-arid hinterland is
+more isolated than the map suggests, as patients bypass underequipped
+local hospitals and travel to distant regional capitals. The headline
+divergence map and a structured taxonomy of canonical cases provide a
+diagnostic of where the Brazilian SUS network deviates from its planning
+geography. We discuss why the cross-sectional relationship between this
+divergence and amenable mortality is confounded by SIM under-reporting and
+cross-border death recording, and outline a closure event-study design as
+the natural next step toward causal identification of the marginal
+mortality cost of network distance.
+
+\medskip
+\noindent\textbf{Keywords:} hospital access, healthcare deserts, graph
+embeddings, node2vec, amenable mortality, SUS, Brazil.
+
+\medskip
+\noindent\textbf{JEL:} I11, I14, I18, R12, C45.
+\end{abstract}
+
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+
+\input{introduction.tex}
+
+\input{setting.tex}
+
+\input{data.tex}
+
+\input{method.tex}
+
+\input{results.tex}
+
+\input{discussion.tex}
+
+\input{conclusion.tex}
+
+\bibliography{references}
+
+\appendix
+\input{appendix.tex}
+
+\end{document}
