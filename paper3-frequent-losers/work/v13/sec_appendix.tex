@@ -171,57 +171,162 @@ manufactured competition falls.
 
 \section{Structural Model: Identification, Estimation, and Specification Tests}
 \label{app:structural_id}
-\noindent\textit{(Online Appendix)}\medskip
+\noindent\textit{(Online Appendix.)}\medskip
 
-\subsection{Identification of Structural Parameters}
+This appendix specifies the bid equation, identifies the
+structural parameters, reports two-stage maximum-likelihood
+estimates, selects between the cover-bidding regimes of
+\ref{app:proofs} via BIC, and presents three out-of-sample
+specification tests on moments not used in estimation. The
+exercise is a calibration of the cover-bidding mechanism and the
+distribution of FL bids; we do not claim independent
+identification of the markup or the causal price effect.
 
-\paragraph{Genuine-bid parameters $(\boldsymbol{\beta}, \sigma_g^2)$.}
-These are identified from within-item--year variation in non-FL
-losing bids. The exclusion restriction is that FL status does not
-enter the genuine-bid distribution $F_{\text{genuine}}$: conditional
-on observables $\mathbf{x}_j$ and fixed effects, a genuine bidder's
-cost draw and markup are independent of whether FL firms participate
-in the same tender. This permits estimation on 23.2~million non-FL
-losing bids without selection correction.
+\subsection{Bid Equation and Estimation}
 
-\paragraph{Cover-bid parameters $(\delta$ or $\sigma_c, \epsilon)$.}
-Conditional on the winning bid $b^*_t$ (observed in each tender),
-the cover-bid distribution is identified from 189,381 FL losing
-bids. Under Regime~1, $\delta$ is identified by the range of FL
-bids above $b^*_t$. Under Regime~2, $(\epsilon, \sigma_c)$ are
-identified by the mean and variance of $\log b_{\ell t} - \log b^*_t$
-among FL bids. Model selection between regimes uses BIC.
+The bid-level data comprise 23{,}177{,}905 non-FL losing bids
+and 189{,}381 FL losing bids on 2{,}875{,}208 tender-items with
+valid prices and item-year fixed-effect coverage (after
+restricting to losing bids per
+Section~\ref{sec:supporting_setup}). The bid equation is
+\begin{equation}
+  \log b_{jt} = \mathbf{x}_j' \boldsymbol{\beta}
+  + \alpha_i + \lambda_t + u_{jt},
+  \label{eq:by_first_stage}
+\end{equation}
+where $\mathbf{x}_j$ contains firm size, firm age, and CNAE
+sector dummies; $\alpha_i$ is the item fixed effect; $\lambda_t$
+the year fixed effect; and $u_{jt}$ a bid-level residual. The
+first stage absorbs item-year structural variation in genuine
+costs and markups; the residuals carry the FL/non-FL signal
+exploited by the structural likelihood and the Bajari--Ye tests
+of \S\ref{sec:results_bajari}.
 
-\paragraph{Detection probability $\theta_k$.}
-Not point-identified from bid data alone.
-We bound it using cross-PBU variation in oversight capacity, proxied
-by procurement volume. The comparative static $\partial m^* /
-\partial \theta_k < 0$ (Proposition~\ref{prop:optimal_m}) generates
-a testable implication evaluated in the oversight heterogeneity
-analysis (Section~\ref{sec:robustness}).
+We estimate the cover-bid mixture by maximum likelihood in two
+stages. \emph{Stage 1}: estimate
+$(\boldsymbol{\beta}, \sigma_g^2)$ from the non-FL losing bids
+under a log-normal specification, which reduces to OLS of
+$\log b_{jt}$ on $\mathbf{x}_j$ with item and year fixed
+effects; the residual variance gives $\hat{\sigma}_g^2$.
+\emph{Stage 2}: conditional on $b^*_t$ observed in each tender,
+estimate cover-bid parameters from FL bids under each regime
+specification of \ref{app:proofs}. Under Regime~1, the support
+parameter $\delta$ is identified from the range of FL bids
+above $b^*_t$; under Regime~2, the location and scale
+$(\epsilon, \sigma_c)$ are identified from the mean and
+variance of $\log b_{\ell t} - \log b^*_t$ among FL bids.
+Standard errors come from a parametric bootstrap (500
+replications, tender-level resampling).
 
-\paragraph{Cartel markup.}
-The markup $b^* - c_{j^*}$ is not separately identified: we observe
-$b^*$ but not $c_{j^*}$. The structural model characterizes the
-cover-bid mechanism, not price effects.
+\subsection{Identifying Assumptions}
+
+\begin{description}
+\item[B1 (Genuine-bid exclusion).] FL status does not enter the
+genuine-bid distribution $F_{\mathrm{genuine}}$: conditional on
+observables and item-year fixed effects, a genuine bidder's cost
+draw and markup are independent of whether FL firms participate
+in the same tender. \emph{Test:} comparing $\hat{\sigma}_g^2$ on
+genuine-only subsamples that do vs.\ do not include FL bids in
+the same tender yields a difference of $0.001$ (NS), consistent
+with the exclusion restriction.
+
+\item[B2 (Conditional cover-bid identification).] $b^*_t$ is
+observed in each tender (it is the realized winning bid), so
+cover-bid parameters are identified conditional on $b^*_t$
+without further restriction. The assumption is data-driven: we
+do not need to model the cartel's choice of $b^*_t$ to identify
+the distribution of $b_{\ell t}$ above it.
+
+\item[B3 (Detection probability bounded, not point-identified).]
+$\theta_k$ is not point-identified from bid data alone. We
+bound it using cross-PBU variation in oversight capacity (PBU
+size as a proxy for $\theta_k$) and test the comparative static
+$\partial m^*/\partial \theta_k < 0$ (Proposition~\ref{prop:optimal_m})
+in the oversight-heterogeneity analysis of
+\S\ref{sec:robustness}: the FL coefficient varies $0.214 \to
+0.017$ across PBU-size quartiles Q1--Q4, monotonically and in
+the predicted direction.
+
+\item[B4 (Markup not separately identified).] The cartel markup
+$b^*_t - c_{j^*t}$ requires observing the cartel's true cost
+$c_{j^*t}$, which the data do not provide. The structural
+model therefore characterizes the cover-bid \emph{mechanism}
+(distribution and regime selection), not the cartel
+\emph{markup}. The implied markup we report in
+Table~\ref{tab:structural_params} is a calibration that
+mechanically applies the cover-bid distribution to the
+reduced-form coefficients; it is not an independent estimate
+of the price effect.
+\end{description}
 
 \subsection{Structural Parameter Estimates}
 
 \input{tables/tab_structural_params}
 
-\subsection{Specification Tests}
+\subsection{Regime Selection and Specification Tests}
 
-Three predictions can be tested on moments not used in estimation; all go in the predicted direction.
-\emph{First}, the corner-vs-interior solution: mean FL count is 10.7
-when $n_{\text{genuine}} = 0$ (constraint forces $m \geq 3$) and
-$\approx 2$ for $n \geq 2$ (interior solution)---as
-Proposition~\ref{prop:optimal_m} predicts.
-\emph{Second}, within-tender bid dispersion: in 29,398 tenders with
-both FL and non-FL bidders, FL bid CV is 0.57 vs.\ non-FL 1.65; FL
-bids are less dispersed in 82.6\% of tenders (paired $t = -104$,
-$p < 0.001$), validating Regime~2 at the tender level.
-\emph{Third}, the $m$--$\theta$ comparative static: mean FL per tender
-decreases monotonically from Q1 (0.41) to Q4 (0.31) by PBU size.
+\paragraph{BIC selects Regime 2.}
+The two-stage likelihood evaluated under each regime
+specification yields BIC values that select Regime 2
+(coordinated cover bidding) by a margin of $\Delta\mathrm{BIC} =
+-91{,}473$ (Table~\ref{tab:structural_params}). The fitted
+ratio $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$ is consistent
+with $\sigma_c \leq \sigma_g$ and left-truncation at $b^*$, the
+sufficient condition for the lower-dispersion prediction of
+Proposition~\ref{prop:regime2}. The BIC margin is large but is
+itself a within-sample selection criterion; the three
+out-of-sample tests below provide independent confirmation.
+
+\paragraph{Out-of-sample test 1: Corner vs.\ interior solution.}
+Proposition~\ref{prop:optimal_m} predicts that the
+minimum-bidder constraint forces $m \geq 3$ when no genuine
+bidders enter ($n_{\mathrm{genuine}} = 0$, corner solution) and
+that the interior solution is achieved when at least two
+genuine bidders are present. The data: mean FL count is $10.7$
+under $n_{\mathrm{genuine}} = 0$ and $\approx 2$ for
+$n_{\mathrm{genuine}} \geq 2$. The corner-vs-interior gap of
+roughly five-fold matches the sign and order of magnitude the
+proposition predicts and is computed on a moment not used in
+estimation.
+
+\paragraph{Out-of-sample test 2: Within-tender bid dispersion.}
+Proposition~\ref{prop:regime2} predicts that FL bids are less
+dispersed than non-FL bids \emph{within} a tender, conditional
+on the winning bid. In the 29{,}398 tenders with at least two
+FL and at least two non-FL bidders, the FL bid CV is $0.57$
+versus $1.65$ for non-FL bids; FL dispersion is lower in
+$82.6\%$ of tenders (paired $t = -104$, $p < 0.001$). This is
+the sharpest validation of Regime 2 at the tender level: it
+holds within-tender, controlling for the focal-point variation
+that drives the BIC selection.
+
+\paragraph{Out-of-sample test 3: $m$--$\theta_k$ comparative
+static.}
+Proposition~\ref{prop:optimal_m} predicts $\partial m^* /
+\partial \theta_k < 0$: cover-bidder deployment falls with
+oversight capacity. Using PBU size as a proxy for $\theta_k$
+(larger buyers face more administrative scrutiny), mean FL
+firms per tender decreases monotonically across the four
+PBU-size quartiles: $0.41$ (Q1, smallest) $\to 0.39$ (Q2) $\to
+0.34$ (Q3) $\to 0.31$ (Q4, largest). The prediction is
+qualitative; the monotonic decline across quartiles is the
+out-of-sample bite. Combined with the FL-coefficient gradient
+of $0.214 \to 0.017$ across the same quartiles
+(\S\ref{sec:robustness}), the test confirms the comparative
+static in both quantities Proposition~\ref{prop:optimal_m}
+constrains.
+
+\paragraph{What the structural exercise does and does not deliver.}
+The exercise selects a regime, calibrates the cover-bid
+distribution within it, and confirms three out-of-sample
+predictions. It does not identify the cartel markup or the
+causal effect of FL participation on prices. The implied
+markup we report ($\approx 6.4\%$) is by construction
+mechanically tied to the reduced-form coefficient and serves
+as a consistency check, not as an independent estimate. The
+welfare calculations in \ref{app:extensions} apply the
+reduced-form coefficient to FL-present spending and inherit the
+same caveat.
 
 % ============================================================================
 
