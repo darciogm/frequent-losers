@@ -1,0 +1,120 @@
+\section{Introduction}
+\label{sec:intro}
+
+Brazilian procurement law (Lei 8.666/93, Article 22) requires the
+sealed-bid \emph{convite} modality to receive at least three valid
+proposals before a contract may be awarded. The rule was designed
+to protect competition. Its operational effect, documented in
+multiple Conselho Administrativo de Defesa Econ\^omica (CADE)
+investigations, has been the opposite: when fewer than three genuine
+bidders appear, the buyer (or the cartel that controls the buyer's
+pool) must produce additional bids, and those bids tend to be
+deliberately losing---a pattern competition law calls \emph{cover
+bidding} \citep{marshall2012economics, asker2010leniency}. The
+minimum-bidder rule thus creates, by design, a population of firms
+whose participation pattern is anomalous: persistent presence,
+zero wins.
+
+This paper proposes a screening rule that uses precisely that
+anomaly. Define a \emph{frequent loser} (FL) as a firm that bids on
+many tenders without ever winning. The screen requires only
+participation records and win/loss outcomes---no bid microdata, no
+structural assumptions, no enforcement records. It is implementable
+by any procurement oversight body that maintains contract registries:
+the Tribunal de Contas do Estado (TCE), the Controladoria Geral da
+Uni\~ao, comparable institutions in OECD countries, and CADE itself
+when triaging tips for bid-rigging investigations. The screen does
+not identify cartelists. It flags procurement environments
+systematically associated with patterns the cover-bidding literature
+documents in prosecuted cases.
+
+We apply the screen to S\~ao Paulo's Bolsa Eletr\^onica de Compras
+(BEC), the centralized procurement platform handling 1{,}308
+purchasing units across 4.5 million tender-items between 2009 and
+2019, and validate it against CADE's portfolio of cartel
+adjudications. Among 2{,}735 FL firms identified in BEC,
+193 (7.1\%) co-participate with at least one CADE-defendant in the
+same tender-item---3.5$\times$ the participation-stratified
+baseline ($p < 0.001$). Three of the 47 BEC-active CADE-defendants
+are themselves classified as FL by the screen, against a population
+base rate of 6.6\%. The ROC curve against CADE co-bidding achieves
+AUC~$= 0.94$, with the data-driven optimal threshold (Youden's
+$J = 0.84$) nearly identical to the rule we set \emph{a priori} on
+behavioral grounds. Eight of the twelve cartel cases were
+adjudicated after the BEC sample window closes, so the validation
+is partly prospective: 2009--2019 participation patterns
+anticipate firms whose involvement enforcement confirmed years
+later.
+
+FL-flagged tenders show 3.6--7.7\% higher negotiated prices in
+within-item, within-year, within-purchasing-unit comparisons
+(temporal cross-fitting, OLS with high-dimensional fixed effects,
+and matching estimators bracket this range). After absorbing item
+fixed effects the raw FL--non-FL gap collapses from 2.43 to 0.050
+log points (overlap 0.978; Table~\ref{tab:conditional_descstats},
+\ref{app:competition})---the regressions compare similar tenders
+within tight product categories. Comparability, however, is not
+identification. The price gap is a conditional association, not a
+causal estimate. \citet{cinelli2020making} sensitivity analysis
+yields $RV_{q=1} = 17.5\%$, bounding the scope for omitted
+confounders, but bounding is not identification. We are explicit
+about what the design does and does not deliver.
+
+The legal and economic stakes of getting screening right are
+considerable. Brazilian federal and subnational procurement
+spending exceeds 12\% of GDP \citep{oecd2019government}; even
+modest cartel overcharges aggregate to material public losses.
+Existing screens require bid-level microdata that incomplete
+electronic systems do not always preserve
+\citep{imhof2019detecting, huber2019machine}; the FL screen lowers
+the data threshold for proactive enforcement to participation
+records that virtually every electronic system records. The 2021
+Brazilian procurement reform (Lei 14.133/2021, replacing Lei
+8.666/93) tightens habilitation rules in ways that should reduce
+the regulatory cover-bidding incentive over time, but does not
+eliminate it; the screen we develop applies under both regimes
+and across other settings where minimum-participant rules or
+formal-competition requirements create analogous incentives.
+
+\subsection{Contributions}
+
+\emph{First}, we operationalize the regulatory-cover-bidding
+phenomenon with a participation-only screen that requires no bid
+microdata. The screen is firm-level, computable from
+contract-award records alone, and deployable at scale by oversight
+bodies whose data infrastructure cannot support tender-level
+forensic analysis. Against CADE-defendant co-bidding as ground
+truth, the screen achieves AUC~$= 0.94$, dominating
+\citet{imhof2019detecting}-style bid-level composites
+($0.79$; DeLong $p < 0.001$).
+
+\emph{Second}, we document that FL-flagged environments exhibit
+3.6--7.7\% higher negotiated prices in within-item comparisons.
+This is a conditional association, not a causal estimate; we are
+explicit about identification limits and the scope of plausible
+omitted-variable bias.
+
+\emph{Third}, we develop the law-and-economics framing of the
+screen: the convite minimum-bidder rule, intended to protect
+competition, generates a decoy-firm population that procurement
+authorities can detect at virtually no marginal cost. Our policy
+discussion (Section~\ref{sec:conclusion}) translates the screen
+into an implementation pathway: triage flagging firms, then
+prioritize by network features (winner concentration,
+co-bidding partners), then deploy bid-level forensic tools on
+the triaged set.
+
+We do not claim to identify cover bidders, estimate causal
+overcharges, or measure welfare losses. The screen is a
+diagnostic, not a verdict.
+
+After describing the legal and institutional framework
+(Section~\ref{sec:institutional}), the data and FL classification
+(Sections~\ref{sec:data}--\ref{sec:fl_definition}), we present the
+empirical strategy (Section~\ref{sec:empirical}), the CADE
+consistency check (Section~\ref{sec:cade}), the price regressions
+and mechanism diagnostics
+(Sections~\ref{sec:results}--\ref{sec:mechanisms}), robustness
+(Section~\ref{sec:robustness}), an explicit discussion of
+limitations (Section~\ref{sec:limitations}), and a conclusion
+(Section~\ref{sec:conclusion}).
