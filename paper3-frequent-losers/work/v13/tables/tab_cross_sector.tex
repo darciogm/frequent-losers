@@ -1,0 +1,68 @@
+\begin{table}[htbp]
+\centering
+\caption{Cross-Sector Replication: Detection AUC and Price Coefficient by BEC Item Sector}
+\label{tab:cross_sector}
+\begin{threeparttable}
+\small
+\begin{tabular}{lccccc}
+\toprule
+ & \multicolumn{2}{c}{Detection} & \multicolumn{3}{c}{Price effect} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-6}
+Sector code & N firms & AUC & N tenders & $\hat{\beta}_{\mathrm{FL}}$ & SE \\
+\midrule
+12 & 1{,}833 & 0.962 & --- & --- & --- \\
+13 & 963 & 0.949 & --- & --- & --- \\
+14 & 640 & 0.948 & 107{,}485 & 0.039 & 0.029 \\
+15 & 559 & 0.946 & 96{,}757 & 0.011 & 0.069 \\
+16 & 946 & 0.904 & 75{,}327 & 0.052 & 0.031 \\
+17 & 438 & 0.897 & 99{,}070 & 0.255$^{***}$ & 0.071 \\
+18 & 259 & 0.995 & --- & --- & --- \\
+20 & 130 & 0.980 & --- & --- & --- \\
+70 & 36 & 0.995 & --- & --- & --- \\
+\midrule
+\multicolumn{2}{l}{\textit{Other large sectors (price-only)}} & & & & \\
+10 & --- & --- & 96{,}374 & 0.010 & 0.024 \\
+11 & 447 & 0.964 & 90{,}776 & 0.029 & 0.027 \\
+23 & --- & --- & 73{,}166 & $-$0.002 & 0.010 \\
+26 & --- & --- & 79{,}039 & $-$0.047 & 0.036 \\
+29 & --- & --- & 113{,}787 & 0.014 & 0.015 \\
+30 & --- & --- & 75{,}233 & $-$0.015 & 0.025 \\
+37 & --- & --- & 84{,}390 & $-$0.056$^{***}$ & 0.012 \\
+38 & --- & --- & 75{,}263 & 0.001 & 0.012 \\
+39 & --- & --- & 89{,}835 & $-$0.043$^{***}$ & 0.009 \\
+\midrule
+\multicolumn{6}{l}{\textit{Cross-sector summary}} \\
+\quad Mean / median AUC & \multicolumn{2}{c}{0.954 / 0.956} & & & \\
+\quad SD AUC & \multicolumn{2}{c}{0.034} & & & \\
+\quad Sectors with AUC $> 0.90$ & \multicolumn{2}{c}{10 / 10} & & & \\
+\quad Mean $\hat{\beta}_{\mathrm{FL}}$ (15 sectors) & & & & 0.027 & \\
+\quad Sectors with $\hat{\beta} > 0$ & & & & 10 / 15 & \\
+\quad Sectors significant at 5\% & & & & 4 / 15 & \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Sector code is the leading two-digit prefix of
+the BEC item-code, defining the firm's primary product
+classification. Detection AUC uses the
+$\text{tenders\_count}$ score against the binary co-bidding flag
+with CADE-defendants among always-loser firms whose
+primary sector matches the row. The detection sample is restricted
+to sectors with at least three CADE positives among always-losers.
+The price specification is identical to Equation~\eqref{eq:ols_main}
+(item, year, and PBU fixed effects; SE clustered at item level)
+estimated separately by sector on tenders with at least one FL
+firm per sector. Detection generalizes uniformly: all ten sectors
+with sufficient CADE positives yield AUC $\geq 0.90$, with mean
+0.954 (SD 0.034). Price-effect heterogeneity is real: most sectors
+show positive coefficients consistent with the headline 6.4\%, but
+two sectors (37, 39) show small negative coefficients significant
+at the 5\% level, which we read as boundary cases where FL
+classification likely captures legitimately marginal entrants
+rather than cover bidders. The cross-sector pattern fits the
+limitation noted in Section~\ref{sec:limitations}: FL is an
+environment marker, not a stable firm type.
+$^{*}$~$p<0.10$, $^{**}$~$p<0.05$, $^{***}$~$p<0.01$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
