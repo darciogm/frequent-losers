@@ -585,34 +585,73 @@ SE clustered at item level.
 % ============================================================================
 \section{Staggered Designs We Attempted and Rejected}
 \label{app:did}
-\noindent\textit{(Reported for transparency; designs declared invalid
-in main text.)}\medskip
+\noindent\textit{(Online Appendix; reported for transparency.
+Designs declared invalid for this setting in
+\S\ref{sec:robustness}; do not interpret estimates below as
+robustness checks for the headline coefficient.)}\medskip
 
-We attempted three staggered event-study designs treating first FL
-entry into a PBU $\times$ item market as the treatment. The sample
-restriction (markets with $\geq 3$ pre- and $\geq 3$ post-treatment
-observations) yields 144{,}168 market-year observations across
-19{,}777 markets (1{,}511 treated, 18{,}266 never-treated).
-Three estimators were applied: TWFE event study,
-Callaway--Sant'Anna (\citeyear{callaway2021difference}) doubly-robust,
-and \citet{cengiz2019effect} stacked regression. All three yield
-ATT estimates that are imprecise (C\&S~$= 0.014$, SE~$= 0.039$) or
-near zero with tight CIs (Stacked~$= -0.006$, SE~$= 0.014$). The
-stacked CI excludes the OLS baseline of 0.064.
+This appendix documents three staggered event-study designs we
+implemented and the diagnostics that led us to reject them. The
+designs treat first FL entry into a PBU $\times$ item market as
+the treatment of interest. We report them so a reader
+considering similar designs in a comparable setting can see
+both the implementation and the rejection criteria.
 
-These designs require parallel pre-trends. The pre-event coefficients
-at $t=-2$ and $t=-3$ are positive and similar in magnitude to the
-ATT, indicating that FL entry is endogenous to within-market price
-dynamics. We declare the designs \emph{invalid for the present
-setting}, not merely underpowered. \citet{rambachan2023more}
-sensitivity analysis confirms that the bound on the pre-trend slope
-needed to nullify the conclusion is implausibly small.
+\paragraph{Sample and estimators.}
+The market-level panel (PBU $\times$ item-group $\times$ year)
+restricted to markets with at least three pre- and three
+post-treatment observations contains $144{,}168$ market-year
+observations across $19{,}777$ markets ($1{,}511$ treated,
+$18{,}266$ never-treated). We estimate three specifications:
+the TWFE event study around first FL entry; the
+\citet{callaway2021difference} doubly-robust estimator using
+never-treated units as the comparison group; and the
+\citet{cengiz2019effect} stacked regression with cohort-specific
+market and year fixed effects (avoiding the
+``bad-comparison'' bias of standard TWFE under heterogeneous
+treatment effects). Outcomes are log negotiated price and
+log non-FL firm count.
 
-We retain this material as a transparency artifact rather than as
-robustness for the main estimates: a referee deciding whether to
-attempt these designs in a similar setting can see the diagnostics
-and the verdict. Detailed tables (\ref{tab:did_revised},
-\ref{tab:stacked_did}) and the TWFE event-study figure follow.
+\paragraph{Why the designs fail.}
+The estimating assumption common to all three is parallel
+pre-trends in the absence of treatment. The TWFE event study
+(Figure~\ref{fig:event_study}) yields pre-event coefficients
+at $t = -2$ and $t = -3$ that are positive and similar in
+magnitude to the post-event coefficient. Markets that
+eventually receive FL entry already had higher prices two and
+three years before. Two readings of the pre-trend are
+observationally equivalent: cartels select into already-high-price
+markets and then deploy cover bidders, or unobserved
+within-market dynamics predate FL arrival. Either reading
+violates the parallel-trends assumption the staggered
+estimators require, and \citet{rambachan2023more} sensitivity
+bounds confirm that the maximum pre-trend slope under which
+the conclusion would survive is implausibly small.
+
+\paragraph{Estimates that follow are diagnostics, not robustness.}
+\citet{callaway2021difference} doubly-robust ATT $= 0.014$
+(SE $0.039$); \citet{cengiz2019effect} stacked ATT $= -0.006$
+(SE $0.014$). The stacked $95\%$ CI $(-0.034, 0.022)$ excludes
+the OLS baseline of $0.064$. The discrepancy between staggered
+and OLS is mechanical: under violated parallel trends the
+estimators identify a different object (the within-cohort
+deviation from a counterfactual that depends on never-treated
+trajectories), and that object is not the conditional
+association the OLS specification estimates. The right reading
+is that staggered DiD identification requires exogenous
+treatment timing the FL setting does not provide. The
+conditional-association range we report in
+\S\ref{sec:results_ols} is robust to this constraint, not
+despite it: the estimands differ, and the staggered designs
+target the wrong one.
+
+\paragraph{Tables and figure.}
+Table~\ref{tab:did_revised} reports the TWFE and C\&S
+estimates with pre-trend coefficients and Rambachan--Roth
+sensitivity bounds. Figure~\ref{fig:event_study} plots the
+TWFE event study coefficients. Table~\ref{tab:stacked_did}
+reports the stacked regression with cohort-specific fixed
+effects.
 
 \input{./output/tables/tab_did_revised}
 
