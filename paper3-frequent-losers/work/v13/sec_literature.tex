@@ -1,74 +1,117 @@
 \section{Related Literature}
 \label{sec:literature}
 
-This paper makes four moves on existing screening and bid-rigging
-literatures.
+Four literatures bear on the screening problem we address. Each
+faces a constraint that has shaped its empirical reach. Our
+contribution is the conjunction: a screening rule that resolves
+or relaxes the binding constraint in each.
 
-\paragraph{Bid-coordination tests require ex-post partitioning.}
-\citet{bajari2003deciding} develop the canonical tests for
-collusion---exchangeability of bid functions and conditional
-independence of bid residuals---but the researcher must first
-partition bidders into suspected colluders and a competitive
-fringe, a partition the tests themselves cannot deliver. The
-literature that followed inherits this constraint: bid rotation
-\citep{porter1993detection, porter1999ohio}, collusion in timber
-auctions \citep{baldwin1997bidder}, bidder groups from co-bidding
-patterns \citep{conley2016detecting}, and collusion dynamics in
-long-lived cartels \citep{clark2021collusion,
-schurter2020identification} all classify firms \emph{after}
-collusion is established or assumed. \citet{conley2016detecting}
-come closest in data parsimony but detect group structure rather
-than flag individual firms. Our contribution is the partitioning
-step: a data-driven, \emph{ex ante} firm-level classifier that
-produces the input these subsequent tests need.
+\paragraph{Bid-coordination tests cannot deliver their own
+input.} \citet{bajari2003deciding} establish the canonical
+econometric framework for detecting collusion through
+exchangeability of bid functions and conditional independence of
+bid residuals; the tests achieve discriminating power against
+known cartels but require the researcher to first partition
+bidders into suspected colluders and a competitive fringe. The
+literature that builds on Bajari--Ye inherits this constraint:
+\citet{porter1993detection} and \citet{porter1999ohio} detect bid
+rotation conditional on assumed cartel membership;
+\citet{baldwin1997bidder} document collusion in timber auctions
+identified by post-prosecution records;
+\citet{conley2016detecting} infer bidder groups from co-bidding
+patterns---the closest precedent in data parsimony, but
+recovering group structure rather than individual flags;
+\citet{clark2021collusion} and \citet{schurter2020identification}
+study collusion dynamics in long-lived cartels with
+ex-post-known cartel membership. The partition is constructed
+\emph{ex post} or by assumption in every case. We close that
+gap: the FL classifier delivers an \emph{ex ante} firm-level
+partition computable from contract-award records alone, and we
+show in Section~\ref{sec:results_bajari} that Bajari--Ye tests
+applied with the FL partition reject exchangeability
+($D = 0.15$, $p < 0.001$) and conditional independence
+($t = 81.0$, $p < 0.001$).
 
-\paragraph{Proactive screens require bid microdata that does not
-always exist.}
-\citet{imhof2019detecting}, \citet{imhof2018screening},
-\citet{huber2019machine}, and \citet{wallimann2023machine} train
-machine-learning classifiers on tender-level bid statistics
-(within-tender CV, kurtosis, normalized spread) and achieve high
-accuracy against known cartels; \citet{abrantesmetz2006a}
-develop the variance screen; \citet{chassang2022robust} provide
-a robust theoretical foundation; \citet{harrington2008detecting}
-surveys. All four operate at the \emph{tender} level and require
-granular bid microdata---in particular, the per-bidder bid
-amounts. Many real procurement systems do not preserve this layer:
-electronic platforms typically archive winning prices and
-participant lists at the contract-record layer, not bid-by-bid.%
-\footnote{Our Imhof comparison uses a coefficient-of-variation
-median split, a coarser proxy for the full implementation; see
-Section~\ref{sec:results_detection}.}
-The gap between what cartel screens \emph{can} do (with full
-microdata) and what oversight bodies \emph{do} have (winner +
-participants) is the operational gap our screen addresses. The
-FL classifier needs only contract-award records.
+\paragraph{Proactive screens require microdata that procurement
+systems do not always preserve.} \citet{imhof2019detecting},
+\citet{imhof2018screening}, \citet{huber2019machine}, and
+\citet{wallimann2023machine} train machine-learning classifiers
+on tender-level bid statistics (within-tender CV, kurtosis,
+skewness, normalized spread); the most accurate implementations
+achieve AUC $\geq 0.85$ against ground-truth cartel cases in
+European procurement.\footnote{Our Imhof comparison uses a
+coefficient-of-variation median split, a coarser proxy for the
+full implementation; the AUC of $0.79$ we report against the
+$0.94$ of the FL screen is therefore conservative.}
+\citet{abrantesmetz2006a} pioneer the variance screen;
+\citet{chassang2022robust} provide robust theoretical
+foundations; \citet{harrington2008detecting} surveys.
+Every implementation operates at the \emph{tender} level and
+requires per-bidder bid amounts. Many real procurement systems
+do not preserve this layer: electronic platforms, including BEC
+during much of our sample, archive winning prices and
+participant lists at the contract-record layer but not bid-by-bid.
+The gap is operational, not theoretical: what cartel screens
+\emph{can} do (with full microdata) is structurally larger than
+what oversight bodies \emph{do} have (winner + participants).
+The FL screen runs on the second.
 
 \paragraph{Cover-bidding identification has been retrospective.}
-Cover bidders are documented in prosecuted cartels by
 \citet{porter1999ohio}, \citet{pesendorfer2000study},
-\citet{asker2010leniency}, and \citet{marshall2012economics}, and
-in theoretical comparisons of auction formats by
-\citet{athey2011comparing}. In every empirical case the cover
-bidders are identified \emph{ex post}---through leniency
-testimony, judicial documents, or post-conviction record review.
-We invert this: by flagging firms whose participation patterns
-are behaviorally coherent with cover bidding, the retrospective
-observation becomes a prospective screening rule.
+\citet{asker2010leniency}, and \citet{marshall2012economics}
+document cover bidders in prosecuted cartels with rich case
+records (the Ohio milk cartel, the Italian highway cartel, the
+NYC stamp cartel, and a series of cases reviewed by
+Marshall--Marx). \citet{athey2011comparing} compare cover-bidding
+incentives across auction formats theoretically. In every
+empirical case the cover bidders are identified through
+leniency testimony, post-conviction records, or judicial
+discovery---\emph{ex post}, after the cartel is broken.
+\emph{Ex ante} prospective identification of cover bidders has
+not been attempted in the empirical procurement literature, to
+our knowledge. We invert the retrospective workflow: by flagging
+firms whose participation patterns are behaviorally coherent
+with cover bidding, the post-conviction observation becomes a
+pre-investigation screen. Eight of the twelve CADE cases in our
+validation portfolio were adjudicated after the BEC sample
+window closes (Section~\ref{sec:cade}), so part of the
+validation operates as a strict prospective test: the screen
+anticipated firms whose collusive role enforcement confirmed
+years later.
 
 \paragraph{Procurement enforcement is hardest where data are
-scarcest.}
-The bid-rigging literature is dominated by developed-economy
-settings (US, EU, OECD) where data infrastructure is mature.
-Developing economies, where procurement spending shares of GDP
-are larger and oversight resources thinner
-\citep{sanchezgraells2019screening, oecd2019government}, are
-both more vulnerable to bid rigging and less equipped to deploy
-the existing detection tools. BEC's institutional setup---a
-centralized electronic platform with 1{,}308 purchasing units,
-4.5 million tender-items, 40 million bids, two auction formats,
-a procurement-cartel adjudication portfolio at CADE---provides
-the test bed for a screening rule designed to be deployable
-under thin data infrastructure. The contribution generalizes
+scarcest.} The bid-rigging literature is dominated by
+developed-economy settings where data infrastructure is mature
+and procurement spending shares of GDP are 5--10\% of the
+economy. Developing economies, where shares can exceed 12\% of
+GDP \citep{oecd2019government} and oversight resources are
+thinner, are simultaneously more vulnerable to bid rigging and
+less equipped to deploy the existing tools.
+\citet{sanchezgraells2019screening} surveys the limits of
+existing screens in low-resource settings. BEC is a useful test
+bed: a centralized electronic platform (1{,}308 purchasing
+units, 4.5 million tender-items, 40 million bids, 2009--2019),
+two auction formats with different cover-bidding incentives,
+and a cartel adjudication portfolio at CADE (12 cases, 65
+firm-defendants, 47 BEC-active). The contribution generalizes
 in principle wherever a procurement system records winners and
-participants, regardless of bid-level archiving.
+participants, regardless of bid-level archiving---the layer
+preserved, in our experience and the cited surveys, more
+consistently than bid-by-bid logs.
+
+\paragraph{Synthesis.} The four literatures share a structural
+constraint: each requires more information than typical
+oversight bodies have, or works only after collusion is
+established. Bid-coordination tests need the partition;
+proactive screens need the microdata; cover-bidding
+identification needs the post-conviction record; the developing-economy
+literature has flagged the resource gap but not closed it.
+The FL screen addresses the conjunction. It produces the
+partition that Bajari--Ye-class tests need, runs on the
+contract-award records that Imhof-class screens cannot use,
+operates prospectively rather than retrospectively, and is
+deployable in low-resource settings. The empirical contribution
+is not a more powerful test against any one of these
+literatures' benchmarks; it is a test that can be run in
+settings where the existing tests cannot, and that produces
+inputs the existing tests then use.
