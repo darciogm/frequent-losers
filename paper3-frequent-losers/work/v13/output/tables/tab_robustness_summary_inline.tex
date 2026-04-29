@@ -1,0 +1,37 @@
+\begin{table}[htbp]
+\centering
+\caption{Robustness summary: FL price coefficient across checks}
+\label{tab:robustness_summary}
+\small
+\begin{tabular}{lcccll}
+\hline\hline
+Check & Coeff.\ & SE & $N$ & Assumption & Note \\
+\hline
+\multicolumn{6}{l}{\textit{Baseline and matching}} \\
+OLS (item + year + PBU FE) & 0.064 & 0.020 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Baseline \\
+CEM & 0.077 & 0.024 & 969{,}751 & Sel.\ on obs. & \S\ref{sec:results_ols} \\
+IPW & 0.055 & 0.021 & 830{,}194 & Sel.\ on obs. & \S\ref{sec:results_ols} \\
+Cross-fit average & 0.036 & --- & --- & Sel.\ on obs.\ + FE; no mech.\ link & Out-of-sample \\
+\hline
+\multicolumn{6}{l}{\textit{FL definition variants}} \\
+IQR 1.0$\times$ & 0.079 & 0.023 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 3{,}442 FL firms \\
+IQR 1.5$\times$ & \multicolumn{5}{l}{\textit{(= OLS baseline above)}} \\
+IQR 2.0$\times$ & 0.060 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 2{,}093 FL firms \\
+IQR 3.0$\times$ & 0.050 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & 1{,}456 FL firms \\
+\hline
+\multicolumn{6}{l}{\textit{Specification variants}} \\
+Item$\times$year FE & 0.074 & 0.022 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Tighter controls \\
+Two-way clustering & 0.064 & 0.024 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Item + PBU \\
+\hline
+\multicolumn{6}{l}{\textit{Alternative treatments and diagnostics}} \\
+Continuous (log max AL) & 0.022 & 0.005 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Per log-point \\
+Decomposition (odd-yr FL, full sample) & 0.043 & 0.019 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Intermediate \\
+Horse-race (FL + Imhof CV) & 0.084 & 0.023 & 1{,}654{,}401 & Sel.\ on obs.\ + FE & Suppression \\
+IV (leave-one-out) & 0.194 & 0.077 & 1{,}654{,}401 & Excl.\ restriction & Measurement error \\
+\hline\hline
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} ``Sel.\ on obs.\ + FE'' = selection on observables absorbed by item, year, and PBU fixed effects. Cross-fit further removes any mechanical link between the FL rule and the price outcome. The IV is a measurement-error diagnostic; exclusion-restriction concerns (\S\ref{sec:results_ols}) keep it off the headline range. Staggered DiD (Callaway--Sant'Anna and stacked Cengiz et al.) and Oster $\hat{\delta}$ are excluded from this summary because their identifying assumptions fail in this setting; they are reported transparently in \S\ref{sec:robustness}, \ref{app:did}, and \ref{app:robustness}.
+\end{tablenotes}
+\end{table}
