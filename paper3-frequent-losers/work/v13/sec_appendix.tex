@@ -745,6 +745,34 @@ firm-level signal.
 % ============================================================================
 \section{Additional Robustness Checks}
 \label{app:online_robustness}
+\noindent\textit{(Online Appendix.)}\medskip
+
+This appendix collects the secondary robustness exercises that
+the main text and \ref{app:robustness} reference but do not
+table in detail. The exercises fall in five blocks. \emph{Detection
+diagnostics} (Detection Performance, FL Entry Event Study,
+FL Definition Variants) document the screen's performance
+across thresholds and the within-PBU FL-entry event study that
+motivates the conditional-association framing.
+\emph{Sample and specification variants} (Unrestricted Sample,
+Homogeneous Sub-Samples, Tighter Controls, Matching Estimators,
+Alternative Clustering) bracket the headline OLS coefficient
+under variations in sample restriction, fixed-effects density,
+and inference. \emph{Sensitivity to unobservables} (Sensitivity
+Analysis, Oster Coefficient Stability) reports the
+\citet{cinelli2020making} contour plot and the
+\citet{oster2019unobservable} bound. \emph{Mechanism evidence}
+(Bajari--Ye First Stage and Placebo, Bajari--Ye Tender Fixed
+Effects, Network Interactions, Oversight Heterogeneity, Dyadic
+Linkage Permutation Test, Cox Survival Model) reports the
+secondary tables behind the M1--M5 diagnostics of
+\S\ref{sec:mechanisms}. \emph{Visualizations} (Network Graph,
+Threshold Sensitivity Heatmap, Density Shift, FL Distribution
+Figures, Threshold Stability, Classification Robustness)
+provides the figures referenced from the main text. We retain
+the level of detail expected in a replication archive: each
+table and figure has a self-contained caption that matches the
+labels in the body and main appendix.
 
 \subsection{Detection Performance}
 
@@ -1018,13 +1046,48 @@ baseline (win rate = 0), low-win-rate variants, and cross-fitting.}
 % ============================================================================
 \section{Heterogeneity and FL Characteristics}
 \label{app:heterogeneity}
+\noindent\textit{(Online Appendix.)}\medskip
 
-Figure~\ref{fig:network_split} displays the FL price coefficient
-separately for concentrated- and competitive-market FL firms (network-based
-classification). Descriptive statistics for the network metrics are
-reported in Table~\ref{tab:fl_network_summary}.
+This appendix reports the network-based heterogeneity decomposition
+that supports the network-split classification of \S\ref{sec:empirical_network}
+and the descriptive statistics on the FL co-bidding network. Two
+results structure the appendix: \emph{(i)} the FL price
+coefficient is concentrated among FL firms operating in
+competitive markets (low winner HHI), confirming the
+market-selection prediction of Proposition~\ref{prop:market_selection};
+\emph{(ii)} the winner-HHI distribution among FL firms is
+right-skewed, with a mode in the 0.20--0.40 range characteristic
+of moderately diversified loser-winner relationships.
+
+\paragraph{Network-based summary statistics.}
+Table~\ref{tab:fl_network_summary} reports the network metrics
+underlying the concentrated-vs-competitive classification. The
+median winner HHI among FL firms is 0.178 (14.3 unique
+winners), substantially below the non-FL always-loser median
+of 0.303 (5.0 winners; $p < 0.001$). FL firms co-bid with a
+broader set of winners than other always-losers, consistent
+with rotation of designated winners across competitive markets
+(\S\ref{sec:mechanisms}, M5 cartel-ecosystem reading). The
+network-based concentrated-FL classification combines two
+necessary conditions for sustained coordination: winner HHI
+above the sample median, and at least two repeat co-bidding
+partners.
 
 \input{./output/tables/tab_fl_network_summary}
+
+\paragraph{Network-split price coefficient.}
+Figure~\ref{fig:network_split} displays the FL price
+coefficient separately for the concentrated and competitive
+subgroups under the PBU FE specification. The competitive-market
+subgroup yields $+0.126$ ($p < 0.01$); the concentrated-market
+subgroup yields $-0.018$ (insignificant). The competitive-FL
+subgroup drives the entire price effect, the empirical
+counterpart of Proposition~\ref{prop:market_selection}'s
+prediction that cover bidding is most profitable where
+genuine competition is otherwise active. Three competing
+readings of the concentrated-market null are discussed in
+\S\ref{sec:results_network} and remain unresolved with
+cross-sectional data.
 
 \begin{figure}[htbp]
 \centering
@@ -1034,6 +1097,18 @@ classification). The price effect is concentrated among FL firms
 operating in competitive markets (low winner HHI).}
 \label{fig:network_split}
 \end{figure}
+
+\paragraph{Winner-HHI distribution.}
+Figure~\ref{fig:network_hhi} plots the empirical distribution
+of winner HHI across FL firms. The distribution is right-skewed
+with a mode in the 0.20--0.40 range; 70\% of FL firms have
+winner HHI below 0.40 (diversified losing partnerships), and
+the right tail above 0.60 captures the concentrated-market
+subgroup that sustains repeat coordination with a small set of
+winners. The distributional shape is consistent with a cartel
+ecosystem in which most FL firms are deployed across
+heterogeneous tender pools---generating the diversified
+winner-pattern signature the network-split test exploits.
 
 \begin{figure}[htbp]
 \centering
