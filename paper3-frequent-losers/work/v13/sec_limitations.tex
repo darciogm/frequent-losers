@@ -1,84 +1,132 @@
-% IDENTITY-REWRITE: new Limitations section
-
 \section{Limitations}
 \label{sec:limitations}
 
-Several limitations bound what this paper can claim.
+We catalog the limitations of the design under three headings:
+identification gaps that the institutional design and supporting
+diagnostics narrow but do not close, scope constraints inherent to
+the BEC setting, and operational caveats for deployment. Each
+limitation pairs the residual threat with the bound we report and
+the next step that would relax it.
 
 \paragraph{Within-market selection.}
-The remaining threat to interpretation, after the institutional
-identification of Section~\ref{sec:empirical} is applied. Item,
-year, and PBU fixed effects absorb time-invariant cross-market
-heterogeneity; the cross-fit removes the mechanical link between
-the FL classification and prices; the modal comparison and the
-within-convite constraint-binding split exploit institutional
-variation in the regulatory cover-bidding incentive; the
-McCrary-style density check around the convite/preg\~ao value
-threshold finds no evidence of strategic bunching. None of these
-fully resolves the possibility that unobserved, time-varying
-market characteristics attract both FL firms and higher prices
-within the same item--year--PBU cell, conditional on modality and
-constraint regime. The sensitivity analysis ($RV = 17.5\%$) bounds
-how large such a confounder would need to be; bounding is not
-strict identification.
+After the institutional identification of
+Section~\ref{sec:empirical}, the residual threat is unobserved
+time-varying market characteristics that attract both FL firms
+and higher prices within the same item--year--PBU cell,
+conditional on modality and constraint regime. Item, year, and
+PBU fixed effects absorb time-invariant cross-market
+heterogeneity; the cross-fit removes the mechanical FL--price
+link; the convite--preg\~ao comparison and the within-convite
+constraint-binding split exploit institutional variation; the
+McCrary-style density check at the statutory value threshold
+rules out the strongest version of value-based modal selection.
+Cinelli--Hazlett yields $RV_{q=1} = 17.5\%$: an unobserved
+confounder would need to explain at least $17.5\%$ of residual
+variation in both FL presence and log prices to nullify the
+coefficient. Bounding is not strict identification. \emph{Next
+step:} a setting with stronger institutional ID---a procurement
+reform's natural experiment, or external replication in
+ComprasNet---would tighten the bound.
 
-\paragraph{Pre-trends in the event study.}
-Positive coefficients at $t = -2$ and $t = -3$ before first FL entry
-are equally consistent with strategic selection by cartels into
-high-value markets and with within-market confounding that predates
-FL arrival. This pattern precludes a causal interpretation of the event study
-and reinforces the broader point that within-market selection---not
-just pre-trends---is why the paper is positioned as diagnostic rather
-than causal.
+\paragraph{Pre-trends in the FL-entry event study.}
+Pre-event coefficients at $t = -2$ and $t = -3$ are positive and
+similar in magnitude to the post-event coefficient
+(Figure~\ref{fig:event_study}, \ref{app:did}). Two readings are
+observationally equivalent: cartels select into already-high-price
+markets and then deploy cover bidders, or unobserved
+within-market dynamics predate FL arrival. The paper's
+diagnostic positioning does not require choosing between them;
+top-5-grade causal identification would.
+\citet{rambachan2023more} sensitivity bounds the maximum
+pre-trend slope under which conclusions hold; we report the
+bounds as failing the conventional benchmarks for the
+event-study estimates, which is why we report the staggered DiD
+as a transparency artifact rather than as a robustness check
+(Section~\ref{sec:robustness}). \emph{Next step:} a sharply
+exogenous treatment timing the FL setting does not provide.
 
-\paragraph{FL persistence.}
-Only 10\% of firms classified as FL in 2009--2013 reappear as FL in
-2014--2019. This limits the interpretation of FL as a stable firm
-type. It is more accurately read as an environment-level marker
-subject to cartel reorganization, firm exit, or classification noise.
+\paragraph{FL persistence as environment marker.}
+Only $10\%$ of firms classified as FL on 2009--2013 data reappear
+as FL on 2014--2019 data ($111$ of $1{,}095$). FL is therefore
+properly read as an environment-level marker of suspicious
+procurement \emph{settings}---PBU $\times$ item $\times$ year
+cells where regulatory cover bidding operates---rather than as a
+stable firm type. We adopt this reading throughout the paper.
+The rotation does not undermine the screen, since the
+environment-marker function is what the diagnostic is for; it
+does mean the operational deployment in
+Section~\ref{sec:conclusion} flags markets and re-screens
+periodically, not single firms in perpetuity. \emph{Next step:}
+explicit market-level (PBU $\times$ item $\times$ year)
+persistence statistics, currently in the replication archive but
+not in the main paper.
 
-\paragraph{Zero-win sensitivity.}
-Relaxing the zero-win condition to include firms with 1--2\% win
-rates weakens the price coefficient substantially. The screen depends
-on a sharp boundary that sophisticated cartels could evade by allowing
-cover bidders an occasional win.
+\paragraph{Zero-win threshold dependence.}
+Relaxing the zero-win condition to include firms with 1--2\%
+win rates substantially attenuates the price coefficient
+(Table~\ref{tab:fl_lowwinrate}, \ref{app:online_robustness}).
+The bright line at zero is doing real work: a sophisticated
+cartel could evade the screen by allowing cover bidders the
+occasional win. \emph{Next step:} adversarial-aware screen
+design---weighted scores rather than indicator thresholds, or
+periodic threshold updating---which the
+\citet{harrington2008detecting} cat-and-mouse logic recommends
+for any proactive enforcement tool.
 
-\paragraph{CADE overlap.}
-Conditional on participation intensity, FL firms are indistinguishable
-from other always-losers in CADE proximity ($p = 0.93$). As discussed
-in Section~\ref{sec:cade}, this is the screen's operating
-principle---it flags high-participation firms in suspicious
-markets---but it means the CADE check validates market-level exposure,
-not firm-level cartel membership.
+\paragraph{CADE-overlap conditional indistinguishability.}
+Conditional on participation intensity, FL firms are
+statistically indistinguishable from non-FL always-losers in
+CADE-proximity rate ($p = 0.93$;
+Section~\ref{sec:ground_truth}). The unconditional
+$3.5\times$ excess we report
+(Section~\ref{sec:cade}) is therefore driven by participation
+volume, not by the FL classification per se. This is a feature
+of the screen, not a bug---it flags firms that participate
+heavily in suspicious markets without requiring the analyst to
+distinguish participation-driven proximity from direct cartel
+involvement---but it means the CADE check validates
+\emph{market-level exposure}, not firm-level cartel membership.
+\emph{Next step:} matching FL flags to leniency-driven
+firm-level identifications when the latter become available.
 
 \paragraph{Prospective ground truth.}
-The CADE sample comprises 12 cartel cases with final adjudications
-spanning 2015--2025; eight cases were decided after our 2009--2019
-BEC window closes. The validation is therefore partially
-prospective---it asks whether 2009--2019 FL flags anticipate firms
-that subsequent enforcement confirmed as cartel members---and
-strictly contemporaneous validation would restrict the sample to
-the four pre-2020 cases, leaving too few positives for meaningful
-inference. The prospective framing is methodologically defensible
+Eight of the twelve CADE cases were adjudicated 2020--2025,
+after the BEC sample window closes. A strictly contemporaneous
+validation would restrict ground truth to the four pre-2020
+cases, leaving too few positives for inference. The
+prospective framing we adopt is methodologically defensible
 (future enforcement cannot leak into pre-2019 participation
-patterns), but mixes firms whose collusive behavior was active
-during the BEC window with firms whose cases were filed earlier
-and adjudicated later. We treat the resulting AUC and overlap
-rates as a forward-looking external check rather than a
-contemporaneous identification of cartelists.
+patterns) but mixes firms whose collusive behavior was active
+during the BEC window with firms whose cases were filed
+earlier and adjudicated later. \emph{Next step:} validation
+against contemporaneous-window adjudications as more cases
+clear adjudication; the cross-sector AUC stability of $0.954$
+in Section~\ref{sec:cross_sector} is the strongest available
+robustness check.
 
-\paragraph{Structural model.}
-The model calibrates cover-bid distributions and selects between
-regimes, but does not identify the markup or the causal price effect.
-Its welfare implications are illustrative, not causal
-(\ref{app:extensions}).
+\paragraph{Structural model is a calibration.}
+The mixture-model regime selection and implied markup
+(\ref{app:structural_id}, Online) calibrate cover-bid
+distributions but do not identify the markup or the causal
+price effect independently of the reduced-form coefficients.
+Welfare quantification in \ref{app:extensions} (Online)
+mechanically applies price coefficients to FL-present spending
+and \emph{assumes} causality; we report the resulting
+$0.3$--$0.9\%$-of-spending range as illustrative, not as a
+policy estimate.
 
 \paragraph{External validity.}
-All results come from S\~ao Paulo's BEC platform. The cross-sector
-replication of Section~\ref{sec:cross_sector} provides intra-platform
-validation: detection performance (AUC) is uniformly high across
-fifteen product categories, with mean AUC of 0.954 (SD 0.034).
-Generalization to federal procurement (ComprasNet), other Brazilian
-states, or other countries still requires external replication with
-the same FL definition applied to different
-institutional settings.
+The paper's results come from S\~ao Paulo's BEC platform.
+Section~\ref{sec:cross_sector} provides intra-platform
+validation across fifteen BEC product categories: AUC is
+uniformly $\geq 0.90$ with mean $0.954$ (SD $0.034$). The
+price coefficient is heterogeneous across these categories,
+consistent with the environment-marker reading and with the
+cross-jurisdictional discussion in
+Section~\ref{sec:institutional}. Generalization to federal
+procurement (ComprasNet), other Brazilian states (TCE-MG,
+TCE-RS), or OECD platforms (Italy MEPA, Mexico CompraNet)
+requires external replication with the same FL definition. The
+contribution generalizes \emph{in principle} wherever a
+procurement system records winners and participants; the
+empirical record outside BEC is open.
