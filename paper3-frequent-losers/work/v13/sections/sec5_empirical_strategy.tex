@@ -63,7 +63,7 @@ diminished where it is not.
 Section~\ref{sec:reduced_form} sets out the OLS, cross-fit, and
 matching specifications. Section~\ref{sec:detection_validation}
 benchmarks the screen against CADE cartel co-bidding ground truth.
-Sections~\ref{sec:structural_estimation}--\ref{sec:empirical_network}
+Sections~\ref{sec:supporting_setup}--\ref{sec:empirical_network}
 present supporting diagnostics that assess coherence with
 cover-bidding mechanisms (structural estimation, Bajari--Ye
 bid-coordination tests, network-split heterogeneity). These
@@ -71,8 +71,15 @@ diagnostics check coherence; they do not identify the mechanism.
 
 % ── 5.1 Reduced-Form Identification ──────────────────────────────
 
-\subsection{Reduced-Form Identification}
+\subsection{Reduced-Form Conditional Associations}
 \label{sec:reduced_form}
+
+\noindent\textit{The institutional identification of
+Section~\ref{sec:additional_id} is our primary design. The
+specifications below are conditional-association baselines,
+estimated on the same regression sample, that bracket the
+modal-channel estimates and document the FL--price gap
+descriptively.}\medskip
 
 \paragraph{OLS baseline.}
 The baseline specification regresses tender outcomes on FL presence:
@@ -198,72 +205,30 @@ Equation~\eqref{eq:ols_main} tests whether FL captures information
 orthogonal to bid-level screens
 (Section~\ref{sec:results_detection}).
 
-% ── 5.3 Structural Estimation ────────────────────────────────────
+% ── 5.3 Supporting diagnostics (online setup) ────────────────────
 
-\subsection{Structural Likelihood Estimation}
-\label{sec:structural_estimation}
+\subsection{Supporting Diagnostics: Setup}
+\label{sec:supporting_setup}
 
-The mixture model (\ref{app:structural_id}) is estimated in two stages on bid-level data. After restricting to losing bids with valid prices and item-year fixed-effect coverage, the estimation sample comprises 23.2 million genuine (non-FL) losing bids and 189,381 FL losing bids (Table~\ref{tab:structural_params}).
-
-\paragraph{Stage 1: Genuine bid distribution.}
-We estimate $(\boldsymbol{\beta}, \sigma_g^2)$ from the 23.2 million non-FL losing bids by maximum likelihood under a log-normal specification:
-\begin{equation}
-  (\hat{\boldsymbol{\beta}}, \hat{\sigma}_g^2) =
-  \operatorname*{arg\,max}_{\boldsymbol{\beta}, \sigma_g^2}
-  \sum_{t=1}^{T} \sum_{j \in \mathcal{G}_t}
-  \log \phi\!\left(
-    \frac{\log b_{jt} - \mathbf{x}_j'\boldsymbol{\beta}
-    - \hat{\alpha}_i - \hat{\lambda}_t}{\sigma_g}
-  \right)
-  \label{eq:mle_genuine}
-\end{equation}
-where $\phi(\cdot)$ is the standard normal density and $\hat{\alpha}_i$, $\hat{\lambda}_t$ are absorbed item and year fixed effects. In practice, this reduces to OLS of $\log b_{jt}$ on $\mathbf{x}_j$ with fixed effects, yielding $\hat{\sigma}_g^2$ as the residual variance.
-
-\paragraph{Stage 2: Cover bid distribution.}
-Conditional on the winning bid $b^*_t$, we estimate cover-bid parameters from FL bids under each regime specification (\ref{app:structural_id}).
-
-\paragraph{Model selection.}
-We select between regimes using BIC; the implied markup is:
-\begin{equation}
-  \hat{\mu}_{\text{structural}} =
-  \frac{E[b^*_t \mid \text{FL present}] -
-        E[b^*_t \mid \text{FL absent}]}{E[b^*_t \mid \text{FL absent}]}
-  \label{eq:structural_markup}
-\end{equation}
-This markup is a calibration exercise---it computes the implied price
-difference from the estimated distributions---rather than an
-independently identified structural parameter. We report it alongside
-the reduced-form estimates for completeness. Standard errors are
-computed via parametric bootstrap (500 replications, tender-level
-resampling).
-
-% ── 5.4 Bajari-Ye Tests ──────────────────────────────────────────
-
-\subsection{Bajari--Ye Bid Coordination Tests}
-\label{sec:bajari_ye}
-
-We implement the \citet{bajari2003deciding} tests using corrected
-first-stage residuals from the bid equation:
-\begin{equation}
-  \log b_{jt} = \mathbf{x}_j'\boldsymbol{\phi} + \alpha_i + \lambda_t
-  + u_{jt}
-  \label{eq:by_first_stage}
-\end{equation}
-where $\mathbf{x}_j$ includes firm size, firm age, and CNAE sector
-dummies. We exclude $n_{\text{bids}}$ from the first stage: it is
-jointly determined with bid levels and mechanically increased by FL
-presence \citep[p.~978]{bajari2003deciding}.
-
-Using the residuals $\hat{u}_{jt}$, we test (i)~\emph{exchangeability}
-(KS test comparing FL and non-FL residual distributions) and
-(ii)~\emph{conditional
-independence} (mean pairwise product of FL residuals within tenders;
-bootstrap with 1,000 iterations). A fake-groups placebo splits non-FL
-firms randomly within each tender; the economically relevant statistic
-is the FL--non-FL pairwise \emph{difference}, which isolates excess
-FL correlation beyond common tender-level shocks. We also report a
-tender-FE variant as a conservative specification absorbing all
-tender-level variation.
+Two supporting diagnostics complement the institutional
+identification and the conditional-association baselines:
+\textit{(i)~A two-stage structural mixture model} estimating
+genuine-bid and cover-bid distributions on the bid-level data
+(23.2 million non-FL losing bids and 189{,}381 FL losing bids);
+the model selects between complementary and coordinated cover-bid
+regimes via BIC and computes an implied markup as a calibration
+exercise---not as an independently identified structural
+parameter. \textit{(ii)~The \citet{bajari2003deciding}
+bid-coordination tests} using corrected first-stage residuals
+(excluding $n_{\text{bids}}$ as in \citealt{bajari2003deciding},
+p.~978) to test exchangeability of FL and non-FL bid residuals
+(KS test) and conditional independence of FL residuals within
+tenders (mean pairwise product, bootstrap with 1{,}000 iterations,
+plus a fake-groups placebo and a tender-FE variant). Full setup,
+estimating equations, and identification discussion appear in
+\ref{app:structural_id} (Online); structural results appear in
+the same online appendix, and Bajari--Ye results are reported in
+Section~\ref{sec:results_bajari}.
 
 % ── 5.5 Network-Split Heterogeneity ──────────────────────────────
 

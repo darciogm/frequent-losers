@@ -280,14 +280,36 @@ SE clustered at item level.
 \end{table}
 
 % ============================================================================
-\section{Staggered Difference-in-Differences}
+\section{Staggered Designs We Attempted and Rejected}
 \label{app:did}
+\noindent\textit{(Reported for transparency; designs declared invalid
+in main text.)}\medskip
 
-We construct a market-level panel (item $\times$ PBU $\times$ year)
-where treatment is first FL entry. The sample is restricted to markets
-with at least three pre- and three post-treatment observations, yielding
-144,168 market-year observations across 19,777 markets (1,511 treated,
-18,266 never-treated).
+We attempted three staggered event-study designs treating first FL
+entry into a PBU $\times$ item market as the treatment. The sample
+restriction (markets with $\geq 3$ pre- and $\geq 3$ post-treatment
+observations) yields 144{,}168 market-year observations across
+19{,}777 markets (1{,}511 treated, 18{,}266 never-treated).
+Three estimators were applied: TWFE event study,
+Callaway--Sant'Anna (\citeyear{callaway2021difference}) doubly-robust,
+and \citet{cengiz2019effect} stacked regression. All three yield
+ATT estimates that are imprecise (C\&S~$= 0.014$, SE~$= 0.039$) or
+near zero with tight CIs (Stacked~$= -0.006$, SE~$= 0.014$). The
+stacked CI excludes the OLS baseline of 0.064.
+
+These designs require parallel pre-trends. The pre-event coefficients
+at $t=-2$ and $t=-3$ are positive and similar in magnitude to the
+ATT, indicating that FL entry is endogenous to within-market price
+dynamics. We declare the designs \emph{invalid for the present
+setting}, not merely underpowered. \citet{rambachan2023more}
+sensitivity analysis confirms that the bound on the pre-trend slope
+needed to nullify the conclusion is implausibly small.
+
+We retain this material as a transparency artifact rather than as
+robustness for the main estimates: a referee deciding whether to
+attempt these designs in a similar setting can see the diagnostics
+and the verdict. Detailed tables (\ref{tab:did_revised},
+\ref{tab:stacked_did}) and the TWFE event-study figure follow.
 
 \input{./output/tables/tab_did_revised}
 
@@ -295,21 +317,11 @@ with at least three pre- and three post-treatment observations, yielding
 \centering
 \includegraphics[width=0.9\textwidth]{fig_06_event_study.pdf}
 \caption{TWFE event study: coefficients on years relative to first FL
-entry, by outcome variable.}
+entry, by outcome variable. Pre-event coefficients at $t=-2,-3$
+violate parallel trends and motivate the rejection of these designs
+for the main estimation.}
 \label{fig:event_study}
 \end{figure}
-
-\subsection{Stacked Regression (Cengiz et al.)}
-
-As a complement to the Callaway \& Sant'Anna estimator,
-Table~\ref{tab:stacked_did} reports a stacked regression following
-\citet{cengiz2019effect}. Each cohort-year sub-experiment pairs the
-treated markets entering in year $g$ with all never-treated markets
-within a symmetric $\pm$5-year event window, and cohort-specific
-market and year fixed effects absorb level differences across
-sub-experiments. This design eliminates the ``bad comparison''
-problem---already-treated units serving as controls---that can bias
-standard TWFE in staggered settings.
 
 \input{./output/tables/tab_stacked_did}
 
@@ -556,11 +568,26 @@ co-participation with CADE-convicted cartelists.}
 \end{figure}
 
 % ============================================================================
-\section{Welfare Analysis and Policy Counterfactuals}
+\section{Illustrative Welfare Calculations}
 \label{app:extensions}
-\noindent\textit{(Online Appendix)}\medskip
+\noindent\textit{(Online Appendix; not causal estimates.)}\medskip
 
-\input{sections/sec_counterfactual}
+We report illustrative back-of-the-envelope welfare calculations
+that mechanically apply the headline FL price coefficients to
+FL-present procurement spending. Under the OLS coefficient (6.4\%)
+applied to the share of BEC spending in FL-present tenders
+($\sim 4.8\%$ of tender-items, weighted by spending), the implied
+overcharge is on the order of 0.3\% of total BEC spending; under
+the higher matching coefficient (7.7\%) the figure rises to
+$\sim 0.4\%$; under the IV (19.4\%) it reaches 0.9\%. Detailed
+tables and a year-by-year decomposition are reported in
+Tabela~\ref{tab:welfare_bounds}; benchmark OECD cartel-overcharge
+ranges (5--30\%) appear in Figure~\ref{fig:welfare}. These
+figures \emph{assume causality} that the design does not establish
+and should be read as rough benchmarks rather than policy
+estimates. A causal welfare quantification awaits replication in
+a setting with stronger institutional identification (e.g., a
+post-2021 BEC sample exploiting the Lei 14.133/2021 reform).
 
 \input{./output/tables/tab_welfare_bounds}
 
