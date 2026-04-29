@@ -396,8 +396,32 @@ distinction.
 \section{Key Robustness Results}
 \label{app:robustness}
 
-\subsection{Institutional Identification: Modal and Threshold Diagnostics}
+This appendix presents the seven robustness results that the main
+text references. They fall in three blocks: institutional
+identification (D.1--D.2: modal/threshold diagnostics,
+cross-sector replication); identification diagnostics
+(D.3--D.4: leave-one-out IV, Bajari--Ye corrected); and
+sensitivity exercises (D.5--D.7: threshold sensitivity, regime
+test, Imhof comparison and horse-race). Each subsection states
+the result, the table or figure that contains the numerics, and
+the implication for the main estimates.
+
+\subsection{Institutional Identification: Modal and Threshold
+Diagnostics}
 \label{app:robust_modal}
+
+Table~\ref{tab:modal_id} reports the FL price coefficient
+within the modality $\times$ constraint partition introduced in
+\S\ref{sec:additional_id}. Voluntary cover bidding under
+convite ($n_{\mathrm{genuine}} \geq 3$) generates a 7.6\%
+premium ($p < 0.001$); the same coefficient under the binding
+constraint ($n_{\mathrm{genuine}} < 3$) is $-0.160$
+($p < 0.001$). The flip is the institutional design's
+identifying signature. Table~\ref{tab:mccrary} reports the
+McCrary density check at the statutory threshold: ratio
+$0.94$, log-density discontinuity $-0.063$, no bunching
+detected. The threshold check rules out the strongest version
+of value-based modal selection.
 
 \input{tables/tab_modal_id}
 
@@ -406,17 +430,60 @@ distinction.
 \subsection{Cross-Sector Replication}
 \label{app:cross_sector}
 
+Table~\ref{tab:cross_sector} reports the AUC against CADE
+co-bidding and the FL price coefficient separately by BEC
+product sector. All ten sectors with at least three CADE
+positives yield AUC $\geq 0.90$ (mean $0.954$, SD $0.034$).
+The price coefficient is heterogeneous across the same partition
+($+0.255$ to $-0.056$), consistent with the environment-marker
+reading of \S\ref{sec:limitations}. Detection generalizes;
+the price coefficient does not, in a way that the environment
+reading anticipates.
+
 \input{tables/tab_cross_sector}
 
-\subsection{IV Results}
+\subsection{IV: Measurement-Error Diagnostic}
+
+Table~\ref{tab:iv_main} reports the leave-one-out IV
+(Equation~\eqref{eq:iv_v6}). The point estimate is $0.194$
+($p = 0.01$, first-stage $F = 396$), three times the OLS
+coefficient---consistent with measurement-error attenuation in
+the binary FL indicator. The exclusion restriction is strained,
+since cross-PBU FL supply may capture cartel intensity beyond
+classification noise. We treat the IV as a diagnostic
+indicating that OLS is conservative, not as a primary
+estimator (\S\ref{sec:reduced_form}).
 
 \input{./output/tables/tab_iv_main}
 
-\subsection{Bajari--Ye Corrected Results}
+\subsection{Bajari--Ye Corrected First-Stage Tests}
+
+Table~\ref{tab:bajari_ye_corrected} reports the
+\citet{bajari2003deciding} exchangeability and conditional-independence
+tests with the corrected first stage of \ref{app:structural_id}
+(excluding $n_{\mathrm{bids}}$). The KS test rejects
+exchangeability ($D = 0.15$, $p < 0.001$); the mean pairwise
+product of FL residuals is $4.28$ ($t = 81.0$, $p < 0.001$).
+Both reject in the direction predicted by coordinated bidding.
+Enriching the first stage with firm age and CNAE-sector dummies
+leaves $R^2$ unchanged at $0.770$ and does not alter the test
+statistics, ruling out omitted firm-level cost shifters as
+the source of the rejection.
 
 \input{tables/tab_bajari_ye_corrected}
 
 \subsection{Threshold Sensitivity}
+\label{app:threshold_sens}
+
+Table~\ref{tab:threshold} reports the FL price coefficient
+across IQR multipliers $1.0\times$ through $5.0\times$. The
+coefficient declines monotonically from $0.079$ at $1.0\times$
+to $0.050$ at $3.0\times$. The simpler reading is
+classification noise: stricter thresholds shrink the treated
+group, leaving fewer FL-present tenders and more misclassified
+controls. The result does not hinge on the $1.5\times$ choice;
+all multipliers in $[1.0, 3.0]$ yield significant coefficients
+in the $[0.050, 0.079]$ range.
 
 \begin{table}[htbp]
 \centering
@@ -425,14 +492,41 @@ distinction.
 \input{./output/tables/tab_threshold_robustness}
 \end{table}
 
-\subsection{Regime Test}
+\subsection{Pooled vs.\ Individual Bid Dispersion}
+
+Table~\ref{tab:regime_test} reports the regression of log
+within-tender bid SD on FL presence. FL-present tenders have
+$0.47$--$0.55$ log points higher pooled bid SD. This is
+\emph{not} inconsistent with the Regime 2 finding that
+individual FL bids have lower dispersion than genuine bids
+($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$,
+Table~\ref{tab:structural_params}). The two statistics
+measure different objects: pooled SD aggregates all bids in
+the tender, while $\hat{\sigma}_c / \hat{\sigma}_g$ compares
+individual-bid distributions conditional on the winning price.
+FL firms add bids clustered near $b^* + \epsilon$ but above
+the winning bid; the cluster mechanically widens the pooled
+distribution even when each FL bid individually exhibits lower
+variance. The reconciliation is the regime-2 prediction's
+sharpest test at the within-tender level (\ref{app:structural_id}).
 
 \input{./output/tables/tab_regime_test}
 
-\paragraph{Reconciling pooled and individual bid dispersion.}
-Table~\ref{tab:regime_test} shows that FL presence raises total within-tender bid dispersion (coefficient 0.47--0.55 on log bid SD). This is \emph{not} inconsistent with the Regime~2 finding that individual FL bids have lower dispersion than genuine bids ($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$, Table~\ref{tab:structural_params}). The two statistics measure different objects: Table~\ref{tab:regime_test} captures the pooled distribution of all bids in a tender, while $\hat{\sigma}_c / \hat{\sigma}_g$ compares individual-bid distributions conditional on the winning price. When FL firms enter a tender, they add bids clustered near $b^* + \epsilon$ but above the winning bid, mechanically widening the pooled distribution even though each FL bid individually exhibits lower variance.
+\subsection{Imhof Comparison and Horse-Race}
 
-\subsection{Imhof Comparison}
+Table~\ref{tab:imhof_comparison} reports detection AUC for the
+FL screen, three Imhof-style bid-level features individually
+(within-tender CV, kurtosis, normalized spread; see
+\S\ref{sec:literature}), the Imhof composite, and the
+logistic-regression combiner that uses all five features
+($z_{\mathrm{FL}}$ plus four Imhof $z$-features) on held-out
+5-fold cross-validation predictions. The FL screen achieves
+AUC $= 0.94$; the Imhof composite achieves $0.79$ (DeLong
+$p < 0.001$). The combiner reaches $0.84$, above any
+individual Imhof feature but below FL alone---consistent with
+Imhof features adding noise relative to the participation
+signal in this setting. Figure~\ref{fig:roc_comparison} plots
+the ROC curves.
 
 \input{tables/tab_imhof_comparison}
 
@@ -446,7 +540,17 @@ Imhof composite (AUC~$= 0.79$; DeLong $p < 0.001$).}
 \label{fig:roc_comparison}
 \end{figure}
 
-\subsection{Horse-Race: FL vs.\ Imhof Screens}
+Table~\ref{tab:horse_race} reports the horse-race specification
+that includes both FL presence and an Imhof-style CV flag in
+Equation~\eqref{eq:ols_main}. The FL coefficient rises from
+$0.064$ to $0.084$ when the Imhof flag is added---a suppression
+effect, since Imhof-flagged tenders have lower FL incidence
+($r = 0.060$), creating negative omitted-variable bias in the
+FL-only regression. The Imhof flag itself enters at $0.021$
+($p < 0.01$). The two screens are complementary: each captures
+information the other does not, and the suppression pattern
+is coherent with Regime 2 (low within-tender dispersion evades
+CV-based screens; sustained participation triggers FL).
 
 \begin{table}[htbp]
 \centering
