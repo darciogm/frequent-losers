@@ -128,22 +128,39 @@ instrument primarily to diagnose this attenuation:
 The instrument exploits aggregate FL supply variation at other
 purchasing units in the same product market and year. We treat
 $\hat{\beta}_{\text{IV}}$ as a measurement-error diagnostic rather
-than a primary estimator: balance tests reveal systematic imbalance
-across observables, raising exclusion-restriction
-concerns, and the point estimate is sensitive to the FE structure. The IV
-indicates that the OLS is conservative, but we do not include it in
-the headline range. Our primary estimates are cross-fit (0.036),
-OLS (0.064), and matching (0.055--0.077).
+than a primary estimator: the leave-one-out instrument may correlate
+with observable market characteristics that affect prices
+independently of FL-classification noise, raising
+exclusion-restriction concerns, and the point estimate is sensitive
+to the FE structure. The IV indicates that the OLS is conservative,
+but we do not include it in the headline range. Our primary
+\emph{conditional-association} estimates are cross-fit (0.036), OLS
+(0.064), and matching (0.055--0.077).
+
+The conditional-association range above is the \emph{baseline}
+estimate. The institutional identification of
+Section~\ref{sec:empirical} above---modal comparison, within-convite
+constraint binding, and the statutory value threshold---tightens
+the reading by isolating the regulatory cover-bidding channel.
+Section~\ref{sec:additional_id} reports the modal and constraint
+estimates; together with the baseline conditional associations,
+they bound the range over which the FL--price gap is concentrated
+in the procurement environments where the regulatory incentive is
+operative.
 
 % ── 5.2 Detection Validation ─────────────────────────────────────
 
 \subsection{Detection Performance Validation}
 \label{sec:detection_validation}
 
-The detection assessment uses CADE cartel convictions as ground truth,
-with FL status defined on 2009--2014 data and evaluated against
-2015--2019 enforcement outcomes (the temporal split described in
-Section~\ref{sec:cade_sample}).
+The detection assessment uses CADE cartel adjudications as ground
+truth. FL status is defined on 2009--2019 BEC participation, and
+ground truth is co-bidding with the 47 BEC-active firm-defendants
+across 12 cartel cases adjudicated 2015--2025. As discussed in
+Section~\ref{sec:cade_sample}, the validation is partly prospective:
+eight of the twelve cases were decided after our 2009--2019 sample
+window, so the screen is asked to anticipate firms whose cartel
+involvement subsequent enforcement confirmed.
 
 \paragraph{ROC analysis.}
 We vary the IQR multiplier from 0.5 to 5.0 in steps of 0.1, producing
@@ -273,10 +290,12 @@ diversified winner patterns (competitive markets).
 
 \paragraph{Classification.}
 We classify FL firms as \emph{concentrated-market} if
-$\text{HHI}_j$ exceeds the sample median, and
-\emph{competitive-market} otherwise. We then estimate the baseline
-price regression (Equation~\ref{eq:ols_main}) separately for each
-subgroup, interacting $\text{losers}_{igt}$ with the
+$\text{HHI}_j$ exceeds the sample median \emph{and} the firm shares
+at least two tenders with at least one repeat partner (a necessary
+condition for sustained coordination across tenders); and
+\emph{competitive-market} as the complement. We then estimate the
+baseline price regression (Equation~\ref{eq:ols_main}) separately
+for each subgroup, interacting $\text{losers}_{igt}$ with the
 market-structure indicator.
 
 Before presenting the price regressions, we check the FL
