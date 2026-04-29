@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
-# ============================================================================
-# roc_detection.py — ROC analysis for FL screening using CADE ground truth (v6)
-# Paper 3 v6: Frequent Losers in Public Procurement
-# ============================================================================
-# Purpose: Evaluate the FL screening tool's detection performance by varying
-#          the IQR multiplier threshold and computing TPR/FPR against CADE
-#          ground truth (firms co-bidding with convicted cartelists).
-# Outputs:
-#   - work/v6/images/fig_roc_fl_screen.pdf
-#   - work/v6/tables/tab_roc_detection.tex
-#   - work/v6/FLAG_roc.txt (if data missing)
-# ============================================================================
+# roc_detection.py
+# Builds the FL detection ROC against CADE co-bidding as ground truth.
+# Sweeps the IQR multiplier and computes TPR/FPR; writes the LaTeX table
+# and the ROC figure straight into work/v12/.
+#
+# CNPJs are zero-padded to 14 chars before any merge — without this the
+# CADE list collapses to ~98 firms and the ROC silently understates TPR.
 
 import os
 import sys
@@ -19,7 +14,6 @@ import pandas as pd
 from pathlib import Path
 from datetime import datetime
 
-# ---- Path constants ---------------------------------------------------------
 BASE_DIR = Path("/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers")
 DATA_DIR = BASE_DIR / "data" / "processed"
 V12_DIR  = BASE_DIR / "work" / "v12"
@@ -30,7 +24,7 @@ FLAG_DIR = V12_DIR
 OUT_TAB.mkdir(parents=True, exist_ok=True)
 OUT_IMG.mkdir(parents=True, exist_ok=True)
 
-# ---- Check required data ----------------------------------------------------
+# Data inputs we need
 FP_FILE   = DATA_DIR / "FREQ_PARTICIP_rebuilt.parquet"
 CADE_FILE = DATA_DIR / "cade_fl_cobidders.csv"
 FLS_FILE  = DATA_DIR / "firm_loss_stats.parquet"
@@ -53,12 +47,10 @@ if missing:
     print(f"  FLAG written to: {flag_path}")
     sys.exit(0)
 
-# ---- Load data --------------------------------------------------------------
 print("=== roc_detection.py: ROC analysis for FL screen ===")
 
 print("  Loading FREQ_PARTICIP_rebuilt.parquet...")
 fp = pd.read_parquet(FP_FILE)
-# Standardize firm ID column
 firm_col = [c for c in fp.columns if "fornecedor" in c.lower()]
 if firm_col and "firm_id" not in fp.columns:
     fp = fp.rename(columns={firm_col[0]: "firm_id"})
@@ -68,7 +60,6 @@ print(f"  Columns: {list(fp.columns)}")
 
 print("  Loading cade_fl_cobidders.csv...")
 cade = pd.read_csv(CADE_FILE)
-# Standardize firm ID column
 cade_firm_col = [c for c in cade.columns if "fornecedor" in c.lower() or "firm" in c.lower() or "codigo" in c.lower() or "código" in c.lower()]
 if cade_firm_col and "firm_id" not in cade.columns:
     cade = cade.rename(columns={cade_firm_col[0]: "firm_id"})
@@ -76,7 +67,7 @@ cade["firm_id"] = cade["firm_id"].astype(str).str.strip().str.zfill(14)
 print(f"  CADE co-bidders: {len(cade):,} FL firms")
 print(f"  Columns: {list(cade.columns)}")
 
-# Also load firm_loss_stats for the full universe of always-losers
+# firm_loss_stats gives us the broader always-loser universe if it's around
 fls = None
 if FLS_FILE.exists():
     print("  Loading firm_loss_stats.parquet...")
@@ -87,13 +78,9 @@ if FLS_FILE.exists():
     fls["firm_id"] = fls["firm_id"].astype(str).str.strip()
     print(f"  Firm loss stats: {len(fls):,} firms")
 
-# ---- Define ground truth ----------------------------------------------------
-# Ground truth: FL firms that co-bid with CADE-convicted cartelists
-# These are plausible collusion suspects.
-# The CADE file has 193 FL firms that co-bid with CADE cartelists.
-
-# We need: for each always-loser, is it a "true positive" (co-bids with CADE)?
-# And the "score" is tenders_count (more participations = more suspicious).
+# Ground truth = FL firms that co-bid with CADE-convicted cartelists.
+# Score = tenders_count (more participations → higher suspicion).
+# True positives are always-losers that overlap CADE; false positives the rest.
 
 cade_positive_ids = set(cade["firm_id"].unique())
 print(f"  Ground truth positives (CADE co-bidders among FL): {len(cade_positive_ids)}")
@@ -107,7 +94,7 @@ print(f"  Overlap with FREQ_PARTICIP: {len(overlap)} / {len(cade_positive_ids)}"
 fp["is_cade_cobidder"] = fp["firm_id"].isin(cade_positive_ids).astype(int)
 print(f"  CADE co-bidders in FREQ_PARTICIP: {fp['is_cade_cobidder'].sum()}")
 
-# ---- Compute IQR threshold parameters --------------------------------------
+# IQR threshold parameters used to sweep the cutoff.
 q25 = fp["tenders_count"].quantile(0.25)
 q50 = fp["tenders_count"].quantile(0.50)  # median
 q75 = fp["tenders_count"].quantile(0.75)
@@ -120,7 +107,7 @@ print(f"  Tenders count: Q25={q25:.0f}, Q50={q50:.0f}, Q75={q75:.0f}, IQR={iqr_v
 baseline_threshold = q50 + 1.5 * iqr_val
 print(f"  Baseline threshold (1.5x IQR): {baseline_threshold:.1f}")
 
-# ---- Vary IQR multiplier and compute TPR/FPR --------------------------------
+# Sweep multipliers, compute TPR/FPR per threshold.
 print("  Computing ROC curve by varying IQR multiplier...")
 
 multipliers = np.arange(0.0, 5.05, 0.05)
@@ -175,7 +162,7 @@ for mult in multipliers:
 
 roc_df = pd.DataFrame(results)
 
-# ---- Compute AUC using trapezoidal rule --------------------------------------
+# AUC by trapezoidal rule on the (FPR, TPR) curve.
 # Sort by FPR for proper integration
 roc_sorted = roc_df.sort_values("fpr").reset_index(drop=True)
 # Remove duplicates in FPR (keep one with highest TPR)
@@ -194,7 +181,7 @@ except AttributeError:
     auc = trapezoid(roc_unique["tpr"].values, roc_unique["fpr"].values)
 print(f"  AUC: {auc:.4f}")
 
-# ---- Find optimal threshold (Youden's J) ------------------------------------
+# Pick the optimal threshold by Youden's J.
 best_idx = roc_df["youden_j"].idxmax()
 best = roc_df.loc[best_idx]
 print(f"  Optimal (Youden's J = {best['youden_j']:.4f}):")
@@ -211,7 +198,7 @@ print(f"    TPR: {baseline_row['tpr']:.4f}, FPR: {baseline_row['fpr']:.4f}")
 print(f"    Precision: {baseline_row['precision']:.4f}, F1: {baseline_row['f1']:.4f}")
 print(f"    Flagged: {int(baseline_row['n_flagged']):,}")
 
-# ---- Plot ROC curve ----------------------------------------------------------
+# ROC plot for the appendix figure.
 print("  Plotting ROC curve...")
 
 try:
@@ -273,7 +260,7 @@ except ImportError as e:
         f"Timestamp: {datetime.now()}\n"
     )
 
-# ---- Write LaTeX table ------------------------------------------------------
+# LaTeX output for the main table.
 print("  Writing LaTeX table...")
 
 # Select key multipliers for the table
@@ -343,7 +330,7 @@ tex_path = OUT_TAB / "tab_roc_detection.tex"
 tex_path.write_text("\n".join(tex_lines))
 print(f"  LaTeX table saved to: {tex_path}")
 
-# ---- Save full ROC data for reference ----------------------------------------
+# Save the per-threshold sweep as CSV for reference.
 roc_csv_path = OUT_TAB / "roc_detection_full.csv"
 roc_df.to_csv(roc_csv_path, index=False)
 print(f"  Full ROC data saved to: {roc_csv_path}")
