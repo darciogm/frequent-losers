@@ -991,24 +991,64 @@ co-participation with CADE-convicted cartelists.}
 % ============================================================================
 \section{Illustrative Welfare Calculations}
 \label{app:extensions}
-\noindent\textit{(Online Appendix; not causal estimates.)}\medskip
+\noindent\textit{(Online Appendix. The calculations below assume
+causality the paper does not establish; read as rough benchmarks,
+not policy estimates.)}\medskip
 
-We report illustrative back-of-the-envelope welfare calculations
+This appendix reports back-of-the-envelope welfare calculations
 that mechanically apply the headline FL price coefficients to
-FL-present procurement spending. Under the OLS coefficient (6.4\%)
-applied to the share of BEC spending in FL-present tenders
-($\sim 4.8\%$ of tender-items, weighted by spending), the implied
-overcharge is on the order of 0.3\% of total BEC spending; under
-the higher matching coefficient (7.7\%) the figure rises to
-$\sim 0.4\%$; under the IV (19.4\%) it reaches 0.9\%. Detailed
-tables and a year-by-year decomposition are reported in
-Tabela~\ref{tab:welfare_bounds}; benchmark OECD cartel-overcharge
-ranges (5--30\%) appear in Figure~\ref{fig:welfare}. These
-figures \emph{assume causality} that the design does not establish
-and should be read as rough benchmarks rather than policy
-estimates. A causal welfare quantification awaits replication in
-a setting with stronger institutional identification (e.g., a
-post-2021 BEC sample exploiting the Lei 14.133/2021 reform).
+FL-present procurement spending. The exercise quantifies an
+upper bound on the overcharge that would be implied \emph{if}
+the conditional-association coefficients were causal. The
+identification of \S\ref{sec:empirical} does not deliver that
+causality, so the figures below are illustrative.
+
+\paragraph{Computation.}
+Let $\beta$ denote the price coefficient on FL presence, $s$
+the share of BEC procurement spending in FL-present tenders,
+and $S$ total BEC procurement spending. The implied overcharge
+under the assumption of causal $\beta$ is
+$W = \beta \cdot s \cdot S$. We compute $s = 0.048$
+(FL-present share of tender-items, weighted by spending; from
+Table~\ref{tab:descstats}) and report $W/S$ across four
+coefficient choices:
+
+\begin{itemize}
+\item OLS baseline ($\beta = 0.064$): $W/S \approx 0.31\%$
+\item Matching, CEM ($\beta = 0.077$): $W/S \approx 0.37\%$
+\item Cross-fit ($\beta = 0.036$): $W/S \approx 0.17\%$
+\item IV diagnostic ($\beta = 0.194$): $W/S \approx 0.93\%$
+\end{itemize}
+
+The OECD cartel-overcharge benchmark range
+(\citealt{connor2007price}, \citealt{oecd2019government}: 5--30\%
+of contract value in established cartels) is roughly an order
+of magnitude higher than the FL-spending-weighted figures.
+The discrepancy reflects two facts: FL-flagged tenders are
+4.8\% of all tender-items, so even a 6.4\% price effect on
+FL-flagged tenders dilutes to a small share of total
+procurement spending; and the headline conditional association
+is below the typical cartel overcharge documented in
+post-conviction record reviews. Detailed bounds and
+year-by-year decompositions appear in
+Table~\ref{tab:welfare_bounds} and
+Figure~\ref{fig:welfare}.
+
+\paragraph{Why these are not causal estimates.}
+The mechanical application of $\beta$ to FL-present spending
+\emph{assumes} that $\beta$ would persist if FL participation
+were exogenously removed. The conditional-association design
+of \S\ref{sec:reduced_form} does not establish this
+counterfactual: pre-event coefficients in the FL-entry event
+study at $t = -2, -3$ remain positive, indicating cartel
+selection into already-high-price markets that the FL flag
+does not by itself remove. A causal welfare quantification
+requires a setting with exogenous variation in FL participation;
+the 2021 Brazilian reform (Lei 14.133/2021) is the natural
+candidate, and replication on post-2021 BEC data---if and when
+the data become available---would exploit the reform's
+restriction of convite as a policy-driven first-stage on FL
+deployment.
 
 \input{./output/tables/tab_welfare_bounds}
 
@@ -1025,6 +1065,15 @@ OECD benchmark range for cartel overcharges shown as dashed lines.}
 
 \subsection{Year-by-Year Coefficients}
 
+Figure~\ref{fig:year_coefs} plots the FL price coefficient
+re-estimated separately for each sample year. The point
+estimates are stable across years for both log prices and log
+firm count, consistent with the static FL classification we
+adopt and with the absence of a year-specific shock that would
+induce time-varying selection bias. The coefficient pattern
+does not show the trends one would expect under macroeconomic
+demand shocks correlated with FL entry.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{fig_10_year_coefficients.pdf}
@@ -1034,6 +1083,17 @@ years for log prices and log firms.}
 \end{figure}
 
 \subsection{FL Definition Robustness}
+
+Figure~\ref{fig:fl_robustness} plots the FL price coefficient
+under three alternative FL definitions: the baseline
+(win rate $= 0$, the headline definition); low-win-rate
+variants ($<1\%$ and $<2\%$ thresholds, the sensitivity of
+\S\ref{sec:limitations}); and cross-fit estimates. The
+baseline and cross-fit estimates lie within the conventional
+significance bounds; relaxing the zero-win cutoff to $1\%$ or
+$2\%$ attenuates the coefficient toward zero, the
+threshold-dependence pattern that motivates our adoption of
+the strict zero-win condition as the FL definition.
 
 \begin{figure}[htbp]
 \centering
