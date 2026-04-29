@@ -1,50 +1,74 @@
 \section{Related Literature}
 \label{sec:literature}
 
-This paper sits at the intersection of four literatures.
+This paper makes four moves on existing screening and bid-rigging
+literatures.
 
-\paragraph{Bid-coordination tests and bidder classification.}
-\citet{bajari2003deciding} develop powerful tests for
+\paragraph{Bid-coordination tests require ex-post partitioning.}
+\citet{bajari2003deciding} develop the canonical tests for
 collusion---exchangeability of bid functions and conditional
-independence of bid residuals---but the researcher must first partition
-bidders into ``suspected colluders'' and a ``competitive fringe.''
-Subsequent work detects bid rotation
+independence of bid residuals---but the researcher must first
+partition bidders into suspected colluders and a competitive
+fringe, a partition the tests themselves cannot deliver. The
+literature that followed inherits this constraint: bid rotation
 \citep{porter1993detection, porter1999ohio}, collusion in timber
 auctions \citep{baldwin1997bidder}, bidder groups from co-bidding
 patterns \citep{conley2016detecting}, and collusion dynamics in
 long-lived cartels \citep{clark2021collusion,
-schurter2020identification}. \citet{conley2016detecting} are the
-closest precedent in data requirements, though they detect group
-structure rather than flag individual firms. In each case the
-partition is constructed \emph{ex post} or by assumption; the FL
-classification provides a data-driven, \emph{ex ante} partition
-grounded in a participation anomaly.
+schurter2020identification} all classify firms \emph{after}
+collusion is established or assumed. \citet{conley2016detecting}
+come closest in data parsimony but detect group structure rather
+than flag individual firms. Our contribution is the partitioning
+step: a data-driven, \emph{ex ante} firm-level classifier that
+produces the input these subsequent tests need.
 
-\paragraph{Proactive screens for bid rigging.}
-\citet{imhof2019detecting} and \citet{imhof2018screening} train ML
-classifiers on tender-level features and achieve high accuracy against
-known cartels; see also \citet{abrantesmetz2006a},
-\citet{harrington2008detecting}, \citet{chassang2022robust}, and
-\citet{wallimann2023machine}. All operate at the \emph{tender} level
-and require granular bid values. The FL screen operates at the
-\emph{firm} level using only participation and outcome records,
-enabling a two-stage workflow: FL flags triage firms, bid-level
-analysis follows on flagged tenders.%
-\footnote{Our Imhof comparison uses a CV median split, a coarser proxy
-for the full implementation; see Section~\ref{sec:results_detection}.}
+\paragraph{Proactive screens require bid microdata that does not
+always exist.}
+\citet{imhof2019detecting}, \citet{imhof2018screening},
+\citet{huber2019machine}, and \citet{wallimann2023machine} train
+machine-learning classifiers on tender-level bid statistics
+(within-tender CV, kurtosis, normalized spread) and achieve high
+accuracy against known cartels; \citet{abrantesmetz2006a}
+develop the variance screen; \citet{chassang2022robust} provide
+a robust theoretical foundation; \citet{harrington2008detecting}
+surveys. All four operate at the \emph{tender} level and require
+granular bid microdata---in particular, the per-bidder bid
+amounts. Many real procurement systems do not preserve this layer:
+electronic platforms typically archive winning prices and
+participant lists at the contract-record layer, not bid-by-bid.%
+\footnote{Our Imhof comparison uses a coefficient-of-variation
+median split, a coarser proxy for the full implementation; see
+Section~\ref{sec:results_detection}.}
+The gap between what cartel screens \emph{can} do (with full
+microdata) and what oversight bodies \emph{do} have (winner +
+participants) is the operational gap our screen addresses. The
+FL classifier needs only contract-award records.
 
-\paragraph{Cover bidding.}
-Cover bidders have been documented in prosecuted cartels
-\citep{porter1999ohio, pesendorfer2000study, asker2010leniency,
-marshall2012economics} and in theoretical comparisons of auction
-formats \citep{athey2011comparing}. In every case, identification is
-\emph{ex post}. We flag firms whose participation patterns are coherent with cover
-bidding, turning a retrospective observation into a prospective
-screening tool.
+\paragraph{Cover-bidding identification has been retrospective.}
+Cover bidders are documented in prosecuted cartels by
+\citet{porter1999ohio}, \citet{pesendorfer2000study},
+\citet{asker2010leniency}, and \citet{marshall2012economics}, and
+in theoretical comparisons of auction formats by
+\citet{athey2011comparing}. In every empirical case the cover
+bidders are identified \emph{ex post}---through leniency
+testimony, judicial documents, or post-conviction record review.
+We invert this: by flagging firms whose participation patterns
+are behaviorally coherent with cover bidding, the retrospective
+observation becomes a prospective screening rule.
 
-\paragraph{Procurement in developing economies.}
-The bid-rigging literature focuses on developed economies, yet
-enforcement is hardest where resources are scarce
-\citep{sanchezgraells2019screening}. BEC's scale---4.5 million
-tender-items, 40 million bids, 11 years, two auction formats---provides a test bed for screens designed to work with minimal data
-infrastructure.
+\paragraph{Procurement enforcement is hardest where data are
+scarcest.}
+The bid-rigging literature is dominated by developed-economy
+settings (US, EU, OECD) where data infrastructure is mature.
+Developing economies, where procurement spending shares of GDP
+are larger and oversight resources thinner
+\citep{sanchezgraells2019screening, oecd2019government}, are
+both more vulnerable to bid rigging and less equipped to deploy
+the existing detection tools. BEC's institutional setup---a
+centralized electronic platform with 1{,}308 purchasing units,
+4.5 million tender-items, 40 million bids, two auction formats,
+a procurement-cartel adjudication portfolio at CADE---provides
+the test bed for a screening rule designed to be deployable
+under thin data infrastructure. The contribution generalizes
+in principle wherever a procurement system records winners and
+participants, regardless of bid-level archiving.
