@@ -1,87 +1,113 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The convite minimum-bidder rule of Lei~8.666/93, intended to protect
-procedural competition, generated a population of firms whose
-sustained zero-win participation cannot be rationalized under
-standard entry models. That population is detectable from the
-data every procurement registry maintains: contract-award records.
-We propose a participation-only screen that operationalizes this
-behavioral residue, validate it against CADE's cartel adjudication
-portfolio, and document the price patterns associated with
-FL-flagged tenders.
+The convite minimum-bidder rule of Lei 8.666/93, designed to
+protect procedural competition, generates a behavioral residue
+that procurement oversight bodies can detect at virtually no
+marginal cost: firms that participate in many tenders without
+ever winning, a pattern rationally dominated under any standard
+entry model with positive bidding cost. We operationalize this
+residue into a screening rule and validate it against CADE's
+adjudication portfolio. Detection generalizes: AUC $=0.94$
+against the headline ground truth, mean AUC $=0.954$
+(SD $0.034$) across ten BEC product sectors, $2.6\times$
+within-firm enrichment over the always-loser baseline. The
+price-gap claim is weaker---a 3.6--7.7\% conditional
+association concentrated where the regulatory cover-bidding
+incentive operates---and the institutional design identifies
+the 7.6\% premium under voluntary cover bidding within convite,
+absent or negative under the binding constraint. Eight of the
+twelve cartel cases were adjudicated after the sample window
+closes, making the bulk of the validation prospective: the
+screen anticipated firms that subsequent enforcement confirmed
+years later.
 
-The empirical record is clear about what the screen does and what
-it does not. FL-flagged environments have 3.6--7.7\% higher
-negotiated prices in within-item, within-year, within-purchasing-unit
-comparisons. The screen achieves AUC~$=0.94$ against CADE
-co-bidding ground truth, and three of the 47 BEC-active CADE
-firm-defendants are themselves classified as FL---a 2.6$\times$
-enrichment over the population base rate among always-losers.
-Eight of the twelve cartel cases were adjudicated after the
-sample window, so part of the validation is prospective: the
-screen anticipated firms that subsequent enforcement confirmed.
+We are explicit about what the design does not deliver. We do
+not identify cover bidders firm-by-firm: conditional on
+participation count, FL firms are statistically
+indistinguishable from non-FL always-losers in CADE proximity
+($p = 0.93$). We do not estimate causal overcharges: pre-event
+coefficients in the FL-entry event study at $t = -2,-3$
+preclude a fully causal reading. We do not measure welfare
+losses beyond the illustrative $0.3$--$0.9\%$-of-spending range
+in \ref{app:extensions} (Online), which assumes causality the
+design does not establish. The Limitations section
+(\S\ref{sec:limitations}) catalogs the residual threats and the
+sensitivity bounds that constrain them.
 
-The price gap is a conditional association, not a causal estimate.
-Within-market selection remains unresolved, the event-study
-pre-trends at $t = -2$ and $t = -3$ preclude a causal reading,
-and the FL classification's low temporal persistence (10\%
-across sample halves) marks it as an environment indicator
-rather than a firm type. We are explicit about these limits
-(Section~\ref{sec:limitations}). Welfare quantification requires
-a causal interpretation this design does not provide; an
-illustrative calculation appears in \ref{app:extensions}.
-
-\paragraph{Policy implementation.}
-The screen's contribution is operational, not theoretical. It is
-designed to be deployable by oversight bodies whose data
-infrastructure cannot support tender-level forensic analysis.
-We propose a three-stage implementation pathway:
+\paragraph{Implementation pathway.}
+The screen's contribution is operational, not methodological:
+it is designed to run on the data oversight bodies already
+maintain. We propose a three-stage deployment, ordered by
+marginal data cost.
 
 \begin{enumerate}
-\item \textbf{Screen.} Apply the FL rule to participation
+\item \textbf{Screen}. Apply the FL rule to contract-award
 records: count tenders per firm in a defined window, flag
-always-losers with participation above the median + $1.5 \times$
-IQR threshold. The computation requires no data transformation
-beyond contract-award tallies and runs in seconds at the scale of
-millions of contracts.
+always-losers with participation above the
+median $+\,1.5 \times$ IQR threshold. The computation runs in
+seconds at the scale of millions of contracts and requires no
+data transformation beyond winner/participant tallies. For
+TCE-SP and analogous state audit bodies, this is a single
+SQL query against the procurement warehouse they already query.
 
-\item \textbf{Triage.} Re-score FL-flagged markets (not firms:
-the 10\% firm-level persistence across our sample halves means
-the flag is a marker for procurement \emph{environments} rather
-than for individual operatives) by winner-HHI and repeated
-co-bidding pairs, prioritizing markets with diversified-winner
-patterns and concentrated repeat partnerships. Our heterogeneity
-results show the price effect concentrates in the
-competitive-market FL subgroup; the network-based triage operationalizes
-this finding for case selection.
+\item \textbf{Triage}. Re-score FL-flagged \emph{markets}
+(PBU $\times$ item-group $\times$ year cells, not individual
+firms: the $10\%$ firm-level persistence across our sample
+halves means the flag identifies procurement environments,
+not stable operatives) by winner-HHI and repeated co-bidding
+pair counts. Prioritize markets with diversified winner
+patterns and concentrated repeat partnerships---the
+competitive-market FL subgroup that drives the price effect
+in our network-split heterogeneity analysis
+(Table~\ref{tab:network_split}, \S\ref{sec:results_network}).
 
-\item \textbf{Investigate.} On the triaged set, deploy bid-level
-forensic tools---Bajari--Ye exchangeability and conditional
-independence tests, Imhof-style dispersion screens, document
-discovery, and (where available) leniency-driven testimony.
-Bid-level analysis is expensive; the screen narrows the caseload
-to where it is most likely to pay off.
+\item \textbf{Investigate}. On the triaged subset, deploy
+bid-level forensic tools---Bajari--Ye exchangeability and
+conditional-independence tests, Imhof-style dispersion screens
+\citep{imhof2019detecting, huber2019machine,
+wallimann2023machine}, document discovery, and (where
+available) leniency-driven testimony. Bid-level analysis is
+expensive; the screen narrows the caseload to the markets where
+the bid-level tools are most likely to pay off.
 \end{enumerate}
 
-For TCE-SP, CGE, and analogous oversight bodies, the screen is
-implementable with existing data and existing personnel. For
-CADE, it offers an automated triage layer for tip-driven
-investigations where bid-level microdata are not yet available.
-The screen's data parsimony makes it portable: the same
-participation-only rule applies in any procurement system whose
-records distinguish participants from winners.
+The pathway is portable. For TCE-SP, CGE, and analogous
+state-audit bodies, stages 1--2 require no new data
+infrastructure. For CADE, the pathway offers an automated
+triage layer for tip-driven investigations in settings where
+bid-level microdata are not yet exported to analytical
+warehouses. For OECD oversight bodies operating under
+comparable minimum-bidder provisions
+(EU Directive 2014/24/EU, US FAR 13.106-2; see
+\S\ref{sec:institutional}), the same participation-only rule
+applies. The screen's data parsimony makes it deployable
+wherever a procurement system records participants and
+winners, regardless of bid-level archiving.
 
-\paragraph{Open questions and replication.}
-Whether the FL--price association is causal remains open. The
-2021 Brazilian reform (Lei~14.133/2021) replaces Lei~8.666 for
-new contracts, restricts convite, and tightens habilitation; if
-post-2021 BEC data become available, a difference-in-differences
-exploiting the modality transition would test whether reducing
-the regulatory cover-bidding incentive moves prices in the
-direction the FL diagnosis predicts. Replication in other
-Brazilian states and OECD jurisdictions with comparable
-contract-record archives is the most pressing next step.
+\paragraph{Open questions.}
+Three questions structure the agenda the paper opens.
+\emph{Causality of the price effect}: the institutional design
+identifies the regulatory channel under stated assumptions
+(\S\ref{sec:empirical}), but a causal estimate of the
+overcharge requires variation the within-window BEC sample
+does not provide. The 2021 Brazilian reform (Lei 14.133/2021)
+restricts convite and tightens habilitation; if post-2021 BEC
+data become available, a difference-in-differences exploiting
+the modality transition would test whether reducing the
+regulatory cover-bidding incentive moves prices as the FL
+diagnosis predicts. \emph{External validity}: replication in
+ComprasNet (Brazilian federal procurement), other state-level
+TCE platforms (TCE-MG, TCE-RS), and OECD platforms (Italy MEPA,
+Mexico CompraNet) would establish whether AUC stability holds
+out-of-sample. \emph{Sector--cartel correspondence}: the
+inverse CNAE mapping in \S\ref{sec:cross_sector} recovered
+eleven CNAE divisions for seven cartels but did not establish
+a tight sector-to-cartel match; the BEC item-code dictionary
+would close this and is the single most informative additional
+data input.
+
 Whether frequent losers are unlucky competitors or cartel
-operatives, their presence marks markets that deserve a closer
-look.
+operatives, their presence marks procurement environments that
+warrant a closer look---and the closer look can begin with
+data oversight bodies already have.
