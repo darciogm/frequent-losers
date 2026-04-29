@@ -6,68 +6,109 @@
 \section{Empirical Strategy}
 \label{sec:empirical}
 
-\paragraph{Identification through institutional variation.}
-The convite minimum-bidder rule of Lei~8.666/93 generates the
-empirical variation we exploit. Within convite, when fewer than
-three motivated bidders appear, the buyer must produce additional
-proposals: cover bidding becomes \emph{statutorily required} rather
-than strategic. When three or more genuine bidders appear, cover
-bidding under convite is \emph{voluntary}. The pregão modality
-(Lei~10.520/2002) has no analogous minimum-bidder requirement and
-serves as a within-platform comparator. Three sources of variation
-structure the identification:
+\paragraph{Estimand.}
+We estimate $\beta$, the conditional mean difference in log
+negotiated price between tenders that include at least one FL
+firm and otherwise comparable tenders, within item type, year,
+and purchasing unit. We are explicit that $\beta$ is a
+\emph{conditional association}, not a causal parameter unless
+the identification assumptions stated below are satisfied. We
+identify $\beta$ under two complementary designs of unequal
+strength: a baseline conditional-on-observables specification
+(\S\ref{sec:reduced_form}), which provides the descriptive
+range; and an institutional design exploiting the variation
+the convite minimum-bidder rule creates
+(\S\ref{sec:additional_id}), which is our primary
+identification. The institutional design generates three
+sources of variation that interact:
 
 \begin{enumerate}
-\item \textbf{Modal comparison} (convite vs.\ pregão). Same
-buyer, same item-group, same year; different
-minimum-bidder regime. Under regulatory cover bidding, FL
-participation should generate a measurable price premium under
-convite that is absent or smaller under pregão when modal choice
-is not driven by cartel selection.
-\item \textbf{Within-convite constraint binding}. Comparing
-$n_{\text{genuine}} < 3$ (binding, mandatory cover bidding) to
-$n_{\text{genuine}} \geq 3$ (slack, voluntary cover bidding)
-isolates the strategic component of FL deployment from the
-mechanical procedural-compliance component. The voluntary subset
-identifies the price effect of cartel-driven cover bidding.
-\item \textbf{Statutory value threshold}. Lei~8.666/93 caps
-convite procurement at R\$80{,}000 (raised to R\$176{,}000 by
-Decreto 9.412/2018); above the cap, only pregão or higher
-modalities are permitted. The cap is administered by purchasing
-units according to documented contract value, not bidder
-identity, providing a quasi-exogenous source of modal assignment.
-A McCrary-style density check around the R\$80{,}000 cap finds
-no evidence of bunching (left/right density ratio
-$= 0.94$; log-density discontinuity $= -0.063$;
-Table~\ref{tab:mccrary}, \ref{app:robustness}). The convite
-\emph{share} drops 9.8 percentage points across the cap (69\%
-below, 59\% above), consistent with rule-driven assignment rather
-than strategic gaming.
+\item \textbf{Modal comparison} (convite vs.\ pregão).
+Convite (Lei 8.666/93 Art.\ 22) requires three valid proposals;
+pregão (Lei 10.520/2002) has no analogous rule. Comparing
+FL-present tenders across modalities within the same buyer,
+item-group, and year identifies the regulatory cover-bidding
+channel under the assumption that modal assignment is
+orthogonal to FL classification conditional on item-year-buyer
+fixed effects.
+\item \textbf{Within-convite constraint binding}. Within the
+convite subsample, the rule binds when $n_{\text{genuine}} < 3$
+(cover bidding statutorily required) and slack when
+$n_{\text{genuine}} \geq 3$ (cover bidding voluntary). Under
+the assumption that the binding-versus-slack split is
+orthogonal to the unobserved cartel-selection process
+conditional on observed market characteristics---we discuss
+sensitivity to this assumption below---the
+voluntary subset identifies the strategic component of FL
+deployment, separated from mechanical procedural compliance.
+\item \textbf{Statutory value threshold}. Lei 8.666/93 Art.\ 23
+caps convite procurement at R\$80{,}000 (R\$176{,}000 after
+Decreto 9.412/2018); above the cap, only pregão is permitted.
+The cap is administered on documented contract value, not
+bidder identity. We use the threshold not as a fuzzy RDD---
+local first-stage power is too weak (Stock--Yogo $F$ below
+threshold)---but as an exogeneity check on modal assignment.
+McCrary-style density tests around the R\$80{,}000 cap find no
+evidence of bunching (left/right density ratio $0.94$,
+log-density discontinuity $-0.063$;
+Table~\ref{tab:mccrary}); the convite share drops 9.8
+percentage points across the cap (69\% below, 59\% above),
+consistent with rule-driven assignment rather than strategic
+gaming. The threshold check rules out the strongest version of
+the alternative that buyers self-select into convite to deploy
+cover bidders.
 \end{enumerate}
 
-These three sources jointly tighten the identification of the
-regulatory channel. The OLS specification (Section~\ref{sec:reduced_form})
-provides the headline conditional-association estimate; the modal
-comparison and within-convite constraint variation
-(Section~\ref{sec:additional_id}) operationalize the institutional
-identification; the McCrary check rules out the most aggressive
-threat to the modal-assignment claim. None of these establishes
-strict causal identification of the price effect---within-market
-selection by cartels into competitive, high-value items remains
-plausible---but together they bound the reading: the FL--price
-gap is concentrated in the modality and the convite subsample
-where the regulatory cover-bidding incentive is operative,
-diminished where it is not.
+\paragraph{Identifying assumptions and what we test.}
+The institutional design identifies $\beta$ under three
+assumptions, each with a sensitivity analysis. \emph{(A.1)
+Modal-assignment exogeneity}: convite vs.\ pregão modal choice
+is uncorrelated with the unobserved cartel-selection process
+conditional on item-year-buyer fixed effects. We test the
+strongest violation---selection on contract value to deploy
+cover bidders---via the McCrary density check at the R\$80{,}000
+cap, which passes. \emph{(A.2) Constraint-binding exogeneity}:
+the within-convite split between binding and slack is
+uncorrelated with unobserved cartel selection conditional on
+the FE structure. We bound violations using the
+\citet{cinelli2020making} sensitivity analysis, which yields
+$RV_{q=1} = 17.5\%$: an unobserved confounder would need to
+explain at least 17.5\% of residual variation in both FL
+presence and log prices to nullify the coefficient. \emph{(A.3)
+No anticipation}: market entry of FL firms is not driven by
+contemporaneous price expectations within the same item-PBU
+cell. The reverse-causality test in
+Section~\ref{sec:mechanisms} (M3) shows the elasticity of FL
+entry with respect to lagged prices is $0.0021$ (SE $0.0008$);
+price-chasing is too weak to account for the main results.
+
+The three assumptions do not jointly establish strict causal
+identification: pre-event coefficients in the within-PBU FL-entry
+event study at $t = -2,-3$ remain positive and similar to the
+post-event coefficient (Figure~\ref{fig:fl_entry_es},
+\ref{app:robustness}). We interpret this pre-trend as evidence
+of cartel selection \emph{into} markets that already exhibit
+high prices---the very behavior the screen is designed to
+flag---rather than as a violation of A.1--A.3. Under that
+interpretation, the institutional design identifies the
+\emph{premium that FL participation generates conditional on
+cartel-selected markets}, not the average causal effect of FL
+participation on prices in a randomly drawn market. We are
+explicit about this in Section~\ref{sec:limitations}: the
+identification we deliver is plausible and bounded by the
+sensitivity analysis, not strict.
 
 \paragraph{Outline.}
-Section~\ref{sec:reduced_form} sets out the OLS, cross-fit, and
-matching specifications. Section~\ref{sec:detection_validation}
-benchmarks the screen against CADE cartel co-bidding ground truth.
-Sections~\ref{sec:supporting_setup}--\ref{sec:empirical_network}
-present supporting diagnostics that assess coherence with
-cover-bidding mechanisms (structural estimation, Bajari--Ye
-bid-coordination tests, network-split heterogeneity). These
-diagnostics check coherence; they do not identify the mechanism.
+Section~\ref{sec:reduced_form} reports the OLS, cross-fit, and
+matching baselines. Section~\ref{sec:detection_validation}
+benchmarks the screen against CADE cartel co-bidding ground
+truth. Sections~\ref{sec:supporting_setup}--\ref{sec:empirical_network}
+present supporting diagnostics (structural estimation,
+Bajari--Ye coordination tests, network-split heterogeneity) that
+assess coherence with cover-bidding mechanisms.
+Section~\ref{sec:additional_id}, embedded in the Results,
+reports the institutional-identification estimates that the
+present section sets up.
 
 % ── 5.1 Reduced-Form Identification ──────────────────────────────
 
