@@ -167,12 +167,16 @@ agg_lances_q <- function(paths, out_tag) {
   if (length(paths) == 0) return(NULL)
   src_list_sql <- paste(sprintf("'%s'", paths), collapse = ", ")
 
-  # Detect actual columns present in the first parquet (so we can safely
-  # ANY_VALUE() what's there; fall back gracefully if a column is missing).
+  # Detect column union across all parquets (schemas differ across LANCES
+  # versions — e.g. early files have "Qtde. Oferta de Compra Item Negociado",
+  # later ones have "Quantidade Negociada"; some have duplicate-rename
+  # suffixes like _1; some have unnamed column69+). union_by_name=true
+  # aligns by name and fills NULL for missing columns.
   cols <- dbGetQuery(con, sprintf("
-    DESCRIBE SELECT * FROM read_parquet([%s]) LIMIT 1
+    DESCRIBE SELECT * FROM read_parquet([%s], union_by_name=true) LIMIT 1
   ", src_list_sql))$column_name
-  cat(sprintf("  [%s] %d columns detected\n", out_tag, length(cols)))
+  cat(sprintf("  [%s] %d columns detected (union across %d files)\n",
+              out_tag, length(cols), length(paths)))
 
   # Identify candidate columns for canonical fields
   pick <- function(candidates) {
@@ -226,7 +230,7 @@ WITH src AS (
          %s AS _won_flag,
          TRY_CAST(REPLACE(\"%s\", ',', '.') AS DOUBLE) AS _qty,
          TRY_CAST(REPLACE(\"%s\", ',', '.') AS DOUBLE) AS _ref_unit_price
-  FROM read_parquet([%s])
+  FROM read_parquet([%s], union_by_name=true)
 )
 SELECT
   \"%s\"  AS numerodaoc,
@@ -388,7 +392,7 @@ cat(sprintf("\n  Saved item panel: %s  (rows: %s)\n", ITEM_OUT,
 if (length(bid_paths$lances) > 0) {
   src_list_sql <- paste(sprintf("'%s'", bid_paths$lances), collapse = ", ")
   dbExecute(con, sprintf("
-    COPY (SELECT * FROM read_parquet([%s]))
+    COPY (SELECT * FROM read_parquet([%s], union_by_name=true))
     TO '%s' (FORMAT PARQUET, COMPRESSION 'snappy')
   ", src_list_sql, BID_OUT))
   n_bid <- dbGetQuery(con, sprintf("SELECT COUNT(*) AS n FROM read_parquet('%s')",
