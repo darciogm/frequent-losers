@@ -35,7 +35,6 @@ suppressPackageStartupMessages({
 BASE <- normalizePath(file.path(.script_dir, ".."), mustWork = FALSE)
 BID  <- file.path(BASE, "data/processed/bid_level_full_v14.parquet")
 FP   <- file.path(BASE, "data/processed/FREQ_PARTICIP_rebuilt.parquet")
-LOS  <- file.path(BASE, "data/processed/firm_loss_stats.parquet")
 OUT  <- file.path(BASE, "output/first_time_fl")
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
@@ -46,16 +45,15 @@ dbExecute(con, "PRAGMA threads=12")
 dbExecute(con, "PRAGMA memory_limit='14GB'")
 dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
 
-# ---- Load FL classification + always-loser pool ---------------------------
-cat("  Loading firm-loss stats and FL classifications...\n")
-fls <- as.data.table(read_parquet(LOS))
-cat(sprintf("  firm_loss_stats: %s rows\n", format(nrow(fls), big.mark=",")))
-cat(sprintf("  Always-losers (win_rate == 0): %s\n",
-            format(sum(fls$always_loser == 1, na.rm = TRUE), big.mark=",")))
+# ---- Load FL classification (always-loser pool with tender counts) -------
+cat("  Loading FREQ_PARTICIP_rebuilt (always-loser firms + tenders_count)...\n")
+fls <- as.data.table(read_parquet(FP))
+cat(sprintf("  Always-losers in FREQ_PARTICIP_rebuilt: %s rows\n",
+            format(nrow(fls), big.mark = ",")))
 
 # FL firms: always-loser AND tenders_count > IQR threshold (=14 in v13)
 THRESH <- 14L
-fls[, is_fl := as.integer(always_loser == 1L & tenders_count > THRESH)]
+fls[, is_fl          := as.integer(always_loser == 1L & tenders_count >  THRESH)]
 fls[, is_loser_below := as.integer(always_loser == 1L & tenders_count <= THRESH)]
 
 cat(sprintf("  FL firms (always-loser & tenders > %d): %s\n", THRESH,
@@ -97,6 +95,9 @@ if (any(sapply(req, is.null))) {
 # ---- Stage A: identify each firm's earliest (numerodaoc, codigoitem) ------
 cat("\n  Stage A: finding each firm's first tender-item...\n")
 
+# Stage A: pull firm × earliest tender keys WITHOUT filtering on price
+# (some files store prices as DOUBLE in union, which breaks REPLACE; we
+# filter price validity in Stage D after the merge).
 stage_a_q <- sprintf("
 CREATE OR REPLACE TEMP TABLE firm_first AS
 WITH bids AS (
@@ -105,11 +106,10 @@ WITH bids AS (
     \"%s\"  AS numerodaoc,
     \"%s\"  AS codigoitem,
     \"%s\"  AS mes_ano,
-    -- yyyy*12 + mm to make month-year sortable
     CAST(SUBSTR(\"%s\", 4, 4) AS INTEGER) * 12 +
       CAST(SUBSTR(\"%s\", 1, 2) AS INTEGER) AS yyyymm,
-    TRY_CAST(REPLACE(\"%s\", ',', '.') AS DOUBLE) AS bid_price,
-    TRY_CAST(REPLACE(\"%s\", ',', '.') AS DOUBLE) AS ref_price,
+    \"%s\" AS bid_price_raw,
+    \"%s\" AS ref_price_raw,
     \"%s\" AS modal_str
   FROM read_parquet('%s', union_by_name=true)
   WHERE \"%s\" IS NOT NULL
@@ -119,11 +119,9 @@ ranked AS (
          ROW_NUMBER() OVER (PARTITION BY firm_code
                             ORDER BY yyyymm, numerodaoc, codigoitem) AS rn
   FROM bids
-  WHERE bid_price IS NOT NULL AND bid_price > 0
-    AND ref_price IS NOT NULL AND ref_price > 0
 )
 SELECT firm_code, numerodaoc, codigoitem, yyyymm, mes_ano,
-       bid_price, ref_price, modal_str
+       bid_price_raw, ref_price_raw, modal_str
 FROM ranked WHERE rn = 1
 ", c_firm, c_oc, c_item, c_mes, c_mes, c_mes, c_bid, c_ref, c_modal,
    BID, c_firm)
@@ -140,8 +138,8 @@ WITH bids AS (
   SELECT
     \"%s\"  AS numerodaoc,
     \"%s\"  AS codigoitem,
-    TRY_CAST(REPLACE(\"%s\", ',', '.') AS DOUBLE) AS bid_price,
-    TRY_CAST(\"%s\" AS INTEGER) AS won
+    TRY_CAST(REPLACE(CAST(\"%s\" AS VARCHAR), ',', '.') AS DOUBLE) AS bid_price,
+    TRY_CAST(CAST(\"%s\" AS VARCHAR) AS INTEGER) AS won
   FROM read_parquet('%s', union_by_name=true)
   WHERE bid_price IS NOT NULL AND bid_price > 0
 )
@@ -158,20 +156,26 @@ dbExecute(con, stage_b_q)
 # ---- Stage C: assemble first-tender × FL flag ------------------------------
 cat("\n  Stage C: merging FL classifications and item stats...\n")
 
-# Pull FL flag from R-side firm_loss_stats (firm_id is "códigofornecedor")
-fls_export <- fls[, .(firm_code = as.character(`códigofornecedor`),
-                      always_loser, tenders_count, win_rate, is_fl,
-                      is_loser_below)]
-duckdb_register(con, "fls", fls_export)
+# Write fls (FREQ_PARTICIP_rebuilt + FL flags) to a parquet so DuckDB can
+# join cleanly without registration quirks.
+fls_path <- file.path(BASE, "data/processed/intermediate/fls_for_merge.parquet")
+setnames(fls, "códigofornecedor", "firm_code")
+write_parquet(fls[, .(firm_code, always_loser, tenders_count, is_fl,
+                      is_loser_below)],
+              fls_path)
 
-dbExecute(con, "
+dbExecute(con, sprintf("
 CREATE OR REPLACE TEMP TABLE first_panel AS
 SELECT
   ff.firm_code, ff.numerodaoc, ff.codigoitem, ff.yyyymm, ff.mes_ano,
-  ff.bid_price, ff.ref_price, ff.modal_str,
+  TRY_CAST(REPLACE(CAST(ff.bid_price_raw AS VARCHAR), ',', '.') AS DOUBLE) AS bid_price,
+  TRY_CAST(REPLACE(CAST(ff.ref_price_raw AS VARCHAR), ',', '.') AS DOUBLE) AS ref_price,
+  ff.modal_str,
   it.item_min_bid, it.item_winner_bid, it.item_n_bids,
-  fls.always_loser, fls.tenders_count, fls.win_rate,
-  fls.is_fl, fls.is_loser_below,
+  COALESCE(fls.always_loser, 0)    AS always_loser,
+  fls.tenders_count,
+  COALESCE(fls.is_fl, 0)           AS is_fl,
+  COALESCE(fls.is_loser_below, 0)  AS is_loser_below,
   CAST(SUBSTR(ff.mes_ano, 4, 4) AS INTEGER) AS year,
   CASE
     WHEN UPPER(ff.modal_str) = 'CONVITE' THEN 1
@@ -180,8 +184,17 @@ SELECT
   END AS modality
 FROM firm_first ff
 LEFT JOIN item_stats it USING (numerodaoc, codigoitem)
-LEFT JOIN fls         USING (firm_code)
-")
+LEFT JOIN read_parquet('%s') fls ON ff.firm_code = fls.firm_code
+", fls_path))
+
+cat("  Merge stats from DuckDB:\n")
+print(dbGetQuery(con, "
+  SELECT COUNT(*) AS total,
+         SUM(always_loser) AS n_always_loser,
+         SUM(is_fl) AS n_fl,
+         SUM(is_loser_below) AS n_below
+  FROM first_panel
+"))
 
 # ---- Stage D: pull to R for fixest analysis -------------------------------
 panel <- as.data.table(dbGetQuery(con, "
