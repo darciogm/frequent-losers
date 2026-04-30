@@ -8,6 +8,35 @@ Academic research paper: **"Frequent Losers in Public Procurement"** by Darcio G
 
 This is **Paper 3** in the `bitter-pills` monorepo. See also `../paper1-bitter-pills/` and `../paper2-me-epp/`.
 
+## Strategic path (locked 2026-04-30, after mr-frequent rounds 2-4)
+
+**Target tier: JLEO base, JLE contingent.** Working branch is `v13-jle` but the JLE-ambitious narrative was disciplined out. Probabilities:
+
+| Path | Effort | JLE | JLEO |
+|---|---|---|---|
+| Status quo v13 | 0 | 0.05 | 0.35 |
+| **A+ (base plan)** | 2 weeks | 0.00 | **0.68** |
+| γ++ (winner/loser reframe) | 4 weeks | 0.33 | 0.27 |
+
+**Rules of engagement:**
+- Object semantics: **"loser-side concentration"** is the concept; **"frequent losers"** is the operational implementation. Never defend FL14 cutoff as ontologically special.
+- Language: `flags`, `screens`, `prioritizes`, `concentrates risk`. **Never** `detects cartelists`, `proves`, `outperforms decisively`.
+- Front-page the failures: AUC ≈ 0.49 against 47 direct CADE defendants; AUC ≈ 0.91 against 193 cobidders. The asymmetry is the design, not a bug — but only after the asymmetry is empirically demonstrated, not asserted.
+- Continuous `log(tenders_count)` dominates FL14 binary (DeLong p<0.001). FL14 is a deployable rule; the true signal is loss intensity.
+- First-time-FL +0.20 unconditional → +0.06 (p=0.31) under PS matching. **Demote to appendix or non-causal description.**
+- Mechanism heterogeneity: Low HHI × Low pairs +10% is the largest cell, not "cartel signature". **Drop "assinatura de cartel" framing.**
+- Imhof full pipeline AUC 0.888 vs FL 0.903 — gap is **complementarity**, not dominance. Sell as "comparable discrimination at lower informational cost", not "outperforms".
+
+**A+ pacote (11 actions, ~2 weeks):** see `work/v13/mr_frequent_round4.md` and `work/v13/master_plan_jle.md`.
+
+**γ++ gate:** activate ONLY if 4/4 confirm: (1) horse race harmonized same-sample; (2) modal-by-modal AUC confirms institutional asymmetry; (3) continuous preserves loser-side thesis without FL14; (4) CADE winner-heavy table is clean. Otherwise freeze A+ and submit JLEO.
+
+**Ilusões de progresso a evitar** (do not waste cycles): more redundant robustness; figures bonitas; rewriting intro before object is fixed; salvaging first-time-FL; reviving classical cartel mechanism with more heterogeneity; broader literature review without comparison matrix; bigger welfare headline.
+
+**Scripts already executed (35 total) — REUSE, do not recreate:**
+- `30_first_time_fl_matching.R`, `31_imhof_full_pipeline.R`, `32_matched_heterogeneity.R`
+- `33_auc_direct_cade.R`, `34_horse_race_fl_continuous.R`, `35_unified_mechanism.R`
+
 ## Commands
 
 ```bash
