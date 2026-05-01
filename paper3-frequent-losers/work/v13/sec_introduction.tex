@@ -9,6 +9,7 @@
 \section{Introduction}
 \label{sec:intro}
 
+% JLEO-R1: narrow headline claim to within-stratum triage, continuous-vs-binary distinction, and descriptive price scope
 Public procurement oversight bodies face an asymmetric
 data-cost problem. The bid-rigging screens that have organized
 the empirical literature since
@@ -39,16 +40,19 @@ the shape of the offers it received, loser-side concentration
 diagnoses an environment by the persistence of the
 zero-win participation it sustains. The two constructs measure
 different objects on different data, target different stages of
-oversight, and---we will document below---turn out to discriminate
-adjudicated bid-rigging cartels at comparable levels of
-accuracy. This is the paper's central operational claim.
+oversight, and---we will document below---generate
+complementary risk rankings. The paper's central claim is
+operational, not universal: loser-side concentration is useful
+for low-cost triage inside a narrow scope that we now state
+explicitly.
 
 We implement loser-side concentration through a binary marker
 we call \emph{frequent losers} (FL). Of the $\valAlwaysLosers$ firms
 that participated in São Paulo's electronic procurement
 platform (BEC) between 2009 and 2019 without ever winning, we
-flag the $\valFL$ that bid in more than \valThreshold\ tenders.
-The cutoff at \valThreshold\ is the
+flag the $\valFL$ that bid in \valThreshold\ or more tenders.
+The operational cutoff at \valThreshold\ corresponds to a
+statistical threshold of $\valThresholdStat$, the
 median plus $\valIQRmul$ interquartile range of the participation
 distribution among always-losers, set as a Tukey-style outlier
 rule \emph{ex ante} on the participation-count distribution
@@ -60,31 +64,63 @@ The FL marker is the operational object that an oversight
 body can compute from award records alone: it requires no
 bid-level offers, no enforcement labels, no structural
 assumptions. The cutoff itself is not the object of
-substantive interest---continuous loss intensity carries the
-same signal at finer granularity, as we document
-below---but discretization fixes a deployable trigger.
+substantive interest. Continuous loss intensity is the
+construct-rich object; FL is the binary deployment rule. This
+distinction matters because the continuous score ranks
+co-bidder proximity better than the binary rule in sample
+($\valAUClogtc$ vs.\ $\valAUCFLfirm$), and generalizes much
+better out of time at the item level ($\valAUCStrictItemTC$
+vs.\ $\valAUCStrictItemFL$). Neither uniformly dominates: at
+the firm level under strict train-period truncation the
+binary rule is marginally more robust
+(Section~\ref{sec:robustness}).
+
+% JLEO-R2: explicit construct rationale (Bayesian rationality + selection)
+The economic logic that motivates the construct is direct:
+under positive bid-preparation costs and persistent zero wins,
+continued participation past any reasonable Bayesian threshold
+is incompatible with expected-profit maximization
+(\S\ref{sec:rationality} formalizes the calculation). Firms
+that nevertheless persist past such a threshold are doing so
+for reasons orthogonal to expected-profit competition---capacity
+transfer, market intelligence, instrumental participation in
+coordinated arrangements, or systematically misspecified
+priors. The construct does not distinguish among these
+non-competitive readings; it captures their shared empirical
+footprint. The framework in~\ref{app:proofs} is an organizing
+device for interpreting these patterns, not a source of
+causal identification.
 
 \paragraph{What the screen prioritizes, and what it does not.}
 We validate against CADE's adjudicated bid-rigging portfolio
 in two ways, and the gap between the two is informative.
 Among the $\valAlwaysLosers$ always-losers, $\valCobidders$ co-bid with firms
 that CADE later named as bid-rigging defendants. Within this
-pool, the FL marker scores AUC $=\valAUCFLfirm$ ($95\%$ CI $[0.898,
-0.925]$) against the co-bidder label. A continuous score
+pool, the FL marker scores AUC $=\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$)
+against the co-bidder label. A continuous score
 based on $\log(1 + $tenders$)$ achieves AUC $=\valAUClogtc$
-($[0.932, 0.946]$); the binary FL flag is the discretized
-version of a strictly more informative continuous signal,
+% JLEO-R2: continuous score is "of substantive interest", not strictly dominant
+($\valAUClogtcCI$); the binary FL flag is the discretized
+version of an underlying continuous loss-intensity signal,
 which is the price of operational simplicity. A full
-\citet{imhof2019detecting}-style pipeline using five within-tender
-bid-distribution features achieves AUC $=\valAUCImhofFull$ ($[0.865,
-0.912]$) on the same firms; the construct and the
-bid-distribution pipeline reach comparable discrimination,
-and combining them reaches AUC $=\valAUCImhofPlusFL$. The screen earns
-its place administratively, not by displacing the
-forensic-microdata literature, but by reproducing a similar
-level of risk prioritization at substantially lower data cost
-and by adding non-redundant signal where microdata
-\emph{are} available.
+\citet{imhof2019detecting}-style pipeline using within-tender
+bid-distribution features reaches AUC $=\valAUCImhofFull$
+($\valAUCImhofFullCI$) on the same 11{,}676-firm comparison
+universe; the FL binary alone reaches $\valAUCFLalone$, and the
+combined model reaches $\valAUCImhofPlusFL$. The implication is
+not that participation data dominate bid microdata in general.
+It is that award-record information carries non-redundant
+signal and can materially improve low-cost triage, while still
+adding value even when rich-data forensic tools are available.
+
+The same validation also identifies where the claim breaks.
+Freezing the threshold on 2009--2016 and carrying it to 2017--2019
+reduces the firm-level AUC to $\valAUCStrictFirmFL$ and the
+item-level binary AUC to $\valAUCStrictItemFL$, while the
+continuous item score remains at $\valAUCStrictItemTC$. The
+headline $\valAUCFLfirm$ therefore belongs to a
+within-stratum, pooled-sample prioritization problem; it
+should not be read as a portable cartel-detection number.
 
 The screen does not, however, flag the \valDirectCADE\ direct CADE
 defendants in the broader universe of $\valBECfirms$ BEC firms
@@ -108,7 +144,7 @@ oversight conclusions follow from a positive flag.
 
 \paragraph{Descriptive associations within the screen output.}
 Conditional on the construct being deployed, FL-flagged
-environments associate with approximately $\valApproxSixPct$ higher
+environments associate with approximately $\valMatchBaselineCoef$ higher
 negotiated unit prices in within-item, within-year, within-PBU
 comparisons (Section~\ref{sec:results}). Confidence
 intervals are tight under item-clustered standard errors. The
@@ -123,7 +159,11 @@ pre-Decreto \valDecreto; \valCapNewR post) and a
 difference-in-differences using the 2018 cap raise---both
 return null first stages and null effects on FL prevalence
 under the bandwidths and sample sizes available
-(Section~\ref{sec:robustness}). The screen is therefore a
+(Section~\ref{sec:robustness}). More sharply, when we force
+treated and untreated items into the same observed
+item-group-year-modality-size cells, the coefficient turns
+negative ($\valMatchOverlapCoef$; $\valMatchOverlapRefCoef$
+once reference-price bins are added). The screen is therefore a
 flag, not an estimate; we read the price gap as a conditional
 descriptive statistic, not as a treatment effect.
 
@@ -139,10 +179,12 @@ matches the configurations classical cartel models
 would carry the cleanest cartel-rotation reading, returns a
 null coefficient ($+\valMechQLLHCoef\%$, $p = 0.18$). The
 \emph{High HHI $\times$ High pairs} cell returns a
-\emph{negative} coefficient ($\valMechQLHHCoef\%$, $p = 0.002$), most
-parsimoniously read as selection into already-investigated
-environments where FL participation no longer covaries with
-inflated prices. We discuss the heterogeneity pattern in
+\emph{negative} coefficient ($\valMechQLHHCoef\%$, $p = 0.002$), and
+the audit of that cell shows the negative sign in both convite
+and pregão ($\valNegCellConvCoef\%$ and $\valNegCellPregCoef\%$),
+with the largest negative estimates concentrated in the early
+period (\valNegCellEarlyCoef\%) and in the largest PBUs
+(\valNegCellPBUQFourCoef\%). We discuss the heterogeneity pattern in
 Section~\ref{sec:mechanisms} but do not rely on it as
 mechanism evidence, because the cell pattern is consistent
 with several non-collusive readings and with at least one
@@ -171,8 +213,9 @@ deployed where data permit. This is the law-and-economics
 contribution.
 
 \paragraph{What we do not claim.} The screen is not a
-detector of cartelist firms: the \valDirectCADE-defendant AUC of $\valAUCdirectStd$
-is the appropriate calibration of detection scope. The price
+detector of cartelist firms: the direct-defendant AUC of
+$\valAUCdirectCADE$ is the appropriate calibration of detection
+scope. The price
 gap is not an overcharge estimate; welfare quantification
 beyond the back-of-the-envelope figures of
 \ref{app:extensions} (Online) requires causal identification

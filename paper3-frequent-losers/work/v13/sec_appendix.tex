@@ -158,6 +158,29 @@ optimal cover-bidder deployment falls with market
 concentration. \qed
 \end{proof}
 
+% JLEO-R2: empirical tension with A3 acknowledged honestly
+\paragraph{Empirical tension with A3.}
+Proposition~\ref{prop:market_selection} predicts
+$\partial m^*/\partial \mathrm{HHI} < 0$ under A3---i.e., that
+cover-bidder deployment concentrates in less-concentrated
+markets. The empirical decomposition reported in
+Table~\ref{tab:unified_mechanism} is partially consistent with
+this prediction in the dominant cell (Low HHI $\times$ Low pairs,
+$+\valMechQLLLCoef\%$), but the High HHI $\times$ High pairs
+cell returns a \emph{negative} coefficient
+($\valMechQLHHCoef\%$, $p=\valMechQLHHP$).
+We do not interpret this as falsification of A3 in isolation,
+because the negative cell is small ($\valMechQLHHN$ items) and is
+plausibly a selection cell---environments under or already
+targeted by CADE enforcement, where cartel activity has been
+deterred or prosecuted. We acknowledge, however, that this
+leaves the mechanism partially unidentified: the framework
+guides the interpretation of the broader empirical patterns
+but the data do not deliver a single canonical mechanism, and
+the coefficient sign in the High HHI $\times$ High pairs cell
+remains an open puzzle. We treat the empirical patterns as
+risk heterogeneity rather than mechanism evidence.
+
 \paragraph{Economic content of A3.}
 A3 states that cover bidders are more valuable in less-concentrated
 markets: when $\mathrm{HHI}$ is low, genuine bidders exert
@@ -384,7 +407,7 @@ flags before enforcement does, or correlated unobserved
 features of high-price markets that FL participation tracks
 without causal involvement. Either reading supports the
 diagnostic claim of the paper; only the first supports the
-policy claim of \S\ref{sec:conclusion}, and the supporting
+operational-triage claim of \S\ref{sec:conclusion}, and the supporting
 diagnostics of \S\ref{sec:mechanisms} bear on the
 distinction.
 
@@ -436,8 +459,9 @@ product sector. All ten sectors with at least three CADE
 positives yield AUC $\geq 0.90$ (mean $\valAUCCrossSectorMean$, SD $\valAUCCrossSectorSD$).
 The price coefficient is heterogeneous across the same partition
 ($\valMechRegimeSpread$ to $\valMechRegimeNeg$), consistent with the environment-marker
-reading of \S\ref{sec:limitations}. Detection generalizes;
-the price coefficient does not, in a way that the environment
+reading of \S\ref{sec:limitations}. Within BEC, detection is
+not confined to a single product family; the price coefficient
+does not travel in the same way, which the environment
 reading anticipates.
 
 \input{tables/tab_cross_sector}
@@ -513,6 +537,7 @@ sharpest test at the within-tender level (\ref{app:structural_id}).
 \input{./output/tables/tab_regime_test}
 
 \subsection{Loser-Side Concentration vs the Full Imhof--Wallimann Pipeline}
+% JLEO-R1: replace displacement framing with same-universe incremental-value comparison
 % CO-AUTHOR EDIT (Path A+ Action 4, 2026-04-30): replaced the v13
 % strawman comparison (Imhof CV alone, AUC 0.79) with the full
 % Imhof-Wallimann pipeline (5 within-tender features) + the
@@ -525,13 +550,12 @@ data and is not a representative implementation of the screening
 literature \citep{imhof2019detecting, huber2019machine,
 wallimann2023machine}. We replace the strawman with the full
 five-feature pipeline---within-tender CV, skewness, kurtosis,
-normalized spread, and second-lowest distance---trained as a
-random-forest classifier with $500$ trees on the same
-always-loser pool (Table~\ref{tab:imhof_full}). The full
-pipeline reaches AUC $\valAUCImhofFull$ ($95\%$ CI $\valAUCImhofFullCI$); the
-participation-only screen reaches AUC $\valAUCFLalone$ for the FL14
-binary and AUC $\valAUCTCalone$ for the continuous score. The CIs of
-the two pipelines overlap at every reported significance level.
+normalized spread, and second-lowest distance---and rebuild the
+comparison on the same 11{,}676-firm universe for every model
+(Table~\ref{tab:imhof_incremental}). The full pipeline reaches
+AUC $\valAUCImhofFull$ ($95\%$ CI $\valAUCImhofFullCI$); the
+participation-only screen reaches AUC $\valAUCFLalone$ for the
+binary rule and AUC $\valAUCTCalone$ for the continuous score.
 
 The substantive claim is therefore one of \emph{comparable
 discrimination at substantially lower data cost}, not
@@ -546,60 +570,45 @@ the operational contribution.
 
 The two pipelines are also non-redundant when combined. The
 classifier that uses both the participation-only feature and
-the five bid-distribution features reaches AUC $\valAUCImhofPlusFL$
-($[0.943, 0.967]$); replacing the FL14 binary with the
-continuous loss-intensity score yields $\valAUCimhofPlusTC$
-($[0.954, 0.969]$). The combined model gains $5$--$7$ AUC
-points over either single-construct pipeline, indicating that
-the participation-only and bid-distribution information sources
-are not measuring the same underlying object. Where bid
-microdata are available, our recommendation is to combine the
-two; where they are not, the participation-only construct
-delivers screening performance close enough to the
-bid-distribution pipeline to support administrative use.
+the five bid-distribution features reaches AUC
+$\valAUCImhofPlusFL$; replacing the binary rule with the
+continuous loss-intensity score yields $\valAUCImhofPlusTC$.
+The combined model gains roughly ten AUC points over the rich
+benchmark alone, indicating that participation-only and
+bid-distribution information sources are not measuring the same
+underlying object. Where bid microdata are available, our
+recommendation is to combine the two; where they are not, the
+participation-only construct remains deployable at sharply lower
+data cost.
 
-\input{./output/tables/tab_imhof_full}
+\input{./output/tables/tab_imhof_incremental.tex}
 
 \subsection{Horse Race: Binary FL14 vs Continuous Loss Intensity}
 % CO-AUTHOR EDIT (Path A+ Action 4, 2026-04-30): harmonized same-sample
 % horse race; FL14 binary is operationalization, continuous is
 % substantive object.
 
-The FL14 cutoff is an operational discretization of an
-underlying continuous loss-intensity signal. To document this,
-Table~\ref{tab:horse_race_v14} reports the within-item price
-specification with the FL14 binary alone (column 1), the
-continuous score $\log(1{+}\max\,\text{tc})$ alone (column 2),
-and both regressors jointly (column 3) on the same
-\valSampleN items. Both single-construct specifications
-yield positive and statistically significant coefficients:
-$+\valFLpremTopReg$ ($p\!=\!0.003$) for the binary, $+\valOLSGeneralPBU\%$
-($p\!<\!10^{-3}$) for the continuous score. In the joint
-specification the FL14 coefficient flips sign to $\valMechAttenu$
-($p\!=\!0.05$) while the continuous score rises to
-$\valRobustCSCornerHi$ ($p\!=\!0.001$). The pattern is the standard
-discretization-overlap diagnostic: when the underlying
-continuous signal is included, the binary cutoff carries
-predominantly the residual variation orthogonal to the
-continuous score---i.e., the part of FL14 that is not loss
-intensity---which is no longer associated with prices. The
-continuous score is the substantive object; FL14 is a
-deployable rule. We frame the paper accordingly.
+The FL cutoff is an operational discretization of an underlying
+continuous loss-intensity signal. Table~\ref{tab:theory_operationalization}
+documents the hierarchy directly: within the always-loser
+stratum, the continuous score reaches AUC $\valAUClogtc$ while
+the binary paper rule reaches $\valAUCFLfirm$; out of time on
+2017--2019 items, the continuous score retains
+$\valAUCStrictItemTC$ while the binary rule falls to
+$\valAUCStrictItemFL$. The continuous score is therefore the
+substantive object; the binary rule is the deployable audit
+trigger.
 
-A parallel firm-level diagnostic against the $193$
-CADE-cobidder labels (within the always-loser pool of
-$\valAlwaysLosers$ firms) confirms the dominance of the continuous
-score: AUC $=\valAUCFLfirm$ for FL14 versus $\valAUClogtc$ for
-$\log(1{+}\text{tenders\_count})$, with a DeLong test
-yielding $Z\!=\!-4.30$ and $p\!=\!1.7\times 10^{-5}$. The
-binary discretization at $14$ tenders happens to be the
-locally optimal cutoff among the binary alternatives we
-sweep---FL10 yields AUC $\valAUCFLalone$ and FL20 falls to $\valAUCConvFL$,
-both lower---which is informative for defending the cutoff
-as deployable but does not justify treating the threshold
-itself as economically primitive.
+A parallel cutoff audit confirms that the paper rule is the
+best of the simple binary alternatives we examine, but not the
+best representation of the construct itself. The referee's
+standard Tukey cutoff drops to $\valAUCQThreeIQR$, well below
+the paper rule, which supports our choice of an
+always-loser-tail rule while reinforcing the larger point that
+continuous loss intensity, not any specific threshold, is the
+natural theoretical object.
 
-\input{./output/tables/tab_horse_race_v14}
+\input{./output/tables/tab_theory_operationalization.tex}
 
 % ============================================================================
 \section{Staggered Designs We Attempted and Rejected}

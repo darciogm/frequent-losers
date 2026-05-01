@@ -8,6 +8,7 @@
 \section{Results}
 \label{sec:results}
 
+% JLEO-R2: causal language demoted to conditional throughout
 We report results in five blocks. Section~\ref{sec:class_diagnostics}
 verifies that the FL classification is not a threshold artifact.
 Section~\ref{sec:results_ols} presents the conditional-association
@@ -15,11 +16,17 @@ baselines (OLS, cross-fit, matching) and the IV measurement-error
 diagnostic. Section~\ref{sec:results_detection} reports detection
 performance against CADE ground truth. Section~\ref{sec:cross_sector}
 documents cross-sector replication. Section~\ref{sec:additional_id},
-embedded after the supporting diagnostics, reports the
-institutional-identification estimates. The headline conditional
-range is 3.6--\valFLpremBottomReg; the institutional design (\S\ref{sec:additional_id})
-identifies a \valWelfareConclLow\ premium under voluntary cover bidding within
-convite, attenuating to negative under the binding constraint.
+embedded after the supporting diagnostics, reports modal-subsample
+heterogeneity as descriptive evidence of where the conditional
+association concentrates. The headline conditional range is
+3.6--\valFLpremBottomReg; within the voluntary subset of convite
+tenders the conditional association reaches \valWelfareConclLow,
+attenuating to negative in the binding subset. We treat these
+modal estimates as descriptive heterogeneity, not as
+identification of a causal effect; matching diagnostics
+reported below confirm that the price association does not
+survive overlap-strict reweighting (Section~\ref{sec:robustness},
+Table~\ref{tab:item_level_scope_match}).
 
 % ── 7.0 Classification Diagnostics ──────────────────────────────
 
@@ -68,16 +75,18 @@ inflates the estimate.
 
 \input{./output/tables/tab_prices}
 
+% JLEO-R2: "institutional identification" → descriptive separation
 FL-present tenders contain $\valDiagPrice$ log points more non-FL firms
 under the PBU FE specification, contradicting the crowding-out
 prediction of legitimate-FL-as-competitor and consistent with
 \emph{strategic selection}---FL firms gravitate toward more
-competitive tenders, the regime-2 prediction of
-\ref{app:proofs}. The pattern is also consistent with the
-non-collusive alternative that FL firms self-select into
-inherently competitive tenders for orthogonal reasons; the
-institutional identification of \S\ref{sec:additional_id}
-separates the two.
+competitive tenders, an interpretation organized by the
+framework in \ref{app:proofs}. The pattern is also consistent
+with the non-collusive alternative that FL firms self-select
+into inherently competitive tenders for orthogonal reasons;
+the modal-subsample analysis of \S\ref{sec:additional_id}
+provides descriptive evidence on which reading better fits the
+data, but does not identify the underlying mechanism.
 
 \paragraph{Cross-fit estimate.}
 FL status is defined using the same 2009--2019 data on which the price
@@ -159,54 +168,40 @@ estimation methods. OLS estimates in gray; IV estimates in red.}
 \subsection{Detection Performance}
 \label{sec:results_detection}
 
-\paragraph{AUC = \valAUCFLfirm\ against CADE; bid-level alternative is \valAUCImhofCV.}
-The FL screen evaluated against the 193 BEC always-losers who
-co-participate with CADE-defendants achieves AUC $=\valAUCFLfirm$
-(95\% DeLong CI $\valAUClogtcCI$; stratified percentile and BCa
-bootstraps with $B = \valFiveK$ and $\valItemHund$ agree to three
-decimals; Figure~\ref{fig:roc}, Table~\ref{tab:roc_detection},
-\ref{app:robustness}). The data-driven optimal threshold (Youden's
-$J = 0.84$) corresponds to a multiplier of 1.45$\times$IQR, close
-to the 1.5$\times$ baseline rule we set \emph{a priori},
-achieving TPR $= 1.00$ at FPR $= 0.15$. The 15-point AUC gap
-against an \citet{imhof2019detecting}-style bid-level composite
-(within-tender CV, kurtosis, skewness, normalized spread; AUC
-$=\valAUCImhofCVLegacy$, DeLong $p < 0.001$;
-Table~\ref{tab:imhof_full}, Figure~\ref{tab:imhof_full},
-\ref{app:robustness}) is the headline detection finding.
+\paragraph{Detection is strong within the always-loser stratum and weak outside it.}
+The FL screen evaluated against the \valCobidders BEC
+always-losers who co-participate with CADE-defendants achieves
+AUC $=\valAUCFLfirm$ (95\% CI $\valAUCFLfirmCI$). The
+continuous loser-side concentration score improves that to
+$\valAUClogtc$ ($\valAUClogtcCI$). This is the paper's
+headline validation object: a within-stratum prioritization
+problem in which the task is to rank risky firms inside the
+always-loser pool. The same construct does \emph{not} recover
+the \valDirectCADE\ direct CADE defendants in the full BEC
+universe (AUC $=\valAUCdirectCADE$), and its strict
+out-of-time performance is materially weaker
+($\valAUCStrictFirmFL$ at the firm level; $\valAUCStrictItemFL$
+on 2017--2019 items). Those failures are not side notes. They
+define the scope of the result.
 
-Three caveats apply but do not erase the gap. \emph{(i)} The
-firm-level CADE-co-bidding ground truth favors firm-level
-screens that operate over many tenders over tender-level screens
-that operate one tender at a time. \emph{(ii)} Our Imhof
-implementation uses tender statistics aggregated to firm-level
-means rather than the trained classifier in
-\citet{huber2019machine}; the latter likely closes part of the
-gap. \emph{(iii)} The participation-count score may
-mechanically inflate co-participation opportunities; the
-permutation test of \S\ref{sec:cade} controls for this by
-stratifying on participation quartile and confirms the FL--cartel
-association ($\valMultThreeFive\times$, $p < 0.001$). Precision is $\valCobidShareFL$
-at a $\valPctOneOne$ base rate---FL is a high-recall triage tool, not a
-standalone classifier.
+% JLEO-R1: scope table
+\input{./output/tables/tab_stratum_scope.tex}
 
-A logistic-regression combiner using both screens together
-($z_{\mathrm{FL}}$ plus four Imhof $z$-features) reaches AUC
-$= 0.84$ on held-out 5-fold cross-validation: above any
-individual Imhof feature, below FL alone. Imhof features add
-noise relative to the participation signal in this setting.
-The two screens are complementary in the horse-race
-specification of Equation~\eqref{eq:ols_main}: adding an
-Imhof-style CV flag raises the FL coefficient from $\valThreshOneFivex$ to
-$\valBidCoefBoth$ ($p < 0.01$), a suppression effect---Imhof-flagged
-tenders have lower FL incidence, creating negative
-omitted-variable bias in the FL-only regression. The Imhof
-flag itself enters at $\valBidSEclt$ ($p < 0.01$); the correlation
-between indicators is $\valThreshTwox$. The suppression is coherent
-with Regime~2 coordinated cover bidding: low within-tender
-dispersion evades CV-based screens while sustained
-participation triggers FL (Table~\ref{tab:horse_race_v14},
-\ref{app:robustness}).
+\paragraph{The relevant Imhof comparison is incremental value on common support.}
+The referee is right that cross-paper AUC comparisons can be
+circular if the label and support differ. We therefore rebuild
+the comparison on the same 11{,}676-firm universe for all
+models. On that common support, the full Imhof pipeline
+reaches AUC $=\valAUCImhofFull$ ($\valAUCImhofFullCI$), the FL
+binary alone reaches $\valAUCFLalone$, the continuous
+participation count reaches $\valAUCTCalone$, and the combined
+models reach $\valAUCImhofPlusFL$ and $\valAUCImhofPlusTC$.
+The paper's claim is therefore complementary rather than
+displacement-based: award-record information adds
+non-redundant signal to rich-data screens and can sustain a
+useful ranking even where bid microdata are missing.
+
+\input{./output/tables/tab_imhof_incremental.tex}
 
 \input{sections/sec_ground_truth}
 
@@ -290,13 +285,14 @@ the price specification separately by BEC item sector
 tenders each; Table~\ref{tab:cross_sector} in
 \ref{app:robustness}).
 
-Detection generalizes uniformly. All ten sectors with at least
-three CADE-defendant positives among their always-loser pool
-yield AUC $\geq 0.90$, with mean $\valAUCCrossSectorMean$ (SD $\valAUCCrossSectorSD$). The
-participation-based screen does not depend on a particular
-product category: it discriminates CADE co-bidders from other
-always-losers across food, paper, equipment, and services with
-near-uniform accuracy.
+Within BEC, detection is broad across sectors with enough
+positives: all ten sectors with at least three CADE-defendant
+positives among their always-loser pool yield AUC $\geq 0.90$,
+with mean $\valAUCCrossSectorMean$ (SD $\valAUCCrossSectorSD$).
+We do not read this as unconstrained external validity. The
+sector exercise is an intra-platform replication, and
+Section~\ref{sec:limitations} shows that BEC itself is heavily
+commodity-weighted.
 
 The price coefficient is more heterogeneous. Of fifteen
 within-sector OLS estimates, ten are positive (consistent with
@@ -328,10 +324,10 @@ sector-cartel mapping. Detection performance (AUC) does generalize
 across both classifications; the price coefficient does not align
 with the cartel-sector decomposition we attempted.}
 
-The cross-sector evidence reinforces the screen's primary
-contribution: detection performance is portable; the conditional
-price gap is a property of specific procurement environments,
-not a setting-wide constant.
+The cross-sector evidence reinforces the paper's narrower
+contribution: within BEC, loser-side concentration is not
+confined to a single product market, but the price gap remains a
+property of specific procurement environments rather than a
+setting-wide constant.
 
 \input{sections/sec_identification}
-

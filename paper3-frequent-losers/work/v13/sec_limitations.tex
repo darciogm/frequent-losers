@@ -1,6 +1,7 @@
 \section{Limitations}
 \label{sec:limitations}
 
+% JLEO-R1: rewrite limitations around overlap instability, holdout weakness, and narrow external validity
 We catalog the limitations of the design under three headings:
 identification gaps that the institutional design and supporting
 diagnostics narrow but do not close, scope constraints inherent to
@@ -9,24 +10,21 @@ limitation pairs the residual threat with the bound we report and
 the next step that would relax it.
 
 \paragraph{Within-market selection.}
-After the institutional identification of
-Section~\ref{sec:empirical}, the residual threat is unobserved
-time-varying market characteristics that attract both FL firms
-and higher prices within the same item--year--PBU cell,
-conditional on modality and constraint regime. Item, year, and
-PBU fixed effects absorb time-invariant cross-market
-heterogeneity; the cross-fit removes the mechanical FL--price
-link; the convite--preg\~ao comparison and the within-convite
-constraint-binding split exploit institutional variation; the
-McCrary-style density check at the statutory value threshold
-rules out the strongest version of value-based modal selection.
-Cinelli--Hazlett yields $RV_{q=1} = \valRVqOne$: an unobserved
-confounder would need to explain at least $\valRVqOne$ of residual
-variation in both FL presence and log prices to nullify the
-coefficient. Bounding is not strict identification. \emph{Next
-step:} a setting with stronger institutional ID---a procurement
-reform's natural experiment, or external replication in
-ComprasNet---would tighten the bound.
+The baseline FL--price coefficient is not robust to stricter
+observable overlap. The main within-item estimate is
+$\valMatchBaselineCoef$, but exact overlap on item-group, year,
+modality, PBU size, and tender-value quartile turns it to
+$\valMatchOverlapCoef$; adding reference-price bins leaves it at
+$\valMatchOverlapRefCoef$; ATT weighting on observables drives it
+to $\valMatchPSCoef$. This pattern is stronger than a generic
+caveat about omitted variables. It says directly that the
+estimated sign depends on which parts of the sample supply the
+comparison. Cinelli--Hazlett still bounds how strong an
+unobserved confounder would need to be to erase the baseline,
+but the rereview version treats the price result as a
+conditional association only. \emph{Next step:} a design with
+sharper exogenous treatment timing or richer pre-treatment
+market covariates.
 
 \paragraph{Pre-trends in the FL-entry event study.}
 Pre-event coefficients at $t = -2$ and $t = -3$ are positive and
@@ -46,20 +44,17 @@ as a transparency artifact rather than as a robustness check
 exogenous treatment timing the FL setting does not provide.
 
 \paragraph{FL persistence as environment marker.}
-Only $\valPctTenRef$ of firms classified as FL on 2009--2013 data reappear
-as FL on 2014--2019 data ($111$ of $\valBoundaryFLone$). FL is therefore
-properly read as an environment-level marker of suspicious
-procurement \emph{settings}---PBU $\times$ item $\times$ year
-cells where regulatory cover bidding operates---rather than as a
-stable firm type. We adopt this reading throughout the paper.
-The rotation does not undermine the screen, since the
-environment-marker function is what the diagnostic is for; it
-does mean the operational deployment in
-Section~\ref{sec:conclusion} flags markets and re-screens
-periodically, not single firms in perpetuity. \emph{Next step:}
-explicit market-level (PBU $\times$ item $\times$ year)
-persistence statistics, currently in the replication archive but
-not in the main paper.
+The pooled-sample cutoff is not stable across windows. Training
+the threshold only on 2009--2016 yields a cutoff of
+$\valThresholdTrain$, below the full-sample statistical cutoff
+of $\valThresholdStat$, and reduces the firm-level AUC to
+$\valAUCStrictFirmFL$. On 2017--2019 items the frozen binary
+rule drops to $\valAUCStrictItemFL$, while the continuous score
+retains $\valAUCStrictItemTC$. FL is therefore properly read as
+an environment-level marker and binary trigger, not as a stable
+firm type or a time-invariant structural classification.
+\emph{Next step:} periodic retraining of the cutoff or direct
+deployment of the continuous ranking score.
 
 \paragraph{Zero-win threshold dependence.}
 Relaxing the zero-win condition to include firms with 1--2\%
@@ -100,9 +95,9 @@ patterns) but mixes firms whose collusive behavior was active
 during the BEC window with firms whose cases were filed
 earlier and adjudicated later. \emph{Next step:} validation
 against contemporaneous-window adjudications as more cases
-clear adjudication; the cross-sector AUC stability of $\valAUCCrossSectorMean$
-in Section~\ref{sec:cross_sector} is the strongest available
-robustness check.
+clear adjudication; in the meantime, the strict temporal
+holdout in Table~\ref{tab:strict_train_threshold} is the most
+honest deployment benchmark we can provide.
 
 \paragraph{Structural model is a calibration.}
 The mixture-model regime selection and implied markup
@@ -116,17 +111,39 @@ $\valWelfareLowPct$--$\valWelfareHighPct\%$-of-spending range as illustrative, n
 policy estimate.
 
 \paragraph{External validity.}
-The paper's results come from S\~ao Paulo's BEC platform.
-Section~\ref{sec:cross_sector} provides intra-platform
-validation across fifteen BEC product categories: AUC is
-uniformly $\geq 0.90$ with mean $\valAUCCrossSectorMean$ (SD $\valAUCCrossSectorSD$). The
-price coefficient is heterogeneous across these categories,
-consistent with the environment-marker reading and with the
-cross-jurisdictional discussion in
-Section~\ref{sec:institutional}. Generalization to federal
-procurement (ComprasNet), other Brazilian states (TCE-MG,
-TCE-RS), or OECD platforms (Italy MEPA, Mexico CompraNet)
-requires external replication with the same FL definition. The
-contribution generalizes \emph{in principle} wherever a
-procurement system records winners and participants; the
-empirical record outside BEC is open.
+% JLEO-R2: scope statement strengthened with falsifiable prediction
+The paper's results come from a single Brazilian platform with a
+very specific data structure and product mix. In BEC, roughly
+\valExtCommodityShare\ of items are commodity-like and only
+\valExtServiceShare\ are service-like under a transparent text
+classification. Detection is also modality-skewed:
+pregão-primary always-losers yield AUC $\valExtPregAUC$ versus
+$\valExtConvAUC$ for convite-primary firms. These facts do not
+invalidate the screen, but they narrow its natural external
+domain.
+
+We make this scope claim falsifiable by stating where the
+construct's empirical content is most likely portable and where
+it is not. The construct is most likely portable to procurement
+environments sharing three structural features: (i) commodity-heavy
+item composition (allowing repeated participation by the same
+firms across many tender-items), (ii) electronic platforms with
+publicly auditable participant lists, and (iii) institutional
+asymmetry between winner and loser sides of the bidding pool
+(e.g., minimum-bidder rules in convite-style modalities, or
+analogous quorum requirements in other jurisdictions). The
+construct is least likely portable to (i) heterogeneous works
+contracts where each tender involves different firms, (ii)
+private-sector procurement where participant lists are not
+disclosed, and (iii) jurisdictions where bid microdata are
+routinely audited and bid-distribution screens are operational
+\citep{imhof2019detecting,wallimann2023machine}. The construct's
+value is in cheaply screening procurement environments where
+bid microdata are unavailable---roughly the OECD-procurement-without-microdata
+frontier surveyed by \citet{coviello2017tenure} and the
+participation-disclosure regimes documented by
+\citet{decarolis2020rules}. Generalization to ComprasNet, other
+Brazilian states, or OECD platforms requires external
+replication with the same scope discipline.
+
+\input{./output/tables/tab_external_validity_scope.tex}

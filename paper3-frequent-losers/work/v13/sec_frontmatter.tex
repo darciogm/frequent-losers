@@ -7,6 +7,7 @@
 
 \begin{frontmatter}
 
+% JLEO-R1: reframe abstract/highlights to stratum scope, strict holdout, and non-causal price reading
 \title{Loser-Side Concentration as a Low-Cost Bid-Rigging Risk Screen: Award-Record Evidence from Brazilian Procurement\texorpdfstring{\footnote{This version: April 2026. We thank seminar participants at INSPER and anonymous feedback received during paper preparation. All errors are our own. \textbf{Data and code availability:} replication archive (R, Python, and \LaTeX{} sources) is available upon publication; CADE adjudication records used as ground truth are public. \textbf{Funding:} the authors received no specific funding for this study. \textbf{Declarations of interest:} none.}}{}}
 
 \author[insper]{Darcio Genicolo-Martins\corref{cor1}}
@@ -29,29 +30,35 @@ implementation we call \emph{frequent losers} (FL). The screen
 runs on contract-award records alone: winner identity,
 participant identity, item identifier. Applied to 4.5~million
 tender-items from São Paulo's electronic procurement
-platform (BEC, \valYearStart--\valYearEnd), the screen prioritizes
-environments enriched in firms later associated with
-adjudicated bid-rigging cartels: AUC $=\valAUCFLfirm$
-($95\%$ CI $[0.898, 0.925]$) against \valCobidders CADE-defendant
-co-bidders within the always-loser pool, comparable to a full
+platform (BEC, \valYearStart--\valYearEnd), the screen
+prioritizes risk \emph{within the always-loser stratum}: AUC
+$=\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$) against
+\valCobidders CADE-defendant co-bidders, versus
+$\valAUClogtc$ ($\valAUClogtcCI$) for the underlying continuous
+score. On the same 11{,}676-firm comparison universe, a full
 \citeauthor{imhof2019detecting}-style bid-distribution pipeline
-(AUC $=\valAUCImhofFull$, CI $[0.865, 0.912]$) at substantially lower
-data cost; combining the two pipelines reaches AUC $=\valAUCImhofPlusFL$.
-We are explicit about scope. The screen does not flag the
+reaches AUC $=\valAUCImhofFull$ ($\valAUCImhofFullCI$), the FL
+binary alone reaches $\valAUCFLalone$, and the combination
+reaches $\valAUCImhofPlusFL$. Freezing the threshold on
+2009--2016 weakens the binary screen to AUC
+$=\valAUCStrictFirmFL$ at the firm level and to
+$\valAUCStrictItemFL$ on 2017--2019 items, while the continuous
+item score retains AUC $=\valAUCStrictItemTC$. We are explicit
+about scope. The screen does not flag the
 \valDirectCADE\ direct CADE defendants in the universe of BEC firms above
 chance (AUC $= 0.491$): direct defendants tend to be frequent
 \emph{winners}, not losers, and the construct is targeted at
 the loser-side of the bidding pool by design. Within the screen
-output, FL-flagged environments associate with $\approx\!\valApproxSixPct$
-higher negotiated prices in within-item, within-year
-comparisons; the association is not causal, attenuates under
-matching, and is heterogeneous across network quadrants in
-ways that do not match a clean cartel-rotation signature. We
-make explicit the asymmetric data-cost wedge that motivates
-the construct: the screen is a triage tool for oversight bodies
-that hold contract-award records but not bid microdata, not a
-substitute for forensic bid-distribution analysis where
-microdata are available.
+output, FL-flagged environments are associated with
+$\valMatchBaselineCoef$ higher negotiated prices in the baseline
+within-item specification, but the sign turns negative under
+strict overlap matching; the price evidence is therefore
+descriptive, not causal. The asymmetric data-cost wedge is the
+paper's main point: loser-side concentration is a low-cost
+triage device for oversight bodies that hold contract-award
+records but not bid microdata, not a general cartelist
+detector and not a substitute for forensic bid-distribution
+analysis where microdata are available.
 \end{abstract}
 
 \end{frontmatter}
@@ -60,9 +67,10 @@ microdata are available.
 \begin{itemize}\setlength{\itemsep}{1pt}
 \item Loser-side concentration: a participation-only construct for procurement-risk screening.
 \item Frequent losers (FL) implements the construct using award records alone.
-\item AUC $=\valAUCFLfirm$ against \valCobidders CADE-defendant co-bidders; comparable to full Imhof at lower data cost.
-\item Combining FL with bid-distribution features reaches AUC $=\valAUCImhofPlusFL$.
-\item Construct does not flag \valDirectCADE\ direct CADE defendants above chance (AUC $= 0.49$); scope is explicit.
+\item AUC $=\valAUCFLfirm$ against \valCobidders CADE-defendant co-bidders \emph{within the always-loser stratum}; strict holdout is weaker.
+\item Continuous loss intensity is the construct of substantive interest; the FL binary is the deployable discretization. Neither uniformly dominates: the continuous score wins at the item level, the binary rule is more robust to firm-level truncation. % JLEO-R2: nuance
+\item Combining FL with bid-distribution features reaches AUC $=\valAUCImhofPlusFL$ on the same firm universe.
+\item Construct does not flag \valDirectCADE\ direct CADE defendants above chance (AUC $= 0.49$); scope is explicit and narrow.
 \item Three-stage administrative pathway (Screen $\to$ Triage $\to$ Forensic) for oversight bodies without microdata.
 \end{itemize}
 

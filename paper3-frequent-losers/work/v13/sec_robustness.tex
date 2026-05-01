@@ -1,6 +1,7 @@
 \section{Robustness and Extensions}
 \label{sec:robustness}
 
+% JLEO-R1: add strict holdout, threshold audit, overlap sign-flip, and remove welfare from the main robustness narrative
 We subject the conditional-association baselines and the
 institutional-identification estimates to five groups of checks:
 FL-definition variants (IQR multiplier, win-rate cutoff, temporal
@@ -17,21 +18,47 @@ estimates with the assumption each estimator imposes.
 \input{./output/tables/tab_robustness_summary_inline}
 
 \paragraph{Threshold sensitivity.}
-The FL coefficient declines monotonically with stricter
-thresholds: $\valThreshOnex$ (IQR $1.0\times$), $\valThreshOneFivex$ (baseline
-$\valIQRmul$), $\valThreshTwox$ ($2.0\times$), $\valThreshThreex$ ($3.0\times$).
-Two readings are consistent with the pattern. \emph{(i)}
-Classification noise: stricter thresholds shrink the treated
-group, leaving fewer FL-present tenders and more misclassified
-controls. \emph{(ii)} Marker bite: the marginal FL firms
-(10--14 tenders) sit in markets with larger cartel markups
-while tail firms face more detection pressure. The noise reading
-is the simpler explanation and we adopt it. A two-dimensional
-sensitivity analysis varying the IQR multiplier (1.0--3.0$\times$)
-and the win-rate cutoff (0--5\%) yields significant
-coefficients across all 36 cells
-(Figure~\ref{fig:threshold_heatmap}, \ref{app:robustness});
-the result does not hinge on the FL definition.
+% JLEO-R2: continuous-vs-binary nuance — neither dominates uniformly
+The revised threshold exercise clarifies what the binary rule is
+and is not doing. Inside the always-loser stratum, the paper
+rule (median $+ 1.5\times$IQR) yields \valFL flagged firms and
+AUC $=\valAUCFLfirm$; the looser median $+ 1.0\times$IQR rule
+falls to lower discrimination, while the referee's standard
+Tukey alternative ($Q_3 + 1.5\times$IQR) drops to
+$\valAUCQThreeIQR$ and flags only \valFLQThreeIQR firms. The
+threshold is therefore not arbitrary, but neither is it
+theory-privileged. We retain the binary rule because it is
+auditable and deployable, not because the data isolate a
+uniquely correct cutoff.
+
+\input{./output/tables/tab_threshold_q3iqr.tex}
+
+\paragraph{Continuous vs.\ binary: trade-off, not dominance.}
+% JLEO-R2: explicit nuance on continuous-vs-binary trade-off
+Whether the continuous loss-intensity score uniformly dominates
+the binary $\valFL$ rule depends on the holdout structure. In
+the in-sample firm-level evaluation (full $2009$--$\valYearEnd$
+participation observable for both score construction and
+labeling), the continuous score wins:
+$\valAUClogtc$ vs.\ $\valAUCFLfirm$
+(DeLong $Z=\valDeLongZ$, $p=\valDeLongP$). In the strict
+train-period-only firm-level holdout, where the threshold is
+calibrated on $\valYearStart$--$2016$ and evaluated on the
+same firms with their full participation, the binary rule
+ranks marginally \emph{above} the continuous score
+(AUC $\valAUCStrictFirmFL$ vs.\ $\valAUCStrictFirmTC$). At the
+item level, the pattern reverses again: the continuous score
+($\valAUCStrictItemTC$) clearly outperforms the binary
+($\valAUCStrictItemFL$) in the train-period-only holdout
+(Table~\ref{tab:strict_train_threshold}). Reading: the
+continuous score captures finer ordering when the full sample
+is observable and when the unit of evaluation is the
+tender-item; the binary rule is more robust to truncation when
+the unit of evaluation is the firm. We therefore treat the
+continuous loss-intensity score as the construct of substantive
+interest and the binary rule as the deployable form, with
+neither uniformly dominant. The construct--rule relationship
+is concept--versus--operational rule, not equilibrium--versus--noise.
 
 \paragraph{Sensitivity to unobservables.}
 The \citet{cinelli2020making} sensitivity analysis yields
@@ -86,14 +113,18 @@ the convite-only estimate; both are statistically significant.
 The continuous loss-intensity specification yields the same
 pattern at finer granularity: $\valFalPregLog$ in pregão versus
 $\valFalConvLog$ in convite (Table~\ref{tab:falsification_modal}).
+% JLEO-R2: falsification claim disciplined — describe-not-identify
 The loser-side construct is therefore not a mechanical
-consequence of the convite minimum-bidder rule: it
-discriminates coordinated environments more strongly in the
-modal regime where the rule does \emph{not} bind. We read this
-as evidence that the construct identifies a coordination
-phenomenon that operates across modal regimes, with statutory
-rules adding noise (in convite) rather than producing the
-signal.
+consequence of the convite minimum-bidder rule: the
+conditional price association is empirically robust to the
+absence of the minimum-bidder rule, supporting the descriptive
+interpretation that loser-side concentration discriminates
+similar environments across modal regimes. We do not interpret
+this as identification of a coordination mechanism; the test
+addresses one specific competing reading (regulatory artifact)
+and rules it out, leaving the descriptive scope of the
+construct intact while the mechanism behind that scope
+remains an open question.
 
 \paragraph{Pre-registered diagnostics for an alternative paper formulation.}
 % CO-AUTHOR EDIT (Path A+ Action 7+, 2026-04-30): D2 reframed as
@@ -142,20 +173,24 @@ therefore tautological. We audit the leakage component along
 three dimensions (Table~\ref{tab:leakage_audit},
 \ref{app:robustness}). Audit~1 evaluates the same score
 against a label that does not share the construction (any
-direct CADE defendant in the item): AUC $= 0.51$, random,
+direct CADE defendant in the item): AUC $=\valAUCitemDirect$, random,
 confirming the screen's structural scope limit. Audit~2
 withholds approximately one fifth of the cobidder firms per
 fold, recomputes tenders\_count without their participation,
 and predicts items containing held-out cobidders using the
 recomputed score; pooling the five out-of-fold predictions
 yields AUC $=\valAUCitemCV$ ($95\%$ CI $\valAUCitemCVCI$), a drop of
-roughly $\valFLpremtenAttenSE$ from the in-sample reference. Audit~3 trains
-tenders\_count on 2009--2016 and predicts 2017--2019 items:
-AUC $=\valAUCitemTemp$ ($\valAUCitemTempCI$). The audited values remain
-above the conventional $\valAUCstandard$ threshold for strong screening
-rules; the substantive predictive content is not fully
-tautological. We rely on the audited AUCs in our claims, not
-the in-sample $\valAUCitemRaw$.
+roughly $\valFLpremtenAttenSE$ from the in-sample reference. Audit~3 is the
+strict holdout relevant for deployment: training the threshold
+on 2009--2016 and predicting 2017--2019 items yields
+$\valAUCStrictItemFL$ for the binary flag and
+$\valAUCStrictItemTC$ for the continuous score. The binary
+deployment rule is weak out of time; the continuous score
+retains some prospective content. We rely on the audited and
+strict-holdout numbers in our claims, not on the in-sample
+$\valAUCitemRaw$.
+
+\input{./output/tables/tab_item_level_scope_match.tex}
 
 \paragraph{Designs we attempted and rejected.}
 Two estimators that the recent staggered-DiD literature
@@ -183,14 +218,13 @@ exogenous treatment timing the FL setting does not provide,
 and the conditional-association range we report is robust to
 this constraint, not despite it.
 
-\paragraph{Illustrative welfare.}
-\ref{app:extensions} reports back-of-the-envelope welfare
-calculations that mechanically apply the FL price coefficients
-to FL-present spending: roughly $\valWelfareLowPct$--$\valWelfareHighPct\%$ of total BEC
-spending depending on which point estimate is used. The
-calculations \emph{assume} causality the design does not
-establish; they should be read as rough benchmarks, not policy
-estimates. A causal welfare quantification awaits replication
-in a setting with stronger institutional identification (e.g.,
-post-2021 BEC under Lei 14.133, or external replication in
-ComprasNet or OECD platforms; see Section~\ref{sec:conclusion}).
+\paragraph{Design implication.}
+Taken together, the robustness exercises favor a specific
+editorial posture. The continuous participation score is the
+more stable empirical object; the FL binary is the cheaper and
+more transparent deployment rule. The price regressions remain
+descriptive because overlap tightening can overturn the sign,
+and the detection result remains narrow because the strong AUC
+belongs to a within-stratum task. The rereview revisions
+therefore reframe the paper around scope, complementarity, and
+triage value rather than around causal or welfare claims.
