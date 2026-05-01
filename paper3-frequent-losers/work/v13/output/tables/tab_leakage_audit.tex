@@ -1,0 +1,50 @@
+% CO-AUTHOR EDIT (Path A+ Action 7+, 2026-04-30): leakage audit for the
+% item-level AUC reported in D3, in response to peer-review concern that
+% the in-sample 0.99 AUC may be tautological (cobidders are by construction
+% always-losers with high tenders_count). Source: scripts/40_leakage_audit_d3.R.
+\begin{table}[htbp]
+\centering
+\caption{Leakage Audit of the Item-Level Loser-Side Concentration AUC}
+\label{tab:leakage_audit}
+\begin{threeparttable}
+\small
+\begin{tabular}{p{4.5cm}p{5cm}cc}
+\toprule
+Audit specification & What it tests & AUC & 95\% CI \\
+\midrule
+Original (in-sample, full pool) & Reference: $\log(1+\max\,\text{tc})$ predicting any-cobidder participation. & $0.995$ & $[0.995, 0.995]$ \\
+\midrule
+\multicolumn{4}{l}{\emph{Audit 1: Different label, same score (scope)}} \\
+Same score $\to$ any-direct-CADE label & Whether the screen also flags items with direct CADE defendants ($N\!\!+\!\!=\!\!54{,}039$ items). & $0.506$ & $[0.505, 0.507]$ \\
+\midrule
+\multicolumn{4}{l}{\emph{Audit 2: 5-fold cross-validation at the cobidder-firm level (tautology)}} \\
+Pooled out-of-fold & Hold out $\sim\!\!1/5$ of cobidders per fold; recompute tenders\_count without their participation; predict items containing held-out cobidders using the recomputed score. Pool out-of-fold predictions across folds. & $0.891$ & $[0.887, 0.894]$ \\
+\midrule
+\multicolumn{4}{l}{\emph{Audit 3: Temporal holdout (generalization)}} \\
+Train 2009--2016 $\to$ test 2017--2019, any-cobidder & Compute tenders\_count using only 2009--2016 items; predict items in 2017--2019. & $0.864$ & $[0.859, 0.870]$ \\
+Train 2009--2016 $\to$ test 2017--2019, any-direct-CADE & Same temporal split, against direct-CADE label. & $0.511$ & $[0.510, 0.513]$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} The reference in-sample item-level AUC of
+$0.995$ is partially tautological: cobidders are by construction
+always-loser firms with elevated participation counts, and an item
+that contains a cobidder participant therefore mechanically has an
+elevated max-tenders-count among its always-loser participants.
+Audit 2 breaks this construction by withholding cobidder firms from
+the score-construction step within each cross-validation fold and
+re-evaluating on items containing held-out cobidders. Audit 3
+breaks the construction temporally: tenders-count is computed using
+only 2009--2016 participation, so the score for 2017--2019 items
+cannot directly encode their own cobidders. The screen retains
+discriminating power above $0.85$ under both audits, indicating
+that the substantive predictive content is not fully tautological.
+The drop of approximately $0.10$--$0.13$ AUC under audit is the
+pure-leakage component. Audits against direct-CADE labels return
+random AUC in all configurations, confirming the structural scope
+asymmetry documented in Table~\ref{tab:cade_fl_firms}.
+\item \textit{Source:} \texttt{scripts/40\_leakage\_audit\_d3.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

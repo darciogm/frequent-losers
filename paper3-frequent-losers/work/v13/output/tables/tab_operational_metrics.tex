@@ -1,0 +1,36 @@
+% CO-AUTHOR EDIT (Path A+ Actions 5, 8, 9, 2026-04-30): operational metrics
+% Source: scripts/42_operational_metrics.R + scripts/43_precision_at_k_audit.R.
+\begin{table}[htbp]
+\centering
+\caption{Operational Deployment Metrics: Precision, Recall, and Lift at Top-$k$}
+\label{tab:operational_metrics}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{rcccccccc}
+\toprule
+& \multicolumn{4}{c}{In-sample (full 2009--2019)} & \multicolumn{4}{c}{Temporal holdout (score: 2009--2016)} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Top-$k$ & TP & Precision & Recall & Lift & TP & Precision & Recall & Lift \\
+\midrule
+$50$ & 15 & $0.300$ & $0.078$ & $26.2\!\!\times$ & 1 & $0.020$ & $0.005$ & $1.7\!\!\times$ \\
+$100$ & 17 & $0.170$ & $0.088$ & $14.8\!\!\times$ & 7 & $0.070$ & $0.036$ & $6.1\!\!\times$ \\
+$250$ & 40 & $0.160$ & $0.207$ & $14.0\!\!\times$ & 19 & $0.076$ & $0.098$ & $6.6\!\!\times$ \\
+$500$ & 66 & $0.132$ & $0.342$ & $11.5\!\!\times$ & 35 & $0.070$ & $0.181$ & $6.1\!\!\times$ \\
+$1{,}000$ & 97 & $0.097$ & $0.503$ & $8.5\!\!\times$ & 66 & $0.066$ & $0.342$ & $5.8\!\!\times$ \\
+\midrule
+\multicolumn{9}{l}{\emph{Reference quantities}} \\
+Always-loser pool size $N$       & \multicolumn{8}{c}{$16{,}843$} \\
+Cobidder positives $N\!\!+\!\!$ & \multicolumn{8}{c}{$193$} \\
+Base cobidder rate                & \multicolumn{8}{c}{$0.0115$} \\
+ROC AUC ($\log(1{+}\text{tc})$)   & \multicolumn{4}{c}{In-sample: $0.939$} & \multicolumn{4}{c}{Temporal holdout: $0.864$} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Score: $\log(1+\text{tenders\_count})$, ranked descending across the always-loser pool. Lift is precision divided by the base cobidder rate. The in-sample columns score firms using $2009$--$2019$ participation counts; the temporal-holdout columns score using only $2009$--$2016$ participation, evaluated against the same $193$ cobidder labels. The temporal-holdout numbers are the operationally honest projection. The in-sample columns over-state precision by approximately $50\%$ at top-$500$. We rely on the temporal-holdout figures in our operational claims; the in-sample column is reported for comparison and to make the leakage transparent. Computational cost on this run: roughly $1$ CPU-second per state-year of award records on consumer-class hardware (Apple M1 / Ryzen 7 5800H equivalent). Operational deployment requires only contract-award records (winner identity, participant identity, item identifier); no bid microdata.
+\item \textit{Source:} \texttt{scripts/42\_operational\_metrics.R} (in-sample), \texttt{scripts/43\_precision\_at\_k\_audit.R} (temporal-holdout audit).
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

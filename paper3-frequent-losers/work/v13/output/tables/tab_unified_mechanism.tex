@@ -1,0 +1,50 @@
+% CO-AUTHOR EDIT (Path A+ Action 7, 2026-04-30): per-quadrant FL coefficient
+% on within-item negotiated price, full v13 sample (N approx 1.65M).
+% Source: scripts/35_unified_mechanism.R / output/unified_mechanism/unified_mechanism.csv.
+\begin{table}[htbp]
+\centering
+\caption{Network-Quadrant Heterogeneity of the Loser-Side-Concentration Price Association}
+\label{tab:unified_mechanism}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{Binary FL (full sample)} & \multicolumn{2}{c}{Continuous $\log(1+\text{tc})$} & \multicolumn{2}{c}{Binary FL (preg\~ao only)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Cell (PBU $\times$ item-grp $\times$ year) & Coef ($\%$) & $p$ & Coef ($\%$) & $p$ & Coef ($\%$) & $p$ \\
+\midrule
+Low HHI $\times$ Low pairs        & $+9.98^{***}$  & $<\!10^{-4}$ & $+3.16^{***}$  & $<\!10^{-5}$ & $+15.03^{***}$ & $<\!10^{-5}$ \\
+High HHI $\times$ Low pairs       & $+6.78^{*}$    & $0.075$      & $+2.26^{**}$   & $0.019$      & $+10.28^{**}$  & $0.033$ \\
+Low HHI $\times$ High pairs       & $+2.72$        & $0.179$      & $+0.33$        & $0.462$      & $+2.53$        & $0.335$ \\
+High HHI $\times$ High pairs      & $-7.92^{***}$  & $0.002$      & $-1.98^{***}$  & $<\!10^{-4}$ & $-6.48^{**}$   & $0.041$ \\
+\midrule
+Cells (count)                     & \multicolumn{6}{c}{$340{,}150$} \\
+Items (full sample)               & \multicolumn{6}{c}{$1{,}654{,}401$} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} OLS within-item, within-year, within-PBU
+specification of Equation~\eqref{eq:ols_main}, run separately
+on each network-quadrant subsample. Binary FL columns use the
+$\log p \sim \mathbf{1}[\text{loser-side concentrated}]$ specification of
+Section~\ref{sec:results}. Continuous column replaces the
+binary marker with $\log(1 + \max_{j} \text{tenders}_j)$,
+where the max is over always-loser participants in the item.
+Cells defined on procuring unit (PBU, 11 digits) $\times$
+2-digit item group $\times$ year. \emph{Low/High HHI} = below/above
+median winner-side Herfindahl across cells. \emph{Low/High
+pairs} = $0$ vs $\geq 1$ FL--winner pairs co-appearing in
+$\geq 2$ items within the cell. SEs clustered at item level.
+The Low HHI $\times$ Low pairs cell carries 80\% of the
+sample. The High HHI $\times$ High pairs cell carries 0.4\%
+and returns a negative coefficient that we do not interpret
+substantively (Section~\ref{sec:mechanisms}); the most
+parsimonious reading is selection into already-investigated
+environments. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\item \textit{Source:} \texttt{scripts/35\_unified\_mechanism.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

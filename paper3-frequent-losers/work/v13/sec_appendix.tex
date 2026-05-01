@@ -184,8 +184,8 @@ identification of the markup or the causal price effect.
 
 \subsection{Bid Equation and Estimation}
 
-The bid-level data comprise 23{,}177{,}905 non-FL losing bids
-and 189{,}381 FL losing bids on 2{,}875{,}208 tender-items with
+The bid-level data comprise \valStatusBidsTotal non-FL losing bids
+and \valItemsCount FL losing bids on \valStatusBidsTotal tender-items with
 valid prices and item-year fixed-effect coverage (after
 restricting to losing bids per
 Section~\ref{sec:supporting_setup}). The bid equation is
@@ -227,7 +227,7 @@ observables and item-year fixed effects, a genuine bidder's cost
 draw and markup are independent of whether FL firms participate
 in the same tender. \emph{Test:} comparing $\hat{\sigma}_g^2$ on
 genuine-only subsamples that do vs.\ do not include FL bids in
-the same tender yields a difference of $0.001$ (NS), consistent
+the same tender yields a difference of $\valBidIVraw$ (NS), consistent
 with the exclusion restriction.
 
 \item[B2 (Conditional cover-bid identification).] $b^*_t$ is
@@ -269,7 +269,7 @@ of the price effect.
 The two-stage likelihood evaluated under each regime
 specification yields BIC values that select Regime 2
 (coordinated cover bidding) by a margin of $\Delta\mathrm{BIC} =
--91{,}473$ (Table~\ref{tab:structural_params}). The fitted
+\valCVStructPre$ (Table~\ref{tab:structural_params}). The fitted
 ratio $\hat{\sigma}_c / \hat{\sigma}_g = 0.72$ is consistent
 with $\sigma_c \leq \sigma_g$ and left-truncation at $b^*$, the
 sufficient condition for the lower-dispersion prediction of
@@ -282,7 +282,7 @@ Proposition~\ref{prop:optimal_m} predicts that the
 minimum-bidder constraint forces $m \geq 3$ when no genuine
 bidders enter ($n_{\mathrm{genuine}} = 0$, corner solution) and
 that the interior solution is achieved when at least two
-genuine bidders are present. The data: mean FL count is $10.7$
+genuine bidders are present. The data: mean FL count is $\valFLcountMean$
 under $n_{\mathrm{genuine}} = 0$ and $\approx 2$ for
 $n_{\mathrm{genuine}} \geq 2$. The corner-vs-interior gap of
 roughly five-fold matches the sign and order of magnitude the
@@ -292,10 +292,10 @@ estimation.
 \paragraph{Out-of-sample test 2: Within-tender bid dispersion.}
 Proposition~\ref{prop:regime2} predicts that FL bids are less
 dispersed than non-FL bids \emph{within} a tender, conditional
-on the winning bid. In the 29{,}398 tenders with at least two
-FL and at least two non-FL bidders, the FL bid CV is $0.57$
-versus $1.65$ for non-FL bids; FL dispersion is lower in
-$82.6\%$ of tenders (paired $t = -104$, $p < 0.001$). This is
+on the winning bid. In the \valFLBidEvent tenders with at least two
+FL and at least two non-FL bidders, the FL bid CV is $\valFLBidCV$
+versus $\valNonFLBidCV$ for non-FL bids; FL dispersion is lower in
+$\valPctEightytwosix$ of tenders (paired $t = -104$, $p < 0.001$). This is
 the sharpest validation of Regime 2 at the tender level: it
 holds within-tender, controlling for the focal-point variation
 that drives the BIC selection.
@@ -307,7 +307,7 @@ Proposition~\ref{prop:optimal_m} predicts $\partial m^* /
 oversight capacity. Using PBU size as a proxy for $\theta_k$
 (larger buyers face more administrative scrutiny), mean FL
 firms per tender decreases monotonically across the four
-PBU-size quartiles: $0.41$ (Q1, smallest) $\to 0.39$ (Q2) $\to
+PBU-size quartiles: $\valPBUQone$ (Q1, smallest) $\to 0.39$ (Q2) $\to
 0.34$ (Q3) $\to 0.31$ (Q4, largest). The prediction is
 qualitative; the monotonic decline across quartiles is the
 out-of-sample bite. Combined with the FL-coefficient gradient
@@ -321,7 +321,7 @@ The exercise selects a regime, calibrates the cover-bid
 distribution within it, and confirms three out-of-sample
 predictions. It does not identify the cartel markup or the
 causal effect of FL participation on prices. The implied
-markup we report ($\approx 6.4\%$) is by construction
+markup we report ($\approx \valPctSixfour$) is by construction
 mechanically tied to the reduced-form coefficient and serves
 as a consistency check, not as an independent estimate. The
 welfare calculations in \ref{app:extensions} apply the
@@ -344,11 +344,11 @@ enforcement record.
 \paragraph{Conditional descriptive statistics.}
 Table~\ref{tab:conditional_descstats} reports the FL--non-FL
 gap on log negotiated prices before and after absorbing item,
-year, and PBU fixed effects. The unconditional gap is $2.43$
-log points (FL-present mean $4.92$ vs.\ FL-absent $2.49$ in
+year, and PBU fixed effects. The unconditional gap is $\valDataDecimals$
+log points (FL-present mean $\valStatFourNine$ vs.\ FL-absent $\valStatTwoFour$ in
 Table~\ref{tab:descstats}); after fixed effects, the
-conditional gap collapses to $0.050$ log points with overlap
-coefficient $0.978$ and Cohen's $d = 0.039$. The compression
+conditional gap collapses to $\valThreshThreex$ log points with overlap
+coefficient $\valAUCimhofCombo$ and Cohen's $d = 0.039$. The compression
 of two orders of magnitude is the magnitude of the selection
 problem the fixed-effects structure is designed to absorb,
 and the residualized distributions are nearly indistinguishable
@@ -361,11 +361,11 @@ paper relies on.
 Table~\ref{tab:cade_permutation} reports the contingency table
 of FL--CADE co-participation and the stratified permutation
 test described in \S\ref{sec:cade}. The observed FL--CADE
-co-bidding rate is $7.06\%$ (193 of 2{,}735 FL firms), against
-a permuted mean of $2.01\%$ (SD $0.26\%$) under the null of
+co-bidding rate is $\valPctSevenZeroSix$ (193 of \valFL FL firms), against
+a permuted mean of $\valPctTwoZeroOne$ (SD $\valPctTwentysix$) under the null of
 random co-participation among always-losers stratified by
 participation quartile. The permutation $p$-value is below
-$10^{-3}$ on $1{,}000$ replications. The test rules out the
+$10^{-3}$ on $\valPermPilot$ replications. The test rules out the
 alternative that the unconditional excess is mechanically
 generated by FL firms' high participation volume alone, since
 the permutation reshuffles labels within participation-count
@@ -373,9 +373,9 @@ quartiles.
 
 \paragraph{Excluding CADE-involved tenders.}
 Table~\ref{tab:excl_cade} reports the OLS price regression
-re-estimated after dropping all $31{,}447$ tender-items with
-any CADE-defendant participant. The coefficient is $0.062$
-($N = 1{,}622{,}954$) versus $0.064$ on the full sample---a
+re-estimated after dropping all $\valCADEpermPerm$ tender-items with
+any CADE-defendant participant. The coefficient is $\valFtPrecision$
+($N = \valCADEpermObs{,}954$) versus $\valThreshOneFivex$ on the full sample---a
 $3\%$ change. The FL--price association does not depend on the
 enforcement record; the screen identifies high-price
 environments outside the documented cartel cases, consistent
@@ -413,13 +413,13 @@ Diagnostics}
 Table~\ref{tab:modal_id} reports the FL price coefficient
 within the modality $\times$ constraint partition introduced in
 \S\ref{sec:additional_id}. Voluntary cover bidding under
-convite ($n_{\mathrm{genuine}} \geq 3$) generates a 7.6\%
+convite ($n_{\mathrm{genuine}} \geq 3$) generates a \valFLpremTopReg
 premium ($p < 0.001$); the same coefficient under the binding
-constraint ($n_{\mathrm{genuine}} < 3$) is $-0.160$
+constraint ($n_{\mathrm{genuine}} < 3$) is $\valMechBoundaryNeg$
 ($p < 0.001$). The flip is the institutional design's
 identifying signature. Table~\ref{tab:mccrary} reports the
 McCrary density check at the statutory threshold: ratio
-$0.94$, log-density discontinuity $-0.063$, no bunching
+$\valMcCraryRatio$, log-density discontinuity $\valMcCraryDisc$, no bunching
 detected. The threshold check rules out the strongest version
 of value-based modal selection.
 
@@ -433,9 +433,9 @@ of value-based modal selection.
 Table~\ref{tab:cross_sector} reports the AUC against CADE
 co-bidding and the FL price coefficient separately by BEC
 product sector. All ten sectors with at least three CADE
-positives yield AUC $\geq 0.90$ (mean $0.954$, SD $0.034$).
+positives yield AUC $\geq 0.90$ (mean $\valAUCCrossSectorMean$, SD $\valAUCCrossSectorSD$).
 The price coefficient is heterogeneous across the same partition
-($+0.255$ to $-0.056$), consistent with the environment-marker
+($\valMechRegimeSpread$ to $\valMechRegimeNeg$), consistent with the environment-marker
 reading of \S\ref{sec:limitations}. Detection generalizes;
 the price coefficient does not, in a way that the environment
 reading anticipates.
@@ -445,7 +445,7 @@ reading anticipates.
 \subsection{IV: Measurement-Error Diagnostic}
 
 Table~\ref{tab:iv_main} reports the leave-one-out IV
-(Equation~\eqref{eq:iv_v6}). The point estimate is $0.194$
+(Equation~\eqref{eq:iv_v6}). The point estimate is $\valBidPHigh$
 ($p = 0.01$, first-stage $F = 396$), three times the OLS
 coefficient---consistent with measurement-error attenuation in
 the binary FL indicator. The exclusion restriction is strained,
@@ -463,10 +463,10 @@ Table~\ref{tab:bajari_ye_corrected} reports the
 tests with the corrected first stage of \ref{app:structural_id}
 (excluding $n_{\mathrm{bids}}$). The KS test rejects
 exchangeability ($D = 0.15$, $p < 0.001$); the mean pairwise
-product of FL residuals is $4.28$ ($t = 81.0$, $p < 0.001$).
+product of FL residuals is $\valStatX$ ($t = 81.0$, $p < 0.001$).
 Both reject in the direction predicted by coordinated bidding.
 Enriching the first stage with firm age and CNAE-sector dummies
-leaves $R^2$ unchanged at $0.770$ and does not alter the test
+leaves $R^2$ unchanged at $\valBYFirstStageRsq$ and does not alter the test
 statistics, ruling out omitted firm-level cost shifters as
 the source of the rejection.
 
@@ -477,11 +477,11 @@ the source of the rejection.
 
 Table~\ref{tab:threshold} reports the FL price coefficient
 across IQR multipliers $1.0\times$ through $5.0\times$. The
-coefficient declines monotonically from $0.079$ at $1.0\times$
-to $0.050$ at $3.0\times$. The simpler reading is
+coefficient declines monotonically from $\valThreshOnex$ at $1.0\times$
+to $\valThreshThreex$ at $3.0\times$. The simpler reading is
 classification noise: stricter thresholds shrink the treated
 group, leaving fewer FL-present tenders and more misclassified
-controls. The result does not hinge on the $1.5\times$ choice;
+controls. The result does not hinge on the $\valIQRmul$ choice;
 all multipliers in $[1.0, 3.0]$ yield significant coefficients
 in the $[0.050, 0.079]$ range.
 
@@ -496,7 +496,7 @@ in the $[0.050, 0.079]$ range.
 
 Table~\ref{tab:regime_test} reports the regression of log
 within-tender bid SD on FL presence. FL-present tenders have
-$0.47$--$0.55$ log points higher pooled bid SD. This is
+$\valBoundaryCoef$--$\valHHIfllowq$ log points higher pooled bid SD. This is
 \emph{not} inconsistent with the Regime 2 finding that
 individual FL bids have lower dispersion than genuine bids
 ($\hat{\sigma}_c / \hat{\sigma}_g = 0.72$,
@@ -512,75 +512,94 @@ sharpest test at the within-tender level (\ref{app:structural_id}).
 
 \input{./output/tables/tab_regime_test}
 
-\subsection{Imhof Comparison and Horse-Race}
+\subsection{Loser-Side Concentration vs the Full Imhof--Wallimann Pipeline}
+% CO-AUTHOR EDIT (Path A+ Action 4, 2026-04-30): replaced the v13
+% strawman comparison (Imhof CV alone, AUC 0.79) with the full
+% Imhof-Wallimann pipeline (5 within-tender features) + the
+% combined classifier. Frame disciplined to comparable-at-lower-cost.
 
-Table~\ref{tab:imhof_comparison} reports detection AUC for the
-FL screen, three Imhof-style bid-level features individually
-(within-tender CV, kurtosis, normalized spread; see
-\S\ref{sec:literature}), the Imhof composite, and the
-logistic-regression combiner that uses all five features
-($z_{\mathrm{FL}}$ plus four Imhof $z$-features) on held-out
-5-fold cross-validation predictions. The FL screen achieves
-AUC $= 0.94$; the Imhof composite achieves $0.79$ (DeLong
-$p < 0.001$). The combiner reaches $0.84$, above any
-individual Imhof feature but below FL alone---consistent with
-Imhof features adding noise relative to the participation
-signal in this setting. Figure~\ref{fig:roc_comparison} plots
-the ROC curves.
+The version of this comparison reported in earlier drafts of the
+paper used the within-tender coefficient of variation alone as
+the bid-distribution benchmark, which yields AUC $\valAUCImhofCV$ in our
+data and is not a representative implementation of the screening
+literature \citep{imhof2019detecting, huber2019machine,
+wallimann2023machine}. We replace the strawman with the full
+five-feature pipeline---within-tender CV, skewness, kurtosis,
+normalized spread, and second-lowest distance---trained as a
+random-forest classifier with $500$ trees on the same
+always-loser pool (Table~\ref{tab:imhof_full}). The full
+pipeline reaches AUC $\valAUCImhofFull$ ($95\%$ CI $\valAUCImhofFullCI$); the
+participation-only screen reaches AUC $\valAUCFLalone$ for the FL14
+binary and AUC $\valAUCTCalone$ for the continuous score. The CIs of
+the two pipelines overlap at every reported significance level.
 
-\input{tables/tab_imhof_comparison}
+The substantive claim is therefore one of \emph{comparable
+discrimination at substantially lower data cost}, not
+displacement of the bid-distribution literature. The full Imhof
+pipeline requires per-bid offer values for every tender; the
+participation-only screen requires only the participant list
+and the win flag in each item. Brazilian Tribunais de Contas,
+the Controladoria Geral da Uni\~ao, and CADE investigators
+triaging tips routinely face data envelopes in which the latter
+are available and the former are not. The data-cost wedge is
+the operational contribution.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.78\textwidth]{images/fig_roc_comparison.pdf}
-\caption{ROC curves: FL screen vs.\ Imhof-style bid-level screens.
-Ground truth: co-participation with CADE-convicted cartelists among
-always-loser firms. The FL screen (AUC~$= 0.94$) dominates the
-Imhof composite (AUC~$= 0.79$; DeLong $p < 0.001$).}
-\label{fig:roc_comparison}
-\end{figure}
+The two pipelines are also non-redundant when combined. The
+classifier that uses both the participation-only feature and
+the five bid-distribution features reaches AUC $\valAUCImhofPlusFL$
+($[0.943, 0.967]$); replacing the FL14 binary with the
+continuous loss-intensity score yields $\valAUCimhofPlusTC$
+($[0.954, 0.969]$). The combined model gains $5$--$7$ AUC
+points over either single-construct pipeline, indicating that
+the participation-only and bid-distribution information sources
+are not measuring the same underlying object. Where bid
+microdata are available, our recommendation is to combine the
+two; where they are not, the participation-only construct
+delivers screening performance close enough to the
+bid-distribution pipeline to support administrative use.
 
-Table~\ref{tab:horse_race} reports the horse-race specification
-that includes both FL presence and an Imhof-style CV flag in
-Equation~\eqref{eq:ols_main}. The FL coefficient rises from
-$0.064$ to $0.084$ when the Imhof flag is added---a suppression
-effect, since Imhof-flagged tenders have lower FL incidence
-($r = 0.060$), creating negative omitted-variable bias in the
-FL-only regression. The Imhof flag itself enters at $0.021$
-($p < 0.01$). The two screens are complementary: each captures
-information the other does not, and the suppression pattern
-is coherent with Regime 2 (low within-tender dispersion evades
-CV-based screens; sustained participation triggers FL).
+\input{./output/tables/tab_imhof_full}
 
-\begin{table}[htbp]
-\centering
-\caption{Horse-Race Regression: FL Screen vs.\ Imhof CV Flag}
-\label{tab:horse_race}
-\begin{threeparttable}
-\small
-\begin{tabular}{lccc}
-\toprule
- & (1) FL only & (2) Imhof only & (3) Both \\
-\midrule
-FL presence & 0.064*** &  & 0.084*** \\
- & (0.022) &  & (0.023) \\
-Imhof CV flag &  & 0.031*** & 0.021*** \\
- &  & (0.008) & (0.008) \\
-\midrule
-Item + Year + PBU FE & YES & YES & YES \\
-Observations & 1{,}654{,}401 & 1{,}654{,}401 & 1{,}654{,}401 \\
-Correlation(FL, Imhof) & \multicolumn{3}{c}{0.060} \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\small
-\item \textit{Notes:} DV: log negotiated price. Imhof CV flag equals one
-if the within-item-group coefficient of variation exceeds the median.
-SE clustered at item level.
-*** \textit{p}$<$0.01, ** \textit{p}$<$0.05, * \textit{p}$<$0.1.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\subsection{Horse Race: Binary FL14 vs Continuous Loss Intensity}
+% CO-AUTHOR EDIT (Path A+ Action 4, 2026-04-30): harmonized same-sample
+% horse race; FL14 binary is operationalization, continuous is
+% substantive object.
+
+The FL14 cutoff is an operational discretization of an
+underlying continuous loss-intensity signal. To document this,
+Table~\ref{tab:horse_race_v14} reports the within-item price
+specification with the FL14 binary alone (column 1), the
+continuous score $\log(1{+}\max\,\text{tc})$ alone (column 2),
+and both regressors jointly (column 3) on the same
+\valSampleN items. Both single-construct specifications
+yield positive and statistically significant coefficients:
+$+\valFLpremTopReg$ ($p\!=\!0.003$) for the binary, $+\valOLSGeneralPBU\%$
+($p\!<\!10^{-3}$) for the continuous score. In the joint
+specification the FL14 coefficient flips sign to $\valMechAttenu$
+($p\!=\!0.05$) while the continuous score rises to
+$\valRobustCSCornerHi$ ($p\!=\!0.001$). The pattern is the standard
+discretization-overlap diagnostic: when the underlying
+continuous signal is included, the binary cutoff carries
+predominantly the residual variation orthogonal to the
+continuous score---i.e., the part of FL14 that is not loss
+intensity---which is no longer associated with prices. The
+continuous score is the substantive object; FL14 is a
+deployable rule. We frame the paper accordingly.
+
+A parallel firm-level diagnostic against the $193$
+CADE-cobidder labels (within the always-loser pool of
+$\valAlwaysLosers$ firms) confirms the dominance of the continuous
+score: AUC $=\valAUCFLfirm$ for FL14 versus $\valAUClogtc$ for
+$\log(1{+}\text{tenders\_count})$, with a DeLong test
+yielding $Z\!=\!-4.30$ and $p\!=\!1.7\times 10^{-5}$. The
+binary discretization at $14$ tenders happens to be the
+locally optimal cutoff among the binary alternatives we
+sweep---FL10 yields AUC $\valAUCFLalone$ and FL20 falls to $\valAUCConvFL$,
+both lower---which is informative for defending the cutoff
+as deployable but does not justify treating the threshold
+itself as economically primitive.
+
+\input{./output/tables/tab_horse_race_v14}
 
 % ============================================================================
 \section{Staggered Designs We Attempted and Rejected}
@@ -600,9 +619,9 @@ both the implementation and the rejection criteria.
 \paragraph{Sample and estimators.}
 The market-level panel (PBU $\times$ item-group $\times$ year)
 restricted to markets with at least three pre- and three
-post-treatment observations contains $144{,}168$ market-year
-observations across $19{,}777$ markets ($1{,}511$ treated,
-$18{,}266$ never-treated). We estimate three specifications:
+post-treatment observations contains $\valDiDmarketYear$ market-year
+observations across $\valDiDmarkets$ markets ($\valDiDtreated$ treated,
+$\valDiDneverTreated$ never-treated). We estimate three specifications:
 the TWFE event study around first FL entry; the
 \citet{callaway2021difference} doubly-robust estimator using
 never-treated units as the comparison group; and the
@@ -630,9 +649,9 @@ the conclusion would survive is implausibly small.
 
 \paragraph{Estimates that follow are diagnostics, not robustness.}
 \citet{callaway2021difference} doubly-robust ATT $= 0.014$
-(SE $0.039$); \citet{cengiz2019effect} stacked ATT $= -0.006$
-(SE $0.014$). The stacked $95\%$ CI $(-0.034, 0.022)$ excludes
-the OLS baseline of $0.064$. The discrepancy between staggered
+(SE $\valCSseverr$); \citet{cengiz2019effect} stacked ATT $= -0.006$
+(SE $\valCSlimit$). The stacked $95\%$ CI $(-0.034, 0.022)$ excludes
+the OLS baseline of $\valThreshOneFivex$. The discrepancy between staggered
 and OLS is mechanical: under violated parallel trends the
 estimators identify a different object (the within-cohort
 deviation from a counterfactual that depends on never-treated
@@ -688,13 +707,13 @@ This appendix reports four additional outcome regressions that
 the main text references but whose detailed tables fall outside
 the headline price specification. The four objects are
 \emph{(i)} the count of non-FL firms in FL-present tenders
-($+0.143$ more, contradicting the crowding-out prediction;
+($\valMechMOneCoef$ more, contradicting the crowding-out prediction;
 \S\ref{sec:mechanisms} M1), \emph{(ii)} the modality
 breakdown by year (which establishes that
 convite/preg\~ao composition is stable across the sample),
 \emph{(iii)} the count of all firms in FL-present tenders
-($+0.184$, the unrestricted analog of (i)), and
-\emph{(iv)} the count of bids per tender ($+0.219$, consistent
+($\valMechCrowdInUC$, the unrestricted analog of (i)), and
+\emph{(iv)} the count of bids per tender ($\valMechBidsPerTender$, consistent
 with cover-bidder volume above and beyond firm count). The
 tables share the OLS specification of
 Equation~\eqref{eq:ols_main}; standard errors clustered at the
@@ -703,7 +722,7 @@ item level.
 \paragraph{Crowding-out: non-FL firm count.}
 Table~\ref{tab:nfirms_excl} reports the regression of log
 non-FL firm count on FL presence under item, year, and PBU
-fixed effects. The coefficient is $+0.143$ ($p < 0.01$): FL
+fixed effects. The coefficient is $\valMechMOneCoef$ ($p < 0.01$): FL
 presence is associated with $14\%$ \emph{more} non-FL
 participants, not fewer. The crowding-out hypothesis (FL
 displaces real bidders) predicts a negative coefficient; the
@@ -731,7 +750,7 @@ within-year, within-buyer variation across modalities.
 Tables~\ref{tab:nfirms} and~\ref{tab:nbids} extend the
 crowding-out test to the full firm count (FL plus non-FL) and
 to total bids per tender. FL presence is associated with
-$+0.184$ more firms and $+0.219$ more bids ($p < 0.01$ in
+$\valMechCrowdInUC$ more firms and $\valMechBidsPerTender$ more bids ($p < 0.01$ in
 both). The increment in bids exceeds the increment in firms,
 consistent with cover bidders submitting at the
 multi-bid level under preg\~ao's iterative-bid format and
@@ -842,7 +861,7 @@ PBUs.}
 \includegraphics[width=0.85\textwidth]{fig_08_sensitivity_contour.pdf}
 \caption{Sensitivity contour plot (\citealt{cinelli2020making}).
 The point estimate and confidence interval are robust to confounders
-explaining up to $RV = 17.5\%$ of residual variation in both the
+explaining up to $RV = \valRVqOne$ of residual variation in both the
 treatment and the outcome.}
 \label{fig:sensitivity}
 \end{figure}
@@ -886,6 +905,90 @@ and procedure type).}
 \subsection{Cox Survival Model}
 
 \input{./output/tables/tab_cox_survival}
+
+\subsection{Network-Quadrant Heterogeneity (Unified Mechanism Specification)}
+
+\input{./output/tables/tab_unified_mechanism}
+
+\subsection{Matched First-Tender FL Test}
+
+\input{./output/tables/tab_matched_first_time}
+
+\subsection{Pre-registered Gate Diagnostics}
+
+\input{./output/tables/tab_gate_diagnostics}
+
+\subsection{Anti-Leakage Audit of the Item-Level AUC}
+
+\input{./output/tables/tab_leakage_audit}
+
+\subsection{Operational Deployment Metrics}
+% CO-AUTHOR EDIT (Path A+ Actions 5, 8, 9, 2026-04-30): precision@k,
+% recall@k, lift, computational cost. Source: scripts/42_operational_metrics.R.
+
+The participation-only screen produces a ranked list rather
+than a binary verdict; the operationally relevant statistics
+are precision and recall at the truncation point an oversight
+body chooses, not the area under the ROC. Table~\ref{tab:operational_metrics}
+reports both an in-sample reference (scoring firms with
+$2009$--$2019$ participation counts) and a temporal-holdout
+projection (scoring firms with only $2009$--$2016$
+participation, evaluated against the same $193$ cobidder
+labels). The temporal-holdout figures are the honest
+operational projection: a deploying oversight body in $2017$
+would not have access to subsequent participation when
+ranking firms today. We rely on the temporal-holdout column
+for our claims and report the in-sample column for
+comparison.
+
+Under temporal holdout, the screen flags $500$ firms of which
+$35$ are cobidders ($\valPctSevenZero$ precision, $6.1\!\!\times$ lift over
+the cobidder base rate of $\valBaseRate$, capturing 18\% of the
+$193$ known cobidders). Doubling $k$ to $\valPermPilot$ raises recall
+to $34\%$ at $\valPrecTHOnek$ precision. Under the in-sample reference,
+the same operating points read $\valPctEighteenfour$ ($11.5\!\!\times$) and
+$\valPctNineSeven$ ($8.5\!\!\times$), respectively. The leakage component
+is roughly $\valPctFifty$ at top-$500$: about half of the in-sample
+precision reflects information accumulated during years
+$2017$--$2019$, when CADE adjudication was already in flight
+for some of the cartels under investigation. The honest
+deployment number is the temporal-holdout column. We emphasize
+this gap because the leakage is exactly the kind of
+construction artifact a referee would ask the authors to
+audit; we audit it ourselves.
+
+The computational cost on this run is approximately one CPU-second
+per state-year of award records on a single core of a
+consumer-class machine (Apple M1 / Ryzen 7 5800H equivalent).
+Data ingestion adds a second-order overhead for projects with
+existing data infrastructure. The cost figure does not include
+data-cleaning or onboarding effort, which we estimate at
+$1$--$2$ staff-days for a one-time setup at a procurement
+oversight body familiar with its own award records, dominated
+by data-format reconciliation rather than analytic modeling.
+Operational comparison points: the
+\citeauthor{imhof2019detecting} bid-distribution pipeline
+requires per-bid offer values for every tender (a per-firm
+per-tender data envelope larger than the per-firm per-item
+envelope the present screen consumes); case-level forensic
+bid-distribution analysis is typically days to weeks per
+investigation. The data-cost wedge motivates the screen even
+where the bid-distribution pipeline would be feasible in
+principle.
+
+\input{./output/tables/tab_operational_metrics}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{output/fig_pr_curve.pdf}
+\caption{Precision--recall curve for the loser-side concentration
+screen against $193$ CADE-cobidder labels in the always-loser
+pool ($N = \valAlwaysLosers$ firms). The horizontal dashed line marks
+the cobidder base rate of $\valBaseRate$. The screen sustains
+$13\%$ precision (over $11\!\!\times$ lift) at $34\%$ recall
+when flagging the top $500$ firms.}
+\label{fig:pr_curve}
+\end{figure}
 
 \begin{figure}[htbp]
 \centering
@@ -981,7 +1084,7 @@ Error bars show 95\% confidence intervals.}
 \centering
 \includegraphics[width=0.78\textwidth]{images/fig_classification_comparison.pdf}
 \caption{ROC curves: IQR rule vs.\ model-based classifiers.
-The IQR rule (AUC~$= 0.94$) dominates the random forest with
+The IQR rule (AUC~$=\valAUCFLfirm$) dominates the random forest with
 7 bid-level features (AUC~$= 0.90$; DeLong $p = 0.04$) and the
 structural likelihood-ratio score (AUC~$= 0.56$). Ground truth:
 co-participation with CADE-convicted cartelists.}
@@ -1014,10 +1117,10 @@ Table~\ref{tab:descstats}) and report $W/S$ across four
 coefficient choices:
 
 \begin{itemize}
-\item OLS baseline ($\beta = 0.064$): $W/S \approx 0.31\%$
-\item Matching, CEM ($\beta = 0.077$): $W/S \approx 0.37\%$
-\item Cross-fit ($\beta = 0.036$): $W/S \approx 0.17\%$
-\item IV diagnostic ($\beta = 0.194$): $W/S \approx 0.93\%$
+\item OLS baseline ($\beta = 0.064$): $W/S \approx \valWelfareTinyTwo$
+\item Matching, CEM ($\beta = 0.077$): $W/S \approx \valWelfareTinyThree$
+\item Cross-fit ($\beta = 0.036$): $W/S \approx \valWelfareTinyOne$
+\item IV diagnostic ($\beta = 0.194$): $W/S \approx \valWelfareTinyFour$
 \end{itemize}
 
 The OECD cartel-overcharge benchmark range
@@ -1025,7 +1128,7 @@ The OECD cartel-overcharge benchmark range
 of contract value in established cartels) is roughly an order
 of magnitude higher than the FL-spending-weighted figures.
 The discrepancy reflects two facts: FL-flagged tenders are
-4.8\% of all tender-items, so even a 6.4\% price effect on
+\valCartelMarkup of all tender-items, so even a \valPctSixfour price effect on
 FL-flagged tenders dilutes to a small share of total
 procurement spending; and the headline conditional association
 is below the typical cartel overcharge documented in
@@ -1139,8 +1242,8 @@ partners.
 Figure~\ref{fig:network_split} displays the FL price
 coefficient separately for the concentrated and competitive
 subgroups under the PBU FE specification. The competitive-market
-subgroup yields $+0.126$ ($p < 0.01$); the concentrated-market
-subgroup yields $-0.018$ (insignificant). The competitive-FL
+subgroup yields $\valCompFLcoef$ ($p < 0.01$); the concentrated-market
+subgroup yields $\valConcMarketcoef$ (insignificant). The competitive-FL
 subgroup drives the entire price effect, the empirical
 counterpart of Proposition~\ref{prop:market_selection}'s
 prediction that cover bidding is most profitable where

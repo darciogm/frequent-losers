@@ -1,140 +1,206 @@
+% CO-AUTHOR EDIT (Path A+ Action 11, 2026-04-30): full rewrite of intro
+% as a stable paper, not a recovery arc. Object disciplined per Round 4:
+% loser-side concentration (concept) + frequent losers (implementation).
+% Front-pages: (i) the data-cost wedge that motivates the construct, and
+% (ii) the AUC asymmetry between cobidders and direct defendants. Welfare
+% claim demoted; mechanism cartel-signature framing dropped; first-time-FL
+% claim demoted to a sample-conditioned descriptive statistic.
+
 \section{Introduction}
 \label{sec:intro}
 
-Of the 16,843 firms that bid on São Paulo's electronic
-procurement platform between 2009 and 2019 without ever winning,
-2,735 placed bids in fourteen or more tenders. At plausible
-bid-preparation costs of R\$50--500, sustained zero-win
-participation past this threshold is rationally dominated under
-any standard entry model. A Bayesian learner with a uniform
-prior expects negative profit per bid. Why do thousands of
-firms behave this way?
+Public procurement oversight bodies face an asymmetric
+data-cost problem. The bid-rigging screens that have organized
+the empirical literature since
+\citet{porter1993detection}---bid distributions, second-lowest
+distances, within-tender variance, the
+\citet{imhof2019detecting} composite, and the machine-learning
+extensions in \citet{huber2019machine} and
+\citet{wallimann2023machine}---deliver strong discrimination
+when bid microdata are available. They demand exactly that:
+the per-bidder, per-item monetary offer for every tender. Most
+electronic procurement systems do not preserve these records
+beyond the award decision, do not release them under freedom-of-information
+statutes, or release them in formats that
+require expensive forensic processing. Brazilian Tribunais de
+Contas, the Controladoria Geral da União, and CADE
+investigators triaging tips routinely face a setting in which
+they have access to who participated and who won, but not
+to what each firm offered. Under that constraint, the screens
+that are easiest to defend econometrically are also the screens
+that are hardest to deploy administratively.
 
-Brazilian procurement law (Lei 8.666/93, Article~22) requires
-the sealed-bid \emph{convite} modality to receive at least
-three valid proposals before a contract clears. The rule was
-designed to protect competition. In practice, when fewer than
-three motivated bidders appear, the buyer---or the cartel that
-controls the buyer's pool---must produce additional proposals.
-Those proposals tend to be deliberately losing, the
-configuration competition law calls \emph{cover bidding}
-\citep{marshall2012economics, asker2010leniency,
-porter1993detection}. The minimum-bidder rule generates, by
-construction, a population of firms whose participation pattern
-is the empirical signature of regulatory cover bidding:
-persistent presence, zero wins. We turn that signature into a
-screening rule and validate it against the procurement-cartel
-adjudication portfolio of Brazil's competition authority (CADE).
+We propose a complementary construct that operates within the
+data envelope a procurement oversight body can be expected to
+hold: \emph{loser-side concentration}, the share of
+tender-items in which the same firms participate without ever
+winning. Where bid-distribution screens diagnose a tender by
+the shape of the offers it received, loser-side concentration
+diagnoses an environment by the persistence of the
+zero-win participation it sustains. The two constructs measure
+different objects on different data, target different stages of
+oversight, and---we will document below---turn out to discriminate
+adjudicated bid-rigging cartels at comparable levels of
+accuracy. This is the paper's central operational claim.
 
-We call these firms \emph{frequent losers} (FL) and define
-them in two steps: always-losers (zero win rate) above an
-outlier threshold of 14 tenders---median + $1.5 \times$ IQR of
-the participation distribution, set \emph{a priori} on
-behavioral grounds. The screen needs only contract-award
-records: no bid microdata, no structural assumptions, no
-enforcement records. It runs on what every procurement
-oversight body already has, including the Tribunal de Contas
-do Estado, the Controladoria Geral da União, comparable
-institutions in OECD countries, and CADE itself when triaging
-tips.
+We implement loser-side concentration through a binary marker
+we call \emph{frequent losers} (FL). Of the $\valAlwaysLosers$ firms
+that participated in São Paulo's electronic procurement
+platform (BEC) between 2009 and 2019 without ever winning, we
+flag the $\valFL$ that bid in more than \valThreshold\ tenders.
+The cutoff at \valThreshold\ is the
+median plus $\valIQRmul$ interquartile range of the participation
+distribution among always-losers, set as a Tukey-style outlier
+rule \emph{ex ante} on the participation-count distribution
+itself.\footnote{We use median plus $\valIQRmul$ IQR (rather
+than the standard Tukey $Q_3 + 1.5\times$ IQR) to identify
+participation outliers within an already extreme-tail
+sample; \S\ref{sec:robustness} reports cutoff sensitivity.}
+The FL marker is the operational object that an oversight
+body can compute from award records alone: it requires no
+bid-level offers, no enforcement labels, no structural
+assumptions. The cutoff itself is not the object of
+substantive interest---continuous loss intensity carries the
+same signal at finer granularity, as we document
+below---but discretization fixes a deployable trigger.
 
-\paragraph{Findings.} We make two empirical claims, of unequal
-strength. The detection claim is robust. Against CADE-defendant
-co-bidding as ground truth, the FL screen achieves AUC
-$=0.94$ ($95\%$ DeLong CI $[0.932, 0.946]$), well above the
-$0.79$ obtained by an \citet{imhof2019detecting}-style
-bid-level composite ($p < 0.001$). The result generalizes
-within-platform: across ten BEC product sectors with at least
-three CADE positives, the AUC averages $0.954$ (SD $0.034$),
-and every sector exceeds $0.90$. Eight of the twelve cartel
-cases were adjudicated \emph{after} the BEC sample window
-closes, so the bulk of the validation is strictly prospective:
-the 2009--2019 FL classification anticipated firms whose
-collusive role enforcement confirmed years later. Three of the
-47 BEC-active CADE-defendants are themselves FL by the screen,
-against a $16\%$ base rate among always-losers---a
-$2.6\times$ enrichment.
+\paragraph{What the screen prioritizes, and what it does not.}
+We validate against CADE's adjudicated bid-rigging portfolio
+in two ways, and the gap between the two is informative.
+Among the $\valAlwaysLosers$ always-losers, $\valCobidders$ co-bid with firms
+that CADE later named as bid-rigging defendants. Within this
+pool, the FL marker scores AUC $=\valAUCFLfirm$ ($95\%$ CI $[0.898,
+0.925]$) against the co-bidder label. A continuous score
+based on $\log(1 + $tenders$)$ achieves AUC $=\valAUClogtc$
+($[0.932, 0.946]$); the binary FL flag is the discretized
+version of a strictly more informative continuous signal,
+which is the price of operational simplicity. A full
+\citet{imhof2019detecting}-style pipeline using five within-tender
+bid-distribution features achieves AUC $=\valAUCImhofFull$ ($[0.865,
+0.912]$) on the same firms; the construct and the
+bid-distribution pipeline reach comparable discrimination,
+and combining them reaches AUC $=\valAUCImhofPlusFL$. The screen earns
+its place administratively, not by displacing the
+forensic-microdata literature, but by reproducing a similar
+level of risk prioritization at substantially lower data cost
+and by adding non-redundant signal where microdata
+\emph{are} available.
 
-The price-gap claim is weaker and we treat it as such.
-FL-flagged tenders show 3.6--7.7\% higher negotiated prices in
-within-item, within-year, within-PBU comparisons, robust across
-cross-fit, OLS, and matching. The gap concentrates where the
-regulatory cover-bidding incentive is operative. Within
-convite, the FL premium is $7.6\%$ when at least three
-genuine bidders participate (the rule is slack and cover
-bidding is voluntary); the coefficient flips negative when
-fewer than three appear (the rule binds and FL participation
-is statutorily required). Pregão (Lei 10.520/2002), which has
-no minimum-bidder rule, shows a smaller premium than
-convite-voluntary. The price gap is a conditional association,
-not a causal estimate. Cinelli--Hazlett sensitivity yields
-$RV_{q=1} = 17.5\%$, which bounds the scope for omitted
-confounders without identifying them; pre-event coefficients
-at $t = -2, -3$ in the FL-entry event study preclude a fully
-causal reading.
+The screen does not, however, flag the \valDirectCADE\ direct CADE
+defendants in the broader universe of $\valBECfirms$ BEC firms
+above chance (AUC $=\valAUCdirectCADE$, $\valAUCdirectCADECI$). This is by
+construction, not by accident. Direct defendants in the
+adjudicated cartels were typically frequent \emph{winners},
+not frequent losers; the screen targets the loser-side of the
+bidding pool---the pool that minimum-bidder rules in
+\emph{convite} (Lei~\valLeiOriginal, Article~22) and analogous
+statutory rules in OECD jurisdictions can fill with deliberately
+losing participants \citep{marshall2012economics,
+asker2010leniency,porter1993detection}. Loser-side
+concentration prioritizes the environments in which a cartel
+operates, not the firms that organize it. Conflating the two
+would be a category error. We therefore report the
+construct as a screen for environments enriched in
+adjudicated bid-rigging activity, not as a detector of
+cartelist firms; the AUC asymmetry is a feature of what the
+construct measures, but it is also a hard limit on what
+oversight conclusions follow from a positive flag.
 
-\paragraph{Mechanism evidence.} Five diagnostics constrain the
-alternative readings the price gap leaves open. FL-present
-tenders contain $0.143$ \emph{more} non-FL firms, not fewer
-(no crowding-out, the prediction of legitimate FL competition).
-Winners in FL-present tenders bid $4\%$ closer to publicly
-posted reference prices, consistent with calibrated cover
-bidding. FL entry has elasticity $0.0021$ with respect to
-lagged prices, too small to account for the headline by a
-factor of thirty. FL firms form $4,603$ unique winner pairs
-with at least five shared tenders, against a permuted mean of
-$3,271$ ($p < 0.001$). And genuine firms in FL-exposed markets
-exit BEC \emph{less} frequently, not more, consistent with a
-stable cartel ecosystem rather than displacement. Each test is
-individually consistent with non-collusive alternatives;
-jointly with the institutional identification, they tighten
-the reading.
+\paragraph{Descriptive associations within the screen output.}
+Conditional on the construct being deployed, FL-flagged
+environments associate with approximately $\valApproxSixPct$ higher
+negotiated unit prices in within-item, within-year, within-PBU
+comparisons (Section~\ref{sec:results}). Confidence
+intervals are tight under item-clustered standard errors. The
+association is not causal: pre-event coefficients in the
+event-study at $t = -2, -3$ are not statistically zero, and a
+\citet{cinelli2020making} sensitivity analysis bounds the
+confounding tolerance at $RV_{q=1} = \valRVqOne$, which is the
+order of variation any plausible omitted variable could
+mimic. Two design-based identification strategies---a sharp
+RDD at the convite/pregão statutory caps (\valCapOldR
+pre-Decreto \valDecreto; \valCapNewR post) and a
+difference-in-differences using the 2018 cap raise---both
+return null first stages and null effects on FL prevalence
+under the bandwidths and sample sizes available
+(Section~\ref{sec:robustness}). The screen is therefore a
+flag, not an estimate; we read the price gap as a conditional
+descriptive statistic, not as a treatment effect.
 
-\paragraph{Contributions.}
-\emph{First}, we close the partitioning gap in the
-bid-coordination literature. \citet{bajari2003deciding},
-\citet{conley2016detecting}, and subsequent work require an
-\emph{ex post} partition of bidders into suspected colluders
-and a competitive fringe. The FL classifier produces the
-\emph{ex ante} firm-level partition these tests need.
-\emph{Second}, we close an operational gap in the
-proactive-screen literature. \citet{imhof2019detecting},
-\citet{huber2019machine}, and \citet{wallimann2023machine}
-require bid microdata that many electronic procurement systems
-do not preserve. The FL screen runs on the contract-award
-records virtually every system maintains, lowering the data
-threshold for proactive enforcement to participation tallies
-and win/loss flags. \emph{Third}, we develop the
-law-and-economics framing: the convite minimum-bidder rule,
-designed to protect competition, generates a decoy-firm
-population that oversight bodies can detect at virtually no
-marginal cost. We translate the detection capability into a
-three-stage pathway---Screen $\to$ Triage $\to$ Investigate
-(Section~\ref{sec:conclusion})---deployable by Brazilian and
-OECD oversight bodies.
+Heterogeneity along network primitives is also less
+disciplined than a clean cartel-rotation signature would
+require. Splitting cells (PBU $\times$ item-group $\times$ year)
+on winner-side HHI and on the count of repeated FL--winner
+pairs, the largest FL premium falls in the
+\emph{Low HHI $\times$ Low pairs} cell ($+\valMechQLLLCoef\%$, $p < 10^{-4}$,
+$N = \valMechQLLLN$)---the single largest cell, not a cell that
+matches the configurations classical cartel models
+\citep{harrington2008detecting} predict. The \emph{Low HHI $\times$ High pairs} cell, which
+would carry the cleanest cartel-rotation reading, returns a
+null coefficient ($+\valMechQLLHCoef\%$, $p = 0.18$). The
+\emph{High HHI $\times$ High pairs} cell returns a
+\emph{negative} coefficient ($\valMechQLHHCoef\%$, $p = 0.002$), most
+parsimoniously read as selection into already-investigated
+environments where FL participation no longer covaries with
+inflated prices. We discuss the heterogeneity pattern in
+Section~\ref{sec:mechanisms} but do not rely on it as
+mechanism evidence, because the cell pattern is consistent
+with several non-collusive readings and with at least one
+selection mechanism.
 
-We are explicit about what the design does not deliver. The
-screen does not identify cover bidders firm-by-firm: FL--CADE
-overlap conditional on participation count is statistically
-indistinguishable from non-FL always-losers ($p = 0.93$),
-which makes the FL flag an environment-level marker rather
-than a stable firm type. The price gap is a conditional
-association, not a causal overcharge. Welfare quantification
-beyond the illustrative back-of-the-envelope figures of
+\paragraph{Contributions.} We make three contributions, of
+unequal weight. \emph{First}, we document a participation-only
+risk-screening construct that achieves discrimination
+comparable to the
+\citeauthor{imhof2019detecting}--\citeauthor{huber2019machine}
+bid-distribution pipeline against the same ground truth at
+substantially lower data cost, and that contributes
+non-redundant signal when combined with bid-distribution
+features. This is the operational contribution. \emph{Second},
+we connect the construct to the institutional design of
+minimum-bidder rules in Brazilian procurement law, articulating
+how convite-style rules can sustain a population of zero-win
+participants whose joint persistence is detectable in
+contract-award records but who are not, individually, the
+targets of cartel adjudication. This is the institutional
+contribution. \emph{Third}, we translate the construct into an
+administrative pathway---Screen $\to$ Triage $\to$ Forensic---in
+which the participation-only screen narrows the case-load of
+oversight bodies before forensic bid-microdata methods are
+deployed where data permit. This is the law-and-economics
+contribution.
+
+\paragraph{What we do not claim.} The screen is not a
+detector of cartelist firms: the \valDirectCADE-defendant AUC of $\valAUCdirectStd$
+is the appropriate calibration of detection scope. The price
+gap is not an overcharge estimate; welfare quantification
+beyond the back-of-the-envelope figures of
 \ref{app:extensions} (Online) requires causal identification
-this design does not provide. The screen is a flag, not a
-verdict.
+this design does not provide. The cutoff at \valThreshold\ tenders
+is a deployable rule, not an economically primitive number;
+the underlying signal is continuous loss intensity. Mechanism
+heterogeneity is reported but is not load-bearing for the
+operational claim. The screen is a flag, not a verdict.
 
 \paragraph{Roadmap.} Section~\ref{sec:literature} situates the
-contribution in four literatures. Section~\ref{sec:institutional}
-sets out the legal and institutional framework.
-Section~\ref{sec:data} describes the data and the FL
-classification. Section~\ref{sec:empirical} states the empirical
-strategy. Section~\ref{sec:cade} reports the CADE consistency
-check. Sections~\ref{sec:results}--\ref{sec:mechanisms}
-present the price regressions, detection benchmarks,
-cross-sector replication, and mechanism diagnostics.
-Section~\ref{sec:robustness} collects robustness checks.
-Section~\ref{sec:limitations} catalogs limitations.
-Section~\ref{sec:conclusion} concludes with the implementation
-pathway.
+construct in the bid-rigging-screening, bid-coordination, and
+machine-learning-detection literatures.
+Section~\ref{sec:institutional} sets out the legal framework
+under which loser-side concentration arises.
+Section~\ref{sec:data} describes the BEC data and the FL
+classification. Section~\ref{sec:empirical} states the
+descriptive empirical strategy and the two design-based
+strategies that returned null. Section~\ref{sec:cade} reports
+the CADE consistency check and the AUC asymmetry between
+co-bidders and direct defendants.
+Sections~\ref{sec:results}--\ref{sec:mechanisms} present the
+within-item price associations, the cross-sector replication,
+and the network-quadrant heterogeneity.
+Section~\ref{sec:robustness} collects robustness checks,
+including the cutoff sensitivity, the horse race against
+continuous loss intensity, the
+\citeauthor{imhof2019detecting} comparison, the matched
+first-time-FL test, and the RDD/DiD null findings.
+Section~\ref{sec:limitations} catalogs scope limitations.
+Section~\ref{sec:conclusion} concludes with the
+administrative pathway.

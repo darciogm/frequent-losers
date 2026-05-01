@@ -1,6 +1,13 @@
+% CO-AUTHOR EDIT (Path A+ Action 11, 2026-04-30): full rewrite of frontmatter.
+% Object renamed "loser-side concentration" (concept) + "frequent losers"
+% (operational implementation). Language disciplined per CLAUDE.md rounds 2-4:
+% screens / flags / prioritizes (never detects / proves / outperforms).
+% Front-pages the AUC asymmetry (cobidders vs direct defendants) instead of
+% hiding it. Welfare and identification claims demoted to associations.
+
 \begin{frontmatter}
 
-\title{Detecting Bid-Rigging Cartels Without Bid Microdata: A Frequent-Losers Screen\texorpdfstring{\footnote{This version: April 2026. We thank seminar participants at INSPER, the participants of the bitter-pills monorepo internal review, and anonymous feedback received during paper preparation. All errors are our own. \textbf{Data and code availability:} replication archive (R, Python, and \LaTeX{} sources) is available upon publication; CADE adjudication records used as ground truth are public. \textbf{Funding:} the authors received no specific funding for this study. \textbf{Declarations of interest:} none.}}{}}
+\title{Loser-Side Concentration as a Low-Cost Bid-Rigging Risk Screen: Award-Record Evidence from Brazilian Procurement\texorpdfstring{\footnote{This version: April 2026. We thank seminar participants at INSPER and anonymous feedback received during paper preparation. All errors are our own. \textbf{Data and code availability:} replication archive (R, Python, and \LaTeX{} sources) is available upon publication; CADE adjudication records used as ground truth are public. \textbf{Funding:} the authors received no specific funding for this study. \textbf{Declarations of interest:} none.}}{}}
 
 \author[insper]{Darcio Genicolo-Martins\corref{cor1}}
 \ead{darciogm1@insper.edu.br}
@@ -10,47 +17,58 @@
 \cortext[cor1]{Corresponding author.}
 
 \begin{abstract}
-We propose a participation-only screen for bid-rigging cartels
-that runs on the contract-award records virtually every
-electronic procurement system maintains: no bid microdata, no
-structural assumptions, no enforcement records. The screen
-identifies \emph{frequent losers} (FL)---firms that never win
-yet participate in abnormally many tenders, the empirical
-signature of regulatory cover bidding under minimum-bidder
-rules. Applied to 4.5 million tender-items from São Paulo's
-electronic procurement platform (2009--2019), the screen
-achieves AUC $= 0.94$ against CADE adjudications ($95\%$
-DeLong CI $[0.932, 0.946]$), well above the $0.79$ of
-bid-level alternatives. Detection generalizes across ten
-product sectors at mean AUC $0.954$. FL-flagged environments
-show 3.6--7.7\% higher prices in within-item comparisons and
-$3.5\times$ the baseline rate of co-participation with
-CADE-defendant firms; eight of twelve cartel cases were
-adjudicated after the sample window closes, so the bulk of the
-validation is prospective. The institutional design identifies
-a 7.6\% premium under voluntary cover bidding within convite,
-flipping negative when the minimum-bidder rule binds. The
-price gap is a conditional association, not a causal estimate;
-sensitivity analysis yields $RV_{q=1} = 17.5\%$. The
-contribution is operational: a screening rule deployable where
-tender-level forensic analysis is not. A flag is a starting
-point, not a verdict.
+Existing bid-rigging screens in the
+\citet{porter1993detection}--\citet{bajari2003deciding}--\citet{imhof2019detecting}
+tradition deliver high discrimination but require granular
+bid microdata that most public procurement systems do not
+preserve or release. We propose a complementary,
+participation-only construct---\emph{loser-side concentration}:
+the share of tender-items in which the same set of
+zero-win firms keeps participating---and an operational
+implementation we call \emph{frequent losers} (FL). The screen
+runs on contract-award records alone: winner identity,
+participant identity, item identifier. Applied to 4.5~million
+tender-items from São Paulo's electronic procurement
+platform (BEC, \valYearStart--\valYearEnd), the screen prioritizes
+environments enriched in firms later associated with
+adjudicated bid-rigging cartels: AUC $=\valAUCFLfirm$
+($95\%$ CI $[0.898, 0.925]$) against \valCobidders CADE-defendant
+co-bidders within the always-loser pool, comparable to a full
+\citeauthor{imhof2019detecting}-style bid-distribution pipeline
+(AUC $=\valAUCImhofFull$, CI $[0.865, 0.912]$) at substantially lower
+data cost; combining the two pipelines reaches AUC $=\valAUCImhofPlusFL$.
+We are explicit about scope. The screen does not flag the
+\valDirectCADE\ direct CADE defendants in the universe of BEC firms above
+chance (AUC $= 0.491$): direct defendants tend to be frequent
+\emph{winners}, not losers, and the construct is targeted at
+the loser-side of the bidding pool by design. Within the screen
+output, FL-flagged environments associate with $\approx\!\valApproxSixPct$
+higher negotiated prices in within-item, within-year
+comparisons; the association is not causal, attenuates under
+matching, and is heterogeneous across network quadrants in
+ways that do not match a clean cartel-rotation signature. We
+make explicit the asymmetric data-cost wedge that motivates
+the construct: the screen is a triage tool for oversight bodies
+that hold contract-award records but not bid microdata, not a
+substitute for forensic bid-distribution analysis where
+microdata are available.
 \end{abstract}
 
 \end{frontmatter}
 
 \noindent\textbf{Highlights:}
 \begin{itemize}\setlength{\itemsep}{1pt}
-\item A participation-only cartel screen using only contract-award records (winner, participants).
-\item AUC $= 0.94$ against CADE adjudications; mean cross-sector AUC $0.954$ (SD $0.034$).
-\item Prospective validation: 8 of 12 cartel cases adjudicated after the 2009--2019 sample.
-\item FL premium of 7.6\% under voluntary cover bidding within convite, identified institutionally.
-\item Three-stage policy pathway (Screen $\to$ Triage $\to$ Investigate) for procurement oversight bodies.
+\item Loser-side concentration: a participation-only construct for procurement-risk screening.
+\item Frequent losers (FL) implements the construct using award records alone.
+\item AUC $=\valAUCFLfirm$ against \valCobidders CADE-defendant co-bidders; comparable to full Imhof at lower data cost.
+\item Combining FL with bid-distribution features reaches AUC $=\valAUCImhofPlusFL$.
+\item Construct does not flag \valDirectCADE\ direct CADE defendants above chance (AUC $= 0.49$); scope is explicit.
+\item Three-stage administrative pathway (Screen $\to$ Triage $\to$ Forensic) for oversight bodies without microdata.
 \end{itemize}
 
 \bigskip
 
-\noindent\textbf{Keywords:} bid rigging, cover bidding, public procurement, cartel screening, frequent losers
+\noindent\textbf{Keywords:} bid rigging, cover bidding, public procurement, cartel screening, participation-only screen, loser-side concentration
 
 \noindent\textbf{JEL No.:} D44, D73, H57, K21, L41
 

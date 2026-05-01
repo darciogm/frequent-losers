@@ -1,0 +1,58 @@
+% CO-AUTHOR EDIT (Path A+ Action 7+, 2026-04-30): pre-registered $\gamma$++ gate
+% diagnostics (4 tests) reported transparently in online appendix.
+% Source: scripts/36_gate_d1_harmonized.R, 37_gate_d2_modal_auc.R,
+% 38_gate_d3_continuous_only.R, 39_gate_d4_cade_winner_heavy.R.
+\begin{table}[htbp]
+\centering
+\caption{Pre-registered Gate Diagnostics}
+\label{tab:gate_diagnostics}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{p{3.5cm}p{6.5cm}p{4cm}c}
+\toprule
+Diagnostic & Pre-registered pass criterion & Result & Verdict \\
+\midrule
+\textbf{D1.} Harmonized horse race
+  & Continuous score AUC $>$ FL14 binary AUC against 193 CADE cobidders (DeLong $p<0.05$) AND price-regression coefficients of same sign on the same observations.
+  & FL14 AUC $0.911$, log$(1{+}\text{tc})$ AUC $0.939$ (DeLong $Z=-4.30$, $p=1.7\times 10^{-5}$); price: FL14 $+6.5\%$ ($p=0.003$), log\_max\_tc $+1.9\%$ ($p<10^{-3}$).
+  & PASS \\[0.3em]
+\textbf{D2.} Modal-by-modal AUC institutional asymmetry
+  & AUC against cobidders \emph{higher} in convite-primary always-loser pool than in preg\~ao-primary pool (bootstrap $p<0.10$); the institutional hypothesis is that the convite minimum-bidder rule generates loser-side concentration.
+  & convite-primary AUC $0.816$ ($N\!\!+\!\!=\!\!6$, $N\!=\!3{,}042$); preg\~ao-primary AUC $0.952$ ($N\!\!+\!\!=\!\!186$, $N\!=\!13{,}508$); bootstrap diff $-0.136$ [$-0.199, -0.078$], $p\!\!\approx\!\!0$. Direction \emph{opposite} to the hypothesis.
+  & FAIL \\[0.3em]
+\textbf{D3.} Continuous preserves loser-side thesis without FL14
+  & Replacing FL14 with continuous loss-intensity in the price regression preserves positive significance; modal asymmetry survives; item-level AUC above baseline.
+  & log\_max\_tc $+1.9\%$ ($p<10^{-3}$), log\_sum\_tc $+2.1\%$ ($p<10^{-4}$), log\_mean\_tc $+1.2\%$ ($p\!=\!0.01$); item-level AUC subject to leakage audit (see Table~\ref{tab:leakage_audit}).
+  & PASS \\[0.3em]
+\textbf{D4.} CADE direct defendants are winner-heavy
+  & Median win-rate of direct CADE defendants exceeds BEC universe median (Mann–Whitney $p<0.05$); $<\!1/3$ are always-losers; median wins $>\!1$.
+  & 7 of 47 direct defendants are always-losers (14.9\%); median win-rate $0.26$ vs BEC universe $0.09$; median wins among defendants $42$; Mann–Whitney $p<0.05$.
+  & PASS \\
+\midrule
+\textbf{Aggregate verdict} & 4 of 4 required for $\gamma$++ (winner/loser reframe targeting JLE). & 3 of 4 passed; D2 failed in opposite direction. & $\gamma$++ DISQUALIFIED \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} The four diagnostics were pre-registered as a gate
+for activating the alternative paper formulation discussed in
+Section~\ref{sec:limitations}. The gate was specified before the
+diagnostics were run. D2 failed in the direction opposite to the
+institutional hypothesis: AUC is higher in the modal pool
+(preg\~ao) without the minimum-bidder rule, not lower as the
+hypothesis required. We interpret D2 in the manuscript as
+heterogeneity-of-environment information about the construct's
+operating range, not as a falsified positive identification of an
+institutional mechanism (the test as designed cannot separate
+modality effects from selection of firms into modalities). The full
+pre-registration and verdict logic is committed in the replication
+archive.
+\item \textit{Sources:} \texttt{scripts/36\_gate\_d1\_harmonized.R},
+\texttt{37\_gate\_d2\_modal\_auc.R},
+\texttt{38\_gate\_d3\_continuous\_only.R},
+\texttt{39\_gate\_d4\_cade\_winner\_heavy.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

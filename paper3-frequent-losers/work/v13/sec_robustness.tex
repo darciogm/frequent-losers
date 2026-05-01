@@ -18,8 +18,8 @@ estimates with the assumption each estimator imposes.
 
 \paragraph{Threshold sensitivity.}
 The FL coefficient declines monotonically with stricter
-thresholds: $0.079$ (IQR $1.0\times$), $0.064$ (baseline
-$1.5\times$), $0.060$ ($2.0\times$), $0.050$ ($3.0\times$).
+thresholds: $\valThreshOnex$ (IQR $1.0\times$), $\valThreshOneFivex$ (baseline
+$\valIQRmul$), $\valThreshTwox$ ($2.0\times$), $\valThreshThreex$ ($3.0\times$).
 Two readings are consistent with the pattern. \emph{(i)}
 Classification noise: stricter thresholds shrink the treated
 group, leaving fewer FL-present tenders and more misclassified
@@ -35,23 +35,23 @@ the result does not hinge on the FL definition.
 
 \paragraph{Sensitivity to unobservables.}
 The \citet{cinelli2020making} sensitivity analysis yields
-$RV_{q=1} = 17.5\%$: an unobserved confounder would need to
-explain at least $17.5\%$ of residual variation in
+$RV_{q=1} = \valRVqOne$: an unobserved confounder would need to
+explain at least $\valRVqOne$ of residual variation in
 \emph{both} FL presence and log prices to nullify the
 coefficient---stringent given the item, year, and PBU
 fixed-effects structure. Sensitivity contour plots appear in
 \ref{app:robustness}. The \citet{oster2019unobservable}
 bound is uninformative here because adding PBU fixed effects
-moves $R^2$ from $0.879$ to $0.886$; the denominator of the
-Oster formula is near zero and $\hat{\delta} = 261.6$ is
+moves $R^2$ from $\valCScornerLow$ to $\valCScornerHigh$; the denominator of the
+Oster formula is near zero and $\hat{\delta} = \valOsterDelta$ is
 mechanically large. The Cinelli--Hazlett bound, which does not
 depend on the $R^2$ gap, is the more informative robustness
 statement for this design.
 
 \paragraph{Oversight heterogeneity.}
-The FL price coefficient varies steeply with PBU size: $0.214$
-in the smallest quartile, $0.098$ in Q2, $0.045$ in Q3, and
-$0.017$ in Q4 (Table~\ref{tab:regime_oversight},
+The FL price coefficient varies steeply with PBU size: $\valOversightQone$
+in the smallest quartile, $\valOversightQtwo$ in Q2, $\valOversightQthree$ in Q3, and
+$\valOversightQfour$ in Q4 (Table~\ref{tab:regime_oversight},
 \ref{app:robustness}). The 12.5$\times$ gradient between Q1
 and Q4 is the single largest source of heterogeneity in the
 data---larger than the preg\~ao--convite gap---and runs in the
@@ -65,16 +65,78 @@ up residual heterogeneity. The monotonic gradient across all
 four quartiles is hard to generate from pure FE noise, but we
 cannot fully rule it out.
 
+\paragraph{Pre-registered diagnostics for an alternative paper formulation.}
+% CO-AUTHOR EDIT (Path A+ Action 7+, 2026-04-30): D2 reframed as
+% environment heterogeneity rather than failed institutional test;
+% D3 leakage audit reported.
+Before settling on the descriptive scope of this paper, we
+pre-registered four diagnostics whose joint pass would have
+authorized an alternative formulation foregrounding a
+winner/loser-side institutional reading
+(Table~\ref{tab:gate_diagnostics}, \ref{app:robustness}). Three
+of the four returned the predicted sign and magnitude:
+the harmonized horse race (D1) confirms continuous
+loss-intensity dominates the FL14 binary at conventional
+significance; the without-FL14 specification (D3) confirms the
+loser-side association survives elimination of the threshold;
+the winner-heavy distribution of direct CADE defendants (D4)
+confirms the structural scope asymmetry the screen exploits.
+The fourth diagnostic (D2), comparing the construct's AUC
+across modal-primary subsamples of always-loser firms,
+returned the \emph{opposite} sign of the institutional
+hypothesis: the convite-primary pool yielded AUC $\valAUCConvlogtc$
+(small subsample, $N\!\!+\!\!=\!\!6$ cobidders) versus
+preg\~ao-primary AUC $\valAUCPreglogtc$ ($N\!\!+\!\!=\!\!186$). We do not
+interpret D2 as a falsification of an institutional mechanism
+because the test as designed cannot separate effects of
+modality from selection of firms into modalities, but neither
+do we extract a positive institutional reading from it. The
+honest interpretation is that loser-side concentration
+discriminates more strongly in modal environments without the
+minimum-bidder rule, which is information about the
+construct's operating range and not evidence of a coordination
+mechanism we can identify with this design. We report D2 in
+Table~\ref{tab:gate_diagnostics} for transparency and rely on
+the descriptive operational claim made in the body of the
+paper.
+
+\paragraph{Anti-leakage audit of the item-level AUC.}
+% CO-AUTHOR EDIT (Path A+ Action 7+, 2026-04-30).
+The diagnostic D3 reports an item-level AUC of $\valFLpremitemRaw$ for
+$\log(1{+}\max\,\text{tc})$ predicting any-cobidder
+participation. Cobidders are by construction always-loser
+firms with elevated participation counts; an item containing a
+cobidder mechanically has elevated max-tenders-count among its
+always-loser participants. Part of the in-sample AUC is
+therefore tautological. We audit the leakage component along
+three dimensions (Table~\ref{tab:leakage_audit},
+\ref{app:robustness}). Audit~1 evaluates the same score
+against a label that does not share the construction (any
+direct CADE defendant in the item): AUC $= 0.51$, random,
+confirming the screen's structural scope limit. Audit~2
+withholds approximately one fifth of the cobidder firms per
+fold, recomputes tenders\_count without their participation,
+and predicts items containing held-out cobidders using the
+recomputed score; pooling the five out-of-fold predictions
+yields AUC $=\valAUCitemCV$ ($95\%$ CI $\valAUCitemCVCI$), a drop of
+roughly $\valFLpremtenAttenSE$ from the in-sample reference. Audit~3 trains
+tenders\_count on 2009--2016 and predicts 2017--2019 items:
+AUC $=\valAUCitemTemp$ ($\valAUCitemTempCI$). The audited values remain
+above the conventional $\valAUCstandard$ threshold for strong screening
+rules; the substantive predictive content is not fully
+tautological. We rely on the audited AUCs in our claims, not
+the in-sample $\valAUCitemRaw$.
+
 \paragraph{Designs we attempted and rejected.}
 Two estimators that the recent staggered-DiD literature
 recommends fail their identifying assumptions in this setting,
 and we report them only to document the failures.
 \citet{callaway2021difference} doubly-robust staggered DiD
-yields $\mathrm{ATT} = 0.014$ (SE $0.039$); the
+yields $\mathrm{ATT} = 0.014$ (SE $\valCSseverr$); the
 \citet{cengiz2019effect} stacked design yields
-$\mathrm{ATT} = -0.006$ (SE $0.014$;
+$\mathrm{ATT} = -0.006$ (SE $\valCSlimit$;
 Table~\ref{tab:stacked_did}, \ref{app:did}). The stacked 95\%
-CI $(-0.034, 0.022)$ excludes the OLS baseline of $0.064$. The
+CI $(-0.034, 0.022)$ excludes the OLS baseline of $\valThreshOneFivex$. The
 discrepancy is mechanical: positive pre-event coefficients at
 $t = -2$ and $t = -3$ (Figure~\ref{fig:event_study},
 \ref{app:did}) indicate that FL entry is endogenous to market
@@ -84,7 +146,7 @@ this setting, not merely underpowered, and exclude them from
 Table~\ref{tab:robustness_summary}. \citet{rambachan2023more}
 sensitivity bounds confirm that the maximum pre-trend slope
 under which the conclusion would hold is implausibly small.
-\citet{oster2019unobservable} $\hat{\delta} = 261.6$ is
+\citet{oster2019unobservable} $\hat{\delta} = \valOsterDelta$ is
 similarly degenerate (above). The right reading of these
 exercises is that staggered-DiD identification requires
 exogenous treatment timing the FL setting does not provide,
@@ -94,7 +156,7 @@ this constraint, not despite it.
 \paragraph{Illustrative welfare.}
 \ref{app:extensions} reports back-of-the-envelope welfare
 calculations that mechanically apply the FL price coefficients
-to FL-present spending: roughly $0.3$--$0.9\%$ of total BEC
+to FL-present spending: roughly $\valWelfareLowPct$--$\valWelfareHighPct\%$ of total BEC
 spending depending on which point estimate is used. The
 calculations \emph{assume} causality the design does not
 establish; they should be read as rough benchmarks, not policy

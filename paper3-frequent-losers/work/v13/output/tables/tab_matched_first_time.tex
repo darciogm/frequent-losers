@@ -1,0 +1,41 @@
+% CO-AUTHOR EDIT (Path A+ Action 6, 2026-04-30): matched first-tender FL test.
+% Source: scripts/30_first_time_fl_matching.R / output/first_time_fl_matching/matched_results.csv.
+\begin{table}[htbp]
+\centering
+\caption{First-Tender FL Premium under Matching: Attenuation Pattern}
+\label{tab:matched_first_time}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Specification & Coef on $\mathbf{1}[\text{FL}]$ & SE & $p$-value & $N$ \\
+\midrule
+Unconditional, item $\times$ year FE                                   & $+0.100$  & $(0.043)$ & $0.019$  & $9{,}118$ \\
+Coarsened-exact-matched (item-group $\times$ year $\times$ modality)   & $+0.085$  & $(0.048)$ & $0.076$  & $1{,}930$ \\
+Propensity-score 1-NN (caliper $0.1$, on $\log p_{\text{winner}}$)     & $+0.062$  & $(0.061)$ & $0.312$  & $2{,}200$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Outcome is $\log(b_i / w_i)$, the log of
+firm $i$'s first-tender bid relative to that item's winning
+bid. Sample restricted to always-loser firms with at least
+two bids in the same item, trimmed at $|\log(b/w)| \leq 5$ to
+drop bid-entry errors (the untrimmed unconditional coefficient
+is $+0.20$, dominated by a small number of extreme outliers
+that survive in both treatment and control). Unconditional
+specification uses item and year fixed effects with
+item-clustered SEs. CEM matches on 4-digit item group, year,
+modality, and quartiles of $\log(p_{\text{winner}})$, with
+$k=1$ pairing. PS matching uses the same covariates as a
+1-NN nearest neighbor on the propensity score. The
+coefficient attenuates by approximately $40\%$ under PS matching
+and loses statistical significance, indicating that the
+unconditional first-tender pattern reflects observable
+item-selection rather than behavioral selection by FL firms
+on first appearance. We do not interpret the residual
+coefficient as evidence of FL-specific bidding behavior.
+\item \textit{Source:} \texttt{scripts/30\_first\_time\_fl\_matching.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

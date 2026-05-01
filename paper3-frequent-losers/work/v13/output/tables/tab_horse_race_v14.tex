@@ -1,0 +1,49 @@
+% CO-AUTHOR EDIT (Path A+ Action 4, 2026-04-30): horse race FL14 binary vs
+% continuous loss intensity, harmonized same-sample. Source:
+% scripts/34_horse_race_fl_continuous.R + 36_gate_d1_harmonized.R.
+\begin{table}[htbp]
+\centering
+\caption{Horse Race: FL14 Binary vs Continuous Loss Intensity (Same Sample)}
+\label{tab:horse_race_v14}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Specification & Coef on FL14 & Coef on $\log(1{+}\max\,\text{tc})$ & Convite & $N$ \\
+\midrule
+(1) FL14 only                 & $+0.0653^{***}$ & --                  & $+0.171^{***}$ & $1{,}653{,}658$ \\
+                              & $(0.0216)$      &                     & $(0.013)$      &                 \\
+(2) Continuous only           & --              & $+0.0188^{***}$     & $+0.169^{***}$ & $1{,}653{,}658$ \\
+                              &                 & $(0.0055)$          & $(0.013)$      &                 \\
+(3) Both, additive            & $-0.0746^{*}$   & $+0.0349^{***}$     & $+0.169^{***}$ & $1{,}653{,}658$ \\
+                              & $(0.0383)$      & $(0.0108)$          & $(0.013)$      &                 \\
+\midrule
+\multicolumn{5}{l}{\emph{Firm-level AUC against $193$ CADE-cobidder labels (always-loser pool, $N\!=\!16{,}843$)}} \\
+FL14 binary                   & AUC $= 0.911$ $[0.898,\,0.925]$ & & & \\
+$\log(1{+}\text{tenders\_count})$ & AUC $= 0.939$ $[0.932,\,0.946]$ & & & \\
+DeLong test (continuous vs FL14)  & $Z = -4.30$, $p = 1.7\times 10^{-5}$ & & & \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Outcome is $\log p_{\text{negotiated}}$ within
+the v13 panel of $1{,}653{,}658$ items. Item-level treatment is
+$\mathbf{1}[\text{any FL14 participant}]$ in column~(1) and the
+log of the maximum loss-intensity score among always-loser
+participants in column~(2). Column~(3) includes both. The FL14
+coefficient flips sign when continuous intensity is added to the
+specification: this is the disciplinary diagnostic that the binary
+discretization at $14$ tenders is an operationalization of the
+underlying continuous signal, not an economically primitive
+threshold. We report the binary specification as a deployable
+implementation rule and the continuous specification as the
+substantive object. SEs clustered at item level.
+DeLong tests use the firm-level AUC reported in the bottom panel.
+*** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\item \textit{Source:} \texttt{scripts/34\_horse\_race\_fl\_continuous.R},
+\texttt{scripts/36\_gate\_d1\_harmonized.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

@@ -8,34 +8,57 @@ Academic research paper: **"Frequent Losers in Public Procurement"** by Darcio G
 
 This is **Paper 3** in the `bitter-pills` monorepo. See also `../paper1-bitter-pills/` and `../paper2-me-epp/`.
 
-## Strategic path (locked 2026-04-30, after mr-frequent rounds 2-4)
+## Strategic path (locked 2026-04-30, gate executed and γ++ disqualified)
 
-**Target tier: JLEO base, JLE contingent.** Working branch is `v13-jle` but the JLE-ambitious narrative was disciplined out. Probabilities:
+**Target tier: JLEO sole alvo. JLE disqualified by gate.** Working branch is `v13-jle` (rename pending). Probabilities post-gate:
 
 | Path | Effort | JLE | JLEO |
 |---|---|---|---|
 | Status quo v13 | 0 | 0.05 | 0.35 |
-| **A+ (base plan)** | 2 weeks | 0.00 | **0.68** |
-| γ++ (winner/loser reframe) | 4 weeks | 0.33 | 0.27 |
+| **A+ (base plan, with leakage audit + gate appendix + precision audit)** | 2-3 days | **0.08-0.10** | **0.50-0.55** |
+| γ++ (winner/loser reframe) | — | — | **DISQUALIFIED by gate D2** |
 
-**Rules of engagement:**
+**Gate result (4 diagnostics, scripts 36-39, 2026-04-30):**
+- ✅ **D1 — horse race harmonized same-sample (script 36):** continuous AUC 0.939 dominates FL14 0.911, DeLong p=1.7e-5; price coefficients same sign.
+- ❌ **D2 — modal-by-modal AUC institutional asymmetry (script 37):** AUC convite_primary 0.816 vs pregão_primary 0.952; bootstrap difference −0.136, p≈0. **Direction OPPOSITE to the institutional hypothesis.** The convite minimum-bidder rule does NOT produce stronger loser-side signal. Caveat: convite_primary has only 6 cobidders (small N+).
+- ✅ **D3 — continuous preserves loser-side thesis without FL14 (script 38):** all continuous specs +sig (p<0.001); modal asymmetry survives. AUC 0.983 item-level (raw, in-sample) — **subject to leakage audit, see below**.
+- ✅ **D4 — CADE winner-heavy (script 39):** 7/47 direct defendants are always-losers (14.9%); median win_rate 0.26 vs 0.09; Mann-Whitney p<0.05.
+
+**γ++ formally disqualified:** the institutional theory that would justify γ++ (loser-side concentration as consequence of convite minimum-bidder rule) is incompatible with D2 direction. Salvageable narrative ("pregão coordination voluntary and visible vs convite forced and camouflaged") inverts the hypothesis, requires new theory from scratch, and does not reach JLE acceptance under realistic calibration (~0.10-0.12 with 4-6 weeks of additional theory work). **Decision: stop on JLEO via A+.**
+
+**D3 leakage audit (script 40):** verdict DEFENSIBLE.
+- Raw item-level AUC 0.995 → out-of-fold CV at cobidder-firm level: 0.891 → temporal holdout (train 09-16, test 17-19): 0.864.
+- Drop ~0.10-0.13 under audit; remaining AUC > 0.85 sustains the operational claim.
+- Against direct CADE defendants: AUC 0.51 in all scenarios (random) — confirms structural scope limit.
+- Action: report audit table in online appendix as anti-leakage transparency block.
+
+**Precision@k audit (script 43):** verdict INFLATED — operational metrics under temporal holdout are ~50% lower than in-sample.
+- In-sample precision@500 = 0.132 (lift 11.5×) → temporal holdout = 0.070 (lift 6.1×, retention 53%).
+- In-sample precision@1000 = 0.097 → temporal holdout = 0.066.
+- Source of inflation: ~47% of top-500 ranking comes from 2017-2019 participation, after CADE investigation was already underway for some of the cartels. The screen is half prospective, half retrospective.
+- Action: report two-column table (in-sample + temporal-holdout) in online appendix; rely on temporal-holdout column for operational claims; AUC firm-level 0.864 is the honest discriminating performance.
+
+**Rules of engagement (locked):**
 - Object semantics: **"loser-side concentration"** is the concept; **"frequent losers"** is the operational implementation. Never defend FL14 cutoff as ontologically special.
 - Language: `flags`, `screens`, `prioritizes`, `concentrates risk`. **Never** `detects cartelists`, `proves`, `outperforms decisively`.
-- Front-page the failures: AUC ≈ 0.49 against 47 direct CADE defendants; AUC ≈ 0.91 against 193 cobidders. The asymmetry is the design, not a bug — but only after the asymmetry is empirically demonstrated, not asserted.
+- Front-page the failures: AUC ≈ 0.49 against 47 direct CADE defendants; AUC ≈ 0.91 against 193 cobidders. The asymmetry is the design, demonstrated empirically by D4.
 - Continuous `log(tenders_count)` dominates FL14 binary (DeLong p<0.001). FL14 is a deployable rule; the true signal is loss intensity.
-- First-time-FL +0.20 unconditional → +0.06 (p=0.31) under PS matching. **Demote to appendix or non-causal description.**
-- Mechanism heterogeneity: Low HHI × Low pairs +10% is the largest cell, not "cartel signature". **Drop "assinatura de cartel" framing.**
+- First-time-FL +0.10 unconditional (winsorized) → +0.06 (p=0.31) under PS matching. Demoted to appendix.
+- Mechanism heterogeneity: Low HHI × Low pairs +10% is the largest cell, not "cartel signature". Drop "assinatura de cartel" framing.
 - Imhof full pipeline AUC 0.888 vs FL 0.903 — gap is **complementarity**, not dominance. Sell as "comparable discrimination at lower informational cost", not "outperforms".
+- **D2 framing:** present as "construct discriminates better in pregão environments; we interpret this as scope information, not as institutional identification" — NOT as positive test of the minimum-bidder-rule theory.
+- **D3 framing:** report leakage audit explicitly. Item-level AUC reported only after CV out-of-fold and temporal holdout (0.86-0.89, not 0.99).
 
-**A+ pacote (11 actions, ~2 weeks):** see `work/v13/mr_frequent_round4.md` and `work/v13/master_plan_jle.md`.
+**A+ pacote (11 actions):** see `work/v13/mr_frequent_round4.md`. Status by 2026-04-30: actions 1-7 implemented in intro/abstract/sec_mechanisms; actions 4 (horse race in robustness), 8-11 (operational table, precision@k, biblio cleanup, intro polish) pending.
 
-**γ++ gate:** activate ONLY if 4/4 confirm: (1) horse race harmonized same-sample; (2) modal-by-modal AUC confirms institutional asymmetry; (3) continuous preserves loser-side thesis without FL14; (4) CADE winner-heavy table is clean. Otherwise freeze A+ and submit JLEO.
+**Ilusões de progresso a evitar** (do not waste cycles): more redundant robustness; figures bonitas; rewriting intro before object is fixed; salvaging first-time-FL; reviving classical cartel mechanism with more heterogeneity; broader literature review without comparison matrix; bigger welfare headline. **Now also: pursuing γ++ after gate failure.**
 
-**Ilusões de progresso a evitar** (do not waste cycles): more redundant robustness; figures bonitas; rewriting intro before object is fixed; salvaging first-time-FL; reviving classical cartel mechanism with more heterogeneity; broader literature review without comparison matrix; bigger welfare headline.
-
-**Scripts already executed (35 total) — REUSE, do not recreate:**
-- `30_first_time_fl_matching.R`, `31_imhof_full_pipeline.R`, `32_matched_heterogeneity.R`
-- `33_auc_direct_cade.R`, `34_horse_race_fl_continuous.R`, `35_unified_mechanism.R`
+**Scripts already executed — REUSE, do not recreate:**
+- v14 empirical core: `12_build_item_value.R`, `13_rdd_cap.R`, `14_did_decreto_2018.R`, `15_first_time_fl.R`
+- Disciplinary cleanup (round 2-4): `30_first_time_fl_matching.R`, `31_imhof_full_pipeline.R`, `32_matched_heterogeneity.R`, `33_auc_direct_cade.R`, `34_horse_race_fl_continuous.R`, `35_unified_mechanism.R`
+- **Gate diagnostics (round 5, 2026-04-30):** `36_gate_d1_harmonized.R`, `37_gate_d2_modal_auc.R`, `38_gate_d3_continuous_only.R`, `39_gate_d4_cade_winner_heavy.R`
+- **Leakage audit (post-gate, 2026-04-30):** `40_leakage_audit_d3.R`
+- **Cosmetic + operational (2026-04-30):** `41_fix_figures.R` (regenerated 3 figs with disciplined subtitles), `42_operational_metrics.R` (in-sample precision@k), `43_precision_at_k_audit.R` (temporal-holdout audit, INFLATED verdict)
 
 ## Commands
 

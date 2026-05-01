@@ -14,14 +14,14 @@ operated by the State Treasury since 2002. BEC serves 1,308
 purchasing units (PBUs)---state agencies, public universities,
 hospitals, schools---and clears two procurement modalities
 during our sample: \emph{convite} (sealed-bid, statutory
-minimum three bidders, Lei 8.666/93) and \emph{preg\~ao}
+minimum three bidders, Lei \valLeiOriginal) and \emph{preg\~ao}
 (electronic reverse auction, no minimum-bidder rule, Lei
 10.520/2002). The convite minimum-bidder rule creates the
 regulatory cover-bidding incentive we analyze; preg\~ao serves
 as a within-platform comparator. Our 2009--2019 window
-comprises 4{,}533{,}754 contract-record items
-across 22 calendar semesters, generated from 39{,}961{,}357
-individual bids placed by 41{,}444 distinct firms
+comprises \valDataItemAvgVar{,}754 contract-record items
+across 22 calendar semesters, generated from \valDataNbidsMean{,}357
+individual bids placed by \valBECfirms distinct firms
 (Table~\ref{tab:modality_year}, \ref{app:competition}). The
 contract-record layer preserves participants, winners,
 negotiated prices, reference prices, and procurement metadata;
@@ -45,7 +45,7 @@ Bayesian learner with a uniform prior updates $\pi_w$ toward
 $1/(n+2)$ after $n$ zero-win trials, so the expected gain per
 bid is $\bar{V} m / (n+2)$ and falls below cost $c$ once
 $n > \bar{V} m / c - 2$. At BEC parameters
-($\bar{V} = $~R\$$86{,}000$ from the sample mean, $m = 0.10$
+($\bar{V} = $~R\$$\valDataItemAvgPay$ from the sample mean, $m = 0.10$
 from documented procurement-supplier margins), this threshold is
 $n \approx 15$ for $c = $~R\$$500$, $n \approx 41$ for
 $c = $~R\$$200$, and $n \approx 170$ for the lower bound
@@ -56,7 +56,7 @@ threshold of 14 zero-win participations expected profit is
 already negative under that anchor. At the 90th-percentile FL
 participation of 50+ zero-win tenders, expected profit is
 negative under any $c$ above R\$$167$ and cumulative direct
-cost exceeds R\$$10{,}000$. Sustained participation past this
+cost exceeds R\$$\valPermFirms$. Sustained participation past this
 point reveals (i) a non-pecuniary objective---cartel
 side-payment, signaling, eligibility maintenance---(ii)
 systematically incorrect beliefs that fail to update on the
@@ -70,8 +70,8 @@ We define frequent losers (FL) as the intersection of:
 
 \begin{enumerate}
 \item \textbf{Always-losers}: firms with a zero win rate across
-all 2009--2019 BEC tenders. The pool comprises 16,843 firms
-(41\% of all BEC participants), reflecting low electronic
+all 2009--2019 BEC tenders. The pool comprises \valAlwaysLosers firms
+(\valPctFortyone of all BEC participants), reflecting low electronic
 participation costs, small firms bidding beyond their
 operational capacity, and---for convite---PBU officials
 inviting firms primarily to meet the three-bidder minimum. FL
@@ -92,7 +92,7 @@ this economic rationale, before any examination of CADE data;
 the data-driven optimal threshold from a CADE-based ROC
 exercise (Youden's $J = 0.84$) corresponds to a multiplier of
 1.45$\times$IQR, close to the rule chosen
-\emph{ex ante}. The definition yields 2,735 FL firms.
+\emph{ex ante}. The definition yields \valFL FL firms.
 \end{enumerate}
 
 The treatment variable $\text{losers}_{igt}$ equals one if
@@ -103,7 +103,7 @@ FL firm among its participants, and zero otherwise.
 The classification pools participation over the full 2009--2019
 window. Splitting the sample, only 10\% of FL firms classified
 on 2009--2013 data reappear as FL on 2014--2019 data (111 of
-1{,}095). This is the \emph{environment-marker} reading we use
+\valBoundaryFLone). This is the \emph{environment-marker} reading we use
 throughout the paper: FL flags procurement
 \emph{environments}---the PBU $\times$ item $\times$ year cells
 where regulatory cover bidding operates---rather than firm
@@ -136,21 +136,21 @@ within 0.5 percentage points of the restricted-sample baseline,
 so the restriction is empirically innocuous.
 
 The resulting regression sample contains 1,654,447
-tender-items across 18{,}783 item types, defined at the finest
+tender-items across \valFirmCount item types, defined at the finest
 product-code level available in BEC (not aggregated to
-two-digit groups). Of the 18{,}783 item types, 15{,}101 (82\%)
+two-digit groups). Of the \valFirmCount item types, \valDataFirmMean (82\%)
 have both FL-present and FL-absent tenders within sample,
 contributing to within-item identification under the
 fixed-effects specification of
-Equation~\ref{eq:ols_main}. FL firms participate in 4.8\% of
+Equation~\ref{eq:ols_main}. FL firms participate in \valCartelMarkup of
 tender-items.
 
 Table~\ref{tab:descstats} reports unconditional descriptive
 statistics by FL presence. The unconditional negotiated-price
-ratio between FL-present and FL-absent tenders---R\$$140{,}673$
-versus R\$$12{,}465$, a factor of $11\times$---reflects the
+ratio between FL-present and FL-absent tenders---R\$$\valOCcount$
+versus R\$$\valDataItemMean$, a factor of $11\times$---reflects the
 sorting of FL firms toward larger contracts: FL-present tenders
-have on average $9.06$ bidders versus $4.90$ in FL-absent
+have on average $\valDataMedianWinPart$ bidders versus $\valDataMeanWinPart$ in FL-absent
 tenders, indicating that FL firms appear in tenders that
 attract bidder pools roughly twice the size. Under
 within-item, within-year, within-PBU fixed effects, the raw
@@ -174,10 +174,10 @@ Eight of the 12 cases were decided after the BEC sample window
 closes, so the test asks whether 2009--2019 participation
 patterns anticipated firms whose collusive role enforcement
 confirmed years later. Of the 65 firm-defendants, 47 match BEC
-participants via CNPJ. Among 2,735 FL firms, 193 (7.1\%)
+participants via CNPJ. Among \valFL FL firms, 193 (\valCobidShareFL)
 co-participate with at least one of these 47 firms in the same
 tender-item---3.5 times the participation-stratified baseline
-of 2.0\% ($p < 0.001$; Section~\ref{sec:cade}).
+of \valCADEbase ($p < 0.001$; Section~\ref{sec:cade}).
 
 The bid-level structural exercises and Bajari--Ye coordination
 tests (Section~\ref{sec:supporting_setup}) are estimated on the
@@ -186,7 +186,7 @@ winning price, firm identity, and the FL classification at the
 firm level. The full bid-level setup is reported in
 \ref{app:structural_id} (Online); the structural likelihood
 sample comprises 23.2 million genuine (non-FL) losing bids and
-189{,}381 FL losing bids after restricting to losing bids with
+\valItemsCount FL losing bids after restricting to losing bids with
 valid prices and item-year fixed-effect coverage.
 
 A formal cover-bidding framework---summarized in
