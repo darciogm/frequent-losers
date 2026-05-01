@@ -1,6 +1,6 @@
 # Audit: paper numbers → script provenance
 
-Generated automatically by `scripts/99_make_paper_values.R` on 2026-05-01 07:56:00.
+Generated automatically by `scripts/99_make_paper_values.R` on 2026-05-01 08:34:10.
 Every number that appears in the manuscript via `\val<Macro>` macro
 is listed below with its source script, source CSV, and the row from
 which the value was read.
@@ -110,6 +110,15 @@ which the value was read.
 | `\valAUCPregFLCI` | `[0.910,\ 0.938]` | `scripts/37_gate_d2_modal_auc.R ` | ` output/gate_d2/d2_modal_auc.csv` | `—` |
 | `\valAUCPreglogtc` | `0.952` | `scripts/37_gate_d2_modal_auc.R ` | ` output/gate_d2/d2_modal_auc.csv` | `—` |
 | `\valAUCPreglogtcCI` | `[0.946,\ 0.958]` | `scripts/37_gate_d2_modal_auc.R ` | ` output/gate_d2/d2_modal_auc.csv` | `—` |
+| `\valFalPregBin` | `+9.59\%` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalPregBinPSig` | `p < 10^{-3}` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalConvBin` | `+3.92\%` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalConvBinPSig` | `p = 0.037` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalPregLog` | `+2.62\%` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalConvLog` | `+1.24\%` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalPregN` | `543{,}752` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalConvN` | `1{,}105{,}852` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
+| `\valFalRatio` | `2.45` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
 | `\valAUCCrossSectorMean` | `0.954` | `hardcoded constants (verified canonical, not yet sourced from CSV)` | `—` | `—` |
 | `\valAUCCrossSectorSD` | `0.034` | `hardcoded constants (verified canonical, not yet sourced from CSV)` | `—` | `—` |
 | `\valMechSampleN` | `1{,}654{,}401` | `hardcoded constants (verified canonical, not yet sourced from CSV)` | `—` | `—` |
