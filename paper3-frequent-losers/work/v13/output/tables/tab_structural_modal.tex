@@ -1,0 +1,42 @@
+% JLEO-R3 (Major 1): structural estimation by modality.
+% Source: scripts/55_structural_modal_split.R / output/structural_modal/structural_modal.csv
+\begin{table}[htbp]
+\centering
+\caption{Structural Cover-Bid Distribution: Regime Selection by Modality}
+\label{tab:structural_modal}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+& $N$ FL above-winner & $\hat{\sigma}_g$ & $\hat{\sigma}_c$ & $\hat{\sigma}_c/\hat{\sigma}_g$ & $\Delta\mathrm{BIC}$ (R2$-$R1) & Selected regime \\
+\midrule
+Full sample   & $\valStructFullN$ & $\valStructFullSigG$ & $\valStructFullSigC$ & $\valStructFullRatio$ & $\valStructFullDeltaBIC$ & Regime 2 \\
+Convite-only  & $\valStructConvN$ & $\valStructConvSigG$ & $\valStructConvSigC$ & $\valStructConvRatio$ & $\valStructConvDeltaBIC$ & Regime 2 \\
+Preg\~ao-only & $\valStructPregN$ & $\valStructPregSigG$ & $\valStructPregSigC$ & $\valStructPregRatio$ & $\valStructPregDeltaBIC$ & Regime 2 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} BIC selection between Regime 1 (uniform
+high-dispersion cover bids) and Regime 2 (truncated-normal
+low-dispersion cover bids), estimated separately on
+above-winner FL losing bids in each modal subsample.
+$\hat{\sigma}_g$ is the standard deviation of genuine
+losing bids in the same subsample; $\hat{\sigma}_c$ is the
+estimated dispersion of cover bids under Regime 2.
+$\Delta\mathrm{BIC}$ negative means Regime 2 is preferred.
+Regime 2 is the operative regime in \emph{both} modalities,
+with pregão exhibiting \emph{tighter} coordination
+($\hat{\sigma}_c/\hat{\sigma}_g = \valStructPregRatio$ vs.\
+$\valStructConvRatio$ in convite). Reading: cover bidding in
+BEC is uniformly anchor-following (Regime 2), not
+detection-evading via dispersion (Regime 1), regardless of
+the modality's minimum-bidder rule. Pregão's tighter
+dispersion is consistent with electronic-auction discipline
+and visibility incentives.
+\item \textit{Source:} \texttt{scripts/55\_structural\_modal\_split.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}

@@ -18,20 +18,30 @@ P1: optimal $m^*$
   & FL price coefficient gradient by PBU oversight quartile: Q1 ($\valOversightQone$), Q2 ($\valOversightQtwo$), Q3 ($\valOversightQthree$), Q4 ($\valOversightQfour$). $12.5\!\!\times$ gradient between smallest and largest PBUs.
   & PASS
   & Tab.~\ref{tab:regime_oversight} \\[0.3em]
-P2: Regime~1 (high-dispersion cover)
+P2: Regime~1 (high-dispersion cover) --- both modalities
   & Cover-bid distribution uniform, $\mathrm{Var}(b_\ell) > \sigma_g^2$.
-  & Empirical $\hat{\sigma}_c/\hat{\sigma}_g = 0.72 < 1$ (\ref{app:structural_id}); BIC selects Regime~2 over Regime~1. Regime~1 is therefore not the operative regime in BEC.
-  & N/A (Regime not operative)
-  & \ref{app:structural_id} \\[0.3em]
-P3: Regime~2 (truncated-normal cover)
+  & BIC rejects Regime~1 in favor of Regime~2 in \emph{both} modalities: convite ($\Delta\mathrm{BIC}=\valStructConvDeltaBIC$, $N=\valStructConvN$ FL above-winner bids), pregão ($\Delta\mathrm{BIC}=\valStructPregDeltaBIC$, $N=\valStructPregN$). Regime~1 is therefore not operative anywhere in BEC.
+  & N/A in both modalities (Regime not operative)
+  & Tab.~\ref{tab:structural_modal} \\[0.3em]
+P3: Regime~2 (truncated-normal cover) --- both modalities
   & Cover-bid dispersion compressed below $\sigma_g$ via truncation at $b^*$.
-  & $\hat{\sigma}_c/\hat{\sigma}_g = 0.72$ consistent with $\sigma_c \le \sigma_g$ and left-truncation at $b^*$. Regime~2 selected by BIC. FL median bid-to-winner ratio $\valFLBidWinnerRatio$ vs.\ non-FL $\valNonFLBidWinnerRatio$.
-  & PASS
-  & \ref{app:structural_id}, Tab.~\ref{tab:bajari_ye_corrected} \\[0.3em]
-P4: market-selection
+  & Regime~2 selected by BIC in both modalities. $\hat{\sigma}_c/\hat{\sigma}_g$ ratio: $\valStructConvRatio$ in convite, $\valStructPregRatio$ in pregão (both $<1$). Pregão is \emph{more} coordinated than convite: lower dispersion ratio. FL median bid-to-winner ratio $\valFLBidWinnerRatio$ vs.\ non-FL $\valNonFLBidWinnerRatio$.
+  & PASS in both modalities; pregão has sharper coordination
+  & Tab.~\ref{tab:structural_modal}, Tab.~\ref{tab:bajari_ye_corrected} \\[0.3em]
+P4: market-selection (full sample)
   & $\partial m^*/\partial \mathrm{HHI} < 0$: more cover-bidder deployment in less concentrated markets.
   & Largest cell (Low HHI $\times$ Low pairs): $+\valMechQLLLCoef\%$ ($p<10^{-4}$, $N=\valMechQLLLN$). High HHI $\times$ High pairs: $\valMechQLHHCoef\%$ ($p=\valMechQLHHP$, $N=\valMechQLHHN$) — opposite sign in this small cell.
   & PARTIAL (sign flip in High$\times$High cell)
+  & Tab.~\ref{tab:unified_mechanism} \\[0.3em]
+P4: market-selection (convite-only)
+  & Same prediction, restricted to items where the minimum-bidder rule binds.
+  & Low HHI $\times$ Low pairs $+6.52\%$ ($p=0.002$, $N=901{,}533$); High HHI $\times$ High pairs $-6.15\%$ ($p=0.010$, $N=3{,}145$). Same direction, same sign flip in the small cell.
+  & PARTIAL (cross-modal robustness)
+  & Tab.~\ref{tab:unified_mechanism} \\[0.3em]
+P4: market-selection (preg\~ao-only)
+  & Same prediction, in the modal regime without the rule.
+  & Low HHI $\times$ Low pairs $+15.03\%$ ($p<10^{-5}$, $N=422{,}176$); High HHI $\times$ High pairs $-6.48\%$ ($p=0.041$, $N=1{,}967$). Same direction, same sign flip; pregão Low$\times$Low coefficient $\sim$$2.3\!\!\times$ larger than convite, consistent with falsification (Tab.~\ref{tab:falsification_modal}).
+  & PARTIAL (cross-modal robustness)
   & Tab.~\ref{tab:unified_mechanism} \\[0.3em]
 P5: linearized exposure proxy
   & $\log(1+\text{tenders\_count})$ is a sufficient ranking statistic for cover-bidder type given award records (Poisson MLR).
@@ -55,7 +65,12 @@ finding. The framework yields five propositions and one
 lemma; four (P1, P3, P5, Lemma) deliver empirical predictions
 that pass with the data; P4 holds in the dominant cell
 ($80\%$ of items) but inverts in a small high-concentration
-high-pair cell, an empirical tension we acknowledge openly
+high-pair cell. The sign flip persists across both modalities
+(convite $-6.15\%$, preg\~ao $-6.48\%$), which strengthens a
+selection reading---these are the configurations most visible
+to oversight, where cartel activity may have been deterred or
+prosecuted---rather than a modality-specific artifact. We
+acknowledge the tension openly
 (Section~\ref{app:proofs}, ``Empirical tension with A3''); P2
 characterizes a regime that is not selected by the data in
 BEC, and is reported for completeness. We do not interpret

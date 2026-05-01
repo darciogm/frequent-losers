@@ -1,6 +1,6 @@
 # Audit: paper numbers → script provenance
 
-Generated automatically by `scripts/99_make_paper_values.R` on 2026-05-01 11:24:50.
+Generated automatically by `scripts/99_make_paper_values.R` on 2026-05-01 12:11:24.
 Every number that appears in the manuscript via `\val<Macro>` macro
 is listed below with its source script, source CSV, and the row from
 which the value was read.
@@ -150,6 +150,32 @@ which the value was read.
 | `\valExtServiceShare` | `11.3\%` | `scripts/52_external_validity_scope.R ` | ` output/external_validity_scope/external_validity_scope.csv ` | ` dimension=coverage ` |
 | `\valExtConvAUC` | `0.816` | `scripts/52_external_validity_scope.R ` | ` output/external_validity_scope/external_validity_scope.csv ` | ` dimension=modal_primary_auc ` |
 | `\valExtPregAUC` | `0.952` | `scripts/52_external_validity_scope.R ` | ` output/external_validity_scope/external_validity_scope.csv ` | ` dimension=modal_primary_auc ` |
+| `\valLCAprobCoverFL` | `0.560` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valLCAprobCoverNonFL` | `0.119` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valLCAratio` | `4.7` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valLCAprecision` | `0.712` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valLCArecall` | `0.545` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valLCAfone` | `0.618` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valLCAsampleN` | `8{,}275` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valLCAcoverN` | `2{,}087` | `scripts/v8_latent_class_validation.R ` | ` work/v8/tables/lca_validation_results.csv` | `—` |
+| `\valDyadicRatio` | `5.9` | `scripts/45_legacy_m1m3_perm_welfare.R ` | ` output/legacy_constants/dyadic_permutation.csv (derived)` | `—` |
+| `\valDyadicTopTenRatio` | `2.0` | `scripts/45_legacy_m1m3_perm_welfare.R ` | ` output/legacy_constants/dyadic_permutation.csv (derived)` | `—` |
+| `\valPBUgradientRatio` | `12.6` | `scripts/07_heterogeneity.R ` | ` output/tables/tab_regime_oversight (parsed)` | `—` |
+| `\valStructFullN` | `140{,}947` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructFullSigG` | `3.618` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructFullSigC` | `1.056` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructFullRatio` | `0.292` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructFullDeltaBIC` | `-55,063` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructConvN` | `24{,}070` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructConvSigG` | `2.006` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructConvSigC` | `0.788` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructConvRatio` | `0.393` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructConvDeltaBIC` | `-13,855` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructPregN` | `116{,}877` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructPregSigG` | `4.093` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructPregSigC` | `1.103` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructPregRatio` | `0.269` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
+| `\valStructPregDeltaBIC` | `-42,818` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
 | `\valFalPregBin` | `+9.59\%` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
 | `\valFalPregBinPSig` | `p < 10^{-3}` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |
 | `\valFalConvBin` | `+3.92\%` | `scripts/46_falsification_pregao_only.R ` | ` output/falsification_pregao/falsification_results.csv` | `—` |

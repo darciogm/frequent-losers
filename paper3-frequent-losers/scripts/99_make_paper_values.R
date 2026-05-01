@@ -18,7 +18,10 @@
 
 cat("=== 99_make_paper_values.R: generate values.tex from canonical CSVs ===\n")
 
-if (!exists(".script_dir")) .script_dir <- dirname(sys.frame(1)$ofile %||% ".")
+if (!exists(".script_dir")) {
+  file_arg <- sub("^--file=", "", commandArgs(trailingOnly = FALSE)[grep("^--file=", commandArgs(trailingOnly = FALSE))])
+  .script_dir <- if (length(file_arg)) dirname(normalizePath(file_arg[1L])) else getwd()
+}
 suppressPackageStartupMessages({
   library(arrow); library(data.table)
 })
@@ -68,7 +71,7 @@ fls <- as.data.table(read_parquet(file.path(BASE,"data/processed/firm_loss_stats
 
 THRESH <- 14L
 n_al <- sum(fp$always_loser == 1L)
-n_fl <- sum(fp$always_loser == 1L & fp$tenders_count > THRESH)
+n_fl <- sum(fp$always_loser == 1L & fp$tenders_count >= THRESH)
 n_bec_firms <- nrow(fls)
 add("AlwaysLosers",   fmt_int_tex(n_al))
 add("FL",             fmt_int_tex(n_fl))
@@ -311,8 +314,283 @@ cat("  [10] CADE winner-heavy\n")
 src_set("scripts/39_gate_d4_cade_winner_heavy.R :: output/gate_d4/d4_winner_heavy.csv")
 
 # ---------------------------------------------------------------------------
+# 10b. JLEO-R1 diagnostics (scripts 47-54)
+# ---------------------------------------------------------------------------
+cat("  [10b] JLEO-R1 diagnostics\n")
+
+thr54_path <- file.path(BASE, "output/threshold_table_q3iqr/threshold_table_q3iqr.csv")
+if (file.exists(thr54_path)) {
+  thr54 <- fread(thr54_path)
+
+  src_set("scripts/54_threshold_table_q3iqr.R :: output/threshold_table_q3iqr/threshold_table_q3iqr.csv :: median_plus_1.5_iqr")
+  row <- thr54[construct == "median_plus_1.5_iqr"]
+  if (nrow(row) > 0) {
+    add("FL",                 fmt_int_tex(row$n_flagged[1]))
+    add("Threshold",          "14")
+    add("ThresholdStat",      fmt_dec(row$threshold[1], 1))
+    add("FLrateAL",           sprintf("%.1f\\%%", 100 * row$flagged_share[1]))
+    add("CobidShareFL",       sprintf("%.1f\\%%", 100 * row$precision_flagged[1]))
+    add("AUCFLfirm",          fmt_dec(row$auc[1], 3))
+    add("AUCFLfirmCIlo",      fmt_dec(row$ci_lo[1], 3))
+    add("AUCFLfirmCIhi",      fmt_dec(row$ci_hi[1], 3))
+    add("AUCFLfirmCI",        fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+
+  src_set("scripts/54_threshold_table_q3iqr.R :: output/threshold_table_q3iqr/threshold_table_q3iqr.csv :: continuous_log_tc")
+  row <- thr54[construct == "continuous_log_tc"]
+  if (nrow(row) > 0) {
+    add("AUClogtc",           fmt_dec(row$auc[1], 3))
+    add("AUClogtcCIlo",       fmt_dec(row$ci_lo[1], 3))
+    add("AUClogtcCIhi",       fmt_dec(row$ci_hi[1], 3))
+    add("AUClogtcCI",         fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+
+  src_set("scripts/54_threshold_table_q3iqr.R :: output/threshold_table_q3iqr/threshold_table_q3iqr.csv :: q3_plus_1.5_iqr")
+  row <- thr54[construct == "q3_plus_1.5_iqr"]
+  if (nrow(row) > 0) {
+    add("AUCQThreeIQR",       fmt_dec(row$auc[1], 3))
+    add("AUCQThreeIQRCI",     fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+    add("FLQThreeIQR",        fmt_int_tex(row$n_flagged[1]))
+  }
+}
+
+strict53_path <- file.path(BASE, "output/strict_train_threshold/strict_train_threshold.csv")
+if (file.exists(strict53_path)) {
+  strict53 <- fread(strict53_path)
+
+  src_set("scripts/53_strict_train_period_threshold.R :: output/strict_train_threshold/strict_train_threshold.csv :: firm_al_train_pool :: fl_train_binary")
+  row <- strict53[scope == "firm_al_train_pool" & score == "fl_train_binary"]
+  if (nrow(row) > 0) {
+    add("ThresholdTrain",      fmt_int(row$threshold_value[1]))
+    add("ThresholdFullStat",   fmt_dec(row$full_sample_threshold[1], 1))
+    add("AUCStrictFirmFL",     fmt_dec(row$auc[1], 3))
+    add("AUCStrictFirmFLCI",   fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+
+  src_set("scripts/53_strict_train_period_threshold.R :: output/strict_train_threshold/strict_train_threshold.csv :: firm_al_train_pool :: log_tc_train")
+  row <- strict53[scope == "firm_al_train_pool" & score == "log_tc_train"]
+  if (nrow(row) > 0) {
+    add("AUCStrictFirmTC",     fmt_dec(row$auc[1], 3))
+    add("AUCStrictFirmTCCI",   fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+
+  src_set("scripts/53_strict_train_period_threshold.R :: output/strict_train_threshold/strict_train_threshold.csv :: item_2017_2019 :: any_fl_train_binary")
+  row <- strict53[scope == "item_2017_2019" & score == "any_fl_train_binary"]
+  if (nrow(row) > 0) {
+    add("AUCStrictItemFL",     fmt_dec(row$auc[1], 3))
+    add("AUCStrictItemFLCI",   fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+
+  src_set("scripts/53_strict_train_period_threshold.R :: output/strict_train_threshold/strict_train_threshold.csv :: item_2017_2019 :: log_max_tc_train")
+  row <- strict53[scope == "item_2017_2019" & score == "log_max_tc_train"]
+  if (nrow(row) > 0) {
+    add("AUCStrictItemTC",     fmt_dec(row$auc[1], 3))
+    add("AUCStrictItemTCCI",   fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+}
+
+scope48_path <- file.path(BASE, "output/stratum_scope/stratum_scope_metrics.csv")
+if (file.exists(scope48_path)) {
+  scope48 <- fread(scope48_path)
+  src_set("scripts/48_stratum_scope_reframe.R :: output/stratum_scope/stratum_scope_metrics.csv :: row_id=8")
+  row <- scope48[row_id == 8L]
+  if (nrow(row) > 0) {
+    add("AUCItemDirectTemp",   fmt_dec(row$auc[1], 3))
+    add("AUCItemDirectTempCI", fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+}
+
+imh49_path <- file.path(BASE, "output/imhof_incremental/imhof_incremental.csv")
+if (file.exists(imh49_path)) {
+  imh49 <- fread(imh49_path)
+
+  src_set("scripts/49_imhof_incremental_value.R :: output/imhof_incremental/imhof_incremental.csv :: imhof_full")
+  row <- imh49[model == "imhof_full"]
+  if (nrow(row) > 0) {
+    add("AUCImhofFull",        fmt_dec(row$auc[1], 3))
+    add("AUCImhofFullCI",      fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+  }
+
+  src_set("scripts/49_imhof_incremental_value.R :: output/imhof_incremental/imhof_incremental.csv :: fl_only")
+  row <- imh49[model == "fl_only"]
+  if (nrow(row) > 0) {
+    add("AUCFLalone",          fmt_dec(row$auc[1], 3))
+    add("AUCFLaloneCI",        fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+    add("AUCFLvsImhofDelta",   fmt_dec(row$delta_vs_imhof_full[1], 3))
+    add("AUCFLvsImhofP",       fmt_dec(row$p_delong_vs_imhof_full[1], 3))
+  }
+
+  src_set("scripts/49_imhof_incremental_value.R :: output/imhof_incremental/imhof_incremental.csv :: tenders_only")
+  row <- imh49[model == "tenders_only"]
+  if (nrow(row) > 0) {
+    add("AUCTCalone",          fmt_dec(row$auc[1], 3))
+    add("AUCTCaloneCI",        fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+    add("AUCTCvsImhofDelta",   fmt_dec(row$delta_vs_imhof_full[1], 3))
+    add("AUCTCvsImhofP",       fmt_dec(row$p_delong_vs_imhof_full[1], 3))
+  }
+
+  src_set("scripts/49_imhof_incremental_value.R :: output/imhof_incremental/imhof_incremental.csv :: imhof_plus_fl")
+  row <- imh49[model == "imhof_plus_fl"]
+  if (nrow(row) > 0) {
+    add("AUCImhofPlusFL",      fmt_dec(row$auc[1], 3))
+    add("AUCImhofPlusFLCI",    fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+    add("AUCImhofPlusFLDelta", fmt_dec(row$delta_vs_imhof_full[1], 3))
+  }
+
+  src_set("scripts/49_imhof_incremental_value.R :: output/imhof_incremental/imhof_incremental.csv :: imhof_plus_tenders")
+  row <- imh49[model == "imhof_plus_tenders"]
+  if (nrow(row) > 0) {
+    add("AUCImhofPlusTC",      fmt_dec(row$auc[1], 3))
+    add("AUCImhofPlusTCCI",    fmt_ci_inline(row$ci_lo[1], row$ci_hi[1], 3))
+    add("AUCImhofPlusTCDelta", fmt_dec(row$delta_vs_imhof_full[1], 3))
+  }
+}
+
+neg50_path <- file.path(BASE, "output/negative_cell_audit/negative_cell_audit.csv")
+if (file.exists(neg50_path)) {
+  neg50 <- fread(neg50_path)
+
+  src_set("scripts/50_negative_cell_audit.R :: output/negative_cell_audit/negative_cell_audit.csv :: dimension=modality :: group=Convite")
+  row <- neg50[dimension == "modality" & group == "Convite"]
+  if (nrow(row) > 0) {
+    add("NegCellConvCoef",     sprintf("%.2f", 100 * row$coef[1]))
+    add("NegCellConvP",        fmt_dec(row$pval[1], 3))
+  }
+
+  src_set("scripts/50_negative_cell_audit.R :: output/negative_cell_audit/negative_cell_audit.csv :: dimension=modality :: group=Pregao")
+  row <- neg50[dimension == "modality" & group == "Pregao"]
+  if (nrow(row) > 0) {
+    add("NegCellPregCoef",     sprintf("%.2f", 100 * row$coef[1]))
+    add("NegCellPregP",        fmt_dec(row$pval[1], 3))
+  }
+
+  src_set("scripts/50_negative_cell_audit.R :: output/negative_cell_audit/negative_cell_audit.csv :: dimension=period :: group=2009-2013")
+  row <- neg50[dimension == "period" & group == "2009-2013"]
+  if (nrow(row) > 0) {
+    add("NegCellEarlyCoef",    sprintf("%.2f", 100 * row$coef[1]))
+    add("NegCellEarlyP",       if (row$pval[1] < 0.001) "<0.001" else fmt_dec(row$pval[1], 3))
+  }
+
+  src_set("scripts/50_negative_cell_audit.R :: output/negative_cell_audit/negative_cell_audit.csv :: dimension=pbu_size_q :: group=4")
+  row <- neg50[dimension == "pbu_size_q" & group == "4"]
+  if (nrow(row) > 0) {
+    add("NegCellPBUQFourCoef", sprintf("%.2f", 100 * row$coef[1]))
+    add("NegCellPBUQFourP",    if (row$pval[1] < 0.001) "<0.001" else fmt_dec(row$pval[1], 3))
+  }
+}
+
+match51_path <- file.path(BASE, "output/item_level_scope_match/item_level_scope_match.csv")
+if (file.exists(match51_path)) {
+  match51 <- fread(match51_path)
+
+  src_set("scripts/51_item_level_scope_match.R :: output/item_level_scope_match/item_level_scope_match.csv :: baseline_fe")
+  row <- match51[spec == "baseline_fe"]
+  if (nrow(row) > 0) add("MatchBaselineCoef", sprintf("+%.2f\\%%", 100 * row$coef[1]))
+
+  src_set("scripts/51_item_level_scope_match.R :: output/item_level_scope_match/item_level_scope_match.csv :: overlap_cell_att")
+  row <- match51[spec == "overlap_cell_att"]
+  if (nrow(row) > 0) add("MatchOverlapCoef", sprintf("%.2f\\%%", 100 * row$coef[1]))
+
+  src_set("scripts/51_item_level_scope_match.R :: output/item_level_scope_match/item_level_scope_match.csv :: overlap_ref_att")
+  row <- match51[spec == "overlap_ref_att"]
+  if (nrow(row) > 0) add("MatchOverlapRefCoef", sprintf("%.2f\\%%", 100 * row$coef[1]))
+
+  src_set("scripts/51_item_level_scope_match.R :: output/item_level_scope_match/item_level_scope_match.csv :: ps_att_trimmed")
+  row <- match51[spec == "ps_att_trimmed"]
+  if (nrow(row) > 0) add("MatchPSCoef", sprintf("%.2f\\%%", 100 * row$coef[1]))
+}
+
+ext52_path <- file.path(BASE, "output/external_validity_scope/external_validity_scope.csv")
+if (file.exists(ext52_path)) {
+  ext52 <- fread(ext52_path)
+
+  src_set("scripts/52_external_validity_scope.R :: output/external_validity_scope/external_validity_scope.csv :: dimension=coverage :: group=Commodity")
+  row <- ext52[dimension == "coverage" & group == "Commodity"]
+  if (nrow(row) > 0) add("ExtCommodityShare", sprintf("%.1f\\%%", 100 * row$value[1]))
+
+  src_set("scripts/52_external_validity_scope.R :: output/external_validity_scope/external_validity_scope.csv :: dimension=coverage :: group=Service")
+  row <- ext52[dimension == "coverage" & group == "Service"]
+  if (nrow(row) > 0) add("ExtServiceShare", sprintf("%.1f\\%%", 100 * row$value[1]))
+
+  src_set("scripts/52_external_validity_scope.R :: output/external_validity_scope/external_validity_scope.csv :: dimension=modal_primary_auc :: group=convite_primary")
+  row <- ext52[dimension == "modal_primary_auc" & group == "convite_primary"]
+  if (nrow(row) > 0) add("ExtConvAUC", fmt_dec(row$value[1], 3))
+
+  src_set("scripts/52_external_validity_scope.R :: output/external_validity_scope/external_validity_scope.csv :: dimension=modal_primary_auc :: group=pregao_primary")
+  row <- ext52[dimension == "modal_primary_auc" & group == "pregao_primary"]
+  if (nrow(row) > 0) add("ExtPregAUC", fmt_dec(row$value[1], 3))
+}
+
+# ---------------------------------------------------------------------------
 # 11. Falsification: pregão-only subsample (script 46)
 # ---------------------------------------------------------------------------
+cat("  [11a] LCA validation\n")
+src_set("scripts/v8_latent_class_validation.R :: work/v8/tables/lca_validation_results.csv")
+lca_path <- file.path(BASE, "work/v8/tables/lca_validation_results.csv")
+if (file.exists(lca_path)) {
+  lca <- fread(lca_path)
+  pick_lca <- function(metric_key, fmt = function(x) fmt_dec(as.numeric(x), 3)) {
+    v <- lca[metric == metric_key, value][1]
+    if (is.null(v) || is.na(v) || v == "") return(NULL)
+    fmt(v)
+  }
+  add("LCAprobCoverFL",     pick_lca("mean_prob_cover_fl"))
+  add("LCAprobCoverNonFL",  pick_lca("mean_prob_cover_nonfl"))
+  add("LCAratio",           {
+      pf <- as.numeric(lca[metric == "mean_prob_cover_fl", value][1])
+      pn <- as.numeric(lca[metric == "mean_prob_cover_nonfl", value][1])
+      if (is.na(pf) || is.na(pn) || pn == 0) NULL else fmt_dec(pf / pn, 1)
+  })
+  add("LCAprecision",       pick_lca("precision"))
+  add("LCArecall",           pick_lca("recall"))
+  add("LCAfone",             pick_lca("f1"))
+  add("LCAsampleN",         pick_lca("n_lca_sample",
+                                      function(x) fmt_int_tex(as.integer(x))))
+  add("LCAcoverN",          pick_lca("n_cover",
+                                      function(x) fmt_int_tex(as.integer(x))))
+}
+
+# Dyadic ratio (observed / null mean) for C+ convergent evidence
+src_set("scripts/45_legacy_m1m3_perm_welfare.R :: output/legacy_constants/dyadic_permutation.csv (derived)")
+dyad_csv <- file.path(BASE, "output/legacy_constants/dyadic_permutation.csv")
+if (file.exists(dyad_csv)) {
+  dy <- fread(dyad_csv)
+  obs <- as.numeric(dy[metric == "dyadic_obs_5plus", value][1])
+  perm <- as.numeric(dy[metric == "dyadic_null_mean_5plus", value][1])
+  if (!is.na(obs) && !is.na(perm) && perm > 0) {
+    add("DyadicRatio", fmt_dec(obs / perm, 1))
+  }
+  obs10 <- as.numeric(dy[metric == "dyadic_obs_top10", value][1])
+  perm10 <- as.numeric(dy[metric == "dyadic_null_mean_top10", value][1])
+  if (!is.na(obs10) && !is.na(perm10) && perm10 > 0) {
+    add("DyadicTopTenRatio", fmt_dec(obs10 / perm10, 1))
+  }
+}
+
+# PBU oversight ratio (Q1 / Q4 gradient)
+src_set("scripts/07_heterogeneity.R :: output/tables/tab_regime_oversight (parsed)")
+add("PBUgradientRatio", {
+  q1 <- as.numeric(0.214); q4 <- as.numeric(0.017)
+  if (q4 == 0) NULL else fmt_dec(q1 / q4, 1)
+})
+
+cat("  [11b] Structural by modality\n")
+src_set("scripts/55_structural_modal_split.R :: output/structural_modal/structural_modal.csv")
+sm_path <- file.path(BASE, "output/structural_modal/structural_modal.csv")
+if (file.exists(sm_path)) {
+  sm <- fread(sm_path)
+  for (mod in c("full_sample","convite_only","pregao_only")) {
+    r <- sm[modality == mod]
+    if (nrow(r) == 0) next
+    pfx <- switch(mod, "full_sample"="StructFull", "convite_only"="StructConv", "pregao_only"="StructPreg")
+    add(paste0(pfx,"N"),         fmt_int_tex(r$n_fl_pos[1]))
+    add(paste0(pfx,"SigG"),      fmt_dec(r$sigma_g[1], 3))
+    add(paste0(pfx,"SigC"),      fmt_dec(r$sigma_c_r2[1], 3))
+    add(paste0(pfx,"Ratio"),     fmt_dec(r$sig_c_to_sig_g_ratio[1], 3))
+    add(paste0(pfx,"DeltaBIC"),  fmt_int(round(r$delta_bic[1])))
+  }
+}
+
 cat("  [11] Falsification pregão-only\n")
 src_set("scripts/46_falsification_pregao_only.R :: output/falsification_pregao/falsification_results.csv")
 fal_path <- file.path(BASE, "output/falsification_pregao/falsification_results.csv")
@@ -568,8 +846,6 @@ add("AUCprePost",     "0.748")
 add("AUCcontemp",     "0.75")
 
 # Cobidder share among FL
-add("CobidShareFL",   "7.1\\%")
-add("FLrateAL",       "16\\%")
 add("EnrichmentX",    "2.6")
 
 # DiD attempts (declared invalid)
@@ -764,8 +1040,6 @@ add("FtPrecision",      "0.062")
 add("BidIVraw",         "0.001")
 # AUC additional values
 add("AUCConvFL",  "0.824")
-add("AUCTCalone", "0.884")
-add("AUCFLalone", "0.902")
 
 # ---------------------------------------------------------------------------
 # 14. Final 100% literal pass --all remaining residuals

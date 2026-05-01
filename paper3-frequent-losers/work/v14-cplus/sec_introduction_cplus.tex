@@ -1,0 +1,188 @@
+% C+ introduction — characterization-first frame, multi-evidence stack.
+% JLEO-Cplus: phenomenon → framework → 6 lines of evidence → policy → scope.
+
+\section{Introduction}
+\label{sec:intro}
+
+Brazilian electronic procurement platforms preserve contract-award
+records in detail---winner identity, participant list, item identifier,
+negotiated price---but the bid microdata that organize the empirical
+bid-rigging literature since \citet{porter1993detection} are not
+routinely audited at scale. Detecting institutional irregularities in
+this data envelope requires constructs that operate on the
+participation pattern alone. We document a regularity in São Paulo's
+BEC platform that meets this description: $\valFL$ firms participate
+in $\valThresholdStat$ or more tender-items between $\valYearStart$ and
+$\valYearEnd$ without ever winning, in a population of
+$\valAlwaysLosers$ always-losers and $\valBECfirms$ unique BEC
+participants. We call the empirical object \emph{loser-side
+concentration}: the persistent zero-win participation that
+distinguishes a subset of always-loser firms from the rest.
+
+\paragraph{The construct, theoretically derived.}
+Under positive bid-preparation costs and persistent zero wins,
+continued participation past any reasonable Bayesian threshold is
+incompatible with expected-profit maximization
+(\S\ref{sec:rationality} formalizes this calculation). Firms that
+nevertheless persist past such a threshold do so for reasons
+orthogonal to expected-profit competition---capacity transfer,
+market intelligence, instrumental participation in coordinated
+arrangements, or systematically misspecified priors. We do not
+distinguish among these non-competitive readings; the construct
+captures their shared empirical footprint. Appendix~\ref{app:proofs}
+formalizes a two-type framework with cover bidders ($C$) and genuine
+entrants ($G$). Two derivations make the empirical object
+theoretically grounded rather than data-mined:
+Proposition~\ref{prop:exposure_stmt} shows that
+$\log(1{+}\text{tenders\_count})$ is a sufficient ranking statistic
+for cover-bidder type given award-record data, under a Poisson
+approximation to the cartel's deployment process; the posterior
+$\Pr(\text{type}=C \mid t)$ is non-decreasing in $t$ by monotone
+likelihood ratio. Lemma~\ref{lem:wins_zero_stmt} shows that the
+bright-line filter $\text{wins}=0$ is the equilibrium choice of cover
+bidders: winning either reveals capacity, undermining the cover
+identity in subsequent rounds, or violates the cartel's allocation
+rule and triggers internal sanctions. The joint statistic
+$(\log(1{+}\text{tenders\_count}),\ \mathbf{1}[\text{wins}=0])$ is
+therefore a sufficient screen for the cover-bidder type given the
+data envelope. The binary $\valFL$ rule is the
+information-coarsening of the latent posterior under the framework's
+separating equilibrium.
+
+\paragraph{Six independent lines of empirical evidence.}
+We test the framework's empirical content through six lines of
+evidence, each separately verifiable and (within statistical noise)
+robust to elimination of any other.
+
+\emph{(L1) Conditional price premium.} FL-flagged environments
+associate with approximately $6\%$ higher negotiated unit prices in
+within-item, within-year, within-PBU comparisons across $\valSampleN$
+items. Confidence intervals are tight under item-clustered standard
+errors. The association is not causal: matching diagnostics confirm
+that the price gap does not survive overlap-strict reweighting
+(Section~\ref{sec:robustness}, Table~\ref{tab:item_level_scope_match}).
+We treat the price gap as a \emph{conditional} association.
+
+\emph{(L2) Oversight-capacity gradient.} The price coefficient varies
+by a factor of $\valPBUgradientRatio$ across quartiles of procuring-unit
+size, monotonically: $\valOversightQone$ in the smallest quartile, falling
+to $\valOversightQfour$ in the largest (Section~\ref{sec:robustness}).
+PBU size is a proxy for monitoring capacity (smaller buyers have less
+oversight infrastructure), and the gradient runs in the direction the
+framework predicts: $\partial m^*/\partial \theta_k < 0$
+(Proposition~\ref{prop:optimal_m}). The $12.5\!\!\times$ gradient is the
+single largest source of heterogeneity in the data---larger than the
+preg\~ao--convite gap, larger than the binary--continuous distinction.
+
+\emph{(L3) Structural regime selection across modalities.} We
+estimate competing cover-bid distributions on the FL-bid sample:
+Regime~1 (uniform high-dispersion, evade-detection cover bidding) and
+Regime~2 (truncated-normal low-dispersion, anchor-following cover
+bidding). BIC selects Regime~2 over Regime~1 by large margins in
+\emph{both} modalities ($\Delta\mathrm{BIC}=\valStructConvDeltaBIC$ in
+convite, $\valStructPregDeltaBIC$ in pregão), with pregão exhibiting
+sharper coordination ($\hat{\sigma}_c/\hat{\sigma}_g = \valStructPregRatio$
+vs.\ $\valStructConvRatio$ in convite). The framework's Regime~2
+prediction holds without modal heterogeneity in regime type.
+
+\emph{(L4) Bayesian latent-class agreement.} A two-component
+Gaussian mixture model on bid distributions classifies
+$\valLCAcoverN$ firms as the cover-class type. The mean posterior
+probability of cover-class membership is $\valLCAprobCoverFL$ for FL
+firms versus $\valLCAprobCoverNonFL$ for non-FL---a $\valLCAratio\!\!\times$
+ratio. Latent-class classification uses different identifying
+assumptions from our construct (bid-distribution shape vs.\
+participation-count signal), so this agreement is independent
+evidence that the FL marker tracks coordination-related types,
+without relying on enforcement labels.
+
+\emph{(L5) Repeated FL--winner pairs above null.} Stratified
+permutation of FL labels within the always-loser pool yields a null
+mean of $\valDyadicPairsPerm$ FL--winner pairs sharing $\geq 5$
+tender-items; observed value is $\valDyadicPairsObs$, a $\valDyadicRatio\!\!\times$
+ratio ($p < 0.001$). The top-10 pairs share $\valDyadicTopTenObs$
+tender-items on average versus $\valDyadicTopTenPerm$ under permutation
+($\valDyadicTopTenRatio\!\!\times$). Persistent FL--winner adjacencies are
+informative even within the construct's own population.
+
+\emph{(L6) CADE adjudication consistency check.} As one consistency
+check among the lines above, we report that the FL marker
+discriminates $\valCobidders$ adjudicated CADE-cobidder firms within
+the always-loser stratum at AUC $\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$).
+We do \emph{not} interpret this as
+detection of cartelists in general: the FL marker does not
+discriminate the $\valDirectCADE$ direct CADE defendants in the
+broader BEC universe (AUC $\valAUCdirectStd$). Direct defendants in
+adjudicated cartels were typically frequent winners, not losers; the
+construct targets the loser-side of the bidding pool by design. The
+within-stratum AUC is therefore informative about the construct's
+behavior at the cobidder boundary, not about cartel detection scope.
+
+\paragraph{What the evidence does and does not say.}
+None of the six lines, taken alone, establishes a causal mechanism.
+Two design-based identification strategies---a sharp RDD at the
+convite/pregão statutory caps and a difference-in-differences using
+the 2018 cap raise---both return null first stages and null effects
+on FL prevalence under the available bandwidths and sample sizes
+(Section~\ref{sec:robustness}). We treat the empirical content
+descriptively. Mechanism heterogeneity is also not uniform: the
+largest cell (Low HHI $\times$ Low pairs) carries a $+\valMechQLLLCoef\%$
+premium consistent with the framework, but the small High HHI $\times$
+High pairs cell returns $\valMechQLHHCoef\%$, an empirical tension we
+acknowledge openly (Appendix~\ref{app:proofs}, ``Empirical tension
+with A3''). We treat the empirical patterns as risk heterogeneity, not
+as identification of a single mechanism.
+
+\paragraph{Policy implications.}
+We do not estimate causal welfare effects. As an illustrative
+bound---explicitly conditional on the price gap reflecting the
+cover-bidding mechanism the framework specifies, which our matching
+diagnostics do not establish---counterfactual specifications in
+Appendix~\ref{app:extensions} yield welfare gains in the range
+$\valWelfareCrossfit$--$\valWelfareIV$ (approximately $\valWelfareLowPct$--$\valWelfareHighPct$
+of total BEC spending) under removal of the minimum-bidder rule.
+These figures are illustrative bounds, not policy estimates;
+oversight bodies considering the construct as a triage tool should
+treat the price gap as conditional, not as overcharge.
+
+\paragraph{Contributions.}
+We make three contributions, of unequal weight. \emph{First}, we
+introduce loser-side concentration as a theoretically derived
+participation-only construct with formal equilibrium grounding
+(Propositions~\ref{prop:exposure_stmt} and \ref{prop:market_selection},
+Lemma~\ref{lem:wins_zero_stmt}, framework Appendix~\ref{app:proofs}).
+\emph{Second}, we document six independent lines of empirical evidence
+consistent with the framework, each of which can be evaluated and
+falsified separately. \emph{Third}, we connect the construct to the
+institutional design of minimum-bidder rules in Brazilian procurement
+law and translate it into an administrative pathway---Screen $\to$
+Triage $\to$ Forensic---deployable in jurisdictions where bid microdata
+are not centrally collected.
+
+\paragraph{What we do not claim.}
+The construct does not detect cartelist firms in general; the AUC
+$\valAUCdirectStd$ against direct CADE defendants in the BEC universe is
+the appropriate calibration of detection scope. The price gap is not
+an overcharge estimate; matching diagnostics show it does not survive
+overlap-strict reweighting. The framework is an organizing device for
+interpreting the empirical patterns; it is not the source of causal
+identification.
+
+\paragraph{Roadmap.}
+Section~\ref{sec:literature} situates the construct in the
+bid-rigging-screening, bid-coordination, and machine-learning-detection
+literatures. Section~\ref{sec:institutional} sets out the legal
+framework. Section~\ref{sec:data} describes the BEC data and the FL
+classification. Section~\ref{sec:empirical} states the descriptive
+empirical strategy and the two design-based strategies that returned
+null. Section~\ref{sec:cade} reports the CADE consistency check
+(Line 6 of the evidence stack). Sections~\ref{sec:results}--\ref{sec:mechanisms}
+present the within-item price associations, the cross-sector
+replication, and the network-quadrant heterogeneity.
+Section~\ref{sec:robustness} collects the convergent evidence
+(Lines 2--5), the cutoff sensitivity, the horse race against
+continuous loss intensity, the Imhof comparison, and the matched
+first-time-FL test. Section~\ref{sec:limitations} catalogs scope
+limitations. Section~\ref{sec:conclusion} concludes with the
+administrative pathway and an explicit list of what generalization
+the construct does and does not support.
