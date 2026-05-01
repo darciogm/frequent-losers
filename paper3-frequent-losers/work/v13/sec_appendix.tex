@@ -158,6 +158,103 @@ optimal cover-bidder deployment falls with market
 concentration. \qed
 \end{proof}
 
+% JLEO-R2-MAJOR1: Proposition 5 derives loser-side concentration as construct
+\phantomsection\label{prop:exposure}
+\phantomsection\label{lem:wins_zero}
+\begin{proposition}[Linearized cumulative exposure]\label{prop:exposure_stmt}
+Suppose firm $i$ is a cover bidder of type $C$ deployed by a cartel
+in market $k$ at per-period rate $\lambda_C(\theta_k, c_1)$ and
+tenure $\tau_i$. Under A1--A3 and a stationary
+deployment process,
+\[
+  \mathbb{E}\!\left[\,\text{tenders\_count}_i \mid \text{type}=C,\
+                                                  \tau_i\right]
+  \;=\; \lambda_C(\theta_k, c_1)\,\tau_i.
+\]
+For genuine competitive entrants of type $G$,
+$\mathbb{E}[\text{tenders\_count}_i \mid \text{type}=G, \tau_i]
+= \lambda_G\,\tau_i$ with $\lambda_G < \lambda_C$ in any
+cartel-targeted market: by Proposition~\ref{prop:optimal_m},
+$m^* > 0$ implies positive equilibrium deployment of cover
+bidders, while genuine entry does not respond to cartel demand
+for participation slots. The log-statistic
+$\log(1+\text{tenders\_count}_i)$ is therefore monotone in
+$\lambda$ given tenure, and---under monotone likelihood ratio
+in the Poisson approximation
+$T_i \sim \mathrm{Poisson}(\lambda \tau_i)$---the
+posterior $\Pr(\text{type}=C \mid \text{tenders\_count}_i = t)$
+is non-decreasing in $t$.
+\end{proposition}
+
+\begin{proof}[\textbf{Proof of Proposition~\ref{prop:exposure_stmt}}]
+The expectation result is immediate from the law of large
+numbers applied to the deployment counting process given
+constant rate $\lambda$. The monotonicity claim follows from
+Bayes' rule:
+\[
+  \Pr(C \mid t) =
+  \frac{\Pr(t \mid C)\,\pi_C}{\Pr(t \mid C)\,\pi_C
+                              + \Pr(t \mid G)\,(1-\pi_C)},
+\]
+which is non-decreasing in $t$ if and only if the likelihood
+ratio $\Pr(t \mid C)/\Pr(t \mid G)$ is non-decreasing in $t$.
+For Poisson likelihoods with rates $\lambda_C > \lambda_G$,
+this MLR property is standard. Hence
+$\log(1+\text{tenders\_count})$ is a sufficient ranking
+statistic for the cover-bidder type, and the binary indicator
+$\mathbf{1}[\text{tenders\_count} > k]$ is its
+information-coarsening operational form. \qed
+\end{proof}
+
+\begin{lemma}[Wins-zero separating equilibrium]\label{lem:wins_zero_stmt}
+Suppose cover bidders draw their bid $b_C$ from a strategy that
+satisfies (a) $b_C > b^*$ in equilibrium (cartel-allocation
+constraint) and (b) winning triggers either capacity revelation
+(undermining the cover identity in subsequent rounds) or
+internal cartel sanctions on the deviating firm. Genuine
+entrants of type $G$ face no such constraint and accept any
+$b_G < b^*$ that yields positive expected payoff.
+Then in the separating equilibrium, cover bidders satisfy
+$\Pr(\text{win} \mid C) = 0$, i.e., the bright-line filter
+$\text{wins}=0$ is the equilibrium choice of type $C$.
+\end{lemma}
+
+\begin{proof}[\textbf{Proof of Lemma~\ref{lem:wins_zero_stmt}}]
+Write the cover-bidder per-period payoff as
+$u_C(b) = -c_1 - \theta_k\phi_0 \cdot \mathbf{1}[\text{win}]
+       - \kappa\cdot\mathbf{1}[\text{win}]$, where $\kappa>0$
+captures expected cartel-internal sanction or capacity
+revelation cost. Choosing $b_C > b^*$ delivers
+$\Pr(\text{win}|b_C, b^*) = 0$ in any equilibrium where the
+designated winner submits $b^*$, so $u_C = -c_1$. Any deviation
+to $b_C' < b^*$ delivers $u_C' = -c_1 - \theta_k\phi_0 - \kappa
++ \mathrm{rents}$, where $\mathrm{rents}$ is the deviation gain
+from winning. Under the cartel's allocation rule
+$\mathrm{rents} < \kappa$ for any cover bidder (otherwise the
+allocation would not be incentive-compatible). Hence
+$u_C > u_C'$, and the equilibrium strategy is $b_C > b^*$ with
+$\Pr(\text{win}|C) = 0$. By contrast, type $G$ has no $\kappa$
+penalty and accepts $b_G < b^*$ when expected payoff is
+positive. Hence the empirical filter $\text{wins} = 0$
+identifies the type-$C$ subset, conditional on the cartel
+deploying its allocation rule. \qed
+\end{proof}
+
+\paragraph{Bayesian implication: the construct as a sufficient screen.}
+Combining Proposition~\ref{prop:exposure_stmt} and
+Lemma~\ref{lem:wins_zero_stmt}, the joint statistic
+$(\text{tenders\_count}, \mathbf{1}[\text{wins}=0])$ is a
+sufficient screen for cover-bidder type given award-record
+data: the wins-zero filter selects the cover-bidder pool sharply
+at the equilibrium type boundary, and the tenders-count statistic
+ranks within that pool by posterior cover-bidder probability.
+This is the formal sense in which the construct is theoretically
+derived rather than data-mined: the binary $\valFL$ rule is the
+information-coarsening of the latent posterior under the
+framework's separating equilibrium. The continuous score is the
+substantive object; the binary rule is its administrative
+implementation.
+
 % JLEO-R2: empirical tension with A3 acknowledged honestly
 \paragraph{Empirical tension with A3.}
 Proposition~\ref{prop:market_selection} predicts
@@ -189,6 +286,22 @@ minimum-bidder rules, and obscure the cartel's bid pattern from
 forensic screens. When $\mathrm{HHI}$ is high, the cartel sustains
 prices through market power alone and the marginal return to
 manufactured competition falls.
+
+% JLEO-R2-MAJOR1: Predictions vs. Findings table closes the framework
+\paragraph{Predictions vs.\ findings.}
+Table~\ref{tab:predictions_findings} maps the five propositions
+and the wins-zero lemma to the empirical findings most directly
+testing them, with status (PASS, PARTIAL, N/A) and
+cross-references. Four predictions pass; one
+(Proposition~\ref{prop:market_selection}/A3) holds in the
+dominant cell but inverts in a small high-concentration
+high-pair cell; one (Regime~1) characterizes a regime that the
+data do not select. We treat the table as documentation of
+testable content and as honest disclosure of where the
+framework guides interpretation versus where it leaves
+empirical questions open.
+
+\input{./output/tables/tab_predictions_findings}
 
 % ============================================================================
 

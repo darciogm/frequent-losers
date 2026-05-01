@@ -1,0 +1,74 @@
+% JLEO-R2-MAJOR1: Predictions vs. Findings table — maps formal framework
+% propositions to empirical results, makes theoretical content testable
+% explicit. Source: framework derived in Appendix A; empirical results
+% from scripts 31-46 (see references column).
+\begin{table}[htbp]
+\centering
+\caption{Framework Predictions vs. Empirical Findings}
+\label{tab:predictions_findings}
+\begin{adjustbox}{max width=\textwidth}
+\begin{threeparttable}
+\small
+\begin{tabular}{p{2.6cm}p{4.0cm}p{5.5cm}cc}
+\toprule
+Proposition & Prediction & Empirical finding & Status & Reference \\
+\midrule
+P1: optimal $m^*$
+  & $\partial m^*/\partial \theta_k < 0$: weaker oversight $\Rightarrow$ more cover bidders.
+  & FL price coefficient gradient by PBU oversight quartile: Q1 ($\valOversightQone$), Q2 ($\valOversightQtwo$), Q3 ($\valOversightQthree$), Q4 ($\valOversightQfour$). $12.5\!\!\times$ gradient between smallest and largest PBUs.
+  & PASS
+  & Tab.~\ref{tab:regime_oversight} \\[0.3em]
+P2: Regime~1 (high-dispersion cover)
+  & Cover-bid distribution uniform, $\mathrm{Var}(b_\ell) > \sigma_g^2$.
+  & Empirical $\hat{\sigma}_c/\hat{\sigma}_g = 0.72 < 1$ (\ref{app:structural_id}); BIC selects Regime~2 over Regime~1. Regime~1 is therefore not the operative regime in BEC.
+  & N/A (Regime not operative)
+  & \ref{app:structural_id} \\[0.3em]
+P3: Regime~2 (truncated-normal cover)
+  & Cover-bid dispersion compressed below $\sigma_g$ via truncation at $b^*$.
+  & $\hat{\sigma}_c/\hat{\sigma}_g = 0.72$ consistent with $\sigma_c \le \sigma_g$ and left-truncation at $b^*$. Regime~2 selected by BIC. FL median bid-to-winner ratio $\valFLBidWinnerRatio$ vs.\ non-FL $\valNonFLBidWinnerRatio$.
+  & PASS
+  & \ref{app:structural_id}, Tab.~\ref{tab:bajari_ye_corrected} \\[0.3em]
+P4: market-selection
+  & $\partial m^*/\partial \mathrm{HHI} < 0$: more cover-bidder deployment in less concentrated markets.
+  & Largest cell (Low HHI $\times$ Low pairs): $+\valMechQLLLCoef\%$ ($p<10^{-4}$, $N=\valMechQLLLN$). High HHI $\times$ High pairs: $\valMechQLHHCoef\%$ ($p=\valMechQLHHP$, $N=\valMechQLHHN$) — opposite sign in this small cell.
+  & PARTIAL (sign flip in High$\times$High cell)
+  & Tab.~\ref{tab:unified_mechanism} \\[0.3em]
+P5: linearized exposure proxy
+  & $\log(1+\text{tenders\_count})$ is a sufficient ranking statistic for cover-bidder type given award records (Poisson MLR).
+  & $\log(1+\text{tenders\_count})$ achieves AUC $\valAUClogtc$ vs.\ binary FL14 AUC $\valAUCFLfirm$ within the always-loser pool against $\valCobidders$ CADE-cobidder labels (DeLong $Z=\valDeLongZ$, $p=\valDeLongP$). Continuous dominates binary in-sample firm-level and item-level holdout, consistent with sufficient-statistic interpretation.
+  & PASS
+  & Tab.~\ref{tab:horse_race_v14}, Tab.~\ref{tab:theory_operationalization} \\[0.3em]
+Lemma: wins-zero separating
+  & Cover bidders satisfy $\Pr(\text{win}\mid C) = 0$ in equilibrium; the bright-line filter $\text{wins}=0$ separates types.
+  & Relaxing the win-rate condition from $0$ to $1$--$2\%$ substantially attenuates the FL price coefficient (Tab.~\ref{tab:fl_lowwinrate}); the bright-line at zero is empirically sharp.
+  & PASS
+  & Tab.~\ref{tab:fl_lowwinrate} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Each row maps a formal prediction from
+the framework in Appendix~\ref{app:proofs} to the empirical
+finding most directly testing it, with status (PASS, PARTIAL,
+N/A) and cross-reference to the table that supports the
+finding. The framework yields five propositions and one
+lemma; four (P1, P3, P5, Lemma) deliver empirical predictions
+that pass with the data; P4 holds in the dominant cell
+($80\%$ of items) but inverts in a small high-concentration
+high-pair cell, an empirical tension we acknowledge openly
+(Section~\ref{app:proofs}, ``Empirical tension with A3''); P2
+characterizes a regime that is not selected by the data in
+BEC, and is reported for completeness. We do not interpret
+this table as a structural test of the framework; it is a
+mapping of theoretical predictions to descriptive empirical
+patterns. The mechanism remains partially unidentified (cf.\
+Section~\ref{sec:mechanisms}); the empirical content of the
+construct rests on the operational claim
+(Section~\ref{sec:robustness}) more than on a single unified
+mechanism.
+\item \textit{Source:} Framework, Appendix~\ref{app:proofs}.
+Empirical references as listed.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
