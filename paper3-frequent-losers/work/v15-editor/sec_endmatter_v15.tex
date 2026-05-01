@@ -1,0 +1,83 @@
+% Endmatter: Acknowledgments, Author Contributions, Data and Code,
+% Funding, Declarations. Placed before References.
+
+\section*{Acknowledgments}
+
+We thank seminar participants at INSPER for comments on early
+drafts. The paper benefited from internal review and detailed
+feedback over multiple rounds of revision; the resulting log of
+corrections---including the CNPJ zero-padding convention that
+recovers the full 193 FL--CADE co-bidder set, the
+specification of the logistic-regression combiner used in the
+detection benchmark, and the cross-sector replication
+exercise---is preserved in the replication archive. All errors
+are our own.
+
+\section*{Author Contributions (CRediT)}
+
+\textbf{Darcio Genicolo-Martins:} conceptualization, data
+curation, formal analysis, investigation, methodology, software,
+validation, visualization, writing---original draft, writing---review
+and editing.
+\textbf{Paulo Furquim de Azevedo:} conceptualization, methodology,
+supervision, writing---review and editing.
+
+\section*{Data and Code Availability}
+
+The CADE adjudication records used as ground truth are public
+and accessible through the
+\textit{Conselho Administrativo de Defesa Econ\^omica} portal
+(\url{https://www.gov.br/cade}). The S\~ao Paulo Bolsa
+Eletr\^onica de Compras (BEC) data are administrative records
+maintained by the State of S\~ao Paulo Treasury and were
+obtained through institutional channels. The replication
+archive containing the R, Python, and \LaTeX{} source files,
+the construction scripts for all derived datasets, and the git
+history that produced the analysis is available upon publication
+via the journal's data-availability portal. The archive
+includes: (i) the canonical pipeline (\texttt{00\_master.R} plus
+the build, clean, and analysis scripts) that regenerates all
+tables and figures from the four primary parquet files
+(\texttt{firm\_loss\_stats.parquet},
+\texttt{firm\_tender\_map.parquet},
+\texttt{FREQ\_PARTICIP\_rebuilt.parquet},
+\texttt{LOSERS\_rebuilt.parquet}); (ii) the
+institutional-identification scripts producing
+Table~\ref{tab:mccrary}; (iii) the
+cross-sector replication script producing
+Table~\ref{tab:falsification_modal}; and (iv) the inverse-CNAE
+mapping diagnostic discussed in
+Section~\ref{sec:lim_external}.
+
+\section*{Funding}
+
+The authors received no specific funding for this study.
+
+\section*{Declarations of Interest}
+
+None.
+
+\section*{Reproducibility Note}
+
+The numerical claims in this paper come from a single pipeline
+run on the canonical 2009--2019 BEC parquet files plus the CADE
+crossmatch CSV. The pipeline applies a strict 14-character CNPJ
+zero-padding convention before every merge: this padding is
+required to recover the full 193 FL--CADE co-bidder set, and
+alternative conventions yield the 98-firm subset that appears
+in earlier draft tables. We flag the convention here so future
+replications reproduce either count deterministically. The
+headline AUC of \valAUCFLfirm\ corresponds to point estimate 0.9389 on
+193 positives among \valAlwaysLosers always-losers; the 95\% confidence
+interval $\valAUClogtcCI$ uses DeLong's method, with stratified
+percentile and BCa bootstrap intervals ($B = 5,000$ and
+$2,000$, respectively) agreeing to three decimal places. The
+cross-sector replication (\S\ref{sec:lim_external}) runs on the
+same canonical sample with the BEC item-code 2-digit prefix as
+the sector partition; the inverse CNAE mapping
+(\S\ref{sec:lim_external} footnote) uses the
+\texttt{Firms\_final.parquet} CNAE codes recovered for 34 of the
+47 BEC-active CADE-defendants. The full sequence of commits
+that produced the final tables and figures lives in the
+replication archive's git log.
+

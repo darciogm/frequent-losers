@@ -1,0 +1,129 @@
+% Legal and Institutional Framework — three paragraph headings.
+%   Procurement statutes: Lei 8.666, Lei 10.520, modalities, caps, 2018 decree, 2021 reform.
+%   Enforcement architecture: TCE-SP, CGE, CADE; cartel portfolio; lead time.
+%   Screening problem: data envelope of contract-award records vs bid microdata.
+% Aligned with v15 frame: NOT exploiting the convite minimum-bidder channel
+% (gate D2 reverses that direction); modal asymmetry in §8.2 reads as scope.
+
+\section{Legal and Institutional Framework}
+\label{sec:institutional}
+
+\paragraph{Procurement statutes.}
+Brazilian public procurement during our $\valYearStart$--$\valYearEnd$
+sample is governed by Lei~$\valLeiOriginal$ (the General
+Procurement Statute, enacted to implement Article~$37$ of the
+$1988$ Constitution) and Lei $\valLeiPregao$ (which introduced the
+Pregão modality). Two modalities dominate BEC. \emph{Convite}
+(Lei~$8.666/93$, Article~$22$) is a sealed-bid invitation
+procedure: the buyer invites at least three suppliers from the
+qualified-supplier registry, all proposals are submitted in writing
+within a five-business-day window, and the contract is awarded to
+the qualifying lowest bid. The statute requires three valid
+proposals for the procedure to clear; if fewer appear, the buyer
+must either re-issue the call or document the absence of bidders.
+\emph{Pregão} (Lei~$\valLeiPregao$) is a reverse electronic
+auction: bidders submit progressively lower offers in real time
+until no firm improves the standing best offer. Pregão has no
+minimum-bidder requirement. Statutory value caps (Lei~$8.666/93$,
+Article~$23$) restrict convite to procurement below
+$\valCapOldR$ for goods and services and $\valCapMidR$ for
+engineering works during $2009$--$2017$; Decreto~$\valDecreto$
+raised these caps to $\valCapNewR$ and $\valCapHighR$ respectively.
+Above the caps, only pregão (or higher modalities not used in BEC)
+is permitted.
+
+The structural difference between the two modalities provides
+useful institutional contrast for our analysis but is not the
+mechanism through which the construct operates. The convite
+minimum-bidder rule was introduced to ensure procedural
+competition; the older competition-economics literature
+\citep{marshall2012economics,asker2010leniency,porter1993detection}
+has identified configurations of mandated bidder counts without
+corresponding rules ensuring genuine competition as canonical
+settings for regulatory cover bidding. The construct's empirical
+signal does not match this institutional reading: the price
+imprint and the discrimination of adjudicated CADE-cobidder firms
+are sharper in preg\~ao (no minimum-bidder rule) than in convite
+(§\ref{sec:results_ols} and §\ref{sec:mech_modal}). We
+therefore present the convite statute as institutional context
+rather than as the channel the construct exploits.
+
+The 2021 reform (Lei~$14.133/2021$) replaces Lei~$8.666/93$ for
+new contracts, restricts the convite modality, and tightens
+habilitation requirements (mandatory federal qualified-supplier
+registry, integrity programs above a value threshold). The reform
+postdates our sample but shapes the policy relevance of the
+construct: by consolidating preg\~ao-style electronic auctions as
+the institutional default, the reform moves Brazilian procurement
+toward the modal regime in which the construct's signal-to-noise
+is highest (§\ref{sec:mech_modal}, §\ref{sec:lim_external}).
+
+\paragraph{Enforcement architecture.}
+Three institutions police BEC procurement. \textbf{Tribunal de
+Contas do Estado de S\~ao Paulo} (TCE-SP) audits purchasing units
+administratively, with binding power to require correction of
+irregularities, fine officials, and report findings to
+prosecutorial bodies; in $2023$, TCE-SP processed over
+$\valPBUcount$ administrative procurement cases at first
+instance. \textbf{Controladoria Geral do Estado} (CGE) oversees
+executive-branch compliance with procurement law and integrity
+programs, including the cadastros of debarred firms. The
+\textbf{Conselho Administrativo de Defesa Econ\^omica} (CADE) is
+the federal competition authority; it investigates and adjudicates
+cartel and bid-rigging cases under Lei~$12.529/2011$, imposing
+administrative fines of $\valAdminCost$--$\valPctTwenty$ of the
+infringing firm's gross revenue in the year preceding the
+investigation, and may refer cases to the Public Prosecutor's
+Office for criminal prosecution under Lei~$8.137/90$ (Article~$3$,
+prison sentences of two to five years for bid rigging). CADE's
+leniency program (Lei~$12.529/2011$, Article~$86$) grants
+immunity to the first cooperator and reduced fines to subsequent
+ones, generating the disclosure trail on which the cartel-detection
+literature relies for ground truth.
+
+CADE's procurement-cartel portfolio relevant to our sample
+comprises $12$ adjudicated cases covering $65$ firm-defendants in
+total, of which $\valDirectCADE$ are active in BEC during the
+sample window. Final decisions span $2015$--$2025$, with cases
+ranging from \emph{Cartel dos trens-metr\^os} (adjudicated
+$2019$-$07$-$08$) to \emph{Transporte escolar} (adjudicated
+$2025$-$02$-$26$). Eight of the twelve cases were decided after
+our $2019$ sample cut, so a portion of the consistency check in
+§\ref{sec:cade} operates prospectively: the construct's
+discrimination against the adjudicated cobidder population was
+computed on participation patterns observable years before
+enforcement confirmed those patterns. The interval between
+operational cartel activity and final CADE adjudication---the
+cases in our portfolio span $4$--$16$ years from process opening
+to ruling---is the policy-relevant benchmark for the construct's
+contribution: a screen that flags suspicious environments in real
+time, even imperfectly, compresses the case-load that reaches the
+forensic stage of the administrative pathway
+(§\ref{sec:conclusion}).
+
+\paragraph{The screening problem.}
+Bid-level forensic tools---variance, kurtosis, skewness, and
+spread analyses across submitted bids---detect coordinated
+bidding when the required microdata are preserved
+\citep{imhof2019detecting,huber2019machine,wallimann2023machine}.
+The information-theoretic logic of these tools is unimpeachable;
+their practical reach is bounded by data infrastructure. Many
+electronic procurement systems, including BEC during much of our
+sample, archive only winning prices and participant lists at the
+contract-record layer: bid-by-bid records may exist in operational
+logs but are not always exported into the analytical warehouses
+oversight bodies query.\footnote{In TCE-SP audits we examined,
+requesting bid-by-bid microdata from the BEC operational system
+is a multi-step administrative process that typically delays
+investigations by weeks or months; the contract-record layer
+queried directly produces results in minutes.} The data asymmetry
+is not specific to Brazil. EU member-state platforms preserve bid
+microdata heterogeneously; the United States federal procurement
+data system (FPDS-NG) preserves contract awards but not bid
+history at the contracting-officer-accessible layer; subnational
+systems are typically thinner still. A screen that requires only
+participation records lowers the data threshold for proactive
+detection to the level virtually every system maintains. That is
+the construct's primary contribution to the law-and-economics of
+procurement enforcement: not a more powerful test, but a test
+deployable where the more powerful tests are not.

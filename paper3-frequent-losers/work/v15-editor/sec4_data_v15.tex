@@ -1,0 +1,245 @@
+% Data and Frequent Losers Definition — four subsections.
+%   4.1 BEC Platform
+%   4.2 Frequent Losers Definition
+%   4.3 Sample Construction
+%   4.4 CADE Validation Portfolio
+% Aligned with v15 frame: NOT exploiting convite minimum-bidder channel
+% (gate D2); construct as participation-only screen for cover-bidder
+% population. Median+1.5×IQR cutoff (NOT Tukey Q3+1.5×IQR), intentional.
+
+\section{Data and Frequent Losers Definition}
+\label{sec:data}
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{BEC Platform}
+\label{sec:data_bec}
+% ──────────────────────────────────────────────────────────────────
+
+The data come from the Bolsa Eletr\^onica de Compras (BEC), São
+Paulo's centralized electronic procurement platform, operated by
+the State Treasury since $2002$. BEC serves $1{,}308$ purchasing
+units (PBUs)---state agencies, public universities, hospitals,
+schools---and clears two procurement modalities during our sample:
+\emph{convite} (sealed-bid invitation procedure with a
+statutory three-bidder requirement, Lei~$\valLeiOriginal$) and
+\emph{preg\~ao} (electronic reverse auction with no minimum-bidder
+requirement, Lei~$\valLeiPregao$). The two modalities provide a
+within-platform institutional contrast that the empirical analysis
+exploits in §\ref{sec:results_ols} and §\ref{sec:mech_modal};
+the construct itself does not depend on the convite minimum-bidder
+rule (§\ref{sec:institutional}). Our $\valYearStart$--$\valYearEnd$
+window comprises $\valDataItemAvgVar{,}754$ contract-record items
+across $22$ calendar semesters, generated from
+$\valDataNbidsMean{,}357$ individual bids placed by $\valBECfirms$
+distinct firms (Table~\ref{tab:modality_year}). The contract-record
+layer preserves participants, winners, negotiated prices, reference
+prices, and procurement metadata; the bid-by-bid log is retained in
+the operational system but exported to the analytical warehouse
+only on administrative request, an envelope asymmetry central to
+the construct's portability claim (§\ref{sec:lim_external}).
+
+The modal mix shifts over the sample window. Preg\~ao auctions
+expand from a minority share at the start of the sample toward
+near-universal coverage by $2019$, consistent with the $2021$
+consolidation of preg\~ao-style electronic auctions as the
+institutional default for Brazilian procurement
+(§\ref{sec:institutional}). Convite remains a meaningful share
+in the small-cap range and in early years, providing the modal
+variation that powers the falsification check of
+§\ref{sec:results_ols} and the discrimination comparison of
+§\ref{sec:mech_modal}.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Frequent Losers Definition}
+\label{sec:fl_definition}
+% ──────────────────────────────────────────────────────────────────
+
+\paragraph{Behavioral anchor.}
+Sustained participation with a zero win rate is rationally
+dominated under standard expected-profit competition. With
+positive per-bid cost $c > 0$, the expected gain per bid for a
+firm Bayesian-updating its win probability after $n$ consecutive
+losses falls below $c$ once $n > \bar{V} m / c - 2$, where
+$\bar{V}$ is the mean procurement-order value and $m$ is the
+gross margin (Appendix~\ref{app:proofs}). At BEC parameters
+($\bar{V} =$ R\$$\valDataItemAvgPay$ from the sample mean,
+$m = 0.10$ from documented procurement-supplier margins), this
+threshold is approximately $n = 15$ for $c =$ R\$$500$ and
+$n = 41$ for $c =$ R\$$200$. The plausible cost range is anchored
+on documented BEC bid-preparation effort (one to two staff-hours
+plus documentation compliance, $c \geq$ R\$$200$); at the FL
+threshold of $\valThreshold$ zero-win participations expected
+profit is already negative under that anchor, and at the
+$90$\textsuperscript{th}-percentile FL participation count of
+$50+$ zero-win tenders cumulative direct cost exceeds
+R\$$\valPermFirms$. Sustained participation past this point
+reveals one of three readings: a non-pecuniary objective
+(cover-bidding, capacity-signaling, or eligibility maintenance);
+systematically incorrect beliefs that fail to update on the loss
+record; or zero-win participation in BEC offset by wins in
+unobserved tenders elsewhere. The construct flags the
+participation footprint these readings share; we adopt the
+cover-bidding reading as the working interpretation
+(§\ref{sec:lim_construct}).
+
+\paragraph{Two-step classification.}
+We define frequent losers as the intersection of two conditions.
+
+\begin{enumerate}
+\item \textbf{Always-losers}: firms with a zero win rate across
+all $\valYearStart$--$\valYearEnd$ BEC tenders. The pool
+comprises $\valAlwaysLosers$ firms ($\valPctFortyone$ of all BEC
+participants), reflecting low electronic participation costs,
+small firms bidding beyond their operational capacity, and the
+broader compositional features of decentralized procurement
+\citep{coviello2017tenure,decarolis2017corruption}. Frequent
+losers are a small extreme subset of this population.
+
+\item \textbf{IQR threshold}: among always-losers, those with
+participation counts above $\text{median} + 1.5 \times
+\text{IQR}$ of the always-loser participation
+distribution.\footnote{We use median + $1.5 \times$ IQR rather
+than the standard Tukey rule (Q3 + $1.5 \times$ IQR) because the
+participation distribution is highly right-skewed; the rule we
+use yields a stricter threshold and fewer false positives. The
+referee's standard Tukey alternative flags
+$\valFLQThreeIQR$ firms and yields AUC $\valAUCQThreeIQR$
+($\valAUCQThreeIQRCI$), versus $\valAUCFLfirm$
+($\valAUCFLfirmCI$) for the rule we adopt. Robustness to the
+multiplier choice across $1.0\!\!\times$ to $3.0\!\!\times$ is
+reported in §\ref{sec:rob_threshold}.} The threshold yields
+$\valThreshold$ or more tenders with zero wins, corresponding
+to a statistical cutoff of $\valThresholdStat$. The threshold
+was fixed \emph{ex ante} on the participation distribution and
+the behavioral anchor above, before any examination of CADE
+labels. The definition yields $\valFL$ frequent-loser firms.
+\end{enumerate}
+
+The treatment variable $\text{losers}_{igt}$ equals one if
+tender-item $i$ in item group $g$ at time $t$ has at least one
+frequent-loser firm among its participants, and zero otherwise.
+
+The economic construct is broader than the binary rule. The
+continuous loss-intensity statistic
+$\log(1 + \text{tenders\_count})$ is the primitive that
+Proposition~\ref{prop:exposure_stmt} identifies as a sufficient
+ranking statistic for cover-bidder type given award-record data;
+the binary $\valThreshold$-tender rule is the
+information-coarsening of this statistic under the framework's
+separating equilibrium (Appendix~\ref{app:proofs}). The horse
+race in §\ref{sec:mech_horse_race} establishes that the
+continuous statistic strictly dominates the binary in
+discrimination (DeLong $p = \valDeLongP$). We treat the binary
+rule as the deployable operational implementation and the
+continuous statistic as the discriminating instrument.
+
+\paragraph{Strict temporal validation.}
+The classification pools participation over the full
+$\valYearStart$--$\valYearEnd$ window, which maximizes
+within-stratum discrimination but does not isolate the deployable
+projection. When we estimate the threshold only on the
+$2009$--$2016$ training window, the cutoff falls to
+$\valThresholdTrain$ and the firm-level AUC is
+$\valAUCStrictFirmFL$ ($\valAUCStrictFirmFLCI$). Frozen against
+$2017$--$2019$ items, the binary indicator drops to
+$\valAUCStrictItemFL$, while the continuous loss-intensity
+statistic retains $\valAUCStrictItemTC$
+(Table~\ref{tab:strict_train_threshold}). The temporal-holdout
+audit in §\ref{sec:rob_operational} reports the same gap on
+operational metrics: in-sample precision overstates the
+deployable projection by approximately $50\%$ at top-$500$, and
+the temporal-holdout AUC of $0.864$ is the conservative
+discriminating reference we adopt for operational claims. The
+binary rule is a deployable triage trigger; the continuous
+statistic is the more persistent identifier of the loser-side
+participation footprint.
+
+\input{./output/tables/tab_theory_operationalization.tex}
+\input{./output/tables/tab_strict_train_threshold.tex}
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Sample Construction}
+\label{sec:data_sample}
+% ──────────────────────────────────────────────────────────────────
+
+The participation distribution among always-losers is heavily
+right-skewed (Figures~\ref{fig:losses}--\ref{fig:iqr}). The
+regression sample retains convite and preg\~ao tenders with a
+recorded winner and item types with at least one frequent-loser
+participation during the sample window. The last restriction
+conditions on the treatment in the sense that item types that
+never attract frequent losers anywhere in
+$\valYearStart$--$\valYearEnd$ are excluded; the restriction
+ensures controls come from item markets where the construct can
+plausibly fire. The unrestricted sample yields a coefficient
+within $0.5$ percentage points of the restricted-sample baseline
+(§\ref{sec:robustness}), so the conditioning is empirically
+innocuous.
+
+The resulting regression sample contains $\valSampleN$
+tender-items across $\valFirmCount$ item types, defined at the
+finest product-code level available in BEC (not aggregated to
+two-digit groups). Of the $\valFirmCount$ item types,
+$\valDataFirmMean$ ($82\%$) have both frequent-loser-present and
+frequent-loser-absent tenders within sample, contributing to
+within-item identification under the fixed-effects specification
+of Equation~\eqref{eq:ols_main}. Frequent-loser firms participate
+in $\valCartelMarkup$ of tender-items.
+
+Table~\ref{tab:descstats} reports unconditional descriptive
+statistics by frequent-loser presence. The unconditional
+negotiated-price ratio between frequent-loser-present and
+frequent-loser-absent tenders---R\$$\valOCcount$ versus
+R\$$\valDataItemMean$, a factor of approximately
+eleven---reflects the sorting of frequent losers toward larger
+contracts: frequent-loser-present tenders attract on average
+$\valDataMedianWinPart$ bidders versus $\valDataMeanWinPart$ in
+frequent-loser-absent tenders. Under within-item, within-year,
+within-procuring-unit fixed effects, the raw $2.43$-log-point gap
+compresses to roughly $0.05$ log points
+(Table~\ref{tab:conditional_descstats}); the regressions compare
+similar tenders within tight product-code categories rather than
+across categories. Table~\ref{tab:descstats} establishes the
+magnitude of the selection problem the fixed-effects structure is
+designed to absorb, and the comparison to
+Table~\ref{tab:conditional_descstats} shows the absorption is
+substantial.
+
+\input{./output/tables/tab_desc_stats}
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{CADE Validation Portfolio}
+\label{sec:data_cade}
+% ──────────────────────────────────────────────────────────────────
+
+The construct's external validation rests on the
+procurement-cartel adjudication portfolio of CADE, the federal
+competition authority (§\ref{sec:institutional}). The portfolio
+relevant to our sample comprises $12$ adjudicated cases covering
+$65$ firm-defendants in total, with final decisions spanning
+$2015$--$2025$. Of the $65$ firm-defendants, $\valDirectCADE$
+match BEC participants by CNPJ root, and these $\valDirectCADE$
+firms constitute the \emph{direct-defendant} ground-truth
+population. Eight of the twelve cases were adjudicated after
+$2019$, so the construct's discrimination against the
+adjudicated population was computed on participation patterns
+observable years before enforcement confirmed those
+patterns---a prospective character we exploit in
+§\ref{sec:cade}.
+
+The validation operates against two distinct populations, and
+the distinction is central to the construct's claim. The
+\emph{direct defendants} are the $\valDirectCADE$ firms named in
+CADE rulings as cartel members; in adjudicated cases these firms
+are typically frequent winners, the operational core of the
+collusive arrangement. The \emph{cobidders} are the
+$\valCobidders$ firms that participated alongside the direct
+defendants in the same BEC tender-items, inside the always-loser
+stratum. Cobidders are cover-bidder \emph{candidates} by
+structure: they share tenders with adjudicated cartel members
+without ever winning. The construct's target is the cobidder
+population, not the direct-defendant population. The AUC
+differential---firm-level $\valAUCFLfirm$ ($95\%$ CI
+$\valAUCFLfirmCI$) against cobidders versus $\valAUCdirectStd$
+against direct defendants---is the empirical signature of this
+design (§\ref{sec:cade}, §\ref{sec:lim_construct}).

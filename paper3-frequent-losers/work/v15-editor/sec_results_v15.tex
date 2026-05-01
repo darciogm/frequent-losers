@@ -1,0 +1,187 @@
+% Main Results — single-thesis discipline.
+% Two subsections only:
+%   7.1 Within-item conditional price gap
+%   7.2 The procuring-unit-size oversight gradient
+% Detection / network / Bajari-Ye / cross-sector live in mechanisms or appendix.
+
+\section{Main Results}
+\label{sec:results}
+
+The empirical case for treating frequent losers as an institutional
+marker rests on two observations developed in this section. First,
+within-item, within-year, within-procuring-unit comparisons
+associate the presence of frequent losers with a higher log
+negotiated price---positive and significant under every estimator
+we deploy, with magnitude bounded by the $\valHeadlineRange$ range
+that the cross-fit decomposition recovers as a structural floor.
+Second, that price gap is sharply heterogeneous in procuring-unit
+size, falling monotonically across quartiles to near zero among the
+largest buyers. The first observation establishes that the
+construct has a measurable price imprint; the second, that the
+imprint is institutionally patterned, with administrative oversight
+as the dominant moderating force. We read both as descriptive
+associations consistent with the cover-bidding framework of
+Appendix~\ref{app:proofs}, not as causal estimates---a discipline
+we maintain throughout.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Within-Item Conditional Price Gap}
+\label{sec:results_ols}
+% ──────────────────────────────────────────────────────────────────
+
+Table~\ref{tab:prices} reports OLS estimates of
+Equation~\eqref{eq:ols_main}. The presence of at least one frequent
+loser is associated with a significantly higher log negotiated unit
+price in all four specifications. The general within-item-and-year
+estimate is $\valPctSixeight$ (SE clustered by item-year); adding
+procuring-unit fixed effects moves it to $\valPctSixfour$, a shift
+small enough to be inconsistent with concentration in high-cost
+buyers as the operating mechanism. The modal subsamples bracket the
+within-PBU estimate at $\valPctNinethree$ in preg\~ao and
+$\valPctThreeeight$ in convite. The comparison set is the
+$\valSampleN$ tender-items in the same product code × year ×
+procuring unit that do not contain frequent losers.
+
+\input{./output/tables/tab_prices}
+
+The natural first question is whether the gap is a regulatory
+artifact. Convite tenders in Brazilian procurement law
+(Lei~$8.666/93$, Art.\ 22, \S\,3) require a minimum number of
+qualified bidders, and procuring units sometimes fill the quorum
+with firms that have no realistic chance of winning. If frequent
+losers were just statutorily mandated quorum-fillers, their
+presence would correlate mechanically with regulatory pressure
+rather than with coordinated behavior. The data say otherwise. The
+preg\~ao-only subsample ($\valFalPregN$ items) carries no analogous
+minimum-bidder rule (Lei~$\valLeiPregao$); within it, the binary
+frequent-loser specification yields $\valFalPregBin$
+($\valFalPregBinPSig$), versus $\valFalConvBin$
+($\valFalConvBinPSig$) in convite ($\valFalConvN$ items)---a ratio
+of $\valFalRatio\!\!\times$
+(Table~\ref{tab:falsification_modal}).\footnote{The two modal
+subsamples sum to slightly less than the full $\valSampleN$-item
+panel; the residual covers a small set of items in mixed-modal or
+secondary procedure types (concorr\^encia, tomada de pre\c{c}os,
+dispensa) that we exclude from the modal falsification but retain
+in the pooled estimates of Table~\ref{tab:prices}.} The continuous
+loss-intensity specification reproduces the pattern at finer
+granularity ($\valFalPregLog$ in preg\~ao versus $\valFalConvLog$
+in convite). The price imprint is not produced by the convite
+quorum rule; it is, if anything, sharper where the rule is absent.
+
+The conditional association is positive and significant under
+every estimator we deploy, and the cross-fit decomposition is
+informative rather than fragile. Cross-fit
+estimation---defining the frequent-loser list on odd years and
+estimating on even, then reversing---yields $\valPctThreeSix$;
+applying the odd-year list to the full panel yields
+$\valBidConvCoefPct$, midway between $\valPctSixfour$ (full-PBU
+OLS) and $\valPctThreeSix$ (clean cross-fit). The OLS estimate
+therefore decomposes cleanly into a structural component
+($\valPctThreeSix$, recovered by cross-fit) and a within-sample
+classification component (about $\valClassNoiseGapPct$ percentage
+points, the gap between full-PBU OLS and cross-fit). We adopt
+$\valPctThreeSix$ as the conservative floor and treat the resulting
+$\valHeadlineRange$ across the four estimators (cross-fit, IPW,
+OLS, CEM) as the headline reference in the remainder of the paper.
+
+A leave-one-out instrumental-variable specification confirms that
+OLS is conservative: the IV estimate is $\valBidPHigh$
+($p < 0.05$, first-stage $F = 396$), three times the within-PBU
+OLS, in the direction expected under classical attenuation when a
+binary indicator proxies for an underlying continuous participation
+count. Coarsened exact matching ($\valBidCoefMean$,
+$N = \valCleanItems$) and inverse-probability weighting
+($\valBidNonCV$, $N = \valFilteredItems$) bracket the OLS and
+cross-fit estimates on the common-support subsample, so the price
+gap holds under non-parametric reweighting on observable item,
+year, and procuring-unit characteristics.
+
+The \citet{cinelli2020making} robustness value is
+$RV_{q=1} = \valRVqOne$: an unobserved confounder would need to
+explain at least $\valRVqOne$ of the residual variation in both
+frequent-loser presence and log price to drive the coefficient to
+zero, a stringent bar given the item-, year-, and
+procuring-unit-fixed-effects structure. Under matching restricted
+to regions of strict covariate overlap, the conditional coefficient
+reverses ($-9.7\%$ overlap-cell ATT, $-30.7\%$ PS-trimmed ATT;
+Section~\ref{sec:robustness}, Table~\ref{tab:item_level_scope_match}).
+We read the reversal as informative about selection within the
+always-loser stratum: strict-overlap matching restricts comparisons
+to the items that frequent losers \emph{would} have entered with
+high probability, removing precisely the systematic differences
+between selected and unselected items that the broad-sample gap
+captures. The two estimates are consistent descriptions of the
+same population from different angles, neither carrying causal
+weight on its own. The heterogeneity that the broad-sample gap
+conceals is the focus of the next subsection.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{The Procuring-Unit-Size Oversight Gradient}
+\label{sec:results_oversight}
+% ──────────────────────────────────────────────────────────────────
+
+The procuring-unit-size gradient is the single strongest piece of
+evidence in the paper that the price gap reflects institutional
+structure rather than statistical noise. Splitting the sample into
+quartiles of procuring-unit size and re-estimating the within-item
+specification yields a steep, monotonic gradient:
+$\valOversightQonePct$ in the smallest quartile,
+$\valOversightQtwoPct$ in the second, $\valOversightQthreePct$ in
+the third, and $\valOversightQfourPct$ in the largest, all
+significant at conventional levels with standard errors clustered
+by item. The $\valPBUgradientRatio\!\!\times$ ratio between the
+extreme quartiles is the largest source of heterogeneity we find in
+the data---larger than the preg\~ao--convite gap, larger than any
+cross-sector spread---and is preserved across alternative measures
+of buyer size (annual contract volume, cumulative item count,
+headcount of distinct purchasers).
+Table~\ref{tab:regime_oversight} reports the coefficients.
+
+The framework in Appendix~\ref{app:proofs} predicts this gradient
+directly. Proposition~\ref{prop:optimal_m} gives
+$\partial m^*/\partial \theta_k < 0$: where the procuring unit's
+principal cost of detection $\theta_k$ is lower, the cartel's
+optimal cover-bidder deployment rate is higher, because lower
+$\theta_k$ simultaneously raises the marginal expected payoff per
+cover bid and lowers the marginal expected detection cost.
+Procuring-unit size is not identical to detection cost, but the
+empirical association between buyer size and oversight
+infrastructure is a well-documented feature of decentralized
+procurement systems
+\citep{decarolis2017corruption,coviello2017tenure,oecd2019government}:
+large state agencies and state-level secretariats employ dedicated
+procurement staff, electronic monitoring systems, and internal-audit
+units that small municipalities and decentralized purchasing units
+typically lack. Read through this institutional mapping, the
+monotonic gradient is what the framework predicts: where oversight
+is thinner, the participation footprint we identify exhibits a
+larger conditional price gap.
+
+Three features distinguish the gradient from a mechanical artifact:
+monotonicity across all four quartiles, a magnitude beyond what
+fixed-effect noise typically produces, and a direction matching
+$\partial m^*/\partial \theta_k < 0$ (Proposition~\ref{prop:optimal_m}).
+Two structural alternatives---thinner item-PBU cells in small
+procuring units, and systematically different bidder pools or item
+compositions across buyer sizes---could in principle deliver a
+gradient absent any oversight mechanism, and we treat them as
+scope rather than as competing readings: neither generates the
+direction and monotonicity we observe without an oversight channel.
+The configuration is what cover bidding under endogenous monitoring
+predicts, and among the descriptive alternatives we examine,
+oversight is the channel that matches the framework most directly.
+
+The gradient is the central piece of evidence behind the
+cartel-screen framing of the paper. The price imprint of the
+construct is not a uniform artifact of the data envelope; it is
+patterned in a way that institutional structure---specifically, the
+gradient of oversight infrastructure across buyer sizes---directly
+produces. The cover-bidding framework, the conservative empirical
+scope, and the administrative pathway proposed in
+Section~\ref{sec:conclusion} all rest on this finding.
+Section~\ref{sec:mechanisms} reads the heterogeneity through the
+framework's mechanism predictions, and
+Section~\ref{sec:robustness} stress-tests both the price gap and
+the gradient against threshold variants, alternative clustering,
+sensitivity bounds, and strict-overlap matching.

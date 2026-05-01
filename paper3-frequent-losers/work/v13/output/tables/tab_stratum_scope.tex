@@ -1,0 +1,27 @@
+\begin{table}[htbp]
+\centering
+\caption{Scope of Detection Performance}
+\label{tab:stratum_scope}
+\begin{threeparttable}
+\small
+\begin{tabular}{p{2.7cm}p{3.1cm}p{5.6cm}cc}
+\toprule
+Universe & Positive class & Empirical question & AUC & 95\% CI \\
+\midrule
+Always-loser firms & CADE co-bidders inside always-loser stratum & Can a participation-only flag prioritize risk within the loser-side stratum? & $0.924$ & $[0.921, 0.926]$ \\
+Always-loser firms & CADE co-bidders inside always-loser stratum & How informative is the latent loser-side concentration score before binarization? & $0.939$ & $[0.932, 0.946]$ \\
+All BEC firms & Direct CADE defendants & Does the screen detect cartel defendants in general? & $0.491$ & $[0.461, 0.520]$ \\
+All BEC firms & Direct CADE defendants & Does simple bidding intensity recover winner-heavy defendants? & $0.383$ & $[0.322, 0.443]$ \\
+Always-losers as of 2009-2016 & CADE co-bidders & What survives when the threshold is trained only in the pre-2017 window? & $0.767$ & $[0.734, 0.800]$ \\
+Items in 2017-2019 & Items containing CADE co-bidders & Does participation intensity generalize prospectively at the item level? & $0.770$ & $[0.764, 0.776]$ \\
+Items in 2017-2019 & Items containing CADE co-bidders & Does the binary deployment rule remain strong out of time? & $0.565$ & $[0.564, 0.566]$ \\
+Items in 2017-2019 & Items containing direct CADE defendants & Does prospective item-level scoring recover direct defendants? & $0.511$ & $[0.510, 0.513]$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} The same participation-based construct answers different empirical questions on different universes. High AUC in the always-loser pool does not transport to the universe of direct CADE defendants. The revised manuscript should therefore front-page ``within-stratum prioritization'' rather than ``cartelist detection'' as the correct headline.
+\item \textit{Source:} \texttt{scripts/48\_stratum\_scope\_reframe.R}, consolidating outputs from \texttt{33}, \texttt{40}, \texttt{53}, and \texttt{54}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

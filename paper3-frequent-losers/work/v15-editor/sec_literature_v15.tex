@@ -1,0 +1,140 @@
+% Related Literature — five-paragraph structure with paragraph headings,
+% mirrored from v13 but rewritten to align with v15 single-thesis frame:
+% construct/screen, cover-bidder population, descriptive scope, and
+% complementarity-not-dominance against bid-distribution detectors.
+% No reference to a Bajari-Ye section the v15 manuscript does not contain.
+
+\section{Related Literature}
+\label{sec:literature}
+
+Four literatures bear on the screening problem. Each operates
+under a constraint on data or on identification timing:
+bid-coordination tests need the partition; proactive screens need
+bid microdata; cover-bidding identification has been
+retrospective; and the developing-economy literature has flagged
+the resource gap but has not closed it. The construct's
+positioning is at the conjunction of these constraints---not as a
+more powerful test against any of them individually, but as a
+screen that operates where the existing tests cannot, and that
+integrates with them where they apply
+(§\ref{sec:rob_imhof}).
+
+\paragraph{Bid-coordination tests require the partition as input.}
+\citet{bajari2003deciding} establish the canonical econometric
+framework for detecting collusion through exchangeability of bid
+functions and conditional independence of bid residuals; the tests
+achieve discriminating power against known cartels but require the
+researcher to first partition bidders into suspected colluders and
+a competitive fringe. The literature that builds on Bajari--Ye
+inherits this constraint:
+\citet{porter1993detection} and
+\citet{porter1999ohio} detect bid rotation conditional on assumed
+cartel membership; \citet{baldwin1997bidder} document collusion in
+timber auctions identified through post-prosecution records;
+\citet{conley2016detecting} infer bidder groups from co-bidding
+patterns---the closest precedent in data parsimony, but recovering
+group structure rather than individual flags;
+\citet{clark2021collusion} and \citet{schurter2020identification}
+study collusion dynamics in long-lived cartels with
+ex-post-known cartel membership. The partition is constructed
+\emph{ex post} or by assumption in every case. The frequent-loser
+construct delivers a candidate \emph{ex ante} firm-level flag
+computable from contract-award records alone; bid-coordination
+tests can then be applied with the construct's flag as input where
+bid microdata are available.
+
+\paragraph{Proactive bid-distribution screens require microdata
+that procurement systems do not always preserve.}
+\citet{imhof2019detecting},
+\citet{imhof2018screening},
+\citet{huber2019machine}, and
+\citet{wallimann2023machine} train machine-learning classifiers on
+tender-level bid statistics (within-tender coefficient of
+variation, kurtosis, skewness, normalized spread); the most
+accurate implementations achieve AUC above $0.85$ against
+ground-truth cartel cases in European procurement.
+\citet{abrantesmetz2006a} pioneer the variance screen;
+\citet{chassang2022robust} provide robust theoretical foundations
+for moment-based detection; \citet{harrington2008detecting}
+surveys the field. Every implementation operates at the
+\emph{tender} level and requires per-bidder bid amounts. Many
+real procurement systems do not preserve this layer at scale:
+electronic platforms, including BEC during much of our sample,
+archive winning prices and participant lists at the
+contract-record layer but not bid-by-bid. The gap is operational,
+not theoretical: what bid-distribution screens \emph{can} do with
+full microdata is structurally larger than what oversight bodies
+\emph{do} have. The frequent-loser construct runs on the second
+data layer and integrates with the first
+(§\ref{sec:rob_imhof}).
+
+\paragraph{Cover-bidding identification in the empirical literature
+has been retrospective.} \citet{porter1999ohio},
+\citet{pesendorfer2000study}, \citet{asker2010leniency}, and
+\citet{marshall2012economics} document cover bidders in prosecuted
+cartels through case records: the Ohio milk cartel, the Italian
+highway cartel, the New York City stamp cartel, and a sequence of
+cases reviewed by Marshall and Marx. \citet{athey2011comparing}
+compare cover-bidding incentives across auction formats
+theoretically. In every empirical case the cover bidders are
+identified through leniency testimony, post-conviction records, or
+judicial discovery---\emph{ex post}, after the cartel is
+adjudicated. \emph{Ex ante} prospective identification of
+cover-bidder candidates from public award-record data has not been
+attempted in the empirical procurement literature, to our
+knowledge. The construct inverts the retrospective workflow: by
+flagging firms whose participation patterns are coherent with
+cover bidding, the post-adjudication observation becomes a
+pre-investigation screen.
+
+\paragraph{Procurement institutions shape both the supply of
+collusion and what screens can observe.} A growing empirical
+literature documents how administrative discretion, repeated
+interaction, and political entrenchment alter procurement
+outcomes outside the cartel-detection lens.
+\citet{coviello2017tenure} show that longer political tenure
+worsens procurement outcomes in Italy and is consistent with
+tighter official--bidder relationships;
+\citet{decarolis2020rules} show that discretionary procedures and
+limits to competition jointly predict corruption risk in Italian
+government contracting; \citet{decarolis2017corruption} documents
+the institutional channel through which procurement-officer
+characteristics moderate outcomes. These papers do not propose
+participation-only screens, but they motivate the procuring-unit-size
+oversight gradient we develop in §\ref{sec:results_oversight}:
+where oversight infrastructure thins, the participation footprint
+that the construct flags is amplified. The construct is most
+naturally read as identifying environments where institutional
+structure permits suspicious participation patterns, not as
+recovering cartel membership firm by firm.
+
+\paragraph{Procurement enforcement is hardest where data are
+scarcest.} The bid-rigging literature is dominated by
+developed-economy settings with mature data infrastructure, in
+which procurement spending represents $5$--$10\%$ of GDP. In
+developing economies, where the share can exceed $\valPctTwelve$ of
+GDP \citep{oecd2019government} and oversight resources are
+thinner, settings are simultaneously more vulnerable to bid
+rigging and less equipped to deploy bid-distribution detectors.
+\citet{sanchezgraells2019screening} surveys the operational
+limits of existing screens in low-resource jurisdictions. The
+contribution generalizes in principle wherever a procurement
+system records winners and participants electronically, regardless
+of bid-by-bid archiving (§\ref{sec:lim_external}).
+
+\paragraph{Synthesis.} The four literatures share a common
+structural constraint: each requires more information than typical
+oversight bodies routinely have, or operates only after collusion
+is established. Bid-coordination tests need the partition;
+bid-distribution screens need microdata; cover-bidding
+identification needs the post-adjudication record; and the
+developing-economy literature has flagged the resource gap without
+closing it. The frequent-loser construct addresses the conjunction.
+It produces a candidate flag that bid-coordination tests can take
+as input; it operates on the contract-award envelope that
+bid-distribution screens cannot use; it shifts cover-bidding
+identification from retrospective to prospective; and it is
+deployable in low-resource settings. The contribution is not a
+test that dominates any of the four benchmarks; it is a tool that
+runs where the existing tests cannot and that integrates with them
+where they apply.

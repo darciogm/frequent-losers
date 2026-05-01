@@ -1,0 +1,24 @@
+\begin{table}[htbp]
+\centering
+\caption{Incremental Value of Loser-Side Concentration Relative to the Full Imhof Benchmark}
+\label{tab:imhof_incremental}
+\begin{threeparttable}
+\small
+\begin{tabular}{p{3.8cm}p{4.0cm}cccc}
+\toprule
+Model & Data requirements & AUC & 95\% CI & $\Delta$ vs Imhof full & DeLong $p$ \\
+\midrule
+Imhof full pipeline & All bid values within each tender & $0.846$ & $[0.819, 0.873]$ & $+0.000$ & --- \\
+Binary FL flag & Winner + participants only & $0.881$ & $[0.871, 0.892]$ & $+0.035$ & $0.014$ \\
+Continuous participation count & Winner + participants only & $0.877$ & $[0.857, 0.898]$ & $+0.031$ & $0.077$ \\
+Imhof full + binary FL & Bid microdata + award records & $0.942$ & $[0.927, 0.957]$ & $+0.096$ & $<0.001$ \\
+Imhof full + participation count & Bid microdata + award records & $0.944$ & $[0.929, 0.958]$ & $+0.098$ & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} All models are evaluated on the exact same always-loser subsample for which the full bid-distribution feature set is available. The relevant comparison is therefore not ``does FL beat Imhof everywhere,'' but whether participation-only information remains informative when rich bid microdata are absent and whether it adds non-redundant signal when those microdata are present. The combined specifications answer the second question directly.
+\item \textit{Source:} \texttt{scripts/49\_imhof\_incremental\_value.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

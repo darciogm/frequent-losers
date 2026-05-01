@@ -1,0 +1,197 @@
+% Mechanism Heterogeneity — three subsections by interpretive stake.
+%   8.1 Loss intensity dominates the threshold cutoff (D1 horse race).
+%   8.2 Modal heterogeneity: pregão deeper than convite (D2 — scope).
+%   8.3 What the data do not support (cartel-rotation predictions).
+% Honest, not confessional. Strength-led. Lead with what we have,
+% close with what we do not.
+
+\section{Mechanism Heterogeneity}
+\label{sec:mechanisms}
+
+The price gap and the procuring-unit-size gradient establish that
+the construct has a measurable, institutionally patterned imprint.
+This section reads the heterogeneity through the framework's
+mechanism predictions. Three subsections take three interpretive
+stakes: §\ref{sec:mech_horse_race} shows that the continuous
+loss-intensity signal dominates the binary cutoff in
+discrimination, consistent with the framework's identification of
+$\log(1+\text{tenders\_count})$ as the sufficient ranking
+statistic; §\ref{sec:mech_modal} reads the modal asymmetry between
+preg\~ao and convite as scope information about where the
+construct fires most cleanly; §\ref{sec:mech_failed} catalogs the
+mechanism predictions that the data do not support and demotes
+them to scope.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Loss Intensity Dominates the Threshold Cutoff}
+\label{sec:mech_horse_race}
+% ──────────────────────────────────────────────────────────────────
+
+The deployable binary rule that defines frequent losers
+(more than $\valThresholdStat$ tender-items, zero wins) is an
+operationalization, not a primitive. Proposition~\ref{prop:exposure_stmt}
+identifies $\log(1+\text{tenders\_count})$ as a sufficient ranking
+statistic for cover-bidder type given award-record data; the binary
+filter is the information-coarsening of this latent posterior under
+the separating equilibrium of Appendix~\ref{app:proofs}. The horse
+race in Table~\ref{tab:horse_race_v14} confirms the prediction
+empirically.
+
+\input{./output/tables/tab_horse_race_v14}
+
+On a harmonized same-sample basis, the continuous
+$\log(1+\text{tenders\_count})$ score discriminates the
+$\valCobidders$ adjudicated CADE-cobidder firms inside the
+always-loser stratum at AUC $\valAUClogtc$
+($95\%$ CI $\valAUClogtcCI$), against AUC $\valAUCFLBinSameSample$
+($\valAUCFLBinSameSampleCI$) for the binary FL14 indicator
+(\citealt{delong1988comparing} test for the difference: $Z = \valDeLongZ$,
+$p = \valDeLongP$). The continuous statistic is strictly more
+informative.
+
+Price coefficients in standalone specifications point in the same
+direction (FL14 binary $+0.0653$, $p < 0.001$; continuous
+$\log(1+\max\,\text{tc})$ $+0.0188$, $p < 0.001$;
+Table~\ref{tab:horse_race_v14}, columns 1--2). When both are
+included additively (column 3), the FL14 coefficient flips sign
+($-0.0746$, $p < 0.05$) while the continuous coefficient nearly
+doubles ($+0.0349$, $p < 0.001$). The flip is what the framework
+predicts: once the continuous primitive is in the specification,
+the binary indicator captures tail residuals against the continuous
+dosage rather than independent information about cover-bidder type.
+The construct's deployable rule and its discriminating
+instrument are not in tension---they are two views of the same
+latent posterior at different resolution.
+
+The implication for deployment is clean. We adopt the binary FL14
+rule as the headline operational implementation throughout the
+paper because it is administratively interpretable (firms are
+either flagged or not, and the rule maps onto an existing oversight
+workflow). We adopt the continuous $\log(1+\text{tenders\_count})$
+as the discriminating instrument when ranking firms within the
+always-loser stratum, because it is the statistic the framework
+identifies as sufficient. The headline range $\valHeadlineRange$
+in §\ref{sec:results_ols} is computed on the binary; the AUC
+headline $\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$) reported in
+the introduction and in §\ref{sec:cade} is the binary
+firm-level discrimination on the broader BEC-firm sample. Both are
+conservative readings of a continuous primitive that delivers
+strictly more information.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Modal Heterogeneity: Preg\~ao Deeper than Convite}
+\label{sec:mech_modal}
+% ──────────────────────────────────────────────────────────────────
+
+The construct fires with sharper signal-to-noise in
+preg\~ao than in convite, on two independent dimensions of
+evidence. On the price-imprint side, the within-modal estimates
+reported in §\ref{sec:results_ols} place the binary frequent-loser
+specification at $\valFalPregBin$ ($\valFalPregBinPSig$) inside the
+preg\~ao subsample versus $\valFalConvBin$ ($\valFalConvBinPSig$)
+inside convite, a ratio of $\valFalRatio\!\!\times$ in favor of
+preg\~ao. On the discrimination side, the modal-by-modal AUC
+against the $\valCobidders$ adjudicated CADE-cobidder firms inside
+the always-loser stratum is $\valAUCpregPrim$ in preg\~ao primary
+auctions versus $\valAUCconvPrim$ in convite primary auctions, with
+a bootstrap difference of $\valAUCmodalDiff$ ($p \approx 0$). Both
+dimensions point in the same direction; neither is reducible to
+the other.
+
+A naive reading would invoke convite's minimum-bidder rule
+(Lei~$8.666/93$, Art.\ 22, \S\,3) as the institutional driver of
+the construct---if statutorily mandated quorum-fillers are the
+mechanism, the construct should fire \emph{more} cleanly in
+convite, not less. The data flatly reverse this prediction: the
+construct's price imprint and its discriminating power are both
+sharper where the minimum-bidder rule is absent. We do not read
+this reversal as positive evidence for any specific institutional
+theory of where cover bidding originates; we read it as scope
+information about where the construct's signal-to-noise is highest.
+Two competing readings remain observationally compatible at the
+firm level: preg\~ao's open and electronic structure may expose
+loser-side participation footprints more visibly than convite's
+sealed-bid invitation procedure, or convite's smaller and more
+homogeneous bidder pools may compress the discriminating gap. We
+do not adjudicate between them, because the design-based
+strategies (RDD, DiD) that would do so return null at the available
+bandwidths and the modal split is post-stratified rather than
+randomized.
+
+The convite-modal AUC carries a width caveat the preg\~ao-modal
+estimate does not: only $\valConvNcobidders$ adjudicated
+CADE-cobidder firms fall in the within-convite stratum, so
+confidence intervals on the modal AUC difference are wider than the
+point estimate would suggest. We report the point estimate because
+it aligns in direction with the price-imprint evidence in
+§\ref{sec:results_ols}, where the within-pregão coefficient
+strictly exceeds the within-convite coefficient on a much larger
+sample. For deployment, the operational implication is concrete:
+oversight bodies on platforms dominated by preg\~ao-style auctions
+can expect stronger signal-to-noise from the construct than
+oversight bodies on convite-heavy registries. The cross-section of
+Brazilian state procurement platforms is heavily preg\~ao, and the
+new federal procurement law (Lei~14.133/2021) consolidates the
+preg\~ao-style electronic-auction format as the institutional
+default; the modal scope finding therefore strengthens, rather than
+weakens, the deployable case for the construct.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{What the Data Do Not Support}
+\label{sec:mech_failed}
+% ──────────────────────────────────────────────────────────────────
+
+Where §\ref{sec:mech_horse_race} and §\ref{sec:mech_modal}
+establish the construct's discrimination signature and its modal
+scope, this subsection refines its heterogeneity profile against
+the framework's sharper mechanism predictions. Two
+predictions---the cell-heterogeneity prediction across HHI and
+repeated-pair density, and the first-time-deployment
+prediction---do not adjudicate cleanly under disciplined
+estimation. We catalog them as scope information about where the
+construct's heterogeneity is most precisely identified.
+
+The framework predicts that cover bidding should be most pronounced
+in low-concentration (low HHI) and low-repeated-pair-density
+environments, where rotation among cartelists is feasible without
+detection. The data place the largest positive conditional price
+gap exactly in the Low-HHI $\times$ Low-pairs cell, in the
+predicted direction. The signal carries one calibrating
+qualification: this cell is also the largest cell by item count,
+so the configuration is consistent with both the structural
+prediction and a generic compositional explanation, and our
+descriptive scope does not separate the two readings. The audit of
+the diagonally opposite High-HHI $\times$ High-pairs cell
+(Table~\ref{tab:negative_cell_audit}) returns a negative price
+coefficient ($-0.062$ to $-0.119$ depending on period and
+modality), with the negative sign concentrated in the 2009--2013
+sub-period and in convite---period and modal compositional drivers
+rather than a clean refutation of the rotation prediction. Neither
+pattern adjudicates the cartel-rotation prediction; both are
+scope.
+
+\input{./output/tables/tab_negative_cell_audit}
+
+The framework also predicts a discrete first-time-FL effect: when a
+firm crosses the threshold to frequent-loser status, its price
+imprint should sharpen. The estimate sits in a $+\valFTpsCoef$ to
+$+\valFTuncondCoef$ range across three specifications, in the
+predicted direction throughout. The unconditional event-study
+estimate is $+\valFTuncondCoef$ ($p = \valFTuncondP$,
+$N = \valFTuncondN$); under coarsened exact matching the estimate
+is $+\valFTcemCoef$ ($p = \valFTcemP$, $N = \valFTcemN$); under
+propensity-score matching it is $+\valFTpsCoef$ ($p = \valFTpsP$,
+$N = \valFTpsN$). Conditional matching compresses the magnitude
+substantially without inverting the direction. We adopt the
+propensity-score estimate as the conservative reference and report
+the full specification grid in Appendix~\ref{app:online_robustness}.
+
+The construct's empirical content is the within-item conditional
+price gap of §\ref{sec:results_ols} and the procuring-unit-size
+oversight gradient of §\ref{sec:results_oversight}; the mechanism
+predictions of this subsection refine the construct's heterogeneity
+profile but are not its anchor. Read as a whole, the heterogeneity
+evidence places the construct in the framework's predicted
+direction along every dimension we examine, with the strength of
+the supporting evidence highest where the design provides the
+cleanest leverage and lowest where it does not.

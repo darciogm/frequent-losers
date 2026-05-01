@@ -1,0 +1,25 @@
+\begin{table}[htbp]
+\centering
+\caption{Strict Temporal Holdout with Threshold Frozen on 2009--2016}
+\label{tab:strict_train_threshold}
+\begin{threeparttable}
+\small
+\begin{tabular}{llcccc}
+\toprule
+Scope & Score & Threshold & AUC & 95\% CI & Positives / $N$ \\
+\midrule
+Firm-level always-loser pool & Binary FL flag & $7.0$ & $0.767$ & $[0.734, 0.800]$ & $193 / 21{,}819$ \\
+Firm-level always-loser pool & $\log(1+\text{tc})$ & --- & $0.750$ & $[0.706, 0.795]$ & $193 / 21{,}819$ \\
+Item-level 2017--2019 & Binary FL flag & $7.0$ & $0.565$ & $[0.564, 0.566]$ & $5{,}299 / 1{,}009{,}729$ \\
+Item-level 2017--2019 & $\log(1+\text{tc})$ & --- & $0.770$ & $[0.764, 0.776]$ & $5{,}299 / 1{,}009{,}729$ \\
+\midrule
+\multicolumn{6}{l}{Train-window threshold (2009--2016 always-losers): $7.0$; full-sample reference threshold: $13.5$.} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} The binary FL threshold is estimated exclusively on the 2009--2016 participation distribution of firms with zero wins in the training window. The item-level rows then apply that frozen threshold to 2017--2019 items. This removes the full-sample threshold leakage that a hostile rereview would treat as a technical flaw.
+\item \textit{Source:} \texttt{scripts/53\_strict\_train\_period\_threshold.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

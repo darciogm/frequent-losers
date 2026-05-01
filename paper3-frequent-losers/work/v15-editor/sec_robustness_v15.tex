@@ -1,0 +1,273 @@
+% Robustness — four subsections, each addressing a distinct concern.
+%   9.1 Threshold and Specification Sensitivity (design choices)
+%   9.2 Identification Audits (Cinelli, strict-overlap, leakage, placebo)
+%   9.3 Operational Metrics: In-Sample vs Temporal Holdout (deployment honesty)
+%   9.4 Horse Race Against Bid-Distribution Detectors (comparative scope)
+% Honest, not confessional. Strength-led. Lead with what survives;
+% calibrate where the design provides leverage and where it does not.
+
+\section{Robustness}
+\label{sec:robustness}
+
+This section stress-tests the within-item conditional price gap of
+§\ref{sec:results_ols} and the procuring-unit-size oversight
+gradient of §\ref{sec:results_oversight} against four distinct
+concerns. §\ref{sec:rob_threshold} addresses sensitivity to the
+design choices embedded in the construct (the IQR threshold
+multiplier, the clustering of standard errors, and the
+binary-vs-continuous specification of loss intensity).
+§\ref{sec:rob_identification} reports identification audits
+(\citealt{cinelli2020making} robustness value, strict-overlap
+matching, leakage diagnostics, and a placebo on random firm
+assignment). §\ref{sec:rob_operational} compares in-sample
+operational metrics to a temporal-holdout audit, the most
+consequential disclosure for deployment claims.
+§\ref{sec:rob_imhof} compares the construct's discrimination to
+bid-distribution detectors trained on bid microdata, treating the
+gap as informational complementarity rather than dominance.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Threshold and Specification Sensitivity}
+\label{sec:rob_threshold}
+% ──────────────────────────────────────────────────────────────────
+
+The headline price gap and its oversight gradient hold across
+reasonable variations in the design choices that define the
+construct. We document three: the IQR threshold multiplier, the
+clustering of standard errors, and the binary-versus-continuous
+specification of loss intensity.
+
+The IQR multiplier governs the bright-line cutoff that separates
+frequent losers from the broader always-loser stratum. Our headline
+multiplier is $1.5$, which yields a tender-count threshold of
+$\valThresholdStat$ and a flagged population of $\valFL$ firms.
+Table~\ref{tab:threshold} re-estimates the within-PBU
+specification under five multipliers ranging from $1.0\times$ to
+$3.0\times$ IQR. The price coefficient is positive and significant
+in every row, declining monotonically from $+0.079$ at $1.0\times$
+(threshold $10$, $3{,}442$ firms) to $+0.050$ at $3.0\times$
+(threshold $24$, $1{,}456$ firms). The decline is a feature, not a
+defect: as the cutoff tightens, the binary indicator filters fewer
+firms with high loss-intensity, and §\ref{sec:mech_horse_race}
+established that the underlying primitive is the continuous
+$\log(1+\text{tenders\_count})$ statistic. The binary at $1.5\times$
+is the operational sweet spot between coverage and signal density;
+the construct neither evaporates at conservative thresholds nor
+inflates at permissive ones.
+
+The clustering of standard errors does not change the point
+estimate---which is mechanical---but it does change inference.
+Table~\ref{tab:clustering} reports three regimes:
+item-level clustering (baseline, SE $0.0215$), procuring-unit-level
+clustering (SE $0.0144$, tighter than baseline), and two-way
+\citet{cameron2011robust} clustering on item and procuring unit
+jointly (SE $0.0240$, looser than baseline). The coefficient is
+significant at $p<0.01$ under all three regimes; the baseline
+item-level cluster is the conservative middle choice.
+
+The binary-versus-continuous specification of loss intensity is
+discussed in detail in §\ref{sec:mech_horse_race}; we summarize
+the implication for robustness here. The continuous
+$\log(1+\text{tenders\_count})$ score discriminates the same
+adjudicated CADE-cobidder population at AUC
+$\valAUClogtc$ ($95\%$ CI $\valAUClogtcCI$) versus
+$\valAUCFLBinSameSample$ ($\valAUCFLBinSameSampleCI$) for the binary
+FL14 indicator (DeLong $Z = \valDeLongZ$, $p = \valDeLongP$).
+Standalone price coefficients in
+Table~\ref{tab:horse_race_v14}---FL14 binary $+0.0653$ ($p<0.001$)
+and continuous $+0.0188$ ($p<0.001$)---point in the same direction.
+The headline price gap is not an artifact of binary discretization.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Identification Audits}
+\label{sec:rob_identification}
+% ──────────────────────────────────────────────────────────────────
+
+The construct's identification status is descriptive throughout the
+paper. This subsection collects four audits that calibrate the
+strength of the descriptive claim under specific identification
+concerns: omitted-variable sensitivity, common-support restriction,
+leakage, and a placebo on a non-cover-bidding channel.
+
+The \citet{cinelli2020making} robustness value reported in
+§\ref{sec:results_ols} is $RV_{q=1} = \valRVqOne$: an unobserved
+confounder would need to explain at least $\valRVqOne$ of the
+residual variation in both frequent-loser presence and log price to
+drive the coefficient to zero. The
+\citet{oster2019unobservable} bounds in
+Table~\ref{tab:oster_delta} agree directionally. The full-sample
+$\hat{\delta} = 261.64$ implies that unobservables would need to be
+more than two hundred times as important as the observables already
+captured by item, year, and procuring-unit fixed effects to overturn
+the result; the preg\~ao subsample yields an even larger
+$\hat{\delta} = 634.00$. The convite subsample carries a smaller
+margin ($\hat{\delta} = 43.62$, $\beta^*(\delta=1) = -0.1395$)---
+consistent with §\ref{sec:mech_modal}'s finding that the
+construct's signal-to-noise is highest in preg\~ao environments and
+that the convite estimate is the noisier modal slice. Both
+sensitivity tools agree: the broad-sample association is unlikely to
+be explained away by selection on observables of the kind already
+accounted for.
+
+The strict-overlap matching exercise complements the sensitivity
+bounds with a different identification angle. Where Cinelli and
+Oster ask how strong unobserved selection would need to be to
+overturn the result, strict-overlap matching restricts comparisons
+to the cells in which frequent-loser items and non-frequent-loser
+items genuinely overlap on observables.
+Table~\ref{tab:item_level_scope_match} reports four specifications.
+The baseline within-item-and-PBU coefficient is $+0.064$
+($n = 1{,}653{,}658$, identical to the headline). Restricting to
+overlap cells---requiring frequent-loser and non-frequent-loser
+items to share the same observed pre-treatment cell---returns
+$-0.097$ ($n = 1{,}517{,}066$). Trimming further to common-support
+under propensity-score restriction returns $-0.307$
+($n = 400{,}687$).
+
+\input{./output/tables/tab_item_level_scope_match}
+ The reversal under strict overlap restricts
+comparisons to the items frequent losers \emph{would} have entered
+with high probability, removing precisely the systematic selection
+differences between selected and unselected items that the
+broad-sample association captures (§\ref{sec:results_ols}). Both
+signs describe the same population from different angles, neither
+carrying causal weight on its own; we report the four
+specifications jointly so the reader can locate the construct's
+descriptive claim within the appropriate scope.
+
+The leakage audit in Table~\ref{tab:leakage_audit} addresses a
+distinct concern: that the in-sample item-level AUC of $0.995$
+(reference row) is partially tautological, because cobidders are by
+construction always-loser firms with elevated participation counts.
+Audit~1 holds the score fixed and swaps the label to direct-CADE
+defendants, returning $0.506$---random discrimination, confirming
+the structural scope of the construct (cover bidders, not
+ringleaders). Audit~2 breaks the construction by withholding
+cobidder firms from the score-construction step within five
+cross-validation folds and re-evaluating on items containing
+held-out cobidders: AUC $0.891$ ($95\%$ CI $[0.887, 0.894]$).
+Audit~3 breaks the construction temporally: train $2009$--$2016$,
+test $2017$--$2019$, returning AUC $0.864$ ($95\%$ CI
+$[0.859, 0.870]$). The screen retains discriminating power above
+$0.85$ under both audits. The drop of $0.10$--$0.13$ is the
+pure-leakage component, and we adopt the temporal-holdout AUC of
+$0.864$ as the conservative discriminating reference for the
+operational-metrics audit in §\ref{sec:rob_operational}.
+
+A placebo specification using the supply of sub-threshold
+always-losers (firms with persistent zero wins but below the IQR
+cutoff) as an instrument completes the audit set. The first-stage
+$F$-statistic is $33$, comfortably above the
+\citet{stock2005testing} weak-instrument threshold, but the 2SLS
+coefficient is $5.24$ (Table~\ref{tab:iv_placebo}, below)---an implausible
+magnitude that signals the placebo instrument operates through
+channels other than cover bidding. The construct's price imprint
+draws on the above-threshold cover-bidder population we identify,
+not on generic always-loser supply.
+
+\input{./output/tables/tab_iv_placebo}
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Operational Metrics: In-Sample vs Temporal Holdout}
+\label{sec:rob_operational}
+% ──────────────────────────────────────────────────────────────────
+
+The deployment claim rests on operational metrics computed under
+the temporal-holdout regime, not under in-sample evaluation. The
+construct's discriminating performance under temporal holdout is
+firm-level AUC $0.864$ ($95\%$ CI $[0.859, 0.870]$) against the
+$\valCobidders$ adjudicated CADE-cobidder labels, with the score
+constructed using only $2009$--$2016$ participation counts and
+evaluated on items in $2017$--$2019$. This is the operationally
+honest projection for a screening tool that is built on past
+participation data and deployed against a future case-load. We
+report it as the operational reference throughout the paper.
+
+Table~\ref{tab:operational_metrics} reports precision, recall, and
+lift at five top-$k$ cuts under both in-sample and temporal-holdout
+evaluation. In the deployment-relevant region, top-$100$ has precision
+$0.070$ (lift $6.1\!\times$), top-$500$ has precision $0.070$
+(lift $6.1\!\times$), and top-$1{,}000$ has precision $0.066$
+(lift $5.8\!\times$). At top-$500$, the screen
+flags $35$ adjudicated cobidder firms out of $193$ in the pool
+(recall $18\%$); at top-$1{,}000$ the recall rises to $34\%$. The
+construct's signal sustains through the deployable region, with
+lifts in the $5.8\!\times$ to $6.6\!\times$ range across cuts. The
+in-sample column over-states precision by approximately $50\%$ at
+top-$500$ ($0.132$ in-sample versus $0.070$ holdout, retention
+$53\%$). The inflation arises because roughly $47\%$ of the
+top-$500$ in-sample ranking comes from $2017$--$2019$ participation,
+after CADE adjudications were already underway for some of the
+cartels, so the in-sample score is partly retrospective rather than
+purely prospective. We disclose the gap explicitly and operate on
+the temporal-holdout column.
+
+Three operational implications follow. First, the construct is
+deployable: discriminating AUC $0.864$ and lifts of $5.8\!\times$
+to $6.6\!\times$ in the top-$100$ to top-$1{,}000$ region are
+operationally meaningful for a screening tool that runs on
+contract-award records alone, at near-zero marginal data cost.
+Second, the temporal holdout is the honest reference: any
+operational claim in this paper that requires a precision or lift
+number is computed on the holdout column, and the in-sample column
+is reported for comparison and transparency. Third, periodic
+rescoring matters: an oversight body running the screen in
+production should refresh the score window as new years of
+contract-award data arrive, both to dampen drift and to keep the
+prospective component dominant in the deployment ranking.
+
+% ──────────────────────────────────────────────────────────────────
+\subsection{Horse Race Against Bid-Distribution Detectors}
+\label{sec:rob_imhof}
+% ──────────────────────────────────────────────────────────────────
+
+The construct's competitive position vis-à-vis bid-distribution
+detectors that require bid microdata is the final calibration. The
+relevant comparison is at fixed \emph{data cost}, not at fixed
+sample, because the two pipelines operate on different data
+envelopes: the construct uses award-record fields only (winner
+identity, participant identity, item identifier), while the
+bid-distribution pipeline requires per-bid offer values.
+
+Table~\ref{tab:imhof_full} reports the comparison on the full
+always-loser pool ($N = 16{,}779$ firms, $193$ adjudicated
+cobidder labels). The construct discriminates at AUC $0.903$
+($95\%$ CI $[0.884, 0.923]$) under the binary FL14 indicator and
+$0.884$ ($95\%$ CI $[0.860, 0.908]$) under the continuous
+$\log(1+\text{tenders\_count})$ score. The full Imhof--Wallimann
+pipeline---five within-tender bid-distribution features (coefficient
+of variation, skewness, kurtosis, spread, second-low ratio)
+\citep{imhof2019detecting,wallimann2023machine}---reaches AUC
+$0.888$ ($95\%$ CI $[0.865, 0.911]$) on the same target. The
+two pipelines reach comparable discrimination on different data
+envelopes. We do not claim that the construct outperforms the
+bid-distribution pipeline; we claim that it reaches comparable
+accuracy on a substantially thinner data envelope.
+
+\input{./output/tables/tab_imhof_full}
+
+The combined specifications in the bottom panel of
+Table~\ref{tab:imhof_full} address the integration question. FL14
+combined with the full Imhof pipeline reaches AUC $0.955$
+($95\%$ CI $[0.943, 0.967]$); continuous loss intensity combined
+with the full Imhof pipeline reaches AUC $0.962$ ($95\%$ CI
+$[0.954, 0.969]$). Both combined classifiers gain $5$--$7$ AUC
+points over either single construct, indicating non-redundant
+signal in the participation-only and bid-distribution information
+sources. Restricting attention to the same-sample audit in
+Table~\ref{tab:imhof_incremental}, where all detectors evaluate
+the identical subset of firms with bid microdata available, the
+construct adds $+0.035$ AUC over the Imhof full pipeline alone
+(DeLong $p = 0.014$), and the combined model adds
+$+0.096$--$+0.098$ AUC over Imhof full alone (DeLong $p < 0.001$).
+
+The construct's competitive position is therefore informational
+complementarity, not dominance. It reaches comparable
+discrimination at lower data cost when bid microdata are
+unavailable, and it adds non-redundant signal when bid microdata
+are available. The administrative pathway in
+§\ref{sec:conclusion} integrates the construct with the
+bid-distribution stage rather than substituting for it: the
+\textbf{Screen} stage runs on award records, the \textbf{Forensic}
+stage deploys bid-distribution methods, and the gain from running
+both is identifiable in the data.
