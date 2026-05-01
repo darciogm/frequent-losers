@@ -1,27 +1,19 @@
 \begin{table}[htbp]
-\hfuzz=300pt\relax
 \centering
 \caption{Strict Temporal Holdout with Threshold Frozen on 2009--2016}
 \label{tab:strict_train_threshold}
-\resizebox{\textwidth}{!}{%
-\begin{threeparttable}
 \small
 \begin{tabular}{llcccc}
 \toprule
 Scope & Score & Threshold & AUC & 95\% CI & Positives / $N$ \\
 \midrule
-Firm-level (AL pool) & Binary FL flag & $7.0$ & $0.767$ & $[0.734, 0.800]$ & $193 / 21{,}819$ \\
-Firm-level (AL pool) & $\log(1+\text{tc})$ & --- & $0.750$ & $[0.706, 0.795]$ & $193 / 21{,}819$ \\
-Item-level 17--19 & Binary FL flag & $7.0$ & $0.565$ & $[0.564, 0.566]$ & $5{,}299 / 1{,}009{,}729$ \\
-Item-level 17--19 & $\log(1+\text{tc})$ & --- & $0.770$ & $[0.764, 0.776]$ & $5{,}299 / 1{,}009{,}729$ \\
-\midrule
-\multicolumn{6}{l}{Train-window threshold ($2009$--$2016$ always-losers): $7.0$. Full-sample reference: $13.5$.} \\
+Firm-level (AL) & Binary FL & $7.0$ & $0.767$ & $[0.734, 0.800]$ & $193 / 21{,}819$ \\
+Firm-level (AL) & $\log(1+\text{tc})$ & --- & $0.750$ & $[0.706, 0.795]$ & $193 / 21{,}819$ \\
+Item-level $17$--$19$ & Binary FL & $7.0$ & $0.565$ & $[0.564, 0.566]$ & $5{,}299 / 1{,}009{,}729$ \\
+Item-level $17$--$19$ & $\log(1+\text{tc})$ & --- & $0.770$ & $[0.764, 0.776]$ & $5{,}299 / 1{,}009{,}729$ \\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}
-\small
-\item \textit{Notes:} The binary FL threshold is estimated exclusively on the 2009--2016 participation distribution of firms with zero wins in the training window. The item-level rows then apply that frozen threshold to 2017--2019 items. This removes the full-sample threshold leakage that a hostile rereview would treat as a technical flaw.
-\end{tablenotes}
-\end{threeparttable}
-}
+
+\smallskip
+{\footnotesize\textit{Notes:} Train-window threshold ($2009$--$2016$ AL): $7.0$. Full-sample reference: $13.5$. Binary FL threshold estimated only on $2009$--$2016$; item-level rows apply the frozen threshold to $2017$--$2019$ items.\par}
 \end{table}
