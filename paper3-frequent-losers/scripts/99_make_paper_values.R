@@ -574,6 +574,14 @@ add("PBUgradientRatio", {
   if (q4 == 0) NULL else fmt_dec(q1 / q4, 1)
 })
 
+# JLEO-Cplus Fix 4: welfare percentages derived CONSISTENTLY from v8 CF1
+# (R$40M-R$211M) over the R$12B BEC spending denominator. Replaces the
+# inconsistent script-45 figures (different denominator, gave 1.33-2.40%).
+src_set("scripts/44_consolidate_v8_csvs.R :: derived (R\\$40-211M) / R\\$12B")
+add("WelfareCFOnePctLow",  "0.3\\%")   # R$40M / R$12B
+add("WelfareCFOnePctMid",  "0.6\\%")   # R$74M / R$12B
+add("WelfareCFOnePctHigh", "1.8\\%")   # R$211M / R$12B
+
 cat("  [11b] Structural by modality\n")
 src_set("scripts/55_structural_modal_split.R :: output/structural_modal/structural_modal.csv")
 sm_path <- file.path(BASE, "output/structural_modal/structural_modal.csv")

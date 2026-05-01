@@ -1,6 +1,6 @@
 # Audit: paper numbers → script provenance
 
-Generated automatically by `scripts/99_make_paper_values.R` on 2026-05-01 12:11:24.
+Generated automatically by `scripts/99_make_paper_values.R` on 2026-05-01 13:15:42.
 Every number that appears in the manuscript via `\val<Macro>` macro
 is listed below with its source script, source CSV, and the row from
 which the value was read.
@@ -161,6 +161,9 @@ which the value was read.
 | `\valDyadicRatio` | `5.9` | `scripts/45_legacy_m1m3_perm_welfare.R ` | ` output/legacy_constants/dyadic_permutation.csv (derived)` | `—` |
 | `\valDyadicTopTenRatio` | `2.0` | `scripts/45_legacy_m1m3_perm_welfare.R ` | ` output/legacy_constants/dyadic_permutation.csv (derived)` | `—` |
 | `\valPBUgradientRatio` | `12.6` | `scripts/07_heterogeneity.R ` | ` output/tables/tab_regime_oversight (parsed)` | `—` |
+| `\valWelfareCFOnePctLow` | `0.3\%` | `scripts/44_consolidate_v8_csvs.R ` | ` derived (R\$40-211M) / R\$12B` | `—` |
+| `\valWelfareCFOnePctMid` | `0.6\%` | `scripts/44_consolidate_v8_csvs.R ` | ` derived (R\$40-211M) / R\$12B` | `—` |
+| `\valWelfareCFOnePctHigh` | `1.8\%` | `scripts/44_consolidate_v8_csvs.R ` | ` derived (R\$40-211M) / R\$12B` | `—` |
 | `\valStructFullN` | `140{,}947` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
 | `\valStructFullSigG` | `3.618` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |
 | `\valStructFullSigC` | `1.056` | `scripts/55_structural_modal_split.R ` | ` output/structural_modal/structural_modal.csv` | `—` |

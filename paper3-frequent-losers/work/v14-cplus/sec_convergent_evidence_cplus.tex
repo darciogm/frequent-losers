@@ -1,0 +1,101 @@
+% v14-cplus convergent evidence section: explicit mapping of L1-L6 to body
+% material. Inserted between sec_mechanisms and sec_robustness in the
+% paper_v14cplus.tex flow.
+
+\section{Convergent Evidence}
+\label{sec:convergent_evidence}
+
+We assemble in this section the six lines of empirical evidence
+introduced in the introduction (\S\ref{sec:intro}). Each line is
+verifiable separately and corresponds to a material in this paper or
+in its online appendix; we summarize the cross-references here so
+that a reader can audit each line independently. None of the lines,
+on its own, identifies a causal mechanism; jointly they constrain the
+class of readings consistent with the data.
+
+\paragraph{L1: Conditional within-item price premium.}
+The OLS specifications of Equation~\eqref{eq:ols_main} yield a
+conditional FL-presence price coefficient of $\valOLSGeneralPBU$ in
+the within-item, within-year, within-PBU specification, with a
+range $\valFLpremTopReg$--$\valFLpremBottomReg$ across modal
+subsamples and specifications (Section~\ref{sec:results_ols},
+Table~\ref{tab:prices}). The matching diagnostics in
+Section~\ref{sec:robustness} (Table~\ref{tab:item_level_scope_match})
+show the coefficient does not survive overlap-strict reweighting,
+and we treat the gap as conditional, not causal.
+
+\paragraph{L2: Oversight-capacity gradient.}
+The conditional price coefficient varies by a factor of $\valPBUgradientRatio$
+across PBU-size quartiles, monotonically: $\valOversightQone$ in Q1
+(smallest PBUs), $\valOversightQtwo$ in Q2, $\valOversightQthree$ in
+Q3, and $\valOversightQfour$ in Q4 (largest)
+(Section~\ref{sec:robustness}, ``Oversight heterogeneity'').
+Smaller PBUs are associated with several institutional features in
+addition to monitoring capacity (item composition, market structure,
+fiscal capacity); we do not interpret this gradient as a clean
+causal estimate of monitoring effects, but the magnitude and
+monotonicity are consistent with the framework's prediction
+$\partial m^*/\partial \theta_k < 0$
+(Proposition~\ref{prop:optimal_m}).
+
+\paragraph{L3: Structural Regime~2 selection across modalities.}
+Bid-distribution regime selection by BIC (Appendix~\ref{app:proofs},
+Table~\ref{tab:structural_modal}) prefers Regime~2 over Regime~1
+in both modalities by large margins: $\Delta\mathrm{BIC}=\valStructConvDeltaBIC$
+in convite, $\valStructPregDeltaBIC$ in pregão. Pregão exhibits
+sharper coordination ($\hat{\sigma}_c/\hat{\sigma}_g = \valStructPregRatio$
+vs.\ $\valStructConvRatio$ in convite). Cover bidding in BEC is
+therefore anchor-following (Regime~2), not detection-evading
+through dispersion (Regime~1), in both modal regimes.
+
+\paragraph{L4: Bayesian latent-class agreement.}
+A two-component Gaussian mixture model on bid distributions
+(Section~\ref{sec:classification},
+Table~\ref{tab:lca_validation}) classifies $\valLCAcoverN$ firms as
+the cover-class type. The mean posterior probability of cover-class
+membership is $\valLCAprobCoverFL$ for FL firms versus
+$\valLCAprobCoverNonFL$ for non-FL---a $\valLCAratio\!\!\times$ ratio.
+Latent-class classification uses a different operationalization
+from our construct (bid-distribution shape vs.\ participation-count
+signal); the agreement is complementary, not strictly independent,
+because both methods rely on the same underlying BEC bid-level
+data.
+
+\paragraph{L5: Repeated FL--winner pairs above null.}
+Permutation of FL labels within the always-loser pool ($1{,}000$
+iterations, uniform shuffle in
+\texttt{scripts/45\_legacy\_m1m3\_perm\_welfare.R}) yields a null
+mean of $\valDyadicPairsPerm$ FL--winner pairs sharing $\geq 5$
+tender-items; the observed value is $\valDyadicPairsObs$, a
+$\valDyadicRatio\!\!\times$ ratio ($p < 0.001$). The top-10 pairs
+share $\valDyadicTopTenObs$ tender-items on average versus
+$\valDyadicTopTenPerm$ under permutation
+($\valDyadicTopTenRatio\!\!\times$,
+Table~\ref{tab:dyadic_permutation}). Persistent FL--winner
+adjacencies are informative even within the construct's own
+population; the test does not distinguish coordination from
+geographic or product-market co-location.
+
+\paragraph{L6: CADE adjudication consistency check.}
+The FL marker discriminates $\valCobidders$ adjudicated
+CADE-cobidder firms within the always-loser stratum at AUC
+$\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$;
+Table~\ref{tab:horse_race_v14}). The construct does not
+discriminate the $\valDirectCADE$ direct CADE defendants in the
+broader BEC universe (AUC $\valAUCdirectStd$). The within-stratum
+result is informative about the construct's behavior at the
+cobidder boundary, not about cartel-detection scope at the firm
+level (Section~\ref{sec:cade}).
+
+\paragraph{Summary.}
+Lines L1 and L2 measure the same conditional price-association
+phenomenon at different cuts of the data and are not strictly
+independent. Lines L3, L4, and L5 use bid-level information from
+overlapping populations; their independence from L1 is partial.
+Line L6 uses external enforcement labels and is structurally most
+distinct, but its scope is limited to the always-loser stratum.
+We therefore characterize the evidence as
+\emph{multiple complementary lines} rather than fully independent
+tests; the framework survives elimination of any one line, but the
+lines reinforce each other rather than testing strictly orthogonal
+implications.
