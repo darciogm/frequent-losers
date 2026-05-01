@@ -274,12 +274,14 @@ unchanged: the bright-line filter eliminates the small share of
 newly-winning cover bidders, and rotation reshuffles the
 always-loser pool without compressing the ranking statistic. CNPJ
 splitting (each frequent loser splits into two CNPJs, each carrying
-half the participation count) degrades AUC by roughly $4$ points;
-threshold-aware capping (firms cap participation at $13$
-tender-items to stay below the median + $1.5\!\times$IQR cutoff)
-degrades AUC by roughly $13$ points. The combined attack
-(threshold capping with $20\%$ rotation) drives AUC from $0.928$
-to $0.632$, a $30$-point compression.
+half the participation count) degrades AUC by roughly
+$\valAdaptCNPJAbs$ percentage points; threshold-aware capping
+(firms cap participation at $13$ tender-items to stay below the
+median + $1.5\!\times$IQR cutoff) degrades AUC by roughly
+$\valAdaptCapAbs$ percentage points. The combined attack
+(threshold capping with $20\%$ rotation) drives AUC from
+$\valAUCBase$ to $\valAUCAdaptCombined$, a
+$\valAdaptCombinedAbs$-point compression.
 
 The simulation has two implications for deployment. First, the
 construct is not a black box: a strategic actor with knowledge of
