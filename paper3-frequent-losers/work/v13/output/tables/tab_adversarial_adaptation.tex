@@ -1,0 +1,33 @@
+\begin{table}[htbp]
+\centering
+\caption{Adversarial-Adaptation Simulation: AUC Degradation Under Strategic Cartel Adaptations}
+\label{tab:adversarial_adaptation}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{p{8cm}ccc}
+\toprule
+Scenario & AUC & $\Delta$ vs baseline & Retention \\
+\midrule
+Baseline (no adaptation) & 0.928 & +0.000 & 100.0\% \\
+Rotation: 20% of cover bidders retire and are replaced & 0.931 & +0.003 & 100.3\% \\
+Occasional wins: 5% of FL14 firms get one win & 0.929 & +0.002 & 100.2\% \\
+CNPJ splitting: each FL14 firm splits into two CNPJs & 0.891 & -0.037 & 96.0\% \\
+Threshold cap: firms cap participation at 13 tender-items & 0.801 & -0.127 & 86.3\% \\
+Combined: threshold cap + 20% rotation & 0.632 & -0.295 & 68.2\% \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+
+\smallskip
+{\footnotesize\textit{Notes:} Each scenario applies a strategic
+adaptation to the BEC always-loser pool, holding the construct
+($\log(1{+}\text{tenders\_count})$ ranking against $193$ CADE
+cobidder labels) fixed. The construct is resilient to rotation
+and to occasional wins (the bright-line filter eliminates the
+small share of newly-winning cover bidders without compressing
+the ranking), and degrades modestly under CNPJ splitting. It is
+substantially vulnerable to threshold-aware capping and severely
+degraded when capping is combined with rotation: a sophisticated
+cartel that targets the threshold can compress AUC by roughly
+$30$ points. Retention is the fraction of baseline AUC preserved.\par}
+\end{table}

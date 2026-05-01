@@ -251,6 +251,51 @@ firms.}
 \input{./output/tables/tab_imhof_incremental}
 
 % ──────────────────────────────────────────────────────────────────
+\section{Adversarial-Adaptation Simulation}
+\label{app:adversarial}
+% ──────────────────────────────────────────────────────────────────
+
+A natural concern is that a sophisticated cartel could adapt its
+deployment to evade the construct. We examine four strategic
+adaptations that hold the construct fixed and modify the
+always-loser pool to mimic plausible evasive behavior, then
+recompute the firm-level AUC of $\log(1+\text{tenders\_count})$
+against the $193$ CADE-cobidder labels.
+Table~\ref{tab:adversarial_adaptation} reports the degradation
+profile.
+
+\input{./output/tables/tab_adversarial_adaptation}
+
+The construct is resilient to two adaptations and vulnerable to
+two others. Rotation ($20\%$ of cover bidders retire annually and
+are replaced by fresh CNPJs) and occasional wins ($5\%$ of
+threshold-crossing firms win one tender each) leave AUC essentially
+unchanged: the bright-line filter eliminates the small share of
+newly-winning cover bidders, and rotation reshuffles the
+always-loser pool without compressing the ranking statistic. CNPJ
+splitting (each frequent loser splits into two CNPJs, each carrying
+half the participation count) degrades AUC by roughly $4$ points;
+threshold-aware capping (firms cap participation at $13$
+tender-items to stay below the median + $1.5\!\times$IQR cutoff)
+degrades AUC by roughly $13$ points. The combined attack
+(threshold capping with $20\%$ rotation) drives AUC from $0.928$
+to $0.632$, a $30$-point compression.
+
+The simulation has two implications for deployment. First, the
+construct is not a black box: a strategic actor with knowledge of
+the threshold rule can degrade the screen substantially, and the
+threshold rule is the most exposed margin. Second, the construct's
+operational lifetime in any given jurisdiction depends on whether
+strategic adaptation is observable and whether the threshold can be
+periodically refreshed. We do not claim the construct is
+adaptation-proof; we claim it is informative absent adaptation and
+degrades predictably under specified attacks. Oversight bodies
+deploying the screen should plan for periodic recalibration and
+should integrate the construct with bid-distribution methods where
+those data are available, so that combined detection survives
+adaptations against either component alone.
+
+% ──────────────────────────────────────────────────────────────────
 \section{Staggered Designs Attempted and Rejected}
 \label{app:staggered}
 % ──────────────────────────────────────────────────────────────────
