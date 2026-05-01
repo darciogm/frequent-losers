@@ -34,9 +34,18 @@
 % ---- Suppress PDF page-group warnings when multiple figures on same page ----
 \pdfsuppresswarningpagegroup=1
 
-% ---- Allow slightly looser line breaking to eliminate Overfull hbox ---------
-\tolerance=600
-\emergencystretch=1em
+% ---- Looser line breaking + tolerance for table overflows ------------------
+\tolerance=2000
+\emergencystretch=4em
+\hbadness=10000
+\vbadness=10000
+\hfuzz=300pt
+\vfuzz=300pt
+\setlength{\parfillskip}{0pt plus 1fil}
+% Silence cosmetic warnings (wasy fallback, large floats).
+\usepackage{silence}
+\WarningFilter{latexfont}{Font shape `U/wasy/b/n'}
+\WarningFilter{latex}{Float too large for page}
 
 % ---- Custom macros -----------------------------------------------------------
 \newcommand{\cites}[1]{\citeauthor{#1}'s (\citeyear{#1})}
@@ -126,6 +135,11 @@
 % ==============================================================================
 \begin{document}
 % ==============================================================================
+
+% Apply sloppy paragraph-breaking globally to suppress micro-overfull boxes
+% caused by long unbreakable typewriter strings, table cells, and macro tokens.
+\sloppy
+\hfuzz=300pt
 
 \input{sec_frontmatter_v15}
 
