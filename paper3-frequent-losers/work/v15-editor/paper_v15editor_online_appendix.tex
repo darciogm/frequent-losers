@@ -31,12 +31,10 @@
 \usepackage{microtype}
 \usepackage{natbib}
 \usepackage{xr}
-\externaldocument{paper_v15editor_online_appendix}
+\externaldocument{paper_v15editor}
 
-% ---- Suppress PDF page-group warnings when multiple figures on same page ----
 \pdfsuppresswarningpagegroup=1
 
-% ---- Looser line breaking + tolerance for table overflows ------------------
 \tolerance=2000
 \emergencystretch=4em
 \hbadness=10000
@@ -44,7 +42,7 @@
 \hfuzz=300pt
 \vfuzz=300pt
 \setlength{\parfillskip}{0pt plus 1fil}
-% Silence cosmetic warnings (wasy fallback, large floats).
+
 \usepackage{silence}
 \WarningFilter{latexfont}{Font shape `U/wasy/b/n'}
 \WarningFilter{latex}{Float too large for page}
@@ -52,10 +50,8 @@
 \WarningFilter{latex}{There were multiply-defined labels}
 \WarningFilter{latex}{Label(s) may have changed}
 
-% ---- Custom macros -----------------------------------------------------------
 \newcommand{\cites}[1]{\citeauthor{#1}'s (\citeyear{#1})}
 
-% Fix elsarticle page style
 \makeatletter
 \def\ps@pprintTitle{%
   \let\@oddhead\@empty
@@ -76,91 +72,90 @@
 % Proof environment (amsthm not loaded with elsarticle)
 \newenvironment{proof}[1][Proof]{\noindent\textit{#1.} }{\hfill$\square$\par\medskip}
 
-% ---- Formatting --------------------------------------------------------------
-
-% 1.55 gives effective 1.86× baselineskip at 12pt ≈ generous 1.5-spacing
+% Spacing
 \renewcommand{\baselinestretch}{1.48}
-
-
 \setlength{\abovedisplayskip}{8pt plus 2pt minus 4pt}
 \setlength{\belowdisplayskip}{8pt plus 2pt minus 4pt}
-\setlength{\abovedisplayshortskip}{4pt plus 2pt}
-\setlength{\belowdisplayshortskip}{4pt plus 2pt}
-
-
 \setlength{\textfloatsep}{10pt plus 2pt minus 4pt}
 \setlength{\floatsep}{8pt plus 2pt minus 4pt}
 \setlength{\intextsep}{8pt plus 2pt minus 4pt}
 \setlength{\abovecaptionskip}{4pt}
 \setlength{\belowcaptionskip}{2pt}
 \biboptions{authoryear}
-\setcounter{MaxMatrixCols}{10}
 \setlength{\bibsep}{0pt}
-
 \renewcommand{\bibfont}{\small}
-\interfootnotelinepenalty=50000
 \renewcommand{\arraystretch}{1.3}
 
-% ---- Hyphenation -------------------------------------------------------------
 \hyphenation{eco-no-me-tric re-gres-sion dif-fer-ence-in-dif-fer-ences
   en-do-ge-nei-ty het-e-ro-sce-das-tic-i-ty pro-cure-ment}
 
-% ---- Graphics path -----------------------------------------------------------
 \graphicspath{{./output/figures/}{./images/}}
 
-% ---- Auto-generated paper values (do not edit by hand) ----------------------
-% Every numeric claim in the paper is bound to a \valXxx macro defined here.
-% Re-run scripts/99_make_paper_values.R to refresh from canonical CSVs.
 \input{values.tex}
 
-% ---- v15 local macros: %-formatted versions of decimal coefficients ---------
-% Quartile coefficients (from values.tex they live as raw decimals 0.214 etc.;
-% v15 reports them in % to keep abstract/intro/results in one unit system).
+% v15 local macros (mirror main paper)
 \newcommand{\valOversightQonePct}{+21.4\%}
 \newcommand{\valOversightQtwoPct}{+9.8\%}
 \newcommand{\valOversightQthreePct}{+4.5\%}
 \newcommand{\valOversightQfourPct}{+1.7\%}
-% Headline price-gap range across estimators (cross-fit floor, OLS-PBU ceiling).
 \newcommand{\valHeadlineLow}{+3.6\%}
 \newcommand{\valHeadlineHigh}{+7.7\%}
 \newcommand{\valHeadlineRange}{+3.6\%\,\text{--}\,+7.7\%}
-% Decomposition of OLS estimate into structural + classification-noise components.
 \newcommand{\valBidConvCoefPct}{+4.3\%}
 \newcommand{\valClassNoiseGapPct}{+2.8}
-% Horse-race: FL14 binary AUC harmonized to same sample as continuous log_tc.
-% NOTE: macro names use letters only (TeX rule); digits would be parsed as text.
 \newcommand{\valAUCFLBinSameSample}{0.911}
 \newcommand{\valAUCFLBinSameSampleCI}{[0.898,\ 0.925]}
-% Gate D2: modal-by-modal AUC (script 37). Pregão deeper than convite.
 \newcommand{\valAUCpregPrim}{0.952}
 \newcommand{\valAUCconvPrim}{0.816}
 \newcommand{\valAUCmodalDiff}{-0.136}
 \newcommand{\valConvNcobidders}{6}
 
-% ==============================================================================
 \begin{document}
-% ==============================================================================
 
-% Apply sloppy paragraph-breaking globally to suppress micro-overfull boxes
-% caused by long unbreakable typewriter strings, table cells, and macro tokens.
 \sloppy
 \hfuzz=300pt
 
-\input{sec_frontmatter_v15}
+\begin{frontmatter}
 
-\input{sec_introduction_v15}
-\input{sec_literature_v15}
-\input{sec_institutional_v15}
-\input{sec4_data_v15}
-\input{sec5_emp_v15}
-\input{sec_cade_v15}
-\input{sec_results_v15}
-\input{sec_mechanisms_v15}
-\input{sec_robustness_v15}
-\input{sec_limitations_v15}
-\input{sec_conclusion_v15}
+\title{Online Appendix to:\\
+Frequent Losers as a Cartel Screen:\\
+Detecting Cover Bidding Without Bid Microdata}
 
-\input{sec_endmatter_v15}
+\author[insper]{Darcio Genicolo-Martins\corref{cor1}}
+\ead{darciogm1@insper.edu.br}
+\author[insper]{Paulo Furquim de Azevedo}
+\affiliation[insper]{organization={INSPER},
+  city={S\~ao Paulo}, country={Brazil}}
+\cortext[cor1]{Corresponding author.}
+
+\begin{abstract}
+\noindent This online appendix accompanies \emph{Frequent Losers as
+a Cartel Screen: Detecting Cover Bidding Without Bid Microdata} and
+contains: (A) the cover-bidding framework and proofs of the three
+formal results invoked in the main text; (B) core supporting tables
+and figures; (C) identification audits (Oster bounds and the
+anti-leakage audit); (D) threshold and specification robustness
+tables; (E) operational metrics and detector comparison; and
+(F) the staggered-design estimators that return null at the
+available bandwidths. References to sections, equations, and
+tables in the main text use the same labels as the published
+manuscript.
+\end{abstract}
+
+\end{frontmatter}
+
+\appendix
+
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\makeatletter
+\@addtoreset{table}{section}
+\@addtoreset{figure}{section}
+\makeatother
+
+\input{sec_appendix_v15}
 
 \bibliographystyle{chicago}
 \bibliography{references}
