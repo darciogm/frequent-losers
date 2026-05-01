@@ -1,130 +1,123 @@
-% Introduction — single-thesis frame: institutional regularity in BEC.
-% Six paragraphs, ~4 pages, storytelling fluido + rigor académico.
+% Introduction v16 (mr-frequent revision): three claims, narrower contribution,
+% sign-reversal central, no "cartel detection" overclaim.
 
 \section{Introduction}
 \label{sec:intro}
 
-Brazilian electronic procurement runs on a peculiar pattern:
-thousands of firms register, prepare bids, show up auction after
-auction, and never win. In São Paulo's Bolsa Eletrônica de
-Compras (BEC, $\valYearStart$--$\valYearEnd$), $\valAlwaysLosers$
-firms bid without ever winning a tender-item, and $\valFL$ of
-them participated in more than $\valThresholdStat$ tender-items.
-We call these firms \emph{frequent losers}, and we treat the
-regularity they form as the central object of the paper. The
-pattern is hard to rationalize: bid preparation is costly, and
-the auctions these firms attend are open, electronic, and largely
-commodity-based. Under standard expected-profit competition,
-firms with persistent zero wins should exit. They do not. We read
-this footprint as the empirical face of cover bidding in a
-separating equilibrium, and we show that contract-award records
-alone are enough to use it as a cartel screen.
+Brazilian electronic procurement has a peculiar feature: thousands
+of firms register, prepare bids, show up auction after auction, and
+never win. In São Paulo's Bolsa Eletrônica de Compras (BEC,
+$\valYearStart$--$\valYearEnd$), $\valAlwaysLosers$ firms bid
+without ever winning a tender-item, and $\valFL$ of them
+participated in more than $\valThresholdStat$ tender-items. We call
+these firms \emph{frequent losers}. The pattern is hard to
+rationalize under expected-profit competition once bid preparation
+costs are accounted for, and is broadly consistent with cover
+bidding on the loser side of bid-rigging arrangements; we do not,
+however, claim that the construct identifies cover bidders or
+detects cartels.
 
-Bid-rigging in public procurement is among the most consequential
-and least successful areas of competition enforcement. The
-diagnostic tools developed in the empirical literature since
-\citet{porter1993detection}---bid-distribution tests, structural
-estimation of cost markups, machine-learning detectors trained on
-bid patterns
-\citep{bajari2003deciding,imhof2019detecting,wallimann2023machine}---require
-bid-level microdata that few jurisdictions audit at scale. What
-procurement systems universally preserve, instead, is the
-contract-award record: who won, who participated, what was bought,
-at what price. If a participation-only construct can identify
-institutionally meaningful behavior in this thinner data envelope,
-oversight bodies can act on what they already have.
+Bid-rigging detection in the empirical literature relies on bid
+microdata that few jurisdictions audit at scale
+\citep{porter1993detection,bajari2003deciding,imhof2019detecting,wallimann2023machine}.
+The data envelope that procurement systems universally preserve is
+much thinner: contract-award records, with winner identity,
+participant identity, item identifier, and negotiated price. The
+question we ask is whether \emph{this} envelope alone carries
+exploitable signal for triage. Our answer is conservative: yes, but
+narrowly. Loser-side participation patterns associate with both
+higher negotiated prices and cartel-adjacent ground truth at rates
+above random matching, but the association is unstable across
+scopes and the validation object is indirect. The screen is useful
+for prioritizing procurement environments for oversight, not for
+adjudicating membership in any specific cartel.
 
-The frequent-loser construct meets this test in a way that is more
-than statistical noise. Within-item, within-year,
-within-procuring-unit comparisons across $\valSampleN$ items
-associate environments containing flagged firms with a
-$\valHeadlineRange$ higher log negotiated unit price across
-estimators (full-sample OLS, PBU fixed effects, IPW, CEM,
-cross-fit). The association is sharply heterogeneous in
-procuring-unit size: the price gap falls monotonically from
-$\valOversightQonePct$ in the smallest quartile to
-$\valOversightQfourPct$ in the largest---a
-$\valPBUgradientRatio\!\!\times$ gradient that is the strongest
-source of heterogeneity in the data, larger than the
-preg\~ao--convite gap and larger than any cross-sector spread. The
-configuration is consistent with the comparative static
-$\partial m^*/\partial \theta_k < 0$: where oversight is thinner,
-cover-bidder deployment intensifies.
+The paper makes three claims, in order of empirical strength.
+First, award-record-based loser-side participation contains usable
+signal: within-item, within-year, within-procuring-unit comparisons
+across $\valSampleN$ tender-items associate frequent-loser presence
+with a $\valHeadlineRange$ higher log negotiated unit price across
+five estimators. Second, the signal is associated with
+cartel-adjacent validation targets: the construct discriminates
+$\valCobidders$ adjudicated cobidder firms inside the always-loser
+stratum at AUC $\valAUCFLfirm$ in-sample, $0.864$ under temporal
+holdout (train $2009$--$2016$, test $2017$--$2019$), and $0.748$
+under a stricter contemporaneous benchmark restricted to four
+pre-2020 cases. Cobidders are firms that participate alongside
+adjudicated cartel members; this is an indirect label of cartel
+adjacency, not legal proof of cartel membership. Against the
+$\valDirectCADE$ direct CADE defendants in the broader BEC firm
+universe, the construct discriminates at AUC $\valAUCdirectStd$, by
+design: direct defendants are typically frequent winners and lie
+outside the population the screen targets. Third, the signal is
+heterogeneous across buyer size: the conditional price gap falls
+from $\valOversightQonePct$ in the smallest procuring-unit-size
+quartile to $\valOversightQfourPct$ in the largest, a
+$\valPBUgradientRatio\!\!\times$ ratio. This is consistent with
+thinner institutional capacity moderating the imprint at smaller
+buyers, but buyer size proxies for several correlated institutional
+features (procurement-officer tenure, internal-audit infrastructure,
+item composition) and we do not separately identify oversight as
+the operative channel.
 
-We organize these patterns through a separating-equilibrium
+The paper's most important interpretive challenge is that the
+broad-sample price association reverses sign under strict-overlap
+matching: $-9.7\%$ on overlap-cell ATT, $-30.7\%$ under
+propensity-score trimming. We treat this as a first-order finding,
+not a robustness footnote. The broad-sample estimate captures the
+combined effect of (i) the within-cell association where
+frequent-loser-present and -absent items genuinely overlap and
+(ii) the systematic differences between items frequent losers
+\emph{select into} and items they do not. Strict-overlap matching
+isolates (i); the broad-sample estimate also includes (ii). Both
+are valid descriptive scopes, but the screen's signal is partly
+about selection. The operational implication is concrete: the
+construct prioritizes environments where loser-side participation
+is patterned, not environments where the price gap is causally
+attributable to that participation. A triage tool does not need to
+identify a stable causal effect; it needs to flag environments at
+higher prior risk than random selection. Within that scope, the
+construct is informative.
+
+We organize the construct through a separating-equilibrium
 framework with cover bidders and genuine entrants
-(Online Appendix~A). The framework yields two results that
-ground the construct: $\log(1+\text{tenders\_count})$ is a sufficient
-ranking statistic for cover-bidder type given award-record data
-(Proposition~\ref{prop:exposure_stmt}), and the bright-line filter
-$\text{wins}=0$ is the equilibrium choice of cover bidders themselves
-(Lemma~\ref{lem:wins_zero_stmt}). It is an organizing device, not a
-source of causal identification, but it delivers the comparative
-static $\partial m^*/\partial \theta_k < 0$ that the
-$\valPBUgradientRatio\!\!\times$ oversight gradient instantiates.
+(Online Appendix~A). The framework rationalizes why
+$\log(1+\text{tenders\_count})$ functions as a sufficient ranking
+statistic and why a $\text{wins}=0$ filter is the equilibrium choice
+of the cover-bidder type given the data envelope. The framework is
+an organizing device, not a source of identification. The continuous
+loss-intensity statistic is the primitive; the binary
+frequent-loser rule is its operational simplification. The horse
+race in §\ref{sec:mech_horse_race} confirms that the continuous
+score discriminates more sharply than the binary cutoff (DeLong
+$p = \valDeLongP$); we report the binary rule because it maps onto
+existing oversight workflows, not because it is theoretically
+privileged.
 
-Identification is descriptive by design. Two design-based
-strategies (a sharp regression discontinuity at the
-convite/preg\~ao statutory caps; a difference-in-differences using
-the 2018 cap raise) return null at the available bandwidths, and
-we treat the empirical content as a descriptive association rather
-than as a causal estimate. Within this scope, the construct
-discriminates $\valCobidders$ adjudicated CADE-cobidder firms
-inside the always-loser stratum at AUC $\valAUCFLfirm$ ($95\%$ CI
-$\valAUCFLfirmCI$)---a strong within-stratum result. It does not
-flag $\valDirectCADE$ direct CADE defendants in the broader BEC
-firm universe (AUC $\valAUCdirectStd$), by design: direct
-defendants in adjudicated cases are typically frequent winners,
-while the construct targets the loser side of the cartel
-population. The frequent-loser construct therefore operates as a
-cartel screen for the cover-bidder population; competing readings
-of the same participation footprint (capacity-transfer motives,
-market intelligence) are observationally compatible at the firm
-level and discussed in §\ref{sec:limitations}.
+\paragraph{What this paper does and does not do}
+The construct is an award-record-based risk indicator that flags
+procurement environments statistically associated with higher
+prices and cartel-adjacent validation targets. It is not a cartel
+detector, it does not adjudicate firm-level guilt, and it does not
+identify a stable causal effect of cover bidding on prices. The
+construct is designed for triage: it prioritizes environments for
+oversight bodies operating without bid microdata. Where bid
+microdata are available, the construct integrates with
+bid-distribution detectors (\S\ref{sec:rob_imhof}) rather than
+substituting for them.
 
-The administrative pathway built on the construct has three stages.
-\emph{Screen} computes $\log(1+\text{tenders\_count})$ on award
-records and flags top-$k$ environments by tender-item count; the
-deployable binary rule (more than $\valThresholdStat$ tender-items,
-zero wins) is the information-coarsening of this statistic.
-\emph{Triage} cross-references flagged firms with adjudication
-records (CADE, CGU, TCE) and operational priors of the oversight
-body. \emph{Forensic} deploys bid-distribution methods where bid
-microdata are available
-\citep{imhof2019detecting,wallimann2023machine}. The construct
-narrows the case-load that reaches the forensic stage; it does not
-replace forensic analysis. Portability rests on three structural
-features---commodity-heavy item composition, electronic platforms
-with publicly auditable participant lists, and institutional
-asymmetry between the winner and loser sides of the bidding
-pool---shared by Brazilian state platforms and broadly present in
-jurisdictions where bid microdata are not centrally collected.
-
-The paper makes three contributions. First, the construct is
-\emph{deployable}: we translate it into a three-stage administrative
-pathway---Screen, Triage, Forensic---computable on contract-award
-records alone, at near-zero data cost, in jurisdictions where bid
-microdata are not centrally collected. Second, we document an
-empirical regularity---the within-item conditional price premium
-across estimators and its $\valPBUgradientRatio\!\!\times$
-procuring-unit-size oversight gradient---and show that administrative
-oversight is the dominant moderating force in the data. Third, the
-construct is \emph{theoretically grounded}: we derive it from a
-separating-equilibrium framework with cover bidders and genuine
-entrants (Online Appendix~A), under which
-$\log(1+\text{tenders\_count})$ is a sufficient ranking statistic for
-cover-bidder type given award-record data, and the bright-line filter
-$\text{wins}=0$ is the equilibrium choice of cover bidders
-themselves. The remainder of the paper proceeds in four blocks. Sections
-\ref{sec:literature}--\ref{sec:empirical} situate the construct in
-the bid-rigging-detection literature, set out the institutional and
-legal framework, describe the BEC data, and state the descriptive
-empirical strategy alongside the two design-based strategies that
-return null. Section~\ref{sec:cade} reports the CADE consistency
-check; Sections~\ref{sec:results}--\ref{sec:mechanisms} present the
-within-item price associations, the procuring-unit-size gradient,
-and mechanism heterogeneity. Section~\ref{sec:robustness} collects
-the robustness work---matching, cutoff sensitivity, the horse race
-against continuous loss intensity, and operational metrics---and
+The remainder of the paper proceeds in four blocks.
+Sections~\ref{sec:literature}--\ref{sec:empirical} situate the
+contribution, set out the institutional and legal framework,
+describe the BEC data, and state the descriptive empirical strategy
+alongside the design-based strategies that return null.
+Section~\ref{sec:cade} reports the validation against CADE
+adjudications, with explicit object discipline distinguishing
+direct defendants, cobidders, and cartel adjacency.
+Sections~\ref{sec:results}--\ref{sec:mechanisms} present the
+within-item price association, the buyer-size heterogeneity, and
+the mechanism evidence we read with caution. Section~\ref{sec:robustness}
+collects the robustness work, including the strict-overlap
+matching exercise that anchors §\ref{sec:results_ols}, and
 Sections~\ref{sec:limitations}--\ref{sec:conclusion} catalog scope
 limitations and conclude.
