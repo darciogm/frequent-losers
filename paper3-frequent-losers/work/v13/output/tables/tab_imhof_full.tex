@@ -1,10 +1,8 @@
 % src: scripts/31_imhof_full_pipeline.R
 \begin{table}[htbp]
-\hfuzz=300pt\relax
 \centering
-\caption{Full Imhof--Wallimann Pipeline vs Loser-Side Concentration: Discrimination at Different Data Costs}
+\caption{Imhof--Wallimann Pipeline vs.~Screening Statistic: Discrimination at Different Data Costs}
 \label{tab:imhof_full}
-\resizebox{\textwidth}{!}{%
 \begin{threeparttable}
 \small
 \begin{tabular}{lccc}
@@ -12,22 +10,23 @@
 Model & Features required & AUC & 95\% CI \\
 \midrule
 \multicolumn{4}{l}{\emph{Participation-only (award-record level)}} \\
-FL flag (binary)            & participation count $>$ 14, win flag                   & $0.903$ & $[0.884, 0.923]$ \\
-$\log(1{+}\text{tenders\_count})$ & participation count, win flag                    & $0.884$ & $[0.860, 0.908]$ \\
+FL flag (binary)            & participation count $>$ 14, win flag                   & $\valImhofFLBin$ & $\valImhofFLBinCI$ \\
+$\log(1{+}\text{tenders\_count})$ & participation count, win flag                    & $\valImhofFLcont$ & $\valImhofFLcontCI$ \\
 \midrule
 \multicolumn{4}{l}{\emph{Bid-distribution (per-bid microdata)}} \\
-Imhof CV only (v13 strawman) & per-bid offer values                                  & $0.585$ & $[0.553, 0.616]$ \\
-Imhof full pipeline          & 5 within-tender features (CV, skew, kurt, spread, second-low) & $0.888$ & $[0.865, 0.911]$ \\
+Imhof CV only                & per-bid offer values                                  & $\valImhofCVonly$ & $\valImhofCVonlyCI$ \\
+Imhof full pipeline          & 5 within-tender features (CV, skew, kurt, spread, second-low) & $\valImhofFull$ & $\valImhofFullCI$ \\
 \midrule
 \multicolumn{4}{l}{\emph{Combined}} \\
-FL flag $+$ Imhof full       & participation count + 5 bid features                  & $0.955$ & $[0.943, 0.967]$ \\
-$\log(1{+}\text{tenders\_count})$ $+$ Imhof full & participation count + 5 bid features & $0.962$ & $[0.954, 0.969]$ \\
+FL flag $+$ Imhof full       & participation count + 5 bid features                  & $\valImhofComboBin$ & $\valImhofComboBinCI$ \\
+$\log(1{+}\text{tenders\_count})$ $+$ Imhof full & participation count + 5 bid features & $\valImhofComboCont$ & $\valImhofComboContCI$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item \textit{Notes:} 5-fold cross-validated AUC against $193$
-CADE-cobidder labels within the always-loser pool ($N\!=\!16{,}779$).
+\item \textit{Notes:} 5-fold cross-validated AUC against
+$\valCobidders$ CADE-cobidder labels within the always-loser pool
+($N=\valImhofPoolN$).
 Random forests with $500$ trees, otherwise default tuning. Bid-level
 features are aggregated to the firm level by averaging the per-tender
 within-tender statistic across each firm's tenders.
@@ -47,5 +46,4 @@ pipeline; the relevant comparison is at fixed data cost, where the
 two pipelines reach similar accuracy and the combination dominates.
 \end{tablenotes}
 \end{threeparttable}
-}
 \end{table}

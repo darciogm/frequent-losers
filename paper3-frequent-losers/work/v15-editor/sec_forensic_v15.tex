@@ -14,39 +14,40 @@ beat either component alone.
 
 \paragraph{Comparable accuracy on different data envelopes}
 Table~\ref{tab:imhof_full} reports the comparison on the full
-always-loser pool ($N = 16{,}779$ firms, $\valCobidders$
+always-loser pool ($N = \valImhofPoolN$ firms, $\valCobidders$
 adjudicated cobidder labels). The screening statistic
-discriminates at AUC $0.903$ ($95\%$ CI $[0.884, 0.923]$) under
-the binary FL14 indicator and $0.884$ ($[0.860, 0.908]$) under
-the continuous $\log(1+\text{tenders\_count})$ score. The full
+discriminates at AUC $\valImhofFLBin$ ($95\%$ CI
+$\valImhofFLBinCI$) under the binary FL14 indicator and
+$\valImhofFLcont$ ($\valImhofFLcontCI$) under the continuous
+$\log(1+\text{tenders\_count})$ score. The full
 Imhof--Wallimann pipeline---five within-tender bid-distribution
 features (coefficient of variation, skewness, kurtosis, spread,
 second-low ratio)
 \citep{imhof2019detecting,wallimann2023machine}---reaches AUC
-$0.888$ ($[0.865, 0.911]$) on the same target. The two pipelines
-reach statistically indistinguishable discrimination on
-different data envelopes. The construct does not outperform the
-bid-distribution pipeline, and we do not claim it does; the
-architectural point is that comparable accuracy is achievable
-on a substantially thinner data envelope.
+$\valImhofFull$ ($\valImhofFullCI$) on the same target. The
+two pipelines reach statistically indistinguishable
+discrimination on different data envelopes. The construct does
+not outperform the bid-distribution pipeline, and we do not
+claim it does; the architectural point is that comparable
+accuracy is achievable on a substantially thinner data envelope.
 
 \input{./output/tables/tab_imhof_full}
 
 \paragraph{Non-redundant signal} The combined specifications in
 the bottom panel of Table~\ref{tab:imhof_full} address the
-integration question. FL14 combined with the full Imhof pipeline
-reaches AUC $0.955$ ($[0.943, 0.967]$); continuous loss
-intensity combined with the full Imhof pipeline reaches AUC
-$0.962$ ($[0.954, 0.969]$). The combined classifiers gain
-$5$--$7$ AUC points over either single construct. Restricting
-attention to the same-sample audit
+integration question. FL14 combined with the full Imhof
+pipeline reaches AUC $\valImhofComboBin$ ($\valImhofComboBinCI$);
+continuous loss intensity combined with the full Imhof pipeline
+reaches AUC $\valImhofComboCont$ ($\valImhofComboContCI$). The
+combined classifiers gain $5$--$7$ AUC points over either single
+construct. Restricting attention to the same-sample audit
 (Table~\ref{tab:imhof_incremental}), where all detectors
 evaluate the identical subset of firms with bid microdata
-available, the screening statistic adds $+0.035$ AUC over the
-Imhof full pipeline alone (DeLong $p = 0.014$), and the combined
-model adds $+0.096$--$+0.098$ AUC over Imhof full alone
-($p < 0.001$). The award-layer screening object and the
-bid-layer forensic moments carry non-redundant information
+available, the screening statistic adds $\valImhofIncFL$ AUC
+over the Imhof full pipeline alone (DeLong $p = \valImhofIncFLp$),
+and the combined model adds $\valImhofIncCombo$ AUC over Imhof
+full alone ($p < 0.001$). The award-layer screening object and
+the bid-layer forensic moments carry non-redundant information
 about the same cartel-adjacency target.
 
 \paragraph{The architectural reading}

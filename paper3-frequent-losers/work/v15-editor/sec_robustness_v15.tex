@@ -32,8 +32,9 @@ $\valThresholdStat$ and a flagged population of $\valFL$ firms.
 Table~\ref{tab:threshold} re-estimates the within-PBU
 specification under five multipliers ranging from $1.0\times$ to
 $3.0\times$ IQR. The price coefficient is positive and significant
-in every row, declining monotonically from $+0.079$ at $1.0\times$
-(threshold $10$, $3{,}442$ firms) to $+0.050$ at $3.0\times$
+in every row, declining monotonically from $\valThreshMult10$
+at $1.0\!\times$ (threshold $\valThreshMult10Cut$,
+$\valThreshMult10N$ firms) to $\valThreshMult30$ at $3.0\!\times$
 (threshold $24$, $1{,}456$ firms). The decline is a feature, not a
 defect: as the cutoff tightens, the binary indicator filters fewer
 firms with high loss-intensity, and §\ref{sec:mech_horse_race}
@@ -46,10 +47,11 @@ inflates at permissive ones.
 The clustering of standard errors does not change the point
 estimate---which is mechanical---but it does change inference.
 Table~\ref{tab:clustering} reports three regimes:
-item-level clustering (baseline, SE $0.0215$), procuring-unit-level
-clustering (SE $0.0144$, tighter than baseline), and two-way
-\citet{cameron2011robust} clustering on item and procuring unit
-jointly (SE $0.0240$, looser than baseline). The coefficient is
+item-level clustering (baseline, SE $\valClusterItem$),
+procuring-unit-level clustering (SE $\valClusterPBU$, tighter
+than baseline), and two-way \citet{cameron2011robust} clustering
+on item and procuring unit jointly (SE $\valClusterTwoway$,
+looser than baseline). The coefficient is
 significant at $p<0.01$ under all three regimes; the baseline
 item-level cluster is the conservative middle choice.
 
@@ -122,16 +124,18 @@ specifications jointly so the reader can locate the construct's
 descriptive claim within the appropriate scope.
 
 The leakage audit in Table~\ref{tab:leakage_audit} addresses a
-distinct concern: that the in-sample item-level AUC of $0.995$
-(reference row) is partially tautological, because cobidders are by
-construction always-loser firms with elevated participation counts.
-Audit~1 holds the score fixed and swaps the label to direct-CADE
-defendants, returning $0.506$---random discrimination, confirming
-the structural scope of the construct (cover bidders, not
-ringleaders). Audit~2 isolates the structural component by withholding
-cobidder firms from score construction within five
+distinct concern: that the in-sample item-level AUC of
+$\valLeakRefAUC$ (reference row) is partially tautological,
+because cobidders are by construction always-loser firms with
+elevated participation counts. Audit~1 holds the score fixed
+and swaps the label to direct-CADE defendants, returning
+$\valLeakDirectAUC$---random discrimination, confirming the
+structural scope of the construct (cover bidders, not
+ringleaders). Audit~2 isolates the structural component by
+withholding cobidder firms from score construction within five
 cross-validation folds and re-evaluating on items containing
-held-out cobidders: AUC $0.891$ ($95\%$ CI $[0.887, 0.894]$).
+held-out cobidders: AUC $\valLeakCVAUC$ ($95\%$ CI
+$\valLeakCVAUCCI$).
 Audit~3 evaluates the construct under temporal holdout (train
 $2009$--$2016$, test $2017$--$2019$): AUC $\valAUCFLfirmTemp$
 ($95\%$ CI $\valAUCFLfirmTempCI$). The screen retains discriminating power above
@@ -172,14 +176,18 @@ the paper.
 Table~\ref{tab:operational_metrics} reports precision, recall,
 and lift at five top-$k$ cuts under both in-sample and
 temporal-holdout evaluation. At top-$100$ precision is
-$0.070$ (lift $6.1\!\times$); at top-$500$ precision $0.070$
-(lift $6.1\!\times$); at top-$1{,}000$ precision $0.066$
-(lift $5.8\!\times$). The screen flags $35$ adjudicated cobidder
-firms out of $\valCobidders$ at top-$500$ (recall $18\%$); at
-top-$1{,}000$ recall rises to $34\%$. The in-sample column
-over-states precision by approximately $50\%$ at top-$500$
-($0.132$ in-sample versus $0.070$ holdout). The inflation arises
-because roughly $47\%$ of the top-$500$ in-sample ranking comes
+$\valOpPrecHund$ (lift $\valOpLiftHund$); at top-$500$
+precision $\valOpPrecFiveHund$ (lift $\valOpLiftFiveHund$); at
+top-$1{,}000$ precision $\valOpPrecThou$ (lift $\valOpLiftThou$).
+The screen flags $\valOpFlaggedFiveHund$ adjudicated cobidder
+firms out of $\valCobidders$ at top-$500$ (recall
+$\valOpRecallFiveHund$); at top-$1{,}000$ recall rises to
+$\valOpRecallThou$. The in-sample column over-states precision
+by approximately $50\%$ at top-$500$
+($\valOpInsamplePrecFiveHund$ in-sample versus
+$\valOpPrecFiveHund$ holdout). The inflation arises because
+roughly $\valOpInflationShare$ of the top-$500$ in-sample
+ranking comes
 from $2017$--$2019$ participation, after CADE adjudications were
 already underway for some of the cartels: the in-sample score is
 partly retrospective rather than purely prospective. We disclose
