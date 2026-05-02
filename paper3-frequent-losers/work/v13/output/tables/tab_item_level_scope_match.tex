@@ -1,3 +1,4 @@
+% src: scripts/51_item_level_scope_match.R
 \begin{table}[htbp]
 \centering
 \caption{Item-Level Scope Checks: Conditional Association Under Stricter Overlap}
@@ -8,15 +9,21 @@
 \toprule
 Specification & Coefficient & SE & $p$-value & $N$ \\
 \midrule
-baseline\_fe & $+0.064$ & $0.021$ & $0.003$ & $1{,}653{,}658$ \\
-overlap\_cell\_att & $-0.097$ & $0.015$ & $<0.001$ & $1{,}517{,}066$ \\
-overlap\_ref\_att & $-0.097$ & $0.015$ & $<0.001$ & $1{,}434{,}636$ \\
-ps\_att\_trimmed & $-0.307$ & $0.020$ & $<0.001$ & $400{,}687$ \\
+baseline\_fe         & $\valScopeBaseCoef$        & $\valScopeBaseSE$        & $\valScopeBaseP$       & $\valScopeBaseN$ \\
+overlap\_cell\_att   & $\valScopeOverlapCoef$     & $\valScopeOverlapSE$     & $\valScopeOverlapPlt$  & $\valScopeOverlapN$ \\
+overlap\_ref\_att    & $\valScopeOverlapRefCoef$  & $\valScopeOverlapRefSE$  & $\valScopeOverlapPlt$  & $\valScopeOverlapRefN$ \\
+ps\_att\_trimmed     & $\valScopePSCoef$          & $\valScopePSSE$          & $\valScopeOverlapPlt$  & $\valScopePSN$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
-\small
-\item \textit{Notes:} All rows remain descriptive. The overlap designs tighten comparability by forcing treated and untreated items into the same observed pre-treatment cells; the propensity-score row further trims to common support. None of these designs eliminates selection on unobservables, so the revised paper should call the resulting gap a conditional price association rather than a causal effect.
+\footnotesize
+\item \textit{Notes:} Reports $\beta$ (\texttt{baseline\_fe}) and the
+overlap-restricted $\beta^{\text{ov}}$ (\texttt{overlap\_cell\_att},
+\texttt{overlap\_ref\_att}, \texttt{ps\_att\_trimmed}). Under the
+screening framing of \S\ref{sec:emp_estimand} these are different
+empirical objects rather than alternative estimates of the same
+parameter; the sign reversal is the diagnostic that locates the
+construct as a screening-value object.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}

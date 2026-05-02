@@ -1,46 +1,38 @@
 % src: scripts/34_horse_race_fl_continuous.R + 36_gate_d1_harmonized.R
 \begin{table}[htbp]
-\hfuzz=300pt\relax
 \centering
 \caption{Horse Race: FL14 Binary vs Continuous Loss Intensity (Same Sample)}
 \label{tab:horse_race_v14}
-\resizebox{\textwidth}{!}{%
 \begin{threeparttable}
 \small
 \begin{tabular}{lcccc}
 \toprule
 Specification & Coef on FL14 & Coef on $\log(1{+}\max\,\text{tc})$ & Convite & $N$ \\
 \midrule
-(1) FL14 only                 & $+0.0653^{***}$ & --                  & $+0.171^{***}$ & $1{,}653{,}658$ \\
-                              & $(0.0216)$      &                     & $(0.013)$      &                 \\
-(2) Continuous only           & --              & $+0.0188^{***}$     & $+0.169^{***}$ & $1{,}653{,}658$ \\
-                              &                 & $(0.0055)$          & $(0.013)$      &                 \\
-(3) Both, additive            & $-0.0746^{*}$   & $+0.0349^{***}$     & $+0.169^{***}$ & $1{,}653{,}658$ \\
-                              & $(0.0383)$      & $(0.0108)$          & $(0.013)$      &                 \\
+(1) FL14 only                 & $\valHorseFLOne$ & --                & $\valHorseConvOne$ & $\valHorseN$ \\
+                              & $(\valHorseFLOneSE)$  &              & $(\valHorseConvOneSE)$ & \\
+(2) Continuous only           & --                & $\valHorseContTwo$ & $\valHorseConvTwo$ & $\valHorseN$ \\
+                              &                   & $(\valHorseContTwoSE)$ & $(\valHorseConvTwoSE)$ & \\
+(3) Both, additive            & $\valHorseFLThree$ & $\valHorseContThree$ & $\valHorseConvThree$ & $\valHorseN$ \\
+                              & $(\valHorseFLThreeSE)$ & $(\valHorseContThreeSE)$ & $(\valHorseConvThreeSE)$ & \\
 \midrule
-\multicolumn{5}{l}{\emph{Firm-level AUC against $193$ CADE-cobidder labels (always-loser pool, $N\!=\!16{,}843$)}} \\
-FL14 binary                   & AUC $= 0.911$ $[0.898,\,0.925]$ & & & \\
-$\log(1{+}\text{tenders\_count})$ & AUC $= 0.939$ $[0.932,\,0.946]$ & & & \\
-DeLong test (continuous vs FL14)  & $Z = -4.30$, $p = 1.7\times 10^{-5}$ & & & \\
+\multicolumn{5}{l}{\emph{Firm-level AUC against $\valCobidders$ CADE-cobidder labels (always-loser pool, $N=\valAlwaysLosers$)}} \\
+FL14 binary                       & AUC $= \valHorseAUCBin$ $\valHorseAUCBinCI$ & & & \\
+$\log(1{+}\text{tenders\_count})$ & AUC $= \valHorseAUCCont$ $\valHorseAUCContCI$ & & & \\
+DeLong test (continuous vs FL14)  & $Z = \valDeLongZ$, $p = \valDeLongP$ & & & \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
-\small
-\item \textit{Notes:} Outcome is $\log p_{\text{negotiated}}$ within
-the v13 panel of $1{,}653{,}658$ items. Item-level treatment is
-$\mathbf{1}[\text{any FL14 participant}]$ in column~(1) and the
-log of the maximum loss-intensity score among always-loser
-participants in column~(2). Column~(3) includes both. The FL14
-coefficient flips sign when continuous intensity is added to the
-specification: this is the disciplinary diagnostic that the binary
-discretization at $14$ tenders is an operationalization of the
-underlying continuous signal, not an economically primitive
-threshold. We report the binary specification as a deployable
-implementation rule and the continuous specification as the
-substantive object. SEs clustered at item level.
-DeLong tests use the firm-level AUC reported in the bottom panel.
-*** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\footnotesize
+\item \textit{Notes:} Outcome is $\log p_{\text{negotiated}}$ within the
+v13 panel of $\valHorseN$ items. Item-level treatment is
+$\mathbf{1}[\text{any FL14 participant}]$ in column~(1) and the log of the
+maximum loss-intensity score among always-loser participants in
+column~(2). Column~(3) includes both. The FL14 coefficient flips sign
+when continuous intensity is added: the binary discretization at $14$
+tenders is the information-coarsening of the underlying continuous
+signal, not an economically primitive threshold. SEs clustered at item
+level. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
 \end{tablenotes}
 \end{threeparttable}
-}
 \end{table}

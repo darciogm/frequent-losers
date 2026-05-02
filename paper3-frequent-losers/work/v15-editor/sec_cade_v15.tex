@@ -53,12 +53,14 @@ membership.\par}
 \subsection{Conservative benchmark}
 \label{sec:cade_contemporaneous}
 
-The primary benchmark restricts the ground truth to four CADE
-cases adjudicated before $2020$ (coleta de lixo, aquecedores
-solares, trens-metr\^os, tecnologia-informa\c{c}\~ao
-$2019$-$10$): $30$ firm-defendants, all active in BEC, with $210$
-always-losers co-bidding with at least one of them, of which
-$108$ are frequent losers. The participation-stratified
+The primary benchmark restricts the ground truth to
+$\valConservativeCases$ CADE cases adjudicated before
+$\valConservativeCutoff$ (coleta de lixo, aquecedores solares,
+trens-metr\^os, tecnologia-informa\c{c}\~ao $2019$-$10$):
+$\valConservativeFD$ firm-defendants, all active in BEC, with
+$\valConservativeCobidders$ always-losers co-bidding with at
+least one of them, of which $\valConservativeFL$ are frequent
+losers. The participation-stratified
 co-bidding rate is $\valCADEenrich$ against a baseline of
 $\valCADEbase$ ($p<0.001$, $\valPermPilot$ permutations), an
 excess ratio of $\valMultThreeTwo\!\!\times$. The ROC AUC
@@ -133,9 +135,9 @@ and lie outside the target population.
 \label{sec:cade_robustness}
 
 Dropping all $\valCADEpermPerm$ CADE-involved tender-items and
-re-estimating the within-PBU baseline yields $\hat\beta = 0.062$
-($N = \valCADEpermObs{,}954$), virtually unchanged from
-$\valPctSixfour$. The screening signal in $\beta$ operates
+re-estimating the within-PBU baseline yields
+$\hat\beta = \valExclCADECoef$ ($N = \valCADEpermObs{,}954$),
+virtually unchanged from $\valPctSixfour$. The screening signal in $\beta$ operates
 independently of the enforcement record. The residual sample
 either contains undetected cartels that the screening statistic
 flags before enforcement reaches them, or higher-price
