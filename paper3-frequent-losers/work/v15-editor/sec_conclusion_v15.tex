@@ -1,38 +1,91 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The participation-based screen we build extracts usable signal
-for procurement triage from the data envelope every procurement
-system already maintains. Frequent-loser presence on contract-award
-records associates with a $\valHeadlineRange$ higher conditional
-log negotiated unit price across estimators, and discriminates
-cartel-adjacent populations at rates well above random matching:
-AUC $\valAUCprePost$ on a conservative contemporaneous benchmark
-restricted to four pre-2020 cases, and $\valAUCFLfirmTemp$ on temporal
-holdout against a more permissive prospective benchmark. These
-numbers describe the screen's operational footprint, not cartel
-membership; the validation object is adjacency to documented
-collusion, and the construct discriminates direct CADE defendants
-in the broader BEC firm universe at AUC $\valAUCdirectStd$, by
-design.
+The bid-rigging detection literature has been built on the
+assumption that bid-level data are observable. Real enforcement
+environments routinely violate that assumption: many electronic
+procurement systems preserve only the contract-award envelope,
+and the bid-distribution methods that work on the bid layer
+become inoperative on the layer that survives. The paper takes
+this informational mismatch as its starting point and asks what
+collusion-relevant statistic can be recovered when only the
+award layer is observable.
 
-Two interpretive caveats anchor the reading. The conditional
-price association reverses sign under strict-overlap matching
-($\valMatchOverlapCoef$ to $\valMatchPSCoef$): the broad-sample
-estimate combines a within-support comparison with the
-systematic differences between items frequent losers select into
-and items they do not, and the screen's signal turns on the
-latter as much as on the former. The price
-imprint shrinks $\valPBUgradientRatio\!\!\times$ across
-buyer-size quartiles, consistent with thinner institutional
-capacity moderating the imprint at smaller buyers, but buyer
-size proxies for several correlated features and we do not
-identify oversight as the operative channel.
+Endogenous loser-side participation is such a statistic. A
+separating-equilibrium framework with cover bidders and genuine
+entrants identifies $\log(1+\text{tenders\_count})$ together
+with the $\text{wins}=0$ filter as a sufficient ranking statistic
+for cover-bidder type given award-record data; the binary rule
+we deploy is its information-coarsening. The empirical exercise
+on São Paulo's BEC ($\valYearStart$--$\valYearEnd$) finds a
+broad-sample association of $\valHeadlineRange$ in the
+conditional log negotiated unit price across four estimators,
+discriminating power against adjudicated CADE cobidders at
+firm-level AUC $\valAUCFLfirm$ in-sample and
+$\valAUCFLfirmTemp$ under temporal holdout, and a
+$\valMultThreeTwo\!\!\times$ contemporaneous excess against the
+conservative pre-2020 benchmark. The continuous primitive
+strictly dominates the binary rule, consistent with the
+framework's identification of the loss-intensity statistic. The
+construct does not discriminate direct CADE defendants in the
+broader BEC firm universe (AUC $\valAUCdirectStd$): the
+asymmetry between cobidder and direct-defendant labels is the
+design's empirical signature, not a failure.
 
-The screen is designed for triage, computable on award records
-alone, and integrates with bid-distribution methods where bid
-microdata are available
-\citep{imhof2019detecting,wallimann2023machine}. Adversarial
-adaptation degrades performance predictably (Online Appendix~G),
-replication beyond São Paulo remains an open empirical question,
-and the contribution stops short of cartel detection by design.
+The screening framing reorganizes how the empirical evidence is
+read. The broad-sample estimate is informative about the
+participation footprint where the cartel deploys it, integrated
+over the deployment distribution; the overlap-restricted estimate
+($\valMatchOverlapCoef$ to $\valMatchPSCoef$) is the
+within-support comparison at items where treated and control
+populations overlap on observables. The two are different
+empirical objects; the sign reversal between them is the
+diagnostic that locates the construct as a screening-value
+object rather than a treatment-effect object. The buyer-size
+gradient ($\valPBUgradientRatio\!\!\times$ across procuring-unit
+quartiles) is read as variation in the screening signal across
+detection regimes, not as identification of a causal channel
+through which monitoring infrastructure operates on prices.
+Three independent corroborations support the screening
+reading: cartel-adjacency validation moves with the broad-sample
+association; the continuous statistic delivers a model-predicted
+dose-response; sensitivity bounds discipline selection on
+observables of the kind the fixed effects already absorb.
+
+Two implications for enforcement design follow. First, what
+survives data coarsening is not a moment of submitted bids but
+the equilibrium-generated participation footprint that the
+collusive arrangement leaves on the award layer. The
+information that the bid-layer literature reads off bid
+distributions is partially recoverable from a different
+statistic at the award layer when bid data are unavailable, and
+the screening object the recovery delivers is a participation
+statistic rather than a price moment. Second, the architecture
+of enforcement under incomplete observability separates an
+award-layer screening stage from a bid-layer forensic stage. The
+screening stage produces candidate flags; the forensic stage
+adjudicates suspected coordination on the bid distribution where
+microdata exist. The two stages answer different questions
+and require different statistics. The construct fills the first;
+the bid-distribution literature fills the second; the
+benchmark in \S\ref{sec:rob_imhof} confirms that the two
+operate on the same underlying cases without dominating each
+other.
+
+The contribution stops at the screening stage by design. The
+construct does not adjudicate cartel membership and cannot do so
+under coarsened observability; the cobidder population is the
+structurally appropriate validation object given the data layer.
+Adversarial adaptation degrades the construct's discrimination
+predictably (Online Appendix~G), and replication beyond São Paulo
+remains an open empirical question that the construct's three
+prerequisites---a winner-loser participation registry, an
+electronic platform, and an institutional asymmetry between the
+two sides of the bidding pool---will determine. The conceptual
+content travels: wherever an enforcement environment exposes the
+award layer without exposing the bid layer, the question is not
+whether bid-distribution screens can be retrofitted but what
+participation primitive the collusive arrangement generates that
+survives the coarsening, and how the screening stage that reads
+that primitive should be sequenced before the forensic stage
+that requires bid-level evidence.
