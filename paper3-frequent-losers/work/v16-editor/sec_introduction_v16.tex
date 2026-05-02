@@ -1,28 +1,36 @@
 \section{Introduction}
 \label{sec:intro}
 
-The empirical literature on cartel detection reads collusion off
-the distribution of submitted bids. Within-tender variance,
-kurtosis, skewness, and normalized spread are informative about
-coordinated bidding when the bid-level record is preserved
+The empirical industrial-organization literature on cartel
+detection reads collusion off the distribution of submitted bids.
+Within-tender variance, kurtosis, skewness, and normalized spread
+are informative about coordinated bidding when the bid-level
+record is preserved
 \citep{porter1993detection,bajari2003deciding,imhof2019detecting,wallimann2023machine}.
-Real enforcement environments rarely match this benchmark. Many
-electronic procurement systems archive only the contract-award
-layer---winner identity, participant identity, item code,
-negotiated price---and export bid-by-bid records to operational
-logs that competition authorities and audit courts query slowly,
-partially, or not at all. The methods designed for the bid layer
-become inoperative on the layer that survives.
+Real enforcement environments rarely match this benchmark. Most
+electronic procurement systems globally archive only the
+contract-award layer---winner identity, participant identity, item
+code, negotiated price---and export bid-by-bid records to
+operational logs that competition authorities and audit courts
+query slowly, partially, or not at all. The methods designed for
+the bid layer become inoperative on the layer that survives.
 
-We ask what collusion-relevant information remains under that
-coarsening. A separating-equilibrium framework with cover
-bidders and genuine entrants (Online Appendix~A) makes the
-question tractable. Two results anchor the empirical strategy.
-In equilibrium cover bidders satisfy
-$\Pr(\text{win}\mid C)=0$: the $\text{wins}=0$ filter is a
-separating choice, not a descriptive coincidence. And given
-award-record data, $\log(1+\text{tenders\_count})$ is a
-sufficient ranking statistic for cover-bidder type under a
+We treat the data-coarsening fact as a constraint on enforcement
+design and ask three connected questions. What collusion-relevant
+information remains in award-record data alone? Does that
+information separate cartel-adjacent populations from competitive
+ones with discrimination comparable to bid-distribution methods?
+And does the answer reorganize how an enforcement architecture
+under incomplete observability should be sequenced?
+
+A separating-equilibrium framework with cover bidders and genuine
+entrants (Online Appendix~A) makes the first two questions
+tractable. Two results anchor the empirical strategy. In
+equilibrium cover bidders satisfy $\Pr(\text{win}\mid C)=0$: the
+$\text{wins}=0$ filter is a separating choice, not a descriptive
+coincidence. And given award-record data,
+$\log(1+\text{tenders\_count})$ together with the win-zero filter
+is a sufficient ranking statistic for cover-bidder type under a
 monotone-likelihood-ratio Poisson approximation. The framework
 treats endogenous sorting into cartel-affected items as
 constitutive of the screening object, not as a confound. The
@@ -30,72 +38,118 @@ binary $\text{median}+1.5\!\times\!\text{IQR}$ rule is its
 information-coarsening; we call firms above the threshold
 \emph{frequent losers}.
 
-We test the framework on São Paulo's Bolsa Eletrônica de Compras
-(BEC, $\valYearStart$--$\valYearEnd$), an electronic platform
-that preserves the award envelope across $\valSampleN$
-tender-items. Of $\valBECfirms$ active firms, $\valAlwaysLosers$
-have a zero win rate; $\valFL$ cross the threshold. Their
-presence associates with a $\valHeadlineRange$ higher
-conditional log negotiated unit price across four estimators
-(cross-fit, OLS, CEM, IPW). Restricting to items where treated
-and control overlap on observables reverses the sign
-(overlap-cell ATT $\valMatchOverlapCoef$,
-propensity-score-trimmed $\valMatchPSCoef$). Under the
-framework's screening interpretation the reversal is diagnostic
-rather than refutation: the overlap restriction strips
-precisely the equilibrium sorting that the screening statistic
-is designed to capture. Three independent corroborations support
-the reading. The construct discriminates $\valCobidders$
-adjudicated CADE cobidders inside the always-loser stratum at
-firm-level AUC $\valAUCFLfirm$ in-sample, $\valAUCFLfirmTemp$
-under temporal holdout, and $\valAUCprePost$ on a strict
-pre-$2020$ contemporaneous benchmark; against the $\valDirectCADE$
-direct CADE defendants in the broader BEC firm universe AUC is
-$\valAUCdirectStd$---the design's empirical signature. The
-continuous primitive strictly dominates the binary cutoff
-(\citealt{delong1988comparing} test, $p<10^{-3}$). And the price
-imprint varies $\valPBUgradientRatio\!\!\times$ across
-procuring-unit-size quartiles, evidence that the screening
-signal scales with the detection regime.
+The third question is informational and architectural. Under
+incomplete observability the appropriate enforcement design
+separates an \emph{award-layer screening stage} that produces
+candidate environments for bid-layer scrutiny from a
+\emph{bid-layer forensic stage} that adjudicates suspected
+coordination
+\citep{becker1968crime,stigler1970optimum,harrington2008detecting,decarolis2014awarding,kawai2022detection}.
+The two stages answer different questions, operate on different
+data envelopes, and trade off accuracy against deployability in
+different ways. The screening statistic this paper studies is the
+analytical object the award layer can deliver; whether the bid
+layer is preserved or not, the screening stage need not wait.
 
-The contribution sits at the conjunction of three literatures,
-each constrained by the data layer at which it operates.
-Bid-coordination tests
+We test the framework on São Paulo's Bolsa Eletr\^onica de
+Compras (BEC, $\valYearStart$--$\valYearEnd$), an electronic
+platform that preserves the award envelope across
+$\valSampleN$ tender-items. Three discrimination results lead.
+First, against the cobidder population inside the always-loser
+stratum---the $\valCobidders$ firms that participated alongside
+adjudicated CADE direct defendants---the construct yields
+firm-level AUC $\valAUCFLfirmTemp$ under temporal holdout
+(train $2009$--$2016$, test $2017$--$2019$) and
+$\valAUCprePost$ on a strict pre-$2020$ contemporaneous benchmark
+with participation-stratified permutation null
+($\valMultThreeTwo\!\!\times$ excess over the random-matching
+baseline, $p<0.001$).
+Second, against bid-distribution detectors that require
+per-bidder bid amounts (\citealt{imhof2019detecting} pipeline,
+re-implemented; \S\ref{sec:forensic}), the screening statistic
+reaches comparable accuracy on a substantially thinner data
+envelope (AUC $0.903$ vs.\ $0.888$ on the same target) and adds
+non-redundant signal in same-sample combination
+($+\valImhofIncFL$ AUC, DeLong $p=\valImhofIncFLp$). Third,
+against the $\valDirectCADE$ direct CADE defendants in the
+broader BEC firm universe, AUC is $\valAUCdirectStd$---the
+design's empirical signature, since the construct recovers
+loser-side participation rather than winner-side identity.
+
+Within the always-loser stratum, the cobidder population matches
+the modeled cover-bidder type along four of five operational
+predictions the framework yields: cobidders deploy at higher
+intensity than FL non-cobidders (Cohen's $d=+1.00$ on unique
+winners faced), are deployed proximally to direct CADE defendants
+($d=+0.46$), and concentrate their participation in narrower
+markets ($d=+0.39$ on portfolio item-group HHI). The validation
+positive class is therefore an empirically grounded analog of the
+modeled type, not a label of convenience.
+
+The pricing evidence is descriptive corroboration. Frequent-loser
+presence associates with a $\valHeadlineRange$ higher conditional
+log negotiated unit price across four estimators (cross-fit, OLS,
+CEM, IPW). On the overlap subsample without ATT-reweighting the
+broad-sample positive imprint survives at
+$\valBetaUnwOverlap$ ($p=\valBetaUnwOverlapP$); only ATT-weights
+that up-weight cells with relatively few untreated counterfactuals
+flip the sign to $\valMatchOverlapCoef$. We report all three
+specifications and acknowledge that the framework's
+screening-value reading is one interpretation among several the
+data do not adjudicate
+(\S\ref{sec:results_overlap}, Online Appendix~A).
+\citet{cinelli2020making}'s $RV_{q=1}=\valRVqOne$ and
+\citet{oster2019unobservable}'s $\hat{\delta}=\valOsterDelta$
+bound the broad-sample association against selection on observables.
+
+The contribution sits at the intersection of four literatures,
+each constrained by the data envelope on which it operates. The
+bid-coordination literature
 \citep{bajari2003deciding,porter1993detection,conley2016detecting}
-require a partition between colluders and a competitive fringe;
-the construct supplies a candidate \emph{ex ante} firm-level
-flag computable from award records. Bid-distribution screens
-\citep{imhof2019detecting,wallimann2023machine} require bid
-microdata; the construct runs on the layer that survives the
-coarsening, and integrates with bid-distribution methods at the
-forensic stage where microdata exist (§\ref{sec:forensic}).
-Empirical work on cover bidding has identified cover bidders
-\emph{ex post}, through leniency testimony or judicial discovery
-\citep{porter1999ohio,pesendorfer2000study,asker2010leniency}; we
-are not aware of a published prospective identification of
-cover-bidder candidates from public award-record data. The
-cumulative claim is structural: under incomplete observability,
-the appropriate enforcement architecture separates an award-layer
-screening stage that produces candidate flags from a bid-layer
-forensic stage that adjudicates suspected coordination, and the
-two stages answer different questions
-\citep{becker1968crime,stigler1970optimum,harrington2008detecting}.
-The policy implication is direct: proactive cartel screening
-does not require bid-microdata archival as a precondition.
-Jurisdictions that lack the bid layer can deploy the award-layer
-stage on data they already maintain, and reforms that mandate
-bid archival expand the forensic stage that the screening stage
-feeds rather than substitute for it.
+requires a partition between colluders and a competitive fringe;
+the construct supplies a candidate \emph{ex ante} firm-level flag
+computable from award records. Bid-distribution screens
+\citep{imhof2019detecting,wallimann2023machine,huber2019machine}
+require bid microdata; the construct operates on the
+information-coarsened layer that survives, and integrates with
+bid-distribution methods at the forensic stage where microdata
+exist (\S\ref{sec:forensic}). Empirical cover-bidding work
+identifies cover bidders \emph{ex post}, through leniency
+testimony or judicial discovery
+\citep{porter1999ohio,pesendorfer2000study,asker2010leniency,kawai2022detection};
+we are not aware of a published prospective identification of
+cover-bidder candidates from public award-record data alone. The
+enforcement-design literature
+\citep{becker1968crime,stigler1970optimum,harrington2008detecting,baker2002case}
+prescribes how detection technology and information acquisition
+interact under costly observation; the screening-then-forensic
+sequencing this paper proposes is a particular structure of that
+information chain.
 
-Three things the paper does not claim. The broad-sample
-association is not a causal estimate of cover bidding's effect
-on prices; the screening framing does not require it to be.
-The buyer-size gradient is scope information about where the
-screening signal varies, not identification of an oversight
-channel. And the construct does not adjudicate cartel
-membership: cobidders are the validation object the data layer
-supports, and the AUC asymmetry against direct defendants is
-the design's signature.
+The cumulative claim is structural and informational. Under
+incomplete observability of the bid layer, an award-layer
+screening stage prioritizes environments at discrimination
+accuracy comparable to bid-distribution methods on a substantially
+thinner data envelope, with non-redundant signal in combination.
+The architectural implication is that the bid-layer forensic
+stage need not be the universal entry point for cartel
+enforcement; jurisdictions that lack bid microdata can deploy the
+screening stage on data they already maintain, and reforms that
+mandate bid archival expand the forensic stage that the screening
+stage feeds rather than substitute for it.
+
+Three claims the paper does not make. The pricing imprint is not
+a causal estimate of cover bidding's effect on prices, the
+screening framing does not require it to be, and the
+overlap-decomposition shows the sign reversal is a reweighting
+phenomenon that the data do not let us interpret causally. The
+buyer-size gradient is scope information about where the
+screening signal varies across detection regimes, not
+identification of an institutional channel. And the construct
+does not adjudicate cartel membership: cobidders are the validation
+object the data layer supports, and the AUC asymmetry against
+direct defendants is the design's empirical signature, not a
+failure of the screening logic.
 
 The paper proceeds in five blocks.
 Section~\ref{sec:literature} situates the contribution against
@@ -104,18 +158,18 @@ enforcement-design literatures.
 Section~\ref{sec:institutional} describes the BEC data layers
 and the CADE adjudication portfolio.
 Sections~\ref{sec:data}--\ref{sec:empirical} state the
-participation primitive, the binary rule, and the descriptive
-identifying stance, alongside the two design-based strategies
-(RDD, DiD) that return null.
-Sections~\ref{sec:cade}--\ref{sec:results} report the CADE
-validation and the within-item price association, treating the
-sign reversal under overlap restrictions as the
-screening-value-vs-treatment-effect distinction.
+participation primitive, the binary rule, and the empirical
+strategy, alongside the two design-based strategies (RDD, DiD)
+that return null.
+Section~\ref{sec:cade} carries the discrimination evidence and
+the within-stratum theory-validation bridge.
+Section~\ref{sec:results} reports the price imprint as
+descriptive corroboration and decomposes the sign reversal under
+overlap restriction.
 Sections~\ref{sec:mechanisms}--\ref{sec:robustness} develop the
 modal informativeness contrast, the detection-regime gradient,
 and the threshold/identification audits.
-Section~\ref{sec:forensic} tests the screening-vs-forensic-stage
-architecture against bid-distribution detectors trained on bid
-microdata.
+Section~\ref{sec:forensic} carries the architectural test against
+bid-distribution detectors trained on bid microdata.
 Sections~\ref{sec:limitations}--\ref{sec:conclusion} catalog
 scope limitations and conclude.
