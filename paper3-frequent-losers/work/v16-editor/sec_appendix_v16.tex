@@ -350,27 +350,39 @@ causal channel (\S\ref{sec:results_oversight}).}
 \section{Identification Audits}
 \label{app:online_robustness}
 
-The four audits referenced in §\ref{sec:emp_audits} are reported
-here in detail. Table~\ref{tab:oster_delta} reports the
+Table~\ref{tab:oster_delta} reports the
 \citet{cinelli2020making} robustness value and the
 \citet{oster2019unobservable} bounds for the broad-sample
-association. Table~\ref{tab:leakage_audit} reports the leakage
-decomposition that separates the structural component of the
-in-sample item-level discrimination AUC from the tautology
-component. Table~\ref{tab:cade_permutation} reports the
-permutation-test design behind the conservative-benchmark
-co-bidding rate of §\ref{sec:cade_contemporaneous}: the
-participation-stratified co-bidding rate among frequent losers
-($\valCADEenrich$) is contrasted with the empirical null
-distribution under random matching at comparable participation
-volume ($\valCADEbase$, $\valPermPilot$ iterations,
-$p<0.001$).
+association. The leakage decomposition and the permutation
+null behind the conservative benchmark have been promoted to
+\S\ref{sec:cade} (Table~\ref{tab:leakage_audit},
+Table~\ref{tab:cade_permutation}); we keep them as the
+discrimination centerpiece rather than as appendix audits.
+
+The leave-one-out instrumental-variable placebo
+(Table~\ref{tab:iv_placebo}) confirms that the participation
+primitive operates through the threshold-crossing population the
+construct identifies. Random subsamples of below-threshold always-
+losers do not produce comparable discrimination, validating the
+threshold rule's empirical content.
+
+Table~\ref{tab:temporal_holdout_year} reports the rolling-origin
+temporal-holdout AUC by test year, the year-by-year decomposition
+of Figure~\ref{fig:temporal_holdout_roc} in the body.
+
+Table~\ref{tab:mde_summary} reports minimum-detectable-effect
+calculations for the failed RDD and DiD designs of
+\S\ref{sec:emp_estimand}. Observed-to-MDE ratios well below one
+indicate the null findings are structurally underpowered, not
+refutations of the underlying mechanism.
 
 \input{./output/tables/tab_oster_delta}
 
-\input{./output/tables/tab_leakage_audit}
+\input{./output/tables/tab_iv_placebo}
 
-\input{./output/tables/tab_cade_permutation}
+\input{./output/tables/tab_temporal_holdout_year}
+
+\input{./output/tables/tab_mde_summary}
 
 \section{Threshold and Specification Robustness}
 \label{app:robustness_tables}
@@ -423,6 +435,18 @@ settings.
 \input{./output/tables/tab_imhof_incremental}
 
 \input{./output/tables/tab_external_validity_scope}
+
+\input{./output/tables/tab_auc_decomposition}
+
+The AUC decomposition in Table~\ref{tab:auc_decomposition} reports
+the marginal contribution of each feature block to discrimination
+performance on the cobidder ground truth. The participation
+primitive $\log(1+\text{tenders\_count})$ alone reaches AUC near
+the full-feature ceiling; bid-based features contribute
+non-trivially, and dropping the participation primitive collapses
+discrimination to bid-distribution-only performance. The
+decomposition supports the framework's identification of the
+participation primitive as the dominant signal at the award layer.
 
 \section{Adversarial-Adaptation Simulation}
 \label{app:adversarial}

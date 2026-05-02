@@ -187,6 +187,46 @@ non-trivial assumption that the conservative benchmark in
 \S\ref{sec:cade_contemporaneous} avoids. We report it as
 complementary, not as the primary anchor.
 
+Figure~\ref{fig:temporal_holdout_roc} reports the receiver-operating
+characteristic curves under the rolling-origin temporal-holdout
+scheme, with one curve per test year and the diagonal reference.
+The curves separate cleanly from the diagonal across all six test
+years; the year-by-year AUC is reported in
+Appendix~\ref{tab:temporal_holdout_year}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{./output/figures/fig_temporal_holdout_roc}
+\caption[Temporal-holdout ROC]{ROC curves for the construct
+under rolling-origin temporal holdout. Training window is
+$2009$ through $\text{test year}-1$; the test year provides the
+out-of-sample cobidder ground truth. AUC values, $95\%$ CIs,
+sample sizes, and CADE counts per year are reported in
+Table~\ref{tab:temporal_holdout_year}. Source: \texttt{scripts/17\_temporal\_holdout\_roc.R}.}
+\label{fig:temporal_holdout_roc}
+\end{figure}
+
+\paragraph{Permutation null and leakage decomposition.}
+Two further diagnostics tighten the discrimination evidence.
+The participation-stratified permutation null behind the
+conservative benchmark is reported in
+Table~\ref{tab:cade_permutation}: under $\valPermPilot$
+iterations of within-quartile relabeling of cobidder/non-cobidder
+status, the empirical excess ratio of $\valMultThreeTwo\!\!\times$
+falls in the upper tail of the null distribution at $p<0.001$.
+The leakage decomposition in
+Table~\ref{tab:leakage_audit} separates the in-sample item-level
+discrimination AUC of $\valAUClogtc$ into a structural component
+recovered when cobidder firms are held out of score construction
+within cross-validation folds (AUC $\approx 0.86$--$0.89$) and a
+mechanical-tautology component ($\approx 0.10$--$0.13$). The
+structural component is what the screening interpretation rests
+on.
+
+\input{./output/tables/tab_cade_permutation}
+
+\input{./output/tables/tab_leakage_audit}
+
 A within-firm exercise on the same portfolio: $3$ of $7$
 always-loser direct defendants ($\valPctFortythree$) cross the
 frequent-loser threshold against a population baseline of
