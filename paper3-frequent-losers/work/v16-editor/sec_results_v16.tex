@@ -55,104 +55,133 @@ the deployment sorting is itself part of the screening-value
 content, not whether $\beta$ would survive a counterfactual
 that strips the sorting away.
 
-\subsection{Overlap-Restricted Association \texorpdfstring{($\beta^{\text{ov}}$)}{(beta-ov)} and the
-Screening-Value Diagnostic}
+\subsection{Overlap-Restricted Association \texorpdfstring{($\beta^{\text{ov}}$)}{(beta-ov)} and What the Sign Reversal Does and Does Not Tell Us}
 \label{sec:results_overlap}
 
 Restricting the comparison to cells in which frequent-loser-present
-and -absent items genuinely overlap on observables produces a
-reversed conditional coefficient: overlap-cell ATT
-$\valMatchOverlapCoef$, propensity-score-trimmed ATT
-$\valMatchPSCoef$
+and -absent items genuinely overlap on observables and reweighting
+to the average treatment effect on the treated produces a reversed
+conditional coefficient: overlap-cell ATT $\valMatchOverlapCoef$,
+propensity-score-trimmed ATT $\valMatchPSCoef$
 (Table~\ref{tab:item_level_scope_match}).
 
 \input{./output/tables/tab_item_level_scope_match}
 
-This is a different empirical object. $\beta^{\text{ov}}$ is the
-within-support comparison at the items where treated and control
-populations look alike on observables, computed by holding the
-participation footprint fixed at that subsample. It is the
-estimand a treatment-effect framing would target.
-$\beta$ is the broad-sample association at the items where
-frequent losers actually deploy, integrated over the deployment
-distribution. The two objects answer different questions; the
-sign reversal is the empirical signature that they are
-different.
+The reversal is real, and we report it. Two interpretive moves,
+however, that an earlier version of the paper made are not
+supported once the gap is decomposed empirically. We document the
+decomposition here so that the reader can see exactly what the
+data do and do not say.
 
-Figure~\ref{fig:two_objects} traces the conditional coefficient
-along a continuum of overlap restriction. As the sample retained
-shrinks from the full $\valSampleN$ items to the $400{,}687$
-items inside the propensity-score-trimmed common support, the
-coefficient moves monotonically from $\valPctSixfour$ through
-$\valMatchOverlapCoef$ and $\valMatchPSCoef$. The trajectory is
-the screening-value diagnostic in visual form: the deployment
-sorting that the screening statistic captures lies in the items
-the overlap restriction successively removes, and the curve
-crosses zero precisely as those items are stripped out.
+\paragraph{The reversal is a reweighting result, not an
+overlap-dropping result} The gap from $\valBetaBroad$
+($\valBetaBroadN$ items) to $\valBetaOverlapATT$ separates into
+two margins: (i) restricting to cells with both treated and
+untreated items, and (ii) ATT-reweighting within those cells.
+We re-estimated the same regression on the overlap subsample
+\emph{without} ATT-weights. The unweighted overlap coefficient is
+$\valBetaUnwOverlap$ ($p=\valBetaUnwOverlapP$,
+$N=\valBetaOverlapN$). The reversal to $\valBetaOverlapATT$ is
+produced by the ATT-weighting step, not by the overlap restriction
+itself: only $\valDroppedItems$ of $79{,}452$ treated items
+($\valDroppedItemsShare$) lack a within-cell counterfactual and
+are strictly dropped. The remaining $99\%$ of treated items
+participate in both estimates; the difference is which untreated
+counterfactuals each estimator up-weights.
+
+\paragraph{The cell-dropping pattern provides only mixed support
+for a deployment-sorting reading} An earlier version of the paper
+read the reversal as a diagnostic that overlap restriction strips
+out exactly the deployment-sorted, screening-rich environments.
+Comparing treated items in dropped versus surviving cells along
+six discriminating dimensions
+(Table~\ref{tab:sign_reversal_decomp}, Panel C): convite share is
+\emph{lower} in dropped cells ($\valDropConviteShare$ vs.\
+$\valSurvConviteShare$, $p<10^{-15}$, opposite of the
+deployment-targeting prediction); procuring-unit-size quartile
+is also lower in dropped cells; direct-CADE-item share differs
+trivially and is statistically null
+($\valDropDirectShare$ vs.\ $\valSurvDirectShare$,
+$p=\valDropDirectP$); cobidder-item share is the one dimension
+\emph{consistent} with the deployment reading
+($\valDropCobidShare$ vs.\ $\valSurvCobidShare$, $p<10^{-6}$).
+Dropped cells are dominated by high-priced specialty items with
+many bidders---a thin-market problem distinct from any
+deployment-sorting story. We no longer claim that the cell-dropping
+pattern confirms the screening-value reading; the empirical
+evidence is mixed at best.
+
+\input{./output/tables/tab_sign_reversal_decomp}
+
+\paragraph{What survives inside the overlap sample} Two results
+inside the overlap subsample remain informative for the framework.
+First, $\widehat\beta^{\text{ov}}$ is statistically null among
+items containing direct CADE defendants
+($\valBetaCADEDirect$, $p=\valBetaCADEDirectP$), in contrast to
+its strongly negative value in non-direct-CADE items
+($\valBetaCADENonDirect$, $p<0.001$): on the cells closest to
+adjudicated cartel activity, the negative reading does not
+survive. Second, in the highest tender-value quartile (Q4)---where
+deployment value is most plausible \emph{a priori} on contract
+size alone---$\widehat\beta^{\text{ov}}$ is positive and
+significant at $\valBetaQfour$ ($p=\valBetaQfourP$). The two
+quantities are modest but they are residue, inside the overlap
+sample, of what the screening framework would predict; we report
+them as such, not as positive identification.
+
+\paragraph{What we read into the reversal, and what we do not}
+Under the framework of Online Appendix~A, $\beta$ on the broad
+sample picks up the conditional association at items where
+frequent losers deploy, integrated over the cartel's deployment
+distribution. $\beta^{\text{ov}}$ on the ATT-reweighted overlap
+sample is a different empirical object that up-weights cells with
+relatively few untreated counterfactuals, and the reweighting can
+generate a negative coefficient under data-generating processes
+the framework allows (Online Appendix~A,
+Proposition~\ref{prop:screening_value}, treated as one
+interpretation among several). What we now claim is narrower than
+v15 of this paper claimed: (i) the broad-sample positive imprint
+\emph{survives} an unweighted overlap restriction at
+$\valBetaUnwOverlap$, so it is not built on items the design would
+discard; (ii) the cell-dropping pattern offers one of six
+empirical dimensions consistent with deployment sorting (cobidder
+concentration); (iii) inside the overlap sample,
+$\widehat\beta^{\text{ov}}$ is null on direct-CADE items and
+positive in the largest tender-value quartile.
+What we do \emph{not} claim is that the sign reversal cleanly
+identifies the screening-value reading against alternative
+data-generating processes. The pairing of $\beta$ and
+$\beta^{\text{ov}}$ is reported transparently; we privilege $\beta$
+under the screening framing and acknowledge that
+$\beta^{\text{ov}}$ would be privileged under a treatment-effect
+framing the data do not adjudicate.
+
+The construct's defense, in the rebuilt hierarchy, does not rest
+on the sign reversal. The supporting evidence carries: the
+discrimination AUCs and the architectural comparison with bid-
+distribution detectors (\S\ref{sec:cade}, \S\ref{sec:forensic})
+do not depend on overlap weighting. \citet{cinelli2020making}'s
+$RV_{q=1}=\valRVqOne$ and \citet{oster2019unobservable}'s
+$\hat{\delta}=\valOsterDelta$ bound the broad-sample association
+against selection on observables already absorbed by the fixed
+effects.
+
+Figure~\ref{fig:two_objects} reports the same coefficient
+trajectory across the four anchor specifications.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{./output/figures/fig_two_objects_continuum}
 \caption[Two empirical objects, one continuum]{Conditional
-log-price coefficient along the overlap-restriction continuum.
-The four anchor points are the specifications of
-Table~\ref{tab:item_level_scope_match}; intermediate values
-interpolated. Point size encodes sample retention. The shaded
-band is the 95\% confidence interval. The trajectory crosses
-zero as the propensity-score restriction strips the deployment
-sorting that the screening statistic is designed to capture
-(\S\ref{sec:emp_estimand}, Online Appendix~A,
-Proposition~\ref{prop:screening_value}).}
+log-price coefficient across the four specifications of
+Table~\ref{tab:item_level_scope_match}. Point size encodes
+sample retention. The shaded band is the 95\% confidence
+interval. The figure displays the gap between $\beta$ and
+$\beta^{\text{ov}}$; \S\ref{sec:results_overlap} decomposes the
+gap into an overlap-restriction step (small) and an
+ATT-reweighting step (the bulk).}
 \label{fig:two_objects}
 \end{figure}
-
-\paragraph{Why we read the reversal as a screening-value
-diagnostic} Under the separating equilibrium of
-Online Appendix~A, frequent-loser participation is generated by
-the cartel's deployment problem. The cartel's choice of where
-to place cover bidders is informative: the deployment sorting is
-not a confound to be matched away but the equilibrium response
-to incentives we cannot observe directly. Three pieces of
-empirical evidence are consistent with this reading rather than
-with a treatment-effect-that-fails-on-overlap reading.
-
-\textit{(i)} The broad-sample association moves with cartel
-adjacency. The construct discriminates the $\valCobidders$
-adjudicated CADE-cobidder firms inside the always-loser stratum
-at AUC $\valAUCFLfirm$ in-sample, $\valAUCFLfirmTemp$ under
-temporal holdout, and $\valAUCprePost$ on the contemporaneous
-benchmark of §\ref{sec:cade}. Under a confound-only reading of
-$\beta$, the construct's labels would not concentrate on
-adjudicated cartel members; the empirical concentration is
-inconsistent with that reading.
-
-\textit{(ii)} The continuous loss-intensity statistic
-strictly dominates the binary rule in discrimination of the same
-labels (\citealt{delong1988comparing} test, $p<10^{-3}$;
-§\ref{sec:mech_horse_race}). The participation primitive is
-ranked, not categorical; the binary rule is the
-information-coarsening of a deeper signal. A pure-confound
-reading does not predict the dose-response.
-
-\textit{(iii)} \citet{cinelli2020making}'s
-$RV_{q=1}=\valRVqOne$ and \citet{oster2019unobservable}'s
-$\hat{\delta}=\valOsterDelta$ bound the broad-sample association
-against selection on observables of the kind already absorbed
-by the fixed effects. They do not bound the deployment
-sorting that the overlap restriction surfaces, by construction;
-under the screening framing, that sorting is the object, not the
-threat.
-
-We report $\beta$ and $\beta^{\text{ov}}$ side by side:
-$\valHeadlineRange$ on the broad sample, $\valMatchOverlapCoef$
-to $\valMatchPSCoef$ on the overlap-restricted subsample. The
-pairing is the result, not a robustness contest. Under the
-screening framing $\beta$ is the relevant object because the
-screening statistic reads against the deployment distribution;
-under a treatment-effect framing $\beta^{\text{ov}}$ is the
-relevant object because identification is local to the
-within-support subsample. The reader has both numbers and our
-reasons for privileging the first.
 
 \subsection{Heterogeneity Across Detection Regimes}
 \label{sec:results_oversight}
