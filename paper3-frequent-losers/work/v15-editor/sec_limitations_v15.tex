@@ -1,10 +1,5 @@
-% Limitations — three subsections by stake.
-%   10.1 Identification scope (what causal claims we cannot make)
-%   10.2 Construct scope (what the construct flags and what it does not)
-%   10.3 External validity and portability (where the evidence travels)
-% Limitations section: full disclosure expected. Honest mode applies more
-% openly than in main text. But still strength-led: each subsection ends
-% with what the construct does provide, not with what it lacks.
+% Limitations v18 (Prompt 4 audit): identification + construct +
+% portability; aligned with main-text discipline.
 
 \section{Limitations}
 \label{sec:limitations}
@@ -34,59 +29,54 @@ outcome series. We report the failures openly and treat the
 empirical content as a descriptive association rather than as a
 causal estimate.
 
-The strict-overlap matching exercise developed in §\ref{sec:results_ols}
-and audited in §\ref{sec:rob_identification} is the most
-informative single observation about the limits of the descriptive
-claim. The within-PBU coefficient of $\valPctSixfour$ on the broad
-sample reverses to $\valMatchOverlapCoef$ under matching restricted to overlap
-cells and to $\valMatchPSCoef$ under propensity-score trimming
-(Table~\ref{tab:item_level_scope_match}). Neither the broad-sample
-association nor the strict-overlap inversion carries causal weight
-on its own. Both are conditional descriptions of the same
-population from different angles: the broad-sample gap captures
-the systematic differences between items frequent losers select
-into and items they do not, and the strict-overlap inversion
-removes those differences by construction. The sensitivity bounds (\citet{cinelli2020making} robustness value $\valRVqOne$ and \citet{oster2019unobservable}'s $\hat\delta = 261.64$ on the full sample) discipline the broad-sample
-association against selection on observables of the kind already
-captured by item, year, and procuring-unit fixed effects, but they
-do not extend to the selection on unobservables that strict-overlap
-matching surfaces.
+The strict-overlap matching exercise of §\ref{sec:results_ols},
+audited in §\ref{sec:rob_identification}, sets the limit on the
+descriptive claim. The within-PBU coefficient $\valPctSixfour$ on
+the broad sample reverses to $\valMatchOverlapCoef$ under
+overlap-restricted matching and to $\valMatchPSCoef$ under
+propensity-score trimming (Table~\ref{tab:item_level_scope_match}).
+Neither the broad-sample association nor the overlap-restricted
+inversion carries causal weight on its own; both are conditional
+descriptions of the same population at different scopes. The
+sensitivity bounds (\citet{cinelli2020making} robustness value
+$\valRVqOne$, \citet{oster2019unobservable}
+$\hat\delta = 261.64$) discipline the broad-sample association
+against selection on observables already absorbed by item, year,
+and procuring-unit fixed effects, but do not extend to the
+selection on unobservables that overlap-restricted matching
+surfaces.
 
-What this implies for the paper's claims is concrete. The
-$\valHeadlineRange$ headline range is a conditional descriptive
-association across estimators, not an estimate of cover-bidding's
-causal effect on prices. The $\valPBUgradientRatio\!\!\times$
-procuring-unit-size oversight gradient is consistent with the
-framework's comparative static $\partial m^*/\partial \theta_k < 0$,
-but the consistency is observational; the gradient does not
-identify the causal channel through which oversight infrastructure
-moderates the participation footprint. For the construct's
-intended use---prioritizing oversight case-load on environments
-where the participation footprint is institutionally
-structured---this descriptive scope is sufficient. A screen does
-not need to identify causal effects to allocate scarce auditing
-resources; it needs to flag environments at higher prior risk than
-random selection would, and to do so on data the oversight body
-already holds.
+The implication is concrete. The $\valHeadlineRange$ headline
+range is a conditional descriptive association across
+estimators, not an estimate of cover-bidding's causal effect on
+prices. The $\valPBUgradientRatio\!\!\times$ procuring-unit-size
+gradient is observationally consistent with the framework's
+comparative static $\partial m^*/\partial \theta_k < 0$, without
+identifying the causal channel. For the construct's intended
+use---prioritizing oversight case-load---this descriptive scope
+is sufficient: a screen needs to flag environments at higher
+prior risk than random selection would, on data the oversight
+body already holds.
 
 % ──────────────────────────────────────────────────────────────────
 \subsection{Construct scope}
 \label{sec:lim_construct}
 % ──────────────────────────────────────────────────────────────────
 
-The construct flags loser-side participation patterns, not cartel members. Inside
-the always-loser stratum where the construct operates, it
-discriminates the $\valCobidders$ adjudicated CADE-cobidder firms
-at firm-level AUC $\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$) in
-sample and at $\valAUCFLfirmTemp$ ($95\%$ CI $\valAUCFLfirmTempCI$) under temporal
-holdout (§\ref{sec:rob_operational}). Against the
-$\valDirectCADE$ direct CADE defendants in the broader BEC firm universe, the construct discriminates at AUC $\valAUCdirectStd$, essentially random. The asymmetry is by design, not a failure: direct
-defendants in adjudicated cases are typically frequent winners,
-while the construct concentrates on participation footprints
-characterized by persistent zero wins. A deploying oversight body
-that wants to detect cartel ringleaders directly will need a
-different tool; the construct flags the loser side of the cartel
-population, and the empirical AUC differential against the two
+The construct flags loser-side participation patterns, not
+cartel members. Inside the always-loser stratum the construct
+discriminates the $\valCobidders$ adjudicated CADE-cobidder
+firms at firm-level AUC $\valAUCFLfirm$ ($95\%$ CI
+$\valAUCFLfirmCI$) in sample and $\valAUCFLfirmTemp$ ($95\%$ CI
+$\valAUCFLfirmTempCI$) under temporal holdout
+(§\ref{sec:rob_operational}). Against the $\valDirectCADE$
+direct CADE defendants in the broader BEC firm universe, AUC is
+$\valAUCdirectStd$. The asymmetry is by design: direct
+defendants are typically frequent winners, while the construct
+operates on participation footprints with persistent zero wins.
+A deploying oversight body that wants to identify cartel
+ringleaders directly will need a different tool; the construct
+flags the loser side, and the AUC differential between the two
 populations is what that scope looks like in the data.
 
 The participation footprint the construct flags is observationally
@@ -137,16 +127,12 @@ essentially unchanged), degrades modestly under CNPJ splitting
 ($\valAdaptCNPJDeltaPP$ points), and is substantially vulnerable
 to threshold capping ($\valAdaptCapDeltaPP$ points). Combining
 threshold capping with rotation drives AUC from $\valAUCBase$ to
-$\valAUCAdaptCombined$. We do not claim the construct is
-adaptation-proof. The threshold rule is the most exposed margin,
-and the construct's operational lifetime in any deployment
-requires periodic recalibration and integration with
-bid-distribution methods where those data are available. The construct
-flags a participation footprint with multiple non-competitive
-readings, the supporting evidence places it in the framework's
-predicted direction along every dimension we examine, and the
-strength of the supporting evidence is highest where the design
-provides the cleanest leverage.
+$\valAUCAdaptCombined$. The construct is therefore informative
+absent adaptation and degrades predictably under specified
+attacks; the threshold rule is the most exposed margin, and
+operational lifetime in any deployment requires periodic
+recalibration and integration with bid-distribution methods
+where those data are available.
 
 % ──────────────────────────────────────────────────────────────────
 \subsection{External validity and portability}
@@ -185,14 +171,13 @@ the new federal procurement law, and the construct's stability
 across regulatory regimes is an open empirical question.
 
 The new federal procurement law (Lei~$14.133/2021$) consolidates
-the preg\~ao-style electronic-auction format as the institutional
-default for Brazilian federal and inter-state procurement. The
-modal-asymmetry result of §\ref{sec:mech_modal}, that the construct's signal-to-noise is highest in preg\~ao, means that
-the policy direction is favorable to the construct's portability,
-not adversarial. The construct's three structural prerequisites
-are increasingly the structural defaults of Brazilian public
-procurement, and the deployment case for state and federal
-oversight bodies operating on the new institutional baseline is
-correspondingly stronger. Portability remains contingent, not
-free; but the contingencies the construct requires are
-recognizable, observable, and, in the institutional direction the country is moving, increasingly satisfied.
+the preg\~ao-style electronic-auction format as the
+institutional default for Brazilian federal and inter-state
+procurement. Combined with the modal asymmetry of
+§\ref{sec:mech_modal}---the construct's discrimination is
+sharper in pregão---the regulatory direction is favorable to the
+construct's portability rather than adversarial. Portability
+remains contingent on the three prerequisites above; the
+contingencies are recognizable, observable, and increasingly
+satisfied by the regulatory direction Brazilian procurement is
+taking.
