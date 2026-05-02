@@ -290,6 +290,16 @@ reading of $\beta$.
 \section{Core Supporting Tables and Figures}
 \label{app:supporting}
 
+This appendix collects the supporting tables referenced
+throughout the body. Section~\ref{app:supporting} reports the
+sample-construction tables (modal mix, conditional descriptive
+statistics) and the heterogeneity tables (detection-regime
+quartiles, modal contrast, McCrary density test, robustness to
+exclusion of CADE-involved items). Figure~\ref{fig:losses}
+displays the always-loser participation distribution that
+motivates the median$+1.5\!\times\!$IQR cutoff;
+Figure~\ref{fig:iqr} shows the cutoff itself.
+
 \input{./output/tables/tab_modality_by_year}
 
 \input{./tables/tab_conditional_descstats}
@@ -324,15 +334,58 @@ firms.}
 \label{fig:iqr}
 \end{figure}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{fig_14_oversight_heterogeneity}
+\caption{Frequent-loser price coefficient by procuring-unit-size
+quartile. The Q1-vs-Q4 contrast (smallest to largest buyers) is
+$\valPBUgradientRatio\!\!\times$; the intermediate quartiles are
+imprecisely estimated. Companion figure to
+Table~\ref{tab:regime_oversight}; we read the contrast as
+detection-regime variation rather than as identification of a
+causal channel (\S\ref{sec:results_oversight}).}
+\label{fig:oversight}
+\end{figure}
+
 \section{Identification Audits}
 \label{app:online_robustness}
+
+The four audits referenced in §\ref{sec:emp_audits} are reported
+here in detail. Table~\ref{tab:oster_delta} reports the
+\citet{cinelli2020making} robustness value and the
+\citet{oster2019unobservable} bounds for the broad-sample
+association. Table~\ref{tab:leakage_audit} reports the leakage
+decomposition that separates the structural component of the
+in-sample item-level discrimination AUC from the tautology
+component. Table~\ref{tab:cade_permutation} reports the
+permutation-test design behind the conservative-benchmark
+co-bidding rate of §\ref{sec:cade_contemporaneous}: the
+participation-stratified co-bidding rate among frequent losers
+($\valCADEenrich$) is contrasted with the empirical null
+distribution under random matching at comparable participation
+volume ($\valCADEbase$, $\valPermPilot$ iterations,
+$p<0.001$).
 
 \input{./output/tables/tab_oster_delta}
 
 \input{./output/tables/tab_leakage_audit}
 
+\input{./output/tables/tab_cade_permutation}
+
 \section{Threshold and Specification Robustness}
 \label{app:robustness_tables}
+
+The IQR-multiplier sensitivity is reported in
+Table~\ref{tab:threshold}: the headline price coefficient is
+positive and significant under five multipliers ranging from
+$1.0\!\times$ to $3.0\!\times$ IQR, declining monotonically as
+the cutoff tightens (the framework's continuous primitive
+predicts this pattern; §\ref{sec:mech_horse_race}). Standard-error
+clustering is reported in Table~\ref{tab:clustering} under
+item-level (baseline), procuring-unit-level, and two-way
+\citet{cameron2011robust} clustering on item and PBU jointly.
+The coefficient is significant at $p<0.01$ under all three
+regimes.
 
 \begin{table}[htbp]
 \centering
@@ -351,9 +404,25 @@ firms.}
 \section{Generalization Audit and Detector Comparison}
 \label{app:operational}
 
+The temporal-holdout audit referenced in
+§\ref{sec:rob_operational} is reported in
+Table~\ref{tab:operational_metrics}, and the same-sample
+incremental-AUC comparison referenced in §\ref{sec:forensic} is
+reported in Table~\ref{tab:imhof_incremental}.
+Table~\ref{tab:external_validity_scope} reports the cross-sector
+external-validity scope referenced in §\ref{sec:lim_external}:
+the within-product-code identifying variation that underwrites
+the headline price gap is unevenly distributed across BEC item
+groups, and the construct's portability to non-commodity
+settings (services, infrastructure, public works) depends on
+the availability of analogous within-category variation in those
+settings.
+
 \input{./output/tables/tab_operational_metrics}
 
 \input{./output/tables/tab_imhof_incremental}
+
+\input{./output/tables/tab_external_validity_scope}
 
 \section{Adversarial-Adaptation Simulation}
 \label{app:adversarial}
