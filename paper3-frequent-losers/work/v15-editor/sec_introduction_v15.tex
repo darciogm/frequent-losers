@@ -1,5 +1,6 @@
-% Introduction v17 (mr-frequent R2 polish): compressed; sign-reversal in 1 paragraph;
-% theory footprint reduced; "what this paper does and does not do" tightened.
+% Introduction v18 (Prompt 1 polish): payoff up front, three findings rewritten,
+% interpretive challenge compressed ~25%, theory restricted to wins=0 + continuous
+% intensity, roadmap unchanged.
 
 \section{Introduction}
 \label{sec:intro}
@@ -11,81 +12,75 @@ Compras (BEC, $\valYearStart$--$\valYearEnd$),
 $\valAlwaysLosers$ firms bid without ever winning a tender-item,
 and $\valFL$ of them participated in more than
 $\valThresholdStat$ tender-items. We call these firms
-\emph{frequent losers}.
+\emph{frequent losers}, and ask whether their footprint in
+contract-award records carries usable signal for procurement
+oversight.
 
 Bid-rigging detection in the empirical literature relies on bid
 microdata that few jurisdictions audit at scale
 \citep{porter1993detection,bajari2003deciding,imhof2019detecting,wallimann2023machine}.
-Procurement systems instead universally preserve a much thinner
-envelope: contract-award records, with winner identity,
-participant identity, item identifier, and negotiated price. The
-question we ask is whether \emph{this} envelope alone carries
-exploitable signal for triage. The answer is yes, but narrowly.
-Loser-side participation patterns associate with both higher
-negotiated prices and cartel-adjacent ground truth at rates above
-random matching, but the association is unstable across scopes
-and the validation labels are indirect. The participation-based
-screen we build prioritizes procurement environments for
-oversight; it does not adjudicate cartel membership.
+The much thinner envelope universally preserved by procurement
+systems---contract-award records with winner identity,
+participant identity, item identifier, and negotiated
+price---has not been systematically exploited. This paper builds
+a participation-based screen computable on that envelope alone.
+The screen prioritizes procurement environments for oversight;
+it does not adjudicate cartel membership, and the empirical
+content is narrow by design.
 
-\paragraph{Three findings, in descending order of empirical strength.}
-Within-item, within-year, within-procuring-unit comparisons
-across $\valSampleN$ tender-items associate frequent-loser
-presence with a $\valHeadlineRange$ higher log negotiated unit
-price across five estimators. Against CADE's cartel records,
-the screen discriminates $\valCobidders$ adjudicated cobidder
-firms inside the always-loser stratum at AUC $\valAUCFLfirm$
-in-sample, $\valAUCFLfirmTemp$ under temporal holdout, and $\valAUCprePost$
-under a stricter contemporaneous benchmark restricted to four
-pre-2020 cases. Cobidders are firms that participate alongside
-adjudicated cartel members; the label is indirect by
-construction. Against the $\valDirectCADE$ direct CADE
-defendants in the broader BEC firm universe, the screen
+\paragraph{Three findings.}
+First, frequent-loser presence associates with a
+$\valHeadlineRange$ higher log negotiated unit price across five
+estimators applied to $\valSampleN$ tender-items, comparing
+within item, year, and procuring unit. Second, the construct
+discriminates $\valCobidders$ adjudicated CADE-cobidder firms
+inside the always-loser stratum at AUC $\valAUCFLfirm$ in-sample
+and $\valAUCFLfirmTemp$ under temporal holdout, and at AUC
+$\valAUCprePost$ on a stricter contemporaneous benchmark
+restricted to four pre-2020 cases. Cobidders are firms that
+participate alongside adjudicated cartel members; the label is
+indirect by construction. Against the $\valDirectCADE$ direct
+CADE defendants in the broader BEC firm universe the screen
 discriminates at AUC $\valAUCdirectStd$, by design: direct
 defendants are typically frequent winners and lie outside the
-target population. The price imprint shrinks from
+target population. Third, the price imprint shrinks from
 $\valOversightQonePct$ in the smallest procuring-unit-size
 quartile to $\valOversightQfourPct$ in the largest---a
-$\valPBUgradientRatio\!\!\times$ ratio. We read the gradient as
-consistent with thinner institutional capacity at smaller
-buyers, but buyer size proxies for several correlated
-institutional features and we do not separately identify
+$\valPBUgradientRatio\!\!\times$ gradient consistent with thinner
+institutional capacity at smaller buyers, though buyer size
+proxies for several correlated features and we do not identify
 oversight as the operative channel.
 
 \paragraph{The interpretive challenge.}
 The broad-sample price association reverses sign under
-strict-overlap matching: $\valMatchOverlapCoef$ overlap-cell ATT, $\valMatchPSCoef$
-under propensity-score trimming. The broad-sample estimate
-combines a within-cell association with the systematic
-differences between items frequent losers select into and items
-they do not; strict-overlap matching isolates the former. Both
-scopes are descriptively valid. We report the broad-sample range
-as the headline because it maps to the deployment question
-(which environments to flag) and the screen targets the
-population frequent losers do select into, not a counterfactual
-matched on observables. A triage tool need not identify a stable
-causal effect; it needs to flag environments at higher prior
-risk than random selection, and on both the broad-sample
-association and the cartel-adjacency validation, the screen does
-so.
+strict-overlap matching: overlap-cell ATT
+$\valMatchOverlapCoef$, propensity-score-trimmed
+$\valMatchPSCoef$. The two estimates answer different empirical
+questions about the same population: the broad-sample range
+captures deployment-relevant selection into the items frequent
+losers participate in, while overlap-restricted estimates
+isolate within-support comparisons. We report the broad-sample
+range as the headline because triage operates on the population
+frequent losers do select into, not on a counterfactual matched
+on observables. The construct's task is not to recover a uniform
+treatment effect; it is to flag environments at higher prior
+risk than random selection, on both the price association and
+the cartel-adjacency validation.
 
 \paragraph{Theory.}
-We organize the construct through a separating-equilibrium
-framework with cover bidders and genuine entrants
-(Online Appendix~A). The framework rationalizes the
-$\log(1+\text{tenders\_count})$ ranking and the $\text{wins}=0$
-filter, and it predicts a direction for the buyer-size gradient.
-It is an organizing device, not a source of identification.
+A separating-equilibrium framework with cover bidders and
+genuine entrants (Online Appendix~A) rationalizes the
+$\text{wins}=0$ filter and the $\log(1+\text{tenders\_count})$
+ranking we use to order loss intensity. We treat the framework
+as an organizing device, not a source of identification.
 
-\paragraph{What this paper does and does not do.}
+\paragraph{Scope.}
 The participation-based screen flags procurement environments
 statistically associated with higher prices and cartel-adjacent
-validation targets. It is not a cartel detector, does not
-adjudicate firm-level guilt, and does not identify a stable
-causal effect of cover bidding on prices. The screen is designed
-for triage on award records and integrates with bid-distribution
-methods where bid microdata are available
-(\S\ref{sec:rob_imhof}).
+labels. It does not detect cartels, adjudicate firm-level guilt,
+or identify a stable causal effect of cover bidding on prices,
+and it complements rather than replaces bid-distribution methods
+where bid microdata are available (\S\ref{sec:rob_imhof}).
 
 The remainder of the paper proceeds in four blocks.
 Sections~\ref{sec:literature}--\ref{sec:empirical} situate the
