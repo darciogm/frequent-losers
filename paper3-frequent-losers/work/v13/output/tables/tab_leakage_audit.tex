@@ -26,23 +26,15 @@ Train 2009--2016 $\to$ test 2017--2019, any-direct-CADE & Same temporal split, a
 \end{tabular}
 \begin{tablenotes}
 \small
-\item \textit{Notes:} The reference in-sample item-level AUC of
-$0.995$ is partially tautological: cobidders are by construction
-always-loser firms with elevated participation counts, and an item
-that contains a cobidder participant therefore mechanically has an
-elevated max-tenders-count among its always-loser participants.
-Audit 2 breaks this construction by withholding cobidder firms from
-the score-construction step within each cross-validation fold and
-re-evaluating on items containing held-out cobidders. Audit 3
-breaks the construction temporally: tenders-count is computed using
-only 2009--2016 participation, so the score for 2017--2019 items
-cannot directly encode their own cobidders. The screen retains
-discriminating power above $0.85$ under both audits, indicating
-that the substantive predictive content is not fully tautological.
-The drop of approximately $0.10$--$0.13$ AUC under audit is the
+\item \textit{Notes:} The in-sample AUC of $0.995$ is partly
+tautological by construction. Audit 2 isolates the structural
+component by holding cobidder firms out of score construction
+within each fold; Audit 3 isolates it temporally by computing
+the score on $2009$--$2016$ participation only. AUC retains
+$\geq\!0.85$ under both audits; the $0.10$--$0.13$ drop is the
 pure-leakage component. Audits against direct-CADE labels return
-random AUC in all configurations, confirming the structural scope
-asymmetry documented in Table~\ref{tab:cade_fl_firms}.
+random AUC, consistent with the scope asymmetry in
+Table~\ref{tab:cade_fl_firms}.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
