@@ -1,0 +1,110 @@
+\section{Screening vs.~Forensic Stages: An Architectural Test}
+\label{sec:forensic}
+
+The contribution claim of §\ref{sec:intro} is structural: under
+incomplete observability, enforcement architecture separates an
+award-layer screening stage that produces candidate flags from a
+bid-layer forensic stage that adjudicates suspected coordination
+on the bid distribution. The two stages answer different
+questions and require different statistics. This section tests
+the architectural claim empirically: the two stages should
+discriminate the same cartel-adjacency labels at comparable
+levels on different data envelopes, and the combination should
+beat either component alone.
+
+Figure~\ref{fig:coarsening} sets up the comparison. The bid
+layer carries five within-tender features that the
+Imhof--Wallimann pipeline aggregates into a discrimination
+score. Most enforcement environments do not preserve those
+features at the analytical-warehouse layer
+(§\ref{sec:institutional}); the data coarsening that drops them
+also drops anything else the bid distribution would carry. What
+survives is the award envelope: winner identity, participant
+identity, item code, and negotiated price. The screening
+statistic this paper builds operates on those four fields
+alone. The empirical question of this section is whether what
+survives is enough.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{./output/figures/fig_data_coarsening}
+\caption[What survives data coarsening]{Bid-layer features and
+award-layer fields. The five bid-distribution features the
+Imhof--Wallimann pipeline operates on (left, dashed arrows) are
+dropped by the coarsening that defines most enforcement
+environments. The four award-record fields (right, solid arrows)
+survive. The boxes on the right report random-forest AUCs
+against $\valCobidders$ adjudicated CADE-cobidder labels: the
+two pipelines reach statistically indistinguishable
+discrimination on different data envelopes
+(Table~\ref{tab:imhof_full}).}
+\label{fig:coarsening}
+\end{figure}
+
+\paragraph{Comparable accuracy on different data envelopes}
+Table~\ref{tab:imhof_full} reports the comparison on the full
+always-loser pool ($N = \valImhofPoolN$ firms, $\valCobidders$
+adjudicated cobidder labels). The screening statistic
+discriminates at AUC $\valImhofFLBin$ ($95\%$ CI
+$\valImhofFLBinCI$) under the binary FL14 indicator and
+$\valImhofFLcont$ ($\valImhofFLcontCI$) under the continuous
+$\log(1+\text{tenders\_count})$ score. The full
+Imhof--Wallimann pipeline---five within-tender bid-distribution
+features (coefficient of variation, skewness, kurtosis, spread,
+second-low ratio)
+\citep{imhof2019detecting,wallimann2023machine}---reaches AUC
+$\valImhofFull$ ($\valImhofFullCI$) on the same target. The
+two pipelines reach statistically indistinguishable
+discrimination on different data envelopes. The construct does
+not outperform the bid-distribution pipeline, and we do not
+claim it does; the architectural point is that comparable
+accuracy is achievable on a substantially thinner data envelope.
+
+\input{./output/tables/tab_imhof_full}
+
+\paragraph{Non-redundant signal} The combined specifications in
+the bottom panel of Table~\ref{tab:imhof_full} address the
+integration question. FL14 combined with the full Imhof
+pipeline reaches AUC $\valImhofComboBin$ ($\valImhofComboBinCI$);
+continuous loss intensity combined with the full Imhof pipeline
+reaches AUC $\valImhofComboCont$ ($\valImhofComboContCI$). The
+combined classifiers gain $5$--$7$ AUC points over either single
+construct. Restricting attention to the same-sample audit
+(Table~\ref{tab:imhof_incremental}), where all detectors
+evaluate the identical subset of firms with bid microdata
+available, the screening statistic adds $\valImhofIncFL$ AUC
+over the Imhof full pipeline alone (DeLong $p = \valImhofIncFLp$),
+and the combined model adds $\valImhofIncCombo$ AUC over Imhof
+full alone ($p < 0.001$). The award-layer screening object and
+the bid-layer forensic moments carry non-redundant information
+about the same cartel-adjacency target.
+
+\paragraph{The architectural reading}
+The two findings together identify the sequencing structure
+the contribution claims. The screening statistic and the
+bid-distribution detectors discriminate the same labels at
+comparable levels on different data envelopes (the architecture
+treats them as substitutable when only one envelope is
+available); the two carry non-redundant signal when both
+envelopes are available (the architecture treats them as
+sequential when both are). Under incomplete observability the
+deployable architecture is therefore: an award-layer screening
+stage that runs on contract-record data and produces candidate
+environments, followed by a bid-layer forensic stage that runs
+the bid-distribution moment battery on the candidates the
+screening stage flags, where bid microdata are recoverable for
+those candidates. The two stages answer different questions and
+require different statistics; the comparison in this section
+shows that they share the same cartel-adjacency target without
+dominating each other.
+
+The implication for portability is concrete. Jurisdictions that
+preserve only the award layer can deploy the screening stage
+immediately, on data they already maintain. Jurisdictions that
+also preserve bid microdata gain the forensic stage on top, with
+the screening stage already constraining the pool of cases that
+warrant the forensic step. Reforms that mandate bid-microdata
+archival (\S\ref{sec:institutional}) are best read as expanding
+the forensic stage rather than substituting for the screening
+one---a reading that reverses the standard policy intuition that
+bid-archival is a precondition for proactive cartel screening.

@@ -1,0 +1,218 @@
+\section{Validation: Cartel Adjacency Under Coarsened Observability}
+\label{sec:cade}
+
+The validation answers two questions in sequence. First: does
+the screening statistic concentrate on populations with a higher
+prior probability of operating inside cartel-affected
+environments than random matching at comparable participation
+volume? Second: does the concentration appear in evidence that
+predates estimation, so that the result is not an artifact of
+the within-sample CADE record? We answer both in the
+affirmative, against the structurally appropriate validation
+object given the data layer.
+
+That object is cartel \emph{adjacency}, not membership. The
+award-layer envelope (§\ref{sec:institutional}) does not contain
+the information required for firm-level membership
+identification, and the screening framing of
+§\ref{sec:emp_estimand} does not require it: the participation
+primitive the framework identifies is precisely a loser-side
+exposure measure, not a winner-side label. The cobidder
+population---always-loser firms that participated alongside CADE
+direct defendants---is therefore the empirical content the
+screening statistic is designed to recover. We report against
+direct-defendant labels separately to bound the construct's
+scope and to document the design's empirical signature.
+
+\subsection{Validation populations}
+\label{sec:cade_objects}
+
+The validation reads against five nested populations, each playing
+a distinct role in the empirical exercise.
+Table~\ref{tab:cade_populations} catalogs them, with sample sizes
+and the function of each in the validation. The leftmost column
+moves from the broadest universe (all BEC participants) inward
+through the always-loser stratum to the flagged frequent-loser
+subset; the two rightmost rows split the CADE adjudication
+record into direct defendants---typically frequent winners and
+therefore outside the construct's target---and cobidders inside
+the always-loser stratum, which are the cartel-adjacency labels
+the screening statistic is designed to recover.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation populations and object discipline}
+\label{tab:cade_populations}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{p{4.0cm}p{2.0cm}p{6.5cm}}
+\toprule
+Population & Size & Definition and role \\
+\midrule
+All BEC participants & $41{,}444$ & Universe of firms bidding in BEC, $2009$--$2019$. \\
+Always-losers & $\valAlwaysLosers$ & Firms with zero wins across the sample; stratum within which the screening statistic operates. \\
+Frequent losers & $\valFL$ & Always-losers above the median $+\,1.5\!\times$IQR participation threshold; the flagged population. \\
+CADE direct defendants in BEC & $\valDirectCADE$ & Firms named in CADE rulings; typically frequent winners; outside the screening statistic's target population. \\
+Cobidders in the always-loser stratum & $\valCobidders$ & Always-losers that participated alongside CADE direct defendants; the cartel-adjacency label the screening statistic is designed to recover. \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+
+\smallskip
+{\footnotesize\textit{Notes:} The screening statistic operates
+within the always-loser stratum, not across the broader BEC
+universe. Participation alongside an adjudicated cartel member
+is consistent with cover bidding, capacity-transfer motives,
+market intelligence, or bystander participation in
+cartel-affected markets. Strong AUC against this label
+corroborates that the screening statistic concentrates on
+cartel-relevant environments; it does not adjudicate
+membership.\par}
+\end{table}
+
+\subsection{Conservative benchmark}
+\label{sec:cade_contemporaneous}
+
+The primary benchmark restricts the ground truth to
+$\valConservativeCases$ CADE cases adjudicated before
+$\valConservativeCutoff$ (coleta de lixo, aquecedores solares,
+trens-metr\^os, tecnologia-informa\c{c}\~ao $2019$-$10$):
+$\valConservativeFD$ firm-defendants, all active in BEC, with
+$\valConservativeCobidders$ always-losers co-bidding with at
+least one of them, of which $\valConservativeFL$ are frequent
+losers.
+
+The relevant comparison is whether frequent losers co-bid with
+direct defendants at rates above what random matching at
+comparable participation volume would produce. We construct the
+counterfactual baseline by stratified permutation: for each of
+$\valPermPilot$ iterations, we permute the cobidder/non-cobidder
+labels within strata defined by participation-volume quartile,
+re-compute the share of frequent losers among the relabeled
+cobidders, and accumulate the empirical distribution under the
+null of random matching conditional on participation volume.
+The participation-stratified co-bidding rate observed in the
+data is $\valCADEenrich$ against a permutation baseline of
+$\valCADEbase$ ($p<0.001$, $\valPermPilot$ iterations), an
+excess ratio of $\valMultThreeTwo\!\!\times$. The ROC AUC
+against the contemporaneous ground truth is $\valAUCprePost$
+($95\%$ DeLong CI $[0.713, 0.783]$).
+
+This is the primary benchmark for the screening interpretation
+on three grounds. The construct uses no information from cases
+adjudicated post-sample. The labels predate estimation: cartel
+existence and membership were established by enforcement before
+the screening statistic was built. And the permutation baseline
+strips out the mechanical co-bidding rate that participation
+volume would produce by itself, isolating the residual
+concentration the screening statistic is meant to identify. The
+$\valMultThreeTwo\!\!\times$ excess is what the screening
+framing predicts under the separating equilibrium of
+Online Appendix~A: where the cartel deploys cover bidders, the
+loser-side participation footprint concentrates above the
+random-matching baseline.
+
+\subsection{Prospective benchmark and within-firm enrichment}
+\label{sec:cade_prospective}
+
+A more permissive benchmark uses CADE's full procurement-cartel
+portfolio ($12$ cases, $65$ firm-defendants, of which
+$\valDirectCADE$ are active in BEC). Among $\valFL$ frequent
+losers, $\valCobidders$ ($\valCobidShareFL$) co-participate with
+at least one of the $\valDirectCADE$; the
+participation-stratified excess ratio is
+$\valMultThreeFive\!\!\times$ ($p<0.001$). Firm-level AUC is
+$\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$) in-sample and
+$\valAUCFLfirmTemp$ ($\valAUCFLfirmTempCI$) under temporal
+holdout (train $2009$--$2016$, test $2017$--$2019$). The
+benchmark treats post-sample adjudications as informative labels
+for cartel involvement during the BEC window---a reasonable but
+non-trivial assumption that the conservative benchmark in
+\S\ref{sec:cade_contemporaneous} avoids. We report it as
+complementary, not as the primary anchor.
+
+A within-firm exercise on the same portfolio: $3$ of $7$
+always-loser direct defendants ($\valPctFortythree$) cross the
+frequent-loser threshold against a population baseline of
+$\valPctSixteenRef$. Table~\ref{tab:cade_fl_firms} lists them.
+
+\begin{table}[htbp]
+\centering
+\caption{Direct CADE defendants flagged by the construct}
+\label{tab:cade_fl_firms}
+\begin{adjustbox}{max width=\textwidth,center}
+\small
+\begin{tabular}{p{3.5cm}p{4.0cm}lcc}
+\toprule
+Firm & Cartel & CADE process & Tenders & Wins \\
+\midrule
+Sol Tecnologia & Solar water heaters & 08012.001273/2010-24 & 84 & 0 \\
+Nova Esperan\c{c}a Locadora & School transportation & 08700.005876/2019-85 & 97 & 0 \\
+Jofran Com\'ercio & Trash bags (Op.\ Colludium) & 08700.005789/2015-02 & 65 & 0 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+These are the exception within a direct-defendant population
+that is otherwise frequent-winner-heavy; the AUC against direct
+defendants in the broader BEC firm universe remains
+$\valAUCdirectStd$. The asymmetry between cobidder
+discrimination ($\valAUCFLfirm$ in-sample,
+$\valAUCFLfirmTemp$ under temporal holdout) and direct-defendant
+discrimination ($\valAUCdirectStd$) is the design's empirical
+signature, not a failure of validation. The screening statistic
+recovers loser-side participation footprints; direct defendants
+are by construction the winner side of the same arrangements
+and lie outside the target population.
+
+\subsection{Robustness to the enforcement record}
+\label{sec:cade_robustness}
+
+Dropping all $\valCADEpermPerm$ CADE-involved tender-items and
+re-estimating the within-PBU baseline yields
+$\hat\beta = \valExclCADECoef$ ($N = \valCADEpermObs{,}954$),
+virtually unchanged from $\valPctSixfour$. The broad-sample
+screening signal therefore does not depend on the within-sample
+CADE adjudications for its content: removing the items where
+the cartel record bites leaves the conditional association
+intact. Under the screening framing this is the predicted
+outcome---the participation footprint the construct flags is a
+loser-side equilibrium object, present wherever the deployment
+problem operates, and not a feature mechanically produced by the
+items already labeled by enforcement. The robustness completes
+the conservative benchmark of §\ref{sec:cade_contemporaneous}:
+the labels that drive the validation are stripped out of the
+estimation sample, and the price-imprint signal survives.
+
+\subsection{What the validation does and does not show}
+\label{sec:cade_scope}
+
+The validation corroborates the screening interpretation along
+three dimensions, each consistent with the framework of
+Online Appendix~A. The participation-stratified excess of
+$\valMultThreeTwo\!\!\times$ on the conservative benchmark, the
+discrimination AUC of $\valAUCprePost$ on cases adjudicated
+before the sample window closes, and the
+$\valMultThreeFive\!\!\times$ excess on the full prospective
+portfolio (AUC $\valAUCFLfirm$ in-sample, $\valAUCFLfirmTemp$
+under temporal holdout) all read in the same direction:
+within the always-loser stratum, frequent losers concentrate
+near adjudicated cartel members at rates well above
+participation-stratified random matching.
+
+Three boundaries delimit what the validation supports. The
+labels are indirect by construction, a feature of working at
+the award layer rather than the bid layer; the AUC asymmetry
+between cobidders and direct defendants
+($\valAUCFLfirm$ versus $\valAUCdirectStd$) is the empirical
+signature of a screening statistic that recovers loser-side
+participation, not winner-side identity; and the screening
+signal in $\beta$ persists when CADE-involved items are removed
+from estimation, which means the validation labels are not the
+mechanism that produces the price-imprint result.
+
+The validation establishes that the screening statistic flags
+cartel-adjacent environments. Under coarsened observability it
+cannot adjudicate firm-level membership, and the screening
+framing does not require it to.
