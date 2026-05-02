@@ -1,12 +1,17 @@
 \section{Main Results}
 \label{sec:results}
 
-This section reports two findings: a positive within-item price
-association in the broad sample that reverses sign under
-strict-overlap matching, and a steep gradient across
-procuring-unit-size quartiles.
+This section delivers the screening-value evidence in three
+moves. First, the broad-sample association $\beta$ across four
+estimators (§\ref{sec:results_ols}). Second, the
+overlap-restricted association $\beta^{\text{ov}}$ and the sign
+reversal as the diagnostic that locates the construct as a
+screening-value object rather than a treatment-effect object
+(§\ref{sec:results_overlap}). Third, the heterogeneity of the
+screening signal across detection regimes
+(§\ref{sec:results_oversight}).
 
-\subsection{Within-Item Conditional Price Gap and Selection Scope}
+\subsection{Broad-Sample Conditional Association ($\beta$)}
 \label{sec:results_ols}
 
 Table~\ref{tab:prices} reports OLS estimates of
@@ -21,49 +26,110 @@ without frequent-loser participants.
 
 \input{./output/tables/tab_prices}
 
-The pregão--convite contrast is informative on the role of the
-convite minimum-bidder rule (Lei~$8.666/93$, Art.\ 22, \S\,3): a
-quorum-filler interpretation would predict a sharper imprint in
+The pregão--convite contrast is informative on whether the
+construct's signal could be mechanically driven by the convite
+minimum-bidder rule (Lei~$8.666/93$, Art.\ 22, \S\,3): a
+quorum-filler reading would predict a sharper imprint in
 convite, but the data show the opposite ($\valFalPregBin$ in
 pregão vs.~$\valFalConvBin$ in convite;
 Table~\ref{tab:falsification_modal}). The signal is therefore
-not reducible to the quorum rule, though we do not interpret the
-asymmetry as a positive test of any specific institutional
-channel. Cross-fit estimation yields $\valPctThreeSix$, CEM
+not reducible to the quorum rule. We read the asymmetry as
+informativeness across observability regimes
+(§\ref{sec:mech_modal}), not as a positive test of any specific
+institutional channel.
+
+Cross-fit estimation yields $\valPctThreeSix$, CEM
 $\valBidCoefMean$, and IPW $\valBidNonCV$. A leave-one-out IV
 returns $\valBidPHigh$ ($p<0.05$, first-stage $F=396$), the
-direction expected under classical attenuation when the binary
-indicator proxies for an underlying continuous loss-intensity
-statistic. The conditional range across these four broad-sample
-estimators is $\valHeadlineRange$.
+direction expected when the binary indicator coarsens the
+underlying continuous loss-intensity statistic
+(§\ref{sec:mech_horse_race}). The four broad-sample estimators
+jointly bound the conditional range $\valHeadlineRange$.
 
-\paragraph{The sign reversal under strict-overlap matching}
-Once the comparison is restricted to cells in which
-frequent-loser-present and -absent items overlap on observables,
-the conditional coefficient reverses sign: overlap-cell ATT
+Under the screening framing of §\ref{sec:emp_estimand}, $\beta$
+is the empirical content the construct is designed to recover:
+the conditional association at the items frequent losers do
+participate in, integrated over the cartel's deployment
+distribution. We do not present $\beta$ as a treatment-effect
+estimate. The relevant question for what follows is not whether
+$\beta$ would survive a counterfactual that reweights items to
+remove the deployment sorting, but whether the deployment
+sorting itself is part of the screening-value content.
+
+\subsection{Overlap-Restricted Association ($\beta^{\text{ov}}$) and the
+Screening-Value Diagnostic}
+\label{sec:results_overlap}
+
+Restricting the comparison to cells in which frequent-loser-present
+and -absent items genuinely overlap on observables produces a
+reversed conditional coefficient: overlap-cell ATT
 $\valMatchOverlapCoef$, propensity-score-trimmed ATT
-$\valMatchPSCoef$ (Table~\ref{tab:item_level_scope_match}). The
-broad-sample estimate combines a within-support comparison and
-the systematic differences between items frequent losers select
-into and items they do not; overlap-restricted estimates isolate
-the within-support component.
-\citet{cinelli2020making}'s $RV_{q=1}=\valRVqOne$ and
-\citet{oster2019unobservable}'s $\hat{\delta}=261.64$ bound the
-broad-sample association against selection on observables of the
-kind already absorbed by the fixed effects but do not address
-the selection scope the matching exercise surfaces.
+$\valMatchPSCoef$
+(Table~\ref{tab:item_level_scope_match}).
 
-The two estimates answer different empirical questions about the
-same population. We treat the broad-sample
-$\valHeadlineRange$ as the headline because triage operates on
-the population frequent losers select into, and report the
-overlap-restricted coefficient alongside as the corresponding
-within-support comparison. The construct flags environments in
-which observable selection patterns correlate with higher prices
-and with cartel-adjacent ground truth; it does not recover a
-uniform treatment effect on prices.
+\input{./output/tables/tab_item_level_scope_match}
 
-\subsection{Heterogeneity by Procuring-Unit Size}
+This is a different empirical object. $\beta^{\text{ov}}$ is the
+within-support comparison at the items where treated and control
+populations look alike on observables, computed by holding the
+participation footprint fixed at that subsample. It is the
+estimand a treatment-effect framing would target.
+$\beta$ is the broad-sample association at the items where
+frequent losers actually deploy, integrated over the deployment
+distribution. The two objects answer different questions; the
+sign reversal is the empirical signature that they are
+different.
+
+\paragraph{Why we read the reversal as a screening-value
+diagnostic} Under the separating equilibrium of
+Online Appendix~A, frequent-loser participation is generated by
+the cartel's deployment problem. The cartel's choice of where
+to place cover bidders is informative: the deployment sorting is
+not a confound to be matched away but the equilibrium response
+to incentives we cannot observe directly. Three pieces of
+empirical evidence are consistent with this reading rather than
+with a treatment-effect-that-fails-on-overlap reading.
+
+\textit{(i)} The broad-sample association moves with cartel
+adjacency. The construct discriminates the $\valCobidders$
+adjudicated CADE-cobidder firms inside the always-loser stratum
+at AUC $\valAUCFLfirm$ in-sample, $\valAUCFLfirmTemp$ under
+temporal holdout, and $\valAUCprePost$ on the contemporaneous
+benchmark of §\ref{sec:cade}. Under a confound-only reading of
+$\beta$, the construct's labels would not concentrate on
+adjudicated cartel members; the empirical concentration is
+inconsistent with that reading.
+
+\textit{(ii)} The continuous loss-intensity statistic
+strictly dominates the binary rule in discrimination of the same
+labels (\citealt{delong1988comparing} test, $p<10^{-3}$;
+§\ref{sec:mech_horse_race}). The participation primitive is
+ranked, not categorical; the binary rule is the
+information-coarsening of a deeper signal. A pure-confound
+reading does not predict the dose-response.
+
+\textit{(iii)} \citet{cinelli2020making}'s
+$RV_{q=1}=\valRVqOne$ and \citet{oster2019unobservable}'s
+$\hat{\delta}=261.64$ bound the broad-sample association
+against selection on observables of the kind already absorbed
+by the fixed effects. They do not bound the deployment
+sorting that the overlap restriction surfaces, by construction;
+under the screening framing, that sorting is the object, not the
+threat.
+
+We therefore report $\beta$ and $\beta^{\text{ov}}$ as paired
+empirical objects. The construct's headline range is
+$\valHeadlineRange$ on the broad sample. The
+overlap-restricted coefficient
+($\valMatchOverlapCoef$ to $\valMatchPSCoef$) is the
+within-support comparison at the cells where treated and
+control populations are observable comparables; it is reported
+in parallel, not as a sharper version of the headline. Whether a
+referee privileges $\beta$ or $\beta^{\text{ov}}$ depends on
+which empirical object the reader treats as primary; we have
+made our reasons explicit and report both.
+
+\subsection{Heterogeneity Across Detection Regimes}
 \label{sec:results_oversight}
 
 Splitting the sample into quartiles of procuring-unit size and
@@ -79,13 +145,17 @@ count, headcount of distinct purchasers;
 Table~\ref{tab:regime_oversight}).
 
 The framework in Online Appendix~A predicts a gradient in the
-same direction. The reading is suggestive: buyer size proxies
-for several correlated institutional features---procurement-officer
+same direction through the detection-cost comparative static
+$\partial m^*/\partial \theta_k < 0$. We read the gradient as
+heterogeneity in the screening object across the monitoring
+environment: the construct is more informative where the
+detection regime exposes a thinner audit footprint. Buyer size
+proxies for several correlated institutional features---procurement-officer
 tenure \citep{coviello2017tenure}, internal-audit
 infrastructure, item composition, and discretionary procedure
-use \citep{decarolis2020rules,decarolis2017corruption}---and
-none can be separated with the variation we have. We report the
-gradient as consistent with thinner institutional capacity at
-smaller buyers; the operational implication (oversight is more
-informationally taxed in small-buyer environments) is robust to
-the mechanism reading, the mechanism reading itself is not.
+use \citep{decarolis2020rules,decarolis2017corruption}---none of
+which can be separated with the variation we have. We do not
+identify a causal channel. The implication for the contribution
+is that the screening signal varies systematically with
+features of the enforcement environment, in the direction the
+framework's deployment problem predicts.
