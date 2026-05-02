@@ -1,27 +1,29 @@
 \section{Robustness}
 \label{sec:robustness}
 
-This section stress-tests the within-item conditional price gap of
-§\ref{sec:results_ols} and the procuring-unit-size oversight
-gradient of §\ref{sec:results_oversight} against four distinct
-concerns. §\ref{sec:rob_threshold} addresses sensitivity to the
-design choices embedded in the construct (the IQR threshold
-multiplier, the clustering of standard errors, and the
-binary-vs-continuous specification of loss intensity).
-§\ref{sec:rob_identification} reports identification audits
-(\citealt{cinelli2020making} robustness value, strict-overlap
-matching, leakage diagnostics, and a placebo on random firm
-assignment). §\ref{sec:rob_operational} compares in-sample
-operational metrics to a temporal-holdout audit, the most
-consequential disclosure for deployment claims.
+This section stress-tests the broad-sample association
+$\beta$ of §\ref{sec:results_ols} and the
+detection-regime gradient of §\ref{sec:results_oversight}
+against four concerns. §\ref{sec:rob_threshold} addresses
+sensitivity to the design choices embedded in the screening
+statistic (IQR multiplier, clustering, binary-vs-continuous
+specification). §\ref{sec:rob_identification} reports identification
+audits (\citealt{cinelli2020making} robustness value,
+strict-overlap matching, leakage diagnostics, and the placebo on
+sub-threshold always-loser supply).
+§\ref{sec:rob_operational} reports the temporal-holdout
+generalization of the screening statistic, the most consequential
+disclosure for the screening reading.
 §\ref{sec:rob_imhof} compares the construct's discrimination to
-bid-distribution detectors trained on bid microdata, treating the
-gap as informational complementarity rather than dominance.
+bid-distribution detectors trained on bid microdata, framing the
+comparison as separation between award-layer screening and
+bid-layer forensic stages rather than as competition between
+substitutes.
 
 \subsection{Threshold and Specification Sensitivity}
 \label{sec:rob_threshold}
 
-The headline price gap and its oversight gradient hold across
+The headline price gap and its detection-regime gradient hold across
 reasonable variations in the design choices that define the
 construct. We document three: the IQR threshold multiplier, the
 clustering of standard errors, and the binary-versus-continuous
@@ -41,7 +43,7 @@ defect: as the cutoff tightens, the binary indicator filters fewer
 firms with high loss-intensity, and §\ref{sec:mech_horse_race}
 established that the underlying primitive is the continuous
 $\log(1+\text{tenders\_count})$ statistic. The binary at $1.5\times$
-is the operational sweet spot between coverage and signal density;
+balances coverage and signal density;
 the construct neither evaporates at conservative thresholds nor
 inflates at permissive ones.
 
@@ -139,8 +141,8 @@ $2009$--$2016$, test $2017$--$2019$): AUC $\valAUCFLfirmTemp$
 ($95\%$ CI $\valAUCFLfirmTempCI$). The screen retains discriminating power above
 $0.85$ under both audits. The drop of $0.10$--$0.13$ is the
 pure-leakage component, and we adopt the temporal-holdout AUC of
-$\valAUCFLfirmTemp$ as the conservative discriminating reference for the
-operational-metrics audit in §\ref{sec:rob_operational}.
+$\valAUCFLfirmTemp$ as the conservative discriminating reference for
+the temporal-holdout audit in §\ref{sec:rob_operational}.
 
 A placebo specification using the supply of sub-threshold
 always-losers (firms with persistent zero wins but below the IQR
@@ -155,52 +157,47 @@ not on generic always-loser supply.
 
 \input{./output/tables/tab_iv_placebo}
 
-\subsection{Operational Metrics: In-Sample vs Temporal Holdout}
+\subsection{Temporal Holdout: Generalization of the Screening
+Statistic}
 \label{sec:rob_operational}
 
-The deployment claim rests on operational metrics computed under
-the temporal-holdout regime, not under in-sample evaluation. The
-construct's discriminating performance under temporal holdout is
-firm-level AUC $\valAUCFLfirmTemp$ ($95\%$ CI $\valAUCFLfirmTempCI$) against the
-$\valCobidders$ adjudicated CADE-cobidder labels, with the score
-constructed using only $2009$--$2016$ participation counts and
-evaluated on items in $2017$--$2019$. This is the operationally
-honest projection for a screening tool that is built on past
-participation data and deployed against a future case-load. We
-report it as the operational reference throughout the paper.
+In-sample evaluation of the screening statistic confounds
+classification with prediction: items in the late panel
+contribute both to score construction and to the labels the
+score is evaluated against. The temporal-holdout audit
+disambiguates the two. Constructing the score on
+$2009$--$2016$ participation only and evaluating on items in
+$2017$--$2019$ yields a firm-level AUC of $\valAUCFLfirmTemp$
+($95\%$ CI $\valAUCFLfirmTempCI$) against the $\valCobidders$
+adjudicated CADE-cobidder labels. We report this as the
+generalization reference for the screening statistic throughout
+the paper.
 
-Table~\ref{tab:operational_metrics} reports precision, recall, and
-lift at five top-$k$ cuts under both in-sample and temporal-holdout
-evaluation. In the deployment-relevant region, top-$100$ has precision
-$0.070$ (lift $6.1\!\times$), top-$500$ has precision $0.070$
-(lift $6.1\!\times$), and top-$1{,}000$ has precision $0.066$
-(lift $5.8\!\times$). At top-$500$, the screen
-flags $35$ adjudicated cobidder firms out of $\valCobidders$ in the pool
-(recall $18\%$); at top-$1{,}000$ the recall rises to $34\%$. The
-construct's signal sustains through the deployable region, with
-lifts in the $5.8\!\times$ to $6.6\!\times$ range across cuts. The
-in-sample column over-states precision by approximately $50\%$ at
-top-$500$ ($0.132$ in-sample versus $0.070$ holdout, retention
-$53\%$). The inflation arises because roughly $47\%$ of the
-top-$500$ in-sample ranking comes from $2017$--$2019$ participation,
-after CADE adjudications were already underway for some of the
-cartels, so the in-sample score is partly retrospective rather than
-purely prospective. We disclose the gap explicitly and operate on
-the temporal-holdout column.
+Table~\ref{tab:operational_metrics} reports precision, recall,
+and lift at five top-$k$ cuts under both in-sample and
+temporal-holdout evaluation. At top-$100$ precision is
+$0.070$ (lift $6.1\!\times$); at top-$500$ precision $0.070$
+(lift $6.1\!\times$); at top-$1{,}000$ precision $0.066$
+(lift $5.8\!\times$). The screen flags $35$ adjudicated cobidder
+firms out of $\valCobidders$ at top-$500$ (recall $18\%$); at
+top-$1{,}000$ recall rises to $34\%$. The in-sample column
+over-states precision by approximately $50\%$ at top-$500$
+($0.132$ in-sample versus $0.070$ holdout). The inflation arises
+because roughly $47\%$ of the top-$500$ in-sample ranking comes
+from $2017$--$2019$ participation, after CADE adjudications were
+already underway for some of the cartels: the in-sample score is
+partly retrospective rather than purely prospective. We disclose
+the gap explicitly and report headline metrics on the holdout
+column.
 
-Three operational implications follow. First, the construct is
-deployable: discriminating AUC $\valAUCFLfirmTemp$ and lifts of $5.8\!\times$
-to $6.6\!\times$ in the top-$100$ to top-$1{,}000$ region are
-operationally meaningful for a screening tool that runs on
-contract-award records alone, at near-zero marginal data cost.
-Second, the temporal holdout is the honest reference: any
-operational claim in this paper that requires a precision or lift
-number is computed on the holdout column, and the in-sample column
-is reported for comparison and transparency. Third, periodic
-rescoring matters: an oversight body running the screen in
-production should refresh the score window as new years of
-contract-award data arrive, both to dampen drift and to keep the
-prospective component dominant in the deployment ranking.
+The generalization audit reads against the screening framing of
+\S\ref{sec:emp_audits} as a diagnostic of how well the
+participation primitive separates cartel-adjacent from
+non-cartel-adjacent firms when the score is computed on data
+predating the labels. The drop from in-sample to temporal
+holdout (≈$0.10$--$0.13$ AUC) is the pure-leakage component of
+the in-sample evaluation; the residual AUC $>0.85$ is the
+structural generalization of the screening statistic.
 
 \subsection{Horse Race Against Bid-Distribution Detectors}
 \label{sec:rob_imhof}
@@ -245,13 +242,15 @@ construct adds $+0.035$ AUC over the Imhof full pipeline alone
 (DeLong $p = 0.014$), and the combined model adds
 $+0.096$--$+0.098$ AUC over Imhof full alone (DeLong $p < 0.001$).
 
-The construct's competitive position is therefore informational
-complementarity, not dominance. It reaches comparable
-discrimination at lower data cost when bid microdata are
-unavailable, and it adds non-redundant signal when bid microdata
-are available. The administrative pathway in
-§\ref{sec:conclusion} integrates the construct with the
-bid-distribution stage rather than substituting for it: the
-\textbf{Screen} stage runs on award records, the \textbf{Forensic}
-stage deploys bid-distribution methods, and the gain from running
-both is identifiable in the data.
+The relationship between the screening statistic and
+bid-distribution detectors is therefore informational
+complementarity rather than dominance. The construct reaches
+comparable discrimination at lower data cost when bid microdata
+are unavailable, and it adds non-redundant signal when bid
+microdata are available. The architectural separation in
+§\ref{sec:conclusion} reads this as a two-stage enforcement
+structure: an award-layer screening stage that runs on
+contract-record data, and a bid-layer forensic stage that
+runs on the bid-distribution moment battery; the gain from
+sequencing the two is identifiable in the data and the two
+stages answer different questions.
