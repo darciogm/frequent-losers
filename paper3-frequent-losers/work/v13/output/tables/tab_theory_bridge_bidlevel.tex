@@ -1,0 +1,32 @@
+% Subprompt 2: bid-level theory-validation bridge (script 62)
+\begin{table}[htbp]
+\centering
+\caption{Bid-Level Within-Stratum Profile of Cobidders vs.\ FL Non-Cobidders}
+\label{tab:theory_bridge_bidlevel}
+\begin{threeparttable}
+\footnotesize
+\begin{tabular}{lrrrr}
+\toprule
+ & Cobidder & FL non-cob. & Cohen's $d$ & Wilcoxon $p$ \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel A. Distance from the winning bid (per-bid (bid $-$ winner)/winner, restricted to losing bids, winsorized at $[-0.99, 10]$ before per-firm aggregation).}} \\
+Median (bid $-$ winner) / winner & $0.582$ & $0.809$ & $-0.28$ & $<0.001$ \\
+P75 (bid $-$ winner) / winner & $1.300$ & $1.498$ & $-0.16$ & $0.007$ \\
+Mean (bid $-$ winner) / winner & $0.957$ & $1.102$ & $-0.17$ & $0.014$ \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel B. Within-firm cross-bid dispersion of (bid $-$ winner)/winner.}} \\
+Within-firm SD of (bid $-$ winner) / winner & $1.207$ & $1.099$ & $+0.15$ & $0.050$ \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel C. Multivariate profile: logit of cobidder on per-firm bid-level moments within the FL stratum, holding $\log(1+\text{tenders\_count})$ constant. Estimates show whether bid-level metrics discriminate cobidders beyond their higher participation count.}} \\
+$\log(1+\text{tenders\_count})$ & coef.\ $+0.651$ & SE $0.094$ & --- & $<0.001$ \\
+Median (bid $-$ winner) / winner (winsorized) & coef.\ $-0.708$ & SE $0.171$ & --- & $<0.001$ \\
+Within-firm SD of (bid $-$ winner) / winner (winsorized) & coef.\ $+0.442$ & SE $0.122$ & --- & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Per-bid \textit{Valor Unit\'ario Proposta} and per-(OC, item) winning bid (identified by \textit{Flag Vencedor}) read from \texttt{bid\_level\_full\_v14.parquet}; restricted to losing bids in \textsc{convite} or \textsc{preg\~ao eletr\^onico}. Per-bid (bid $-$ winner)/winner ratio winsorized at $[-0.99, 10]$ before per-firm aggregation; firms retained with at least 5 usable losing bids. Reference-price ratios are reported in the online appendix only: BEC's \textit{Valor Unit\'ario Refer\^encia} is populated for $\sim$22\,\% of \textsc{convite} losing bids and $\sim$32\,\% of \textsc{preg\~ao} losing bids, leaving most cobidders without firm-level coverage. The cover-bidder framework in Online Appendix~A predicts that cobidders, as the modeled type, place bids that maintain credible separation from the winner with cross-bid dispersion above what genuine losers display. The signs reported here \emph{do not} match the textbook ``deliberately uncompetitive'' cover bid: cobidders bid systematically \emph{closer} to winners than FL non-cobidders, while their within-firm dispersion is mildly elevated. The pattern is consistent with a refined credible-cover-bidding interpretation under which cover bids must be plausible to disguise coordination, not with an indiscriminately-high-bid version of the type. Cohen's $d$ uses pooled standard deviations; Wilcoxon $p$-values from two-sided rank-sum tests; logit standard errors are conventional MLE.
+\item \textit{Source:} \texttt{scripts/62\_theory\_bridge\_bidlevel.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

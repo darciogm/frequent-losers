@@ -10,9 +10,10 @@
 #   4. Leakage audit (40)
 #   5. Operational metrics + audit (42, 43)
 #   6. Cosmetic figures (41)
-#   7. 99_make_paper_values.R              (regenerate values.tex + audit)
-#   8. pdflatex × 3 + bibtex                 (compile paper)
-#   9. verify_paper.sh                       (run verification suite)
+#   7. JLEO rereview diagnostics (47-54)
+#   8. 99_make_paper_values.R              (regenerate values.tex + audit)
+#   9. pdflatex × 3 + bibtex                 (compile paper)
+#  10. verify_paper.sh                       (run verification suite)
 #
 # Usage:
 #   bash scripts/00_master_paper.sh           # full rerun
@@ -64,6 +65,18 @@ if [[ $FAST -eq 0 ]]; then
   echo "=== Stage 5b: v8 CSV consolidation + legacy reproduction (44, 45) ==="
   run_R "scripts/44_consolidate_v8_csvs.R" "44_v8"
   run_R "scripts/45_legacy_m1m3_perm_welfare.R" "45_legacy"
+
+  echo "=== Stage 5c: JLEO rereview diagnostics (53, 54, 47-52) ==="
+  for s in 53_strict_train_period_threshold \
+           54_threshold_table_q3iqr \
+           47_theory_operationalization_audit \
+           48_stratum_scope_reframe \
+           49_imhof_incremental_value \
+           50_negative_cell_audit \
+           51_item_level_scope_match \
+           52_external_validity_scope; do
+    run_R "scripts/${s}.R" "${s}"
+  done
 fi
 
 echo "=== Stage 6: regenerate values.tex + provenance audit (99) ==="

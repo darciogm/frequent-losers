@@ -1,4 +1,3 @@
-# ============================================================================
 # 55_structural_modal_split.R — P2 structural estimation by modality
 # Paper 3 v14 / Major 1 deliverables R3
 #
@@ -15,9 +14,7 @@
 #      - BIC compare; report selected regime + sigma_c/sigma_g ratio
 #
 # Output: output/structural_modal/structural_modal.csv
-# ============================================================================
 
-cat("=== 55_structural_modal_split.R ===\n")
 
 if (!exists(".script_dir")) .script_dir <- dirname(sys.frame(1)$ofile %||% ".")
 suppressPackageStartupMessages({

@@ -1,0 +1,121 @@
+\section{Robustness}
+\label{sec:robustness}
+
+\subsection{Threshold and Specification Sensitivity}
+\label{sec:rob_threshold}
+
+The headline price gap and its detection-regime gradient survive
+reasonable variations in the design choices that define the
+screen. The IQR multiplier governs the bright-line cutoff that
+separates frequent losers from the broader always-loser stratum.
+Under five multipliers from $1.0\!\times$ to $3.0\!\times$
+(Table~\ref{tab:threshold}), the price coefficient is positive
+and significant in every row, declining monotonically from
+$\valThreshMultLow$ at $1.0\!\times$ ($\valThreshMultLowN$ firms)
+to $\valThreshMultHigh$ at $3.0\!\times$ ($\valThreshMultHighN$
+firms). The decline is a
+feature, not a defect: as the cutoff tightens, the binary
+indicator filters fewer firms with high loss-intensity, and
+\S\ref{sec:mech_horse_race} establishes that the underlying
+primitive is the continuous $\log(1+\text{tenders\_count})$
+statistic. Standard-error clustering does not change the point
+estimate; under item-level clustering (baseline,
+SE $\valClusterItem$), procuring-unit-level clustering
+(SE $\valClusterPBU$, tighter), and two-way
+\citet{cameron2011robust} clustering (SE $\valClusterTwoway$,
+looser), the coefficient is significant at $p<0.01$
+(Table~\ref{tab:clustering}). The continuous score discriminates
+the same cobidder population at AUC $\valAUClogtc$
+($95\%$ CI $\valAUClogtcCI$) versus $\valAUCFLBinSameSample$
+($\valAUCFLBinSameSampleCI$) for FL14
+(DeLong $Z = \valDeLongZ$, $p = \valDeLongP$); standalone price
+coefficients of $+0.0653$ ($p<0.001$, FL14 binary) and
+$+0.0188$ ($p<0.001$, continuous) point in the same direction
+(Table~\ref{tab:horse_race_v14}). The headline price gap is
+neither a threshold artifact nor a binary-discretization artifact.
+
+\subsection{Identification Audits}
+\label{sec:rob_identification}
+
+Four audits calibrate the descriptive scope of $\beta$ under
+specific identification concerns. The
+\citet{cinelli2020making} robustness value
+$RV_{q=1} = \valRVqOne$ implies an unobserved confounder would
+need to explain at least $\valRVqOne$ of the residual variation
+in both frequent-loser presence and log price to drive the
+coefficient to zero; \citet{oster2019unobservable} bounds
+agree directionally with $\hat\delta = \valOsterDelta$ on the
+full sample (Table~\ref{tab:oster_delta}). The pregão subsample
+yields $\hat\delta = 634.00$; the convite subsample carries a
+smaller margin ($\hat\delta = 43.62$), consistent with
+\S\ref{sec:mech_modal}'s finding that the construct's
+signal-to-noise is highest in pregão environments.
+
+The strict-overlap matching exercise asks a different
+identification question. Restricting comparisons to cells in
+which frequent-loser items and non-frequent-loser items
+genuinely overlap on observables returns
+$\widehat\beta^{\text{ov}}=\valMatchOverlapCoef$
+($N=\valBetaOverlapN$); propensity-score-trimmed matching returns
+$\valMatchPSCoef$. The contrast with the broad-sample
+$\widehat\beta = \valBetaBroad$ is decomposed in
+\S\ref{sec:results_overlap}: the unweighted overlap regression
+returns $\valBetaUnwOverlap$ (only $\valDroppedItemsShare$ of
+treated items are strictly dropped), the segment-level
+decomposition locates the broad-sample positive in tender-value
+Q4 ($\valSRQfourBroad$ robust to all three specifications) and
+the negatives in Q1--Q3 ($\valSRQoneBroad$ to
+$\valSRQthreeBroad$, also robust), and trim sensitivity
+\emph{strengthens} the negative ATT as the most heavily weighted
+cells are removed (from $\valSRTrimNone$ to $\valSRTrimTen$ at
+the top decile). Both signs describe the same population from
+different design angles; we report the four specifications
+jointly so the reader can locate the construct's descriptive
+claim within the appropriate scope.
+
+The leakage audit (Table~\ref{tab:leakage_audit}) addresses
+tautological leakage from cobidders being by construction
+elevated-participation always-losers. Holding the score fixed
+and swapping the label to direct CADE defendants returns
+$\valLeakDirectAUC$, random discrimination that confirms the
+construct's structural scope (cover bidders, not ringleaders).
+Withholding cobidder firms from score construction within five
+cross-validation folds and re-evaluating on items containing
+held-out cobidders returns AUC $\valLeakCVAUC$
+($95\%$ CI $\valLeakCVAUCCI$); under temporal holdout
+(train $2009$--$2016$, test $2017$--$2019$) AUC is
+$\valAUCFLfirmTemp$ ($95\%$ CI $\valAUCFLfirmTempCI$). The
+$0.10$--$0.13$ drop from the in-sample reference is the
+pure-leakage component, and we adopt the temporal-holdout AUC of
+$\valAUCFLfirmTemp$ as the conservative discriminating reference.
+A placebo specification using the supply of sub-threshold
+always-losers as instrument confirms the construct's price
+imprint draws on the above-threshold cover-bidder population, not
+on generic always-loser supply (Online Appendix~C,
+Table~\ref{tab:iv_placebo}).
+
+\subsection{Temporal Holdout: Generalization of the Screening Statistic}
+\label{sec:rob_operational}
+
+In-sample evaluation confounds classification with prediction:
+items in the late panel contribute both to score construction and
+to the labels the score is evaluated against. Constructing the
+score on $2009$--$2016$ participation only and evaluating on
+items in $2017$--$2019$ yields a firm-level AUC of
+$\valAUCFLfirmTemp$ ($95\%$ CI $\valAUCFLfirmTempCI$) against the
+$\valCobidders$ adjudicated CADE-cobidder labels---the
+generalization reference for the screening statistic throughout
+the paper. Operational metrics
+(Table~\ref{tab:operational_metrics}) show in-sample precision
+overstates by approximately $50\%$ at top-$500$
+($\valOpInsamplePrecFiveHund$ in-sample versus
+$\valOpPrecFiveHund$ holdout) because roughly
+$\valOpInflationShare$ of the top-$500$ in-sample ranking comes
+from $2017$--$2019$ participation, after CADE adjudications were
+already underway for some cartels. We disclose the gap explicitly
+and report headline metrics on the holdout column. At top-$1{,}000$
+the screen flags adjudicated cobidder firms with recall
+$\valOpRecallThou$ under temporal holdout, and the architectural
+extension of the temporal-holdout audit to the
+sequential-gatekeeper rule appears in
+Table~\ref{tab:architecture_gatekeeper_th} (\S\ref{sec:forensic}).

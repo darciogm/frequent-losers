@@ -1,0 +1,167 @@
+\section{Screening vs.~Forensic Stages: An Architectural Test}
+\label{sec:forensic}
+
+The screen we have built so far runs on award records. The claim
+of this section is that doing so is not a concession to data
+scarcity---it is the right division of labour between the
+screening stage and the forensic stage that follows.
+
+Under incomplete operational observability of the bid layer
+(\S\ref{sec:institutional}), enforcement architecture splits
+naturally into two stages: an award-layer screening stage that
+produces candidate flags, and a bid-layer forensic stage that
+adjudicates suspected coordination on the bid distribution. We
+test that division along three dimensions. The two stages
+discriminate the same cartel-adjacency labels at comparable AUC
+on different observability layers. The combination beats either
+component alone. And the award-layer screen functions as a
+Stage-1 gatekeeper, narrowing forensic-recoverable bid-microdata
+interrogation to a manageable subpool while preserving most of
+the joint-scoring recall.
+
+Figure~\ref{fig:coarsening} sets up the comparison. The bid
+layer carries the seven within-tender features the
+Imhof--Wallimann pipeline aggregates into a discrimination score
+(within-tender coefficient of variation, its standard deviation
+across tenders, skewness, kurtosis, normalized spread, log
+min/max, log-second-lowest distance); the operational layer
+preserves only the award envelope---winner identity,
+participant identity, item code, negotiated price---on which the
+screening statistic operates. The screen the title refers to is
+the award-layer rule alone; the bid-microdata pipeline appears
+in this section as the benchmark we read the screen against and
+as the Stage-2 input the screen triages, never as a screening
+input itself.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{./output/figures/fig_data_coarsening}
+\caption[What survives data coarsening]{Bid-layer features and
+award-layer fields. The bid-distribution features the
+Imhof--Wallimann pipeline operates on (left, dashed arrows) are
+dropped by the coarsening that defines most enforcement
+environments at the operational layer; the four award-record
+fields (right, solid arrows) survive. Boxes on the right report
+random-forest AUCs against $\valCobidders$ adjudicated
+CADE-cobidder labels (Table~\ref{tab:imhof_full}).}
+\label{fig:coarsening}
+\end{figure}
+
+On the full always-loser pool ($N=\valImhofPoolN$ firms,
+$\valCobidders$ adjudicated cobidder labels;
+Table~\ref{tab:imhof_full}), the screening statistic
+discriminates at AUC $\valImhofFLBin$ ($95\%$ CI
+$\valImhofFLBinCI$) under the binary FL14 indicator and
+$\valImhofFLcont$ ($\valImhofFLcontCI$) under the continuous
+$\log(1+\text{tenders\_count})$ score. The full Imhof--Wallimann
+pipeline reaches AUC $\valImhofFull$ ($\valImhofFullCI$) on the
+same target. The two pipelines reach statistically
+indistinguishable discrimination on different data envelopes;
+the construct does not outperform the bid-distribution pipeline,
+and we do not claim it does---the architectural point is that
+comparable accuracy is achievable on a substantially thinner
+data envelope. FL14 combined with the full Imhof pipeline
+reaches AUC $\valImhofComboBin$ ($\valImhofComboBinCI$);
+continuous loss intensity combined with the full pipeline
+reaches $\valImhofComboCont$ ($\valImhofComboContCI$); the
+combined classifiers gain $5$--$7$ AUC points over either single
+construct. Restricting attention to the same-sample audit
+(Table~\ref{tab:imhof_incremental}), where all detectors
+evaluate the identical subset of firms---the subset for which
+Imhof features can be computed because bid microdata are
+available---the screening statistic adds $\valImhofIncFL$ AUC
+over the Imhof full pipeline alone (DeLong
+$p = \valImhofIncFLp$) and the combined model adds
+$\valImhofIncCombo$ AUC over Imhof full alone ($p < 0.001$). The
+award-layer screen and the bid-layer forensic moments carry
+non-redundant information about the same target. The subset
+restriction is for the comparison, not for the screen: the screen
+itself runs on the four award-record fields whether or not bid
+microdata are recoverable for any given firm.
+
+\input{./output/tables/tab_imhof_full}
+
+Beyond the AUC headline lies the operational test. The
+award-layer screen functions as a Stage-1 gatekeeper for the
+bid-layer forensic stage, narrowing the pool of firms whose bid
+microdata the forensic stage needs to interrogate. The screen
+itself does not need bid microdata; the gatekeeper claim is
+about how it shapes the data envelope that Stage-2 must request.
+Table~\ref{tab:architecture_gatekeeper} reports precision,
+recall, and bid-microdata footprint for four rules on the same
+evaluation pool of $\valArchPoolSize$ always-loser firms
+($\valArchNPos$ adjudicated cobidder positives, base rate
+$\valArchBaseRate$): the award-layer screen alone, the bid-layer
+Imhof full pipeline alone, joint single-model scoring, and the
+sequential gatekeeper that uses the award-layer screen to select
+a Stage-1 pool of $K_1$ firms before applying Imhof full within
+that pool. At top-$1{,}000$
+flags, joint single-model scoring captures
+$\valArchTPThouJoint$ of $\valArchNPos$ cobidders (recall
+$\valArchRecallThouJoint$) while requiring bid microdata for the
+entire $\valArchPoolSize$-firm pool; the sequential gatekeeper
+with $K_1=\valArchSeqKone$ captures $\valArchTPThouSeqK$
+cobidders (recall $\valArchRecallThouSeqK$) while requiring bid
+microdata for $\valArchSeqKone$ firms only---a
+$\valArchFootprintReduction$ reduction in bid-microdata
+footprint at a $\valArchRecallCost$ recall cost relative to
+joint scoring. The sequential rule is not the precision
+champion (joint scoring is, at $\valArchPrecAtFiveHundJoint$
+vs.\ $\valArchPrecAtFiveHundSeqK$ at top-$500$); its in-sample
+operational case is the data-envelope wedge.
+
+\input{./output/tables/tab_architecture_gatekeeper}
+
+In-sample evaluation invites the natural worry that the score
+and the labels both draw on the full $2009$--$2019$ window: the
+5-fold cross-validated precision-at-$k$ in
+Table~\ref{tab:architecture_gatekeeper} confounds prediction
+with classification. Table~\ref{tab:architecture_gatekeeper_th}
+restricts every per-firm feature to participation observed in
+$2009$--$2016$, leaving the cobidder ground truth as anchored on
+post-sample CADE adjudications (which cannot be temporally
+truncated without discarding nearly all positives); the
+temporal-holdout pool is $\valArchTHPoolSize$ always-losers with
+both train-window participation $>0$ and complete train-window
+Imhof features ($\valArchTHNPos$ cobidder positives). Two
+patterns matter for the architectural reading. Precision
+compresses asymmetrically across the four rules: the award-layer
+screen alone loses $\valArchTHFLDrop$ at top-$500$ (consistent
+with the precision-at-$k$ audit on FL alone in Online
+Appendix~C), joint scoring loses $\valArchTHJointDrop$, and the
+sequential gatekeeper loses $\valArchTHSeqDrop$. In absolute
+true-positive count, the sequential gatekeeper matches or
+exceeds joint scoring under temporal holdout: at top-$500$ the
+sequential rule recovers $\valArchTHTPFiveHundSeqK$ adjudicated
+cobidders versus $\valArchTHTPFiveHundJoint$ for joint scoring,
+and at top-$1{,}000$ it recovers $\valArchTHTPThouSeqK$ versus
+$\valArchTHTPThouJoint$. Stage-2 Imhof moments derived from
+train-window bid distributions are more temporally stable than
+the FL participation rank applied across the full pool, so
+restricting bid-microdata interrogation to a Stage-1 survivor
+pool both compresses the data envelope and preserves out-of-time
+TP capture better than running joint scoring on the full pool.
+The $\valArchFootprintReduction$ data-envelope reduction does
+not trade off against out-of-time recall.
+
+\input{./output/tables/tab_architecture_gatekeeper_th}
+
+Taken together, the three findings identify the sequencing
+structure the paper proposes. Under incomplete operational
+observability, the deployable architecture is an award-layer
+screening stage running on operational data, followed by a
+bid-layer forensic stage running the bid-distribution moment
+battery on the candidates the screening stage flags, with bid
+microdata recovered through administrative request only for the
+screening-flagged subpool. Jurisdictions whose operational layer
+carries award records but not per-bidder bid amounts can deploy
+the screening stage immediately. Jurisdictions whose
+forensic-recoverable layer is also analytically queryable gain
+the forensic stage on top, with the screen already constraining
+the pool of cases that warrant the forensic step. Reforms that
+mandate operational bid-microdata archival
+(\S\ref{sec:institutional}) are best read as expanding the
+forensic stage rather than substituting for the screening one---a
+reading that reverses the standard policy intuition that
+operational bid-archival is a precondition for proactive cartel
+screening.

@@ -1,0 +1,45 @@
+% Subprompt 3: architecture / gatekeeper (script 63)
+\begin{table}[htbp]
+\centering
+\caption{Architecture / Gatekeeper: Operational Precision and Bid-Microdata Footprint by Rule}
+\label{tab:architecture_gatekeeper}
+\begin{threeparttable}
+\footnotesize
+\begin{tabular}{lrrrrrr}
+\toprule
+Rule & $k$ & TP & Precision & Recall & Lift & Bid-microdata firms needed \\
+\midrule
+Award-layer only (FL log\_tc) & $250$ & $40$ & $0.160$ & $0.207$ & $9.68\times$ & $0$ \\
+ & $500$ & $66$ & $0.132$ & $0.342$ & $7.99\times$ & $0$ \\
+ & $1{,}000$ & $97$ & $0.097$ & $0.503$ & $5.87\times$ & $0$ \\
+\midrule
+Bid-layer only (Imhof full) & $250$ & $50$ & $0.200$ & $0.259$ & $12.10\times$ & $11{,}676$ \\
+ & $500$ & $73$ & $0.146$ & $0.378$ & $8.83\times$ & $11{,}676$ \\
+ & $1{,}000$ & $97$ & $0.097$ & $0.503$ & $5.87\times$ & $11{,}676$ \\
+\midrule
+Joint scoring (FL + Imhof, single model) & $250$ & $74$ & $0.296$ & $0.383$ & $17.91\times$ & $11{,}676$ \\
+ & $500$ & $112$ & $0.224$ & $0.580$ & $13.55\times$ & $11{,}676$ \\
+ & $1{,}000$ & $142$ & $0.142$ & $0.736$ & $8.59\times$ & $11{,}676$ \\
+\midrule
+Sequential: FL $\rightarrow$ Imhof (Stage-1 keeps top 1000) & $250$ & $62$ & $0.248$ & $0.321$ & $15.00\times$ & $1{,}000$ \\
+ & $500$ & $87$ & $0.174$ & $0.451$ & $10.53\times$ & $1{,}000$ \\
+ & $1{,}000$ & $97$ & $0.097$ & $0.503$ & $5.87\times$ & $1{,}000$ \\
+\midrule
+Sequential: FL $\rightarrow$ Imhof (Stage-1 keeps top 2000) & $250$ & $65$ & $0.260$ & $0.337$ & $15.73\times$ & $2{,}000$ \\
+ & $500$ & $96$ & $0.192$ & $0.497$ & $11.62\times$ & $2{,}000$ \\
+ & $1{,}000$ & $131$ & $0.131$ & $0.679$ & $7.93\times$ & $2{,}000$ \\
+\midrule
+Sequential: FL $\rightarrow$ Imhof (Stage-1 keeps top 4000) & $250$ & $59$ & $0.236$ & $0.306$ & $14.28\times$ & $4{,}000$ \\
+ & $500$ & $87$ & $0.174$ & $0.451$ & $10.53\times$ & $4{,}000$ \\
+ & $1{,}000$ & $127$ & $0.127$ & $0.658$ & $7.68\times$ & $4{,}000$ \\
+\addlinespace
+\multicolumn{7}{l}{\textit{Reference: evaluation pool size = $11{,}676$ always-loser firms with $\geq 2$ priced bids per tender; $193$ cobidder positives; base rate $= 0.0165$.}} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Always-loser firms in the BEC sample, restricted to those for whom the within-tender bid-distribution moments (CV, SD, skewness, kurtosis, spread, min/max log, second-lowest distance --- the seven Imhof full-pipeline features) can be computed from \texttt{bid\_level\_with\_prices.parquet}. Five-fold cross-validated random forest scores; no out-of-sample temporal holdout in this table (see Online Appendix~C for the temporal-holdout audit). The single-model joint scoring trains a random forest on $\log(1+\text{tenders\_count})$ together with the seven Imhof features in one estimator; the sequential gatekeeper trains separately, using FL-stage rank to filter, then Imhof-stage rank inside the survivor pool. ``Bid-microdata firms needed'' is the number of always-loser firms for which per-bid \textit{Valor Unit\'ario Proposta} must be retrieved to compute the Imhof features under each rule. The award-layer-only rule needs zero bid-microdata extractions because $\log(1+\text{tenders\_count})$ uses participation counts only. Lift is precision-at-$k$ divided by the unconditional cobidder rate in the evaluation pool. The sequential pipeline does not raise top-$k$ precision above joint scoring; its operational claim is that comparable precision is reachable while requesting bid microdata for only the Stage-1 survivor pool, not the full pool.
+\item \textit{Source:} \texttt{scripts/63\_architecture\_gatekeeper.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

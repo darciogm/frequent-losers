@@ -1,0 +1,34 @@
+% Subprompt 4 follow-on: temporal-holdout audit of the gatekeeper (script 64)
+\begin{table}[htbp]
+\centering
+\caption{Architecture / Gatekeeper Under Temporal Holdout: Features Trained on $2009$--$2016$, Evaluated on the Same Cobidder Labels}
+\label{tab:architecture_gatekeeper_th}
+\begin{threeparttable}
+\footnotesize
+\begin{tabular}{lrrrrrrr}
+\toprule
+ & & \multicolumn{2}{c}{Precision @ $k$} & \multicolumn{2}{c}{Recall @ $k$} & \multicolumn{2}{c}{TP @ $k$} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8}
+Rule & $k$ & In-samp.\ & T.\ holdout & In-samp.\ & T.\ holdout & In-samp.\ & T.\ holdout \\
+\midrule
+Award-layer only & $250$ & $0.160$ & $0.076$ & $0.207$ & $0.134$ & $40$ & $19$ \\
+ & $500$ & $0.132$ & $0.070$ & $0.342$ & $0.246$ & $66$ & $35$ \\
+ & $1{,}000$ & $0.097$ & $0.066$ & $0.503$ & $0.465$ & $97$ & $66$ \\
+Bid-layer only (Imhof full) & $250$ & $0.200$ & $0.156$ & $0.259$ & $0.275$ & $50$ & $39$ \\
+ & $500$ & $0.146$ & $0.112$ & $0.378$ & $0.394$ & $73$ & $56$ \\
+ & $1{,}000$ & $0.097$ & $0.082$ & $0.503$ & $0.577$ & $97$ & $82$ \\
+Joint scoring (FL + Imhof) & $250$ & $0.296$ & $0.244$ & $0.383$ & $0.430$ & $74$ & $61$ \\
+ & $500$ & $0.224$ & $0.170$ & $0.580$ & $0.599$ & $112$ & $85$ \\
+ & $1{,}000$ & $0.142$ & $0.111$ & $0.736$ & $0.782$ & $142$ & $111$ \\
+Sequential FL $\rightarrow$ Imhof, $K_1=2{,}000$ & $250$ & $0.260$ & $0.248$ & $0.337$ & $0.437$ & $65$ & $62$ \\
+ & $500$ & $0.192$ & $0.174$ & $0.497$ & $0.613$ & $96$ & $87$ \\
+ & $1{,}000$ & $0.131$ & $0.114$ & $0.679$ & $0.803$ & $131$ & $114$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Temporal-holdout column restricts every per-firm feature to participation observed in $2009$--$2016$ before random-forest scoring. The cobidder ground truth (193 always-losers co-bidding with direct CADE defendants) is anchored on adjudications post-sample and cannot be temporally truncated without discarding nearly all positives, so the holdout applies to features rather than labels. Evaluation pool: in-sample is the $11{,}676$-firm pool of Table~\ref{tab:architecture_gatekeeper}; temporal-holdout pool is the $8{,}257$ always-losers with both train-window participation $>0$ and complete train-window Imhof features. The pattern parallels the precision-at-$k$ audit on FL alone reported in Online Appendix C: precision compresses by roughly half, recall by less, lift by roughly half. The relative ordering of the four rules is preserved.
+\item \textit{Source:} \texttt{scripts/64\_gatekeeper\_temporal\_holdout.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

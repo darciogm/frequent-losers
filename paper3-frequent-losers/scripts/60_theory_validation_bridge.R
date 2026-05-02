@@ -1,22 +1,19 @@
-# ============================================================================
-# 60_theory_validation_bridge.R -- tighten the bridge between the theoretical
-# cover-bidder type and the empirical validation object (cobidders inside the
-# always-loser stratum).
+# 60_theory_validation_bridge.R
 #
-# Generates side-by-side comparisons of cobidders vs. four reference
-# populations along five operational predictions of the cover-bidder type
-# from Online Appendix A.
+# Tightens the bridge between the theoretical cover-bidder type and the
+# empirical validation object (cobidders inside the always-loser stratum).
+# Side-by-side comparisons of cobidders vs four reference populations
+# along the operational predictions of the cover-bidder type formalised
+# in Online Appendix A.
 #
 # Outputs:
-#   output/theory_bridge/firm_profile_by_class.csv      -- firm-level descriptive comparison
-#   output/theory_bridge/bid_behavior_by_class.csv      -- bid-level: premium, dispersion
-#   output/theory_bridge/repeat_pair_by_class.csv       -- repeat co-bidding with winners
-#   output/theory_bridge/concentration_by_class.csv     -- portfolio concentration
-#   output/theory_bridge/standardized_diffs.csv         -- Cohen's d per dimension, cobidders vs comparison populations
-#   work/v13/output/tables/tab_theory_bridge.tex        -- summary table
-# ============================================================================
+#   output/theory_bridge/firm_profile_by_class.csv
+#   output/theory_bridge/bid_behavior_by_class.csv
+#   output/theory_bridge/repeat_pair_by_class.csv
+#   output/theory_bridge/concentration_by_class.csv
+#   output/theory_bridge/standardized_diffs.csv
+#   work/v13/output/tables/tab_theory_bridge.tex
 
-cat("=== 60_theory_validation_bridge.R ===\n")
 
 if (!exists(".script_dir")) {
   file_arg <- sub("^--file=", "", commandArgs(trailingOnly = FALSE)[grep("^--file=", commandArgs(trailingOnly = FALSE))])
@@ -340,7 +337,6 @@ cat("  Wrote LaTeX table.\n")
 
 fwrite(cm_wide, file.path(OUT, "summary_means_wide.csv"))
 
-cat("\n=== Done. Outputs:\n")
 cat("   ", file.path(OUT, "firm_profile_by_class.csv"), "\n")
 cat("   ", file.path(OUT, "repeat_pair_by_class.csv"), "\n")
 cat("   ", file.path(OUT, "standardized_diffs.csv"), "\n")

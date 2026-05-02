@@ -1,21 +1,18 @@
-# ============================================================================
-# 59_sign_reversal_decomp.R -- decompose the broad-sample β vs
-# overlap-restricted β^ov gap with maximum empirical concreteness.
+# 59_sign_reversal_decomp.R
 #
-# Goal: replace the verbal "deployment-sorting diagnostic" reading of the
-# sign reversal with cell-level evidence about (a) which cells get dropped
-# under overlap restriction, (b) what those dropped cells look like, and
-# (c) where the negative β^ov actually lives.
+# Decomposes the broad-sample beta vs overlap-restricted beta^ov gap with
+# cell-level evidence: which cells get dropped under overlap restriction,
+# what they look like, and where the negative beta^ov actually lives.
+# Replaces the verbal "deployment-sorting diagnostic" reading of the sign
+# reversal with concrete numbers.
 #
 # Outputs:
-#   output/sign_reversal_decomp/headline_specs.csv          -- {β, β^ov_cell, β^ov_ref, β^ov_ps} on a common sample
-#   output/sign_reversal_decomp/cell_dropping_dimensions.csv -- characterize dropped vs surviving cells
-#   output/sign_reversal_decomp/within_overlap_subgroup_betas.csv -- where β^ov < 0 lives
-#   output/sign_reversal_decomp/screening_alignment.csv     -- direct test of screening-value reading
-#   work/v13/output/tables/tab_sign_reversal_decomp.tex     -- summary table for paper
-# ============================================================================
+#   output/sign_reversal_decomp/headline_specs.csv
+#   output/sign_reversal_decomp/cell_dropping_dimensions.csv
+#   output/sign_reversal_decomp/within_overlap_subgroup_betas.csv
+#   output/sign_reversal_decomp/screening_alignment.csv
+#   work/v13/output/tables/tab_sign_reversal_decomp.tex
 
-cat("=== 59_sign_reversal_decomp.R ===\n")
 
 if (!exists(".script_dir")) {
   file_arg <- sub("^--file=", "", commandArgs(trailingOnly = FALSE)[grep("^--file=", commandArgs(trailingOnly = FALSE))])
@@ -372,7 +369,6 @@ tex <- c(tex,
 writeLines(tex, file.path(TABS, "tab_sign_reversal_decomp.tex"))
 cat("  Wrote LaTeX table.\n")
 
-cat("\n=== Done. Outputs:\n")
 cat("   ", file.path(OUT, "headline_specs.csv"), "\n")
 cat("   ", file.path(OUT, "cell_dropping_dimensions.csv"), "\n")
 cat("   ", file.path(OUT, "per_dimension_overlap_share.csv"), "\n")

@@ -1,4 +1,3 @@
-# ============================================================================
 # 56_regulatory_cost_frontier.R — Boost D: data-cost-aware operational frontier
 # Paper 3 v14 / Major 1+3 deliverables
 #
@@ -14,9 +13,7 @@
 # Output:
 #   output/regulatory_frontier/regulatory_frontier.csv
 #   output/regulatory_frontier/fig_regulatory_frontier.pdf
-# ============================================================================
 
-cat("=== 56_regulatory_cost_frontier.R: Boost D regulatory cost frontier ===\n")
 
 if (!exists(".script_dir")) .script_dir <- dirname(sys.frame(1)$ofile %||% ".")
 suppressPackageStartupMessages({
