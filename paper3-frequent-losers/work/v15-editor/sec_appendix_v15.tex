@@ -1,18 +1,26 @@
 \section{Cover-Bidding Framework and Proofs}\label{app:proofs}
 
 This appendix formalizes the separating-equilibrium framework
-referenced throughout the main text. Three results are derived
-and used: a lemma establishing the bright-line filter
-$\text{wins}=0$ as the equilibrium choice of the cover-bidder
-type (Lemma~\ref{lem:wins_zero_stmt}); a proposition identifying
-$\log(1+\text{tenders\_count})$ as a sufficient ranking statistic
-for the cover-bidder type given award-record data
-(Proposition~\ref{prop:exposure_stmt}); and a proposition
-characterizing the comparative static of optimal cover-bidder
-deployment in the procuring unit's principal cost of detection
-(Proposition~\ref{prop:optimal_m}). The framework is an
-organizing device for the empirical patterns; it is not the
-source of identification.
+referenced throughout the main text. The framework supports four
+results that the empirical exercise reads against. A lemma
+establishes the $\text{wins}=0$ filter as the equilibrium choice
+of the cover-bidder type (Lemma~\ref{lem:wins_zero_stmt}). A
+proposition identifies $\log(1+\text{tenders\_count})$ as a
+sufficient ranking statistic for the cover-bidder type given
+award-record data (Proposition~\ref{prop:exposure_stmt}). A
+proposition characterizes the cartel's optimal deployment rate
+$m^{*}$ in the principal cost of detection $\theta_k$
+(Proposition~\ref{prop:optimal_m}). And a final proposition
+formalizes why the broad-sample association
+$\beta=\mathbb{E}[y\mid\text{losers}=1,\mathbf{x}]-\mathbb{E}[y\mid\text{losers}=0,\mathbf{x}]$
+and the overlap-restricted association
+$\beta^{\text{ov}}=\mathbb{E}[y\mid\text{losers}=1,\mathbf{x},\text{overlap}]-\mathbb{E}[y\mid\text{losers}=0,\mathbf{x},\text{overlap}]$
+are different empirical objects under the framework's deployment
+problem, with the contrast between them diagnostic of the
+deployment sorting that the screening statistic captures
+(Proposition~\ref{prop:screening_value}). The framework is an
+organizing device for the empirical patterns; it is not a source
+of independent causal identification.
 
 \paragraph{Setup}
 A cartel of $n$ firms in a procurement market controls a
@@ -160,6 +168,124 @@ cover-bidder deployment is more aggressive where the procuring
 unit's principal cost of detection is lower
 (§\ref{sec:results_oversight}). \qed
 \end{proof}
+
+\paragraph{Why the screening object differs from a treatment-effect
+target}
+Propositions~\ref{prop:exposure_stmt} and~\ref{prop:optimal_m}
+together imply that frequent-loser participation is not
+distributed uniformly over items: under A1--A2, the cartel
+deploys cover bidders preferentially in items where its expected
+surplus is highest, conditional on the deployment cost
+$c_1$ and the local detection probability $\theta_k$. Items
+the cartel selects into therefore differ from items it does not
+on a vector of unobserved characteristics $\mathbf{u}$ that
+governs the cartel's expected surplus---chiefly, the rents
+available from the designated winner's bid relative to the
+competitive equilibrium price, the local detection environment,
+and item-level characteristics that shape the cartel's
+allocation rule. None of these unobservables is captured by the
+fixed-effects controls or by the matching covariates: by
+construction, item, year, and procuring-unit dummies absorb
+sources of variation that are common to items within their
+respective strata, and the matching covariates are observable
+descriptors of the items themselves, while $\mathbf{u}$ is the
+unobservable component of the cartel's deployment optimum.
+
+The following proposition formalizes the implication for the
+two empirical objects $\beta$ and $\beta^{\text{ov}}$.
+
+\begin{proposition}[Screening-value vs.~treatment-effect
+objects]\label{prop:screening_value}
+Let $D_i \in \{0,1\}$ indicate frequent-loser presence in
+item~$i$, $\mathbf{x}_i$ the vector of observables absorbed by
+fixed effects and matching covariates, and $\mathbf{u}_i$ the
+vector of unobservables governing the cartel's deployment
+optimum (rents available, local detection environment,
+item-specific allocation features). Suppose the cartel's
+optimal deployment satisfies
+$\Pr(D_i=1 \mid \mathbf{x}_i, \mathbf{u}_i)
+= g(\mathbf{x}_i, \mathbf{u}_i)$ with $g$ strictly increasing in
+the rent component of $\mathbf{u}_i$. Then:
+\begin{enumerate}
+\item \emph{Broad-sample $\beta$.} The conditional mean
+difference
+$\beta = \mathbb{E}[y_i \mid D_i=1, \mathbf{x}_i] -
+        \mathbb{E}[y_i \mid D_i=0, \mathbf{x}_i]$
+integrates over the distribution
+$f(\mathbf{u}_i \mid D_i = 1, \mathbf{x}_i)$ versus
+$f(\mathbf{u}_i \mid D_i = 0, \mathbf{x}_i)$. Under the cartel's
+deployment optimum, these two conditional distributions of
+$\mathbf{u}_i$ are systematically different in the rent
+component: items the cartel selects into have
+unobservable-shifted rents.
+\item \emph{Overlap-restricted $\beta^{\text{ov}}$.} The
+overlap-restricted comparison
+$\beta^{\text{ov}} = \mathbb{E}[y_i \mid D_i=1, \mathbf{x}_i,
+\Omega] - \mathbb{E}[y_i \mid D_i=0, \mathbf{x}_i, \Omega]$,
+where $\Omega$ denotes the common-support cell, restricts
+attention to items in which $D_i=1$ and $D_i=0$ have non-trivial
+joint density given $\mathbf{x}_i$. Within $\Omega$, the
+conditional distributions of $\mathbf{u}_i$ are by construction
+more comparable: items where the cartel deploys at the
+$\mathbf{x}_i$-margin must compete with items where the cartel
+does not deploy despite similar observables, so the rent
+component of $\mathbf{u}_i$ that drives the deployment optimum
+must be smaller (otherwise the cartel would deploy with
+near-certainty there as well).
+\item \emph{Diagnostic.} If the rent component of $\mathbf{u}_i$
+that drives the deployment optimum also moves prices in the same
+direction (rent-rich items both attract cartel deployment and
+realize higher prices conditional on observables), then
+$\beta>0$ on the broad sample while $\beta^{\text{ov}}<0$ is
+\emph{the prediction} of the deployment problem, not its
+refutation: forcing overlap removes the cells where rents are
+high, which removes precisely the items where the participation
+footprint and the price imprint co-occur.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:screening_value}]
+Claim 1 follows from the law of iterated expectations: the
+broad-sample $\beta$ averages $\mathbb{E}[y_i \mid D_i,
+\mathbf{x}_i, \mathbf{u}_i]$ over the conditional distributions
+of $\mathbf{u}_i$ given $D_i$ and $\mathbf{x}_i$. The cartel's
+deployment optimum implies that $\mathbf{u}_i \mid D_i=1$ has a
+higher rent component than $\mathbf{u}_i \mid D_i=0$ at the same
+$\mathbf{x}_i$, by Proposition~\ref{prop:optimal_m}. Claim 2
+follows from the definition of common support: cells in $\Omega$
+are those where the propensity score
+$\Pr(D_i=1 \mid \mathbf{x}_i)$ is bounded away from $0$ and $1$,
+which by the strict monotonicity of $g$ in the rent component
+implies that the rent component takes intermediate values. The
+$\mathbf{u}_i$-conditional distributions across $D_i=1$ and
+$D_i=0$ within $\Omega$ are therefore more comparable than across
+the broad sample. Claim 3 is the comparative statement: if the
+rent component shifts both the deployment probability and the
+realized price in the same direction, then averaging over
+$\mathbf{u}_i$ on the broad sample produces a positive
+$\beta$ while restricting to $\Omega$ trims the high-rent cells
+out of the average, leaving a $\beta^{\text{ov}}$ that need not
+be positive and may be negative for reasons unrelated to the
+treatment itself. \qed
+\end{proof}
+
+The proposition formalizes the screening-value reading in
+§\ref{sec:results_overlap}. The broad-sample $\beta$ is
+informative because it integrates over the distribution of
+items where the cartel deploys; under the screening framing of
+§\ref{sec:emp_estimand} this integration is the empirical object
+of interest. The overlap-restricted $\beta^{\text{ov}}$ trims
+out exactly the cells where the deployment optimum places the
+cartel, which is what produces the sign reversal under
+Proposition~\ref{prop:screening_value}'s premise. The model does
+not by itself adjudicate whether the rent-component-co-movement
+premise holds; the empirical evidence of §\ref{sec:cade}
+(cartel-adjacency validation moves with $\beta$),
+§\ref{sec:mech_horse_race} (continuous primitive dose-response),
+and §\ref{sec:results_ols} (sensitivity bounds) are the three
+independent observations that, together, make the screening-value
+reading more consistent with the data than a confound-only
+reading of $\beta$.
 
 \section{Core Supporting Tables and Figures}
 \label{app:supporting}
