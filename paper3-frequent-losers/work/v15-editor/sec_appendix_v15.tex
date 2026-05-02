@@ -427,56 +427,120 @@ settings.
 \section{Adversarial-Adaptation Simulation}
 \label{app:adversarial}
 
-A sophisticated cartel could adapt its deployment to evade the
-construct. We examine four strategic adaptations that hold the
-construct fixed and modify the always-loser pool to mimic
-plausible evasive behavior, then recompute the firm-level AUC of
+The §\ref{sec:lim_construct} discussion notes that the
+construct's behavior under deliberate adversarial adaptation is
+bounded but not invariant. This appendix reports the simulation
+behind that claim. Four strategic adaptations are examined; each
+holds the screening statistic fixed and modifies the always-loser
+pool to mimic plausible evasive behavior; the firm-level AUC of
 $\log(1+\text{tenders\_count})$ against the $\valCobidders$
-CADE-cobidder labels.
+CADE-cobidder labels is recomputed under each. Two are observable
+adaptations (rotation and occasional wins) that the construct is
+resilient to; two are threshold-aware adaptations (CNPJ splitting
+and participation capping) that degrade discrimination.
 
 \input{./output/tables/tab_adversarial_adaptation}
 
-The construct is resilient to rotation ($20\%$ of cover bidders
-retire annually and are replaced by fresh CNPJs) and to
-occasional wins ($5\%$ of threshold-crossing firms win one
-tender): AUC is essentially unchanged because the bright-line
-filter eliminates the small share of newly-winning cover bidders
-and rotation does not compress the ranking statistic. CNPJ
-splitting (each frequent loser splits into two CNPJs carrying
-half the participation count) degrades AUC by
+\paragraph{Resilient adaptations}
+Rotation ($20\%$ of cover bidders retire annually and are
+replaced by fresh CNPJs) and occasional wins ($5\%$ of
+threshold-crossing firms win one tender) leave AUC essentially
+unchanged. The bright-line $\text{wins}=0$ filter eliminates
+the small share of newly-winning cover bidders---a feature of
+the framework's separating equilibrium
+(Lemma~\ref{lem:wins_zero_stmt}), not a heuristic
+robustness---and rotation does not compress the
+$\log(1+\text{tenders\_count})$ ranking statistic across the
+always-loser pool. The screening statistic is structurally
+robust to adaptations that preserve the participation
+primitive's distribution.
+
+\paragraph{Threshold-aware adaptations}
+CNPJ splitting (each frequent loser splits into two CNPJs
+carrying half the participation count) degrades AUC by
 $\valAdaptCNPJAbs$ percentage points; threshold-aware capping
 (firms cap participation at $13$ tender-items to stay below the
 cutoff) degrades AUC by $\valAdaptCapAbs$ points; the combined
 attack (capping plus $20\%$ rotation) drives AUC from
 $\valAUCBase$ to $\valAUCAdaptCombined$, a
-$\valAdaptCombinedAbs$-point compression.
+$\valAdaptCombinedAbs$-point compression. These adaptations
+target the binary cutoff specifically; the continuous primitive
+$\log(1+\text{tenders\_count})$ that
+Proposition~\ref{prop:exposure_stmt} identifies as the
+sufficient ranking statistic is not directly altered, but the
+binary discretization is. Threshold capping is therefore the
+most exposed margin: a cartel that knows the cutoff can
+instruct cover bidders to remain below it.
 
-The construct is therefore informative absent adaptation and
-degrades predictably under specified attacks; the threshold rule
-is the most exposed margin. Practical lifetime depends on
-whether adaptation is observable and whether the threshold can
-be periodically refreshed, and the screen should be combined
-with bid-distribution methods where bid microdata are available
-so that joint detection survives adaptation against either
-component alone.
+\paragraph{Architectural implication}
+The screening statistic is informative absent adaptation and
+degrades predictably under specified attacks. The implication
+for the screening-vs-forensic-stage architecture of
+§\ref{sec:forensic} is asymmetric. Under combined adaptation,
+AUC drops to $\valAUCAdaptCombined$---still above random
+matching, still informative as a screening statistic, but
+substantially reduced. The forensic stage is unaffected by
+threshold-aware adaptation at the screening layer: bid-distribution
+moments operate on a different data envelope and are robust to
+the participation-pattern engineering that defeats the binary
+rule. A combined two-stage architecture in which a refreshable
+screening rule feeds a forensic stage on bid microdata is
+therefore more adaptation-robust than either component alone,
+which the empirical evidence in §\ref{sec:forensic} shows by
+distinct means.
+
+The screening statistic is not adaptation-proof and we do not
+claim it is. Practical lifetime depends on whether adaptation
+is observable to the enforcer (the threshold rule's exposed
+margin is itself observable, since the cutoff is published) and
+on whether the threshold can be periodically refreshed against
+new data. The honest characterization is that the construct is
+informative against an unsophisticated adversary, vulnerable to
+a sophisticated one targeting the binary rule, and best
+deployed alongside the bid-layer forensic stage where microdata
+are available---which is the architectural implication the body
+already states.
 
 \section{Staggered Designs Attempted and Rejected}
 \label{app:staggered}
 
-The difference-in-differences design exploiting Decreto~$\valDecreto$'s
-$2018$ raise of the convite cap fails the parallel-trends
-diagnostic at the available pre-treatment window. We report two
-attempted estimators alongside the failure mode. The
-\citet{sun2021estimating} interaction-weighted estimator yields
-imprecise coefficients with non-monotone dynamic patterns
+The §\ref{sec:lim_identification} discussion notes that two
+design-based strategies that would extract a causal estimate
+from the data return null at the available bandwidths. The
+sharp-RDD failure (gated by the McCrary density test) is
+documented in Table~\ref{tab:mccrary} of App~B. This appendix
+reports the parallel diagnostic for the difference-in-differences
+strategy exploiting Decreto~$\valDecreto$'s $2018$ raise of the
+convite cap. We report the failure transparently because the
+empirical content of the paper is descriptive throughout, and
+the screening framing of §\ref{sec:emp_estimand} does not
+require these designs to succeed; the documented null is part
+of the disclosure that locates the construct as a screening-value
+object rather than a causal-effect estimate.
+
+The \citet{sun2021estimating} interaction-weighted estimator
+yields imprecise coefficients with non-monotone dynamic patterns
 incompatible with the smooth treatment-onset narrative the cap
 raise would imply (Table~\ref{tab:did_revised}). A stacked
-difference-in-differences design constructed around the cap-raise
-event window returns coefficients that flip sign across stacks
-and lack a clean pre-period (Table~\ref{tab:stacked_did}). We
-treat both estimators as null at the available bandwidths and
-report the empirical content of §\ref{sec:results} as
-descriptive throughout (§\ref{sec:lim_identification}).
+difference-in-differences design constructed around the
+cap-raise event window returns coefficients that flip sign
+across stacks and lack a clean pre-period
+(Table~\ref{tab:stacked_did}). We treat both estimators as null
+at the available bandwidths.
+
+The interpretive consequences are limited to identification
+scope. The screening statistic does not require the cap raise
+to be a clean treatment, the broad-sample association $\beta$
+of §\ref{sec:results_ols} does not depend on the staggered
+design surviving, and the null does not constrain the
+screening-value interpretation of §\ref{sec:emp_estimand}.
+What the null does constrain is alternative framings of the
+empirical object that would require a causal identification of
+$\beta$; under those framings, the design-based strategies
+returning null limit the scope of any treatment-effect claim.
+The screening framing trades that claim for the screening-value
+interpretation of $\beta$ and reports the failures here for full
+disclosure.
 
 \input{./output/tables/tab_did_revised}
 
