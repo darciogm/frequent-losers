@@ -1,78 +1,83 @@
-\section{Legal and Institutional Framework}
+\section{Institutional Setting and the Observability Architecture}
 \label{sec:institutional}
 
-\paragraph{Procurement statutes}
+The empirical exercise requires three institutional facts about
+the data layer at which BEC enforcement operates and the source
+of the validation labels we use. We catalog these here and refer
+the reader to standard treatments of the underlying procurement
+statutes for further detail.
+
+\paragraph{Two procurement modalities, two informational regimes}
 Brazilian public procurement during our $\valYearStart$--$\valYearEnd$
-sample is governed by Lei~$\valLeiOriginal$ (the General
-Procurement Statute) and Lei~$\valLeiPregao$ (which introduced the
-Pregão modality). Two modalities dominate BEC. \emph{Convite}
-(Lei~$8.666/93$, Art.~$22$) is a sealed-bid invitation procedure
-in which the buyer invites at least three qualified suppliers and
-the contract is awarded to the lowest qualifying bid; the statute
-requires three valid proposals for the procedure to clear.
-\emph{Pregão} (Lei~$\valLeiPregao$) is a reverse electronic
-auction in which bidders submit progressively lower offers in
-real time, with no minimum-bidder requirement. Statutory value
-caps (Lei~$8.666/93$, Art.~$23$) restrict convite to procurement
-below $\valCapOldR$ for goods and services and $\valCapMidR$ for
-engineering works during $2009$--$2017$;
-Decreto~$\valDecreto$ raised these to $\valCapNewR$ and
-$\valCapHighR$. Above the caps, only pregão is permitted in BEC.
+sample is governed by Lei~$\valLeiOriginal$ and Lei~$\valLeiPregao$.
+Two modalities dominate BEC and differ in observability and
+monitoring structure. \emph{Convite} (Lei~$8.666/93$, Art.~$22$)
+is a sealed-bid invitation procedure with a statutory three-bidder
+quorum requirement and a low value cap. \emph{Pregão}
+(Lei~$\valLeiPregao$) is a reverse electronic auction in which
+bidders submit progressively lower offers in real time, with no
+minimum-bidder requirement and a public bidding interface. The
+two modalities therefore expose different bidding behaviors to
+public visibility: convite preserves only the final award record;
+pregão preserves a richer real-time interaction whose footprint
+is observable to other bidders during the auction itself. We
+treat the modal contrast as variation in the observability
+environment that the construct's signal is read against, not as
+the mechanism the construct exploits. The empirical exercise in
+§\ref{sec:mech_modal} reads modal heterogeneity as
+informativeness across detection regimes; that the price imprint
+and the cobidder discrimination are sharper in pregão is a
+property of the regime, not a falsification of an alternative
+mechanism. The $2021$ reform (Lei~$14.133/2021$) postdates our
+sample and consolidates pregão-style auctions as the default,
+shifting the modal mix toward the regime in which the construct
+is most informative.
 
-We use the modal contrast as institutional context rather than as
-the mechanism the construct exploits: the price imprint and the
-discrimination of adjudicated CADE-cobidder firms are sharper in
-pregão (no minimum-bidder rule) than in convite
-(§\ref{sec:results_ols}, §\ref{sec:mech_modal}). The 2021 reform
-(Lei~$14.133/2021$) postdates our sample, restricts the convite
-modality, and consolidates pregão-style electronic auctions as
-the default, which is the modal regime in which the construct
-performs best (§\ref{sec:mech_modal}, §\ref{sec:lim_external}).
+\paragraph{The data layer that survives}
+The construct operates on the data layer that BEC's analytical
+warehouse exports: winner identity, participant identity, item
+code, and negotiated price. Bid-by-bid records exist in the
+operational system but are not routinely exported to the layer
+that competition authorities and audit courts query.\footnote{In
+TCE-SP audits we examined, requesting bid-level microdata from
+the BEC operational system is a multi-step process that delays
+investigations by weeks; the award-record layer returns results
+in minutes.} The asymmetry is not Brazil-specific: EU
+member-state platforms preserve bid microdata heterogeneously,
+and the U.S.~federal system (FPDS-NG) preserves awards but not
+bid history at the contracting-officer layer. The data-layer
+mismatch between the bid-distribution-screen literature and the
+operational records that survive at most enforcement
+agencies---which the construct's screening problem is built
+around---is therefore a feature of the architecture, not a
+parochial Brazilian artifact.
 
-\paragraph{Enforcement architecture}
-Three institutions police BEC procurement.
-\textbf{TCE-SP} (Tribunal de Contas do Estado de S\~ao Paulo)
-audits purchasing units administratively;
-\textbf{CGE} (Controladoria Geral do Estado) oversees
-executive-branch compliance and maintains debarred-firm registries;
-and \textbf{CADE} (Conselho Administrativo de Defesa Econ\^omica)
-is the federal competition authority that adjudicates bid-rigging
-cases under Lei~$12.529/2011$, with leniency provisions
-(Art.~$86$) generating the disclosure trail that the
-cartel-detection literature uses as ground truth.
+\paragraph{Adjudication portfolio for validation}
+The Conselho Administrativo de Defesa Econ\^omica (CADE) is the
+federal competition authority that adjudicates bid-rigging cases
+under Lei~$12.529/2011$, with leniency provisions
+(Art.~$86$) generating the disclosure trail the cartel-detection
+literature uses as ground truth. CADE's procurement-cartel
+portfolio relevant to our sample comprises $12$ adjudicated
+cases covering $65$ firm-defendants ($\valDirectCADE$ active in
+BEC during the sample window), with final decisions spanning
+$2015$--$2025$. Eight of the twelve were decided after our
+$2019$ sample cut. The temporal structure makes the validation
+in §\ref{sec:cade} partly prospective: the construct's
+discrimination against the adjudicated population is computed on
+participation patterns observable years before enforcement
+adjudicated those patterns. The interval between operational
+cartel activity and final adjudication---$4$ to $16$ years from
+process opening to ruling in our portfolio---is the relevant
+benchmark for the screening-stage interpretation of the
+contribution: an award-layer screen that flags candidate
+environments at $t$ accelerates the path to forensic investigation
+relative to the post-adjudication identification on which the
+prior literature relies.
 
-CADE's procurement-cartel portfolio relevant to our sample
-comprises $12$ adjudicated cases covering $65$ firm-defendants
-($\valDirectCADE$ active in BEC during the sample window), with
-final decisions spanning $2015$--$2025$. Eight of the twelve
-were decided after our $2019$ sample cut, so the validation in
-§\ref{sec:cade} operates partly prospectively: the construct's
-discrimination against the adjudicated cobidder population was
-computed on participation patterns observable years before
-enforcement. The interval between operational cartel activity
-and final adjudication---$4$ to $16$ years from process opening
-to ruling in our portfolio---is the policy-relevant benchmark
-for the construct's deployment value (§\ref{sec:conclusion}).
-
-\paragraph{The screening problem}
-Bid-level forensic tools---variance, kurtosis, skewness, and
-spread analyses across submitted bids---detect coordinated
-bidding when bid microdata are preserved
-\citep{imhof2019detecting,huber2019machine,wallimann2023machine}.
-Their reach is bounded by data infrastructure. Many electronic
-procurement systems, including BEC during much of our sample,
-archive only winners and participant lists at the contract-record
-layer; bid-by-bid records may exist in operational logs but are
-not exported to the analytical warehouses oversight bodies
-query.\footnote{In TCE-SP audits we examined, requesting
-bid-level microdata from the BEC operational system is a
-multi-step process that delays investigations by weeks; the
-contract-record layer returns results in minutes.} The asymmetry
-is not Brazil-specific: EU member-state platforms preserve bid
-microdata heterogeneously, and the U.S.~federal system (FPDS-NG)
-preserves awards but not bid history at the contracting-officer
-layer. A screen that requires only participation records lowers
-the data threshold for proactive detection to what virtually
-every system already maintains. That is the construct's primary
-contribution: not a more powerful test, but one deployable where
-the more powerful tests are not.
+The administrative-audit institutions surrounding BEC (TCE-SP,
+CGE) supervise procurement legality and maintain debarred-firm
+registries; we do not require them as part of the empirical
+strategy. We treat them as part of the broader monitoring
+environment within which the construct's screening signal is
+read.
