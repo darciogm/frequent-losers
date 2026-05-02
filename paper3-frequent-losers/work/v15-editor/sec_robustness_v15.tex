@@ -1,24 +1,20 @@
 \section{Robustness}
 \label{sec:robustness}
 
-This section stress-tests the broad-sample association
-$\beta$ of §\ref{sec:results_ols} and the
-detection-regime gradient of §\ref{sec:results_oversight}
-against four concerns. §\ref{sec:rob_threshold} addresses
-sensitivity to the design choices embedded in the screening
-statistic (IQR multiplier, clustering, binary-vs-continuous
-specification). §\ref{sec:rob_identification} reports identification
-audits (\citealt{cinelli2020making} robustness value,
-strict-overlap matching, leakage diagnostics, and the placebo on
-sub-threshold always-loser supply).
-§\ref{sec:rob_operational} reports the temporal-holdout
-generalization of the screening statistic, the most consequential
-disclosure for the screening reading.
-§\ref{sec:rob_imhof} compares the construct's discrimination to
-bid-distribution detectors trained on bid microdata, framing the
-comparison as separation between award-layer screening and
-bid-layer forensic stages rather than as competition between
-substitutes.
+This section stress-tests the broad-sample association $\beta$
+of §\ref{sec:results_ols} and the detection-regime gradient of
+§\ref{sec:results_oversight} against three concerns.
+§\ref{sec:rob_threshold} addresses sensitivity to the design
+choices embedded in the screening statistic (IQR multiplier,
+clustering, binary-vs-continuous specification).
+§\ref{sec:rob_identification} reports identification audits
+(\citealt{cinelli2020making} robustness value, strict-overlap
+matching, leakage diagnostics, and the placebo on sub-threshold
+always-loser supply). §\ref{sec:rob_operational} reports the
+temporal-holdout generalization of the screening statistic, the
+most consequential disclosure for the screening reading. The
+comparison against bid-distribution detectors is reported in the
+dedicated §\ref{sec:forensic} on screening-vs-forensic stages.
 
 \subsection{Threshold and Specification Sensitivity}
 \label{sec:rob_threshold}
@@ -199,58 +195,20 @@ holdout (≈$0.10$--$0.13$ AUC) is the pure-leakage component of
 the in-sample evaluation; the residual AUC $>0.85$ is the
 structural generalization of the screening statistic.
 
-\subsection{Horse Race Against Bid-Distribution Detectors}
-\label{sec:rob_imhof}
-
-The construct's competitive position vis-à-vis bid-distribution
-detectors that require bid microdata is the final calibration. The
-relevant comparison is at fixed \emph{data cost}, not at fixed
-sample, because the two pipelines operate on different data
-envelopes: the construct uses award-record fields only (winner
-identity, participant identity, item identifier), while the
-bid-distribution pipeline requires per-bid offer values.
-
-Table~\ref{tab:imhof_full} reports the comparison on the full
-always-loser pool ($N = 16{,}779$ firms, $\valCobidders$ adjudicated
-cobidder labels). The construct discriminates at AUC $0.903$
-($95\%$ CI $[0.884, 0.923]$) under the binary FL14 indicator and
-$0.884$ ($95\%$ CI $[0.860, 0.908]$) under the continuous
-$\log(1+\text{tenders\_count})$ score. The full Imhof--Wallimann
-pipeline---five within-tender bid-distribution features (coefficient
-of variation, skewness, kurtosis, spread, second-low ratio)
-\citep{imhof2019detecting,wallimann2023machine}---reaches AUC
-$0.888$ ($95\%$ CI $[0.865, 0.911]$) on the same target. The
-two pipelines reach comparable discrimination on different data
-envelopes. We do not claim that the construct outperforms the
-bid-distribution pipeline; we claim that it reaches comparable
-accuracy on a substantially thinner data envelope.
-
-\input{./output/tables/tab_imhof_full}
-
-The combined specifications in the bottom panel of
-Table~\ref{tab:imhof_full} address the integration question. FL14
-combined with the full Imhof pipeline reaches AUC $0.955$
-($95\%$ CI $[0.943, 0.967]$); continuous loss intensity combined
-with the full Imhof pipeline reaches AUC $0.962$ ($95\%$ CI
-$[0.954, 0.969]$). Both combined classifiers gain $5$--$7$ AUC
-points over either single construct, indicating non-redundant
-signal in the participation-only and bid-distribution information
-sources. Restricting attention to the same-sample audit in
-Table~\ref{tab:imhof_incremental}, where all detectors evaluate
-the identical subset of firms with bid microdata available, the
-construct adds $+0.035$ AUC over the Imhof full pipeline alone
-(DeLong $p = 0.014$), and the combined model adds
-$+0.096$--$+0.098$ AUC over Imhof full alone (DeLong $p < 0.001$).
-
-The relationship between the screening statistic and
-bid-distribution detectors is therefore informational
-complementarity rather than dominance. The construct reaches
-comparable discrimination at lower data cost when bid microdata
-are unavailable, and it adds non-redundant signal when bid
-microdata are available. The architectural separation in
-§\ref{sec:conclusion} reads this as a two-stage enforcement
-structure: an award-layer screening stage that runs on
-contract-record data, and a bid-layer forensic stage that
-runs on the bid-distribution moment battery; the gain from
-sequencing the two is identifiable in the data and the two
-stages answer different questions.
+\paragraph*{Robustness summary} The headline price gap and the
+detection-regime gradient survive the threshold-multiplier
+sweep, two-way clustering, and the binary-versus-continuous
+specification audit. The four identification audits delineate
+the descriptive scope of $\beta$: omitted-variable bounds rule
+out selection-on-observables explanations of the kind the fixed
+effects already absorb; strict-overlap matching delivers the
+within-support estimand $\beta^{\text{ov}}$ as the alternative
+empirical object whose contrast with $\beta$ is the
+screening-value diagnostic of §\ref{sec:results_overlap}; the
+leakage decomposition isolates the structural component of the
+in-sample AUC; the placebo confirms the construct operates
+through the threshold-crossing population, not generic
+always-loser supply. The temporal-holdout audit reports the
+generalization reference. The comparison against
+bid-distribution detectors that the prior literature operates
+with is reported in the dedicated §\ref{sec:forensic}.

@@ -1,0 +1,80 @@
+\section{Screening vs.~Forensic Stages: An Architectural Test}
+\label{sec:forensic}
+
+The contribution claim of §\ref{sec:intro} is structural: under
+incomplete observability, enforcement architecture separates an
+award-layer screening stage that produces candidate flags from a
+bid-layer forensic stage that adjudicates suspected coordination
+on the bid distribution. The two stages answer different
+questions and require different statistics. This section tests
+the architectural claim empirically: the two stages should
+discriminate the same cartel-adjacency labels at comparable
+levels on different data envelopes, and the combination should
+beat either component alone.
+
+\paragraph{Comparable accuracy on different data envelopes}
+Table~\ref{tab:imhof_full} reports the comparison on the full
+always-loser pool ($N = 16{,}779$ firms, $\valCobidders$
+adjudicated cobidder labels). The screening statistic
+discriminates at AUC $0.903$ ($95\%$ CI $[0.884, 0.923]$) under
+the binary FL14 indicator and $0.884$ ($[0.860, 0.908]$) under
+the continuous $\log(1+\text{tenders\_count})$ score. The full
+Imhof--Wallimann pipeline---five within-tender bid-distribution
+features (coefficient of variation, skewness, kurtosis, spread,
+second-low ratio)
+\citep{imhof2019detecting,wallimann2023machine}---reaches AUC
+$0.888$ ($[0.865, 0.911]$) on the same target. The two pipelines
+reach statistically indistinguishable discrimination on
+different data envelopes. The construct does not outperform the
+bid-distribution pipeline, and we do not claim it does; the
+architectural point is that comparable accuracy is achievable
+on a substantially thinner data envelope.
+
+\input{./output/tables/tab_imhof_full}
+
+\paragraph{Non-redundant signal} The combined specifications in
+the bottom panel of Table~\ref{tab:imhof_full} address the
+integration question. FL14 combined with the full Imhof pipeline
+reaches AUC $0.955$ ($[0.943, 0.967]$); continuous loss
+intensity combined with the full Imhof pipeline reaches AUC
+$0.962$ ($[0.954, 0.969]$). The combined classifiers gain
+$5$--$7$ AUC points over either single construct. Restricting
+attention to the same-sample audit
+(Table~\ref{tab:imhof_incremental}), where all detectors
+evaluate the identical subset of firms with bid microdata
+available, the screening statistic adds $+0.035$ AUC over the
+Imhof full pipeline alone (DeLong $p = 0.014$), and the combined
+model adds $+0.096$--$+0.098$ AUC over Imhof full alone
+($p < 0.001$). The award-layer screening object and the
+bid-layer forensic moments carry non-redundant information
+about the same cartel-adjacency target.
+
+\paragraph{The architectural reading}
+The two findings together identify the sequencing structure
+the contribution claims. The screening statistic and the
+bid-distribution detectors discriminate the same labels at
+comparable levels on different data envelopes (the architecture
+treats them as substitutable when only one envelope is
+available); the two carry non-redundant signal when both
+envelopes are available (the architecture treats them as
+sequential when both are). Under incomplete observability the
+deployable architecture is therefore: an award-layer screening
+stage that runs on contract-record data and produces candidate
+environments, followed by a bid-layer forensic stage that runs
+the bid-distribution moment battery on the candidates the
+screening stage flags, where bid microdata are recoverable for
+those candidates. The two stages answer different questions and
+require different statistics; the comparison in this section
+shows that they share the same cartel-adjacency target without
+dominating each other.
+
+The implication for portability is concrete. Jurisdictions that
+preserve only the award layer can deploy the screening stage
+immediately, on data they already maintain. Jurisdictions that
+also preserve bid microdata gain the forensic stage on top, with
+the screening stage already constraining the pool of cases that
+warrant the forensic step. Reforms that mandate bid-microdata
+archival (\S\ref{sec:institutional}) are best read as expanding
+the forensic stage rather than substituting for the screening
+one---a reading that reverses the standard policy intuition that
+bid-archival is a precondition for proactive cartel screening.
