@@ -12,6 +12,35 @@ discriminate the same cartel-adjacency labels at comparable
 levels on different data envelopes, and the combination should
 beat either component alone.
 
+Figure~\ref{fig:coarsening} sets up the comparison. The bid
+layer carries five within-tender features that the
+Imhof--Wallimann pipeline aggregates into a discrimination
+score. Most enforcement environments do not preserve those
+features at the analytical-warehouse layer
+(§\ref{sec:institutional}); the data coarsening that drops them
+also drops anything else the bid distribution would carry. What
+survives is the award envelope: winner identity, participant
+identity, item code, and negotiated price. The screening
+statistic this paper builds operates on those four fields
+alone. The empirical question of this section is whether what
+survives is enough.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{./output/figures/fig_data_coarsening}
+\caption[What survives data coarsening]{Bid-layer features and
+award-layer fields. The five bid-distribution features the
+Imhof--Wallimann pipeline operates on (left, dashed arrows) are
+dropped by the coarsening that defines most enforcement
+environments. The four award-record fields (right, solid arrows)
+survive. The boxes on the right report random-forest AUCs
+against $\valCobidders$ adjudicated CADE-cobidder labels: the
+two pipelines reach statistically indistinguishable
+discrimination on different data envelopes
+(Table~\ref{tab:imhof_full}).}
+\label{fig:coarsening}
+\end{figure}
+
 \paragraph{Comparable accuracy on different data envelopes}
 Table~\ref{tab:imhof_full} reports the comparison on the full
 always-loser pool ($N = \valImhofPoolN$ firms, $\valCobidders$
