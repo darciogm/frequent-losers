@@ -203,6 +203,9 @@ if (file.exists(la_path)) {
   if (nrow(row3) > 0) {
     add("AUCitemTemp",   fmt_dec(row3$auc[1], 3))
     add("AUCitemTempCI", fmt_ci_inline(row3$ci_lo[1], row3$ci_hi[1], 3))
+    # alias: leakage audit at cobidder-firm level → preferred semantic name
+    add("AUCFLfirmTemp",   fmt_dec(row3$auc[1], 3))
+    add("AUCFLfirmTempCI", fmt_ci_inline(row3$ci_lo[1], row3$ci_hi[1], 3))
   }
   if (nrow(row4) > 0) {
     add("AUCitemDirect", fmt_dec(row4$auc[1], 3))
