@@ -1,13 +1,13 @@
-% Validation v17 (R2 polish): conservative-first, table-led, prose trimmed.
-% Object discipline preserved; the population-nesting table now does most of the conceptual work.
+% Validation v18 (Prompt 2): conservative-first, table-led, prose
+% trimmed; opening crisp; closing disciplined.
 
 \section{Validation Against CADE Adjudications}
 \label{sec:cade}
 
 The validation asks whether the construct discriminates
-populations of firms with a higher prior probability of cartel
-adjacency than random selection. It does not speak to firm-level
-membership. The labels we use are indirect by construction.
+populations with a higher prior probability of cartel adjacency
+than random selection. The labels are indirect by construction
+and the exercise does not speak to firm-level membership.
 
 \subsection{Validation populations}
 \label{sec:cade_objects}
@@ -23,65 +23,62 @@ membership. The labels we use are indirect by construction.
 Population & Size & Definition and role \\
 \midrule
 All BEC participants & $41{,}444$ & Universe of firms bidding in BEC, $2009$--$2019$. \\
-Always-losers & $\valAlwaysLosers$ & Firms with zero wins across the sample. The construct discriminates within this stratum. \\
-Frequent losers & $\valFL$ & Always-losers above the median + $1.5\!\times$IQR participation threshold. The construct's flagged population. \\
-CADE direct defendants in BEC & $\valDirectCADE$ & Named in CADE rulings; typically frequent winners; not the construct's target. \\
-Cobidders inside the always-loser stratum & $\valCobidders$ & Always-losers that participated alongside CADE direct defendants. The label of cartel \emph{adjacency}. \\
+Always-losers & $\valAlwaysLosers$ & Firms with zero wins across the sample; stratum within which the construct operates. \\
+Frequent losers & $\valFL$ & Always-losers above the median $+\,1.5\!\times$IQR participation threshold; the flagged population. \\
+CADE direct defendants in BEC & $\valDirectCADE$ & Firms named in CADE rulings; typically frequent winners; outside the construct's target. \\
+Cobidders in the always-loser stratum & $\valCobidders$ & Always-losers that participated alongside CADE direct defendants; the label of cartel \emph{adjacency}. \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
 
 \smallskip
-{\footnotesize\textit{Notes:} The construct discriminates within
-the always-loser stratum, not across the broader BEC universe.
-Cobidders are firms that participated alongside adjudicated
-cartel members; participation alongside is consistent with cover
-bidding, capacity-transfer motives, market intelligence, or
-bystander participation in cartel-affected markets. Strong AUC
-against this population is not equivalent to identifying
-membership.\par}
+{\footnotesize\textit{Notes:} The construct operates within the
+always-loser stratum, not across the broader BEC universe.
+Participation alongside an adjudicated cartel member is
+consistent with cover bidding, capacity-transfer motives, market
+intelligence, or bystander participation in cartel-affected
+markets; strong AUC against this label is not equivalent to
+identifying membership.\par}
 \end{table}
 
 \subsection{Conservative benchmark}
 \label{sec:cade_contemporaneous}
 
-The conservative benchmark restricts the ground truth to four
-CADE cases adjudicated before $2020$ (coleta de lixo, aquecedores
-solares, trens-metr\^os, tecnologia-informa\c{c}\~ao $2019$-$10$),
-covering $30$ firm-defendants, all matching BEC. Always-losers
-co-bidding with at least one number $210$, of which $108$ are
-frequent losers. The participation-stratified co-bidding rate is
-$\valCADEenrich$ versus $\valCADEbase$ at the
-participation-quartile-stratified baseline ($p<0.001$,
-$\valPermPilot$ iterations), an excess ratio of
+The primary benchmark restricts the ground truth to four CADE
+cases adjudicated before $2020$ (coleta de lixo, aquecedores
+solares, trens-metr\^os, tecnologia-informa\c{c}\~ao
+$2019$-$10$): $30$ firm-defendants, all active in BEC, with $210$
+always-losers co-bidding with at least one of them, of which
+$108$ are frequent losers. The participation-stratified co-bidding
+rate is $\valCADEenrich$ against a baseline of $\valCADEbase$
+($p<0.001$, $\valPermPilot$ permutations), an excess ratio of
 $\valMultThreeTwo\!\!\times$. The ROC AUC against the
-$210$-positive contemporaneous ground truth is $\valAUCprePost$
-($95\%$ DeLong CI $[0.713, 0.783]$).
+contemporaneous ground truth is $\valAUCprePost$ ($95\%$ DeLong
+CI $[0.713, 0.783]$).
 
-This is the benchmark we treat as primary. The construct uses no
-information from cases adjudicated post-sample, and the labels
-come from cartels whose existence and membership were established
-by enforcement before the construct was estimated. Within the
-always-loser stratum, frequent losers co-occur with adjudicated
-cartel members at rates above what random matching at comparable
-participation volume would produce.
+We treat this as the primary benchmark because the construct
+uses no information from cases adjudicated post-sample and the
+labels predate estimation: existence and membership were
+established by enforcement before the construct was built.
+Within the always-loser stratum, frequent losers co-occur with
+adjudicated cartel members at rates above random matching at
+comparable participation volume.
 
 \subsection{Prospective benchmark and within-firm enrichment}
 \label{sec:cade_prospective}
 
 A more permissive benchmark uses CADE's full procurement-cartel
-portfolio: $12$ adjudicated cases, $65$ firm-defendants, of which
-$\valDirectCADE$ are active in BEC. Among $\valFL$ frequent
+portfolio ($12$ cases, $65$ firm-defendants, of which
+$\valDirectCADE$ are active in BEC). Among $\valFL$ frequent
 losers, $\valCobidders$ ($\valCobidShareFL$) co-participate with
 at least one of the $\valDirectCADE$; the participation-stratified
-excess ratio is $\valMultThreeFive\!\!\times$ ($p<0.001$). The
-firm-level AUC is $\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$)
-in-sample and $\valAUCFLfirmTemp$ ($\valAUCFLfirmTempCI$) under temporal holdout
-(train $2009$--$2016$, test $2017$--$2019$). This benchmark
-treats post-sample adjudications as informative labels for cartel
-involvement during the BEC window---a reasonable but not
-innocuous assumption. We report it as complementary, not as the
-headline.
+excess ratio is $\valMultThreeFive\!\!\times$ ($p<0.001$).
+Firm-level AUC is $\valAUCFLfirm$ ($95\%$ CI $\valAUCFLfirmCI$)
+in-sample and $\valAUCFLfirmTemp$ ($\valAUCFLfirmTempCI$) under
+temporal holdout (train $2009$--$2016$, test $2017$--$2019$).
+The benchmark treats post-sample adjudications as informative
+labels for cartel involvement during the BEC window, and we
+report it as complementary to the conservative anchor.
 
 A within-firm exercise on the same portfolio: $3$ of $7$
 always-loser direct defendants ($\valPctFortythree$) cross the
@@ -106,12 +103,10 @@ Jofran Com\'ercio & Trash bags (Op.\ Colludium) & 08700.005789/2015-02 & 65 & 0 
 }
 \end{table}
 
-These three firms are direct defendants who happen to share the
-always-loser footprint. They are the exception within the
-direct-defendant population, where most firms are frequent
-winners; the construct's AUC against direct defendants in the
-broader BEC firm universe remains $\valAUCdirectStd$ by
-construction.
+These three firms are the exception within a direct-defendant
+population that is otherwise frequent-winner-heavy; the AUC
+against direct defendants in the broader BEC firm universe
+remains $\valAUCdirectStd$.
 
 \subsection{Robustness to the enforcement record}
 \label{sec:cade_robustness}
@@ -119,25 +114,24 @@ construction.
 Dropping all $\valCADEpermPerm$ CADE-involved tender-items and
 re-estimating the within-PBU baseline yields $\hat\beta = 0.062$
 ($N = \valCADEpermObs{,}954$), virtually unchanged from
-$\valPctSixfour$. The price imprint operates independently of the
-enforcement record. Either the residual sample contains
-undetected cartels the construct picks up before enforcement
-does, or frequent-loser presence correlates with higher-price
-environments through channels orthogonal to documented
-collusion. Both readings are consistent with the triage
-interpretation.
+$\valPctSixfour$. The price imprint operates independently of
+the enforcement record. The residual sample either contains
+undetected cartels or higher-price environments correlated with
+frequent-loser presence through channels orthogonal to
+documented collusion; both readings are consistent with the
+triage interpretation.
 
 \subsection{What the validation does and does not show}
 \label{sec:cade_scope}
 
-Three pieces of evidence anchor the triage interpretation: a
+The validation rests on four pieces of evidence: a
 $\valMultThreeTwo\!\!\times$ contemporaneous excess at AUC
 $\valAUCprePost$, a $\valMultThreeFive\!\!\times$ prospective
-excess at AUC $\valAUCFLfirm$ ($\valAUCFLfirmTemp$ holdout), and the
-price-gap insensitivity to the enforcement record. The construct
+excess at AUC $\valAUCFLfirm$ ($\valAUCFLfirmTemp$ under temporal
+holdout), price-gap insensitivity to the enforcement record, and
+AUC $\valAUCdirectStd$ against the $\valDirectCADE$ direct CADE
+defendants in the broader BEC firm universe. The construct
 prioritizes procurement environments connected to adjudicated
 collusion at rates well above random matching at comparable
-participation volume. It does not detect cartels: against the
-$\valDirectCADE$ direct defendants in the broader BEC universe
-the AUC is $\valAUCdirectStd$, which places a hard upper bound on
-broader detection claims outside the always-loser stratum.
+participation volume; it does not identify cartels, and the
+direct-defendant AUC delimits its scope.

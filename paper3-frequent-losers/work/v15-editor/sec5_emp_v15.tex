@@ -1,10 +1,6 @@
-% Empirical Strategy — three subsections:
-%   5.1 Estimand and Identifying Stance
-%   5.2 Reduced-Form Specification
-%   5.3 Heterogeneity Specifications
-% Aligned with v15 frame: descriptive throughout; convite minimum-bidder
-% rule treated as institutional context, NOT as the channel through
-% which the construct operates (§3, gate D2).
+% Empirical Strategy v18 (Prompt 2): descriptive throughout; failed
+% RDD/DiD kept; identification-audit catalogue compressed; sign-reversal
+% language neutralized.
 
 \section{Empirical Strategy}
 \label{sec:empirical}
@@ -18,49 +14,36 @@ The empirical object is $\beta$, the conditional mean difference
 in log negotiated price between tender-items that include at
 least one frequent-loser participant and otherwise comparable
 tender-items in the same item type, year, and procuring unit. We
-read $\beta$ throughout as a \emph{conditional association},
+treat $\beta$ throughout as a \emph{conditional association},
 not as a causal effect. The descriptive stance is by design: a
-screen does not need to identify a causal parameter to allocate
-oversight case-load, and the operational pathway in
-§\ref{sec:conclusion} requires only that the construct flag
-environments at higher prior risk than random selection would.
+screen does not need to recover a causal parameter to allocate
+oversight case-load, only to flag environments at higher prior
+risk than random selection would.
 
 Two design-based strategies that would extract a causal estimate
-from the data are reported and return null. A sharp regression
+return null and are reported as such. A sharp regression
 discontinuity at the convite/preg\~ao statutory value caps is
 gated by the absence of bunching: McCrary-style density tests
 around the $\valCapOldR$ cap return a left/right ratio of
 $\valMcCraryRatio$ and a log-density discontinuity of
-$\valMcCraryDisc$ (Table~\ref{tab:mccrary}); the convite share
-drops cleanly across the cap from $\valPctSixnine$ below to
-$\valPctFifnine$ above, consistent with rule-driven assignment
-rather than strategic gaming. The local first-stage power is too
-weak to support a fuzzy RDD at standard bandwidths
-(Stock--Yogo $F$ below threshold). A
-difference-in-differences design using Decreto~$\valDecreto$'s
-$2018$ raise of the convite cap fails the parallel-trends
-diagnostic at the available pre-treatment window. We report
-both failures openly and treat the empirical content as
+$\valMcCraryDisc$ (Table~\ref{tab:mccrary}), with the convite
+share dropping cleanly from $\valPctSixnine$ below to
+$\valPctFifnine$ above---consistent with rule-driven assignment.
+Local first-stage power is too weak to support a fuzzy RDD at
+standard bandwidths. A difference-in-differences design using
+Decreto~$\valDecreto$'s $2018$ raise of the convite cap fails
+parallel trends at the available pre-treatment window. We
+report both failures openly and treat the empirical content as
 descriptive.
 
 The descriptive claim is calibrated through four identification
-audits that operate alongside the reduced-form specification.
-The \citet{cinelli2020making} robustness value
-$RV_{q=1} = \valRVqOne$ and the \citet{oster2019unobservable}
-$\hat\delta = 261.64$ on the full sample bound the broad-sample
-association against selection on observables of the kind
-already absorbed by item, year, and procuring-unit fixed
-effects. Strict-overlap matching restricts the comparison to
-cells in which frequent-loser-present and -absent items
-genuinely overlap on observables, returning a sign reversal that
-we read as informative about selection within the always-loser
-stratum. A leakage audit decomposes the in-sample item-level AUC
-into a structural component (temporal-holdout AUC $0.864$) and
-a pure-leakage component. A placebo using sub-threshold
-always-losers as instrument confirms that the construct's price
-imprint operates through the above-threshold population we
-identify, not through generic always-loser supply. The four
-audits are reported in §\ref{sec:rob_identification} and the
+audits reported in §\ref{sec:rob_identification}: robustness
+values bounding selection on observables
+\citep{cinelli2020making,oster2019unobservable}; strict-overlap
+matching, which sharpens the interpretation of selection within
+the always-loser stratum; a leakage audit that separates the
+structural and pure-leakage components of the in-sample
+item-level AUC; and a sub-threshold-always-loser placebo. The
 identification scope they delineate is consolidated in
 §\ref{sec:lim_identification}.
 
@@ -97,26 +80,22 @@ contrast set up in §\ref{sec:institutional}. The estimation
 sample comprises $\valSampleN$ tender-items
 (§\ref{sec:data_sample}).
 
-Three complementary estimators bracket Equation~\eqref{eq:ols_main}.
-Cross-fit estimation defines the frequent-loser list on odd years,
-estimates Equation~\eqref{eq:ols_main} on even years, and reverses
-the assignment, recovering the structural component of $\beta$
-free of within-sample classification noise. Matching estimators
-adjust for selection on observables: coarsened exact matching
-(CEM) on year, procedure type, item group, and procuring-unit-size
-quartile, and inverse-probability weighting (IPW) on the propensity
-of frequent-loser presence given the same observables. A
-leave-one-out instrumental-variable specification uses the supply
-of frequent losers active in other procuring units within the same
-product market and year as instrument; we read $\hat\beta_{\text{IV}}$
-as a measurement-error diagnostic rather than as a primary
-estimator, since the binary frequent-loser indicator carries
-classical attenuation toward zero when it proxies for the
-underlying continuous loss-intensity statistic
-(§\ref{sec:mech_horse_race}). The four estimators
-(cross-fit, IPW, OLS, CEM) jointly bound the headline range
-$\valHeadlineRange$ that we adopt as the reference throughout the
-paper (§\ref{sec:results_ols}).
+Three complementary estimators bracket
+Equation~\eqref{eq:ols_main}. Cross-fitting defines the
+frequent-loser list on odd years, estimates the equation on even
+years, and reverses the assignment, removing within-sample
+classification noise. Coarsened exact matching (CEM) and
+inverse-probability weighting (IPW) adjust for selection on
+observables (year, procedure type, item group, procuring-unit-size
+quartile). A leave-one-out instrumental-variable specification
+uses the supply of frequent losers in other procuring units in
+the same product market and year as instrument, and we read
+$\hat\beta_{\text{IV}}$ as a measurement-error diagnostic rather
+than a primary estimator
+(§\ref{sec:mech_horse_race}). The four estimators (cross-fit,
+IPW, OLS, CEM) jointly bound the headline range
+$\valHeadlineRange$ used throughout the paper
+(§\ref{sec:results_ols}).
 
 Standard errors are clustered at the item level as the baseline
 choice. Robustness to procuring-unit clustering and to two-way
@@ -130,22 +109,20 @@ regimes.
 \label{sec:emp_heterogeneity}
 % ──────────────────────────────────────────────────────────────────
 
-We characterize heterogeneity in $\beta$ along two dimensions
-that match distinct framework predictions. Both are descriptive
-specifications of Equation~\eqref{eq:ols_main} estimated within
-sub-samples; neither is institutional identification.
+We characterize heterogeneity in $\beta$ along two dimensions.
+Both are descriptive specifications of
+Equation~\eqref{eq:ols_main} estimated within sub-samples;
+neither is institutional identification.
 
 The first dimension is procuring-unit size, which the framework
-of Online Appendix~A maps to the principal cost of
-detection $\theta_k$ through the comparative static
-$\partial m^*/\partial\theta_k < 0$. We split the sample into
-quartiles of procuring-unit size, defined by annual contract
-volume in BEC, and re-estimate Equation~\eqref{eq:ols_main}
-within each quartile separately. Robustness to alternative
-size measures (cumulative item count, headcount of distinct
-purchasers) is reported alongside the headline result. The
-specification anchors the procuring-unit-size oversight gradient
-of §\ref{sec:results_oversight}.
+of Online Appendix~A maps to the principal cost of detection
+$\theta_k$. We split the sample into quartiles of procuring-unit
+size (annual contract volume in BEC) and re-estimate
+Equation~\eqref{eq:ols_main} within each quartile, with
+robustness to alternative size measures (cumulative item count,
+headcount of distinct purchasers) reported alongside the
+headline. The specification anchors the buyer-size gradient in
+§\ref{sec:results_oversight}.
 
 The second dimension is the cell-heterogeneity grid in winner
 concentration and repeated-pair density. For each frequent-loser
