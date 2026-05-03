@@ -12,31 +12,27 @@ Dear Editor,
 
 We submit "Cheap Signals, Costly Proof: Award-Layer Triage for Cartel Enforcement" for consideration at the *Journal of Law, Economics, and Organization*.
 
-The paper addresses a question that sits at the intersection of organizational economics and antitrust enforcement design: how should an agency sequence information acquisition when the operational layer it routinely observes is coarser than the layer at which collusion can be adjudicated? Cartel-detection screens have been developed on bid-distribution microdata, but most enforcement environments — including audit courts, oversight bodies, and procurement review tribunals — routinely observe only the contract-award envelope. Methods designed for the bid layer do not run on the layer that survives.
+The paper proposes a **triage architecture for antitrust enforcement under incomplete observability**. Existing bid-rigging screens require per-bidder bid amounts that audit courts and oversight bodies do not routinely query; the paper shows that the contract-award envelope — winner identity, participants, item code, negotiated price — already carries enough structure to triage which firms and environments warrant the costly forensic stage that bid-distribution methods require. The contribution is the architecture; a frequent-loser flag built from award-record data is its empirical instantiation.
 
-We propose an enforcement architecture in which an award-layer screening stage triages firms and environments before a costly bid-layer forensic stage interrogates them. The architecture is the contribution; the *frequent-loser* flag is its empirical instantiation, not its product.
+Three findings on São Paulo's BEC platform (2009–2019) deliver the architecture:
 
-The paper makes three substantive claims that map onto JLEO's editorial profile:
+1. Routing forensic interrogation through the award-layer screen reduces the bid-microdata pool the forensic stage must work on by **83%** (1,985 of 11,676 firms) while still recovering **131 of 193** adjudicated cobidders. The screen is a triage device, not an adjudication device.
+2. Award-layer and bid-distribution screens are **informational complements**, not substitutes: combination yields +0.035 AUC over the seven-feature Imhof–Wallimann pipeline (DeLong $p = 0.014$). Sequencing is therefore well-defined.
+3. The architecture is **portable**. Firm-level discrimination AUC is 0.864 under temporal holdout, the technology that makes the architecture feasible. A simple separating-equilibrium argument (Online Appendix A) motivates endogenous loser-side participation as the ranking primitive on the award layer.
 
-First, the architecture is operationally feasible. On São Paulo's BEC platform (2009–2019), routing forensic interrogation through the award-layer screen reduces the bid-microdata pool the forensic stage must work on by 83% (from 11,676 to 1,985 firms) while still recovering 131 of 193 adjudicated cobidders. The screen is not an adjudication device but a triage device: it ranks loser-side firms and procurement environments for costly bid-layer interrogation, not cartel members for legal sanction.
+The paper sits within JLEO's organization-of-enforcement tradition (Becker, Stigler, Baker, Harrington), not within the bid-rigging-detection toolbox proper. We are explicit about what the construct does *not* do: it does not adjudicate cartel membership, it is not a causal estimate of cover bidding's effect on prices, and the modal pregão–convite asymmetry is reported as scope information for the screening object, not as a positive test of the institutional channel.
 
-Second, the screening and forensic stages are informational complements, not substitutes. The award-layer flag matches the seven-feature Imhof–Wallimann bid-distribution pipeline on a thinner data envelope (firm-level AUC 0.864 under temporal holdout) and adds non-redundant signal in same-sample combination (+0.035 AUC, DeLong p = 0.014). The architecture is therefore well-defined: the screen runs on operational data already maintained, and the forensic stage inherits a much smaller pool to interrogate.
+The manuscript is 48 pages including references; the online appendix is 25 pages. The paper has not been submitted elsewhere. No coauthor has a conflict of interest with the BEC platform operator (FAZESP-SP) or with CADE. Every numeric claim in the manuscript is bound to a macro with explicit script provenance; reproducibility deliverables accompany the submission.
 
-Third, the framework is portable. Wherever an enforcement environment exposes the award layer routinely while reserving per-bidder bid amounts for forensic-recoverable access, the right enforcement design sequences screening before forensics, not the other way around. A simple separating-equilibrium argument with cover bidders (Online Appendix A) motivates endogenous loser-side participation as the ranking primitive on the award layer.
-
-Three editorial features may be relevant to fit. (i) The contribution is enforcement-architectural rather than methodological-detection, which we believe places it within JLEO's organization-of-enforcement tradition (Becker, Stigler, Baker, Harrington) rather than within the bid-rigging-detection toolbox (Bajari–Ye, Imhof–Wallimann). (ii) We are explicit about what the construct does not do: it does not adjudicate cartel membership, it is not a causal estimate of cover bidding's effect on prices, and the modal pregão–convite asymmetry is reported as scope information for the screening object, not as a positive test of the institutional channel. (iii) The reproducibility apparatus — every numeric claim in the manuscript is bound to a `\val*` macro defined in `values.tex`, with explicit script provenance — is included as a transparency commitment.
-
-The paper has not been submitted to any other journal. The manuscript is approximately 48 pages including references; the online appendix is 25 pages. No coauthor has any conflict of interest with the BEC platform operator (FAZESP-SP) or with CADE.
-
-We propose the following potential reviewers, each with relevant expertise:
+We propose the following potential reviewers:
 
 - **Francesco Decarolis** (Bocconi) — procurement, corruption, JPE Microeconomics 2025 on rules vs. discretion in Italian procurement
 - **Sylvain Chassang** (Princeton) — robust screens for non-competitive bidding, Econometrica 2022 with Juan Ortner
-- **Hannes Wallimann** (Lucerne) — machine learning approaches to incomplete bid-rigging cartels, Computational Economics 2023
+- **Hannes Wallimann** (Lucerne) — machine learning for incomplete bid-rigging cartels, Computational Economics 2023
 - **Joseph Harrington** (Wharton) — antitrust enforcement design, detection technology
 - **Albert Sánchez Graells** (Bristol) — competition law in public procurement, screening literature
 
-We thank you in advance for considering the paper. We are happy to provide any additional materials the editorial process requires.
+We thank you for considering the paper.
 
 Sincerely,
 
