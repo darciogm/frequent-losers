@@ -109,15 +109,15 @@ ggsave(path_v3("output/figures/fig_v3_decomposition.pdf"),
 log_step("58", "fig1 decomposition written", logf)
 
 # 2. Figure: Entry as partial insurance (V0 vs V2) -------------------
-# Claim: entry dampens 60–70% of a heavier would-be shock.
-
-# Derive V0 and V2 from dec (V0 = S3, V2 ~ S2 with post count; here
-# approximate V2 as the ratio-to-V0 used in 53_apv.R).
-apv_ratio <- data.table(
-  pharma_lbl = c("non-pharma", "pharma"),
-  delta_V0 = c(0.2585, 0.3079),
-  delta_V2 = c(0.3930, 0.4847),
-  share_V2 = c(152.0, 157.4))
+# Claim: entry dampens a meaningful share of a heavier would-be shock.
+# Pull V0/V2 from script-53 APV parquet (single source of truth) instead
+# of hardcoding — keeps figure annotation in sync with current B and seed.
+apv_src <- as.data.table(arrow::read_parquet(
+  path_v6("data/processed/apv_results.parquet")))
+apv_ratio <- apv_src[, .(pharma_lbl,
+                         delta_V0 = round(delta_V0, 4),
+                         delta_V2 = round(delta_V2, 4),
+                         share_V2 = round(share_V2_of_V0, 1))]
 apv_ratio[, pharma_lbl := factor(pharma_lbl, levels = c("non-pharma","pharma"))]
 
 apv_long <- melt(apv_ratio,
