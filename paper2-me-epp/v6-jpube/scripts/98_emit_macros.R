@@ -54,22 +54,21 @@ if (!is.null(bne)) {
     emit(paste0("bneNnsPre", suf),         bne$n_ns_pre[i],         fmt = "%.2f")
     emit(paste0("bneNsmePost", suf),       bne$n_sme_post[i],       fmt = "%.2f")
   }
-  # Latent-shock share (fixed-pool / endogenous), used in intro "50–60% larger"
-  if ("effect_total" %in% names(bne)) {
-    grid <- read_if_exists("decomp_grid")
-    if (!is.null(grid)) {
-      for (ph in c(0L, 1L)) {
-        suf <- if (ph == 0) "Np" else "Ph"
-        endo  <- grid[method == "clean + endogenous" & pharma_narrow == ph, effect_total]
-        fixed <- grid[method == "clean + fixed-pool" & pharma_narrow == ph, effect_total]
-        if (length(endo) == 1 && length(fixed) == 1 && endo > 0) {
-          emit(paste0("latentShockRatio", suf),
-               100 * (fixed / endo - 1), fmt = "%.0f")
-          emit(paste0("latentShockTimes", suf),
-               100 * (fixed / endo),     fmt = "%.0f")
-        }
-      }
-    }
+}
+
+# Latent shock = V2/V0 (from script 53_apv: V2 = SME-only with Pre pool size,
+# V0 = full SME-only with endogenous Post pool). The "X% larger latent shock"
+# claim in the abstract / intro / sec 5 is V2/V0 - 1 expressed as percent.
+# This used to be (incorrectly) derived from decomp_grid clean+fixed-pool /
+# clean+endogenous, which is a *different* counterfactual definition.
+apv <- read_if_exists("apv_results")
+if (!is.null(apv) && all(c("delta_V0", "delta_V2", "share_V2_of_V0") %in% names(apv))) {
+  for (i in seq_len(nrow(apv))) {
+    suf <- if (apv$pharma_narrow[i] == 0) "Np" else "Ph"
+    emit(paste0("latentShockTimes", suf), apv$share_V2_of_V0[i], fmt = "%.0f")
+    emit(paste0("latentShockRatio", suf), apv$share_V2_of_V0[i] - 100, fmt = "%.0f")
+    emit(paste0("vTwoDelta",        suf), apv$delta_V2[i],        fmt = "%.3f")
+    emit(paste0("vZeroDelta",       suf), apv$delta_V0[i],        fmt = "%.3f")
   }
 }
 

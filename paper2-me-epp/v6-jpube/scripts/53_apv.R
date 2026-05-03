@@ -177,4 +177,10 @@ tex <- c(tex,
   "\\end{table}")
 writeLines(tex, path_v3("output/tables/tab_v3_apv.tex"))
 
+# Persist results so 98_emit_macros can derive latentShockRatio (V2/V0)
+# and v3 preference shifts (V3) directly from script-53 output instead
+# of re-deriving them from decomp_grid (which uses a different fixed-pool
+# definition and produced the wrong macro values in the May 2026 build).
+arrow::write_parquet(res, path_v3("data/processed/apv_results.parquet"))
+
 log_step("53", "done", logf)
