@@ -558,6 +558,34 @@ emit("epsHigh",              "0.3",             comment = "elasticity range uppe
 emit("ppShavedLo",           "1",   fmt = "%s", comment = "fiscal cost shave lower (pp)")
 emit("ppShavedHi",           "3",   fmt = "%s", comment = "fiscal cost shave upper (pp)")
 
+# ===========================================================================
+# 20. Last 13 hardcoded literals (sec 04, 05, 07, 10): macro-ize all
+# ===========================================================================
+# sec 04: Turnbull margin + Krasnokutskaya benchmarks
+emit("turnGapLo",            "0.01",            comment = "Turnbull vs all-bidders left-tail gap, low")
+emit("turnGapHi",            "0.02",            comment = "Turnbull vs all-bidders left-tail gap, high")
+emit("krasICC",              "0.66",            comment = "Krasnokutskaya highway-procurement ICC benchmark")
+emit("krasInfoPct",          "34",  fmt = "%s", comment = "Krasnokutskaya private-info share (percent)")
+
+# sec 05: V3 shifts + B for preference simulation
+emit("vThreeShiftPh",        "+0.002",          comment = "V3 (10% pref) price shift in pharma")
+emit("vThreePrefGrid",       "-0.001",          comment = "V3 from preference-grid simulation, both classes")
+emit("prefGridB",            "B = 3{,}000",    comment = "preference-grid Monte Carlo B")
+emit("iccDecompContrastPh",  "0.59",            comment = "ICC contrast pharma non-SME (sec 5 reference)")
+emit("iccDecompContrastNp",  "0.36",            comment = "ICC contrast non-pharma SME (sec 5 reference)")
+
+# sec 07: IPV grid + bandwidth h-factor grid + filter very-tight params
+emit("ipvRhoGrid",           "\\{0, 0.1, 0.2, 0.3\\}", comment = "IPV affiliation rho grid")
+emit("bandwidthGrid",        "0.5, 0.75, 1.0, 1.5, and 2.0", comment = "bandwidth h-factor grid")
+emit("filterVtightCeps",     "1.5",             comment = "very-tight filter c_eps upper bound")
+emit("filterVtightNbid",     "3",   fmt = "%s", comment = "very-tight filter min bidders")
+emit("prefRhoSmall",         "0.10",            comment = "preference parameter rho (small)")
+
+# sec 10: KS table values (some already in earlier macros)
+emit("ksConvitePharmaNS",    "0.032",           comment = "KS pharma convite non-SME (table reference)")
+emit("ksUHinvCheckLo",       "0.0225",          comment = "Convite pharma non-SME post-UH KS (still passes)")
+emit("prefGridRange",        "0 to 30",         comment = "preference rate grid range (percent)")
+
 # ---------------------------------------------------------------------------
 # Done.
 # ---------------------------------------------------------------------------
