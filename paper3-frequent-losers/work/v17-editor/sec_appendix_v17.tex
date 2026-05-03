@@ -69,29 +69,39 @@ positive.
 \end{lemma}
 
 \begin{proof}[Proof of Lemma~\ref{lem:wins_zero_stmt}]
-Write the cover-bidder per-period payoff conditional on choosing
-bid $b$ as
-$u_C(b) = -c_1 - [\theta_k \phi_0 + \kappa] \cdot \Pr(\text{win}
-\mid b)$, where the deployment cost $c_1$ is sunk on
-participation and the bracketed term is the expected loss
-conditional on winning. For $b > b^*$, the designated winner
-captures the contract and $\Pr(\text{win} \mid b) = 0$, so
-$u_C(b) = -c_1$. For any deviation $b' < b^*$ that becomes the
-winning bid (i.e., $b'$ undercuts both $b^*$ and any genuine-entrant
-bid), $\Pr(\text{win} \mid b') = 1$ and the cover bidder's
-realized payoff becomes
-$u_C(b') = -c_1 - \theta_k \phi_0 - \kappa + \mathrm{rents}$,
-where $\mathrm{rents}$ is the rent the deviating firm captures
-from winning. Under A3, $\mathrm{rents} < \kappa$, so
-$u_C(b') < -c_1 = u_C(b)$ and the equilibrium strategy is
-$b > b^*$ with $\Pr(\text{win} \mid C) = 0$. Type $G$ has no
-$\kappa$ penalty and accepts $b_G < b^*$ when expected payoff is
-positive; the empirical filter $\text{wins} = 0$ thus identifies
-the type-$C$ subset, conditional on the cartel deploying its
-allocation rule. Uniqueness of the separating equilibrium follows
-from the strict inequality $u_C(b) > u_C(b')$ under A3, which
-makes any pooling or mixed strategy strictly dominated for
-type $C$. \qed
+At the bidding stage, the cartel's deployment $m$ and market
+detection probability $\theta_k$ are taken as given; the
+cartel-wide detection penalty $\theta_k \phi_0 m$ is therefore
+sunk from the perspective of any individual cover bidder
+choosing $b$ (Prop.~\ref{prop:optimal_m} treats this term as a
+deployment-stage cost; the bidding stage allocates that sunk
+cost across cover bidders without affecting marginal incentives).
+Write the cover bidder's bidding-stage payoff conditional on
+choosing $b$ as
+$u_C(b) = -c_1 - \tilde{\phi} - \kappa \cdot \Pr(\text{win}
+\mid b)$, where $c_1$ is the per-bidder deployment cost, the
+sunk term $\tilde{\phi} = \theta_k \phi_0$ is the cover bidder's
+share of cartel-wide detection cost (independent of own bid),
+and $\kappa$ is the personal cartel-internal sanction triggered
+only by an off-equilibrium winning deviation. For $b > b^*$, the
+designated winner captures the contract and
+$\Pr(\text{win} \mid b) = 0$, so $u_C(b) = -c_1 - \tilde{\phi}$.
+For any deviation $b' < b^*$ that becomes the winning bid (i.e.,
+$b'$ undercuts both $b^*$ and any genuine-entrant bid),
+$\Pr(\text{win} \mid b') = 1$ and the cover bidder's payoff
+becomes
+$u_C(b') = -c_1 - \tilde{\phi} - \kappa + \mathrm{rents}$, where
+$\mathrm{rents}$ is the rent captured from the deviating win.
+Under A3, $\mathrm{rents} < \kappa$, so
+$u_C(b') < -c_1 - \tilde{\phi} = u_C(b)$ and the equilibrium
+strategy is $b > b^*$ with $\Pr(\text{win} \mid C) = 0$. Type
+$G$ has no $\kappa$ penalty and accepts $b_G < b^*$ when
+expected payoff is positive; the empirical filter
+$\text{wins} = 0$ thus identifies the type-$C$ subset,
+conditional on the cartel deploying its allocation rule.
+Uniqueness of the separating equilibrium follows from the strict
+inequality $u_C(b) > u_C(b')$ under A3, which makes any pooling
+or mixed strategy strictly dominated for type $C$. \qed
 \end{proof}
 
 \begin{proposition}[Linearized cumulative exposure]\label{prop:exposure_stmt}
@@ -208,16 +218,16 @@ conditional distributions of $\mathbf{u}_i$ that differ
 systematically in the rent component (Bayes' rule on the
 deployment density $g(\mathbf{x}, \mathbf{u}) f(\mathbf{u} \mid
 \mathbf{x})$); (2) within the common-support cell $\Omega$,
-defined by propensity scores
-$\Pr(D_i=1 \mid \mathbf{x}_i)$ bounded away from $0$ and $1$,
-the conditional means $\mathbb{E}[\mathbf{u}_i \mid
-\mathbf{x}_i, \mathbf{x}_i \in \Omega]$ are bounded by the
-maximum and minimum of $g(\mathbf{x}, \cdot)^{-1}$ on the bounded
-propensity range, so the conditional distributions of
-$\mathbf{u}_i$ across $D_i=1$ and $D_i=0$ within $\Omega$ are
-more comparable in expectation than they are on the broad
-sample (individual items in $\Omega$ may still have extreme
-$\mathbf{u}_i$); and (3) under the auxiliary premise that the
+defined by propensity scores $\Pr(D_i=1 \mid \mathbf{x}_i)$
+bounded away from $0$ and $1$, the conditional support of
+$\mathbf{u}_i$ overlaps strictly across $D_i=1$ and $D_i=0$ at
+each $\mathbf{x}_i \in \Omega$, so within-cell comparisons
+between treated and untreated items are well-defined; the
+proposition makes no claim that the conditional distributions
+of $\mathbf{u}_i$ within $\Omega$ are equal or that the
+conditional means are bounded, only that their supports
+overlap and that ATT or PS-trimmed reweighting is mathematically
+applicable; and (3) under the auxiliary premise that the
 rent component shifts the realized log price in the same
 direction it shifts the deployment probability, the gap
 $\beta - \beta^{\text{ov}}$ inherits the sign of the rent
@@ -245,13 +255,21 @@ $\mathbf{u}_i \mid D_i=1$ first-order stochastically dominates
 $\mathbf{u}_i \mid D_i=0$ in the rent component at the same
 $\mathbf{x}_i$. Claim 2 follows from the definition of common
 support: cells in $\Omega$ have propensity score
-$\Pr(D_i=1 \mid \mathbf{x}_i)$ bounded away from $0$ and $1$,
-which by strict monotonicity of $g$ in the rent component
-implies that the conditional mean of the rent component within
-$\Omega$ is bounded by intermediate values. Individual items in
-$\Omega$ may still have extreme rent realizations; the
-proposition's comparability claim is about cell-level expectations,
-not pointwise. Claim 3 is the comparative statement: under the
+$\Pr(D_i=1 \mid \mathbf{x}_i) \in (a, b)$ for some
+$0 < a < b < 1$. By Bayes' rule, the conditional density
+$f(\mathbf{u} \mid D_i=d, \mathbf{x}_i)$ is positive at any
+$\mathbf{u}$ where $f(\mathbf{u} \mid \mathbf{x}_i)$ is positive
+and $g(\mathbf{x}_i, \mathbf{u}) \in (0,1)$; the latter holds
+generically when $g$ is strictly monotone and the propensity
+score is interior. Therefore the conditional supports of
+$\mathbf{u}$ across $D=1$ and $D=0$ within $\Omega$ overlap
+strictly. The proposition asserts only this support-overlap
+condition, not that the conditional distributions of
+$\mathbf{u}$ within $\Omega$ are equal or that conditional
+means are bounded; common support is a necessary condition for
+ATT or PS-trimmed estimators to be mathematically defined, not
+for the unobservable distributions across treatment status to
+match. Claim 3 is the comparative statement: under the
 rent-component co-movement premise, the broad-sample average
 inherits a positive contribution from the high-rent cells, while
 $\beta^{\text{ov}}$ averages over a sub-population in which the
