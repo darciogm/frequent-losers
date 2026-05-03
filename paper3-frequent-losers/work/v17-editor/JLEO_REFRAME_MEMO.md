@@ -34,7 +34,7 @@ AUC is now positioned as "the technology that makes the architecture feasible" r
 
 New explicit clause inserted in abstract, intro cumulative claim, intro claims-not-made, and conclusion:
 
-> The screen is a triage device, not an adjudication device: it ranks loser-side firms and procurement environments for costly bid-layer interrogation, not cartel members for legal sanction.
+> The screen triages; it does not adjudicate cartel membership: it ranks loser-side firms and procurement environments for costly bid-layer interrogation, not cartel members for legal sanction.
 
 ## Literature reorder
 

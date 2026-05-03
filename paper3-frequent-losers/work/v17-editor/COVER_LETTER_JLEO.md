@@ -16,7 +16,7 @@ The paper proposes a **triage architecture for antitrust enforcement under incom
 
 Three findings on São Paulo's BEC platform (2009–2019) deliver the architecture:
 
-1. Routing forensic interrogation through the award-layer screen reduces the bid-microdata pool the forensic stage must work on by **83%** (1,985 of 11,676 firms) while still recovering **131 of 193** adjudicated cobidders. The screen is a triage device, not an adjudication device.
+1. Routing forensic interrogation through the award-layer screen reduces the bid-microdata pool the forensic stage must work on by **83%** (1,985 of 11,676 firms) while still recovering **131 of 193** adjudicated cobidders. The screen triages; it does not adjudicate cartel membership.
 2. Award-layer and bid-distribution screens are **informational complements**, not substitutes: combination yields +0.035 AUC over the seven-feature Imhof–Wallimann pipeline (DeLong $p = 0.014$). Sequencing is therefore well-defined.
 3. The architecture is **portable**. Firm-level discrimination AUC is 0.864 under temporal holdout, the technology that makes the architecture feasible. A simple separating-equilibrium argument (Online Appendix A) motivates endogenous loser-side participation as the ranking primitive on the award layer.
 
