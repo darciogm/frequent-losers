@@ -1,6 +1,6 @@
 # Cover Letter — JLEO Submission
 
-**Manuscript:** "Triage Before Forensics: Cartel Detection Under Incomplete Observability"
+**Manuscript:** "Cheap Signals, Costly Proof: Award-Layer Triage for Cartel Enforcement"
 
 **Authors:** Darcio Genicolo-Martins (corresponding) and Paulo Furquim de Azevedo, INSPER
 
@@ -10,7 +10,7 @@
 
 Dear Editor,
 
-We submit "Triage Before Forensics: Cartel Detection Under Incomplete Observability" for consideration at the *Journal of Law, Economics, and Organization*.
+We submit "Cheap Signals, Costly Proof: Award-Layer Triage for Cartel Enforcement" for consideration at the *Journal of Law, Economics, and Organization*.
 
 The paper addresses a question that sits at the intersection of organizational economics and antitrust enforcement design: how should an agency sequence information acquisition when the operational layer it routinely observes is coarser than the layer at which collusion can be adjudicated? Cartel-detection screens have been developed on bid-distribution microdata, but most enforcement environments — including audit courts, oversight bodies, and procurement review tribunals — routinely observe only the contract-award envelope. Methods designed for the bid layer do not run on the layer that survives.
 
