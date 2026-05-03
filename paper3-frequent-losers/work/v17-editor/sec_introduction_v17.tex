@@ -26,8 +26,8 @@ accuracy comparable to bid-distribution methods? And does the
 answer reorganize how an enforcement architecture under incomplete
 observability should be sequenced?
 
-A separating-equilibrium framework with cover bidders and genuine
-entrants makes the first two questions tractable
+A simple separating-equilibrium framework with cover bidders and
+genuine entrants makes the first two questions tractable
 (Online Appendix~A). Cover bidders in equilibrium satisfy
 $\Pr(\text{win}\mid C)=0$: the $\text{wins}=0$ filter is a
 separating choice, not a descriptive coincidence. Given
@@ -46,7 +46,7 @@ design separates an \emph{award-layer screening stage} that
 prioritises candidate environments from a \emph{bid-layer
 forensic stage} that adjudicates suspected coordination on the
 bid distribution
-\citep{becker1968crime,stigler1970optimum,harrington2008detecting,kawai2022detection}.
+\citep{becker1968crime,stigler1970optimum,harrington2008detecting,kawai2022detecting}.
 The screening stage need not wait for the bid layer to be
 recovered.
 
@@ -62,7 +62,14 @@ holdout (train $2009$--$2016$, test $2017$--$2019$) and
 $\valAUCprePost$ on a strict pre-$2020$ benchmark with
 participation-stratified permutation null
 ($\valMultThreeTwo\!\!\times$ excess over the random-matching
-baseline, $p<0.001$).
+baseline, $p<0.001$). An out-of-fold and temporal-holdout
+audit of the corresponding item-level AUC decomposes the raw
+in-sample $0.995$ into a structural component ($\approx
+0.86$--$0.89$) and a pure-leakage component ($0.10$--$0.13$);
+the structural component is what the screening interpretation
+rests on (Table~\ref{tab:leakage_audit}), and operational
+metrics throughout this paper use the temporal-holdout column
+as the headline reference.
 
 The second is the architectural result. Against the seven-feature
 Imhof--Wallimann bid-distribution pipeline trained on the
@@ -121,7 +128,7 @@ construct operates on the operational layer and integrates with
 bid-distribution methods at the forensic stage where microdata are
 recoverable. Empirical cover-bidding work identifies cover bidders
 \emph{ex post}, through leniency testimony or judicial discovery
-\citep{porter1999ohio,pesendorfer2000study,asker2010leniency,kawai2022detection};
+\citep{porter1999ohio,pesendorfer2000study,asker2010leniency,kawai2022detecting};
 we are not aware of a published prospective identification of
 cover-bidder candidates from public award-record data alone. The
 enforcement-design literature
@@ -145,13 +152,16 @@ stage on data they already maintain, and reforms that mandate
 bid archival expand the forensic stage rather than substitute
 for it.
 
-Three claims the paper does not make. The pricing imprint is not
+Four claims the paper does not make. The pricing imprint is not
 a causal estimate of cover bidding's effect on prices. The
 buyer-size gradient is scope information about where the
 screening signal varies across detection regimes, not
-identification of an institutional channel. And the construct
-does not adjudicate cartel membership: cobidders are the
-validation object the data layer supports, and the AUC
+identification of an institutional channel. The
+preg\~ao--convite modal asymmetry is scope information about
+where the screening object discriminates better, not a
+positive test of the minimum-bidder-rule mechanism. And the
+construct does not adjudicate cartel membership: cobidders are
+the validation object the data layer supports, and the AUC
 asymmetry against direct defendants is the design's empirical
 signature, not a failure of the screening logic.
 
