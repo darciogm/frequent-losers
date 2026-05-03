@@ -75,7 +75,7 @@ simulate_one <- function(n_sme, n_nonsme, fc_sme, fc_nonsme,
   }
 }
 
-simulate_B <- function(f, B = 2000) {
+simulate_B <- function(f, B = 10000) {
   replicate(B, f())
 }
 
