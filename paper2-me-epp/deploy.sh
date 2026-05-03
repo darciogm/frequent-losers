@@ -1,48 +1,53 @@
 #!/bin/bash
-# Deploy paper2-me-epp MkDocs site to darciogm.github.io/research/sme-public/
-# Mirrors the deploy.sh pattern of paper1-bitter-pills but targets /research/
-# instead of /papers/ per the project memory (feedback_deploy_paper2).
+# Sync the latest paper2-me-epp PDFs into the personal site's MkDocs source.
+# The personal site (darciogm.github.io) builds via a GitHub Action from docs/,
+# so files must land in docs/research/sme-public/assets/ — anything outside
+# docs/ is ignored by the Action.
+#
+# Source of truth for v6: v6-jpube/manuscript/{paper_v6,online_appendix,highlights}.pdf
+# Live URLs preserved: assets/sme_public_procurement.pdf,
+#                      assets/sme_public_online_appendix.pdf,
+#                      assets/sme_public_highlights.pdf
 
 set -e
 
-DESTINO="../../darciogm.github.io/research/sme-public"
+SRC_DIR="v6-jpube/manuscript"
+DEST_DIR="../../darciogm.github.io/docs/research/sme-public/assets"
 REPO_PESSOAL="../../darciogm.github.io"
 
-echo "🔨 Building MkDocs..."
-rm -rf site/
-mkdocs build --strict
-
-echo ""
-echo "📄 Copying current manuscript PDF into site/"
-if [ -f manuscript/main.pdf ]; then
-  mkdir -p site/assets
-  cp manuscript/main.pdf site/assets/paper.pdf
-  echo "  copied main.pdf -> site/assets/paper.pdf (v1 reduced-form)"
-fi
-if [ -f v2-structural/manuscript/paper_v2.pdf ]; then
-  mkdir -p site/assets
-  cp v2-structural/manuscript/paper_v2.pdf site/assets/paper_v2.pdf
-  echo "  copied paper_v2.pdf -> site/assets/paper_v2.pdf (v2 structural)"
+if [ ! -d "$DEST_DIR" ]; then
+  echo "❌ Destination not found: $DEST_DIR"
+  echo "   Make sure darciogm.github.io is cloned at ../../darciogm.github.io"
+  exit 1
 fi
 
-echo ""
-echo "📦 Copiando para $DESTINO..."
-mkdir -p "$DESTINO"
-rsync -av --delete site/ "$DESTINO/"
+for f in paper_v6.pdf online_appendix.pdf highlights.pdf; do
+  if [ ! -f "$SRC_DIR/$f" ]; then
+    echo "❌ Missing source: $SRC_DIR/$f"
+    exit 1
+  fi
+done
+
+echo "📄 Copying v6 PDFs into $DEST_DIR ..."
+cp "$SRC_DIR/paper_v6.pdf"        "$DEST_DIR/sme_public_procurement.pdf"
+cp "$SRC_DIR/online_appendix.pdf" "$DEST_DIR/sme_public_online_appendix.pdf"
+cp "$SRC_DIR/highlights.pdf"      "$DEST_DIR/sme_public_highlights.pdf"
 
 echo ""
 echo "🚀 Commitando no repo pessoal..."
 cd "$REPO_PESSOAL"
 git pull origin main --rebase --autostash
-git add research/sme-public/
+git add docs/research/sme-public/assets/sme_public_procurement.pdf \
+        docs/research/sme-public/assets/sme_public_online_appendix.pdf \
+        docs/research/sme-public/assets/sme_public_highlights.pdf
 
 if git diff --staged --quiet; then
   echo "ℹ️  Nenhuma mudança detectada — site já está atualizado."
 else
-  git commit -m "docs(research/sme-public): update site $(date '+%Y-%m-%d %H:%M')"
+  git commit -m "sme-public: refresh paper PDFs $(date '+%Y-%m-%d %H:%M')"
   git push origin main
   echo ""
-  echo "✅ Deploy concluído!"
+  echo "✅ Push enviado. Action 'Deploy MkDocs' vai rebuildar o site."
   echo "🌐 https://darciogm.github.io/research/sme-public/"
-  echo "⏱️  Aguarde ~1 minuto para o GitHub Pages atualizar."
+  echo "⏱️  Aguarde ~1m20s + cache do Pages."
 fi
