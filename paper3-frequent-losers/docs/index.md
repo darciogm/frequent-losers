@@ -5,39 +5,45 @@ hide:
 
 <div class="hero-section" markdown>
 
-# Screening for Bid Rigging with Frequent Losers
+# Cheap Signals, Costly Proof
 
-<p class="subtitle">A Participation-Based Screen for Public Procurement</p>
+<p class="subtitle">Award-Layer Triage for Cartel Enforcement</p>
 <p class="authors">Darcio Genicolo-Martins &nbsp;&middot;&nbsp; Paulo Furquim de Azevedo</p>
 <p class="affiliation">Insper Institute of Education and Research, Sao Paulo, Brazil</p>
 
 </div>
 
 <div class="key-result" markdown>
-<span class="number">3.6--7.7%</span>
-<span class="label">Conditional price association with frequent-loser presence (cross-fit to CEM matching)</span>
+<span class="number">83%</span>
+<span class="label">Reduction in the bid-microdata pool the forensic stage must work on, while still recovering 131 of 193 adjudicated cobidders</span>
 </div>
 
 ## Abstract
 
-Minimum-bidder rules in public procurement give cartels a reason to
-deploy cover bidders---firms that show up repeatedly with no
-intention of winning. We exploit this behavioral footprint to build
-a participation-based screen: *frequent losers* (FL), firms
-that never win yet bid abnormally often. The screen requires only
-win/loss records, making it deployable in settings where bid
-microdata are unavailable. In Sao Paulo's electronic procurement
-(4.5 million tender-items, 2009--2019), it achieves
-AUC $= 0.94$ against competition-authority convictions, complements
-bid-level tools (correlation 0.06), and flags environments with
-3.6--7.7% higher conditional prices. The price association is
-concentrated in competitive markets and where cover bidding is
-voluntary rather than forced by the minimum-bidder
-constraint---suggesting strategic deployment, not mere rule
-compliance. We propose a three-stage enforcement pathway (screen,
-triage, investigate) that allocates investigative resources toward
-the procurement environments where the association is strongest and
-oversight weakest.
+How should an enforcement agency sequence information acquisition
+when the cheap operational layer is coarser than the layer where
+collusion can be adjudicated? Cartel-detection screens require
+bid-distribution microdata, but audit courts and oversight bodies
+routinely observe only the contract-award envelope. We propose an
+enforcement architecture in which an award-layer screening stage
+triages firms and environments before a costly bid-layer forensic
+stage interrogates them, and instantiate it with a *frequent-loser*
+flag built from São Paulo's BEC contract-award records (2009--2019).
+Routing forensic interrogation through the flag reduces the
+bid-microdata pool by 83% (1,985 of 11,676 firms) while still
+recovering 131 of 193 adjudicated cobidders. The screen is a
+triage device, not an adjudication device: it ranks loser-side
+firms for costly bid-layer interrogation, not cartel members for
+legal sanction. Discrimination accuracy against the cobidder
+population (AUC 0.864 under temporal holdout) makes the
+architecture feasible; complementarity with bid-distribution
+screens (+0.035 AUC over the Imhof--Wallimann pipeline, DeLong
+$p = 0.014$) makes the sequencing well-defined. A simple
+separating-equilibrium argument motivates endogenous loser-side
+participation as the ranking primitive on the award layer. The
+conceptual content travels: wherever the award layer is exposed
+routinely while per-bidder bid amounts are forensic-recoverable,
+screening should be sequenced before forensics.
 
 **JEL Classification:**
 <span class="badge">D44</span>
@@ -47,11 +53,11 @@ oversight weakest.
 <span class="badge">L41</span>
 
 **Keywords:**
-<span class="badge badge-kw">bid rigging</span>
+<span class="badge badge-kw">screening under incomplete observability</span>
 <span class="badge badge-kw">cover bidding</span>
-<span class="badge badge-kw">public procurement</span>
-<span class="badge badge-kw">cartel screening</span>
-<span class="badge badge-kw">frequent losers</span>
+<span class="badge badge-kw">cartel adjacency</span>
+<span class="badge badge-kw">award-layer enforcement</span>
+<span class="badge badge-kw">separating equilibrium</span>
 
 ---
 
