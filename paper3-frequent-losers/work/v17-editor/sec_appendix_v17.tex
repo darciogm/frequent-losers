@@ -1,13 +1,13 @@
 \section{Cover-Bidding Framework and Proofs}\label{app:proofs}
 
-This appendix formalises the separating-equilibrium framework
+This appendix formalizes the separating-equilibrium framework
 the paper reads against. A cartel of $n$ firms in a procurement
 market controls a designated winner with bid $b^*$ and deploys
 $m \geq 0$ cover bidders, each submitting a bid $b_\ell > b^*$.
 Per-bidder deployment cost is $c_1 > 0$, and the cartel faces a
 detection probability $\theta_k \in (0,1)$ that depends on
 oversight capacity in market $k$---smaller, less-supervised
-buyers have lower $\theta_k$. The cartel maximises expected
+buyers have lower $\theta_k$. The cartel maximizes expected
 surplus $\pi(m, \theta_k, c_1)$, the difference between cartel
 rents and the sum of cover-bidder costs and expected detection
 penalties, under two standard assumptions: A1 (profit positivity,
@@ -22,10 +22,10 @@ identifies the $\text{wins}=0$ filter as the equilibrium choice
 of the cover-bidder type. Proposition~\ref{prop:exposure_stmt}
 identifies $\log(1+\text{tenders\_count})$ as a sufficient
 ranking statistic for cover-bidder type given award-record data.
-Proposition~\ref{prop:optimal_m} characterises the cartel's
+Proposition~\ref{prop:optimal_m} characterizes the cartel's
 optimal deployment rate $m^{*}$ in the principal cost of
 detection $\theta_k$. And
-Proposition~\ref{prop:screening_value} formalises why the
+Proposition~\ref{prop:screening_value} formalizes why the
 broad-sample association $\beta$ and the overlap-restricted
 association $\beta^{\text{ov}}$ are different empirical objects
 under the framework's deployment problem.
@@ -55,17 +55,20 @@ designated winner submits $b^*$, so $u_C = -c_1$. Any deviation
 to $b_C' < b^*$ delivers
 $u_C' = -c_1 - \theta_k \phi_0 - \kappa + \mathrm{rents}$, where
 $\mathrm{rents}$ is the deviation gain from winning. Under the
-cartel's allocation rule $\mathrm{rents} < \kappa$ for any cover
-bidder (otherwise the allocation would not be
-incentive-compatible), so $u_C > u_C'$ and the equilibrium
-strategy is $b_C > b^*$ with $\Pr(\text{win} \mid C) = 0$. Type
+cartel's allocation rule the within-cartel allocation is
+incentive-compatible, which is the standard cartel-IC assumption
+(A3) requiring $\mathrm{rents} < \kappa$ for any non-designated
+firm; otherwise the cartel cannot enforce the designated-winner
+allocation in the first place. Under A3, $u_C > u_C'$ and the
+equilibrium strategy is $b_C > b^*$ with
+$\Pr(\text{win} \mid C) = 0$. Type
 $G$ has no $\kappa$ penalty and accepts $b_G < b^*$ when expected
 payoff is positive; the empirical filter $\text{wins} = 0$
 identifies the type-$C$ subset, conditional on the cartel
 deploying its allocation rule. \qed
 \end{proof}
 
-\begin{proposition}[Linearised cumulative exposure]\label{prop:exposure_stmt}
+\begin{proposition}[Linearized cumulative exposure]\label{prop:exposure_stmt}
 Suppose firm $i$ is a cover bidder of type $C$ deployed by a
 cartel in market $k$ at per-period rate
 $\lambda_C(\theta_k, c_1)$ and tenure $\tau_i$. Under A1--A2 and
@@ -138,7 +141,7 @@ selects into therefore differ from items it does not on a vector
 of unobserved characteristics $\mathbf{u}$ that governs the
 cartel's expected surplus---chiefly, the rents available from
 the designated winner's bid relative to the competitive
-equilibrium price. The next proposition formalises the
+equilibrium price. The next proposition formalizes the
 implication for the two empirical objects $\beta$ and
 $\beta^{\text{ov}}$.
 
@@ -159,13 +162,16 @@ overlap-restricted $\beta^{\text{ov}}$ within the common-support
 cell $\Omega$ trims attention to items where the rent component
 takes intermediate values, so the conditional distributions of
 $\mathbf{u}_i$ across $D_i=1$ and $D_i=0$ within $\Omega$ are
-more comparable; and (3) if the rent component shifts both the
-deployment probability and the realised price in the same
-direction, $\beta>0$ on the broad sample together with
-$\beta^{\text{ov}}<0$ is the prediction of the deployment
-problem, not its refutation: forcing overlap removes precisely
-the items where the participation footprint and the price
-imprint co-occur.
+more comparable; and (3) under the auxiliary premise that the
+rent component shifts the realized log price in the same
+direction it shifts the deployment probability, the gap
+$\beta - \beta^{\text{ov}}$ inherits the sign of the rent
+co-movement, and a sign reversal $\beta>0$, $\beta^{\text{ov}}<0$
+is consistent with the deployment problem rather than refuting
+it. The proposition does not derive the sign reversal; it
+identifies the rent-component-co-movement premise as a
+sufficient condition under which the observed sign reversal is
+rationalizable within the framework.
 \end{proposition}
 
 \begin{proof}[Proof of Proposition~\ref{prop:screening_value}]
@@ -181,12 +187,15 @@ have propensity score
 $\Pr(D_i=1 \mid \mathbf{x}_i)$ bounded away from $0$ and $1$,
 which by strict monotonicity of $g$ in the rent component
 implies that the rent component takes intermediate values within
-$\Omega$. Claim 3 is the comparative statement: averaging over
-$\mathbf{u}_i$ on the broad sample produces a positive $\beta$
-while restricting to $\Omega$ trims the high-rent cells out of
-the average, leaving a $\beta^{\text{ov}}$ that need not be
-positive and may be negative for reasons unrelated to the
-treatment itself. \qed
+$\Omega$. Claim 3 is the comparative statement: under the rent-component
+co-movement premise, averaging over $\mathbf{u}_i$ on the broad
+sample inherits a positive contribution from the high-rent
+cells, while restricting to $\Omega$ trims those cells out of
+the average. The gap $\beta - \beta^{\text{ov}}$ inherits the
+sign of the rent co-movement under the premise; if the premise
+fails, the proposition is silent on the gap and the observed
+sign reversal must be explained by something other than the
+deployment problem. \qed
 \end{proof}
 
 The proposition is the formal counterpart to the screening-value
@@ -223,7 +232,7 @@ opposite to R1 and consistent with R2; we adopt R2 as the
 operational reading. The framework's predictions about firm-level
 participation intensity (Proposition~\ref{prop:exposure_stmt}),
 deployment proximity to direct CADE defendants, and portfolio
-specialisation are unaffected by the R1/R2 distinction; only the
+specialization are unaffected by the R1/R2 distinction; only the
 bid-level reading of $b_C$ is.
 
 \section{Core Supporting Tables and Figures}
@@ -310,7 +319,7 @@ and~\ref{tab:sign_reversal_decomp} carry the overlap-restricted
 ATT estimates and the cell-dropping decomposition discussed in
 \S\ref{sec:results_overlap}, kept here rather than in the body
 so the price-imprint section remains compact: the overlap-cell
-ATT and propensity-score-trimmed ATT formalise the
+ATT and propensity-score-trimmed ATT formalize the
 within-support reweighting that produces the sign reversal, and
 the cell-dropping decomposition shows that only
 $\valDroppedItemsShare$ of treated items lack a within-cell
@@ -356,7 +365,7 @@ all three regimes.
 \input{./output/tables/tab_clustering_robustness}
 \end{table}
 
-\section{Generalisation Audit and Detector Comparison}
+\section{Generalization Audit and Detector Comparison}
 \label{app:operational}
 
 The operational-metrics temporal-holdout audit
@@ -390,11 +399,11 @@ signal at the award layer.
 \section{Adversarial-Adaptation Simulation}
 \label{app:adversarial}
 
-The screen's behaviour under deliberate adversarial adaptation
+The screen's behavior under deliberate adversarial adaptation
 (\S\ref{sec:lim_construct}) is bounded but not invariant. We
 examine four strategic adaptations. Each holds the screening
 statistic fixed and modifies the always-loser pool to mimic
-plausible evasive behaviour, and we recompute the firm-level
+plausible evasive behavior, and we recompute the firm-level
 AUC of $\log(1+\text{tenders\_count})$ against the
 $\valCobidders$ CADE-cobidder labels under each
 (Table~\ref{tab:adversarial_adaptation}). Two are observable
@@ -424,7 +433,7 @@ target the binary cutoff specifically; the continuous primitive
 $\log(1+\text{tenders\_count})$ that
 Proposition~\ref{prop:exposure_stmt} identifies as the
 sufficient ranking statistic is not directly altered, but the
-binary discretisation is. Threshold capping is the most exposed
+binary discretization is. Threshold capping is the most exposed
 margin: a cartel that knows the cutoff can instruct cover
 bidders to remain below it.
 
