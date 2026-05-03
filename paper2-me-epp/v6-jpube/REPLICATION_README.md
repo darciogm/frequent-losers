@@ -1,4 +1,4 @@
-# Replication package — *The Cost of Inclusion: Decomposing Bidder Exclusion in Public Procurement*
+# Replication package — *Sheltered Bidding: The Within-Auction Cost of SME Set-Asides*
 
 **Author:** Darcio Genicolo-Martins (Insper, São Paulo)
 **Manuscript version:** v5 (April 2026)
@@ -225,7 +225,7 @@ Expected output: 88 pages, no LaTeX warnings, no overfull boxes.
 
 If you use this code or data in academic work, please cite:
 
-> Genicolo-Martins, D. (2026). The Cost of Inclusion: Decomposing Bidder Exclusion in Public Procurement. *Journal of Public Economics*, [forthcoming].
+> Genicolo-Martins, D. (2026). Sheltered Bidding: The Within-Auction Cost of SME Set-Asides. *Journal of Public Economics*, [forthcoming].
 
 ---
 
