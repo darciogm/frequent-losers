@@ -1,71 +1,123 @@
 \section{Cover-Bidding Framework and Proofs}\label{app:proofs}
 
-This appendix formalizes the separating-equilibrium framework
-the paper reads against. A cartel of $n$ firms in a procurement
-market controls a designated winner with bid $b^*$ and deploys
-$m \geq 0$ cover bidders, each submitting a bid $b_\ell > b^*$.
-Per-bidder deployment cost is $c_1 > 0$, and the cartel faces a
-detection probability $\theta_k \in (0,1)$ that depends on
-oversight capacity in market $k$---smaller, less-supervised
-buyers have lower $\theta_k$. Let $R(m, \theta_k)$ denote the
-cartel's gross expected rents from deploying $m$ cover bidders
-in market $k$. The cartel's expected net surplus is then
-$\pi(m, \theta_k, c_1) = R(m, \theta_k) - c_1 m - \theta_k
-\phi_0 m$, where the second and third terms are the per-bidder
-deployment cost and the per-bidder marginal expected detection
-penalty $\phi_0 > 0$. We impose two standard assumptions on
-gross rents: A1 (rent positivity at the margin,
-$\partial R / \partial m \big|_{m=0} > c_1 + \theta_k \phi_0$,
-so that deploying at least one cover bidder is profitable);
-and A2 (diminishing rents, $\partial^2 R / \partial m^2 < 0$,
-which by linearity of the cost terms in $m$ yields
-$\partial^2 \pi / \partial m^2 < 0$). Item-level deployment
-within a market is treated as the cartel choosing, for each
-item $i \in k$, whether to deploy a cover bidder; we use $m$
-as the per-market deployment count to keep the choice problem
-compact and recover item-level heterogeneity in
-Proposition~\ref{prop:screening_value} below by indexing
-item-specific rent shifters.\footnote{The reduced-form treatment of $R$
-abstracts from the auction structure that generates rents; the
-underlying micro-foundations are provided by
-\citet{marshall2012economics} for the cartel's allocation rule
-and the side-payment scheme that sustains $\kappa$ below.} The empirical
-environment we read it against is described by award-record
-data: each firm $i$ has a participation count
-$\text{tenders\_count}_i$, a win indicator
-$\text{wins}_i \in \{0, 1\}$, and a tenure $\tau_i$. The
-framework delivers four results. Lemma~\ref{lem:wins_zero_stmt}
-identifies the $\text{wins}=0$ filter as the equilibrium choice
-of the cover-bidder type. Proposition~\ref{prop:exposure_stmt}
-identifies $\log(1+\text{tenders\_count})$ as a sufficient
-ranking statistic for cover-bidder type given award-record data.
+This appendix formalizes the reduced-form separating-equilibrium
+framework the paper reads against. We deliberately keep the
+framework spare: the empirical contribution is screening under
+incomplete observability, and the role of the framework is to
+identify the participation primitive a cartel-deployed cover
+bidder generates in award-record data and to discipline the
+interpretation of the empirical objects, not to provide a
+fully-specified mechanism-design treatment of cartel
+formation.\footnote{The cartel's allocation rule, side-payment
+scheme, and within-cartel sanctions are micro-founded in
+\citet{marshall2012economics} and \citet{asker2010leniency};
+we take their characterization as given and parameterize the
+cartel's reduced-form deployment problem.}
+
+\paragraph{Primitives.} A cartel of $n$ firms is active in a
+procurement market $k$ with $|k|$ auctions per period. The
+cartel allocates the designated winner to one cartel member
+submitting bid $b^*$ in each cartel-targeted auction and chooses
+the per-period deployment count $m \geq 0$, defined as the
+number of auctions per period in which the cartel deploys at
+least one cover bidder.\footnote{For tractability we treat each
+cartel-targeted auction as covered by a single cover bidder;
+the framework is unchanged if multiple cover bidders are deployed
+per auction provided the per-deployment cost $c_1$ is
+re-interpreted accordingly.} A cover bidder in a cartel-targeted
+auction submits a bid $b_\ell > b^*$. Per-deployment cost is
+$c_1 > 0$. Market-level detection probability is
+$\theta_k \in (0,1)$, declining in oversight capacity. Let
+$R(m, \theta_k)$ denote gross expected cartel rents from
+deploying $m$ auctions in market $k$ per period; rents are net
+of the cartel's distributive sharing rule (whose details are not
+material to the empirical claims). The cartel's expected net
+surplus per period is
+$\pi(m, \theta_k, c_1) = R(m, \theta_k) - (c_1 + \theta_k
+\phi_0)\,m$, where $\phi_0 > 0$ is the cartel-wide marginal
+detection penalty per cover-deployment; we treat detection
+penalty as cartel-level (not pegged to individual cover-bidder
+identity), consistent with oversight that detects the
+\emph{pattern} of cover bidding rather than individual
+outcomes.
+
+\paragraph{Assumptions.} We impose:
+\begin{itemize}
+\item[\textbf{A1}] (Rent positivity at the margin)
+$\partial R / \partial m |_{m=0} > c_1 + \theta_k \phi_0$ at
+the observed $\theta_k$, ensuring the cartel optimally deploys
+at least one cover bidder.
+\item[\textbf{A2}] (Diminishing rents)
+$\partial^2 R / \partial m^2 < 0$, which by linearity of the
+cost terms in $m$ yields $\partial^2 \pi / \partial m^2 < 0$.
+\item[\textbf{A3}] (Cartel-allocation incentive compatibility)
+The within-cartel allocation rule is incentive-compatible in
+the bidding subgame: for any non-designated cartel firm,
+$\mathrm{rents} < \kappa$, where $\mathrm{rents}$ is the per-auction
+profit from deviating to a winning bid and $\kappa > 0$ is the
+internal cartel sanction or capacity-revelation cost triggered
+by the deviation. We treat A3 as a primitive equilibrium
+condition the cartel's optimal contract design is required to
+satisfy; \citet{marshall2012economics} and
+\citet{asker2010leniency} derive sufficient conditions on
+side-payment and trigger-strategy schemes.
+\item[\textbf{A4}] (Type partition) Each non-cartel firm $i$ is
+of type $C$ (cover bidder, deployed by the cartel in some
+fraction of auctions) or type $G$ (genuine entrant). Hybrid or
+intermediate types are absorbed into the empirical type-$G$
+class.\footnote{The empirical implementation does not require
+the binary partition to be the unique data-generating process;
+hybrid types whose deployment intensity is intermediate are
+absorbed by the rank-based screening statistic of
+Proposition~\ref{prop:exposure_stmt}.}
+\item[\textbf{A5}] (Stationary deployment within market) The
+cartel's per-period deployment $m$ is constant within market
+$k$ over the analysis window; deployment events are conditionally
+independent across auctions given $m$ and $|k|$.
+\item[\textbf{A6}] (Selection on the wins-zero subset)
+Conditional on $\{\text{wins}_i = 0\}$, type-$G$ firms are
+permanent competitive losers (low-intensity participants, in
+the market at low rate) while type-$C$ firms are cartel-deployed
+participants. This selection effect implies $\lambda_G <
+\lambda_C$ on the wins-zero subset, where $\lambda_C, \lambda_G$
+are per-period auction-participation rates of type $C$ and
+type $G$ firms respectively. A6 is the model-completing
+assumption that disciplines the type-discrimination claim of
+Proposition~\ref{prop:exposure_stmt}; without A6 the wins-zero
+subset is uninformative about type.
+\end{itemize}
+
+\paragraph{Empirical observables.} Award-record data report a
+participation count $T_i = \text{tenders\_count}_i$, a win
+indicator $\text{wins}_i \in \{0, 1\}$, and a tenure $\tau_i$
+(years active) for each firm $i$.
+
+\paragraph{Roadmap.} Lemma~\ref{lem:wins_zero_stmt} identifies
+the $\text{wins} = 0$ filter as the equilibrium choice of
+type $C$. Proposition~\ref{prop:exposure_stmt} establishes
+$\log(1 + T_i)$ as a Bayesian-monotone ranking statistic for
+type $C$ on the conditioning set $\{\text{wins} = 0\}$.
 Proposition~\ref{prop:optimal_m} characterizes the cartel's
-optimal deployment rate $m^{*}$ in the principal cost of
-detection $\theta_k$. And
-Proposition~\ref{prop:screening_value} formalizes why the
+optimal deployment $m^*$ and its comparative statics.
+Proposition~\ref{prop:screening_value} discusses why the
 broad-sample association $\beta$ and the overlap-restricted
-association $\beta^{\text{ov}}$ are different empirical objects
-under the framework's deployment problem.
+$\beta^{\text{ov}}$ are different empirical objects under the
+framework's deployment problem.
 
 \begin{lemma}[Wins-zero separating equilibrium]\label{lem:wins_zero_stmt}
 Consider the bidding subgame in which a cartel allocates the
 designated winner to one cartel member submitting bid $b^*$ and
-the remaining $m$ cartel firms act as cover bidders, each
-choosing a bid $b_\ell$. Assume (i) winning by a non-designated
-cartel firm triggers either capacity revelation undermining the
-cover identity in subsequent rounds or internal cartel sanctions
-of magnitude $\kappa > 0$, and (ii) the cartel's within-cartel
-allocation is incentive-compatible (assumption A3:
-$\mathrm{rents} < \kappa$ for any non-designated firm; this is
-the standard cartel-allocation IC condition derived from the
-side-payment or trigger-strategy schemes in
-\citet{marshall2012economics, asker2010leniency}). Then the
-unique separating equilibrium of this subgame has $b_\ell > b^*$
-for every cover bidder and therefore $\Pr(\text{win} \mid C) = 0$:
-the bright-line filter $\text{wins} = 0$ is the equilibrium
-choice of type $C$. Genuine entrants of type $G$ face no such
-constraint and bid $b_G < b^*$ whenever expected payoff is
-positive.
+deploys $m$ cover bidders in a cartel-targeted auction, each
+cover bidder $\ell$ choosing a bid $b_\ell$. Under A3, every
+separating equilibrium of this subgame has $b_\ell > b^*$ for
+every cover bidder $\ell$, so $\Pr(\text{win} \mid C) = 0$: the
+bright-line filter $\text{wins} = 0$ identifies the type-$C$
+subset of bidders. Genuine entrants of type $G$ face no
+$\kappa$-sanction constraint and bid $b_G < b^*$ whenever
+expected payoff from winning is positive. The cover-bidder
+strategy correspondence is $\{b : b > b^*\}$; the lemma pins
+down the equilibrium win probability and the wins-zero filter,
+not a unique numerical bid.
 \end{lemma}
 
 \begin{proof}[Proof of Lemma~\ref{lem:wins_zero_stmt}]
@@ -73,87 +125,92 @@ At the bidding stage, the cartel's deployment $m$ and market
 detection probability $\theta_k$ are taken as given; the
 cartel-wide detection penalty $\theta_k \phi_0 m$ is therefore
 sunk from the perspective of any individual cover bidder
-choosing $b$ (Prop.~\ref{prop:optimal_m} treats this term as a
-deployment-stage cost; the bidding stage allocates that sunk
-cost across cover bidders without affecting marginal incentives).
-Write the cover bidder's bidding-stage payoff conditional on
-choosing $b$ as
+choosing $b_\ell$. Write the cover bidder's bidding-stage payoff
+conditional on choosing $b$ as
 $u_C(b) = -c_1 - \tilde{\phi} - \kappa \cdot \Pr(\text{win}
-\mid b)$, where $c_1$ is the per-bidder deployment cost, the
-sunk term $\tilde{\phi} = \theta_k \phi_0$ is the cover bidder's
-share of cartel-wide detection cost (independent of own bid),
-and $\kappa$ is the personal cartel-internal sanction triggered
-only by an off-equilibrium winning deviation. For $b > b^*$, the
-designated winner captures the contract and
-$\Pr(\text{win} \mid b) = 0$, so $u_C(b) = -c_1 - \tilde{\phi}$.
-For any deviation $b' < b^*$ that becomes the winning bid (i.e.,
-$b'$ undercuts both $b^*$ and any genuine-entrant bid),
-$\Pr(\text{win} \mid b') = 1$ and the cover bidder's payoff
-becomes
-$u_C(b') = -c_1 - \tilde{\phi} - \kappa + \mathrm{rents}$, where
-$\mathrm{rents}$ is the rent captured from the deviating win.
-Under A3, $\mathrm{rents} < \kappa$, so
-$u_C(b') < -c_1 - \tilde{\phi} = u_C(b)$ and the equilibrium
-strategy is $b > b^*$ with $\Pr(\text{win} \mid C) = 0$. Type
-$G$ has no $\kappa$ penalty and accepts $b_G < b^*$ when
-expected payoff is positive; the empirical filter
-$\text{wins} = 0$ thus identifies the type-$C$ subset,
-conditional on the cartel deploying its allocation rule.
-Uniqueness of the separating equilibrium follows from the strict
-inequality $u_C(b) > u_C(b')$ under A3, which makes any pooling
-or mixed strategy strictly dominated for type $C$. \qed
+\mid b)$, where $c_1$ is the per-deployment cost, the sunk term
+$\tilde{\phi} = \theta_k \phi_0$ is the cover bidder's share of
+the cartel-wide detection cost (independent of own bid), and
+$\kappa$ is the personal cartel-internal sanction triggered
+\emph{only} by an off-equilibrium winning deviation. Compare
+the equilibrium-candidate strategy $b > b^*$ against the
+single deviation $b' < b^*$ that becomes the winning bid (i.e.,
+$b'$ undercuts both $b^*$ and any genuine-entrant bid).
+Equilibrium-candidate payoff: $\Pr(\text{win} \mid b) = 0$ and
+$u_C(b) = -c_1 - \tilde{\phi}$. Deviation payoff:
+$\Pr(\text{win} \mid b') = 1$ and
+$u_C(b') = -c_1 - \tilde{\phi} - \kappa + \mathrm{rents}$. Under
+A3, $\mathrm{rents} < \kappa$, so $u_C(b') < u_C(b)$ and no
+profitable deviation exists. Therefore in any separating
+equilibrium, every cover bidder chooses some $b > b^*$. By the
+auction's lowest-bid rule and the assumption that $b^*$ is the
+designated winning bid, $\Pr(\text{win} \mid C) = 0$ in every
+such equilibrium. Type $G$ faces no $\kappa$ penalty and prefers
+$b_G < b^*$ whenever the post-cost rent from winning is
+positive. The argument pins down the equilibrium win probability
+and the wins-zero filter; it does not pin down a unique cover
+bidder bid, since any $b > b^*$ delivers the same payoff
+$-c_1 - \tilde{\phi}$. The bid correspondence is $\{b : b > b^*\}$,
+and the empirical filter $\text{wins} = 0$ identifies the
+type-$C$ subset across this entire correspondence. \qed
 \end{proof}
 
 \begin{proposition}[Linearized cumulative exposure]\label{prop:exposure_stmt}
-Suppose firm $i$ is a cover bidder of type $C$ deployed by a
-cartel in market $k$ at per-period rate
-$\lambda_C(\theta_k, c_1)$ and tenure $\tau_i$. Under A1--A2 and
-a stationary deployment process with rate
-$\lambda_C(\theta_k, c_1) = m^* / |k|$ (where $m^*$ is the
-optimum of Proposition~\ref{prop:optimal_m} and $|k|$ is market
-size), $T_i \sim \mathrm{Poisson}(\lambda_C \tau_i)$ and so
-$\mathbb{E}[T_i \mid \text{type}=C, \tau_i] = \lambda_C\,\tau_i$.
-For genuine competitive entrants of type $G$,
-$\mathbb{E}[T_i \mid \text{type}=G, \tau_i] = \lambda_G\,\tau_i$
-with $\lambda_G < \lambda_C$ on the conditioning subset
-$\{\text{wins}_i = 0\}$ identified by
-Lemma~\ref{lem:wins_zero_stmt}: type-$G$ firms that never win
-are competitive losers in cartel-targeted markets and bid less
-intensively than cover bidders, who are paid by the cartel to
-participate.\footnote{The strict inequality $\lambda_G <
-\lambda_C$ on $\{\text{wins} = 0\}$ is a model implication of
-the cartel's incentive structure: cover bidders have positive
-deployment intensity ($\lambda_C > 0$ from A1), while type-$G$
-firms with permanent zero-win rate are by selection low-intensity
-participants. The unconditional inequality $\lambda_G \leq
-\lambda_C$ over all firms is not required.} The log-statistic
-$\log(1+T_i)$ is a monotone, rank-equivalent transformation of
-$T_i$, and---under monotone likelihood ratio in the Poisson
-family with $\lambda_C > \lambda_G$---the posterior
-$\Pr(\text{type}=C \mid T_i = t)$ is non-decreasing in $t$.
-Combined with Lemma~\ref{lem:wins_zero_stmt}, the joint
-statistic $(\log(1+T_i), \mathbf{1}[\text{wins}_i=0])$ is an
-admissible Bayesian ranking statistic for the cover-bidder type
-given award-record data; the binary frequent-loser rule
+Define the per-period auction-participation rate of a type-$C$
+firm in market $k$ as
+$\lambda_C(\theta_k, c_1) \equiv m^* / |k|$, where $m^*$ is the
+cartel's optimal per-period deployment count
+(Proposition~\ref{prop:optimal_m}) and $|k|$ is the number of
+auctions per period in market $k$; $\lambda_C$ is therefore the
+fraction of auctions per period in which a typical cover bidder
+participates. Under A5 (stationary deployment with conditional
+independence) and the Poisson approximation
+$T_i \sim \mathrm{Poisson}(\lambda \tau_i)$, the expected
+participation count over tenure $\tau_i$ years is
+$\mathbb{E}[T_i \mid \text{type}=C, \tau_i] =
+\lambda_C \tau_i$ for type $C$ and
+$\mathbb{E}[T_i \mid \text{type}=G, \tau_i] =
+\lambda_G \tau_i$ for type $G$, with $\lambda_G < \lambda_C$ on
+the conditioning subset $\{\text{wins}_i = 0\}$ by A6. The
+log-statistic $\log(1+T_i)$ is a monotone, rank-equivalent
+transformation of $T_i$. Under the monotone-likelihood-ratio
+property of the Poisson family with $\lambda_C > \lambda_G$,
+the posterior $\Pr(\text{type}=C \mid T_i = t,\,\text{wins}_i =
+0)$ is non-decreasing in $t$; equivalently, $\log(1+T_i)$ is a
+Bayesian-monotone ranking statistic for type $C$ on the
+conditioning set $\{\text{wins} = 0\}$. Combined with
+Lemma~\ref{lem:wins_zero_stmt}, the joint statistic
+$(\log(1+T_i),\,\mathbf{1}[\text{wins}_i = 0])$ is the
+sufficient pair of award-record observables for type-$C$
+discrimination under A4--A6; the binary frequent-loser rule
 $\mathbf{1}[T_i > k]$ is one information-coarsening of this
-posterior, with the empirical choice $k =
-\mathrm{med}+1.5\!\times\!\mathrm{IQR}$ a convention motivated
-by the empirical bid-distribution rather than by the framework.
+posterior, with the empirical choice
+$k = \mathrm{med} + 1.5 \times \mathrm{IQR}$ a convention
+motivated by the empirical participation distribution rather
+than by the framework.
 \end{proposition}
 
 \begin{proof}[Proof of Proposition~\ref{prop:exposure_stmt}]
-The expectation result is immediate from the law of large
-numbers applied to the deployment counting process given constant
-rate $\lambda$. The monotonicity claim follows from Bayes' rule:
-$\Pr(C \mid t) = \Pr(t \mid C)\,\pi_C / [\Pr(t \mid C)\,\pi_C +
-\Pr(t \mid G)\,(1-\pi_C)]$ is non-decreasing in $t$ if and only
-if the likelihood ratio $\Pr(t \mid C)/\Pr(t \mid G)$ is
+The expectation result $\mathbb{E}[T_i \mid \text{type},
+\tau_i] = \lambda \tau_i$ is the mean of a Poisson process with
+rate $\lambda$ over horizon $\tau_i$ (A5). The monotonicity
+claim follows from Bayes' rule on the wins-zero subset:
+$\Pr(C \mid t,\,\text{wins} = 0) = \Pr(t \mid C, \text{wins} = 0)
+\,\pi'_C / [\Pr(t \mid C, \text{wins} = 0)\,\pi'_C +
+\Pr(t \mid G, \text{wins} = 0)\,(1 - \pi'_C)]$, where $\pi'_C$
+is the prior conditional on wins=0. This posterior is
+non-decreasing in $t$ if and only if the likelihood ratio
+$\Pr(t \mid C, \text{wins}=0)/\Pr(t \mid G, \text{wins}=0)$ is
 non-decreasing in $t$. For Poisson likelihoods with rates
-$\lambda_C > \lambda_G$, this monotone-likelihood-ratio property
-is standard. Hence $\log(1+\text{tenders\_count})$ is a
-sufficient ranking statistic for the cover-bidder type and the
-binary indicator $\mathbf{1}[\text{tenders\_count} > k]$ is its
-information-coarsening form. \qed
+$\lambda_C > \lambda_G$ (the inequality holds on
+$\{\text{wins} = 0\}$ by A6), the monotone-likelihood-ratio
+property of the Poisson family is standard
+\citep{karlin1956mlr}. Hence the posterior is non-decreasing in
+$T_i$, and the log transform $\log(1 + T_i)$ inherits the
+ranking. Coarsening to a binary indicator
+$\mathbf{1}[T_i > k]$ preserves rank-monotonicity above and
+below $k$ but is no longer Bayesian-sufficient; this
+information-loss is the price of operational simplicity. \qed
 \end{proof}
 
 \begin{proposition}[Optimal cover-bidder deployment]\label{prop:optimal_m}
