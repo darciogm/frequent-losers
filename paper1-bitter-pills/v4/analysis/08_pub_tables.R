@@ -962,6 +962,145 @@ write_panel3_reg_table(
   "Robustness: Tender Success (LPM)", "rob_success", "tab_rob_success.tex",
   note = rob_note_fn("successful tender (LPM)"))
 
+
+# Emit macros for the manuscript layer.
+# 08 is the canonical publication-table script: it re-fits the same models
+# that 03/04/06 do, then writes the booktabs/threeparttable .tex files that
+# the manuscript actually \input{}s. Macros emitted here are the single
+# source of truth for the prose. (03/04/06 also emit the same blocks; since
+# both fit identical models on identical samples, the values agree.)
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+if (file.exists(.bp_macros_path)) {
+  source(.bp_macros_path)
+
+  pull <- function(model, var) {
+    list(b  = unname(coef(model)[var]),
+         se = unname(sqrt(vcov(model)[var, var])),
+         n  = model$nobs)
+  }
+
+  m <- list()
+
+  # Reference / Negotiated / Firms / Quantity / Success / UTG (Tables 4-10)
+  r  <- pull(t4[["Item+Year+PBU"]],  "urgent")
+  ri <- pull(t4[["Item"]],            "urgent")
+  m$refCoef       <- bp_fmt(r$b, 3); m$refSE <- bp_fmt(r$se, 3)
+  m$refPct        <- bp_fmt_pct((exp(r$b) - 1) * 100, 1)
+  m$refCoefItem   <- bp_fmt(ri$b, 3)
+  m$refPctItem    <- bp_fmt_pct((exp(ri$b) - 1) * 100, 1)
+  m$refPctPreferred <- m$refPct
+  m$refPctItemFE    <- m$refPctItem
+
+  q <- pull(t5[["Item+Year+PBU"]], "urgent")
+  m$qtyCoef <- bp_fmt(q$b, 3); m$qtySE <- bp_fmt(q$se, 3)
+
+  na  <- pull(t6a[["Item+Year+PBU"]], "urgent")
+  ni  <- pull(t6a[["Item"]],          "urgent")
+  nym <- pull(t6a[["Item+YM+PBU"]],   "urgent")
+  m$negCoef           <- bp_fmt(na$b, 3); m$negSE <- bp_fmt(na$se, 3)
+  m$negPct            <- bp_fmt_pct((exp(na$b) - 1) * 100, 1)
+  m$negPanelAcoefShort<- bp_fmt(na$b, 3)
+  m$negNobs           <- bp_fmt_int(na$n)
+  m$negCoefItem       <- bp_fmt(ni$b, 3)
+  m$negPctItem        <- bp_fmt_pct((exp(ni$b) - 1) * 100, 1)
+  m$negPctItemFE      <- m$negPctItem
+  m$negCoefItemYM     <- bp_fmt(nym$b, 3)
+  m$negPctItemYM      <- bp_fmt_pct((exp(nym$b) - 1) * 100, 1)
+  m$negPctRange       <- sprintf("%s--%s\\%%",
+                                 bp_fmt_pct_n((exp(na$b) - 1) * 100, 1),
+                                 bp_fmt_pct_n((exp(nym$b) - 1) * 100, 1))
+  m$negPctHeadline    <- bp_fmt_pct((exp(na$b) - 1) * 100, 1)
+
+  nb <- pull(t6b[["Item+Year+PBU"]], "urgent")
+  qb <- pull(t6b[["Item+Year+PBU"]], "bid_qty_log")
+  m$negPanelBcoef       <- bp_fmt(nb$b, 3)
+  m$negPanelBcoefShort  <- bp_fmt(nb$b, 3)
+  m$negPanelBpct        <- bp_fmt_pct((exp(nb$b) - 1) * 100, 1)
+  m$negPanelBqty        <- bp_fmt(qb$b, 3)
+
+  fm <- pull(t7a[["Item+Year+PBU"]], "urgent")
+  m$firmsCoef <- bp_fmt(fm$b, 3); m$firmsSE <- bp_fmt(fm$se, 3)
+  m$firmsPct  <- bp_fmt_pct((exp(fm$b) - 1) * 100, 1)
+  m$firmsPctHeadline <- m$firmsPct
+
+  sm <- pull(t9a[["Item+Year+PBU"]], "urgent")
+  m$successCoef <- bp_fmt(sm$b, 3); m$successSE <- bp_fmt(sm$se, 3)
+  m$successPct  <- bp_fmt_pp(sm$b * 100, 1)
+  m$successPP   <- bp_fmt_pp(sm$b * 100, 1)
+
+  # UTG headline range covers all 4 canonical specs (col 1: Item; col 2: Item+Year;
+  # col 3: Item+Year+PBU; col 4: Item+YM+PBU). The original "23-30%" prose came
+  # from the bottom-to-top sweep across these specs.
+  ua_item   <- pull(t10a[["Item"]],          "is_admin")
+  ua_year   <- pull(t10a[["Item+Year"]],     "is_admin")
+  ua        <- pull(t10a[["Item+Year+PBU"]], "is_admin")
+  uy        <- pull(t10a[["Item+YM+PBU"]],   "is_admin")
+  ub        <- pull(t10b[["Item+Year+PBU"]], "is_admin")
+  uq        <- pull(t10b[["Item+Year+PBU"]], "bid_qty_log")
+  utg_pcts4 <- (exp(-c(ua_item$b, ua_year$b, ua$b, uy$b)) - 1) * 100
+  m$utgCoef        <- bp_fmt(ua$b, 3); m$utgSE <- bp_fmt(ua$se, 3)
+  m$utgPct         <- bp_fmt_pct(utg_pcts4[3], 1)
+  m$utgCoefItemYM  <- bp_fmt(uy$b, 3)
+  m$utgPctItemYM   <- bp_fmt_pct(utg_pcts4[4], 1)
+  m$utgCoefItem    <- bp_fmt(ua_item$b, 3)
+  m$utgPctItem     <- bp_fmt_pct(utg_pcts4[1], 1)
+  m$utgCoefItemYr  <- bp_fmt(ua_year$b, 3)
+  m$utgPctItemYr   <- bp_fmt_pct(utg_pcts4[2], 1)
+  m$utgPanelBcoef  <- bp_fmt(ub$b, 3); m$utgPanelBSE <- bp_fmt(ub$se, 3)
+  m$utgPanelBqty   <- bp_fmt(uq$b, 3)
+  # Range across the 4 specs (matches original "23-30%" framing honestly)
+  m$utgPctRange    <- sprintf("%s--%s\\%%",
+                              bp_fmt_pct_n(min(utg_pcts4), 0),
+                              bp_fmt_pct_n(max(utg_pcts4), 0))
+  m$utgPctRangePreferred <- sprintf("%s--%s\\%%",
+                              bp_fmt_pct_n(min(utg_pcts4[3:4]), 1),
+                              bp_fmt_pct_n(max(utg_pcts4[3:4]), 1))
+  m$nUTG <- bp_fmt_int(ua$n)
+
+  # Heterogeneity: SUS basic vs specialized; market competition split + interaction
+  if (exists("het_sus")) {
+    b_basic <- coef(het_sus$hi[["Item+Year+PBU"]])["urgent"]
+    b_spec  <- coef(het_sus$lo[["Item+Year+PBU"]])["urgent"]
+    if (length(b_basic) == 1 && !is.na(b_basic)) m$hetSUSbasic <- bp_fmt(b_basic, 3)
+    if (length(b_spec)  == 1 && !is.na(b_spec))  m$hetSUSspec  <- bp_fmt(b_spec, 3)
+  }
+  if (exists("het_comp")) {
+    b_hi <- coef(het_comp$hi[["Item+Year+PBU"]])["urgent"]
+    b_lo <- coef(het_comp$lo[["Item+Year+PBU"]])["urgent"]
+    inter_m   <- het_comp$int[["Item+Year+PBU"]]
+    inter_var <- intersect(c("urgent:high_competition", "urgent:high_competitionTRUE"),
+                           names(coef(inter_m)))[1]
+    if (length(b_hi) == 1) m$hetCompetitive  <- bp_fmt(b_hi, 3)
+    if (length(b_lo) == 1) m$hetConcentrated <- bp_fmt(b_lo, 3)
+    if (!is.na(inter_var)) m$hetInteraction  <- bp_fmt(coef(inter_m)[inter_var], 3)
+  }
+
+  # Robustness (Appendix A.1): preferred coef per winsor variant
+  if (exists("rob_nowin") && exists("rob_w01") && exists("rob_w05")) {
+    m$robRefNoWin  <- bp_fmt(coef(rob_nowin$ref[["Item+Year+PBU"]])["urgent"], 3)
+    m$robRefBase   <- bp_fmt(coef(rob_w01$ref[["Item+Year+PBU"]])["urgent"], 3)
+    m$robRefAgg    <- bp_fmt(coef(rob_w05$ref[["Item+Year+PBU"]])["urgent"], 3)
+    neg_p_no  <- (exp(coef(rob_nowin$neg[["Item+Year+PBU"]])["urgent"]) - 1) * 100
+    neg_p_w01 <- (exp(coef(rob_w01$neg[["Item+Year+PBU"]])["urgent"])   - 1) * 100
+    neg_p_w05 <- (exp(coef(rob_w05$neg[["Item+Year+PBU"]])["urgent"])   - 1) * 100
+    m$robNegLow  <- bp_fmt_pct_n(min(neg_p_no, neg_p_w01, neg_p_w05), 0)
+    m$robNegHigh <- bp_fmt_pct_n(max(neg_p_no, neg_p_w01, neg_p_w05), 0)
+    fc <- c(coef(rob_nowin$firms[["Item+Year+PBU"]])["urgent"],
+            coef(rob_w01$firms[["Item+Year+PBU"]])["urgent"],
+            coef(rob_w05$firms[["Item+Year+PBU"]])["urgent"])
+    m$robFirmsLow  <- bp_fmt(min(fc), 2)
+    m$robFirmsHigh <- bp_fmt(max(fc), 2)
+    suc_pp <- mean(c(coef(rob_nowin$succ[["Item+Year+PBU"]])["urgent"],
+                     coef(rob_w01$succ[["Item+Year+PBU"]])["urgent"],
+                     coef(rob_w05$succ[["Item+Year+PBU"]])["urgent"])) * 100
+    m$robSuccessPP <- bp_fmt_pp(suc_pp, 0)
+    m$winsorAggLow  <- "5"
+    m$winsorAggHigh <- "95"
+  }
+
+  bp_macros_emit("08_pub_tables", m)
+}
+
 # SUMMARY
 n_files <- length(list.files(PUB_TAB, pattern = "\\.tex$"))
 cat(sprintf("\n08_pub_tables.R complete: %d .tex files in %s\n", n_files, PUB_TAB))

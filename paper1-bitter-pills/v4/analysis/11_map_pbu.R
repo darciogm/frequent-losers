@@ -47,10 +47,16 @@ p <- ggplot() +
   theme_void(base_size = 9) +
   theme(plot.title = element_blank())
 
-# Save (6.5 x 5 in, cairo PDF)
-out_path <- file.path(PUB_FIG, "fig_00b_pbu_map.pdf")
-ggsave(out_path, p, width = 6.5, height = 5, device = cairo_pdf)
+# Save (6.5 x 5 in, cairo PDF). Manuscript references this as
+# fig_00b_litigation_pbu_map.pdf (paired with fig_00b_admin_pbu_map.pdf from
+# 15_admin_figures.R). Keep the legacy fig_00b_pbu_map.pdf alias too, since
+# older drafts and v4 internal references still use the short name.
+out_path  <- file.path(PUB_FIG, "fig_00b_litigation_pbu_map.pdf")
+out_alias <- file.path(PUB_FIG, "fig_00b_pbu_map.pdf")
+ggsave(out_path,  p, width = 6.5, height = 5, device = cairo_pdf)
+ggsave(out_alias, p, width = 6.5, height = 5, device = cairo_pdf)
 cat(sprintf("  Saved: %s\n", out_path))
+cat(sprintf("  Saved: %s\n", out_alias))
 
 # Summary
 cat(sprintf("\n11_map_pbu.R complete\n"))

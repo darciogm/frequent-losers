@@ -19,6 +19,18 @@ suppressPackageStartupMessages({
 setFixest_nthreads(12L)
 setDTthreads(12L)
 
+.this_dir <- (function() {
+  for (i in seq_len(sys.nframe())) {
+    f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(f)) return(normalizePath(dirname(f)))
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  fa <- grep("^--file=", args, value = TRUE)
+  if (length(fa)) return(normalizePath(dirname(sub("^--file=", "", fa[1]))))
+  getwd()
+})()
+source(file.path(.this_dir, "_macros.R"))
+
 OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output"
 dir.create(file.path(OUT, "figures"), recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(OUT, "tables"),  recursive = TRUE, showWarnings = FALSE)
@@ -231,5 +243,26 @@ twfe_df[event_time == 5, coef]
 )
 writeLines(summary_txt, file.path(OUT, "tables", "honestdid_summary.txt"))
 cat(summary_txt)
+
+
+# Emit macros for the manuscript layer (BJS event-study at t=0 and t=+5)
+macros <- list()
+b0 <- bjs_df[event_time == 0, coef]
+s0 <- bjs_df[event_time == 0, se]
+b5 <- bjs_df[event_time == 5, coef]
+s5 <- bjs_df[event_time == 5, se]
+if (length(b0) == 1 && !is.na(b0)) {
+  macros$bjsETzero    <- bp_fmt(b0, 3)
+  macros$bjsETzeroSE  <- bp_fmt(s0, 3)
+  macros$bjsETzeroPct <- bp_fmt_pct((exp(b0) - 1) * 100, 1)
+}
+if (length(b5) == 1 && !is.na(b5)) {
+  macros$bjsETfive    <- bp_fmt(b5, 3)
+  macros$bjsETfiveSE  <- bp_fmt(s5, 3)
+  macros$bjsETfivePct <- bp_fmt_pct((exp(b5) - 1) * 100, 1)
+}
+pre_max <- max(abs(bjs_df[event_time < 0, coef]), na.rm = TRUE)
+if (is.finite(pre_max)) macros$bjsPreMaxAbs <- bp_fmt(pre_max, 3)
+if (length(macros) > 0) bp_macros_emit("31_honest_did", macros)
 
 cat("\n31_honest_did.R complete\n")

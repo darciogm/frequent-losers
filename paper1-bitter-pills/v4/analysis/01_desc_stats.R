@@ -168,3 +168,31 @@ html_content <- knitr::kable(html_df, format = "html",
 writeLines(as.character(html_content), html_file)
 cat("Saved:", html_file, "\n")
 
+# Emit macros for the manuscript layer (analysis-sample counts and per-type means)
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+if (file.exists(.bp_macros_path)) {
+  source(.bp_macros_path)
+  ref <- panel_a[[1]]   # Reference price
+  neg <- panel_a[[2]]   # Negotiated price
+  qty <- panel_a[[3]]   # Quantity
+  frm <- panel_a[[4]]   # N. firms (uses full dt, not winners)
+  lref <- panel_b[[1]]; lneg <- panel_b[[2]]; lqty <- panel_b[[3]]
+
+  bp_macros_emit("01_desc_stats", list(
+    nAnalysisSample   = bp_fmt_int(nrow(dt)),
+    nItemsAnalysis    = bp_fmt_int(uniqueN(dt$item)),
+    nWinners          = bp_fmt_int(nrow(dt[po_firm_winner == 1])),
+    meanRefPriceOrd   = paste0("R\\$", bp_fmt_int(round(ref$mean_ord))),
+    meanRefPriceAdm   = paste0("R\\$", bp_fmt_int(round(ref$mean_adm))),
+    meanRefPriceLit   = paste0("R\\$", bp_fmt_int(round(ref$mean_lit))),
+    meanLogRefLit     = bp_fmt(lref$mean_lit, 2),
+    meanLogNegLit     = bp_fmt(lneg$mean_lit, 2),
+    meanLogRefOrd     = bp_fmt(lref$mean_ord, 2),
+    meanLogNegOrd     = bp_fmt(lneg$mean_ord, 2),
+    meanQtyLit        = bp_fmt_int(round(qty$mean_lit)),
+    meanQtyOrd        = bp_fmt_int(round(qty$mean_ord)),
+    meanFirmsLit      = bp_fmt(frm$mean_lit, 1),
+    meanFirmsOrd      = bp_fmt(frm$mean_ord, 1)
+  ))
+}
+

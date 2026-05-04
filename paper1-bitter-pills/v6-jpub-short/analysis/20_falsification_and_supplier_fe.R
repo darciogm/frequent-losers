@@ -14,6 +14,18 @@ library(fixest)
 setFixest_nthreads(16L)
 setDTthreads(16L)
 
+.this_dir <- (function() {
+  for (i in seq_len(sys.nframe())) {
+    f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(f)) return(normalizePath(dirname(f)))
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  fa <- grep("^--file=", args, value = TRUE)
+  if (length(fa)) return(normalizePath(dirname(sub("^--file=", "", fa[1]))))
+  getwd()
+})()
+source(file.path(.this_dir, "_macros.R"))
+
 DATA_CACHE <- "/tmp/v4_prepared.rds"
 if (!file.exists(DATA_CACHE)) stop("Run 00_prepare_data.R first")
 
@@ -106,14 +118,28 @@ if (nrow(placebo_dt) > 100) {
         "Main: Ref. Price" = main_ref
       ))
     }
+    placebo_tex <- file.path(OUT, "tab_placebo.tex")
     etable(models_placebo,
-           file = file.path(OUT, "tab_placebo.tex"),
+           file = placebo_tex,
            replace = TRUE,
            title = "Placebo Test: Items Never Subject to Litigation",
            dict = c(urgent = "Urgent Purchase"),
            style.tex = style.tex("aer"),
            notes = "Placebo sample: items with zero litigated purchases across 2009-2019. Main sample: items with at least one litigated and one ordinary purchase. DV: log price. Item + Year + PBU FE. SE clustered at PBU level.")
-    cat("  Saved:", file.path(OUT, "tab_placebo.tex"), "\n")
+    # etable's "aer" style emits a \begingroup wrapper without \begin{table}/\caption/\label.
+    # Wrap it ourselves so cross-refs (\ref{tab:placebo}) resolve in the manuscript.
+    raw <- readLines(placebo_tex)
+    wrapped <- c(
+      "\\begin{table}[ht]",
+      "  \\centering",
+      "  \\caption{Placebo Test: Items Never Subject to Litigation}",
+      "  \\label{tab:placebo}",
+      "  \\small",
+      raw,
+      "\\end{table}"
+    )
+    writeLines(wrapped, placebo_tex)
+    cat("  Saved (wrapped with caption/label):", placebo_tex, "\n")
   }
 } else {
   cat("  WARNING: Placebo sample too small (", nrow(placebo_dt), "obs). Skipping.\n")
@@ -177,14 +203,55 @@ if (!all(is.na(win_dt$firm_f))) {
     "(2) + Firm FE" = m_firm_fe,
     "(3) + Firm FE + Qty" = m_firm_fe_qty
   )
+  supplier_tex <- file.path(OUT, "tab_supplier_fe.tex")
   etable(models_supplier,
-         file = file.path(OUT, "tab_supplier_fe.tex"),
+         file = supplier_tex,
          replace = TRUE,
          title = "Supplier Fixed Effects: Demand vs Supply Side",
          dict = c(urgent = "Urgent Purchase", bid_qty_log = "Log Quantity"),
          style.tex = style.tex("aer"),
          notes = "DV: log negotiated price. Sample: winning bids for items with both ordinary and litigated purchases. Column (1): item + year + PBU FE. Column (2) adds firm FE. Column (3) adds log quantity. SE clustered at PBU level.")
-  cat("  Saved:", file.path(OUT, "tab_supplier_fe.tex"), "\n")
+  # Wrap with caption + label so \ref{tab:supplier_fe} resolves.
+  raw <- readLines(supplier_tex)
+  wrapped <- c(
+    "\\begin{table}[ht]",
+    "  \\centering",
+    "  \\caption{Supplier Fixed Effects: Demand vs Supply Side}",
+    "  \\label{tab:supplier_fe}",
+    "  \\small",
+    raw,
+    "\\end{table}"
+  )
+  writeLines(wrapped, supplier_tex)
+  cat("  Saved (wrapped with caption/label):", supplier_tex, "\n")
 }
+
+
+# Emit macros for the manuscript layer
+macros <- list()
+if (exists("placebo_neg") && !is.null(placebo_neg)) {
+  macros$placeboNegCoef <- bp_fmt(coef(placebo_neg)["urgent"], 3)
+  macros$placeboNegSE   <- bp_fmt(sqrt(vcov(placebo_neg)["urgent","urgent"]), 3)
+}
+if (exists("placebo_ref") && !is.null(placebo_ref)) {
+  macros$placeboRefCoef <- bp_fmt(coef(placebo_ref)["urgent"], 3)
+  macros$placeboRefSE   <- bp_fmt(sqrt(vcov(placebo_ref)["urgent","urgent"]), 3)
+}
+if (exists("m_baseline")) {
+  bb <- coef(m_baseline)["urgent"]
+  macros$supBaseline    <- bp_fmt(bb, 3)
+  macros$supBaselinePct <- bp_fmt_pct((exp(bb) - 1) * 100, 1)
+}
+if (exists("m_firm_fe")) {
+  macros$supFirmFE     <- bp_fmt(coef(m_firm_fe)["urgent"], 3)
+  if (exists("m_baseline")) {
+    attn <- 1 - coef(m_firm_fe)["urgent"] / coef(m_baseline)["urgent"]
+    macros$supFirmFEAttn <- bp_fmt_pct_n(100 * attn, 0)
+  }
+}
+if (exists("m_firm_fe_qty")) {
+  macros$supFirmFEqty <- bp_fmt(coef(m_firm_fe_qty)["urgent"], 3)
+}
+if (length(macros) > 0) bp_macros_emit("20_falsification_and_supplier_fe", macros)
 
 cat("\n20_falsification_and_supplier_fe.R complete\n")

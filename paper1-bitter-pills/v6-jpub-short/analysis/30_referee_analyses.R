@@ -14,6 +14,18 @@ suppressPackageStartupMessages({
 setFixest_nthreads(16L)
 setDTthreads(16L)
 
+.this_dir <- (function() {
+  for (i in seq_len(sys.nframe())) {
+    f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(f)) return(normalizePath(dirname(f)))
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  fa <- grep("^--file=", args, value = TRUE)
+  if (length(fa)) return(normalizePath(dirname(sub("^--file=", "", fa[1]))))
+  getwd()
+})()
+source(file.path(.this_dir, "_macros.R"))
+
 OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output"
 dir.create(file.path(OUT, "tables"), recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(OUT, "figures"), recursive = TRUE, showWarnings = FALSE)
@@ -196,5 +208,177 @@ if (length(firm_col) > 0) {
 } else {
   cat("  WARNING: No firm column found. Skipping overlap analysis.\n")
 }
+
+
+# 1F. Tightest UTG comparison: item x year-month FE.
+# The Results.tex paragraph cites the coefficient, the within-cell N,
+# the share of cells with both purchase types, and the quantity decomposition.
+cat("\n1F: UTG with item x year-month FE\n")
+utg_dt <- dt[has_admin == TRUE & has_litigated == TRUE & urgent == 1L &
+             po_firm_winner == 1L &
+             !is.na(bid_price_log) & !is.na(is_admin)]
+utg_dt[, item_ym := paste(item, ym_int, sep = "_")]
+cell_counts <- utg_dt[, .(n = .N,
+                         both = (any(is_admin == 1L) & any(is_admin == 0L))),
+                      by = item_ym]
+n_total_cells   <- nrow(cell_counts)
+n_both_cells    <- sum(cell_counts$both)
+n_singleton     <- sum(cell_counts$n == 1L)
+utg_within      <- utg_dt[item_ym %in% cell_counts[n > 1L, item_ym]]
+n_within        <- nrow(utg_within)
+
+m_utg_iym <- feols(bid_price_log ~ is_admin | item_id + ym_f + pbu_id,
+                   data = utg_dt, cluster = ~pbu_id)
+m_utg_iym_q <- feols(bid_price_log ~ is_admin + bid_qty_log | item_id + ym_f + pbu_id,
+                     data = utg_dt, cluster = ~pbu_id)
+m_qty_iym <- feols(bid_qty_log ~ is_admin | item_id + ym_f + pbu_id,
+                   data = utg_dt, cluster = ~pbu_id)
+
+cat(sprintf("  N within-cell variation: %d (singletons absorbed: %d, total cells: %d, both-types cells: %d = %.1f%%)\n",
+            n_within, n_singleton, n_total_cells, n_both_cells,
+            100 * n_both_cells / n_total_cells))
+cat(sprintf("  UTG i*ym coef (Panel A): %.4f\n", coef(m_utg_iym)["is_admin"]))
+cat(sprintf("  UTG i*ym coef (Panel B + qty): %.4f (SE %.4f)\n",
+            coef(m_utg_iym_q)["is_admin"],
+            sqrt(vcov(m_utg_iym_q)["is_admin","is_admin"])))
+cat(sprintf("  qty on admin (i*ym + PBU): %.4f\n", coef(m_qty_iym)["is_admin"]))
+
+# Emit macros for the manuscript layer
+macros <- list()
+macros$utgNobsItemYM        <- bp_fmt_int(n_within)
+macros$utgSingletonsItemYM  <- bp_fmt_int(n_singleton)
+macros$utgCellsItemYM       <- bp_fmt_int(n_total_cells)
+macros$utgCellsBoth         <- bp_fmt_int(n_both_cells)
+macros$utgCellsBothPct      <- bp_fmt_pct(100 * n_both_cells / n_total_cells, 0)
+macros$utgPanelBItemYMcoef  <- bp_fmt(coef(m_utg_iym_q)["is_admin"], 3)
+macros$utgPanelBItemYMSE    <- bp_fmt(sqrt(vcov(m_utg_iym_q)["is_admin","is_admin"]), 3)
+macros$utgQtyAdminCoef      <- bp_fmt(coef(m_qty_iym)["is_admin"], 3)
+macros$utgQtyAdminPct       <- bp_fmt_pct((exp(coef(m_qty_iym)["is_admin"]) - 1) * 100, 0)
+# Geometric multiplier: e^coef. "admin orders are X times the size of litigated"
+# is more palatable than "X% larger" when X is large (e.g. 230%).
+macros$utgQtyAdminFold      <- bp_fmt(exp(coef(m_qty_iym)["is_admin"]), 1)
+# Same fold for the preferred (Item+Year+PBU) spec to be safe
+m_qty_iy_pbu <- feols(bid_qty_log ~ is_admin | item_id + year_n + pbu_id,
+                      data = utg_dt, cluster = ~pbu_id)
+macros$utgQtyAdminFoldPref  <- bp_fmt(exp(coef(m_qty_iy_pbu)["is_admin"]), 1)
+macros$utgQtyAdminCoefPref  <- bp_fmt(coef(m_qty_iy_pbu)["is_admin"], 3)
+
+# Forensic: trace what spec / sample produces the legacy 0.787 / 120% qty-on-admin
+# coefficient that earlier drafts cited. The current spec (item x ym + PBU FE,
+# entire UTG sample) gives 1.193 / 230%. Try alternative samples / FE to see
+# which one matches 0.787.
+cat("\n1G: Forensic on qty-on-admin 0.787 -> 1.193 drift\n")
+forensic_specs <- list(
+  item_only        = list(d = utg_dt, fe = "item_id"),
+  item_year        = list(d = utg_dt, fe = "item_id + year_n"),
+  item_year_pbu    = list(d = utg_dt, fe = "item_id + year_n + pbu_id"),
+  item_ym_pbu      = list(d = utg_dt, fe = "item_id + ym_f + pbu_id"),
+  item_only_winsor = list(d = utg_dt, fe = "item_id"),  # winsorized below
+  item_pbu         = list(d = utg_dt, fe = "item_id + pbu_id")
+)
+# Try with winsorized log quantity (1/99) on the qty side
+utg_dt_w <- copy(utg_dt)
+utg_dt_w[, bid_qty_log_w := pmin(pmax(bid_qty_log,
+                                       quantile(bid_qty_log, 0.01, na.rm=TRUE)),
+                                   quantile(bid_qty_log, 0.99, na.rm=TRUE))]
+for (nm in names(forensic_specs)) {
+  sp <- forensic_specs[[nm]]
+  dv <- if (nm == "item_only_winsor") "bid_qty_log_w" else "bid_qty_log"
+  d  <- if (nm == "item_only_winsor") utg_dt_w else sp$d
+  m  <- tryCatch(feols(as.formula(sprintf("%s ~ is_admin | %s", dv, sp$fe)),
+                       data = d, cluster = ~pbu_id),
+                 error = function(e) NULL)
+  if (!is.null(m)) {
+    b  <- unname(coef(m)["is_admin"])
+    pc <- (exp(b) - 1) * 100
+    cat(sprintf("  %-20s coef=%.4f  pct=%.0f%%  N=%d\n", nm, b, pc, m$nobs))
+  }
+}
+if (exists("qty_admin") && exists("qty_litig")) {
+  macros$qtyGapAdmLit <- bp_fmt(qty_admin - qty_litig, 2)
+}
+if (exists("bulk_elast")) {
+  macros$bulkElast <- bp_fmt(bulk_elast, 2)
+}
+if (exists("qty_gap") && exists("bulk_elast")) {
+  implied_pct <- (exp(abs(qty_gap * bulk_elast)) - 1) * 100
+  macros$qtyImpliedPct <- bp_fmt_pct_n(implied_pct, 0)
+}
+# Dose-response: urgency premium by intensity of judicial pressure on the item.
+# Intensity = # litigated purchases (purchase_type == 2) per item-year. Bins:
+#   1-2 (low), 3-5 (mid), 6-10 (high). Item+Year+PBU FE preferred spec.
+cat("\n1E: Dose-response by court orders per item-year\n")
+dose_dt <- dt[has_litigated == TRUE & has_ordinary == TRUE & po_firm_winner == 1 &
+              !is.na(bid_price_log)]
+ct_iy <- dose_dt[purchase_type == 2L, .(ct = .N), by = .(item, year_n)]
+dose_dt <- merge(dose_dt, ct_iy, by = c("item", "year_n"), all.x = TRUE)
+dose_dt[is.na(ct), ct := 0L]
+dose_dt[, dose_bin := fcase(
+  urgent == 0L,             "ord",
+  ct >= 1L  & ct <= 2L,     "lo",
+  ct >= 3L  & ct <= 5L,     "mid",
+  ct >= 6L  & ct <= 10L,    "hi",
+  ct >= 11L,                "chronic",
+  default = NA_character_)]
+dose_models <- list()
+for (b in c("lo", "mid", "hi")) {
+  d_b <- dose_dt[dose_bin %in% c("ord", b)]
+  d_b[, urgent_b := as.integer(dose_bin == b)]
+  if (nrow(d_b) > 100L) {
+    dose_models[[b]] <- tryCatch(
+      feols(bid_price_log ~ urgent_b | item_id + year_n + pbu_id,
+            data = d_b, cluster = ~pbu_id),
+      error = function(e) { cat("  dose", b, ":", e$message, "\n"); NULL })
+  }
+}
+dose_pcts <- list()
+dose_se_b <- list()
+dose_n    <- list()
+for (b in names(dose_models)) {
+  if (!is.null(dose_models[[b]])) {
+    coef_b <- coef(dose_models[[b]])["urgent_b"]
+    se_b   <- sqrt(vcov(dose_models[[b]])["urgent_b","urgent_b"])
+    dose_pcts[[b]] <- (exp(coef_b) - 1) * 100
+    dose_se_b[[b]] <- se_b
+    dose_n[[b]]    <- dose_models[[b]]$nobs
+    lo <- (exp(coef_b - 1.96 * se_b) - 1) * 100
+    hi <- (exp(coef_b + 1.96 * se_b) - 1) * 100
+    cat(sprintf("  bin=%s  coef=%.4f (SE %.4f)  pct=%.2f%%  IC95=[%.2f%%, %.2f%%]  N=%d\n",
+                b, coef_b, se_b, dose_pcts[[b]], lo, hi, dose_n[[b]]))
+  }
+}
+# Test whether mid and hi are distinguishable: 95% CIs overlap?
+if (!is.null(dose_pcts$mid) && !is.null(dose_pcts$hi)) {
+  cm <- coef(dose_models$mid)["urgent_b"];  sm <- dose_se_b$mid
+  ch <- coef(dose_models$hi)["urgent_b"];   sh <- dose_se_b$hi
+  diff <- cm - ch
+  se_diff <- sqrt(sm^2 + sh^2)   # naive (assumes independence between bins)
+  z <- diff / se_diff
+  cat(sprintf("  mid - hi (log scale): %.4f (naive SE %.4f), z=%.2f\n", diff, se_diff, z))
+}
+# Item/firm overlap (used in supplier-FE section, prose: "92% of winning firms serve both")
+if (exists("firms_both") && exists("firms_urg")) {
+  macros$supFirmsBothShare <- bp_fmt_pct(100 * length(firms_both) / length(firms_urg), 0)
+}
+# Dose-response macros (urgency premium by court-orders-per-item-year intensity)
+if (length(dose_pcts) > 0) {
+  for (b_nm in names(dose_pcts)) {
+    pc  <- dose_pcts[[b_nm]]; se_b <- dose_se_b[[b_nm]]
+    cb  <- coef(dose_models[[b_nm]])["urgent_b"]
+    lo_pct <- (exp(cb - 1.96 * se_b) - 1) * 100
+    hi_pct <- (exp(cb + 1.96 * se_b) - 1) * 100
+    suffix <- switch(b_nm, lo = "Low", mid = "Mid", hi = "High")
+    macros[[paste0("dose", suffix)]]      <- bp_fmt_pct(pc, 1)
+    macros[[paste0("dose", suffix, "CIlo")]] <- bp_fmt_pct(lo_pct, 1)
+    macros[[paste0("dose", suffix, "CIhi")]] <- bp_fmt_pct(hi_pct, 1)
+  }
+  if (!is.null(dose_pcts$mid) && !is.null(dose_pcts$hi)) {
+    cm <- coef(dose_models$mid)["urgent_b"];  sm <- dose_se_b$mid
+    ch <- coef(dose_models$hi)["urgent_b"];   sh <- dose_se_b$hi
+    z  <- (cm - ch) / sqrt(sm^2 + sh^2)
+    macros$doseMidVsHighZ <- bp_fmt(z, 2)
+  }
+}
+if (length(macros) > 0) bp_macros_emit("30_referee_analyses", macros)
 
 cat("\nAll referee analyses complete\n")

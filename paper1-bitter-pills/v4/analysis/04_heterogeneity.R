@@ -112,4 +112,34 @@ het_comp <- run_heterogeneity(dt_win, "high_competition", "Market Competition",
 het_pbu <- run_heterogeneity(dt_win, "large_pbu", "PBU Size",
                               "heterogeneity_pbu_size")
 
+
+# Emit macros for the manuscript layer
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+if (file.exists(.bp_macros_path)) {
+  source(.bp_macros_path)
+  m <- list()
+
+  # SUS basic vs specialized: split-sample preferred spec
+  if (!is.null(het_sus)) {
+    b_basic <- coef(het_sus$split[["High: Item+Yr+PBU"]])["urgent"]   # sus_basic == 1
+    b_spec  <- coef(het_sus$split[["Low: Item+Yr+PBU"]])["urgent"]    # sus_basic == 0
+    if (length(b_basic) == 1 && !is.na(b_basic)) m$hetSUSbasic <- bp_fmt(b_basic, 3)
+    if (length(b_spec)  == 1 && !is.na(b_spec))  m$hetSUSspec  <- bp_fmt(b_spec, 3)
+  }
+
+  # Market competition: split-sample preferred spec + interaction
+  if (!is.null(het_comp)) {
+    b_comp_hi <- coef(het_comp$split[["High: Item+Yr+PBU"]])["urgent"]   # high competition
+    b_comp_lo <- coef(het_comp$split[["Low: Item+Yr+PBU"]])["urgent"]    # low competition
+    inter_m   <- het_comp$interaction[["Item+Year+PBU"]]
+    inter_var <- intersect(c("urgent:high_competition", "urgent:high_competitionTRUE"),
+                           names(coef(inter_m)))[1]
+    if (length(b_comp_hi) == 1) m$hetCompetitive   <- bp_fmt(b_comp_hi, 3)
+    if (length(b_comp_lo) == 1) m$hetConcentrated  <- bp_fmt(b_comp_lo, 3)
+    if (!is.na(inter_var))      m$hetInteraction   <- bp_fmt(coef(inter_m)[inter_var], 3)
+  }
+
+  if (length(m) > 0) bp_macros_emit("04_heterogeneity", m)
+}
+
 cat("\n04_heterogeneity.R complete\n")

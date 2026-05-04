@@ -112,3 +112,19 @@ cat("Saving prepared data to:", DATA_CACHE, "\n")
 saveRDS(dt, DATA_CACHE, compress = FALSE)
 cat("  Done. File size:", round(file.size(DATA_CACHE) / 1e6, 1), "MB\n")
 
+# Emit macros for the v6 manuscript (raw-sample counts).
+# v4 scripts forward macros to the v6 values.tex via the shared helper.
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+if (file.exists(.bp_macros_path)) {
+  source(.bp_macros_path)
+  # Pick a "purchase order" id: po_subject is the tender-notice text shared by
+  # all POIs of one notice; if the parquet has a numeric PO id, prefer it.
+  order_col <- intersect(c("po_id", "po_seq", "po_num", "po_subject"), names(dt))[1]
+  bp_macros_emit("00_prepare_data", list(
+    nPOIfull       = bp_fmt_int(nrow(dt)),
+    nItemsFull     = bp_fmt_int(uniqueN(dt$item)),
+    nOrdersFull    = if (!is.na(order_col)) bp_fmt_int(uniqueN(dt[[order_col]])) else "TBD",
+    nPBUsObserved  = bp_fmt_int(uniqueN(dt$pbu_code))
+  ))
+}
+

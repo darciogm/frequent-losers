@@ -8,19 +8,19 @@ This appendix provides tables and figures from the main text, robustness checks,
 
 \subsection*{A.0 Supporting Descriptives, Balance, and Secondary Outcome Tables}
 
-\input{../../../v4/pub/tables/tab_desc_stats}
-\input{../../../v4/pub/tables/tab_balance}
-\input{../../output/tables/tab_balance_within}
-\input{../../../v4/pub/tables/tab_ref_prices}
-\input{../../../v4/pub/tables/tab_quantities}
-\input{../../../v4/pub/tables/tab_firms}
-\input{../../../v4/pub/tables/tab_success}
-\input{../../output/tables/tab_placebo}
+\BPvtab{tab_desc_stats}
+\BPvtab{tab_balance}
+\BPotab{tab_balance_within}
+\BPvtab{tab_ref_prices}
+\BPvtab{tab_quantities}
+\BPvtab{tab_firms}
+\BPvtab{tab_success}
+\BPotab{tab_placebo}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.8\textwidth]{fig_00_litigation_map.pdf}
-  \caption{Health Litigation Cases per 1,000 Inhabitants Across Municipalities in S\~ao Paulo (2009--2019)}
+  \caption{Health Litigation Cases per \BPmapPopDenom{} Inhabitants Across Municipalities in S\~ao Paulo (\BPsampleStartYear--\BPsampleEndYear)}
   \label{fig:distribution}
   \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on CNJ/INSPER (2019) litigation data and IBGE population estimates.
 \end{figure}
@@ -35,23 +35,23 @@ This appendix provides tables and figures from the main text, robustness checks,
 
 \subsection*{A.1 Winsorization Sensitivity}
 
-Our baseline estimates use 1\%/99\% winsorization to limit the influence of extreme outliers while preserving meaningful variation in the data. To verify that our results are not driven by this specific choice, Tables~\ref{tab:rob_ref_prices}--\ref{tab:rob_success} replicate the main regression tables under three alternative winsorization treatments: no winsorization (Panel~A), the 1\%/99\% baseline (Panel~B), and a more aggressive 5\%/95\% winsorization (Panel~C).
+Our baseline estimates use \BPwinsorLow\%/\BPwinsorHigh\% winsorization to limit the influence of extreme outliers while preserving meaningful variation in the data. To verify that our results are not driven by this specific choice, Tables~\ref{tab:rob_ref_prices}--\ref{tab:rob_success} replicate the main regression tables under three alternative winsorization treatments: no winsorization (Panel~A), the \BPwinsorLow\%/\BPwinsorHigh\% baseline (Panel~B), and a more aggressive \BPwinsorAggLow\%/\BPwinsorAggHigh\% winsorization (Panel~C).
 
-Table~\ref{tab:rob_ref_prices} reports the sensitivity of the reference price estimates. The positive coefficient on urgent purchases is stable across all three winsorization levels: the preferred specification (column~3) yields estimates of 0.029 (no winsorization), 0.027 (baseline), and a similar magnitude with aggressive winsorization. The qualitative pattern---a large raw premium that attenuates substantially with PBU fixed effects---is preserved throughout, indicating that the reference price result is not driven by outliers.
+Table~\ref{tab:rob_ref_prices} reports the sensitivity of the reference price estimates. The positive coefficient on urgent purchases is stable across all three winsorization levels: the preferred specification (column~3) yields estimates of \BProbRefNoWin{} (no winsorization), \BProbRefBase{} (baseline), and \BProbRefAgg{} with aggressive winsorization. The qualitative pattern---a large raw premium that attenuates substantially with PBU fixed effects---is preserved throughout, indicating that the reference price result is not driven by outliers.
 
-\input{../../../v4/pub/tables/tab_rob_ref_prices}
+\BPvtab{tab_rob_ref_prices}
 
-Table~\ref{tab:rob_neg_prices} presents the corresponding sensitivity analysis for negotiated prices. The total effect of urgency on negotiated prices is positive and statistically significant across all winsorization levels. The coefficient magnitudes are slightly larger without winsorization (reflecting the influence of extreme values) and slightly smaller with aggressive winsorization, but the economic message remains unchanged: urgent purchases are associated with higher negotiated prices, with the preferred estimate ranging from approximately 3\% to 7\%.
+Table~\ref{tab:rob_neg_prices} presents the corresponding sensitivity analysis for negotiated prices. The total effect of urgency on negotiated prices is positive and statistically significant across all winsorization levels. The coefficient magnitudes are slightly larger without winsorization (reflecting the influence of extreme values) and slightly smaller with aggressive winsorization, but the economic message remains unchanged: urgent purchases are associated with higher negotiated prices, with the preferred estimate ranging from approximately \BProbNegLow\% to \BProbNegHigh\%.
 
-\input{../../../v4/pub/tables/tab_rob_neg_prices}
+\BPvtab{tab_rob_neg_prices}
 
-Table~\ref{tab:rob_firms} examines the robustness of the bidder participation results. The negative effect of urgency on the number of bidding firms is remarkably stable across winsorization levels, with preferred estimates in the range of $-0.05$ to $-0.06$ log points. This stability is expected, since the number of firms is a count variable with limited extreme values, making it less sensitive to winsorization.
+Table~\ref{tab:rob_firms} examines the robustness of the bidder participation results. The negative effect of urgency on the number of bidding firms is remarkably stable across winsorization levels, with preferred estimates in the range of $\BProbFirmsLow$ to $\BProbFirmsHigh$ log points. This stability is expected, since the number of firms is a count variable with limited extreme values, making it less sensitive to winsorization.
 
-\input{../../../v4/pub/tables/tab_rob_firms}
+\BPvtab{tab_rob_firms}
 
-Table~\ref{tab:rob_success} replicates the tender success analysis. The positive coefficient on urgency---indicating that urgent tenders are more likely to succeed---is robust across all winsorization levels. The magnitude is consistent at approximately 2 percentage points in the preferred specification, reinforcing the interpretation that procurement officials under pressure accept less favorable terms to ensure compliance.
+Table~\ref{tab:rob_success} replicates the tender success analysis. The positive coefficient on urgency---indicating that urgent tenders are more likely to succeed---is robust across all winsorization levels. The magnitude is consistent at approximately \BProbSuccessPP{} in the preferred specification, reinforcing the interpretation that procurement officials under pressure accept less favorable terms to ensure compliance.
 
-\input{../../../v4/pub/tables/tab_rob_success}
+\BPvtab{tab_rob_success}
 
 \subsection*{A.2 Under the Gun: Progressive Controls}
 
@@ -59,7 +59,7 @@ Table~\ref{tab:rob_utg} examines the sensitivity of the ``under the gun'' estima
 
 The key finding is that the administrative indicator remains negative across all specifications and winsorization levels, indicating that litigated purchases are consistently more expensive than administrative ones. The coefficient is largest and most precisely estimated in the baseline specification without additional controls (column~1), where it captures the total effect including indirect channels through quantity and competition. As controls are added, the coefficient attenuates---consistent with some of the price premium operating through the quantity and competition channels---but the sign is preserved throughout. This pattern confirms that the sanction channel has an economically meaningful direct effect on prices beyond its indirect effects through procurement conditions.
 
-\input{../../../v4/pub/tables/tab_rob_utg}
+\BPvtab{tab_rob_utg}
 
 \subsection*{A.3 Distributional Evidence}
 
@@ -136,12 +136,12 @@ Figure~\ref{fig:time_trends} plots mean log negotiated prices over time for ordi
 
 This section presents geographic descriptive evidence on the distribution of administrative demand across municipalities in S\~ao Paulo, complementing the litigation maps in Section~\ref{sec:institutional}. Administrative purchases---urgent procurements initiated through internal government requests rather than court orders---share the same planning constraints as litigated purchases but carry no sanctions for procurement failure. The spatial patterns documented below confirm that administrative and litigated demand originate from similar geographic areas, supporting the institutional comparability that underlies the ``under the gun'' identification strategy.
 
-Figure~\ref{fig:admin_map} maps administrative purchases per 1,000 inhabitants across municipalities. The geographic distribution closely mirrors the litigation pattern shown in Figure~\ref{fig:distribution}, with higher per capita rates in municipalities that host PBUs and in the interior of the state. This spatial overlap is consistent with both channels responding to the same underlying health needs.
+Figure~\ref{fig:admin_map} maps administrative purchases per \BPmapPopDenom{} inhabitants across municipalities. The geographic distribution closely mirrors the litigation pattern shown in Figure~\ref{fig:distribution}, with higher per capita rates in municipalities that host PBUs and in the interior of the state. This spatial overlap is consistent with both channels responding to the same underlying health needs.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.8\textwidth]{fig_00_admin_map.pdf}
-  \caption{Administrative Purchases per 1,000 Inhabitants Across Municipalities in S\~ao Paulo (2009--2019)}
+  \caption{Administrative Purchases per \BPmapPopDenom{} Inhabitants Across Municipalities in S\~ao Paulo (\BPsampleStartYear--\BPsampleEndYear)}
   \label{fig:admin_map}
   \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on BEC procurement data and IBGE population estimates.
 \end{figure}
@@ -171,7 +171,7 @@ Figure~\ref{fig:admin_total} maps the total number of administrative purchases b
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.8\textwidth]{fig_00d_admin_total_map.pdf}
-  \caption{Total Administrative Purchases by Municipality in S\~ao Paulo (2009--2019)}
+  \caption{Total Administrative Purchases by Municipality in S\~ao Paulo (\BPsampleStartYear--\BPsampleEndYear)}
   \label{fig:admin_total}
   \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on BEC procurement data.
 \end{figure}
@@ -203,17 +203,17 @@ control group.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\textwidth]{../../output/figures/fig_event_study_honest.pdf}
+  \includegraphics[width=\textwidth]{fig_event_study_honest.pdf}
   \caption{Log Negotiated Price Around First Court Order: Honest DiD Estimators}
   \label{fig:event_study}
   \par\smallskip\footnotesize\textit{Notes:} Item-year panel, winner-only
   observations. BJS (\citealt{borusyak2024revisiting}) shown with shaded
   95\% confidence interval; CS (\citealt{callaway2021did}) with
   never-treated control group; TWFE shown only as a pre-reform benchmark.
-  The BJS pre-period coefficients are economically small (all $<0.05$ in
+  The BJS pre-period coefficients are economically small (all $<\BPbjsPreMaxAbs$ in
   absolute value) and statistically indistinguishable from zero,
   consistent with parallel trends; post-treatment coefficients rise
-  monotonically from $+0.052$ at $t = 0$ to $+0.147$ at $t = +5$. The CS
+  monotonically from $+\BPbjsETzero$ at $t = 0$ to $+\BPbjsETfive$ at $t = +5$. The CS
   estimator with never-treated control is substantially noisier because
   items that never attract a court order are a systematically different
   comparison group (they tend to be routine, well-stocked items);
@@ -235,19 +235,24 @@ confound the interpretation.
 
 We examine heterogeneity in the urgency premium along four dimensions. Tables~\ref{tab:het_sus}--\ref{tab:het_pbu} report results from split-sample regressions and interaction models using our preferred specification (item + year + PBU FE).
 
-\input{../../../v4/pub/tables/tab_het_sus}
-\input{../../../v4/pub/tables/tab_het_period}
-\input{../../../v4/pub/tables/tab_het_competition}
-\input{../../../v4/pub/tables/tab_het_pbu}
+\BPvtab{tab_het_sus}
+\BPvtab{tab_het_period}
+\BPvtab{tab_het_competition}
+\BPvtab{tab_het_pbu}
 
 \paragraph{SUS component (Table~\ref{tab:het_sus}).}
-The urgency premium on negotiated prices is concentrated among items in the basic SUS component (common medications): the coefficient is 0.030 ($p < 0.10$) for basic items and an insignificant 0.005 for specialized items, suggesting that procurement disruption is more consequential for items where established supply chains normally deliver better prices.
+The urgency premium on negotiated prices is concentrated among items in the basic SUS component (common medications): the coefficient is $\BPhetSUSbasic$ ($p < 0.10$) for basic items and an insignificant $\BPhetSUSspec$ for specialized items, suggesting that procurement disruption is more consequential for items where established supply chains normally deliver better prices.
 
 \paragraph{Time period (Table~\ref{tab:het_period}).}
 The urgency premium is larger in the later period (2014--2019) than in the earlier period (2009--2013), consistent with the growing volume and complexity of health litigation over time.
 
 \paragraph{Market competition (Table~\ref{tab:het_competition}).}
-The urgency premium is three times larger in competitive markets (0.143 vs.\ 0.046), with a significant interaction (0.226, $p < 0.01$). In concentrated markets, fewer bidders leave less room for urgency to erode bargaining power; in competitive markets, the loss of planning time has the largest marginal impact.
+The urgency premium is three times larger in competitive markets ($\BPhetCompetitive$ vs.\ $\BPhetConcentrated$), with a significant interaction ($\BPhetInteraction$, $p < 0.01$). In concentrated markets, fewer bidders leave less room for urgency to erode bargaining power; in competitive markets, the loss of planning time has the largest marginal impact.
 
 \paragraph{PBU size (Table~\ref{tab:het_pbu}).}
 The urgency premium is slightly larger for purchases made by smaller PBUs (below-median transaction volume), consistent with smaller units having less experience managing urgent procurement.
+
+\subsection*{A.7 Regex Classifier Validation}
+\label{sec:appendix_regex}
+
+The purchase-type indicator is constructed by a regular-expression algorithm applied to public tender notices, which by Brazilian procurement law must reference any underlying court order. To document classifier accuracy, we draw a stratified random sample of \BPregexNotices{} tender-notice subjects (approximately \BPregexPerClass{} per predicted class) and hand-label each as ordinary, administrative, or litigated. \BPregexValidationStatus{} The regex's literal-reference design implies misclassification, if any, is near-symmetric across the three classes: the algorithm relies on textual markers that are present or absent independently of the price outcomes we estimate, so misclassification attenuates rather than biases our estimates.\footnote{The stratified sample is reproduced from \texttt{output/validation/validation\_sample.csv}, generated by \texttt{analysis/33\_regex\_validation\_sample.R}; F1 statistics are emitted by \texttt{34\_regex\_validation\_f1.R} when the labeled CSV is finalized.}

@@ -16,6 +16,18 @@ suppressPackageStartupMessages({
 })
 setDTthreads(12L)
 
+.this_dir <- (function() {
+  for (i in seq_len(sys.nframe())) {
+    f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(f)) return(normalizePath(dirname(f)))
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  fa <- grep("^--file=", args, value = TRUE)
+  if (length(fa)) return(normalizePath(dirname(sub("^--file=", "", fa[1]))))
+  getwd()
+})()
+source(file.path(.this_dir, "_macros.R"))
+
 OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output/validation"
 csv <- file.path(OUT, "validation_sample.csv")
 
@@ -24,6 +36,16 @@ if (!file.exists(csv)) stop("Validation file not found: ", csv,
 
 d <- fread(csv)
 n <- nrow(d)
+# Coerce true_class to integer regardless of whether the labeler wrote 0/1/2
+# integers, "ordinary"/"administrative"/"litigated" strings, or left it blank.
+class_map <- c("ordinary" = 0L, "administrative" = 1L, "litigated" = 2L,
+               "0" = 0L, "1" = 1L, "2" = 2L)
+if (!is.integer(d$true_class)) {
+  raw_tc <- as.character(d$true_class)
+  raw_tc <- trimws(tolower(raw_tc))
+  raw_tc[raw_tc %in% c("", "na")] <- NA_character_
+  d[, true_class := unname(class_map[raw_tc])]
+}
 n_labeled <- sum(!is.na(d$true_class))
 cat(sprintf("Loaded %d rows; %d labeled (%.0f%%)\n",
             n, n_labeled, 100 * n_labeled / n))
@@ -35,7 +57,18 @@ if (n_labeled < n) {
       "         rows and re-run for the final table.\n", sep = "")
   d <- d[!is.na(true_class)]
 }
-if (nrow(d) == 0) stop("No labeled rows --- nothing to compute.")
+if (nrow(d) == 0) {
+  # Graceful exit when no hand-labels exist yet: keep the discreet default
+  # \BPregexValidationStatus already in values.tex and write nothing else.
+  cat("No labeled rows --- emitting placeholder validation-status macro and exiting.\n")
+  .bp_macros_path <- file.path(.this_dir, "_macros.R")
+  if (file.exists(.bp_macros_path)) {
+    bp_macros_emit("34_regex_validation_f1", list(
+      regexValidationStatus = "Hand-labeling of the stratified sample is in progress; F1 diagnostics will be reported in the replication archive accompanying this paper."
+    ))
+  }
+  quit(save = "no", status = 0)
+}
 
 # Force integer types
 d[, predicted_class := as.integer(predicted_class)]
@@ -138,5 +171,18 @@ cat(sprintf('"A hand-labeled validation sample of %d notices yields F1 = %s (ord
             sum(cm),
             fmt(results$f1[1]), fmt(results$f1[2]), fmt(results$f1[3]),
             fmt(macro_f1), fmt(acc)))
+
+
+# Emit macros for the manuscript layer
+status_sentence <- sprintf(
+  "A hand-labeled subset of %d notices yields macro-average F1 = %.2f (overall accuracy %.2f); per-class F1 of %.2f (ordinary), %.2f (administrative), %.2f (litigated).",
+  sum(cm), macro_f1, acc,
+  results$f1[1], results$f1[2], results$f1[3]
+)
+bp_macros_emit("34_regex_validation_f1", list(
+  regexNotices          = bp_fmt_int(sum(cm)),
+  regexFone             = bp_fmt(macro_f1, 2),
+  regexValidationStatus = status_sentence
+))
 
 cat("\n34_regex_validation_f1.R complete\n")

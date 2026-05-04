@@ -20,6 +20,9 @@
 % References
 \usepackage{natbib}
 
+% Color (used by values.tex for TBD placeholders)
+\usepackage{xcolor}
+
 % Hyperlinks
 \usepackage{hyperref}
 \hypersetup{
@@ -33,7 +36,16 @@
 \newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
 
 % Paths
-\graphicspath{{figures/}{../../../v4/pub/figures/}}
+\graphicspath{{figures/}{../../output/figures/}{../../../v4/pub/figures/}}
+
+% Macro layer (shared with main.tex). See analysis/_macros.R.
+\input{values}
+
+% Cross-reference labels defined in the main paper (sec:institutional, etc.)
+% Resolved via xr-hyper from main.aux. main.tex must be compiled at least once
+% before OnlineAppendix.tex for these refs to render.
+\usepackage{xr-hyper}
+\externaldocument{main}
 
 % Appendix numbering
 \renewcommand{\thesection}{A}

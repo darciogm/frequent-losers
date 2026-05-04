@@ -143,4 +143,96 @@ print_coef("Table 9A (Success, total)",       t9a[["Item+Year+PBU"]],   "urgent"
 print_coef("Table 10A (UTG, total)",          t10a[["Item+Year+PBU"]],  "is_admin")
 print_coef("Table 10B (UTG, direct)",         t10b[["Item+Year+PBU"]],  "is_admin")
 
+
+# Emit macros for the manuscript layer
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+if (file.exists(.bp_macros_path)) {
+  source(.bp_macros_path)
+
+  pull <- function(model, var) {
+    list(b  = unname(coef(model)[var]),
+         se = unname(sqrt(vcov(model)[var, var])),
+         n  = model$nobs)
+  }
+
+  m <- list()
+  # Reference prices (Table 4)
+  r <- pull(t4_pbu[["Item+Year+PBU"]], "urgent")
+  m$refCoef <- bp_fmt(r$b, 3); m$refSE <- bp_fmt(r$se, 3)
+  m$refPct  <- bp_fmt_pct((exp(r$b) - 1) * 100, 1)
+  ri <- pull(t4_pbu[["Item"]], "urgent")
+  m$refCoefItem <- bp_fmt(ri$b, 3); m$refPctItem <- bp_fmt_pct((exp(ri$b) - 1) * 100, 1)
+  m$refPctPreferred <- m$refPct
+  m$refPctItemFE    <- m$refPctItem
+
+  # Quantities (Table 5)
+  q <- pull(t5[["Item+Year+PBU"]], "urgent")
+  m$qtyCoef <- bp_fmt(q$b, 3); m$qtySE <- bp_fmt(q$se, 3)
+
+  # Negotiated prices Panel A (Table 6A)
+  na <- pull(t6a[["Item+Year+PBU"]], "urgent")
+  m$negCoef <- bp_fmt(na$b, 3); m$negSE <- bp_fmt(na$se, 3)
+  m$negPct  <- bp_fmt_pct((exp(na$b) - 1) * 100, 1)
+  m$negPanelAcoefShort <- bp_fmt(na$b, 3)
+  m$negNobs <- bp_fmt_int(na$n)
+  ni  <- pull(t6a[["Item"]], "urgent")
+  m$negCoefItem <- bp_fmt(ni$b, 3)
+  m$negPctItem  <- bp_fmt_pct((exp(ni$b) - 1) * 100, 1)
+  m$negPctItemFE <- m$negPctItem
+  nym <- pull(t6a[["Item+YM+PBU"]], "urgent")
+  m$negCoefItemYM <- bp_fmt(nym$b, 3)
+  m$negPctItemYM  <- bp_fmt_pct((exp(nym$b) - 1) * 100, 1)
+  m$negPctRange   <- sprintf("%s--%s",
+                             bp_fmt_pct_n((exp(na$b) - 1) * 100, 1),
+                             bp_fmt_pct_n((exp(nym$b) - 1) * 100, 1))
+  m$negPctHeadline <- bp_fmt_pct((exp(na$b) - 1) * 100, 1)
+
+  # Negotiated prices Panel B (Table 6B): direct (mediation) effect
+  nb <- pull(t6b[["Item+Year+PBU"]], "urgent")
+  qb <- pull(t6b[["Item+Year+PBU"]], "bid_qty_log")
+  m$negPanelBcoef       <- bp_fmt(nb$b, 3)
+  m$negPanelBcoefShort  <- bp_fmt(nb$b, 3)
+  m$negPanelBpct        <- bp_fmt_pct((exp(nb$b) - 1) * 100, 1)
+  m$negPanelBqty        <- bp_fmt(qb$b, 3)
+
+  # Firms (Table 7A)
+  fm <- pull(t7a[["Item+Year+PBU"]], "urgent")
+  m$firmsCoef <- bp_fmt(fm$b, 3); m$firmsSE <- bp_fmt(fm$se, 3)
+  m$firmsPct  <- bp_fmt_pct((exp(fm$b) - 1) * 100, 1)
+  m$firmsPctHeadline <- m$firmsPct
+
+  # Success (Table 9A): LPM, so coefficient is in pp directly
+  sm <- pull(t9a[["Item+Year+PBU"]], "urgent")
+  m$successCoef <- bp_fmt(sm$b, 3); m$successSE <- bp_fmt(sm$se, 3)
+  m$successPct  <- bp_fmt_pp(sm$b * 100, 1)
+  m$successPP   <- bp_fmt_pp(sm$b * 100, 1)
+
+  # UTG (Table 10A/B)
+  ua <- pull(t10a[["Item+Year+PBU"]], "is_admin")
+  uy <- pull(t10a[["Item+YM+PBU"]],   "is_admin")
+  ub <- pull(t10b[["Item+Year+PBU"]], "is_admin")
+  uq <- pull(t10b[["Item+Year+PBU"]], "bid_qty_log")
+  # UTG prose convention: report litigated > administrative. Coef is on
+  # is_admin (negative); flip sign for the percentage premium.
+  utg_pct <- (exp(-ua$b) - 1) * 100
+  utg_pct_iym <- (exp(-uy$b) - 1) * 100
+  m$utgCoef        <- bp_fmt(ua$b, 3)
+  m$utgSE          <- bp_fmt(ua$se, 3)
+  m$utgPct         <- bp_fmt_pct(utg_pct, 1)
+  m$utgCoefItemYM  <- bp_fmt(uy$b, 3)
+  m$utgPctItemYM   <- bp_fmt_pct(utg_pct_iym, 1)
+  m$utgPanelBcoef  <- bp_fmt(ub$b, 3)
+  m$utgPanelBSE    <- bp_fmt(ub$se, 3)
+  m$utgPanelBqty   <- bp_fmt(uq$b, 3)
+  # Range used in headline ("23--30%"): flip both endpoints to positive premium
+  utg_low  <- min(utg_pct, utg_pct_iym)
+  utg_high <- max(utg_pct, utg_pct_iym)
+  m$utgPctRange <- sprintf("%s--%s\\%%",
+                            bp_fmt_pct_n(utg_low, 0),
+                            bp_fmt_pct_n(utg_high, 0))
+  m$nUTG <- bp_fmt_int(ua$n)
+
+  bp_macros_emit("03_main_regressions", m)
+}
+
 cat("\n03_main_regressions.R complete\n")

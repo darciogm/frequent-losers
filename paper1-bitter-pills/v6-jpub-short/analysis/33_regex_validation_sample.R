@@ -20,6 +20,18 @@ suppressPackageStartupMessages({
 })
 setDTthreads(12L)
 
+.this_dir <- (function() {
+  for (i in seq_len(sys.nframe())) {
+    f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(f)) return(normalizePath(dirname(f)))
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  fa <- grep("^--file=", args, value = TRUE)
+  if (length(fa)) return(normalizePath(dirname(sub("^--file=", "", fa[1]))))
+  getwd()
+})()
+source(file.path(.this_dir, "_macros.R"))
+
 # Reproducibility
 SEED <- 20260417L
 set.seed(SEED)
@@ -78,8 +90,22 @@ sampled[, notes          := NA_character_]
 setcolorder(sampled, c("sample_id", "po_subject", "predicted_class",
                        "predicted_name", "true_class", "notes", "n_pois"))
 
-# Write
+# Write -- but never clobber an existing file that already carries hand-labels
 out_path <- file.path(OUT, "validation_sample.csv")
+if (file.exists(out_path)) {
+  existing <- tryCatch(fread(out_path), error = function(e) NULL)
+  has_labels <- !is.null(existing) &&
+                "true_class" %in% names(existing) &&
+                any(!is.na(existing$true_class) &
+                    nchar(as.character(existing$true_class)) > 0,
+                    na.rm = TRUE)
+  if (has_labels) {
+    cat("\nExisting validation_sample.csv has hand-labels; refusing to overwrite.\n",
+        "If you want to redraw, move the existing file aside first.\n",
+        sep = "")
+    quit(save = "no", status = 0)
+  }
+}
 fwrite(sampled, out_path)
 cat(sprintf("\nWrote %d rows to: %s\n", nrow(sampled), out_path))
 
@@ -98,5 +124,12 @@ cat("\nNext steps\n",
     "4. Run: Rscript v6-jpub-short/analysis/34_regex_validation_f1.R\n",
     "   to compute F1 per class and emit tab_regex_f1.tex for OA A.8.\n",
     sep = "")
+
+
+# Emit macros (sample-design constants; F1 itself comes from script 34)
+bp_macros_emit("33_regex_validation_sample", list(
+  regexNotices  = bp_fmt_int(min(nrow(sampled), N_CAP)),
+  regexPerClass = bp_fmt_int(TARGET_PER_CLASS)
+))
 
 cat("\n33_regex_validation_sample.R complete\n")

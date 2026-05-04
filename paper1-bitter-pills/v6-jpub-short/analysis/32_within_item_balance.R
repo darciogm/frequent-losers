@@ -20,6 +20,18 @@ suppressPackageStartupMessages({
 setFixest_nthreads(12L)
 setDTthreads(12L)
 
+.this_dir <- (function() {
+  for (i in seq_len(sys.nframe())) {
+    f <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(f)) return(normalizePath(dirname(f)))
+  }
+  args <- commandArgs(trailingOnly = FALSE)
+  fa <- grep("^--file=", args, value = TRUE)
+  if (length(fa)) return(normalizePath(dirname(sub("^--file=", "", fa[1]))))
+  getwd()
+})()
+source(file.path(.this_dir, "_macros.R"))
+
 OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output"
 dir.create(file.path(OUT, "tables"), recursive = TRUE, showWarnings = FALSE)
 
@@ -162,5 +174,28 @@ cat(sprintf("\nOf %d covariates, %d show a statistically significant (p<0.05) wi
             nrow(tab), nrow(sig_rows)))
 cat("Largest within-item coefficient (absolute):\n")
 print(tab[which.max(abs(within_coef)), .(name, within_coef, within_se, p_val)])
+
+
+# Emit macros for the manuscript layer.
+# Predetermined-covariate set: SUS basic, late period, large PBU (composition that
+# the paper claims is balanced; see EmpiricalStrategy.tex). The "modality (pregao)"
+# row is a procurement-design knob, not a pre-determined covariate, so it is
+# reported separately as the "4 pp gap" claim.
+macros <- list()
+predet_vars <- c("sus_basic", "late_period", "large_pbu")
+predet_rows <- tab[match(predet_vars, names(results), nomatch = 0L)]
+predet_rows <- tab[name %in% c("SUS basic (MEDICAMENTO flag)",
+                                "Late period (year $\\geq$ 2014)",
+                                "Large PBU (above-median)")]
+if (nrow(predet_rows) > 0) {
+  pmin_pre <- min(predet_rows$p_val, na.rm = TRUE)
+  macros$balPMin <- bp_fmt(pmin_pre, 2)
+}
+modality_row <- tab[grepl("preg", name, ignore.case = TRUE)]
+if (nrow(modality_row) == 1) {
+  # Express within-item gap in percentage points (binary outcome scale).
+  macros$balModalityPP <- bp_fmt_pp(100 * abs(modality_row$within_coef), 0)
+}
+if (length(macros) > 0) bp_macros_emit("32_within_item_balance", macros)
 
 cat("\n32_within_item_balance.R complete\n")

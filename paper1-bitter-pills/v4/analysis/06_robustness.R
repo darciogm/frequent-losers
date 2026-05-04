@@ -188,4 +188,69 @@ run_all_tables_winsor(dt_w1, "Winsorized 1/99", "w01")
 # 5%/95%
 run_all_tables_winsor(dt_w5, "Winsorized 5/95", "w05")
 
+
+# Emit macros for the manuscript layer (Appendix A.1 robustness prose)
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+if (file.exists(.bp_macros_path)) {
+  source(.bp_macros_path)
+
+  # Re-run the preferred spec for each winsorization panel to harvest the
+  # numbers the prose cites. Cheap relative to the table loop above.
+  fit_pref <- function(d, dv = "bid_price_log", treat = "urgent", controls = NULL) {
+    d <- d[po_firm_winner == 1]
+    rhs <- if (length(controls)) paste(c(treat, controls), collapse = " + ") else treat
+    feols(as.formula(paste0(dv, " ~ ", rhs, " | item_id + year_n + pbu_id")),
+          data = d, cluster = ~pbu_id)
+  }
+  pull_b <- function(m, v) unname(coef(m)[v])
+
+  # Reference price preferred coef under no-winsor / 1-99 / 5-95
+  m_ref_no  <- fit_pref(dt_nowin, "bid_price_ref_log")
+  m_ref_w01 <- fit_pref(dt_w1,    "bid_price_ref_log")
+  m_ref_w05 <- fit_pref(dt_w5,    "bid_price_ref_log")
+  ref_no  <- pull_b(m_ref_no,  "urgent")
+  ref_w01 <- pull_b(m_ref_w01, "urgent")
+  ref_w05 <- pull_b(m_ref_w05, "urgent")
+
+  # Negotiated price preferred coef under each winsor variant (Panel A)
+  m_neg_no  <- fit_pref(dt_nowin, "bid_price_log")
+  m_neg_w01 <- fit_pref(dt_w1,    "bid_price_log")
+  m_neg_w05 <- fit_pref(dt_w5,    "bid_price_log")
+  neg_pcts <- (exp(c(pull_b(m_neg_no, "urgent"),
+                     pull_b(m_neg_w01, "urgent"),
+                     pull_b(m_neg_w05, "urgent"))) - 1) * 100
+
+  # Firms preferred coef
+  m_frm_no  <- fit_pref(dt_nowin, "ln_n_firms")
+  m_frm_w01 <- fit_pref(dt_w1,    "ln_n_firms")
+  m_frm_w05 <- fit_pref(dt_w5,    "ln_n_firms")
+  frm_coefs <- c(pull_b(m_frm_no, "urgent"),
+                 pull_b(m_frm_w01, "urgent"),
+                 pull_b(m_frm_w05, "urgent"))
+
+  # Success LPM preferred coef (uses full dt, not winners)
+  m_suc_no  <- feols(po_firm_winner ~ urgent | item_id + year_n + pbu_id,
+                     data = dt_nowin, cluster = ~pbu_id)
+  m_suc_w01 <- feols(po_firm_winner ~ urgent | item_id + year_n + pbu_id,
+                     data = dt_w1,    cluster = ~pbu_id)
+  m_suc_w05 <- feols(po_firm_winner ~ urgent | item_id + year_n + pbu_id,
+                     data = dt_w5,    cluster = ~pbu_id)
+  suc_pp <- mean(c(pull_b(m_suc_no, "urgent"),
+                   pull_b(m_suc_w01, "urgent"),
+                   pull_b(m_suc_w05, "urgent"))) * 100
+
+  bp_macros_emit("06_robustness", list(
+    winsorAggLow      = "5",
+    winsorAggHigh     = "95",
+    robRefNoWin       = bp_fmt(ref_no, 3),
+    robRefBase        = bp_fmt(ref_w01, 3),
+    robRefAgg         = bp_fmt(ref_w05, 3),
+    robNegLow         = bp_fmt_pct_n(min(neg_pcts), 0),
+    robNegHigh        = bp_fmt_pct_n(max(neg_pcts), 0),
+    robFirmsLow       = bp_fmt(min(frm_coefs), 2),
+    robFirmsHigh      = bp_fmt(max(frm_coefs), 2),
+    robSuccessPP      = bp_fmt_pp(suc_pp, 0)
+  ))
+}
+
 cat("\n06_robustness.R complete\n")
