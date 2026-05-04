@@ -114,7 +114,7 @@ het_pbu <- run_heterogeneity(dt_win, "large_pbu", "PBU Size",
 
 
 # Emit macros for the manuscript layer
-.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v7-r2round1", "analysis", "_macros.R")
 if (file.exists(.bp_macros_path)) {
   source(.bp_macros_path)
   m <- list()

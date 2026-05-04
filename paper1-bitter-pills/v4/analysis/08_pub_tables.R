@@ -969,7 +969,7 @@ write_panel3_reg_table(
 # the manuscript actually \input{}s. Macros emitted here are the single
 # source of truth for the prose. (03/04/06 also emit the same blocks; since
 # both fit identical models on identical samples, the values agree.)
-.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v7-r2round1", "analysis", "_macros.R")
 if (file.exists(.bp_macros_path)) {
   source(.bp_macros_path)
 

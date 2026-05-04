@@ -169,7 +169,7 @@ writeLines(as.character(html_content), html_file)
 cat("Saved:", html_file, "\n")
 
 # Emit macros for the manuscript layer (analysis-sample counts and per-type means)
-.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v7-r2round1", "analysis", "_macros.R")
 if (file.exists(.bp_macros_path)) {
   source(.bp_macros_path)
   ref <- panel_a[[1]]   # Reference price

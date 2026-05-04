@@ -112,9 +112,10 @@ cat("Saving prepared data to:", DATA_CACHE, "\n")
 saveRDS(dt, DATA_CACHE, compress = FALSE)
 cat("  Done. File size:", round(file.size(DATA_CACHE) / 1e6, 1), "MB\n")
 
-# Emit macros for the v6 manuscript (raw-sample counts).
-# v4 scripts forward macros to the v6 values.tex via the shared helper.
-.bp_macros_path <- file.path(.this_dir, "..", "..", "v6-jpub-short", "analysis", "_macros.R")
+# Emit macros for the v7-r2round1 manuscript (raw-sample counts).
+# v4 scripts forward macros to v7's values.tex via the shared helper. v6 stays
+# frozen as the audit baseline; only v7 receives new macro emissions.
+.bp_macros_path <- file.path(.this_dir, "..", "..", "v7-r2round1", "analysis", "_macros.R")
 if (file.exists(.bp_macros_path)) {
   source(.bp_macros_path)
   # Pick a "purchase order" id: po_subject is the tender-notice text shared by
