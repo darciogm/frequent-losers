@@ -26,7 +26,7 @@ setDTthreads(16L)
 })()
 source(file.path(.this_dir, "_macros.R"))
 
-OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output"
+OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v7-r2round1/output"
 dir.create(file.path(OUT, "tables"), recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(OUT, "figures"), recursive = TRUE, showWarnings = FALSE)
 
@@ -379,6 +379,79 @@ if (length(dose_pcts) > 0) {
     macros$doseMidVsHighZ <- bp_fmt(z, 2)
   }
 }
+# --------------------------------------------------------------------------
+# v7-r2round1 NEW (Wave 1): Per-channel positive evidence.
+#   T2.1 -- Reference-price Panel B (isolates pure demand-side, can't reflect
+#           supplier markup since reference price is set BEFORE bidding)
+#   T2.2 -- Firms-count Panel B (urgency reduces participation even holding
+#           qty constant -> demand-side participation channel)
+#   T2.4 -- Search-cost proxy via mean bids per firm per tender
+# Sample = winners with both ord and lit, baseline matching Tabela tab_neg_prices.
+# --------------------------------------------------------------------------
+cat("\n2A: T2.1 Reference-price Panel B (demand-side residual after qty)\n")
+d_ref <- dt[has_litigated == TRUE & has_ordinary == TRUE & po_firm_winner == 1L &
+            !is.na(bid_price_ref_log) & !is.na(bid_qty_log)]
+m_ref_total <- feols(bid_price_ref_log ~ urgent | item_id + year_n + pbu_id,
+                     data = d_ref, cluster = ~pbu_id)
+m_ref_qty   <- feols(bid_price_ref_log ~ urgent + bid_qty_log | item_id + year_n + pbu_id,
+                     data = d_ref, cluster = ~pbu_id)
+b_ref_total <- unname(coef(m_ref_total)["urgent"])
+b_ref_qty   <- unname(coef(m_ref_qty)["urgent"])
+se_ref_qty  <- sqrt(vcov(m_ref_qty)["urgent","urgent"])
+cat(sprintf("  Total: coef=%.4f (pct=%.2f%%) | After qty: coef=%.4f (pct=%.2f%%, SE=%.4f)\n",
+            b_ref_total, (exp(b_ref_total)-1)*100,
+            b_ref_qty,   (exp(b_ref_qty)-1)*100, se_ref_qty))
+macros$refPanelBcoef <- bp_fmt(b_ref_qty, 3)
+macros$refPanelBpct  <- bp_fmt_pct((exp(b_ref_qty) - 1) * 100, 1)
+macros$refPanelBSE   <- bp_fmt(se_ref_qty, 3)
+
+cat("\n2B: T2.2 Firms-count Panel B (participation residual after qty)\n")
+d_firms <- dt[has_litigated == TRUE & has_ordinary == TRUE & po_firm_winner == 1L &
+              !is.na(ln_n_firms) & !is.na(bid_qty_log)]
+m_firms_total <- feols(ln_n_firms ~ urgent | item_id + year_n + pbu_id,
+                       data = d_firms, cluster = ~pbu_id)
+m_firms_qty   <- feols(ln_n_firms ~ urgent + bid_qty_log | item_id + year_n + pbu_id,
+                       data = d_firms, cluster = ~pbu_id)
+b_firms_total <- unname(coef(m_firms_total)["urgent"])
+b_firms_qty   <- unname(coef(m_firms_qty)["urgent"])
+se_firms_qty  <- sqrt(vcov(m_firms_qty)["urgent","urgent"])
+cat(sprintf("  Total: coef=%.4f (pct=%.2f%%) | After qty: coef=%.4f (pct=%.2f%%, SE=%.4f)\n",
+            b_firms_total, (exp(b_firms_total)-1)*100,
+            b_firms_qty,   (exp(b_firms_qty)-1)*100, se_firms_qty))
+macros$firmsPanelBcoef <- bp_fmt(b_firms_qty, 3)
+macros$firmsPanelBpct  <- bp_fmt_pct((exp(b_firms_qty) - 1) * 100, 1)
+macros$firmsPanelBSE   <- bp_fmt(se_firms_qty, 3)
+
+cat("\n2C: T2.4 Search-cost proxy (mean bids per participating firm)\n")
+# n_bids_bids per tender / n_firms_bids per tender = mean bids per firm during
+# the bidding phase. A drop under urgency means officials stop iterating bids
+# before searching widely. We compute the ratio at the POI level (each POI is a
+# single bidding round in BEC) and average within urgency status.
+if ("n_bids_bids" %in% names(dt) && "n_firms_bids" %in% names(dt)) {
+  d_search <- dt[!is.na(n_bids_bids) & !is.na(n_firms_bids) & n_firms_bids > 0,
+                 .(bids_per_firm = n_bids_bids / n_firms_bids, urgent)]
+  bpf_urgent <- d_search[urgent == 1L, mean(bids_per_firm, na.rm = TRUE)]
+  bpf_ord    <- d_search[urgent == 0L, mean(bids_per_firm, na.rm = TRUE)]
+  bpf_diff_pct <- 100 * (bpf_urgent - bpf_ord) / bpf_ord
+  cat(sprintf("  Mean bids/firm: urgent=%.2f | ordinary=%.2f | gap=%.2f (%.1f%%)\n",
+              bpf_urgent, bpf_ord, bpf_urgent - bpf_ord, bpf_diff_pct))
+  # Within-item regression to handle item-mix
+  d_search2 <- dt[!is.na(n_bids_bids) & !is.na(n_firms_bids) & n_firms_bids > 0]
+  d_search2[, bids_per_firm := n_bids_bids / n_firms_bids]
+  m_search <- feols(bids_per_firm ~ urgent | item_id + year_n + pbu_id,
+                    data = d_search2, cluster = ~pbu_id)
+  cb_s <- unname(coef(m_search)["urgent"])
+  se_s <- sqrt(vcov(m_search)["urgent","urgent"])
+  cat(sprintf("  Within-item coef (bids/firm ~ urgent): %.4f (SE %.4f)\n", cb_s, se_s))
+  macros$searchBidsPerFirmUrgent     <- bp_fmt(bpf_urgent, 2)
+  macros$searchBidsPerFirmOrdinary   <- bp_fmt(bpf_ord, 2)
+  macros$searchBidsPerFirmGapPct     <- bp_fmt_pct(bpf_diff_pct, 1)
+  macros$searchBidsPerFirmWithinCoef <- bp_fmt(cb_s, 3)
+  macros$searchBidsPerFirmWithinSE   <- bp_fmt(se_s, 3)
+} else {
+  cat("  n_bids_bids or n_firms_bids missing; skipping search-cost macros.\n")
+}
+
 # --------------------------------------------------------------------------
 # v7-r2round1 NEW: Welfare bounds + policy counterfactuals + three-channel
 # decomposition (urgent-vs-ord and UTG). Computes magnitudes for the new prose.

@@ -32,7 +32,7 @@ setDTthreads(12L)
 })()
 source(file.path(.this_dir, "_macros.R"))
 
-OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output"
+OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v7-r2round1/output"
 dir.create(file.path(OUT, "tables"), recursive = TRUE, showWarnings = FALSE)
 
 # Build UTG matched sample

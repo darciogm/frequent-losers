@@ -31,7 +31,7 @@ setDTthreads(12L)
 })()
 source(file.path(.this_dir, "_macros.R"))
 
-OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output"
+OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v7-r2round1/output"
 dir.create(file.path(OUT, "figures"), recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(OUT, "tables"),  recursive = TRUE, showWarnings = FALSE)
 
@@ -245,8 +245,74 @@ writeLines(summary_txt, file.path(OUT, "tables", "honestdid_summary.txt"))
 cat(summary_txt)
 
 
+# --------------------------------------------------------------------------
+# v7-r2round1 NEW (Wave 1 T1.4): Item event study on log quantity around
+# first court order. Smoking-gun evidence of dynamic fragmentation: same
+# item, qty drops sharply once a court order arrives. Mirrors the price
+# event study above but on bid_qty_log.
+# --------------------------------------------------------------------------
+cat("\n-- T1.4 Item event study on log quantity --\n")
+dt_qty <- readRDS("/tmp/v4_prepared.rds")
+dt_qty <- dt_qty[po_firm_winner == 1 & !is.na(bid_qty_log) & !is.na(year_n)]
+first_lit_qty <- dt_qty[purchase_type == 2, .(g = min(year_n, na.rm = TRUE)), by = item]
+dt_qty <- merge(dt_qty, first_lit_qty, by = "item", all.x = TRUE)
+dt_qty[is.na(g), g := 0L]
+dt_qty[, item_id_num := as.integer(as.factor(item))]
+
+panel_qty <- dt_qty[, .(bid_qty_log = mean(bid_qty_log, na.rm = TRUE),
+                        n_obs = .N,
+                        g     = first(g)),
+                    keyby = .(item_id_num, year_n)]
+qty_years <- panel_qty[, .(n_years = uniqueN(year_n)), by = item_id_num]
+panel_qty <- panel_qty[item_id_num %in% qty_years[n_years >= 3, item_id_num]]
+panel_qty[, treated := as.integer(g > 0 & year_n >= g)]
+panel_qty[, event_time := fifelse(g == 0, NA_integer_, as.integer(year_n - g))]
+
+m_q0 <- feols(bid_qty_log ~ 1 | item_id_num + year_n,
+              data = panel_qty[treated == 0L])
+panel_qty[, q0_hat := predict(m_q0, newdata = panel_qty)]
+panel_qty[, tau_qty := bid_qty_log - q0_hat]
+
+bjs_qty_df <- panel_qty[!is.na(event_time) & event_time >= -5 & event_time <= 5,
+                        .(coef = mean(tau_qty, na.rm = TRUE),
+                          se   = sd(tau_qty, na.rm = TRUE) / sqrt(.N)),
+                        keyby = event_time]
+bjs_qty_df[, `:=`(ci_lo = coef - 1.96 * se, ci_hi = coef + 1.96 * se)]
+bjs_qty_df[, method := "Borusyak-Jaravel-Spiess (qty)"]
+
+cat("  Event-time qty coefficients (BJS imputation):\n")
+print(bjs_qty_df[, .(event_time, coef = round(coef,3), se = round(se,3))])
+
+fwrite(bjs_qty_df, file.path(OUT, "tables", "tab_es_qty.csv"))
+
+# Plot: log qty around first court order
+p_qty <- ggplot(bjs_qty_df, aes(x = event_time, y = coef)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray60") +
+  geom_vline(xintercept = -0.5, linetype = "dotted", color = "gray60") +
+  geom_ribbon(aes(ymin = ci_lo, ymax = ci_hi),
+              alpha = 0.15, fill = "darkred", color = NA) +
+  geom_line(color = "darkred", linewidth = 0.6) +
+  geom_point(size = 2.2, color = "darkred") +
+  scale_x_continuous(breaks = -5:5) +
+  labs(x = "Years Relative to First Court Order",
+       y = "Log Quantity (relative to t = -1)",
+       caption = "BJS imputation estimator on log order quantity. Item-year panel, winner-only observations.") +
+  theme_bw(base_size = 9) +
+  theme(panel.grid.minor = element_blank())
+
+ggsave(file.path(OUT, "figures", "fig_event_study_qty.pdf"),
+       p_qty, width = 6.5, height = 4.2, device = cairo_pdf)
+cat("  Saved: fig_event_study_qty.pdf\n")
+
 # Emit macros for the manuscript layer (BJS event-study at t=0 and t=+5)
 macros <- list()
+qb0 <- bjs_qty_df[event_time == 0, coef]
+qb5 <- bjs_qty_df[event_time == 5, coef]
+if (length(qb0) == 1 && !is.na(qb0)) {
+  macros$eventQtyDropFirstOrder <- bp_fmt_pct((exp(qb0) - 1) * 100, 1)
+  macros$eventQtyDropAtFive     <- bp_fmt_pct((exp(qb5) - 1) * 100, 1)
+}
+
 b0 <- bjs_df[event_time == 0, coef]
 s0 <- bjs_df[event_time == 0, se]
 b5 <- bjs_df[event_time == 5, coef]

@@ -14,7 +14,10 @@ feature unique to São Paulo since 2009 — the parallel administrative-request
 channel that shares all planning constraints of court-mandated procurement
 but carries no penalty for officials when delivery fails. The decomposition
 identifies **three distinct channels** through which judicial pressure
-generates procurement cost premiums.
+generates procurement cost premiums: demand fragmentation (orders shrink),
+competition reduction (firms participate less even at identical order
+size), and supplier composition shift (the supplier mix changes with no
+within-firm markup).
 
 ## The three channels
 
@@ -48,63 +51,94 @@ urgent premium AND the entirety of the 23–30% UTG gap.
 **Statistical robustness:** Robust across specifications, FE structures,
 and within-item × within-month tests.
 
-### C2 — Demand-side per-unit residual (urgency-induced)
+### C2 — Reduced participation (competition channel)
 
-**What:** Officials accept worse unit prices under time pressure even at
-identical order size — compressed search, reduced bargaining capacity,
-truncated reference-price research.
+**REFINED in Wave 1.** The pre-Wave-1 framing was "officials accept worse
+unit prices under time pressure." Empirically that turns out to be false
+for the channel that *generates* the residual: reference prices are
+unchanged after qty control (T2.1: residual coef 0.004, SE 0.024,
+$p \gg 0.10$). What does survive is firm participation: holding qty
+constant, urgency reduces the number of bidding firms by 4.2%
+(T2.2: -0.043, SE 0.012, $p < 0.001$). The 3% residual urgency premium
+on negotiated prices is best read as the price consequence of thinner
+markets, not as officials' willingness to pay.
+
+**What:** Urgency reduces bidder participation even at identical order
+size. Thinner participation translates into worse negotiated prices.
 
 **Where it operates:** Across-comparison only (urgent-vs-ordinary
 residual after quantity control). Does NOT survive the within-urgent
 UTG comparison after quantity control.
 
 **Identifying evidence:**
-- Panel B mediation residual: ~3.0% urgency premium remaining after
-  controlling for log quantity. Marginally significant ($p < 0.10$).
-- Reference-price residual (NEW in v7, T2.1): reference prices set BEFORE
-  bidding cannot reflect supplier markup, so a residual urgency premium
-  in reference prices isolates pure demand-side. Expected positive and
-  marginally significant.
-- Search-cost proxy (NEW in v7, T2.4): mean bids per participating firm
-  per tender drops under urgency, consistent with truncated officials'
-  search.
-- Deadline intensity heterogeneity (NEW in v7, T2.3): the residual
-  per-unit demand-side premium is larger for shorter delivery deadlines.
+- Panel B mediation residual on negotiated prices: ~3.0% urgency premium
+  remaining after controlling for log quantity. Marginally significant.
+- T2.1 (NEW in Wave 1): reference-price residual after qty is 0.4%
+  (SE 0.024), statistically zero. Confirms that the channel is NOT
+  "officials set looser reference prices under pressure."
+- T2.2 (NEW in Wave 1): firm-count residual after qty is -4.2%
+  (SE 0.012, $p < 0.001$). This is the load-bearing evidence for C2.
+- T2.4 (NEW in Wave 1): mean bids per participating firm under urgency
+  is 5.65 vs 5.31 under ordinary -- urgency does NOT truncate per-firm
+  search; if anything, pregão tenders under urgency see slightly more
+  iteration. C2 is a participation-margin channel, not a search-iteration
+  channel.
+- Deadline intensity heterogeneity (Wave 2 T2.3, pending): expected to
+  show that the residual is larger for shorter delivery deadlines.
 
-**Magnitude of the contribution:** ~3.0% residual on top of the
-fragmentation channel; only operates across-comparison.
+**Magnitude of the contribution:** ~3.0% on the negotiated-price margin;
+operates across-comparison only.
 
-**Statistical robustness:** Marginal in baseline; T2.1 (reference prices)
-expected to confirm; T2.3 (deadline) expected to deliver direct
-mechanism-by-variation evidence.
+**Statistical robustness:** The participation-residual is highly
+significant ($p < 0.001$); the price-residual is marginally significant
+($p < 0.10$). T2.3 deadline heterogeneity is the next diagnostic.
 
-### C3 — Supply-side within-firm markup (conditional)
+### C3 — Supplier composition shift (selection channel)
 
-**What:** The same supplier charges the same buyer more for the same item
-under urgency than under ordinary procurement, exploiting the government's
-reduced outside option when judicial deadlines bind.
+**REFRAMED in Wave 1.** The pre-Wave-1 framing was "same supplier charges
+more under urgency" — a within-firm markup hypothesis. T3.3 (NEW in
+Wave 1) directly tests this with within firm-buyer-item triples (the
+tightest possible spec): the coefficient is **negative and significant**
+(-0.027, SE 0.010, $p < 0.01$, N = 33,186 obs across 8,232 triples).
+Same firm, same buyer, same item, charges 2.7% LESS under urgency.
 
-**Where it operates:** Across-comparison (urgent-vs-ordinary, within-firm).
+The 52% supplier-FE attenuation that the v6 paper interpreted as
+"within-firm markup" is therefore better read as **supplier composition
+shift**: under urgency, the set of winning firms is systematically
+different (more able to deliver fast, more accustomed to small orders,
+possibly more expensive on average) than the set serving ordinary
+procurement. This is a selection mechanism, not a markup mechanism.
+
+**What:** Under urgency, the supplier mix shifts toward firms that
+specialize in compressed-timeline delivery. Within any single firm,
+prices to the same buyer for the same item are not higher under urgency
+(if anything, they are marginally lower).
+
+**Where it operates:** Across-comparison only.
 
 **Identifying evidence:**
 - Supplier-FE decomposition: adding firm fixed effects to the urgent
-  baseline reduces the coefficient by 52% (from 5.3% to 2.5%). The
-  within-firm residual of 2.5% is the supply-side markup, but is
-  statistically not distinguishable from zero in the global sample.
-- Within firm-buyer-item triple regression (NEW in v7, T3.3): tightest
-  possible test — same firm, same buyer, same item, different urgency
-  status.
-- Market-concentration heterogeneity (NEW in v7, T3.1): expected to show
-  that C3 is positive and significant in concentrated markets (where
-  firms have power to extract rents) and zero in competitive markets.
+  baseline reduces the urgency coefficient by 52% (5.3% to 2.5%).
+- T3.3 (NEW in Wave 1): within firm-buyer-item triples, coef -0.027
+  (SE 0.010, $p < 0.01$). Direct refutation of the within-firm markup
+  hypothesis.
+- 92% of urgent winners also serve ordinary procurement, so the
+  selection is one of weighting in the equilibrium, not entry/exit.
 
-**Magnitude of the contribution:** ~2.5% within-firm markup globally;
-expected larger in concentrated subsamples.
+**Magnitude of the contribution:** Selection accounts for 2.79 pp of
+the 5.26% urgency premium (52% of total); within-firm markup is zero
+or marginally negative.
 
-**Statistical robustness:** n.s. globally; conditional-on-concentration
-is the publishable form. Honest reporting required: paper acknowledges
-that the global C3 result is suggestive, not confirmed, and that T3.1
-heterogeneity is the load-bearing test.
+**Statistical robustness:** The selection contribution is identified
+by FE algebra. The within-firm negative coefficient is the load-bearing
+finding; we report it as evidence that the supply-side channel is
+NOT a within-firm markup channel.
+
+**Note on the original "supply-side under-the-gun" intuition:** the
+intuition that suppliers exploit the government's reduced outside
+option under urgency is theoretically defensible but is not what the
+data show in our setting. We acknowledge this directly in the prose
+rather than papering over it.
 
 ## The umbrella concept
 

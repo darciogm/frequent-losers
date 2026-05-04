@@ -33,7 +33,7 @@ dt <- readRDS(DATA_CACHE)
 cat("Loaded:", nrow(dt), "obs\n")
 
 # Output directory
-OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output/tables"
+OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v7-r2round1/output/tables"
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
 
@@ -227,6 +227,46 @@ if (!all(is.na(win_dt$firm_f))) {
 }
 
 
+# --------------------------------------------------------------------------
+# v7-r2round1 NEW (Wave 1 T3.3): Within firm-buyer-item triple regression.
+# Tightest possible test of the within-firm markup channel (C3): same firm,
+# same buyer, same item, observed under both ordinary AND urgent. The triple
+# fixed effect absorbs all time-invariant firm-buyer-item heterogeneity.
+# --------------------------------------------------------------------------
+cat("\n--- T3.3 Within firm-buyer-item triple ---\n")
+if (exists("win_dt")) {
+  triple_dt <- copy(win_dt)
+  triple_dt[, fbi_triple := paste(firm_id, pbu_code, item, sep = "_")]
+  fbi_counts <- triple_dt[, .(n = .N, has_ord = any(urgent == 0L), has_urg = any(urgent == 1L)),
+                          by = fbi_triple]
+  good_triples <- fbi_counts[has_ord & has_urg, fbi_triple]
+  cat(sprintf("  (firm, buyer, item) triples observed in both: %d\n", length(good_triples)))
+  triple_sample <- triple_dt[fbi_triple %in% good_triples]
+  cat(sprintf("  triple sample N: %d\n", nrow(triple_sample)))
+  if (nrow(triple_sample) > 100L) {
+    triple_sample[, fbi_triple_f := as.factor(fbi_triple)]
+    m_triple <- feols(bid_price_log ~ urgent | fbi_triple_f + year_n,
+                      data = triple_sample, cluster = ~pbu_id)
+    cb_t <- unname(coef(m_triple)["urgent"])
+    se_t <- sqrt(vcov(m_triple)["urgent","urgent"])
+    cat(sprintf("  Triple-FE urgency coef: %.4f (SE %.4f) | pct: %.2f%%\n",
+                cb_t, se_t, (exp(cb_t) - 1) * 100))
+    macros_triple <- list(
+      tripleFirmBuyerItemCoef  = bp_fmt(cb_t, 3),
+      tripleFirmBuyerItemPct   = bp_fmt_pct((exp(cb_t) - 1) * 100, 2),
+      tripleFirmBuyerItemSE    = bp_fmt(se_t, 3),
+      tripleFirmBuyerItemN     = bp_fmt_int(nrow(triple_sample)),
+      tripleFirmBuyerItemCount = bp_fmt_int(length(good_triples))
+    )
+  } else {
+    cat("  Triple sample too small; skipping macro emission for T3.3.\n")
+    macros_triple <- list()
+  }
+} else {
+  macros_triple <- list()
+}
+
+
 # Emit macros for the manuscript layer
 macros <- list()
 if (exists("placebo_neg") && !is.null(placebo_neg)) {
@@ -251,6 +291,10 @@ if (exists("m_firm_fe")) {
 }
 if (exists("m_firm_fe_qty")) {
   macros$supFirmFEqty <- bp_fmt(coef(m_firm_fe_qty)["urgent"], 3)
+}
+# Merge T3.3 macros (firm-buyer-item triple regression)
+if (exists("macros_triple") && length(macros_triple) > 0) {
+  macros <- c(macros, macros_triple)
 }
 if (length(macros) > 0) bp_macros_emit("20_falsification_and_supplier_fe", macros)
 

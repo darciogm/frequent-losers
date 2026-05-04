@@ -1,10 +1,10 @@
 #  34_regex_validation_f1.R --- Compute precision, recall, F1 per class from
 #  the hand-labeled validation_sample.csv.
 #
-#  Inputs  : v6-jpub-short/output/validation/validation_sample.csv
+#  Inputs  : v7-r2round1/output/validation/validation_sample.csv
 #            (must have column true_class populated with 0/1/2 for each row)
 #
-#  Outputs : v6-jpub-short/output/validation/tab_regex_f1.tex
+#  Outputs : v7-r2round1/output/validation/tab_regex_f1.tex
 #            (a compact LaTeX table with confusion matrix and per-class
 #            precision, recall, F1)
 #            Also prints a summary to stdout for quick copy into the body
@@ -28,7 +28,7 @@ setDTthreads(12L)
 })()
 source(file.path(.this_dir, "_macros.R"))
 
-OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output/validation"
+OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v7-r2round1/output/validation"
 csv <- file.path(OUT, "validation_sample.csv")
 
 if (!file.exists(csv)) stop("Validation file not found: ", csv,

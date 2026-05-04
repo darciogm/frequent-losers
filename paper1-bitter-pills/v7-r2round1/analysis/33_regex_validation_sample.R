@@ -1,7 +1,7 @@
 #  33_regex_validation_sample.R --- Stratified sample of tender-notice subjects
 #  for hand-labeling the regex-based purchase-type classifier.
 #
-#  Produces: v6-jpub-short/output/validation/validation_sample.csv
+#  Produces: v7-r2round1/output/validation/validation_sample.csv
 #  Columns:
 #    sample_id       sequential 1..500
 #    po_subject      tender-notice text (the regex input)
@@ -40,7 +40,7 @@ set.seed(SEED)
 TARGET_PER_CLASS <- 167L   # 167 + 167 + 167 = 501, capped to 500 below
 N_CAP            <- 500L
 
-OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v6-jpub-short/output/validation"
+OUT <- "/home/darciogm1/projetos/bitter-pills/paper1-bitter-pills/v7-r2round1/output/validation"
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
 # Load & deduplicate at subject level
@@ -121,7 +121,7 @@ cat("\nNext steps\n",
     "     2 = litigated (reference to court order, lawsuit, or judicial mandate)\n",
     "   Use notes column for borderline cases.\n",
     "3. Save the file back as validation_sample.csv (keep the column order).\n",
-    "4. Run: Rscript v6-jpub-short/analysis/34_regex_validation_f1.R\n",
+    "4. Run: Rscript v7-r2round1/analysis/34_regex_validation_f1.R\n",
     "   to compute F1 per class and emit tab_regex_f1.tex for OA A.8.\n",
     sep = "")
 
