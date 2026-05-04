@@ -1,0 +1,105 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Enforcement Costs: Prices, Competition, and Tender Success}
+\label{sec:main_results}
+
+Urgency distorts every stage of the procurement process. Reference prices---set during the planning phase---are \BPrefPctPreferred{} higher in the preferred specification ($p < 0.10$; Online Appendix, Table~A.4). The raw premium is \BPrefPctItemFE{} with item FE alone but attenuates sharply with PBU FE, indicating that buyer-level heterogeneity accounts for much of the unconditional gap.
+
+Negotiated prices are the core outcome (Table~\ref{tab:neg_prices}). Panel~A reports the total effect; Panel~B controls for log quantity.
+
+\BPvtab{tab_neg_prices}
+
+\paragraph{Total effect (Panel~A).}
+Negotiated prices are significantly higher for urgent purchases across all specifications. The total effect ranges from \BPnegPctItemFE{} ($e^{\BPnegCoefItem}-1$) with item FE only to \BPnegPctRange{} with our preferred specifications (columns~3--4). The attenuation pattern mirrors that of reference prices, confirming the importance of buyer-level heterogeneity.
+
+\paragraph{Mediation decomposition (Panel~B).}
+Adding log quantity as a control reduces the coefficient on urgency by roughly half in the most saturated specifications, from \BPnegPanelAcoefShort{} to \BPnegPanelBcoefShort{} (column~3).\label{fn:mediation-anchor} Log quantity is a post-treatment variable, so conditioning on it re-weights the comparison toward observations with similar order size \citep{acharya2016explaining}. The contrast between Panels~A and~B is therefore a within-paper mediation decomposition: of the \BPnegPctHeadline{} total premium, roughly half co-moves with quantity differences induced by urgency, while a residual \BPnegPanelBpct{} ($e^{\BPnegPanelBcoefShort}-1$, $p < 0.10$) remains once order-size variation is partialled out. The coefficient on log quantity is large and negative ($\BPnegPanelBqty$), consistent with the bulk-discount channel that is the central piece of the demand-fragmentation mechanism developed below.
+
+\subsection{Competition and Tender Success}
+\label{sec:competition}
+
+Urgent purchases attract \BPfirmsPctHeadline{} fewer bidding firms ($\BPfirmsCoef$, $p < 0.01$; Online Appendix, Table~A.6), consistent with reduced competition under compressed timelines \citep{bulow1996auctions}. Quantities also fall, though imprecisely ($\BPqtyCoef$, not significant; Online Appendix, Table~A.5). Yet urgent tenders are \BPsuccessPP{} \emph{more} likely to succeed ($p < 0.01$; Online Appendix, Table~A.7)---precisely what the ``under the gun'' mechanism predicts: officials accept worse terms to ensure the purchase goes through. This also rules out sample selection: urgent tenders succeed \emph{despite} less favorable conditions.
+
+\subsection{The ``Under the Gun'' Effect}
+\label{sec:utg}
+
+The sharpest comparison contrasts litigated and administrative urgent purchases (Table~\ref{tab:underthegun}). Both share the compressed internal phase, the small-order, diverted-budget regime of urgent procurement; they differ only in whether the officer faces personal fines and fund seizure if the tender fails. We frame the resulting gap as a within-regime decomposition: it tells us how much cost margin is associated with the sanction-exposed regime relative to the sanction-free regime, holding planning constraints fixed.
+
+\BPvtab{tab_underthegun}
+
+\paragraph{Total effect (Panel~A).}
+Administrative purchases have significantly lower negotiated prices than litigated ones across all specifications. The implied litigated premium ranges from \BPutgPctItem{} with item fixed effects alone (column~1) to \BPutgPctItemYM{} with item and year-month fixed effects plus PBU controls (column~4). In our preferred specification (column~3), the coefficient is $\BPutgCoef$ ($p < 0.05$), implying that litigated purchases are \BPutgPct{} more expensive than comparable administrative purchases. The same-item, same-month comparison (column~4) yields $\BPutgCoefItemYM$ on $N = \BPutgNobsItemYM$ within-cell observations, ruling out time-varying within-item confounders as a driver.\footnote{Item$\times$year-month FE absorb \BPutgSingletonsItemYM{} singleton observations, leaving \BPutgNobsItemYM{} with within-cell variation. Of \BPutgCellsItemYM{} item$\times$month cells, \BPutgCellsBoth{} (\BPutgCellsBothPct) contain both purchase types.}
+
+\paragraph{Quantity channel does the work (Panel~B).}
+Adding log quantity as a control pulls the UTG coefficient close to zero ($\BPutgPanelBcoef$, SE~$= \BPutgPanelBSE$, column~3); under the tightest item$\times$year-month FE specification, the coefficient is statistically indistinguishable from zero ($\BPutgPanelBItemYMcoef$, SE~$= \BPutgPanelBItemYMSE$). Within UTG, the litigated-vs-administrative gap is essentially mediated by order quantity: holding quantity constant, sanctioned and unsanctioned urgent purchases of the same item in the same month face the same per-unit price.
+
+The magnitude of the quantity gap is large enough to mechanically generate a price gap as big as the one we observe. The log-quantity gap between administrative and litigated purchases (\BPqtyGapAdmLit) times the bulk-discount elasticity ($\BPbulkElast$) accounts for a price gap of about \BPqtyImpliedPct{} from fragmentation alone---of the same order of magnitude as the \BPutgPct{} total, and slightly larger. Equivalently, regressing log quantity on the administrative indicator under our preferred specification yields a coefficient of $\BPutgQtyAdminCoefPref$: for the same item, administrative orders are roughly \BPutgQtyAdminFoldPref{} times the size of litigated orders. Sanctions do not merely correlate with smaller orders; they shrink demand aggregation by a multiple sufficient to mechanically explain the entire UTG price gap through the bulk-discount channel. We return to this point in Section~\ref{sec:three_channel}, where we decompose the urgency premium and the UTG gap into their constituent channels.
+
+\subsection{Three-Channel Decomposition}
+\label{sec:three_channel}
+
+The cost margin between regimes is an umbrella that we open into three distinct channels: \emph{demand fragmentation} (C1), \emph{reduced participation} (C2), and \emph{supplier composition shift} (C3). To isolate them, we run the same urgency regression under four progressively richer specifications: (1) a baseline with item, year, and PBU fixed effects; (2) the baseline plus log quantity; (3) the baseline plus firm fixed effects; and (4) the baseline plus both log quantity and firm fixed effects. Comparing across specifications attributes the drop from (1) to (2) to the quantity channel, the drop from (1) to (3) to the firm-selection channel, and the residual in (4) to the participation channel and any within-firm markup.
+
+Table~\ref{tab:three_channel_uo} reports the cascade for the urgent-vs-ordinary comparison; Table~\ref{tab:three_channel_utg} for the UTG comparison.
+
+\BPotab{tab_three_channel_uo}
+\BPotab{tab_three_channel_utg}
+
+\paragraph{Across the full sample.} The urgent-vs-ordinary cost margin of \BPcascadeUOtotalPct{} decomposes into \BPcascadeUOqtyPP~pp from the quantity channel (C1), \BPcascadeUOfirmPP~pp from the firm-selection channel (C3), and a \BPcascadeUOresidPP~pp residual that the C2 participation channel and any within-firm markup share. Each channel speaks to a distinct mechanism. C1 captures the bulk-discount loss from sanctions-induced fragmentation: smaller orders mechanically buy at higher unit prices. C3 captures the equilibrium consequence of urgency on which firm wins the contract: under urgency, the supplier mix shifts toward firms specializing in compressed-timeline delivery, who are systematically different from---though not necessarily more expensive than---the suppliers serving ordinary procurement. C2 captures the within-firm-orthogonal compression of the participation margin: at identical order size, urgent tenders attract \BPfirmsPanelBpct{} fewer bidders ($\BPfirmsPanelBcoef$, SE $\BPfirmsPanelBSE$, $p<0.001$; \S\ref{sec:competition}), and the resulting thinning of the bid distribution leaves higher negotiated prices.
+
+\paragraph{Within the under-the-gun comparison.} The decomposition for UTG (Table~\ref{tab:three_channel_utg}) is sharper: of the \BPcascadeUTGtotalPct{} total premium, the quantity channel absorbs \BPcascadeUTGqtyPP~pp---more than the entire premium---and the residual after both quantity and firm-FE controls is \BPcascadeUTGresidPP~pp, a number indistinguishable from zero. Within UTG, the cost margin is \emph{entirely} mediated by demand fragmentation. Personal sanctions on procurement officials, conditional on urgency, do not generate a per-unit-price differential beyond what the quantity channel mechanically explains.
+
+\paragraph{Reference prices reinforce the channel reading.} A separate diagnostic confirms that the C2 participation channel, not officials' price-setting behavior, is what generates the residual urgency premium. Re-estimating the Panel~B specification with reference prices (set \emph{before} bidding, so unaffected by supplier markup or selection) yields a residual coefficient of $\BPrefPanelBcoef$ (SE $\BPrefPanelBSE$), statistically zero. Officials under urgency do not set looser reference prices; the residual urgency premium on negotiated prices arises after bidding, in thinner markets.
+
+\paragraph{Item event study confirms dynamic fragmentation.} Within the same item, the arrival of the first court order causes order quantity to drop sharply: \BPeventQtyDropFirstOrder{} at the year of treatment, recovering to \BPeventQtyDropAtFive{} by year~+5 (Online Appendix, Figure~\ref{fig:event_qty}). The price event-study reported earlier moves in the opposite direction; the joint pattern is consistent with the fragmentation mechanism operating in real time at the item level.
+
+\subsection{Falsification: Items Never Litigated}
+\label{sec:placebo}
+
+If the urgency premium reflects the causal effect of judicial pressure
+rather than unobserved item characteristics, it should be absent for
+items that are never subject to court orders. Running the preferred
+specification on items with zero litigated purchases across
+\BPsampleStartYear--\BPsampleEndYear{}
+(restricted to those with both ordinary and administrative purchases)
+yields placebo coefficients of $\BPplaceboNegCoef$ (SE~$= \BPplaceboNegSE$) for negotiated
+prices and $\BPplaceboRefCoef$ (SE~$= \BPplaceboRefSE$) for reference prices---both
+economically small and statistically insignificant (Online Appendix,
+Table~\ref{tab:placebo}). The urgency premium exists only for items
+that are targets of litigation, ruling out a generic correlation
+between urgency and prices.
+
+\subsection{Supplier Composition Shift, Not Within-Firm Markup}
+\label{sec:supplier_fe}
+
+The C3 channel in Table~\ref{tab:three_channel_uo} reflects equilibrium changes in \emph{which} firms win urgent contracts, not the pricing behavior of any one firm. We confirm this directly by estimating the urgency coefficient within firm-buyer-item triples observed under both ordinary and urgent procurement---the tightest possible specification. Of the \BPtripleFirmBuyerItemCount{} such triples (covering \BPtripleFirmBuyerItemN{} observations), the urgency coefficient is $\BPtripleFirmBuyerItemCoef$ (SE \BPtripleFirmBuyerItemSE, $p<0.01$): same firm, same buyer, same item, the price under urgency is \emph{lower} by \BPtripleFirmBuyerItemPct, not higher. The within-firm-markup interpretation of supplier fixed effects---an intuition often invoked in the supply-side under-the-gun literature---is not what we find.
+
+This is consistent with two facts. First, \BPsupFirmsBothShare{} of urgent winners also serve ordinary procurement: the supplier pool is largely shared, and selection operates at the equilibrium-weighting level rather than through entry/exit. Second, market concentration heterogeneity reinforces the reading: in concentrated markets, where the within-firm markup hypothesis would have its strongest case, the within firm-buyer-item triple coefficient is even more negative ($\BPhetHHIhighTriplePct$, $p<0.01$), suggesting that suppliers in those markets concede a small discount under urgency rather than extracting an additional rent. The supplier composition shift channel is most pronounced in less concentrated markets, where there are more potential ``urgency specialists'' to select among (\BPhetHHIlowFirmFEPct{} firm-FE residual versus \BPhetHHIhighFirmFEPct).
+
+We therefore frame C3 as a \emph{selection} channel rather than a markup channel. The fiscal cost it carries is not a price-discrimination problem but a sourcing problem: under urgency, the procurement officer has fewer options and the equilibrium falls on a different point of the supplier distribution.
+
+\subsection{Where the Cost Bites Hardest}
+\label{sec:heterogeneity}
+
+The participation channel and the supplier-selection channel both predict that the urgency cost margin should be larger in markets with more potential bidders---thinner concentration leaves more room for the participation margin to compress, and offers more candidate firms for urgency-driven selection to operate over. The data agree: splitting items by mean number of participating firms per item (the median is \BPhetHHIMedianValue), competitive items (above-median participation) show an \BPhetHHIlowBaselinePct{} urgency premium, of which \BPhetHHIlowFirmFEPct{} survives firm fixed effects (\BPhetHHIlowAttnPct{} attenuation). Concentrated items (below-median participation) show a much smaller, statistically insignificant baseline premium, with the firm-FE residual close to zero. The within firm-buyer-item triple regression in \S\ref{sec:supplier_fe} reinforces the pattern: in concentrated markets the within-firm price under urgency is lower (\BPhetHHIhighTriplePct, $p<0.01$); in competitive markets it is statistically zero. The urgency cost margin, in other words, concentrates where competitive pressure can be eroded; in markets where it cannot be eroded because there is no competitive pressure to begin with, urgency carries little additional cost.
+
+\subsection{Summary of Effects}
+\label{sec:summary}
+
+Figure~\ref{fig:cascade} summarizes the three-channel decomposition for both comparison levels in a single panel. The top panel reports the urgent-vs-ordinary cascade: the \BPcascadeUOtotalPct{} baseline urgency premium decomposes into a \BPcascadeUOqtyPP~pp drop when log quantity is added (C1, demand fragmentation), a \BPcascadeUOfirmPP~pp drop when firm fixed effects are added (C3, supplier composition shift), and a \BPcascadeUOresidPP~pp residual when both controls are included (C2 participation channel plus any within-firm markup). The bottom panel reports the same cascade for the under-the-gun comparison: the \BPcascadeUTGtotalPct{} baseline gap is more than absorbed by the quantity channel alone (C1 contributes \BPcascadeUTGqtyPP~pp), with the residual statistically zero. Within the under-the-gun comparison, sanctions operate entirely through fragmentation; across the full urgent-vs-ordinary comparison, fragmentation, supplier-composition, and participation each contribute meaningfully to the total cost margin.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_three_channel_cascade.pdf}
+  \caption{Three-Channel Decomposition of the Procurement Cost of Judicial Enforcement}
+  \label{fig:cascade}
+  \par\smallskip\footnotesize\textit{Notes:} Cascade across the four canonical
+  specifications. Drop from (1) to (2) absorbs C1 (demand fragmentation, via log
+  quantity); drop from (1) to (3) absorbs C3 (supplier composition shift, via
+  firm fixed effects); column (4) is the residual. Top panel: urgent vs.\
+  ordinary across the full sample. Bottom panel: litigated vs.\ administrative
+  within the urgent sub-sample (UTG). All specifications include item, year,
+  and PBU fixed effects; standard errors clustered at the PBU level. Error
+  bars: 95\% confidence intervals.
+\end{figure}

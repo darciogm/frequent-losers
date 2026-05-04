@@ -1,0 +1,71 @@
+\documentclass[12pt]{elsarticle}
+
+% Typography & Layout
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+\onehalfspacing
+
+% Math
+\usepackage{amsmath,amssymb}
+
+% Tables & Figures
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{adjustbox}
+
+% References
+\usepackage{natbib}
+
+% Color (used by values.tex for TBD placeholders)
+\usepackage{xcolor}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+
+% Custom commands
+\newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+% Paths
+\graphicspath{{figures/}{../../output/figures/}{../../../v4/pub/figures/}}
+
+% Macro layer (shared with main.tex). See analysis/_macros.R.
+\input{values}
+
+% Cross-reference labels defined in the main paper (sec:institutional, etc.)
+% Resolved via xr-hyper from main.aux. main.tex must be compiled at least once
+% before OnlineAppendix.tex for these refs to render.
+\usepackage{xr-hyper}
+\externaldocument{main}
+
+% Appendix numbering
+\renewcommand{\thesection}{A}
+\renewcommand{\thetable}{A.\arabic{table}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+
+\begin{document}
+
+\begin{frontmatter}
+\title{Online Appendix\\[6pt]
+\large Bitter Pills: Judicial Enforcement and the Cost of Public Procurement in Brazil}
+\author[INSPER]{Darcio Genicolo-Martins}
+\author[INSPER]{Paulo Furquim de Azevedo}
+\address[INSPER]{Insper Institute of Education and Research, S\~ao Paulo, Brazil}
+\end{frontmatter}
+
+\noindent\textit{Not for print --- available as supplementary material.}
+
+\bigskip
+
+\input{Appendix}
+
+\end{document}
