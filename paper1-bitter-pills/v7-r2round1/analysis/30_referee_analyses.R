@@ -453,6 +453,140 @@ if ("n_bids_bids" %in% names(dt) && "n_firms_bids" %in% names(dt)) {
 }
 
 # --------------------------------------------------------------------------
+# v7-r2round1 NEW (Wave 2): Heterogeneity tests for C2 (participation) and
+# C3 (selection) channels.
+#   T2.3-alt -- Supplier-base depth heterogeneity. Items with thin supplier
+#               base should suffer more from the C2 participation channel
+#               under urgency (fewer potential bidders to lose).
+#   T3.1     -- Market concentration heterogeneity. Selection effect (C3)
+#               should be larger in concentrated markets where buyers have
+#               fewer outside options to substitute on.
+# Note: T2.3 (deadline intensity from po_subject text) abandoned --
+#       po_subject averages 61 chars and rarely carries delivery deadlines
+#       (28 mentions of DIAS in ~51k litigated subjects).
+# --------------------------------------------------------------------------
+cat("\n3A: T2.3-alt Supplier-base depth heterogeneity (C2 participation)\n")
+# Per-item historical supplier base = unique winning firms over 2009-2019
+item_sup_base <- dt[po_firm_winner == 1L & !is.na(firm_id),
+                    .(n_suppliers = uniqueN(firm_id)), by = item]
+sup_med <- item_sup_base[, median(n_suppliers)]
+item_sup_base[, thin_supplier_base := as.integer(n_suppliers <= sup_med)]
+cat(sprintf("  Median historical suppliers per item: %d\n", sup_med))
+cat(sprintf("  Items with thin (<=median) base: %d | thick: %d\n",
+            sum(item_sup_base$thin_supplier_base == 1L),
+            sum(item_sup_base$thin_supplier_base == 0L)))
+
+d_supbase <- dt[has_litigated == TRUE & has_ordinary == TRUE & po_firm_winner == 1L &
+                !is.na(bid_price_log) & !is.na(bid_qty_log)]
+d_supbase <- merge(d_supbase, item_sup_base, by = "item", all.x = TRUE)
+d_supbase <- d_supbase[!is.na(thin_supplier_base)]
+
+m_supbase_thin  <- feols(bid_price_log ~ urgent + bid_qty_log | item_id + year_n + pbu_id,
+                         data = d_supbase[thin_supplier_base == 1L], cluster = ~pbu_id)
+m_supbase_thick <- feols(bid_price_log ~ urgent + bid_qty_log | item_id + year_n + pbu_id,
+                         data = d_supbase[thin_supplier_base == 0L], cluster = ~pbu_id)
+cb_thin  <- unname(coef(m_supbase_thin)["urgent"])
+cb_thick <- unname(coef(m_supbase_thick)["urgent"])
+se_thin  <- sqrt(vcov(m_supbase_thin)["urgent","urgent"])
+se_thick <- sqrt(vcov(m_supbase_thick)["urgent","urgent"])
+cat(sprintf("  Thin supplier base: urgency coef (Panel B) = %.4f (SE %.4f, pct=%.2f%%)\n",
+            cb_thin, se_thin, (exp(cb_thin)-1)*100))
+cat(sprintf("  Thick supplier base: urgency coef (Panel B) = %.4f (SE %.4f, pct=%.2f%%)\n",
+            cb_thick, se_thick, (exp(cb_thick)-1)*100))
+macros$hetSupBaseThinCoef  <- bp_fmt(cb_thin, 3)
+macros$hetSupBaseThinPct   <- bp_fmt_pct((exp(cb_thin)-1)*100, 1)
+macros$hetSupBaseThinSE    <- bp_fmt(se_thin, 3)
+macros$hetSupBaseThickCoef <- bp_fmt(cb_thick, 3)
+macros$hetSupBaseThickPct  <- bp_fmt_pct((exp(cb_thick)-1)*100, 1)
+macros$hetSupBaseThickSE   <- bp_fmt(se_thick, 3)
+macros$hetSupBaseMedianN   <- bp_fmt_int(sup_med)
+
+# Same exercise for participation outcome (firms count) to test C2 directly
+m_supbase_thin_firms  <- feols(ln_n_firms ~ urgent + bid_qty_log | item_id + year_n + pbu_id,
+                               data = d_supbase[thin_supplier_base == 1L], cluster = ~pbu_id)
+m_supbase_thick_firms <- feols(ln_n_firms ~ urgent + bid_qty_log | item_id + year_n + pbu_id,
+                               data = d_supbase[thin_supplier_base == 0L], cluster = ~pbu_id)
+cb_thin_f  <- unname(coef(m_supbase_thin_firms)["urgent"])
+cb_thick_f <- unname(coef(m_supbase_thick_firms)["urgent"])
+cat(sprintf("  Firms Panel B (thin):  %.4f (pct=%.2f%%)\n", cb_thin_f,  (exp(cb_thin_f)-1)*100))
+cat(sprintf("  Firms Panel B (thick): %.4f (pct=%.2f%%)\n", cb_thick_f, (exp(cb_thick_f)-1)*100))
+macros$hetSupBaseThinFirmsPct  <- bp_fmt_pct((exp(cb_thin_f)-1)*100, 1)
+macros$hetSupBaseThickFirmsPct <- bp_fmt_pct((exp(cb_thick_f)-1)*100, 1)
+
+cat("\n3B: T3.1 Market concentration heterogeneity (C3 selection)\n")
+# Concentration proxy = mean number of firms participating per item.
+# (HHI on winners is degenerate -- single winner per tender -> HHI=1 always.)
+# Items with low mean n_firms = concentrated; high mean = competitive.
+item_n_firms <- dt[!is.na(n_firms_bids), .(mean_firms = mean(n_firms_bids, na.rm = TRUE)),
+                   by = item]
+nf_med <- item_n_firms[, median(mean_firms, na.rm = TRUE)]
+item_n_firms[, high_hhi := as.integer(mean_firms <= nf_med)]   # FEW firms = concentrated
+cat(sprintf("  Median mean n_firms per item: %.2f\n", nf_med))
+cat(sprintf("  High-concentration items (mean firms <= median): %d | Low-concentration: %d\n",
+            sum(item_n_firms$high_hhi == 1L, na.rm=TRUE),
+            sum(item_n_firms$high_hhi == 0L, na.rm=TRUE)))
+item_hhi <- item_n_firms[, .(item, high_hhi)]
+hhi_med <- nf_med   # for macro emission below
+
+d_hhi <- dt[has_litigated == TRUE & has_ordinary == TRUE & po_firm_winner == 1L &
+            !is.na(bid_price_log) & !is.na(firm_id)]
+d_hhi <- merge(d_hhi, item_hhi[, .(item, high_hhi)], by = "item", all.x = TRUE)
+d_hhi <- d_hhi[!is.na(high_hhi)]
+d_hhi[, firm_f := as.factor(firm_id)]
+
+# Compare attenuation when adding firm FE in high-HHI vs low-HHI subsamples
+m_hhi_high_base   <- feols(bid_price_log ~ urgent | item_id + year_n + pbu_id,
+                           data = d_hhi[high_hhi == 1L], cluster = ~pbu_id)
+m_hhi_high_firmFE <- feols(bid_price_log ~ urgent | item_id + year_n + pbu_id + firm_f,
+                           data = d_hhi[high_hhi == 1L], cluster = ~pbu_id)
+m_hhi_low_base    <- feols(bid_price_log ~ urgent | item_id + year_n + pbu_id,
+                           data = d_hhi[high_hhi == 0L], cluster = ~pbu_id)
+m_hhi_low_firmFE  <- feols(bid_price_log ~ urgent | item_id + year_n + pbu_id + firm_f,
+                           data = d_hhi[high_hhi == 0L], cluster = ~pbu_id)
+b_hh_b <- unname(coef(m_hhi_high_base)["urgent"])
+b_hh_f <- unname(coef(m_hhi_high_firmFE)["urgent"])
+b_lh_b <- unname(coef(m_hhi_low_base)["urgent"])
+b_lh_f <- unname(coef(m_hhi_low_firmFE)["urgent"])
+attn_high <- 1 - b_hh_f / b_hh_b
+attn_low  <- 1 - b_lh_f / b_lh_b
+cat(sprintf("  High-HHI: baseline %.3f -> firmFE %.3f | attn %.0f%% | residual pct %.2f%%\n",
+            b_hh_b, b_hh_f, 100*attn_high, (exp(b_hh_f)-1)*100))
+cat(sprintf("  Low-HHI:  baseline %.3f -> firmFE %.3f | attn %.0f%% | residual pct %.2f%%\n",
+            b_lh_b, b_lh_f, 100*attn_low,  (exp(b_lh_f)-1)*100))
+macros$hetHHIhighBaselinePct   <- bp_fmt_pct((exp(b_hh_b)-1)*100, 1)
+macros$hetHHIhighFirmFEPct     <- bp_fmt_pct((exp(b_hh_f)-1)*100, 1)
+macros$hetHHIhighAttnPct       <- bp_fmt_pct_n(100*attn_high, 0)
+macros$hetHHIlowBaselinePct    <- bp_fmt_pct((exp(b_lh_b)-1)*100, 1)
+macros$hetHHIlowFirmFEPct      <- bp_fmt_pct((exp(b_lh_f)-1)*100, 1)
+macros$hetHHIlowAttnPct        <- bp_fmt_pct_n(100*attn_low, 0)
+macros$hetHHIMedianValue       <- bp_fmt(hhi_med, 3)
+
+# Within firm-buyer-item triple: does concentrated-market markup exist there?
+# This is the cleanest test of "supply-side under-the-gun in concentrated markets."
+# Reuse fbi_triple-style analysis but split by HHI.
+d_hhi_triple <- d_hhi[!is.na(firm_id) & !is.na(pbu_code)]
+d_hhi_triple[, fbi_triple := paste(firm_id, pbu_code, item, sep = "_")]
+fbi_counts2 <- d_hhi_triple[, .(has_ord = any(urgent == 0L), has_urg = any(urgent == 1L)),
+                            by = fbi_triple]
+good_t2 <- fbi_counts2[has_ord & has_urg, fbi_triple]
+d_hhi_t  <- d_hhi_triple[fbi_triple %in% good_t2]
+m_t_hhi_high <- feols(bid_price_log ~ urgent | fbi_triple + year_n,
+                      data = d_hhi_t[high_hhi == 1L], cluster = ~pbu_id)
+m_t_hhi_low  <- feols(bid_price_log ~ urgent | fbi_triple + year_n,
+                      data = d_hhi_t[high_hhi == 0L], cluster = ~pbu_id)
+cb_t_hh <- unname(coef(m_t_hhi_high)["urgent"])
+cb_t_lh <- unname(coef(m_t_hhi_low)["urgent"])
+se_t_hh <- sqrt(vcov(m_t_hhi_high)["urgent","urgent"])
+se_t_lh <- sqrt(vcov(m_t_hhi_low)["urgent","urgent"])
+cat(sprintf("  Triple within-firm-buyer-item: high-HHI = %.4f (SE %.4f, pct=%.2f%%) | low-HHI = %.4f (SE %.4f, pct=%.2f%%)\n",
+            cb_t_hh, se_t_hh, (exp(cb_t_hh)-1)*100,
+            cb_t_lh, se_t_lh, (exp(cb_t_lh)-1)*100))
+macros$hetHHIhighTripleCoef <- bp_fmt(cb_t_hh, 3)
+macros$hetHHIhighTriplePct  <- bp_fmt_pct((exp(cb_t_hh)-1)*100, 2)
+macros$hetHHIlowTripleCoef  <- bp_fmt(cb_t_lh, 3)
+macros$hetHHIlowTriplePct   <- bp_fmt_pct((exp(cb_t_lh)-1)*100, 2)
+
+# --------------------------------------------------------------------------
 # v7-r2round1 NEW: Welfare bounds + policy counterfactuals + three-channel
 # decomposition (urgent-vs-ord and UTG). Computes magnitudes for the new prose.
 # --------------------------------------------------------------------------
