@@ -20,8 +20,9 @@ Second, urgent demand is poorly correlated with PBU-level mismanagement:
 only \BPstockShortageShare{} of claims arise from stock shortages or
 service failures. Third, the urgency regime is determined externally
 (by judges or the SES/SP scientific committee), not by the purchasing
-unit. We frame this design as a within-item descriptive estimate of the
-cost margin associated with the urgent regime.
+unit. We frame this design as a within-item estimate of the cost margin
+associated with the urgent regime, conditional on the institutional
+features above.
 
 A Borusyak-Jaravel-Spiess (\citeyear{borusyak2024revisiting}) imputation
 event study around each item's first court order provides a dynamic
@@ -56,8 +57,9 @@ clinically essential and sourceable cases; rejects expensive,
 specialized, or uncertain ones. We do not treat the resulting selection
 bias as ``ambiguous in sign''---the committee's first-stage probit on
 pre-period item characteristics rejects a higher pre-period log
-reference price ($-0.051$, $p<0.001$) and SUS-formulary status
-($-0.265$, $p<0.001$): admin systematically over-represents items that
+reference price (\BPutgProbitRefPriceCoef, \BPutgProbitRefPricePval)
+and SUS-formulary status (\BPutgProbitSUSCoef,
+\BPutgProbitSUSPval): admin systematically over-represents items that
 would have been priced lower under \emph{any} regime. The naive UTG
 comparison therefore inflates the sanction effect.
 
@@ -75,16 +77,6 @@ upper bound. Average trimming intensity is \BPutgLeeTrimMean{} of admin
 observations within strata where trimming applies; \BPutgLeeStrataExcess{}
 of \BPutgLeeStrataTotal{} strata trigger trimming. Section~\ref{sec:utg_bounds}
 reports the bounded UTG.
-
-\paragraph{Heckman parametric correction (sensitivity).}
-A parametric Heckman correction with the same first-stage probit and
-item, year, and PBU FE in the second stage produces a second-stage
-Admin coefficient of $\BPutgHeckmanCoef$ (SE $\BPutgHeckmanSE$, sample
-size $\BPutgFirstStageN$). The inverse Mills ratio is collinear with
-the second-stage fixed effects; the resulting point estimate is
-uninformative. We treat the Heckman as a sensitivity diagnostic, not as
-a competing point estimate, and rely on the Lee bound as the primary
-selection-corrected object.
 
 \paragraph{Inference.}
 Standard errors are clustered at the PBU level. With approximately
@@ -140,5 +132,5 @@ isolates same-firm pricing from supplier composition.
 We do not estimate a structural counterfactual price under hypothetical
 sanction removal. That object is unidentified in our setting because
 the administrative subsample is selected on item economics. What we
-provide is a bounded descriptive decomposition of where the cost
+provide is a bounded decomposition of where the cost
 margin between regimes comes from.

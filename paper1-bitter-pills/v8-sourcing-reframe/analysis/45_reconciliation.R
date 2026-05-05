@@ -117,7 +117,7 @@ bp_log_step("point estimates", t0, LOG)
 # ============================================================================
 # Cluster bootstrap on PBU --- 95% CI for each component
 # ============================================================================
-B <- 499L
+B <- 999L
 pbu_levels <- unique(d$pbu_id)
 n_pbu <- length(pbu_levels)
 set.seed(20260505L)
