@@ -3,30 +3,33 @@
 
 \subsection{Sources}
 
-We assemble three administrative datasets covering January
-\BPsampleStartYear{} through December \BPsampleEndYear. The first
-is the universe of bid-level records from the BEC electronic
-procurement platform for SES/SP purchases of medical supplies (BEC
-Group~\BPbecGroup); each observation is a purchase-offer-item (POI)
-recording the reference price set during the planning phase, the
-winning bid price, the number of bidding firms, the quantity
-ordered, the modality (\textit{preg\~ao eletr\^onico} or
-\textit{convite}), and tender outcome. The second is a purchase-type
-classifier that assigns each POI to one of three regimes: ordinary,
-administrative-request, or litigated. By Brazilian law, the tender
-notice for any urgent purchase must reference the underlying court
-order or administrative-channel request; the classifier exploits
-this regulatory disclosure through a regular-expression algorithm
-applied to free-text tender notices. We validate the classifier
-through a stratified hand-labeling protocol over \BPregexNotices{}
-notices ($\sim$\BPregexPerClass{} per predicted class); detailed
-metrics are in the Online Appendix.\footnote{The regex relies on
-literal court-order references whose presence or absence is
-independent of the price outcomes we estimate, so any residual
-misclassification attenuates rather than biases our coefficients.}
+Three administrative datasets, January \BPsampleStartYear{} through
+December \BPsampleEndYear. The first is the universe of bid-level
+records from the BEC electronic procurement platform for SES/SP
+purchases of medical supplies (BEC Group~\BPbecGroup). Each
+observation is a purchase-offer-item (POI), recording the reference
+price set during the planning phase, the winning bid price, the
+number of bidding firms, the quantity ordered, the modality
+(\textit{preg\~ao eletr\^onico} or \textit{convite}), and the
+tender outcome.
+
+The second is a purchase-type classifier that assigns each POI to
+one of three regimes: ordinary, administrative-request, or litigated.
+Brazilian law requires the tender notice for any urgent purchase to
+reference the underlying court order or administrative-channel
+request, and the classifier exploits this regulatory disclosure
+through a regular-expression algorithm applied to free-text notices.
+We validate it on a stratified hand-labeled sample of
+\BPregexNotices{} notices ($\sim$\BPregexPerClass{} per predicted
+class); detailed metrics are in the Online
+Appendix.\footnote{The regex relies on literal court-order
+references whose presence is independent of the price outcomes we
+estimate, so any residual misclassification attenuates rather than
+biases our coefficients.}
+
 The third is the SES/SP S-CODES database of health-related
-litigation, from which we recover SUS-formulary status and
-injunction enforcement data for each litigated request.
+litigation, which provides SUS-formulary status and injunction
+enforcement data for each litigated request.
 
 The binary outcome \emph{tender success} equals one if the POI
 closes with an accepted winning bid within its procurement order and
