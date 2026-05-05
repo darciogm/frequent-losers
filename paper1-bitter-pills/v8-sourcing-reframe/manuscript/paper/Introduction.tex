@@ -1,157 +1,104 @@
 \section{Introduction}
 \label{sec:introduction}
 
+Do sanctioned officials face higher prices because suppliers extract
+delivery-risk premia, or because the buyer's sourcing pattern shifts?
 Standard models of bureaucratic accountability
-\citep{prendergast2007bureaucrats} predict that sanction-exposed
-officials face higher per-unit prices because suppliers extract a
-delivery-risk premium. Passive-waste accounts
-\citep{bandiera2009active} predict instead that distortion operates
-through \emph{sourcing}---which firm wins the contract, what order
-size is feasible---rather than through within-firm pricing. The two
+\citep{prendergast2007bureaucrats} predict the first; passive-waste
+accounts \citep{bandiera2009active} predict the second. The two
 predictions are observationally equivalent in cross-buyer data, where
 buyer-supplier match heterogeneity confounds within-firm and
-between-firm margins. We provide a within firm-buyer-item test of these competing
-predictions in a setting where accountability pressure should bite
-hardest: court-mandated pharmaceutical procurement under fines,
-personal liability, and fund seizure for delivery failure. The within-firm prediction fails; the sourcing
-prediction holds.
+between-firm margins. We provide a within firm-buyer-item test in a
+setting where accountability pressure should bite hardest:
+court-mandated pharmaceutical procurement in S\~ao Paulo under fines,
+personal liability, and fund seizure for delivery failure. The
+within-firm prediction fails; the sourcing prediction holds.
 
+\paragraph{Setting and identification asset.}
 We use all pharmaceutical procurement by the S\~ao Paulo State
 Department of Health (SES/SP) from \BPsampleStartYear{} through
-\BPsampleEndYear: \BPnPOIfull{} purchase-offer-item observations on the
-state's electronic procurement platform (BEC), which is the mandatory
-channel for common goods in the state since~\BPbecMandatorySinceYear.
-Court orders and administrative requests partition urgent purchases
-into two types that share all planning constraints---compressed
-timelines (\BPurgentPlanLow--\BPurgentPlanHigh{} days against the
-\BPordPlanLow--\BPordPlanHigh{} days for ordinary purchases), small
-quantities, diverted budget resources, and the same auction
-procedures---but differ in penalty exposure. Litigated purchases expose
-the official to fines, personal liability, and fund seizure if delivery
-fails. Administrative requests, instituted by the SES/SP in
-\BPsampleStartYear, carry no such penalties. This is the institutional
-contrast we exploit, and it is, to our knowledge, unique in the
-Brazilian and Latin American procurement record.
+\BPsampleEndYear: \BPnPOIfull{} purchase-offer-item observations on
+the state's electronic procurement platform (BEC), which is the
+mandatory channel for common goods since
+\BPbecMandatorySinceYear. The institutional asset that identifies our
+comparison is a parallel administrative-request channel, instituted by
+the SES/SP scientific committee in \BPsampleStartYear: it shares all
+planning constraints of court-mandated procurement (timelines of
+\BPurgentPlanLow--\BPurgentPlanHigh{} days, small quantities, diverted
+budget, identical auction procedures on BEC) but carries no penalty
+for officials when delivery fails. To our knowledge, no other
+Brazilian state operates a comparable dual channel for urgent
+pharmaceutical demand.
 
-\paragraph{Selection bounds}
-The administrative subsample is itself a non-random subset of urgent
-demand: the SES/SP scientific committee admits cases on
-cost-effectiveness criteria. A pre-period probit on item characteristics
-recovers the committee's selection rule and confirms that admin
-over-represents items that would have been priced lower under any
-regime: the coefficient on pre-period log reference price is
-\BPutgProbitRefPriceCoef{} (\BPutgProbitRefPricePval); on SUS-formulary
-status, \BPutgProbitSUSCoef{} (\BPutgProbitSUSPval). The naive
-under-the-gun (UTG) gap of \BPutgPointNaive{} therefore confounds the
-sanction effect with selection on item economics. Under Manski-Lee
-monotone restrictions on the committee rejection rule, the UTG gap
-lies in $[\BPutgBoundLow, \BPutgBoundHigh]$. A parametric Heckman
-correction is non-identified in this design (Online
-Appendix~\ref{tab:utg_heckman}); the Lee bound is the primary
-selection-corrected object.
+\paragraph{Findings.}
+\emph{First, there is no within-firm markup.} Within firm-buyer-item
+triples observed under both regimes
+(\BPutgTripleCountUTG{} triples, \BPutgTripleNUTG{} observations),
+the Admin coefficient is $\hat\beta=\BPutgTripleCoefUTG$
+(SE $\BPutgTripleSEUTG$), statistically indistinguishable from zero.
+The same firm prices the same item to the same buyer at the same
+level under either regime; the delivery-risk-premium prediction is
+empirically rejected. \emph{Second, the bounded under-the-gun gap is
+modest.} Under Manski-Lee monotone restrictions on committee
+selection, the gap lies in $[\BPutgBoundLow, \BPutgBoundHigh]$, at
+the lower end of within-buyer procurement-cost dispersion documented
+in comparable settings \citep[e.g.,][]{best2023procurement,
+bosio2022public}. \emph{Third, the gap operates through demand
+fragmentation.} Administrative orders are roughly
+\BPutgQtyAdminFoldPref$\times$ larger than litigated orders; the
+bulk-discount channel mechanically delivers $\BPutgMechanicalCone$ in
+admin-minus-litigated log price. The within-firm null contributes
+zero, and the residual loads what the identity attributes neither to
+scale nor to pricing---an imprecisely identified sourcing-and-aggregation
+channel (Figure~\ref{fig:cascade}).
 
-\paragraph{Three findings}
-\emph{First}, the headline urgent-vs-ordinary premium is
-\BPnegPctHeadline{} across the full sample, with the same item under
-compressed timelines attracting \BPfirmsPctHeadlineAbs{} fewer bidders;
-urgent tenders nonetheless succeed \BPsuccessPP{} \emph{more} often than
-their ordinary counterparts---a pattern that rules out an alternative in
-which urgency simply selects easier purchases. The \BPnegPctHeadline{}
-within-item premium sits at the lower end of plausible procurement-cost
-dispersion in comparable bureaucratic settings
-\citep[e.g.,][]{best2023procurement, bosio2022public}, consistent with
-the tighter within-buyer within-item identification we use here.
+\paragraph{Identification discipline.}
+Selection into the administrative channel is non-random: the
+scientific committee admits on cost-effectiveness criteria. A
+pre-period probit confirms that admin over-represents items that
+would have been priced lower under any regime (coefficient on
+pre-period log reference price \BPutgProbitRefPriceCoef,
+\BPutgProbitRefPricePval; on SUS-formulary status
+\BPutgProbitSUSCoef, \BPutgProbitSUSPval), motivating the Lee
+bound.\footnote{A parametric Heckman correction is non-identified in
+this design (Online Appendix~\ref{tab:utg_heckman}).} Wild cluster
+bootstrap on the preferred-FE Admin coefficient delivers
+$p_{\mathrm{boot}}=\BPutgBoottestPval$ (\BPutgBoottestB{} Rademacher
+replicates, 95\% CI in log-points
+$[\BPutgBoottestCIlow, \BPutgBoottestCIhigh]$). A
+Borusyak-Jaravel-Spiess event-study with a Rambachan-Roth
+\citep{rambachan2023more} honest sensitivity overlay is reported
+supportively in the Appendix; the cross-sectional FE design is
+primary. A placebo on items never subject to litigation delivers
+economically and statistically zero coefficients
+($\BPplaceboNegCoef$, SE $\BPplaceboNegSE$ for negotiated prices),
+confirming that the urgency premium does not exist outside the
+litigation pool.
 
-\emph{Second, the price margin is not a within-firm markup.} Within
-firm-buyer-item triples observed under both the litigated and the
-administrative regime (\BPutgTripleCountUTG{} triples,
-\BPutgTripleNUTG{} observations), the Admin coefficient is
-$\hat\beta=\BPutgTripleCoefUTG$ ($\mathrm{SE}=\BPutgTripleSEUTG$),
-statistically indistinguishable from zero. The same firm prices the
-same item to the same buyer at the same level under either regime.
-Standard accountability-distortion intuition
-\citep{prendergast2007bureaucrats} predicts that sanction-exposed
-officials face higher per-unit prices because suppliers extract a
-delivery-risk premium; in our data, that mechanism is absent.
-
-\emph{Third}, the bounded UTG admits an arithmetic decomposition.
-Administrative orders are roughly \BPutgQtyAdminFoldPref$\times$ larger
-than litigated orders, and the bulk-discount elasticity implies a
-mechanical price effect through the quantity channel of
-$\BPutgMechanicalCone$ in the admin-minus-litigated log price. The
-within-firm null contributes essentially zero. The composition
-residual ($\BPutgCompositionResidual$ point estimate; bootstrap CI
-[\BPutgCompCIlow, \BPutgCompCIhigh]) closes the identity by
-elimination: it is wide and inherits the variance of the other
-components, but its sign is consistent with the bulk-discount
-disadvantage of small litigated orders dominating and producing the
-net observed gap. Sourcing-and-aggregation channels, not within-firm
-pricing, load the cost margin.
-Figure~\ref{fig:cascade} reports the decomposition.
-
-\paragraph{Inference, dynamics, and falsification}
-Wild cluster bootstrap inference on the preferred-FE Admin coefficient
-delivers $p_{\mathrm{boot}}=\BPutgBoottestPval$
-($B=\BPutgBoottestB$, Rademacher), with a 95\% CI in log-points of
-$[\BPutgBoottestCIlow, \BPutgBoottestCIhigh]$. A Borusyak-Jaravel-Spiess
-imputation event-study around each item's first court order shows
-post-period coefficients rising from $\BPbjsETzero$ at $t=0$ to
-$\BPbjsETfive$ at $t=+5$ (Online Appendix), and a Rambachan-Roth
-honest sensitivity test \citep{rambachan2023more} on those estimates is
-honored in the main text: the $t=0$ effect is significant under
-parallel trends but does not survive a linear extrapolation of the
-observed pre-period maximum, so we treat the cross-sectional FE design
-as primary and the event study as supportive. A placebo on items never
-subject to litigation delivers economically and statistically zero
-coefficients ($\BPplaceboNegCoef$, SE $\BPplaceboNegSE$ for negotiated
-prices), confirming that the urgency premium does not exist outside
-the litigation pool.
-
-\paragraph{Contributions}
-Our central contribution is conceptual: \emph{the sourcing-vs-pricing
-distinction.} Standard intuition under accountability mechanisms relies
-on within-firm pricing distortion; the within firm-buyer-item triple
-evidence cleanly rejects that mechanism in this setting and isolates
-sourcing under fragmentation as the empirical signature of
-accountability-induced inefficiency. Two supporting contributions
-follow: (i) we provide direct within-item evidence on the price impact
-of court-mandated procurement, exploiting an institutional within-urgent
-contrast unique to S\~ao Paulo; and (ii) in contrast to
-\citet{coviello2018court}---where slow courts \emph{extend} procurement
-timelines and raise prices through delay---we study judicial injunctions
-that \emph{compress} timelines, with the cost concentrated in items
-where demand aggregation matters most. The two papers identify
-alternative institutional channels through which judicial intervention
-raises procurement costs.
-
-\paragraph{Welfare, policy, and literature}
-Applying the bounded UTG to \BPwelfareBoundAnnualSpend{} of annual
-litigated spending in S\~ao Paulo with an admissibility-share
-calibration of \BPwelfareBoundAdmissibility{} gives a per-unit-price
-welfare bound of \BPwelfareBound{} per year (Lee range
-$[\BPwelfareBoundCIlow, \BPwelfareBoundCIhigh]$). The mechanism the
-paper isolates points to demand-aggregation reforms, not contract-design
-changes deterring opportunistic markup. The paper engages procurement
-design and frictions \citep{bandiera2009active, best2023procurement,
-bosio2022public, decarolis2018buyer, carril2026competition},
-accountability-induced bureaucratic distortion
+\paragraph{Contributions, welfare, and literature.}
+The central contribution is conceptual: the sourcing-vs-pricing
+distinction. The cross-buyer literature cannot separate within-firm
+pricing from equilibrium supplier selection; the within firm-buyer-item
+triple does, and isolates sourcing under fragmentation as the
+empirical signature of accountability-induced inefficiency. Two
+supporting contributions follow. Whereas \citet{coviello2018court}
+document timeline \emph{extension} as a procurement cost driver, we
+identify timeline \emph{compression} under sanctions as an alternative
+channel, with the cost concentrated where demand aggregation matters
+most. The finding directly engages recent JPubE evidence on group
+purchasing in health \citep{lin2025value}, which identifies the same
+demand-aggregation lever we find compromised by court mandates. The
+paper engages procurement design and frictions \citep{bandiera2009active,
+best2023procurement, bosio2022public, decarolis2018buyer,
+carril2026competition}, accountability-induced bureaucratic distortion
 \citep{prendergast2007bureaucrats, bandiera2021allocation}, and the
 judicialization of health in Latin America \citep{wang2015right,
-ferraz2009right, biehl2009will}---providing a within firm-buyer-item
-test of the delivery-risk-premium prediction, which we reject, and a
-bid-level cost-channel decomposition of court-mandated procurement. The methodological discipline honors
+ferraz2009right, biehl2009will}. Methodologically, the design honors
 post-treatment-bias \citep{acharya2016explaining}: quantity- and
 firm-fixed-effect controls are read as channel-isolating rather than
-direct-effect estimators.
-
-Figure~\ref{fig:cascade} previews the central decomposition: the
-within firm-buyer-item bar is statistically indistinguishable from
-zero, while the mechanical bulk-discount channel and the supplier
-composition residual jointly account for the observed gap.
-
-The remainder of the paper proceeds as follows.
-Section~\ref{sec:institutional} describes the institutional setting.
-Section~\ref{sec:data} presents the data. Section~\ref{sec:empirical}
-details the empirical strategy and the selection-bound design.
-Section~\ref{sec:results} presents results, organized around the
-sourcing-vs-pricing pivot. Section~\ref{sec:conclusion} concludes.
+direct-effect estimators. Applied to the \BPwelfareBoundAnnualSpend{}
+of annual litigated spending in S\~ao Paulo with an admissibility
+calibration of \BPwelfareBoundAdmissibility, the bounded UTG implies a
+per-unit-price welfare cost of \BPwelfareBound{} per year (Lee range
+$[\BPwelfareBoundCIlow, \BPwelfareBoundCIhigh]$). The policy lever is
+demand aggregation, not contract design.
