@@ -1,0 +1,138 @@
+\documentclass[review,12pt,authoryear]{elsarticle}
+
+% Typography & Layout
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+\doublespacing
+
+% Math
+\usepackage{amsmath,amssymb}
+
+% Tables & Figures
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{rotating}
+\usepackage{lscape}
+\usepackage{adjustbox}
+
+% Float control
+\usepackage{placeins}
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
+% References
+\usepackage{natbib}
+\setlength{\bibsep}{0pt plus 0.3ex}
+
+% Color (used by values.tex for TBD placeholders)
+\usepackage{xcolor}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+\usepackage{url}
+
+% Misc
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,decorations.pathreplacing}
+\usepackage{caption}
+
+% Custom commands
+\newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+% Paths
+\graphicspath{{figures/}{../../output/figures/}{../../../v4/pub/figures/}}
+
+% Macro layer: every numerical claim, table input, and figure path resolves
+% through values.tex (manual + auto-generated blocks). See analysis/_macros.R.
+\input{values}
+
+% Journal information
+\journal{Journal of Public Economics}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Bitter Pills:\\ Sourcing under Compressed Timelines and the Cost of Compliance in Brazilian Public Health Procurement%
+\tnoteref{t1}}
+\tnotetext[t1]{Short paper. This version: \BPversionDate. We thank
+[acknowledgments to be added]. All errors are our own.}
+
+\author[INSPER]{Darcio Genicolo-Martins\corref{cor1}}
+\ead{darciogm1@insper.edu.br}
+\author[INSPER]{Paulo Furquim de Azevedo}
+\ead{paulofa1@insper.edu.br}
+\cortext[cor1]{Corresponding author.}
+\address[INSPER]{Insper Institute of Education and Research,
+  Rua Quat\'a 300, S\~ao Paulo, SP 04546-042, Brazil}
+
+\begin{abstract}
+Judicial enforcement is essential for the rule of law, yet the
+\emph{design} of enforcement can generate economic inefficiency.
+We provide bid-level evidence on the procurement cost of court-mandated
+pharmaceutical purchases in S\~ao Paulo, Brazil
+(\BPsampleStartYear--\BPsampleEndYear). With item, time, and buyer
+fixed effects, urgent purchases carry negotiated prices
+\BPnegPctHeadline{} higher and attract \BPfirmsPctHeadline{} fewer
+bidders than ordinary purchases of the same item; they also succeed
+\BPsuccessPP{} more often. Within urgent purchases, a parallel
+administrative-request channel that shares all planning constraints
+but carries no penalty for officials offers an institutional contrast.
+The naive ``under the gun'' (UTG) gap between litigated and administrative
+urgent purchases of the same item is large
+(\BPutgPointNaive), but it is contaminated by selection: the SES/SP
+scientific committee admits cases on cost-effectiveness criteria.
+Manski-Lee bounds put the selection-corrected UTG at
+$[\BPutgBoundLow, \BPutgBoundHigh]$.
+The economically interesting finding is what produces the gap.
+Within firm-buyer-item triples observed in both regimes, the same
+firm sells the same item to the same buyer at essentially the same
+per-unit price ($\BPutgTripleCoefUTG$, SE $\BPutgTripleSEUTG$, NULL):
+there is \emph{no} within-firm markup. The price margin operates
+through demand fragmentation (smaller orders forgoing bulk discounts)
+and through equilibrium changes in \emph{which} firm wins each
+contract. Accountability-driven sourcing constraints, not price
+discrimination, are what make compliance expensive. A bounded welfare
+calculation places the per-unit-price cost of the litigated regime
+at \BPwelfareBound{} per year on the \BPwelfareBoundAnnualSpend{} of
+annual litigated spending.
+\end{abstract}
+
+\begin{keyword}
+public procurement \sep health litigation \sep enforcement costs \sep
+judicial mandates \sep accountability design \sep sourcing
+\JEL D44 \sep D73 \sep H51 \sep H57 \sep I18 \sep K41
+\end{keyword}
+
+\end{frontmatter}
+
+\input{Introduction}
+\input{InstitutionalBackground}
+\input{DataAndSample}
+\input{EmpiricalStrategy}
+\input{Results}
+\input{Conclusion}
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{References}
+
+\clearpage
+\appendix
+\renewcommand{\thetable}{A.\arabic{table}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\input{Appendix}
+
+\end{document}

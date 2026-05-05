@@ -1,0 +1,211 @@
+\section{Results}
+\label{sec:results}
+
+We organize the results around the central conceptual contrast of the
+paper: the urgency premium operates through \emph{sourcing} (which firm
+wins, what order size is feasible) and not through within-firm
+\emph{pricing}. We first document the headline urgent-vs-ordinary
+patterns, then bound the under-the-gun (UTG) gap under selection,
+then present the within firm-buyer-item null that pivots the
+interpretation, and finally reconcile the bounded UTG with its
+mechanical components.
+
+\subsection{Urgency raises prices and thins competition; tenders still clear}
+\label{sec:main_results}
+
+Urgent purchases carry negotiated prices \BPnegPctHeadline{} higher
+than ordinary purchases of the same item, with the same item attracting
+\BPfirmsPctHeadline{} fewer bidding firms. Reference prices set during
+the planning phase rise by \BPrefPctPreferred{} in the preferred
+specification ($p<0.10$); the raw item-FE-only premium is
+\BPrefPctItemFE, attenuating sharply once buyer fixed effects absorb
+buyer-level heterogeneity. Negotiated prices show the same pattern,
+ranging from \BPnegPctItemFE{} with item FE alone to \BPnegPctRange{}
+with our preferred specifications.
+
+Despite worse conditions, urgent tenders \emph{succeed} more often:
+\BPsuccessPP{} ($p<0.01$). This rules out the alternative that urgent
+purchases are simply cancelled when the bid distribution is unfavourable;
+officials accept worse terms to ensure compliance. The contrast with
+the cross-buyer dispersion benchmarks in the literature
+(Bandiera-Prat-Valletti 2009: \BPbpvBaseline; Best-Hjort-Szakonyi 2023:
+\BPbhsBaseline; Bosio et al.\ 2022: \BPbosioBaseline; Coviello-Guglielmo-Spagnolo
+2018: \BPcgsBaseline) places our \BPnegPctHeadline{} within-item
+premium at the lower end of plausible passive-waste magnitudes; the
+same-buyer, same-item contrast is tighter than typical cross-buyer
+dispersion, so a smaller headline number is consistent with the design.
+
+\BPvtab{tab_neg_prices}
+
+\subsection{The under-the-gun comparison and selection bounds}
+\label{sec:utg_bounds}
+
+The naive UTG comparison contrasts litigated and administrative urgent
+purchases of the same item. Both share planning constraints; they
+differ only in penalty exposure. The naive coefficient on
+\textit{Admin} is $\BPutgCoef$ ($p<0.05$) under the preferred
+specification, implying litigated purchases are \BPutgPointNaive{} more
+expensive than administrative ones. Wild cluster bootstrap inference
+(Rademacher weights, $B=\BPutgBoottestB$) confirms the result with
+$p=\BPutgBoottestPval$ and a 95\% CI in log-points of
+$[\BPutgBoottestCIlow, \BPutgBoottestCIhigh]$.
+
+This comparison is contaminated by selection into the administrative
+channel: the SES/SP scientific committee admits cases on cost-effectiveness
+criteria. The committee's selection rule, recovered from a probit on
+pre-period item characteristics, is informative
+($N=\BPutgFirstStageN$): items with higher pre-period reference prices
+are less likely to be admitted (probit coefficient $-0.051$, $p<0.001$);
+SUS-formulary items are less likely (probit coefficient $-0.265$,
+$p<0.001$). Admin therefore over-represents items that would
+have been priced lower under \emph{any} regime.
+
+We bound the selection wedge using Lee (2009) trimming within
+item$\times$year$\times$PBU strata where the admin sample exceeds the
+litigated count. Trimming admin observations from the top of the
+within-stratum price distribution gives the lower bound; trimming from
+the bottom gives the upper bound. Table~\ref{tab:utg_lee_bounds} reports
+the bounded UTG.
+
+\input{../../output/tables/tab_utg_lee_bounds}
+
+The bounded UTG falls in $[\BPutgBoundLow, \BPutgBoundHigh]$, well below
+the naive \BPutgPointNaive. Selection on observables explains
+approximately one-third of the headline gap.\footnote{We also report
+a Heckman parametric correction with the same first-stage probit
+(Online Appendix Table~\ref{tab:utg_heckman}). The Mills ratio is
+collinear with the second-stage fixed effects; the resulting
+Admin coefficient ($\BPutgHeckmanCoef$, SE $\BPutgHeckmanSE$) is
+uninformative. We treat the Lee bound as the primary
+selection-corrected object and the Heckman estimate as a sensitivity
+diagnostic that flags identification fragility, not as a competing
+point estimate.} The within-cell variation that identifies the tightest
+specification comes from a non-representative subsample (Online
+Appendix Table~\ref{tab:both_types_cells}): of \BPutgCellsItemYM{}
+item$\times$month cells, only \BPbothCellN{} (about 11\%) carry
+within-cell variation and they tilt toward higher-volume,
+more-frequent SUS-formulary medications. Bounded UTG estimates
+therefore speak to the lower-volume liquid items in the sample, not to
+the universe of court-mandated purchases.
+
+\subsection{Same firm, same buyer, same item: no within-firm markup}
+\label{sec:within_firm_null}
+
+The interpretation of the bounded UTG hinges on \emph{how} the gap is
+generated. We separate within-firm pricing from equilibrium supplier
+selection by restricting to firm-buyer-item triples observed under both
+the litigated and the administrative regime within urgent procurement.
+There are \BPutgTripleCountUTG{} such triples covering \BPutgTripleNUTG{}
+observations.
+
+The within firm-buyer-item Admin coefficient is
+$\BPutgTripleCoefUTG$ (SE $\BPutgTripleSEUTG$), \emph{not significantly
+different from zero}. The same firm sells the same item to the same
+buyer at essentially the same per-unit price under both regimes. There
+is no within-firm markup under sanctions. Whatever distinguishes
+litigated from administrative urgent procurement, it is not opportunistic
+pricing by suppliers that already serve the buyer's procurement.
+
+This finding is the empirical pivot of the paper. In the standard
+accountability-distortion intuition \citep{prendergast2007bureaucrats},
+sanction-exposed officials would face higher per-unit prices because
+suppliers extract a premium for delivery risk. In our setting, that
+mechanism is empirically absent.
+
+\subsection{Reconciling the bounded UTG: mechanical fragmentation, sourcing residual}
+\label{sec:reconciliation}
+
+We decompose the observed log-price gap (admin minus litigated) into
+three components linked by an arithmetic identity:
+\begin{equation*}
+\underbrace{\Delta y_{\text{obs}}}_{-0.259}
+\;=\;
+\underbrace{\beta_{\text{bulk}} \cdot \Delta \ln Q_{\text{adm-lit}}}_{\text{mechanical C1: } -0.397}
+\;+\;
+\underbrace{\beta_{\text{within-firm}}}_{\text{within-firm: } +0.035}
+\;+\;
+\underbrace{\beta_{\text{composition}}}_{\text{residual: } +0.103}.
+\end{equation*}
+Table~\ref{tab:utg_reconciliation} reports the three components and
+their implied per-unit-price magnitudes.
+
+\input{../../output/tables/tab_utg_reconciliation}
+
+Three readings follow. \emph{First}, the mechanical bulk-discount channel
+($\BPutgMechanicalCone$, admin cheaper by 32.8\% from order-size differences
+alone) over-explains the observed gap. The qty channel pulls the
+admin-vs-lit price gap below what we observe.
+
+\emph{Second}, the within firm-buyer-item offset is small and not
+significant ($\BPutgWithinFirmOffset$, NULL). Within-firm pricing
+behavior is not where the residual wedge lives.
+
+\emph{Third}, the supplier composition residual is positive
+($\BPutgCompositionResidual$): holding quantity constant and within
+firms not observed in both regimes, the litigated supplier mix is
+\emph{cheaper} by about 11\% than the administrative supplier mix.
+This reverses the sign one might expect under naive intuition: the
+sanction-exposed regime forces sourcing onto a different (and on
+average less expensive per unit) point of the supplier distribution,
+but the bulk-discount disadvantage of small lit orders dominates,
+producing the net 23\% lit-over-admin observed gap. The cost of
+sanctions, in this setting, is a sourcing-and-aggregation cost, not a
+pricing cost.
+
+Figure~\ref{fig:cascade} visualizes the decomposition.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{../../output/figures/fig_sourcing_vs_pricing.pdf}
+  \caption{Sourcing vs.\ pricing: reconciliation of the under-the-gun gap.}
+  \label{fig:cascade}
+  \par\smallskip\footnotesize\textit{Notes:} Bars give the four
+  components of the identity in Table~\ref{tab:utg_reconciliation},
+  expressed as percent (admin minus lit). The within firm-buyer-item
+  offset is not statistically distinguishable from zero. The composition
+  residual is the part of the observed UTG that operates through
+  equilibrium changes in \emph{which} firm wins the contract.
+\end{figure}
+
+\subsection{Falsification: items never litigated}
+\label{sec:placebo}
+
+If the urgency premium reflects judicial pressure rather than unobserved
+item characteristics, it should be absent for items that are never
+subject to court orders. Running the preferred specification on items
+with zero litigated purchases across \BPsampleStartYear--\BPsampleEndYear{}
+(restricted to those with both ordinary and administrative purchases)
+yields placebo coefficients of $\BPplaceboNegCoef$ (SE
+$\BPplaceboNegSE$) for negotiated prices and $\BPplaceboRefCoef$ (SE
+$\BPplaceboRefSE$) for reference prices. Both are economically small
+and statistically insignificant (Online Appendix
+Table~\ref{tab:placebo}). The urgency premium exists only for items
+that are targets of litigation.
+
+\subsection{Where the cost bites hardest}
+\label{sec:heterogeneity}
+
+Splitting items by mean number of participating firms (median
+\BPhetHHIMedianValue), competitive items show a \BPhetHHIlowBaselinePct{}
+urgency premium with \BPhetHHIlowFirmFEPct{} surviving firm fixed
+effects (\BPhetHHIlowAttnPct\% attenuation). Concentrated items show no
+detectable premium (\BPhetHHIhighBaselinePct, not significant). The
+pattern matches the sourcing reading: urgency erodes competitive
+pressure where there is competitive pressure to erode. Where the buyer
+has no outside option in either regime, urgency carries little
+additional cost.
+
+\subsection{Summary of effects}
+\label{sec:summary}
+
+Across the full sample, the \BPnegPctHeadline{} urgent-vs-ordinary
+premium reflects compressed planning timelines and reduced bidder
+participation. Within urgent procurement, the bounded UTG falls in
+$[\BPutgBoundLow, \BPutgBoundHigh]$ once selection into the
+administrative channel is corrected. The bounded UTG itself decomposes
+into a mechanical bulk-discount fragmentation channel, a null within-firm
+pricing component, and a positive supplier composition residual.
+Same firms price the same items the same way regardless of regime.
+Different firms win urgent contracts under the two regimes, and the
+sourcing shift is the empirical signature of accountability-induced
+inefficiency in our data.
