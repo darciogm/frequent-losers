@@ -2,24 +2,19 @@
 # its mechanical C1 prediction, with the within-firm-buyer-item offset
 # isolating the supplier-composition residual.
 #
-# Identity (in log-points, lit minus admin):
+# Identity (in log-points, admin minus lit):
 #   observed UTG  =  mechanical C1 prediction
 #                  + within-firm offset
 #                  + supplier composition residual
 #
-# Inputs:
-#   - bulk-discount elasticity  (v7: -0.341 from UTG Panel B qty coef)
-#   - log qty gap admin minus lit  (v7: 1.34)
-#   - within-firm-buyer-item triple coef  --- recomputed here for the UTG
-#     contrast (lit vs admin within urgent), since v7's triple coef is for
-#     urgent vs ordinary
+# v8 update (2026-05-05): added cluster-bootstrap on PBU for 95% CIs on each
+# of the four bars; redesigned headline figure to put the within-firm null in
+# visual headline (neutral fill + heavy outline + direct annotation).
 #
-# Output:
+# Outputs:
 #   - tab_utg_reconciliation.tex
-#   - fig_sourcing_vs_pricing.pdf  (headline figure for v8: bar chart of
-#     observed UTG vs the three reconciliation components)
-#   - macros: BPutgMechanicalCone, BPutgWithinFirmOffset,
-#             BPutgCompositionResidual
+#   - fig_sourcing_vs_pricing.pdf  (headline figure: 4-bar identity with IC95)
+#   - macros (point estimates + CI bounds for each component)
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -65,6 +60,15 @@ if (is.na(firm_col) || all(is.na(d[[firm_col]]))) {
 }
 d[, firm := as.factor(get(firm_col))]
 d[, fbi := paste(firm, pbu_id, item_id, sep = "_")]
+
+qty_col <- intersect(c("bid_qty", "po_qty", "qty", "quantity"), names(d))[1]
+if (is.na(qty_col)) stop("No quantity column found.")
+if ("bid_qty_log" %in% names(d) && qty_col == "bid_qty") {
+  d[, lqty := bid_qty_log]
+} else {
+  d[, lqty := log(pmax(get(qty_col), 1))]
+}
+
 n_per_fbi <- d[, .N, by = .(fbi, admin)]
 fbi_both <- unique(merge(n_per_fbi[admin == 0L][, .(fbi)],
                          n_per_fbi[admin == 1L][, .(fbi)],
@@ -74,64 +78,102 @@ cat(sprintf("UTG firm-buyer-item triples observed in both regimes: %d\n",
             length(fbi_both)))
 cat(sprintf("Triple sample N: %d\n", nrow(d_triple)))
 
-# 1. Naive UTG (preferred FE)
-m_naive <- feols(bid_price_log ~ admin | item_id + year_n + pbu_id,
-                 data = d, cluster = ~pbu_id)
-b_naive <- coef(m_naive)["admin"]   # negative: admin cheaper
+# ============================================================================
+# Point estimates (the four components of the identity)
+# ============================================================================
+fit_components <- function(dat, dat_triple) {
+  m_naive  <- feols(bid_price_log ~ admin | item_id + year_n + pbu_id,
+                    data = dat, notes = FALSE, warn = FALSE)
+  m_triple <- feols(bid_price_log ~ admin | fbi + year_n,
+                    data = dat_triple, notes = FALSE, warn = FALSE)
+  m_qty    <- feols(lqty ~ admin | item_id + year_n + pbu_id,
+                    data = dat, notes = FALSE, warn = FALSE)
+  m_be     <- feols(bid_price_log ~ lqty | item_id + year_n + pbu_id,
+                    data = dat, notes = FALSE, warn = FALSE)
 
-# 2. Within-firm-buyer-item triple coef in UTG
-m_triple <- feols(bid_price_log ~ admin | fbi + year_n,
-                  data = d_triple, cluster = ~pbu_id)
-b_triple <- coef(m_triple)["admin"]
-se_triple <- sqrt(diag(vcov(m_triple)))["admin"]
-cat(sprintf("Triple UTG admin coef: %.4f (SE %.4f, N=%d)\n",
-            b_triple, se_triple, nobs(m_triple)))
+  b_naive   <- unname(coef(m_naive)["admin"])
+  b_triple  <- unname(coef(m_triple)["admin"])
+  qty_gap   <- unname(coef(m_qty)["admin"])
+  bulk_el   <- unname(coef(m_be)["lqty"])
+  mech_c1   <- bulk_el * qty_gap
+  comp_res  <- b_naive - mech_c1 - b_triple
 
-# 3. Mechanical C1 prediction
-# log qty gap admin minus lit (positive = admin orders larger)
-qty_col <- intersect(c("bid_qty", "po_qty", "qty", "quantity"), names(d))[1]
-if (is.na(qty_col)) stop("No quantity column found.")
-if ("bid_qty_log" %in% names(d) && qty_col == "bid_qty") {
-  d[, lqty := bid_qty_log]
-} else {
-  d[, lqty := log(pmax(get(qty_col), 1))]
+  list(b_naive = b_naive, b_triple = b_triple,
+       qty_gap = qty_gap, bulk_el = bulk_el,
+       mech_c1 = mech_c1, comp_res = comp_res,
+       se_triple = unname(sqrt(diag(vcov(m_triple, cluster = ~pbu_id)))["admin"]),
+       n_triple  = nobs(m_triple))
 }
-m_qty <- feols(lqty ~ admin | item_id + year_n + pbu_id, data = d, cluster = ~pbu_id)
-qty_gap <- coef(m_qty)["admin"]
-cat(sprintf("Log qty gap (admin minus lit): %.4f\n", qty_gap))
 
-# bulk-discount elasticity: regress log price on log qty within UTG
-m_be <- feols(bid_price_log ~ lqty | item_id + year_n + pbu_id, data = d, cluster = ~pbu_id)
-bulk_elast <- coef(m_be)["lqty"]
-cat(sprintf("Bulk-discount elasticity: %.4f\n", bulk_elast))
+pt <- fit_components(d, d_triple)
+cat(sprintf("Triple UTG admin coef: %.4f (SE %.4f, N=%d)\n",
+            pt$b_triple, pt$se_triple, pt$n_triple))
+cat(sprintf("Log qty gap (admin minus lit): %.4f\n", pt$qty_gap))
+cat(sprintf("Bulk-discount elasticity: %.4f\n", pt$bulk_el))
+cat(sprintf("Mechanical C1 (admin minus lit): %.4f\n", pt$mech_c1))
+cat(sprintf("Supplier composition residual: %.4f\n", pt$comp_res))
+bp_log_step("point estimates", t0, LOG)
 
-mech_c1_log <- bulk_elast * qty_gap
-cat(sprintf("Mechanical C1 prediction (admin minus lit log price): %.4f -> pct = %.2f%%\n",
-            mech_c1_log, (exp(mech_c1_log) - 1) * 100))
+# ============================================================================
+# Cluster bootstrap on PBU --- 95% CI for each component
+# ============================================================================
+B <- 499L
+pbu_levels <- unique(d$pbu_id)
+n_pbu <- length(pbu_levels)
+set.seed(20260505L)
 
-# 4. Supplier composition residual = observed - mechanical - within-firm offset
-# All in log points, admin minus lit perspective
-composition_log <- b_naive - mech_c1_log - b_triple
-cat(sprintf("Supplier composition residual: %.4f log -> pct %.2f%%\n",
-            composition_log, (exp(composition_log) - 1) * 100))
+boot_mat <- matrix(NA_real_, nrow = B, ncol = 4L,
+                   dimnames = list(NULL, c("obs", "mech", "within", "comp")))
 
-# Build reconciliation table
+t_boot <- Sys.time()
+for (b in seq_len(B)) {
+  idx <- sample.int(n_pbu, n_pbu, replace = TRUE)
+  pbus_b <- pbu_levels[idx]
+  # Build the resampled dataset (preserve cluster structure)
+  d_b <- d[d$pbu_id %in% pbus_b]
+  fbi_both_b <- intersect(fbi_both, unique(d_b$fbi))
+  if (length(fbi_both_b) < 50L) next  # skip degenerate draws
+  d_triple_b <- d_b[fbi %in% fbi_both_b]
+  est <- tryCatch(
+    fit_components(d_b, d_triple_b),
+    error = function(e) NULL
+  )
+  if (is.null(est)) next
+  boot_mat[b, ] <- c(est$b_naive, est$mech_c1, est$b_triple, est$comp_res)
+  if (b %% 50L == 0L) cat(sprintf("  bootstrap rep %d/%d\n", b, B))
+}
+boot_mat <- boot_mat[complete.cases(boot_mat), , drop = FALSE]
+cat(sprintf("Bootstrap reps usable: %d / %d\n", nrow(boot_mat), B))
+bp_log_step("cluster bootstrap", t_boot, LOG)
+
+ci_pct <- function(x) (exp(quantile(x, c(0.025, 0.975), na.rm = TRUE)) - 1) * 100
 to_pct <- function(b) (exp(b) - 1) * 100
+
+cis <- list(
+  obs    = ci_pct(boot_mat[, "obs"]),
+  mech   = ci_pct(boot_mat[, "mech"]),
+  within = ci_pct(boot_mat[, "within"]),
+  comp   = ci_pct(boot_mat[, "comp"])
+)
+
+# ============================================================================
+# Reconciliation table (point estimates only --- table format unchanged)
+# ============================================================================
 res <- data.table(
   component = c("Observed UTG (admin minus lit, log price)",
                 "Mechanical C1: bulk-discount x qty gap",
                 "Within firm-buyer-item offset",
                 "Supplier composition residual"),
-  log_pct = c(b_naive, mech_c1_log, b_triple, composition_log),
-  pct     = c(to_pct(b_naive), to_pct(mech_c1_log),
-              to_pct(b_triple), to_pct(composition_log))
+  log_pct = c(pt$b_naive, pt$mech_c1, pt$b_triple, pt$comp_res),
+  pct     = c(to_pct(pt$b_naive), to_pct(pt$mech_c1),
+              to_pct(pt$b_triple), to_pct(pt$comp_res))
 )
 print(res)
 
 ktab <- kbl(res, format = "latex", booktabs = TRUE, digits = 3,
             col.names = c("Component", "Log-points (admin minus lit)",
                           "Implied \\% (admin vs lit)"),
-            label = "tab:utg_reconciliation",
+            label = "utg_reconciliation",
             caption = paste0("UTG reconciliation: observed log-price gap decomposed into mechanical bulk-discount prediction, within firm-buyer-item offset, and supplier composition residual. ",
                              format(length(fbi_both), big.mark = ","), " triples observed in both regimes."),
             escape = FALSE) |>
@@ -140,44 +182,85 @@ ktab <- kbl(res, format = "latex", booktabs = TRUE, digits = 3,
     "Within-firm offset estimated on firm-buyer-item triples observed under both",
     "litigated and administrative urgent procurement (no mechanical C1 contribution).",
     "Composition residual is the part of the observed UTG that operates through",
-    "equilibrium changes in which firm wins the contract."),
+    "equilibrium changes in which firm wins the contract.",
+    sprintf("95\\%% cluster-bootstrap CIs (PBU, B=%d): observed [%.1f, %.1f]; mech C1 [%.1f, %.1f]; within-firm [%.1f, %.1f]; composition [%.1f, %.1f].",
+            nrow(boot_mat),
+            cis$obs[1], cis$obs[2],
+            cis$mech[1], cis$mech[2],
+            cis$within[1], cis$within[2],
+            cis$comp[1], cis$comp[2])),
     general_title = "", footnote_as_chunk = TRUE, escape = FALSE)
 writeLines(ktab, file.path(OUT, "tables", "tab_utg_reconciliation.tex"))
 
-# Headline figure: sourcing vs pricing dichotomy
+# ============================================================================
+# Headline figure --- redesign for v8 (NULL in visual headline)
+# ============================================================================
 plot_df <- data.table(
-  comp = factor(c("Observed", "Mechanical\nC1 (qty)",
-                  "Within-firm\noffset", "Composition\n(sourcing)"),
-                levels = c("Observed", "Mechanical\nC1 (qty)",
-                           "Within-firm\noffset", "Composition\n(sourcing)")),
-  pct = c(to_pct(b_naive), to_pct(mech_c1_log),
-          to_pct(b_triple), to_pct(composition_log))
+  comp_short = c("Observed", "Mechanical C1\n(quantity)",
+                 "Within-firm\n(no markup)", "Composition\n(sourcing)"),
+  comp_order = 1:4,
+  pct        = c(to_pct(pt$b_naive), to_pct(pt$mech_c1),
+                 to_pct(pt$b_triple), to_pct(pt$comp_res)),
+  ci_lo      = c(cis$obs[1], cis$mech[1], cis$within[1], cis$comp[1]),
+  ci_hi      = c(cis$obs[2], cis$mech[2], cis$within[2], cis$comp[2])
 )
-p <- ggplot(plot_df, aes(comp, pct, fill = comp)) +
-  geom_col(width = 0.65) +
-  geom_hline(yintercept = 0, color = "grey30") +
-  scale_fill_manual(values = c("Observed" = "grey20",
-                               "Mechanical\nC1 (qty)" = "#1f77b4",
-                               "Within-firm\noffset" = "#2ca02c",
-                               "Composition\n(sourcing)" = "#d62728"),
-                    guide = "none") +
-  labs(x = NULL,
-       y = "Log price gap, admin minus lit (%)",
-       caption = "Identity: Observed = Mechanical C1 + Within-firm + Composition.\nThe 'within-firm' bar is the price effect of urgency among same firm-buyer-item triples;\nthe 'composition' bar is the residual --- equilibrium changes in which firm wins.") +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.major.x = element_blank())
-ggsave(file.path(OUT, "figures", "fig_sourcing_vs_pricing.pdf"),
-       p, width = 6.5, height = 4, device = cairo_pdf)
+plot_df[, comp_short := factor(comp_short, levels = comp_short)]
 
+# Highlight: within-firm bar gets neutral fill + heavy outline so the null
+# reads visually before the eye reaches the caption.
+fill_pal    <- c("grey55", "grey75", "white", "grey75")
+outline_pal <- c("grey25", "grey25", "black", "grey25")
+linew_pal   <- c(0.4, 0.4, 1.4, 0.4)
+
+p <- ggplot(plot_df, aes(comp_short, pct)) +
+  geom_col(width = 0.62,
+           fill   = fill_pal,
+           color  = outline_pal,
+           linewidth = linew_pal) +
+  geom_errorbar(aes(ymin = ci_lo, ymax = ci_hi),
+                width = 0.18, color = "grey15", linewidth = 0.45) +
+  geom_hline(yintercept = 0, color = "grey30", linewidth = 0.35) +
+  annotate("text", x = 3, y = max(plot_df$pct, plot_df$ci_hi, na.rm = TRUE) * 0.55,
+           label = "no within-firm\nmarkup",
+           size = 3.2, fontface = "italic", lineheight = 0.9, color = "black") +
+  annotate("segment",
+           x = 3, xend = 3,
+           y = max(plot_df$pct, plot_df$ci_hi, na.rm = TRUE) * 0.40,
+           yend = plot_df$ci_hi[3] + 1.5,
+           color = "black", linewidth = 0.35,
+           arrow = arrow(length = unit(0.12, "cm"), type = "closed")) +
+  labs(x = NULL,
+       y = "Log price gap, admin minus lit (percent)") +
+  theme_classic(base_size = 11) +
+  theme(panel.grid.major.y = element_line(color = "grey92", linewidth = 0.3),
+        axis.line.x = element_line(color = "grey30"),
+        axis.line.y = element_line(color = "grey30"),
+        plot.margin = margin(8, 12, 8, 8))
+
+ggsave(file.path(OUT, "figures", "fig_sourcing_vs_pricing.pdf"),
+       p, width = 6.8, height = 4.2, device = cairo_pdf)
+
+# ============================================================================
+# Emit macros
+# ============================================================================
 bp_macros_emit("45_reconciliation", list(
-  utgMechanicalCone            = bp_fmt_pct(to_pct(mech_c1_log)),
-  utgWithinFirmOffset        = bp_fmt_pct(to_pct(b_triple)),
-  utgCompositionResidual     = bp_fmt_pct(to_pct(composition_log)),
-  utgTripleCoefUTG           = bp_fmt(b_triple),
-  utgTripleSEUTG             = bp_fmt(se_triple),
-  utgTripleNUTG              = bp_fmt_int(nobs(m_triple)),
-  utgTripleCountUTG          = bp_fmt_int(length(fbi_both)),
-  utgQtyGapAdminLit          = bp_fmt(qty_gap),
-  utgBulkElasticity          = bp_fmt(bulk_elast)
+  utgMechanicalCone        = bp_fmt_pct(to_pct(pt$mech_c1)),
+  utgWithinFirmOffset      = bp_fmt_pct(to_pct(pt$b_triple)),
+  utgCompositionResidual   = bp_fmt_pct(to_pct(pt$comp_res)),
+  utgTripleCoefUTG         = bp_fmt(pt$b_triple),
+  utgTripleSEUTG           = bp_fmt(pt$se_triple),
+  utgTripleNUTG            = bp_fmt_int(pt$n_triple),
+  utgTripleCountUTG        = bp_fmt_int(length(fbi_both)),
+  utgQtyGapAdminLit        = bp_fmt(pt$qty_gap),
+  utgBulkElasticity        = bp_fmt(pt$bulk_el),
+  utgObsCIlow              = bp_fmt_pct(cis$obs[1]),
+  utgObsCIhigh             = bp_fmt_pct(cis$obs[2]),
+  utgMechCIlow             = bp_fmt_pct(cis$mech[1]),
+  utgMechCIhigh            = bp_fmt_pct(cis$mech[2]),
+  utgWithinCIlow           = bp_fmt_pct(cis$within[1]),
+  utgWithinCIhigh          = bp_fmt_pct(cis$within[2]),
+  utgCompCIlow             = bp_fmt_pct(cis$comp[1]),
+  utgCompCIhigh            = bp_fmt_pct(cis$comp[2]),
+  utgReconBootB            = bp_fmt_int(nrow(boot_mat))
 ))
 bp_log_step("done", t0, LOG)

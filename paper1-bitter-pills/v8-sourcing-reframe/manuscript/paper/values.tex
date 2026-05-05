@@ -144,6 +144,25 @@
 \providecommand{\BPutgWithinFirmOffset}{\BPtbd{utgWithinFirmOffset}}% within-triple coef (~-2.7\%)
 \providecommand{\BPutgCompositionResidual}{\BPtbd{utgCompositionResidual}} % residual --- supplier composition
 
+% --- First-stage probit coefficients (manual; from 41_utg_heckman first-stage probit) ---
+% Used in Intro selection-bounds paragraph and Results sec:utg_bounds prose.
+\providecommand{\BPutgProbitRefPriceCoef}{\ensuremath{-0.051}}          % pre-period log ref price coef
+\providecommand{\BPutgProbitRefPricePval}{\ensuremath{p<0.001}}
+\providecommand{\BPutgProbitSUSCoef}{\ensuremath{-0.265}}               % SUS-formulary status coef
+\providecommand{\BPutgProbitSUSPval}{\ensuremath{p<0.001}}
+
+% --- Reconciliation log-gap components (manual; algebraic of 45_reconciliation auto block) ---
+% These are the four bars of the admin-minus-lit identity in Figure 1 / Table tab:utg_reconciliation,
+% expressed in log-points and percent. Derived from BPutgQtyGapAdminLit, BPutgBulkElasticity,
+% BPutgTripleCoefUTG, and observed naive UTG (-0.259 from tab_utg_boottest).
+\providecommand{\BPutgObsLogGap}{\ensuremath{-0.259}}                   % observed admin-minus-lit log-points
+\providecommand{\BPutgMechLogGap}{\ensuremath{-0.397}}                  % mechanical C1 = bulkElast x qtyGap
+\providecommand{\BPutgWithinLogGap}{\ensuremath{+0.035}}                % within firm-buyer-item triple
+\providecommand{\BPutgCompLogGap}{\ensuremath{+0.103}}                  % residual = obs - mech - within
+\providecommand{\BPutgMechPctAbs}{32.8\%}                               % admin cheaper from quantity alone
+\providecommand{\BPutgCompPctSign}{11\%}                                % admin supplier mix more expensive than lit, conditional on Q
+\providecommand{\BPutgObsPctLitOverAdmin}{23\%}                         % 1 - exp(-0.259), level-terms lit-over-admin
+
 % --- Single welfare bound (Layer 2: H) ---
 % Replaces v7's stacked $16-88M range. One number: bounded UTG x
 % sanction-exposed share x annual spend, with explicit 95\% CI.
@@ -157,6 +176,11 @@
 \providecommand{\BPbhsBaseline}{20--40\%}                           % Best-Hjort-Szakonyi 2023 within-buyer Russian dispersion
 \providecommand{\BPbosioBaseline}{15--25\%}                         % Bosio-Djankov-Glaeser-Shleifer 2022 cross-country
 \providecommand{\BPcgsBaseline}{5--12\%}                            % Coviello-Guglielmo-Spagnolo 2018 ManSci
+
+% Positive-magnitude variant of \BPfirmsPctHeadline (signed coef would
+% render as "-5.4% fewer bidders" --- a sign double-count). Used in
+% abstract, intro, conclusion prose where the absolute value reads cleaner.
+\providecommand{\BPfirmsPctHeadlineAbs}{5.4\%}
 
 % --- Quantity / bulk-discount inputs (already produced in v7; reused in G) ---
 \providecommand{\BPrefPanelBcoef}{\BPtbd{refPanelBcoef}}
@@ -975,6 +999,24 @@
 \renewcommand{\BPutgQtyGapAdminLit}{1.208}
 \providecommand{\BPutgBulkElasticity}{}
 \renewcommand{\BPutgBulkElasticity}{-0.329}
+\providecommand{\BPutgObsCIlow}{}
+\renewcommand{\BPutgObsCIlow}{-35.2\%}
+\providecommand{\BPutgObsCIhigh}{}
+\renewcommand{\BPutgObsCIhigh}{-9.1\%}
+\providecommand{\BPutgMechCIlow}{}
+\renewcommand{\BPutgMechCIlow}{-51.2\%}
+\providecommand{\BPutgMechCIhigh}{}
+\renewcommand{\BPutgMechCIhigh}{-5.2\%}
+\providecommand{\BPutgWithinCIlow}{}
+\renewcommand{\BPutgWithinCIlow}{-6.6\%}
+\providecommand{\BPutgWithinCIhigh}{}
+\renewcommand{\BPutgWithinCIhigh}{11.0\%}
+\providecommand{\BPutgCompCIlow}{}
+\renewcommand{\BPutgCompCIlow}{-16.0\%}
+\providecommand{\BPutgCompCIhigh}{}
+\renewcommand{\BPutgCompCIhigh}{39.6\%}
+\providecommand{\BPutgReconBootB}{}
+\renewcommand{\BPutgReconBootB}{499}
 % ===== AUTO END: 45_reconciliation =====
 
 % ===== AUTO BEGIN: 42_both_types_cells =====
