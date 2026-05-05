@@ -1,0 +1,315 @@
+\setcounter{table}{0}
+\setcounter{figure}{0}
+
+\section*{Online Appendix}
+\label{sec:appendix}
+
+This appendix provides tables and figures from the main text, robustness checks, and supplementary evidence.
+
+\subsection*{A.0 Supporting Descriptives, Balance, and Secondary Outcome Tables}
+
+\BPvtab{tab_desc_stats}
+\BPvtab{tab_balance}
+\BPotab{tab_balance_within}
+\BPvtab{tab_ref_prices}
+\BPvtab{tab_quantities}
+\BPvtab{tab_firms}
+\BPvtab{tab_success}
+\BPotab{tab_placebo}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_00_litigation_map.pdf}
+  \caption{Health Litigation Cases per \BPmapPopDenom{} Inhabitants Across Municipalities in S\~ao Paulo (\BPsampleStartYear--\BPsampleEndYear)}
+  \label{fig:distribution}
+  \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on CNJ/INSPER (2019) litigation data and IBGE population estimates.
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_00b_litigation_pbu_map.pdf}
+  \caption{Public Buyer Units (SES/SP)}
+  \label{fig:pbu}
+  \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on SES/SP administrative records.
+\end{figure} Section~A.1 examines the sensitivity of the main estimates to the choice of winsorization level. Section~A.2 assesses the robustness of the ``under the gun'' estimates to progressive inclusion of control variables. Section~A.3 presents distributional evidence on key outcome variables and additional descriptive figures. Section~A.4 presents geographic descriptive evidence on administrative demand, complementing the litigation maps shown in Section~\ref{sec:institutional}. Section~A.5 presents an event study around the first court order for each item. Section~A.6 examines heterogeneity in the urgency premium along several dimensions.
+
+\subsection*{A.1 Winsorization Sensitivity}
+
+Our baseline estimates use \BPwinsorLow\%/\BPwinsorHigh\% winsorization to limit the influence of extreme outliers while preserving meaningful variation in the data. To verify that our results are not driven by this specific choice, Tables~\ref{tab:rob_ref_prices}--\ref{tab:rob_success} replicate the main regression tables under three alternative winsorization treatments: no winsorization (Panel~A), the \BPwinsorLow\%/\BPwinsorHigh\% baseline (Panel~B), and a more aggressive \BPwinsorAggLow\%/\BPwinsorAggHigh\% winsorization (Panel~C).
+
+Table~\ref{tab:rob_ref_prices} reports the sensitivity of the reference price estimates. The positive coefficient on urgent purchases is stable across all three winsorization levels: the preferred specification (column~3) yields estimates of \BProbRefNoWin{} (no winsorization), \BProbRefBase{} (baseline), and \BProbRefAgg{} with aggressive winsorization. The qualitative pattern---a large raw premium that attenuates substantially with PBU fixed effects---is preserved throughout, indicating that the reference price result is not driven by outliers.
+
+\BPvtab{tab_rob_ref_prices}
+
+Table~\ref{tab:rob_neg_prices} presents the corresponding sensitivity analysis for negotiated prices. The total effect of urgency on negotiated prices is positive and statistically significant across all winsorization levels. The coefficient magnitudes are slightly larger without winsorization (reflecting the influence of extreme values) and slightly smaller with aggressive winsorization, but the economic message remains unchanged: urgent purchases are associated with higher negotiated prices, with the preferred estimate ranging from approximately \BProbNegLow\% to \BProbNegHigh\%.
+
+\BPvtab{tab_rob_neg_prices}
+
+Table~\ref{tab:rob_firms} examines the robustness of the bidder participation results. The negative effect of urgency on the number of bidding firms is remarkably stable across winsorization levels, with preferred estimates in the range of $\BProbFirmsLow$ to $\BProbFirmsHigh$ log points. This stability is expected, since the number of firms is a count variable with limited extreme values, making it less sensitive to winsorization.
+
+\BPvtab{tab_rob_firms}
+
+Table~\ref{tab:rob_success} replicates the tender success analysis. The positive coefficient on urgency---indicating that urgent tenders are more likely to succeed---is robust across all winsorization levels. The magnitude is consistent at approximately \BProbSuccessPP{} in the preferred specification, reinforcing the interpretation that procurement officials under pressure accept less favorable terms to ensure compliance.
+
+\BPvtab{tab_rob_success}
+
+\subsection*{A.2 Under the Gun: Progressive Controls}
+
+Table~\ref{tab:rob_utg} examines the sensitivity of the ``under the gun'' estimate to the progressive inclusion of control variables and to the choice of winsorization level. Starting from the baseline specification with item + year + PBU fixed effects (column~1), we sequentially add log quantity (column~2), log reference price (column~3), log number of firms (column~4), and finally replace year FE with year-month FE (column~5). Each row within a panel shows how the coefficient on the administrative indicator responds to additional controls.
+
+The key finding is that the administrative indicator remains negative across all specifications and winsorization levels, indicating that litigated purchases are consistently more expensive than administrative ones. The coefficient is largest and most precisely estimated in the baseline specification without additional controls (column~1), where it captures the total effect including indirect channels through quantity and competition. As controls are added, the coefficient attenuates---consistent with some of the price premium operating through the quantity and competition channels---but the sign is preserved throughout. This pattern confirms that the sanction channel has an economically meaningful direct effect on prices beyond its indirect effects through procurement conditions.
+
+\BPvtab{tab_rob_utg}
+
+\subsection*{A.3 Distributional Evidence}
+
+The regression estimates in the main text capture average treatment effects. The figures below complement these estimates by showing how the \textit{distributions} of key outcome variables differ across purchase types, providing visual evidence of the systematic shifts that underlie our regression results.
+
+Figure~\ref{fig:ref_density} plots kernel density estimates of log reference prices separately for ordinary, administrative, and litigated purchases. The rightward shift of the litigated distribution relative to ordinary purchases is clearly visible, consistent with the positive coefficient on urgency in Table~\ref{tab:ref_prices}. The administrative distribution lies between the other two, reflecting the intermediate planning conditions of this purchase type.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_01_ref_price_density.pdf}
+  \caption{Distribution of Log Reference Price by Purchase Type}
+  \label{fig:ref_density}
+\end{figure}
+
+Figure~\ref{fig:negprice_density} presents the analogous comparison for log negotiated prices. The distributional shift is qualitatively similar to reference prices, with litigated purchases showing higher negotiated prices on average. Notably, the litigated distribution also exhibits a somewhat thicker right tail, suggesting that a subset of litigated purchases involves particularly large price premiums.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_02_negprice_density.pdf}
+  \caption{Distribution of Log Negotiated Price by Purchase Type}
+  \label{fig:negprice_density}
+\end{figure}
+
+Figure~\ref{fig:qty_density} shows the distribution of log quantities. In contrast to prices, here the litigated distribution is shifted \textit{leftward}, reflecting the smaller quantities demanded in urgent purchases. The ordinary distribution has a heavier right tail, consistent with the ability to aggregate demand under standard planning timelines. The administrative distribution is bimodal, spanning both small (individual prescription) and larger (stock replenishment) quantities.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_03_qty_density.pdf}
+  \caption{Distribution of Log Quantity by Purchase Type}
+  \label{fig:qty_density}
+\end{figure}
+
+Figure~\ref{fig:firms_density} displays the distribution of log number of bidding firms. The litigated distribution is clearly shifted leftward relative to ordinary purchases, with a larger mass at low participation levels. This visual pattern confirms the regression finding that urgent tenders attract fewer bidding firms, reducing the competitive pressure that normally restrains prices.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_04_firms_density.pdf}
+  \caption{Distribution of Log Number of Bidding Firms by Purchase Type}
+  \label{fig:firms_density}
+\end{figure}
+
+Figure~\ref{fig:utg_density} focuses on the ``under the gun'' subsample, comparing the distributions of log negotiated prices for administrative and litigated urgent purchases only. The rightward shift of the litigated distribution relative to administrative purchases provides direct visual evidence of the sanction channel: holding constant the urgency of the purchase, judicial pressure shifts the entire price distribution to the right.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_05_utg_density.pdf}
+  \caption{Distribution of Log Negotiated Price: Administrative vs.\ Litigated (Urgent Only)}
+  \label{fig:utg_density}
+\end{figure}
+
+Figure~\ref{fig:success_bar} compares tender success rates across purchase types. Consistent with the LPM estimates, litigated purchases have the highest success rate, followed by administrative and ordinary purchases. This ordering is consistent with the ``under the gun'' mechanism: the greater the penalty for procurement failure, the higher the observed success rate, as officials accept less favorable terms to avoid sanctions.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_06_success_bar.pdf}
+  \caption{Tender Success Rate by Purchase Type}
+  \label{fig:success_bar}
+\end{figure}
+
+Figure~\ref{fig:time_trends} plots mean log negotiated prices over time for ordinary and urgent purchases separately. The figure reveals two patterns. First, the price gap between urgent and ordinary purchases is persistent throughout the sample period, ruling out the possibility that the regression estimates are driven by a specific subperiod. Second, both series exhibit common trends, supporting the identification assumption that time-varying confounders do not differentially affect the two purchase types.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_07_time_trends.pdf}
+  \caption{Mean Log Negotiated Price Over Time: Ordinary vs.\ Urgent}
+  \label{fig:time_trends}
+\end{figure}
+
+% Coefficient plot promoted to main text (see Section~\ref{sec:summary},
+% Figure~\ref{fig:coefplot}).
+
+\subsection*{A.4 Administrative Demand: Descriptive Evidence}
+\label{sec:appendix_admin}
+
+This section presents geographic descriptive evidence on the distribution of administrative demand across municipalities in S\~ao Paulo, complementing the litigation maps in Section~\ref{sec:institutional}. Administrative purchases---urgent procurements initiated through internal government requests rather than court orders---share the same planning constraints as litigated purchases but carry no sanctions for procurement failure. The spatial patterns documented below confirm that administrative and litigated demand originate from similar geographic areas, supporting the institutional comparability that underlies the ``under the gun'' identification strategy.
+
+Figure~\ref{fig:admin_map} maps administrative purchases per \BPmapPopDenom{} inhabitants across municipalities. The geographic distribution closely mirrors the litigation pattern shown in Figure~\ref{fig:distribution}, with higher per capita rates in municipalities that host PBUs and in the interior of the state. This spatial overlap is consistent with both channels responding to the same underlying health needs.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_00_admin_map.pdf}
+  \caption{Administrative Purchases per \BPmapPopDenom{} Inhabitants Across Municipalities in S\~ao Paulo (\BPsampleStartYear--\BPsampleEndYear)}
+  \label{fig:admin_map}
+  \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on BEC procurement data and IBGE population estimates.
+\end{figure}
+
+Figure~\ref{fig:admin_pbu} shows the location of PBUs that process administrative purchases, with marker size proportional to the volume of transactions. The distribution mirrors the PBU map for litigated purchases (Figure~\ref{fig:pbu}), confirming that the same institutional infrastructure handles both procurement channels.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_00b_admin_pbu_map.pdf}
+  \caption{PBUs Handling Administrative Purchases (Size $\propto$ Volume)}
+  \label{fig:admin_pbu}
+  \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on SES/SP administrative records.
+\end{figure}
+
+Figure~\ref{fig:admin_types} provides a visual comparison of administrative and litigated purchases, highlighting that the procurement process is identical across both channels---the only distinguishing feature is the threat of judicial sanctions in litigated cases. This institutional parallel is the foundation for the ``under the gun'' identification.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_00c_admin_types.pdf}
+  \caption{Comparison of Administrative and Litigated Purchases}
+  \label{fig:admin_types}
+  \par\smallskip\footnotesize\textit{Source:} Authors' elaboration.
+\end{figure}
+
+Figure~\ref{fig:admin_total} maps the total number of administrative purchases by municipality. As with litigation, administrative demand is concentrated in a small number of urban centers, particularly the S\~ao Paulo metropolitan area and regional hubs in the state's interior.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_00d_admin_total_map.pdf}
+  \caption{Total Administrative Purchases by Municipality in S\~ao Paulo (\BPsampleStartYear--\BPsampleEndYear)}
+  \label{fig:admin_total}
+  \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on BEC procurement data.
+\end{figure}
+
+Figure~\ref{fig:admin_ratio} shows the share of administrative purchases as a proportion of total purchases (administrative plus litigated) by municipality. The substantial variation across municipalities suggests that the relative importance of administrative versus litigated demand reflects local institutional factors---such as the presence of administrative request mechanisms and the propensity of local courts to grant injunctions---rather than a uniform statewide pattern.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_00e_admin_ratio_map.pdf}
+  \caption{Administrative Purchases as Share of Total Urgent Purchases by Municipality}
+  \label{fig:admin_ratio}
+  \par\smallskip\footnotesize\textit{Source:} Authors' elaboration based on BEC procurement data.
+\end{figure}
+
+\subsection*{A.5 Event Study: First Court Order (Honest DiD)}
+\label{sec:appendix_eventstudy}
+
+To address concerns about pre-trends and heterogeneous-treatment-effect
+contamination in the TWFE event-study design, we re-estimate the dynamic
+response of log negotiated prices to the first court order for each item
+using two contemporary estimators: the imputation estimator of
+\citet{borusyak2024revisiting} (BJS) and the ATT$(g,t)$ estimator of
+\citet{callaway2021did} (CS). The panel is at the item-year level with
+winner-only observations; treatment is defined as the calendar year of
+the first litigated purchase for each item; the BJS specification uses
+item + year fixed effects fit on untreated observations to impute the
+counterfactual. The CS specification uses never-litigated items as the
+control group.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_event_study_honest.pdf}
+  \caption{Log Negotiated Price Around First Court Order: Honest DiD Estimators}
+  \label{fig:event_study}
+  \par\smallskip\footnotesize\textit{Notes:} Item-year panel, winner-only
+  observations. BJS (\citealt{borusyak2024revisiting}) shown with shaded
+  95\% confidence interval; CS (\citealt{callaway2021did}) with
+  never-treated control group; TWFE shown only as a pre-reform benchmark.
+  The BJS pre-period coefficients are economically small (all $<\BPbjsPreMaxAbs$ in
+  absolute value) and statistically indistinguishable from zero,
+  consistent with parallel trends; post-treatment coefficients rise
+  monotonically from $+\BPbjsETzero$ at $t = 0$ to $+\BPbjsETfive$ at $t = +5$. The CS
+  estimator with never-treated control is substantially noisier because
+  items that never attract a court order are a systematically different
+  comparison group (they tend to be routine, well-stocked items);
+  HonestDiD (\citealt{borusyak2024revisiting}-compatible sensitivity in
+  the companion CSV) confirms that the CS point estimate at $t=0$ is not
+  robust to parallel-trend violations of moderate magnitude.
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{fig_event_study_qty.pdf}
+  \caption{Log Order Quantity Around First Court Order: Borusyak-Jaravel-Spiess Imputation}
+  \label{fig:event_qty}
+  \par\smallskip\footnotesize\textit{Notes:} Item-year panel, winner-only
+  observations. BJS imputation estimator on log order quantity. Within the
+  same item, order quantity drops sharply at the year of the first court
+  order (\BPeventQtyDropFirstOrder{} at $t=0$) and recovers thereafter
+  (\BPeventQtyDropAtFive{} at $t=+5$). The dynamic pattern documents the
+  C1 fragmentation channel: judicial pressure forces smaller orders in
+  real time, on the same item.
+\end{figure}
+
+BJS is our preferred honest specification because it uses pre-treatment
+observations of eventually-treated items to fit the counterfactual model,
+avoiding the selection problem that haunts the CS nevertreated comparison.
+The pattern is consistent with the cross-sectional estimates in the main
+text: after a court order, the same item is systematically more expensive
+than it was in its own pre-period, with no detectable pre-trend that could
+confound the interpretation.
+
+\subsection*{A.6 Heterogeneity}
+\label{sec:appendix_het}
+
+We examine heterogeneity in the urgency premium along four dimensions. Tables~\ref{tab:het_sus}--\ref{tab:het_pbu} report results from split-sample regressions and interaction models using our preferred specification (item + year + PBU FE).
+
+\BPvtab{tab_het_sus}
+\BPvtab{tab_het_period}
+\BPvtab{tab_het_competition}
+\BPvtab{tab_het_pbu}
+
+\paragraph{SUS component (Table~\ref{tab:het_sus}).}
+The urgency premium on negotiated prices is concentrated among items in the basic SUS component (common medications): the coefficient is $\BPhetSUSbasic$ ($p < 0.10$) for basic items and an insignificant $\BPhetSUSspec$ for specialized items, suggesting that procurement disruption is more consequential for items where established supply chains normally deliver better prices.
+
+\paragraph{Time period (Table~\ref{tab:het_period}).}
+The urgency premium is larger in the later period (2014--2019) than in the earlier period (2009--2013), consistent with the growing volume and complexity of health litigation over time.
+
+\paragraph{Market competition (Table~\ref{tab:het_competition}).}
+The urgency premium is three times larger in competitive markets ($\BPhetCompetitive$ vs.\ $\BPhetConcentrated$), with a significant interaction ($\BPhetInteraction$, $p < 0.01$). In concentrated markets, fewer bidders leave less room for urgency to erode bargaining power; in competitive markets, the loss of planning time has the largest marginal impact.
+
+\paragraph{PBU size (Table~\ref{tab:het_pbu}).}
+The urgency premium is slightly larger for purchases made by smaller PBUs (below-median transaction volume), consistent with smaller units having less experience managing urgent procurement.
+
+\subsection*{A.7 Regex Classifier Validation}
+\label{sec:appendix_regex}
+
+The purchase-type indicator is constructed by a regular-expression algorithm applied to public tender notices, which by Brazilian procurement law must reference any underlying court order. To document classifier accuracy, we draw a stratified random sample of \BPregexNotices{} tender-notice subjects (approximately \BPregexPerClass{} per predicted class) and hand-label each as ordinary, administrative, or litigated. \BPregexValidationStatus{} The regex's literal-reference design implies misclassification, if any, is near-symmetric across the three classes: the algorithm relies on textual markers that are present or absent independently of the price outcomes we estimate, so misclassification attenuates rather than biases our estimates.\footnote{The stratified sample is reproduced from \texttt{output/validation/validation\_sample.csv}, generated by \texttt{analysis/33\_regex\_validation\_sample.R}; F1 statistics are emitted by \texttt{34\_regex\_validation\_f1.R} when the labeled CSV is finalized.}
+
+\subsection*{A.8 Selection Bounds, Reconciliation, and Diagnostic Robustness}
+\label{sec:appendix_v8_diagnostics}
+
+This section collects the selection-bound, reconciliation, and diagnostic robustness exhibits that support the main-text claims in Sections~\ref{sec:empirical} and~\ref{sec:results}.
+
+\paragraph{Manski-Lee bounds on the UTG.}
+Table~\ref{tab:utg_lee_bounds} reports the bounded UTG coefficient under monotone selection. Trimming admin observations within item$\times$year$\times$PBU strata where the admin sample exceeds the litigated count yields a bounded gap in $[\BPutgBoundLow, \BPutgBoundHigh]$, against a naive coefficient of \BPutgPointNaive. Average trimming intensity is \BPutgLeeTrimMean{} of admin observations across \BPutgLeeStrataExcess{} of \BPutgLeeStrataTotal{} strata.
+
+\input{../../output/tables/tab_utg_lee_bounds}
+
+\paragraph{Heckman selection model (sensitivity).}
+Table~\ref{tab:utg_heckman} reports a parametric Heckman correction with the same first-stage probit (pre-period log reference price; pre-period mean quantity; pre-period mean number of bidders; pre-period order count---the exclusion restriction; SUS-formulary indicator). The first-stage probit on $N=\BPutgFirstStageN$ observations confirms that pre-period reference price and SUS status both enter negatively and significantly. The second-stage Admin coefficient is $\BPutgHeckmanCoef$ (SE $\BPutgHeckmanSE$); the inverse Mills ratio is collinear with the item, year, and PBU fixed effects, so the second-stage point estimate is uninformative. We treat this as a sensitivity diagnostic that flags identification fragility, not as a competing point estimate, and rely on the Lee bound as the primary selection-corrected object.
+
+\input{../../output/tables/tab_utg_heckman}
+
+\paragraph{Both-types-cell representativeness.}
+Table~\ref{tab:both_types_cells} compares the \BPbothCellN{} item$\times$year-month cells that contain both administrative and litigated urgent purchases (the within-cell variation that identifies the tightest specification) with the \BPbothCellNSingleton{} singleton cells. Both-types cells systematically have lower mean log reference and negotiated prices, larger quantities, slightly fewer bidders, and a higher SUS-formulary share. Bounded UTG estimates therefore speak to the more liquid, formulary-anchored items in the urgent panel; we read this as a generalizability boundary, not as a threat to within-cell identification.
+
+\input{../../output/tables/tab_both_types_cells}
+
+\paragraph{Wild cluster bootstrap.}
+Table~\ref{tab:utg_boottest} reports Rademacher wild cluster bootstrap inference on the UTG coefficient (\BPutgBoottestB{} replicates, PBU clustering). The preferred-FE Admin coefficient is significant under both asymptotic and bootstrap inference ($p_{\text{boot}} = \BPutgBoottestPval$, 95\% CI in log-points $[\BPutgBoottestCIlow, \BPutgBoottestCIhigh]$). The item$\times$year-month FE specification is borderline ($p_{\text{boot}} = \BPutgBoottestPvalIYM$), as expected given the thin within-cell sample.\footnote{Implementation: manual Rademacher implementation (the \texttt{fwildclusterboot} package is unavailable for R~4.5); see \texttt{analysis/44\_wild\_bootstrap.R}. Restricted-null residuals weighted by cluster-level Rademacher draws; bootstrap $t$-distribution constructed from~\BPutgBoottestB{} replicates.}
+
+\paragraph{Rambachan-Roth honest sensitivity on BJS event-study.}
+Figure~\ref{fig:event_study_honest_rr} reports the Borusyak-Jaravel-Spiess imputation event-study coefficients with a Rambachan-Roth honest sensitivity overlay. Pre-period maximum absolute coefficient is $\BPbjsPreMaxAbs$; the $t=0$ effect is $\BPbjsETzero$ (SE $\BPbjsETzeroSE$); the breakdown linear-extrapolation parameter at which the $t=0$ confidence interval just contains zero is $M=\BPrrBreakdownM$. The $t=0$ effect is significant under parallel trends but does not survive the linear extrapolation of the observed pre-period maximum---we honor this in the main text by treating the cross-sectional fixed-effects estimate as primary and the BJS event study as supportive, not as a stand-alone identification claim.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{../../output/figures/fig_event_study_honest_rr.pdf}
+  \caption{BJS event study around first court order with Rambachan-Roth sensitivity diagnostic.}
+  \label{fig:event_study_honest_rr}
+\end{figure}
+
+\paragraph{Reconciliation table.}
+Table~\ref{tab:utg_reconciliation} decomposes the observed log-price gap (admin minus litigated) into the mechanical bulk-discount channel ($\BPutgMechanicalCone$, admin cheaper from order-size differences alone), the within firm-buyer-item offset ($\BPutgWithinFirmOffset$, NULL), and the supplier composition residual ($\BPutgCompositionResidual$). Same firms price the same items the same way regardless of regime. The composition residual---positive in the admin-minus-lit direction---reflects that the litigated supplier mix is, conditional on quantity, less expensive per unit than the administrative supplier mix; the bulk-discount disadvantage of small lit orders dominates, producing the net lit-over-admin observed gap.
+
+\input{../../output/tables/tab_utg_reconciliation}
+
+\paragraph{Welfare bound.}
+Table~\ref{tab:welfare_bound} reports the selection-bias-corrected welfare bound. Applying the Lee-midpoint UTG of \BPwelfareBoundUTGmidPct{} to \BPwelfareBoundAnnualSpend{} of annual litigated spending in S\~ao Paulo, with an admissibility-share calibration of \BPwelfareBoundAdmissibility, yields \BPwelfareBound{} per year on the per-unit-price margin. The Lee-endpoint range is $[\BPwelfareBoundCIlow, \BPwelfareBoundCIhigh]$. This is a per-unit-price bound and excludes welfare losses from constrained order sizes, reduced bidder participation, and officials' search time diverted from ordinary procurement; the headline number understates the total cost.
+
+\input{../../output/tables/tab_welfare_bound}
