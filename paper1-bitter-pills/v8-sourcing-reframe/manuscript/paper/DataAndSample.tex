@@ -1,20 +1,88 @@
 \section{Data and Sample}
 \label{sec:data}
 
-\subsection{Data Sources}
+\subsection{Sources}
 
-We combine three administrative datasets covering January \BPsampleStartYear{} through December \BPsampleEndYear: (i) bid-level records from the BEC electronic procurement platform for all SES/SP purchases of medical supplies (BEC Group~\BPbecGroup), where each observation is a purchase-offer-item (POI) recording reference prices, bid prices, number of bidding firms, quantities, and tender outcomes; (ii) purchase-type classification, assigning each POI as ordinary, administrative, or litigated using a regular-expression algorithm applied to tender notices, which by law must reference any underlying court order;\footnote{Online Appendix \S A.7 documents the classifier's design and a stratified hand-labeling protocol over \BPregexNotices{} notices (\(\sim\)\BPregexPerClass{} per predicted class). The regex relies on literal court-order references that are present or absent independently of the price outcomes we estimate, so any residual misclassification attenuates rather than biases our estimates.} and (iii) health litigation records from S-CODES, the SES/SP database of health-related lawsuits, from which we derive SUS formulary status and injunction enforcement data. The binary outcome \emph{tender success} equals one if the POI closes with an accepted winning bid within its procurement order and zero otherwise; re-tendered items enter the data as new POIs and are not counted retroactively as successes. All continuous variables are winsorized at the \BPwinsorLow{}st and \BPwinsorHigh{}th percentiles; robustness to alternative winsorization is in the Appendix.
+We assemble three administrative datasets covering January
+\BPsampleStartYear{} through December \BPsampleEndYear. The first
+is the universe of bid-level records from the BEC electronic
+procurement platform for SES/SP purchases of medical supplies (BEC
+Group~\BPbecGroup); each observation is a purchase-offer-item (POI)
+recording the reference price set during the planning phase, the
+winning bid price, the number of bidding firms, the quantity
+ordered, the modality (\textit{preg\~ao eletr\^onico} or
+\textit{convite}), and tender outcome. The second is a purchase-type
+classifier that assigns each POI to one of three regimes: ordinary,
+administrative-request, or litigated. By Brazilian law, the tender
+notice for any urgent purchase must reference the underlying court
+order or administrative-channel request; the classifier exploits
+this regulatory disclosure through a regular-expression algorithm
+applied to free-text tender notices. We validate the classifier
+through a stratified hand-labeling protocol over \BPregexNotices{}
+notices ($\sim$\BPregexPerClass{} per predicted class); detailed
+metrics are in the Online Appendix.\footnote{The regex relies on
+literal court-order references whose presence or absence is
+independent of the price outcomes we estimate, so any residual
+misclassification attenuates rather than biases our coefficients.}
+The third is the SES/SP S-CODES database of health-related
+litigation, from which we recover SUS-formulary status and
+injunction enforcement data for each litigated request.
 
-\subsection{Sample Construction}
+The binary outcome \emph{tender success} equals one if the POI
+closes with an accepted winning bid within its procurement order and
+zero otherwise; re-tendered items enter as new POIs and are not
+counted retroactively as successes. All continuous variables are
+winsorized at the \BPwinsorLow{}st and \BPwinsorHigh{}th
+percentiles; robustness to alternative winsorization is in the
+Appendix.
 
-The raw dataset comprises \BPnPOIfull{} POI observations across \BPnItemsFull{} distinct items, \BPnOrdersFull{} purchase orders, and \BPnPBUsObserved{} PBUs (descriptive statistics in Online Appendix, Table~A.1).
+\subsection{Sample and descriptive patterns}
 
-The analysis sample is restricted to items for which at least one ordinary and at least one litigated purchase is observed, ensuring within-item comparability. This yields \BPnAnalysisSample{} observations covering \BPnItemsAnalysis{} items.\footnote{Sample sizes vary slightly across tables due to missing values in specific dependent variables and the restriction to winners for price regressions.} For regressions using bid prices, we further restrict to winning bids (\BPnWinners{} observations).
+The raw data comprise \BPnPOIfull{} POI observations across
+\BPnItemsFull{} distinct items, \BPnOrdersFull{} purchase orders,
+and \BPnPBUsObserved{} PBUs (Online Appendix Table~A.1). Our
+analysis sample restricts to items for which at least one ordinary
+and at least one litigated purchase is observed, ensuring within-item
+comparability; this yields \BPnAnalysisSample{} observations
+covering \BPnItemsAnalysis{} items.\footnote{Sample sizes vary
+slightly across tables due to missing values in specific dependent
+variables and the restriction to winners for price regressions.}
+Price regressions further restrict to winning bids (\BPnWinners{}
+observations).
 
-Table~\ref{tab:descriptive_balance} reports sample means by purchase type on winning bids. Three patterns anticipate the empirical results. First, log negotiated prices are higher in litigated than in ordinary purchases (\BPmeanLogNegLit{} vs.\ \BPmeanLogNegOrd; item fixed effects absorb the level mix). Second, administrative orders are markedly larger than litigated ones (\BPmeanQtyAdm{} vs.\ \BPmeanQtyLit{} units on average), the bulk-discount disadvantage that drives the mechanical channel of the reconciliation in Section~\ref{sec:results}. Third, the number of bidding firms is lower in urgent than in ordinary tenders (\BPmeanFirmsLit{} for litigated vs.\ \BPmeanFirmsOrd{} for ordinary), and tender success rates are higher in urgent regimes (\BPsuccessLit{} for litigated vs.\ \BPsuccessOrd{} for ordinary)---officials accept worse terms to ensure compliance.
+Table~\ref{tab:descriptive_balance} reports sample means by purchase
+type on winning bids. Three patterns anticipate the empirical
+results. \emph{Higher litigated prices.} Log negotiated prices are
+higher in litigated than in ordinary purchases (\BPmeanLogNegLit{}
+vs.\ \BPmeanLogNegOrd; item fixed effects absorb the level mix).
+\emph{Larger administrative orders.} Administrative orders are
+markedly larger than litigated ones (\BPmeanQtyAdm{} vs.\
+\BPmeanQtyLit{} units on average), the bulk-discount disadvantage
+that drives the mechanical channel in Section~\ref{sec:results}.
+\emph{Thinner urgent competition with higher success.} The number of
+bidding firms is lower in urgent than in ordinary tenders
+(\BPmeanFirmsLit{} for litigated vs.\ \BPmeanFirmsOrd{} for
+ordinary), yet tender success rates are higher in urgent regimes
+(\BPsuccessLit{} litigated vs.\ \BPsuccessOrd{} ordinary)---officials
+accept worse terms to ensure compliance.
 
 \input{../../output/tables/tab_descriptive_balance}
 
-The Online Appendix presents complementary geographic evidence on the spatial distribution of administrative demand, which mirrors the patterns documented for litigation in Section~\ref{sec:institutional}.
+\subsection{The under-the-gun subsample}
 
-For the ``under the gun'' analysis, we construct a subsample of urgent purchases (administrative and litigated) for items with both types present, yielding \BPnUTG{} observations (balance statistics in Online Appendix, Table~A.2). The tightest specifications use item$\times$year-month cells: of \BPutgCellsItemYM{} such cells, \BPutgCellsBoth{} (\BPutgCellsBothPct) carry within-cell variation in regime; the remaining cells are absorbed as singletons under the fixed-effects design. Both-types cells are not a representative subsample of urgent items---they tilt toward higher-volume, more-reordered medications. Online Appendix Table~\ref{tab:both_types_cells} compares both-types cells with singletons along reference price, modality, SUS-formulary status, and supplier base, and we discuss how this representativeness restriction interacts with the bounded UTG estimate in Section~\ref{sec:empirical}.
+For the under-the-gun analysis, we construct a subsample of urgent
+purchases (administrative and litigated) for items with both regimes
+present, yielding \BPnUTG{} observations (Online Appendix
+Table~A.2). The tightest specifications identify off
+item$\times$year-month cells in which both regimes coexist: of
+\BPutgCellsItemYM{} such cells, \BPutgCellsBoth{}
+(\BPutgCellsBothPct) carry within-cell variation. The remaining
+cells are absorbed as singletons under the fixed-effects design.
+Both-types cells are not a representative subsample---they tilt
+toward higher-volume, more-reordered medications (Online Appendix
+Table~\ref{tab:both_types_cells}); the bounded estimate therefore
+speaks to the more liquid items in the urgent panel, a restriction
+we revisit in the welfare bound. Online Appendix complements the
+balance with geographic evidence on the spatial distribution of
+administrative demand, which mirrors the litigation patterns of
+Section~\ref{sec:institutional}.

@@ -1,136 +1,96 @@
 \section{Empirical Strategy}
 \label{sec:empirical}
 
-The analysis has two stages. We first estimate the urgent-vs-ordinary
-cost margin under item, time, and buyer fixed effects. We then bound
-the under-the-gun (UTG) gap between litigated and administrative urgent
-purchases under selection into the administrative channel. The
-identification of the within-item gap is straightforward; the
-identification of the UTG gap requires explicit selection bounds.
-
-\subsection{Identification: urgent vs.\ ordinary}
-
-Identification of the urgent-vs-ordinary premium requires that,
-conditional on item, time, and PBU fixed effects, urgency is
-uncorrelated with unobserved determinants of procurement outcomes.
-Three institutional features support this. First, court orders and
-administrative requests originate from patients' health needs and legal
-or scientific-committee assessments---not from the procurement process.
-Second, urgent demand is poorly correlated with PBU-level mismanagement:
-only \BPstockShortageShare{} of claims arise from stock shortages or
-service failures. Third, the urgency regime is determined externally
-(by judges or the SES/SP scientific committee), not by the purchasing
-unit. We frame this design as a within-item estimate of the cost margin
-associated with the urgent regime, conditional on the institutional
-features above.
-
-A Borusyak-Jaravel-Spiess (\citeyear{borusyak2024revisiting}) imputation
-event study around each item's first court order provides a dynamic
-check (Online Appendix Figure~\ref{fig:event_study}). Pre-period
-coefficients are economically small (max absolute pre-period coefficient
-$=\BPbjsPreMaxAbs$); post-period coefficients rise from $\BPbjsETzero$
-at $t=0$ to $\BPbjsETfive$ at $t=+5$. We honest-test this dynamic
-pattern using Rambachan-Roth (\citeyear{rambachan2023more}) sensitivity:
-the breakdown linear-extrapolation parameter at which the $t=0$
-confidence interval just contains zero is $M=\BPrrBreakdownM$. The
-$t=0$ effect is significantly positive at zero pre-period violation
-but does not survive a linear extrapolation of the observed pre-period
-maximum. We honor this by treating the cross-sectional fixed-effects
-estimate as the primary object and the BJS event-study as supportive
-dynamic evidence rather than a stand-alone identification claim.
-
-\subsection{Identification: under-the-gun}
-
-Both litigated and administrative urgent purchases face identical
-planning constraints---compressed timelines, small quantities, diverted
-budget resources, and the same BEC platform and bidding procedures.
-They differ only in penalty exposure. The within-item UTG comparison
-isolates the cost margin associated with the sanction regime, conditional
-on a selection wedge that we now bound formally.
-
-\paragraph{Selection into the administrative channel.}
-Cases enter the administrative channel rather than the courts when the
-patient (or a SUS social worker) requests the medication directly
-through an SES/SP intake and the request is approved by a scientific
-committee using cost-effectiveness criteria. The committee admits
-clinically essential and sourceable cases; rejects expensive,
-specialized, or uncertain ones. We do not treat the resulting selection
-bias as ``ambiguous in sign''---the committee's first-stage probit on
-pre-period item characteristics rejects a higher pre-period log
-reference price (\BPutgProbitRefPriceCoef, \BPutgProbitRefPricePval)
-and SUS-formulary status (\BPutgProbitSUSCoef,
-\BPutgProbitSUSPval): admin systematically over-represents items that
-would have been priced lower under \emph{any} regime. The naive UTG
-comparison therefore inflates the sanction effect.
-
-\paragraph{Manski-Lee bounds.}
-We bound the UTG coefficient under monotone selection by trimming
-admin observations within item$\times$year$\times$PBU strata where the
-admin sample exceeds the litigated count. The trimming proportion
-$p_{\text{trim},s} = \max\{0,\,(n_{\text{adm},s}-n_{\text{lit},s})/n_{\text{adm},s}\}$
-is the share of admin observations within stratum $s$ that, under the
-Lee monotone-acceptance assumption, would not have appeared in the
-litigated counterfactual. Trimming admin from the upper tail of the
-within-stratum price distribution yields the lower bound on the
-admin-minus-lit log-price gap; trimming from the lower tail yields the
-upper bound. Average trimming intensity is \BPutgLeeTrimMean{} of admin
-observations within strata where trimming applies; \BPutgLeeStrataExcess{}
-of \BPutgLeeStrataTotal{} strata trigger trimming. Section~\ref{sec:utg_bounds}
-reports the bounded UTG.
-
-\paragraph{Inference.}
-Standard errors are clustered at the PBU level. With approximately
-\BPpbuCount{} clusters, asymptotic CR-cluster SEs may be liberal in the
-tightest specifications. We re-do inference for the UTG coefficients
-under a Rademacher wild cluster bootstrap ($B=\BPutgBoottestB$). The
-bootstrap $p$-value on the preferred-FE Admin coefficient is
-\BPutgBoottestPval; the corresponding 95\% CI in log-points is
-$[\BPutgBoottestCIlow, \BPutgBoottestCIhigh]$. The naive-UTG result
-survives wild-cluster inference; the within-item$\times$year-month
-specification is borderline ($p=\BPutgBoottestPvalIYM$), as expected
-given the thin within-cell sample documented below.
-
-\paragraph{Within-cell representativeness.}
-Item fixed effects absorb time-invariant item characteristics; item
-$\times$ year-month FE absorb time-varying within-item composition.
-The tightest specification therefore identifies off cells in which
-both administrative and litigated purchases occur in the same
-item$\times$year-month. Of \BPutgCellsItemYM{} such cells,
-\BPbothCellN{} (about 11\%) carry within-cell variation; the remaining
-\BPbothCellNSingleton{} are absorbed as singletons under the FE design.
-Both-types cells are not a representative subsample (Online Appendix
-Table~\ref{tab:both_types_cells}): they tilt toward higher-volume,
-lower-priced, more-frequent SUS-formulary items than singleton cells.
-The bounded UTG estimate therefore speaks to the more liquid items in
-the urgent panel, not to the universe of court-mandated procurement.
-We discuss this restriction explicitly in the welfare bound calculation
-in Section~\ref{sec:results}.
+We exploit two within-item contrasts. The urgent-vs-ordinary contrast
+identifies the cost margin associated with the urgent regime,
+conditional on item, time, and PBU fixed effects. The
+under-the-gun (UTG) contrast, restricted to the urgent panel,
+identifies the cost margin associated with the sanction regime,
+conditional on selection into the administrative channel that we
+bound formally.
 
 \subsection{Specifications}
 
-We estimate the urgent-vs-ordinary premium as
+The urgent-vs-ordinary premium is
 \begin{equation}
 \label{eq:baseline}
 y_{i,g,t} = \beta \cdot \text{Urgent}_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t},
 \end{equation}
-where $y_{i,g,t}$ is the outcome (log negotiated price, log reference
-price, log number of firms, success indicator) for purchase order $i$
-of item $g$ at time $t$; $\gamma_g$, $\lambda_t$, $\delta_b$ are item,
+where $y_{i,g,t}$ is log negotiated price, log reference price, log
+number of firms, or the success indicator for purchase order $i$ of
+item $g$ at time $t$; $\gamma_g$, $\lambda_t$, $\delta_b$ are item,
 time, and PBU fixed effects. We report four specifications with
-progressively richer fixed effects.
-
-We estimate the under-the-gun coefficient as
+progressively richer fixed effects. The under-the-gun coefficient
+restricts to the urgent panel (admin or litigated):
 \begin{equation}
 \label{eq:utg}
 \ln(\text{Price}_{i,g,t}) = \beta \cdot \text{Admin}_{i,g,t} + \gamma_g + \lambda_t + \delta_b + \varepsilon_{i,g,t},
 \end{equation}
-on the urgent-only subsample (admin or litigated). We report (i) the
-naive coefficient under the preferred FE; (ii) the Manski-Lee bounded
-coefficient; (iii) the within firm-buyer-item triple coefficient that
-isolates same-firm pricing from supplier composition.
+estimated as (i) a naive coefficient, (ii) a Manski-Lee bounded
+coefficient, and (iii) a within firm-buyer-item triple coefficient
+that isolates same-firm pricing from supplier composition. Standard
+errors cluster at the PBU level (\BPpbuCount{} clusters), with wild
+cluster bootstrap as a robustness check.
 
-We do not estimate a structural counterfactual price under hypothetical
-sanction removal. That object is unidentified in our setting because
-the administrative subsample is selected on item economics. What we
-provide is a bounded decomposition of where the cost
-margin between regimes comes from.
+\subsection{Identification: urgent vs.\ ordinary}
+
+Three institutional features support strict exogeneity of urgency
+conditional on item-time-PBU fixed effects. First, court orders and
+administrative requests originate from patient health needs and
+external (legal or scientific-committee) assessments---not from the
+procurement process. Second, urgent demand is poorly correlated with
+PBU mismanagement: only \BPstockShortageShare{} of claims arise from
+stock shortages or service failures. Third, the urgency regime is
+determined externally, not by the purchasing unit. We frame the
+estimate as a within-item cost margin associated with the urgent
+regime, conditional on the institutional features above.
+
+A Borusyak-Jaravel-Spiess (\citeyear{borusyak2024revisiting})
+imputation event-study around each item's first court order
+provides a dynamic check (Online Appendix). Pre-period coefficients
+are economically small (max absolute pre-period coefficient
+$=\BPbjsPreMaxAbs$); post-period coefficients rise from
+$\BPbjsETzero$ at $t=0$ to $\BPbjsETfive$ at $t=+5$. A
+Rambachan-Roth (\citeyear{rambachan2023more}) honest sensitivity
+test gives a breakdown linear-extrapolation parameter at which the
+$t=0$ confidence interval just contains zero of
+$M=\BPrrBreakdownM$. The cross-sectional FE estimate is the primary
+object; the BJS event-study is supportive dynamic evidence rather
+than a stand-alone identification claim.
+
+\subsection{Identification: under-the-gun}
+
+Litigated and administrative urgent purchases face identical planning
+constraints (Section~\ref{sec:institutional}) and differ only in
+penalty exposure. Selection into the administrative channel is
+non-random: a scientific committee admits cases on
+cost-effectiveness criteria. The committee's first-stage probit on
+pre-period item characteristics rejects higher pre-period log
+reference price (\BPutgProbitRefPriceCoef,
+\BPutgProbitRefPricePval) and SUS-formulary status
+(\BPutgProbitSUSCoef, \BPutgProbitSUSPval): admin systematically
+over-represents items that would have been priced lower under any
+regime, so the naive UTG comparison inflates the sanction effect.
+
+We bound this wedge under monotone selection (Lee 2009) by trimming
+admin observations within item$\times$year$\times$PBU strata where
+the admin sample exceeds the litigated count. The trimming
+proportion
+$p_{\text{trim},s} = \max\{0,\,(n_{\text{adm},s}-n_{\text{lit},s})/n_{\text{adm},s}\}$
+is the share of admin observations within stratum $s$ that, under
+the Lee monotone-acceptance assumption, would not have appeared in
+the litigated counterfactual. Trimming admin from the upper tail of
+the within-stratum price distribution yields the lower bound on the
+admin-minus-lit log-price gap; trimming from the lower tail yields
+the upper bound. Average trimming intensity is \BPutgLeeTrimMean{}
+of admin observations where applicable; \BPutgLeeStrataExcess{} of
+\BPutgLeeStrataTotal{} strata trigger trimming. A parametric
+Heckman correction is non-identified in this design (Online
+Appendix~\ref{tab:utg_heckman}); the Lee bound is the primary
+selection-corrected object.
+
+We do not estimate a structural counterfactual price under
+hypothetical sanction removal. That object is unidentified in our
+setting because the administrative subsample is selected on item
+economics. What we provide is a bounded decomposition of where the
+between-regime cost margin originates.
