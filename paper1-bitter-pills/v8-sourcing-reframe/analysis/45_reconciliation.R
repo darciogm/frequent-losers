@@ -117,7 +117,11 @@ bp_log_step("point estimates", t0, LOG)
 # ============================================================================
 # Cluster bootstrap on PBU --- 95% CI for each component
 # ============================================================================
-B <- 999L
+B <- 499L  # cluster bootstrap on PBU; 499 reps respect Coviello et al. 2018
+            # convention. A B=999 attempt 2026-05-05 hit pathological fixest
+            # FE-cache slowdown (~7.8 s/rep vs ~0.14 s/rep at B=499); kept at
+            # 499 pending efficient implementation (e.g., one-step influence-
+            # function bootstrap on pre-fitted residuals).
 pbu_levels <- unique(d$pbu_id)
 n_pbu <- length(pbu_levels)
 set.seed(20260505L)
