@@ -189,60 +189,43 @@ Figure~\ref{fig:admin_ratio} shows the share of administrative purchases as a pr
 \subsection*{A.5 Event Study: First Court Order (Honest DiD)}
 \label{sec:appendix_eventstudy}
 
-To address concerns about pre-trends and heterogeneous-treatment-effect
-contamination in the TWFE event-study design, we re-estimate the dynamic
-response of log negotiated prices to the first court order for each item
-using two contemporary estimators: the imputation estimator of
-\citet{borusyak2024revisiting} (BJS) and the ATT$(g,t)$ estimator of
-\citet{callaway2021did} (CS). The panel is at the item-year level with
-winner-only observations; treatment is defined as the calendar year of
-the first litigated purchase for each item; the BJS specification uses
-item + year fixed effects fit on untreated observations to impute the
-counterfactual. The CS specification uses never-litigated items as the
-control group.
+We re-estimate the dynamic response of log negotiated price (and log
+quantity) to the first court order for each item using two contemporary
+estimators: the imputation estimator of \citet{borusyak2024revisiting}
+(BJS) and the ATT$(g,t)$ estimator of \citet{callaway2021did} (CS).
+The panel is item-year, winner-only; treatment is the calendar year of
+the first litigated purchase for each item; the never-litigated set is
+the CS control group. BJS pre-period coefficients are economically
+small ($<\BPbjsPreMaxAbs$ in absolute value); post-period coefficients
+rise from $+\BPbjsETzero$ at $t=0$ to $+\BPbjsETfive$ at $t=+5$.
+Within the same item, order quantity drops sharply at the year of the
+first court order (\BPeventQtyDropFirstOrder{} at $t=0$) and recovers
+slowly (\BPeventQtyDropAtFive{} at $t=+5$), tracing the C1
+fragmentation channel in real time.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{fig_event_study_honest.pdf}
-  \caption{Log Negotiated Price Around First Court Order: Honest DiD Estimators}
+  \caption{Log negotiated price around first court order: honest-DiD estimators.}
   \label{fig:event_study}
-  \par\smallskip\footnotesize\textit{Notes:} Item-year panel, winner-only
-  observations. BJS (\citealt{borusyak2024revisiting}) shown with shaded
-  95\% confidence interval; CS (\citealt{callaway2021did}) with
-  never-treated control group; TWFE shown only as a pre-reform benchmark.
-  The BJS pre-period coefficients are economically small (all $<\BPbjsPreMaxAbs$ in
-  absolute value) and statistically indistinguishable from zero,
-  consistent with parallel trends; post-treatment coefficients rise
-  monotonically from $+\BPbjsETzero$ at $t = 0$ to $+\BPbjsETfive$ at $t = +5$. The CS
-  estimator with never-treated control is substantially noisier because
-  items that never attract a court order are a systematically different
-  comparison group (they tend to be routine, well-stocked items);
-  HonestDiD (\citealt{borusyak2024revisiting}-compatible sensitivity in
-  the companion CSV) confirms that the CS point estimate at $t=0$ is not
-  robust to parallel-trend violations of moderate magnitude.
+  \par\smallskip\footnotesize\textit{Notes:} BJS shown with shaded 95\%
+  CI; CS with never-treated control; TWFE as a pre-reform benchmark.
+  CS is noisier because never-litigated items are systematically
+  different (routine, well-stocked).
 \end{figure}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{fig_event_study_qty.pdf}
-  \caption{Log Order Quantity Around First Court Order: Borusyak-Jaravel-Spiess Imputation}
+  \caption{Log order quantity around first court order: BJS imputation.}
   \label{fig:event_qty}
-  \par\smallskip\footnotesize\textit{Notes:} Item-year panel, winner-only
-  observations. BJS imputation estimator on log order quantity. Within the
-  same item, order quantity drops sharply at the year of the first court
-  order (\BPeventQtyDropFirstOrder{} at $t=0$) and recovers thereafter
-  (\BPeventQtyDropAtFive{} at $t=+5$). The dynamic pattern documents the
-  C1 fragmentation channel: judicial pressure forces smaller orders in
-  real time, on the same item.
 \end{figure}
 
-BJS is our preferred honest specification because it uses pre-treatment
-observations of eventually-treated items to fit the counterfactual model,
-avoiding the selection problem that haunts the CS nevertreated comparison.
-The pattern is consistent with the cross-sectional estimates in the main
-text: after a court order, the same item is systematically more expensive
-than it was in its own pre-period, with no detectable pre-trend that could
-confound the interpretation.
+BJS is our preferred honest specification because it fits the
+counterfactual on pre-treatment observations of eventually-treated
+items, avoiding the selection problem of the CS never-treated control.
+The cross-sectional FE estimate in the main text is the primary object;
+the BJS event-study is supportive dynamic evidence.
 
 \subsection*{A.6 Heterogeneity}
 \label{sec:appendix_het}
@@ -281,8 +264,8 @@ Table~\ref{tab:utg_lee_bounds} reports the bounded UTG coefficient under monoton
 
 \input{../../output/tables/tab_utg_lee_bounds}
 
-\paragraph{Heckman selection model (sensitivity).}
-Table~\ref{tab:utg_heckman} reports a parametric Heckman correction with the same first-stage probit (pre-period log reference price; pre-period mean quantity; pre-period mean number of bidders; pre-period order count---the exclusion restriction; SUS-formulary indicator). The first-stage probit on $N=\BPutgFirstStageN$ observations confirms that pre-period reference price and SUS status both enter negatively and significantly. The second-stage Admin coefficient is $\BPutgHeckmanCoef$ (SE $\BPutgHeckmanSE$); the inverse Mills ratio is collinear with the item, year, and PBU fixed effects, so the second-stage point estimate is uninformative. We treat this as a sensitivity diagnostic that flags identification fragility, not as a competing point estimate, and rely on the Lee bound as the primary selection-corrected object.
+\paragraph{Heckman selection model (non-identified).}
+Table~\ref{tab:utg_heckman} reports a parametric Heckman correction with the same first-stage probit (pre-period log reference price, mean quantity, mean number of bidders, and order count as the exclusion restriction; SUS-formulary indicator). The probit confirms negative loadings on pre-period reference price and SUS status. The inverse Mills ratio is collinear with the item, year, and PBU fixed effects in the second stage, so the resulting Admin coefficient ($\BPutgHeckmanCoef$, SE $\BPutgHeckmanSE$) is uninformative. The Lee bound is the primary selection-corrected object.
 
 \input{../../output/tables/tab_utg_heckman}
 
@@ -292,7 +275,7 @@ Table~\ref{tab:both_types_cells} compares the \BPbothCellN{} item$\times$year-mo
 \input{../../output/tables/tab_both_types_cells}
 
 \paragraph{Wild cluster bootstrap.}
-Table~\ref{tab:utg_boottest} reports Rademacher wild cluster bootstrap inference on the UTG coefficient (\BPutgBoottestB{} replicates, PBU clustering). The preferred-FE Admin coefficient is significant under both asymptotic and bootstrap inference ($p_{\text{boot}} = \BPutgBoottestPval$, 95\% CI in log-points $[\BPutgBoottestCIlow, \BPutgBoottestCIhigh]$). The item$\times$year-month FE specification is borderline ($p_{\text{boot}} = \BPutgBoottestPvalIYM$), as expected given the thin within-cell sample.\footnote{Implementation: manual Rademacher implementation (the \texttt{fwildclusterboot} package is unavailable for R~4.5); see \texttt{analysis/44\_wild\_bootstrap.R}. Restricted-null residuals weighted by cluster-level Rademacher draws; bootstrap $t$-distribution constructed from~\BPutgBoottestB{} replicates.}
+Table~\ref{tab:utg_boottest} reports Rademacher wild cluster bootstrap inference on the UTG coefficient (\BPutgBoottestB{} replicates, PBU clustering, restricted-null residuals).\footnote{Manual Rademacher implementation; \texttt{fwildclusterboot} unavailable for R~4.5. See \texttt{analysis/44\_wild\_bootstrap.R}.} The preferred-FE Admin coefficient is significant under both asymptotic and bootstrap inference ($p_{\text{boot}} = \BPutgBoottestPval$, 95\% CI in log-points $[\BPutgBoottestCIlow, \BPutgBoottestCIhigh]$); the item$\times$year-month FE specification is borderline ($p_{\text{boot}} = \BPutgBoottestPvalIYM$), as expected given the thin within-cell sample.
 
 \input{../../output/tables/tab_utg_boottest}
 
@@ -307,7 +290,7 @@ Figure~\ref{fig:event_study_honest_rr} reports the Borusyak-Jaravel-Spiess imput
 \end{figure}
 
 \paragraph{Reconciliation table.}
-Table~\ref{tab:utg_reconciliation} decomposes the observed log-price gap (admin minus litigated) into the mechanical bulk-discount channel ($\BPutgMechanicalCone$, admin cheaper from order-size differences alone), the within firm-buyer-item offset ($\BPutgWithinFirmOffset$, NULL), and the supplier composition residual ($\BPutgCompositionResidual$). Same firms price the same items the same way regardless of regime. The composition residual---positive in the admin-minus-lit direction---reflects that the litigated supplier mix is, conditional on quantity, less expensive per unit than the administrative supplier mix; the bulk-discount disadvantage of small lit orders dominates, producing the net lit-over-admin observed gap.
+Table~\ref{tab:utg_reconciliation} decomposes the observed log-price gap (admin minus litigated) into the mechanical bulk-discount channel ($\BPutgMechanicalCone$, IC [\BPutgMechCIlow, \BPutgMechCIhigh]), the within firm-buyer-item offset ($\BPutgWithinFirmOffset$, IC [\BPutgWithinCIlow, \BPutgWithinCIhigh]), and the supplier composition residual ($\BPutgCompositionResidual$, IC [\BPutgCompCIlow, \BPutgCompCIhigh]). Within-firm pricing is identified and zero; bulk-discount is identified and large; the composition residual is imprecisely identified by elimination.
 
 \input{../../output/tables/tab_utg_reconciliation}
 
