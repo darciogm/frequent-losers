@@ -1,0 +1,129 @@
+% Introduction draft for v8 — sourcing reframe.
+% Five-element structure (Keith Head): question / why we care / what we do /
+% what we find / what it means.
+% Compared to v7-r2round1 Introduction.tex, the differences are:
+%   1. The hook foregrounds the sourcing-vs-pricing dichotomy, not the
+%      "30% under the gun" magnitude.
+%   2. The UTG number is presented as bounded rather than point-estimated.
+%   3. The within-firm-buyer-item negative coefficient is in the headline
+%      results paragraph, not buried.
+%   4. The three contributions are reformulated; "first quantitative
+%      decomposition" claim is dropped.
+
+\section{Introduction}
+\label{sec:introduction}
+
+A judge orders the government to buy a cancer drug within
+\BPurgentPlanLow--\BPurgentPlanHigh{} days. The procurement officer has no
+time to aggregate demand across other purchases, no time to negotiate with
+multiple suppliers, and faces personal fines if delivery fails. The drug
+arrives. The natural question is why it costs more --- and whether the
+cost margin is best understood as suppliers extracting a markup from a
+constrained buyer, or as a constrained buyer ending up with a different,
+more expensive supplier altogether.
+
+The answer matters for procurement design. If urgency makes existing
+suppliers raise prices, the policy lever is on contract terms ---
+deterring opportunistic markup. If urgency forces the buyer onto a
+different point of the supplier distribution, the lever is on demand
+aggregation and supplier search. The two readings are observationally
+similar in standard data. They are observationally distinct only in
+data, like the bid-level data we use here, that allow within firm-buyer-item
+comparison across urgency regimes.
+
+This paper provides such evidence using all pharmaceutical procurement by
+the S\~ao Paulo State Department of Health (SES/SP) from
+\BPsampleStartYear{} through \BPsampleEndYear: over \BPnPOIfull{}
+purchase-offer-item observations conducted through the state's electronic
+procurement platform (BEC). Court orders and administrative requests
+partition urgent purchases into two types that share all planning
+constraints --- compressed timelines, small quantities, diverted budget
+resources, the same BEC platform and bidding procedures --- but differ in
+penalty exposure. Litigated purchases expose officials to fines, personal
+liability, and fund seizure if delivery fails. Administrative requests,
+instituted by SES/SP in \BPsampleStartYear, carry no such penalties.
+Comparing these two types is what we call the ``under the gun'' (UTG)
+comparison.
+
+The administrative subsample is itself selected by a scientific committee
+on cost-effectiveness criteria; the committee admits cases that are
+clinically essential and sourceable through standard procurement and
+rejects others, which then arrive in our data through the courts. The
+naive UTG gap therefore confounds the cost of personal sanctions with
+selection on item economics. We bound the selection wedge formally: under
+Manski-Lee monotone restrictions on the committee rejection rule, the
+UTG gap lies in [\BPutgBoundLow{}, \BPutgBoundHigh{}], with a preferred
+bounded estimate of \BPutgPointBounded{} after a Heckman cross-check.
+This range remains economically large; in the rest of the paper we ask
+where it comes from.
+
+Three findings frame the answer.
+
+First, the headline urgent-vs-ordinary premium is \BPnegPctHeadline{}
+across the full sample, with the same item sold under compressed
+timelines attracting \BPfirmsPctHeadline{} fewer bidding firms and
+succeeding \BPsuccessPP{} \emph{more} often. The success-rate pattern
+rules out that urgency simply selects easier purchases: urgent tenders
+clear despite less favorable conditions, exactly as ``under the gun''
+predicts.
+
+Second, the price margin is \emph{not} a within-firm markup. Within
+firm-buyer-item triples observed under both ordinary and urgent
+procurement (\BPtripleFirmBuyerItemCount{} triples,
+\BPtripleFirmBuyerItemN{} observations), the urgency coefficient is
+\BPtripleFirmBuyerItemCoef{} (SE \BPtripleFirmBuyerItemSE,
+$p<0.01$): the same firm sells the same item to the same buyer at a
+slightly \emph{lower} per-unit price under urgency. Whatever pushes the
+across-sample price up, it is not opportunistic pricing by suppliers
+that already serve the buyer's ordinary procurement.
+
+Third, the across-sample premium operates through two channels that the
+data identify. \emph{Demand fragmentation}: under urgency, order quantity
+falls sharply (BJS event study, log-quantity drop of
+\BPeventQtyDropFirstOrder{} at the year of the first court order on the
+same item), and the bulk-discount elasticity (\BPbulkElast) implies a
+mechanical price effect through the quantity channel. \emph{Supplier
+composition shift}: which firms win urgent contracts differs from which
+firms win ordinary contracts on the same item, and the equilibrium
+weighting falls on a different point of the supplier distribution. The
+two channels are not exclusive --- the same compressed-timeline
+constraint produces both --- but neither implicates within-firm pricing
+behavior.
+
+Three contributions follow. First, we provide direct within-item
+evidence on the price impact of court-mandated procurement, exploiting
+the institutional within-urgent contrast unique to S\~ao Paulo.
+\emph{Second, and conceptually most novel}, we distinguish the
+\emph{sourcing} channel of procurement-cost variation from the
+\emph{pricing} channel. Standard intuition under accountability
+mechanisms relies on within-firm pricing distortion
+\citep{prendergast2007bureaucrats}; the within firm-buyer-item triple
+evidence here cleanly rejects that mechanism. The empirical signature of
+accountability-induced inefficiency in our setting is mismatched
+suppliers, not extorted prices. Third, in contrast to
+\citet{coviello2018court} --- where slow courts \emph{extend} procurement
+timelines and raise prices --- we study judicial injunctions that
+\emph{compress} timelines, with the cost concentrated in items where
+demand aggregation matters most. The two papers identify alternative
+institutional channels through which judicial intervention raises
+procurement costs.
+
+The findings position naturally between the public-economics literature
+on procurement frictions \citep{bandiera2009active, best2023procurement,
+bosio2022public, decarolis2018buyer} and the institutional literature on
+the judicialization of health in Latin America \citep{wang2015right,
+ferraz2009right, biehl2009will}. They contribute to a smaller literature
+on bureaucratic distortion under accountability mechanisms
+\citep{rasul2018management, williams2021bureaucratic,
+bandiera2021allocation}. Our methodological discipline avoids the
+post-treatment-bias trap (\citealt{acharya2016explaining}): we read
+quantity- and firm-controls as channel-isolating, not as direct-effect
+estimators, and present the within firm-buyer-item triple as the
+mechanism's positive evidence.
+
+The remainder of the paper proceeds as follows.
+Section~\ref{sec:institutional} describes the institutional setting.
+Section~\ref{sec:data} presents the data. Section~\ref{sec:empirical}
+details the empirical strategy and the selection-bound design.
+Section~\ref{sec:results} presents results, organized around the
+sourcing-vs-pricing pivot. Section~\ref{sec:conclusion} concludes.
