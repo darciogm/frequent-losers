@@ -216,30 +216,40 @@ fill_pal    <- c("grey55", "grey75", "white", "grey75")
 outline_pal <- c("grey25", "grey25", "black", "grey25")
 linew_pal   <- c(0.4, 0.4, 1.4, 0.4)
 
+y_top <- max(plot_df$pct, plot_df$ci_hi, na.rm = TRUE)
+y_bot <- min(plot_df$pct, plot_df$ci_lo, na.rm = TRUE)
+y_pad <- 0.05 * (y_top - y_bot)
+
 p <- ggplot(plot_df, aes(comp_short, pct)) +
-  geom_col(width = 0.62,
+  geom_col(width = 0.58,
            fill   = fill_pal,
            color  = outline_pal,
            linewidth = linew_pal) +
   geom_errorbar(aes(ymin = ci_lo, ymax = ci_hi),
-                width = 0.18, color = "grey15", linewidth = 0.45) +
-  geom_hline(yintercept = 0, color = "grey30", linewidth = 0.35) +
-  annotate("text", x = 3, y = max(plot_df$pct, plot_df$ci_hi, na.rm = TRUE) * 0.55,
+                width = 0.16, color = "grey15", linewidth = 0.45) +
+  geom_hline(yintercept = 0, color = "grey20", linewidth = 0.4) +
+  annotate("text", x = 3, y = y_top * 0.62,
            label = "no within-firm\nmarkup",
-           size = 3.2, fontface = "italic", lineheight = 0.9, color = "black") +
+           size = 3.4, fontface = "italic", family = "serif",
+           lineheight = 0.95, color = "black") +
   annotate("segment",
            x = 3, xend = 3,
-           y = max(plot_df$pct, plot_df$ci_hi, na.rm = TRUE) * 0.40,
-           yend = plot_df$ci_hi[3] + 1.5,
-           color = "black", linewidth = 0.35,
-           arrow = arrow(length = unit(0.12, "cm"), type = "closed")) +
+           y = y_top * 0.45,
+           yend = plot_df$ci_hi[3] + y_pad,
+           color = "black", linewidth = 0.4,
+           arrow = arrow(length = unit(0.14, "cm"), type = "closed")) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                     labels = function(x) sprintf("%+.0f", x)) +
   labs(x = NULL,
-       y = "Log price gap, admin minus lit (percent)") +
-  theme_classic(base_size = 11) +
+       y = "Admin-minus-litigated log price gap (percent)") +
+  theme_classic(base_size = 11, base_family = "serif") +
   theme(panel.grid.major.y = element_line(color = "grey92", linewidth = 0.3),
-        axis.line.x = element_line(color = "grey30"),
-        axis.line.y = element_line(color = "grey30"),
-        plot.margin = margin(8, 12, 8, 8))
+        axis.line.x  = element_line(color = "grey20", linewidth = 0.4),
+        axis.line.y  = element_line(color = "grey20", linewidth = 0.4),
+        axis.ticks   = element_line(color = "grey20", linewidth = 0.3),
+        axis.text    = element_text(color = "black"),
+        axis.title.y = element_text(margin = margin(r = 8)),
+        plot.margin  = margin(10, 14, 6, 8))
 
 ggsave(file.path(OUT, "figures", "fig_sourcing_vs_pricing.pdf"),
        p, width = 6.8, height = 4.2, device = cairo_pdf)
