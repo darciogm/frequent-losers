@@ -7,20 +7,20 @@ hide:
 
 # Bitter Pills
 
-<p class="subtitle">Judicial Enforcement and the Cost of Public Procurement in Brazil</p>
+<p class="subtitle">Sanctions without Markups: Sourcing as the Margin of Bureaucratic Inefficiency</p>
 <p class="authors">Darcio Genicolo-Martins &nbsp;&middot;&nbsp; Paulo Furquim de Azevedo</p>
 <p class="affiliation">Insper Institute of Education and Research, Sao Paulo, Brazil</p>
 
 </div>
 
 <div class="key-result" markdown>
-<span class="number">23--30%</span>
-<span class="label">Price premium from judicial sanctions alone (the "under the gun" effect)</span>
+<span class="number">[15.9%, 21.1%]</span>
+<span class="label">Selection-corrected Manski-Lee bounds on the "under-the-gun" gap. Within firm-buyer-item, the markup is zero — the cost surfaces as sourcing, not pricing.</span>
 </div>
 
 ## Abstract
 
-Public health procurement is shaped not only by administrative decisions but also by judicial interventions that compel urgent purchases. These court-mandated procurements carry substantial fiscal costs because they undermine procurement planning and expose officials to sanctions that incentivize compliance over cost-efficiency---a mechanism we term the **"under the gun" effect**. Using granular bid-level data on pharmaceutical procurement in Sao Paulo, Brazil (2009--2019), with item, time, and buyer fixed effects, we estimate that judicial enforcement increases reference prices by 2.7--17.8%, raises negotiated prices by 3.1--17.2%, and reduces bidder participation by 4.1--10.7%. Isolating the sanction channel by comparing litigated and administrative urgent purchases, we find judicial pressure alone raises prices by 23.2--30.2%. These findings highlight the economic burden of judicial enforcement on public budgets and suggest that legal mandates should weigh procurement efficiency alongside individual rights.
+When mandates secure compliance, what efficiency does the state forgo? Standard accountability models (Prendergast, 2007) predict suppliers extract delivery-risk premia; passive-waste accounts (Bandiera et al., 2009) predict the buyer's sourcing pattern shifts. The two are observationally equivalent in cross-buyer data, which conflate within-firm pricing with equilibrium supplier composition. Using bid-level data on **479,330 pharmaceutical purchases** by the São Paulo State Department of Health (2009--2019), we exploit a parallel administrative channel sharing all planning constraints of court-mandated procurement, without sanction exposure. Selection-corrected Manski-Lee bounds place the under-the-gun gap at **[15.9%, 21.1%]**. **There is no within-firm markup in deep markets** (β̂ = 0.035, SE = 0.041 within firm-buyer-item triples), with a sanction premium reappearing on thin-supplier subsamples. In deep markets, the price margin reflects **demand fragmentation** (admin orders 3.3× larger) and a **sourcing shift** (modal winner differs across regimes in 70.2% of item-buyer pairs); a placebo on never-litigated items returns zero. Bounded welfare cost: **\$27.8M per year on \$300M of annual litigated spending in São Paulo**. The policy lever is demand aggregation, not contract design: delivery is guaranteed; sourcing efficiency is the bill.
 
 **JEL Classification:**
 <span class="badge">D44</span>
@@ -33,25 +33,27 @@ Public health procurement is shaped not only by administrative decisions but als
 **Keywords:**
 <span class="badge badge-kw">public procurement</span>
 <span class="badge badge-kw">health litigation</span>
-<span class="badge badge-kw">enforcement costs</span>
-<span class="badge badge-kw">judicial mandates</span>
-<span class="badge badge-kw">Brazil</span>
+<span class="badge badge-kw">accountability</span>
+<span class="badge badge-kw">sourcing</span>
 
 ---
 
 ## Key Findings
 
-!!! success "Judicial mandates raise procurement costs"
-    Court-ordered purchases increase **reference prices by 2.7%** and **negotiated prices by 5.4%** compared to ordinary procurement, after controlling for item, year, and buyer fixed effects.
+!!! success "There is no within-firm markup in deep markets"
+    Within firm-buyer-item triples observed under both regimes (1,206 triples, 4,573 observations), the Admin coefficient is **β̂ = 0.035 (SE 0.041)** — statistically indistinguishable from zero. Same firm, same item, same buyer, no sanction premium.
 
-!!! warning "Competition declines under judicial pressure"
-    Litigated purchases attract **5.5% fewer bidding firms**, reducing competitive pressure and contributing to higher prices.
+!!! info "The under-the-gun gap is modest, not large"
+    Under Manski-Lee monotone restrictions on committee selection, the gap lies in **[15.9%, 21.1%]** — at the lower end of within-buyer procurement-cost dispersion documented in comparable settings (Best et al., 2023; Bosio et al., 2022). Replaces the naïve cross-sectional 23–30% headline.
 
-!!! danger "The 'under the gun' effect is substantial"
-    When comparing litigated purchases to administrative urgent purchases---which share the same urgency but lack judicial sanctions---the **price premium is 23--30%**. This isolates the pure effect of judicial enforcement pressure on procurement officials.
+!!! warning "The cost surfaces as sourcing, not pricing"
+    Among item-buyer pairs observed under both regimes, the **modal winning firm differs across regimes in 70.2% of pairs**. Sanctions reorganize the supplier set far more than they reorganize the incumbent's price.
 
-!!! info "Officials accept worse terms to comply"
-    Tender success rates are **2.1 percentage points higher** for litigated purchases, indicating that procurement officials accept less favorable bids to meet court deadlines.
+!!! danger "Demand fragmentation does the heavy lifting"
+    Administrative orders are roughly **3.3× larger** than litigated orders; the bulk-discount channel mechanically delivers most of the admin-minus-litigated price gap. Court mandates dismantle the demand aggregation that procurement efficiency depends on.
+
+!!! info "Welfare bound and policy lever"
+    Applied to **\$300M of annual litigated spending** in São Paulo, the bounded UTG implies a per-unit-price welfare cost of **\$27.8M per year** (Lee range \$23.9M–\$31.7M). The policy lever is demand aggregation, not contract design.
 
 ---
 
@@ -59,7 +61,7 @@ Public health procurement is shaped not only by administrative decisions but als
 
 <div class="quick-links" markdown>
 
-[**Paper** <br> Full description, contribution, and methodology](paper.md)
+[**Paper** <br> Question, contributions, identification asset, findings](paper.md)
 
 [**Results** <br> Main tables, figures, and coefficient plots](results.md)
 
