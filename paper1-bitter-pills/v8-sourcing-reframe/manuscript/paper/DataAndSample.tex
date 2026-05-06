@@ -13,19 +13,25 @@ number of bidding firms, the quantity ordered, the modality
 (\textit{preg\~ao eletr\^onico} or \textit{convite}), and the
 tender outcome.
 
-The second is a purchase-type classifier that assigns each POI to
-one of three regimes: ordinary, administrative-request, or litigated.
+The second is an ensemble classifier that assigns each POI to one
+of three regimes: ordinary, administrative-request, or litigated.
 Brazilian law requires the tender notice for any urgent purchase to
 reference the underlying court order or administrative-channel
 request, and the classifier exploits this regulatory disclosure
-through a regular-expression algorithm applied to free-text notices.
-We validate it on a stratified hand-labeled sample of
-\BPregexNotices{} notices ($\sim$\BPregexPerClass{} per predicted
-class); detailed metrics are in the Online
-Appendix.\footnote{The regex relies on literal court-order
-references whose presence is independent of the price outcomes we
-estimate, so any residual misclassification attenuates rather than
-biases our coefficients.}
+across four signal channels: a TF-IDF + LinearSVC model trained on
+$\sim$170{,}000 ground-truth-labeled tender notices, regex matching
+on tender-notice free text, regex matching on the JSON \textit{municipio}
+metadata field, and positional heuristics on the notice header and
+``local de entrega'' block. Signals are combined by weighted vote,
+with the ML and metadata channels each sufficient individually and
+regex-plus-positional requiring corroboration. We validate the
+ensemble on a stratified hand-labeled sample of \BPregexNotices{}
+notices ($\sim$\BPregexPerClass{} per predicted class); detailed
+metrics and the attenuation analysis are in the Online
+Appendix.\footnote{The classifier exploits textual markers whose
+presence is independent of the price outcomes we estimate, so any
+residual misclassification attenuates rather than biases our
+coefficients.}
 
 The third is the SES/SP S-CODES database of health-related
 litigation, which provides SUS-formulary status and injunction
