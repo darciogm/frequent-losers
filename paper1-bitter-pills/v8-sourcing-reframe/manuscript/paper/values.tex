@@ -376,12 +376,24 @@
 \providecommand{\BPbalPMin}{\BPtbd{balPMin}}            % min p across pre-determined covs
 \providecommand{\BPbalModalityPP}{\BPtbd{balModPP}}     % modality gap, pp
 
-% --- 33/34_regex_validation ---
+% --- 33/34_regex_validation (sample for hand-label triple check; not the primary validation) ---
 \providecommand{\BPregexNotices}{\BPtbd{regexN}}        % stratified sample size, e.g. 500
 \providecommand{\BPregexPerClass}{\BPtbd{regexPC}}      % e.g. 167
 \providecommand{\BPregexFone}{\BPtbd{regexFone}}        % overall F1 (F-one to avoid digit in macro name)
-% Validation-status sentence: discreet default sentence that 34_regex_validation_f1.R
-% overwrites with a quantified F1-based statement once the CSV is hand-labeled.
+
+% --- Ensemble validation against SES/SP S-CODES ground truth (179K cross-linked OCs) ---
+% Source: datasets/Classif_editais/classification_report.txt; numbers are MANUAL transcription
+% from the production-classifier diagnostic run.
+\providecommand{\BPregexNGroundTruth}{\BPtbd{regexNGT}} % 179{,}148 GT-cross-linked OCs
+\providecommand{\BPregexNHO}{\BPtbd{regexNHO}}          % 34{,}191 ML hold-out test set
+\providecommand{\BPregexFoneJud}{\BPtbd{regexFoneJud}}  % ensemble F1 judicial
+\providecommand{\BPregexFoneAdm}{\BPtbd{regexFoneAdm}}  % ensemble F1 administrative
+\providecommand{\BPregexFoneJudHO}{\BPtbd{regexFoneJudHO}} % ML hold-out F1 judicial
+\providecommand{\BPregexFoneAdmHO}{\BPtbd{regexFoneAdmHO}} % ML hold-out F1 administrative
+\providecommand{\BPregexExactMatchPct}{\BPtbd{regexExactPct}} % 98.6\%
+
+% Validation-status sentence: now filled with quantified S-CODES validation; the 500-notice
+% hand-label remains available for triple-check audit but is not the primary number.
 \providecommand{\BPregexValidationStatus}{Hand-labeling and F1 diagnostics are reported in the replication archive accompanying this paper.}
 
 % --- 04_heterogeneity ---
@@ -931,10 +943,28 @@
 \renewcommand{\BPwinsorAggHigh}{95}
 % ===== AUTO END: 08_pub_tables =====
 
-% ===== AUTO BEGIN: 34_regex_validation_f1 =====
+% ===== MANUAL BEGIN: ensemble_validation_scodes_2026-02-25 =====
+% Source: datasets/Classif_editais/classification_report.txt
+% (run on 764,362 classified OCs against 179,148 SES/SP S-CODES GT-labeled OCs)
+\providecommand{\BPregexNGroundTruth}{}
+\renewcommand{\BPregexNGroundTruth}{179{,}148}
+\providecommand{\BPregexNHO}{}
+\renewcommand{\BPregexNHO}{34{,}191}
+\providecommand{\BPregexFoneJud}{}
+\renewcommand{\BPregexFoneJud}{0.93}
+\providecommand{\BPregexFoneAdm}{}
+\renewcommand{\BPregexFoneAdm}{0.96}
+\providecommand{\BPregexFoneJudHO}{}
+\renewcommand{\BPregexFoneJudHO}{0.93}
+\providecommand{\BPregexFoneAdmHO}{}
+\renewcommand{\BPregexFoneAdmHO}{0.94}
+\providecommand{\BPregexExactMatchPct}{}
+\renewcommand{\BPregexExactMatchPct}{98.6\%}
+\providecommand{\BPregexFone}{}
+\renewcommand{\BPregexFone}{0.94}
 \providecommand{\BPregexValidationStatus}{}
-\renewcommand{\BPregexValidationStatus}{Hand-labeling of the stratified sample is in progress; F1 diagnostics will be reported in the replication archive accompanying this paper.}
-% ===== AUTO END: 34_regex_validation_f1 =====
+\renewcommand{\BPregexValidationStatus}{The hand-labeled subsample is reproduced in the replication archive as a redundant audit alongside the S-CODES validation reported above.}
+% ===== MANUAL END: ensemble_validation_scodes_2026-02-25 =====
 
 % ===== AUTO BEGIN: 35_figure_decomposition =====
 \providecommand{\BPcascadeUOtotalPct}{}
