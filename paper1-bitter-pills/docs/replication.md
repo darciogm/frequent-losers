@@ -1,48 +1,55 @@
 # Replication
 
-This page describes how to replicate the results presented in the paper.
+This page describes how to replicate the v8 sourcing-reframe results. The active version of the paper is **v8-sourcing-reframe** (JPubE Short paper, May 2026).
 
 ---
 
-## Replication Package
+## Repository Structure
 
-The full replication package includes all code, processed datasets, and manuscript source files needed to reproduce every table and figure in the paper.
+```
+paper1-bitter-pills/
+├── v8-sourcing-reframe/        # ACTIVE (JPubE Short)
+│   ├── analysis/               # R scripts 40_… 48_… + _macros.R
+│   ├── manuscript/paper/       # main.tex, submission.tex, *.tex sections
+│   ├── output/figures/         # 7 v8 PDFs (event study, sourcing-vs-pricing, …)
+│   └── output/tables/          # 16 v8 .tex / .csv tables
+├── v7-r2round1/                # frozen — referee R2 round 1 audit baseline
+├── v6-jpub-short/              # frozen — first JPubE Short attempt
+├── v4/                         # legacy R pipeline (still referenced for input data)
+├── docs/                       # MkDocs site source (this site)
+└── deploy.sh                   # build + push to darciogm.github.io
+```
 
-!!! info "Repository Structure"
-    The replication materials are organized in version-specific directories. The **v4** directory contains the current primary analysis in R, while **v2** and **v3** contain legacy Stata implementations.
+The **v4 pipeline** prepares the input data cache (`/tmp/v4_prepared.rds`) used by all v8 scripts; v8 builds analysis on top of that prepared dataset rather than re-deriving it from raw BEC.
 
 ---
 
 ## Software Requirements
 
-### Primary Analysis (v4 -- R)
+### Primary Analysis (v8 — R)
 
-| Software | Version | Purpose |
-|----------|---------|---------|
-| **R** | 4.5+ | Statistical computing |
-| `fixest` | latest | High-dimensional fixed effects estimation |
-| `data.table` | latest | Fast data manipulation |
-| `modelsummary` | latest | Regression tables |
-| `ggplot2` | latest | Publication-quality figures |
-| `arrow` | latest | Reading Parquet files |
+| Package | Purpose |
+|---------|---------|
+| `R` 4.5+ | Statistical computing |
+| `fixest` | High-dimensional fixed-effects estimation (preferred FE specs, `lean=TRUE` default) |
+| `did` / `csdid` | Borusyak-Jaravel-Spiess event study |
+| `data.table` | Fast data manipulation |
+| `arrow` / `duckdb` | Parquet I/O (DuckDB is the default engine for parquet) |
+| `modelsummary` / `kableExtra` / `gt` | Regression and balance tables |
+| `ggplot2` | Publication figures |
+| `binsreg` | Binscatters for diagnostic plots |
+| `sf` / `tmap` | SIRGAS 2000 maps for São Paulo state |
 
-Additional R packages: `kableExtra`, `sandwich`, `lmtest`, `broom`, `scales`, `sf`, `viridis`.
-
-### Legacy Analysis (v2/v3 -- Stata)
-
-| Software | Version | Purpose |
-|----------|---------|---------|
-| **Stata/SE** | 17+ | Statistical computing |
-| `reghdfe` | latest | High-dimensional fixed effects |
-| `ftools` | latest | Fast Stata tools |
+Manski-Lee bounds and the Rademacher wild cluster bootstrap (B = 999) are implemented manually in the v8 scripts. The `fwildclusterboot` package is archived for R 4.5 and `HonestDiD` requires `CVXR`/`clarabel` system deps; both are bypassed in v8 with hand-rolled equivalents that produce JPubE-grade inference.
 
 ### Manuscript
 
-| Software | Version | Purpose |
-|----------|---------|---------|
-| **LaTeX** | TeX Live 2024+ | Document typesetting |
-| `elsarticle` | latest | Journal document class |
-| `chicago` | latest | Bibliography style |
+| Tool | Purpose |
+|------|---------|
+| TeX Live 2024+ | LaTeX typesetting |
+| `elsarticle` | Journal class (review format for `main.tex`, single-column for `submission.tex`) |
+| `natbib` + `bibtex` | Bibliography (NOT biblatex/biber in this project) |
+| `booktabs` + `threeparttable` | Tables |
 
 ---
 
@@ -50,125 +57,90 @@ Additional R packages: `kableExtra`, `sandwich`, `lmtest`, `broom`, `scales`, `s
 
 ### Primary Dataset
 
-**BEC-G65-WORK1.parquet**
+**BEC-G65** — bid-level pharmaceutical procurement on the São Paulo state electronic procurement platform.
 
-- **Source:** Bolsa Eletronica de Compras (BEC), Sao Paulo state electronic procurement platform
-- **Format:** Apache Parquet (~125 MB)
-- **Observations:** 479,330 bids
-- **Variables:** 180 columns
-- **Coverage:** All bids for BEC Group 65 (medical, dental, and hospital supplies), January 2009 -- December 2019
-- **Unit:** Bid level (firm x item x procurement event)
+| Feature | Description |
+|---------|-------------|
+| Source | Bolsa Eletrônica de Compras (BEC), São Paulo state |
+| Coverage | All bids for BEC Group 65 (medical, dental, hospital supplies) |
+| Period | January 2009 – December 2019 |
+| Observations | 479,330 purchase-offer-item observations (bid level) |
+| Treatment classes | Ordinary; Administrative urgent; Litigated |
 
-!!! warning "Data Access"
-    The BEC procurement data is publicly available through the Sao Paulo state transparency portal. The processed dataset used in the analysis is included in the replication package.
+The processed dataset (parquet) is included in the replication package; raw BEC data is publicly available through the São Paulo state transparency portal.
 
-### Key Variables
+### Selection Probit (admin-channel selection)
 
-| Variable | Description |
-|----------|-------------|
-| `purchase_type` | 0 = Ordinary, 1 = Administrative, 2 = Litigated |
-| `bid_price_ref` | Reference price (maximum the government will pay), in BRL |
-| `bid_price` | Negotiated (final) bid price, in BRL |
-| `bid_qty` | Quantity demanded in tender notice |
-| `n_firms_bids` | Number of distinct firms submitting bids |
-| `po_item_winner` | Tender success indicator (1 = successful purchase) |
-| `item_id` | Product identifier (used for item FE) |
-| `pbu_code` | Public buyer unit code (used for PBU FE and clustering) |
-| `year_n` | Year (used for time FE) |
+The Manski-Lee bounds rely on a pre-period probit on admin-channel admissibility, predicting `admin = 1` on `litigated = 1` items using:
 
-A full data dictionary is available in the replication package (`DATA_DICTIONARY.md`).
+- Pre-period log reference price (coef ≈ −0.05, p < 0.001)
+- SUS-formulary status (coef ≈ −0.27, p < 0.001)
+- Item-class dummies, year-of-onset
+
+This probit identifies the wedge that the Lee bound corrects.
 
 ---
 
-## Running the Analysis
+## Pipeline (v8)
 
-### Quick Start (v4 -- R)
-
-```bash
-# 1. Clone the repository and navigate to the project
-cd paper1-bitter-pills
-
-# 2. Run the full v4 pipeline (~5 minutes on 16 cores)
-Rscript v4/run_all.R
-```
-
-This single command executes all analysis scripts in sequence:
-
-1. `00_prepare_data.R` -- Load and prepare the dataset (cached at `/tmp/v4_prepared.rds`)
-2. `01_desc_stats.R` -- Descriptive statistics
-3. `02_balance_table.R` -- Balance table for urgent subsample
-4. `03_main_regressions.R` -- Main regression tables (4 FE specs x 3 clustering variants)
-5. `04_heterogeneity.R` -- Heterogeneous effects analysis
-6. `05_fiscal_costs.R` -- Fiscal cost estimates
-7. `06_robustness.R` -- Robustness checks (120+ regressions)
-8. `07_graphs.R` -- Generate all figures
-9. `08_pub_tables.R` -- Publication-ready LaTeX tables
-10. `09_pub_figures.R` -- Publication-ready PDF figures
-
-### Running Individual Scripts
+The v8 analysis runs on top of the v4 prepared cache. The numbered scripts emit macros into `manuscript/paper/values.tex`, which the LaTeX manuscript reads.
 
 ```bash
-# Must run data preparation first
+# 1. Prepare input data (one-off; ~1 minute)
 Rscript v4/analysis/00_prepare_data.R
 
-# Then any individual analysis script
-Rscript v4/analysis/03_main_regressions.R
-Rscript v4/analysis/07_graphs.R
-```
+# 2. Run v8 analysis scripts in order
+cd v8-sourcing-reframe/analysis
+Rscript 40_utg_lee_bounds.R       # Manski-Lee bounds → tab_utg_lee_bounds
+Rscript 41_utg_heckman.R          # Heckman parametric (degenerate; sensitivity)
+Rscript 42_both_types_cells.R     # Both-types-cell representativeness
+Rscript 43_rambachan_roth.R       # Honest sensitivity on BJS event study
+Rscript 44_wild_bootstrap.R       # Manual Rademacher bootstrap
+Rscript 45_reconciliation.R       # UTG decomposition + headline figure
+Rscript 46_balance_descriptive.R  # Within-cell balance + descriptives
+Rscript 46_welfare_bound.R        # Single welfare bound
+Rscript 47_regen_fig1.R           # Regenerate Figure 1 in serif font
+Rscript 48_mechanism_evidence.R   # Modal-winner switch, Jaccard, supplier FE
 
-### Legacy Analysis (Stata)
-
-```bash
-# Install required Stata packages
-stata-se -b -q do v2/analysis/install_packages.do
-
-# Run the v3 pipeline
-bash v3/analysis/run_all.sh
-```
-
----
-
-## Output Files
-
-### Tables
-
-| Directory | Format | Count | Description |
-|-----------|--------|-------|-------------|
-| `v4/pub/tables/` | LaTeX (.tex) | 17 | Publication-ready tables (booktabs + threeparttable) |
-| `v4/manuscript/` | LaTeX (.tex) | 59 | Full regression tables (tabularray format) |
-| `v4/results/` | HTML (.html) | 59 | Browser-viewable tables |
-
-### Figures
-
-| Directory | Format | Count | Description |
-|-----------|--------|-------|-------------|
-| `v4/pub/figures/` | PDF | 8 | Publication-ready figures (grayscale, 6.5 x 4 in) |
-| `v4/graphs/` | PDF | 8 | Color figures for presentations |
-
-### Manuscript
-
-```bash
-# Compile the manuscript
-cd v5/manuscript/paper
+# 3. Compile manuscript (clean 4-pass)
+cd ../manuscript/paper
 pdflatex -interaction=nonstopmode main.tex
 bibtex main
 pdflatex main.tex
 pdflatex main.tex
 ```
 
+Each numbered script emits a block into `values.tex` (auto-generated section delimited by markers). The manuscript reads those macros — every numerical claim, table input, and figure path is regenerated by the script that owns it. **No hardcoded numerals in the manuscript.**
+
+---
+
+## Output Files
+
+| Path | Content |
+|------|---------|
+| `v8-sourcing-reframe/output/figures/` | 7 PDFs: event-study (BJS, honest-sensitivity, item, qty), sourcing-vs-pricing decomposition, qty-ratio density, three-channel cascade |
+| `v8-sourcing-reframe/output/tables/` | 16 tables: Lee bounds, Heckman sensitivity, both-types-cell, placebo, RR sensitivity, supplier FE, three-channel cascade, UTG bootstrap, UTG reconciliation, welfare bound, winner switch, within-firm robustness, descriptive balance |
+| `v8-sourcing-reframe/manuscript/paper/main.pdf` | Compiled manuscript (35pp, JPubE Short review format, double-spaced) |
+| `v8-sourcing-reframe/manuscript/paper/submission.pdf` | Single-column compiled version (17pp) |
+
 ---
 
 ## Computational Environment
 
-The analysis was developed and tested on the following system:
+The analysis was developed and tested on **DarcioWork** (a dual-CPU WSL2 development workstation):
 
 | Component | Specification |
-|-----------|--------------|
-| **OS** | Ubuntu 24.04 (WSL2 on Windows) |
-| **CPU** | 16 cores |
-| **RAM** | 15 GB |
-| **R** | 4.5 |
-| **fixest** | Uses OpenMP for parallel estimation (16 threads) |
+|-----------|---------------|
+| OS | Ubuntu 24.04 (WSL2 on Windows) |
+| CPU | Intel i7-1260P (12 cores / 14 threads visible to WSL2) |
+| RAM | 21 GB |
+| GPU | None (CPU-only) |
+| R | 4.5 |
+| `fixest` threads | `setFixest_nthreads(12)` |
+| DuckDB threads | `PRAGMA threads=12; PRAGMA memory_limit='14GB'` |
 
 !!! note "Runtime"
-    The full v4 pipeline (`run_all.R`) takes approximately 5 minutes on the reference system. The most time-intensive step is the robustness analysis (`06_robustness.R`), which estimates 120+ regressions across three winsorization levels.
+    The full v8 analysis pipeline (scripts 40 through 48) runs in approximately **3 minutes** on the reference system, after the v4 prepared cache is in place. The slowest step is the Rademacher wild bootstrap (`44_wild_bootstrap.R` — ~30 s for B = 999).
+
+!!! warning "Reproducibility seeds"
+    All scripts that draw random numbers (bootstrap, simulation, train/test splits) set `set.seed(20260504)` at the top. Re-running the pipeline produces byte-identical `values.tex` blocks.
