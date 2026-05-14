@@ -1,14 +1,26 @@
 # Manuscript
 
+## Download
+
+- [Main paper (v6, JPubE format) &mdash; PDF](assets/paper/paper_v6.pdf)
+- [Online appendix &mdash; PDF](assets/paper/online_appendix.pdf)
+- [Highlights &mdash; PDF](assets/paper/highlights.pdf)
+
+Submission-ready version, May 2026.
+
+## Title
+
+**Sheltered Bidding: The Within-Auction Cost of SME Set-Asides**
+
 ## Contribution
 
 This paper makes three main contributions:
 
-1. **Cost estimation of SME set-asides:** Provides credible causal estimates of the procurement costs imposed by restricting public tenders to SMEs, using a quasi-experimental variation in Sao Paulo, Brazil.
+1. **Total impact:** A March 2018 SME set-aside reversal on São Paulo's centralized procurement platform identifies a causal DiD effect of roughly **10% on winning prices** against 76 never-treated product groups, surviving Callaway-Sant'Anna, Sun-Abraham, and Goodman-Bacon estimators.
 
-2. **Heterogeneity analysis:** Demonstrates that the costs of restricting competition are not uniform---they are approximately 40% larger for high-value items, offering guidance for differentiated policy design.
+2. **Decomposition into channels (the novelty):** An asymmetric IPV model identified from Pregão drop-out bids decomposes the total impact under observed equilibrium entry. The **within-auction component---*sheltered bidding*---accounts for two-thirds to three-quarters** of the simulated effect across classes. This is a policy-relevant accounting decomposition identified by the auction format plus observed entry, not a full structural entry equilibrium.
 
-3. **Competition mechanism:** Documents the full causal chain from restricted tenders to reduced competition (fewer firms and bids) to higher prices, with supporting evidence from winner composition and procurement efficiency analyses.
+3. **Policy ranking:** A **10% price preference** welfare-dominates the set-aside in thick standardized markets at near-zero fiscal cost; the ranking turns conditional in thin pharmaceutical markets, where equilibrium-selection treatment of the protected pool becomes first-order. Bidder exclusion is hardest to defend where the protected pool is thick and the good standardized, and most defensible---if at all---where it is not.
 
 ---
 
