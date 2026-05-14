@@ -5,13 +5,12 @@ Target: 4:00–5:00.
 
 from manim import (
     Scene, Text, VGroup, Dot, Line, Axes, FadeIn, FadeOut, ValueTracker,
-    always_redraw, ORIGIN, UP, DOWN, LEFT, RIGHT, np,
-)
+    always_redraw, ORIGIN, UP, DOWN, LEFT, RIGHT, np, Group)
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
     configure_manim, BG, INK, INK_SOFT, GRID, RED_SME, BLUE_NS, GREEN_OK,
-    FONT_TITLE, FONT_BODY, header_strip,
+    FONT_TITLE, FONT_BODY, header_strip, pad_to_target,
 )
 
 
@@ -130,4 +129,5 @@ class SceneDropout(Scene):
         self.play(FadeIn(overlay, shift=0.1 * DOWN), run_time=0.5)
 
         self.wait(2.0)
-        self.play(FadeOut(VGroup(*self.mobjects)), run_time=0.6)
+        pad_to_target(self, "SceneDropout")
+        self.play(FadeOut(Group(*self.mobjects)), run_time=0.6)

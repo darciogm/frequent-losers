@@ -5,8 +5,7 @@ Target: 8:50–9:30.
 
 from manim import (
     Scene, Text, VGroup, Rectangle, Line, FadeIn, FadeOut,
-    ORIGIN, UP, DOWN, LEFT, RIGHT,
-)
+    ORIGIN, UP, DOWN, LEFT, RIGHT, Group)
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
@@ -95,4 +94,4 @@ class SceneCMED(Scene):
         self.play(FadeIn(overlay, shift=0.1 * UP), run_time=0.6)
 
         self.wait(2.0)
-        self.play(FadeOut(VGroup(*self.mobjects)), run_time=0.6)
+        self.play(FadeOut(Group(*self.mobjects)), run_time=0.6)

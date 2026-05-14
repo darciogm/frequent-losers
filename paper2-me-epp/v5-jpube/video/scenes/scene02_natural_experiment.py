@@ -11,7 +11,7 @@ import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
     configure_manim, BG, INK, INK_SOFT, GRID, RED_SME, BLUE_NS,
-    FONT_TITLE, FONT_BODY, SIZE_BODY, header_strip,
+    FONT_TITLE, FONT_BODY, SIZE_BODY, header_strip, pad_to_target,
 )
 
 
@@ -99,6 +99,7 @@ class SceneNaturalExperiment(Scene):
         self.play(FadeIn(annot, shift=0.1 * DOWN), run_time=0.6)
 
         self.wait(3.0)
+        pad_to_target(self, "SceneNaturalExperiment")
         self.play(
             FadeOut(VGroup(timeline, ticks, cutoff_marker, cutoff_lbl,
                            g65_pre, g65_post, g65_lbl_pre, g65_lbl_post,

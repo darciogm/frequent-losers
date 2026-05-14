@@ -9,7 +9,7 @@ import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
     configure_manim, BG, INK, INK_SOFT, RED_SME,
-    FONT_TITLE, FONT_BODY, SIZE_HERO, SIZE_BODY,
+    FONT_TITLE, FONT_BODY, SIZE_HERO, SIZE_BODY, pad_to_target,
 )
 
 
@@ -55,8 +55,11 @@ class SceneColdOpen(Scene):
             self.play(FadeIn(line, shift=0.15 * DOWN), run_time=0.45)
             self.wait(0.4)
 
+        # Hold long enough for the hosts to land the "phantom cost" framing
+        # before fading. pad_to_target absorbs the remainder of Scene 0's
+        # 54-second audio block.
         self.wait(2.0)
-
+        pad_to_target(self, "SceneColdOpen")
         self.play(
             FadeOut(VGroup(prefix, number, suffix, subs)),
             run_time=0.6,

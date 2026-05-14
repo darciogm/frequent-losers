@@ -8,13 +8,12 @@ Target: 7:45–8:50.
 
 from manim import (
     Scene, Text, VGroup, Rectangle, FadeIn, FadeOut,
-    ORIGIN, UP, DOWN, LEFT, RIGHT,
-)
+    ORIGIN, UP, DOWN, LEFT, RIGHT, Group)
 import sys, pathlib, json
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
     configure_manim, BG, INK, INK_SOFT, GRID, RED_SME, BLUE_NS, GREEN_OK,
-    FONT_TITLE, FONT_BODY, header_strip, overlay_quote,
+    FONT_TITLE, FONT_BODY, header_strip, overlay_quote, pad_to_target,
 )
 
 
@@ -105,13 +104,13 @@ class ScenePolicyWindow(Scene):
         self.play(FadeIn(h_cost), FadeIn(h_cov), run_time=0.4)
 
         overlay = overlay_quote(
-            "92% of procurement value sits in the top 25% of items.\n"
-            "Apply SME-only to the bottom 75% only:\n"
-            "recover 90% of the fiscal cost while preserving 75% of the preference.",
+            "10% price preference: SMEs get a scoring discount,\n"
+            "but large firms stay in the room — and stay tough.",
             position=2.4 * DOWN,
             color=INK,
         )
         self.play(FadeIn(overlay, shift=0.1 * UP), run_time=0.8)
 
         self.wait(2.5)
-        self.play(FadeOut(VGroup(*self.mobjects)), run_time=0.6)
+        pad_to_target(self, "ScenePolicyWindow")
+        self.play(FadeOut(Group(*self.mobjects)), run_time=0.6)

@@ -11,7 +11,7 @@ import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
     configure_manim, BG, INK, INK_SOFT, GRID, GREEN_OK, RED_SME,
-    FONT_TITLE, FONT_BODY, header_strip,
+    FONT_TITLE, FONT_BODY, header_strip, pad_to_target,
 )
 
 
@@ -78,4 +78,5 @@ class SceneData(Scene):
             self.play(FadeIn(b, shift=0.15 * LEFT), run_time=0.4)
 
         self.wait(2.5)
+        pad_to_target(self, "SceneData")
         self.play(FadeOut(VGroup(boxes, arrows, badges)), run_time=0.6)

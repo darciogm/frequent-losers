@@ -11,7 +11,8 @@ import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
     configure_manim, BG, INK, INK_SOFT, RED_SME, BLUE_NS,
-    FONT_TITLE, FONT_BODY, SIZE_LARGE, SIZE_BODY, header_strip, title_card,
+    FONT_TITLE, FONT_BODY, SIZE_LARGE, SIZE_BODY,
+    header_strip, title_card, pad_to_target,
 )
 
 
@@ -79,7 +80,7 @@ class SceneQuestion(Scene):
         self.play(FadeIn(ring), FadeIn(ring_lbl), run_time=0.6)
 
         self.wait(2.0)
-
+        pad_to_target(self, "SceneQuestion")
         self.play(
             FadeOut(VGroup(question, sme_box, sme_lbl, ns_box, ns_lbl,
                            gavel, ring, ring_lbl)),

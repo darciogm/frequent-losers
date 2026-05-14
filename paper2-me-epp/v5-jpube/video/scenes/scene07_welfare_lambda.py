@@ -9,13 +9,12 @@ Target: 6:30–7:45.
 
 from manim import (
     Scene, Text, VGroup, Rectangle, Line, Dot, Axes, FadeIn, FadeOut,
-    ORIGIN, UP, DOWN, LEFT, RIGHT, np,
-)
+    ORIGIN, UP, DOWN, LEFT, RIGHT, np, Group)
 import sys, pathlib, json
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from theme import (
     configure_manim, BG, INK, INK_SOFT, GRID, RED_SME, BLUE_NS, AMBER_WARN,
-    FONT_TITLE, FONT_BODY, header_strip, overlay_quote,
+    FONT_TITLE, FONT_BODY, header_strip, overlay_quote, pad_to_target,
 )
 
 
@@ -136,4 +135,5 @@ class SceneWelfareLambda(Scene):
         self.play(FadeIn(punchline, shift=0.1 * UP), run_time=0.7)
 
         self.wait(3.0)
-        self.play(FadeOut(VGroup(*self.mobjects)), run_time=0.6)
+        pad_to_target(self, "SceneWelfareLambda")
+        self.play(FadeOut(Group(*self.mobjects)), run_time=0.6)
