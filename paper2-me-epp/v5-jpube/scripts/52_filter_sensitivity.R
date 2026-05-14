@@ -83,7 +83,7 @@ run_bne <- function(fc_samples) {
     m1 <- mean(p_S1, na.rm = TRUE)
     m2 <- mean(p_S2, na.rm = TRUE)
     m3 <- mean(p_S3, na.rm = TRUE)
-    rows[[length(rows) + 1]] <- date.table(
+    rows[[length(rows) + 1]] <- data.table(
       pharma_narrow = ph,
       mean_S1 = m1, mean_S2 = m2, mean_S3 = m3,
       delta_total = m3 - m1,

@@ -108,7 +108,7 @@ run_pref_grid <- function(ph, k_grid, B = 3000) {
     dp   <- mp - p_S1
     dwl  <- mc1 - c1_S1
     loss <- (dwl + 0.30 * dp) / p_S1 * 100
-    rows[[length(rows) + 1]] <- date.table(
+    rows[[length(rows) + 1]] <- data.table(
       pharma_narrow = ph,
       k = k,
       mean_price = round(mp, 4),
@@ -117,7 +117,7 @@ run_pref_grid <- function(ph, k_grid, B = 3000) {
       sme_winrate = round(mwon * 100, 1),
       welfare_loss_pct = round(loss, 2))
   }
-  rows[[length(rows) + 1]] <- date.table(
+  rows[[length(rows) + 1]] <- data.table(
     pharma_narrow = ph,
     k = NA_real_,
     mean_price = round(p_V0, 4),

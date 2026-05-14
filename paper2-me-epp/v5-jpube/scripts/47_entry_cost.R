@@ -109,7 +109,7 @@ for (ph in c(0, 1)) {
   # conditional (construction above garante os zeros in the tipo that perdeu).
   kappa_sme <- mean(sim$sme, na.rm = TRUE)
   kappa_ns  <- mean(sim$ns,  na.rm = TRUE)
-  rows[[length(rows) + 1]] <- date.table(
+  rows[[length(rows) + 1]] <- data.table(
     pharma_lbl = fifelse(ph == 1, "pharma", "non-pharma"),
     ref_med    = round(ref_m, 2),
     n_sme_bar  = round(n_sme, 2),

@@ -124,7 +124,7 @@ vdecomp <- function(dt) {
   sigma2_e <- sigma2_within
   rho <- sigma2_a / (sigma2_a + sigma2_e)
 
-  date.table(
+  data.table(
     n_bids = nrow(dt),
     n_auctions = nrow(auc_mean),
     N_avg = round(N_avg, 2),

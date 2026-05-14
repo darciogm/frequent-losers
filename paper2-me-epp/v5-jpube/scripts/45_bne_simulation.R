@@ -119,7 +119,7 @@ for (ph in c(0, 1)) {
                             else fc_sme_pre,
                             fc_ns_pre)
 
-  results[[length(results) + 1]] <- date.table(
+  results[[length(results) + 1]] <- data.table(
     pharma_narrow = ph,
     n_sme_pre   = round(n_pre$n_sme, 2),
     n_ns_pre    = round(n_pre$n_nonsme, 2),
@@ -158,11 +158,11 @@ sink()
 plot_df <- rbindlist(lapply(seq_len(nrow(res)), function(i) {
   r <- res[i]
   rbind(
-    date.table(pharma_lbl = r$pharma_lbl, scenario = "S1 (open, Pre)",
+    data.table(pharma_lbl = r$pharma_lbl, scenario = "S1 (open, Pre)",
                price = r$p_S1_list[[1]]),
-    date.table(pharma_lbl = r$pharma_lbl, scenario = "S2 (SME-only, fixed pool)",
+    data.table(pharma_lbl = r$pharma_lbl, scenario = "S2 (SME-only, fixed pool)",
                price = r$p_S2_list[[1]]),
-    date.table(pharma_lbl = r$pharma_lbl, scenario = "S3 (SME-only, endogenous)",
+    data.table(pharma_lbl = r$pharma_lbl, scenario = "S3 (SME-only, endogenous)",
                price = r$p_S3_list[[1]]))
 }))
 plot_df <- plot_df[is.finite(price)]

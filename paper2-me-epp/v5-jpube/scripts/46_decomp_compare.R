@@ -85,7 +85,7 @@ run_scenario <- function(fc_samples, entry_counts, endogenous = TRUE) {
                               if (!is.null(fc_sme_post)) fc_sme_post
                               else fc_sme_pre,
                               fc_ns_pre)
-    rows[[length(rows) + 1]] <- date.table(
+    rows[[length(rows) + 1]] <- data.table(
       pharma_narrow = ph,
       mean_S1 = mean(p_S1, na.rm = TRUE),
       mean_S2 = mean(p_S2, na.rm = TRUE),

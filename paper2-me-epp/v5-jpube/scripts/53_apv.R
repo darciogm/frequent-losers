@@ -115,7 +115,7 @@ run_apv <- function(ph) {
 
   m <- function(x) mean(x, na.rm = TRUE)
   base <- m(p_S1)
-  out <- date.table(
+  out <- data.table(
     pharma_narrow = ph,
     mean_S1 = base,
     mean_V0 = m(p_V0), delta_V0 = m(p_V0) - base,

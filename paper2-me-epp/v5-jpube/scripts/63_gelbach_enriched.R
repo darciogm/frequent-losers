@@ -117,13 +117,13 @@ resD <- list(label = "D: + winner CNAE 2-digit",
              s_full = se(fit_D)["g65_pre"])
 
 results <- rbindlist(list(
-  date.table(label = resA$label, k = resA$n_channels,
+  data.table(label = resA$label, k = resA$n_channels,
              b_full = round(resA$b_full, 4), s_full = round(resA$s_full, 4)),
-  date.table(label = resB$label, k = resB$n_channels,
+  data.table(label = resB$label, k = resB$n_channels,
              b_full = round(resB$b_full, 4), s_full = round(resB$s_full, 4)),
-  date.table(label = resC$label, k = resC$n_channels,
+  data.table(label = resC$label, k = resC$n_channels,
              b_full = round(resC$b_full, 4), s_full = round(resC$s_full, 4)),
-  date.table(label = resD$label, k = resD$n_channels,
+  data.table(label = resD$label, k = resD$n_channels,
              b_full = round(resD$b_full, 4), s_full = round(resD$s_full, 4))
 ))
 results[, b_short := round(b_short, 4)]

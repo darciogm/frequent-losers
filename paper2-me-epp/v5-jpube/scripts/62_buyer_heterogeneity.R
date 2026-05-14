@@ -68,7 +68,7 @@ for (grp in keep_grps) {
   fit <- feols(lpreco_final ~ g65_pre + convite + lquantidade |
                item_alt + date_oc_numb,
                date = sub, cluster = ~item_alt)
-  res[[grp]] <- date.table(
+  res[[grp]] <- data.table(
     buyer_grp = grp,
     n        = nobs(fit),
     n_g65pre = sub[, sum(g65_pre)],

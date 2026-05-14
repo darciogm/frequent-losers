@@ -72,7 +72,7 @@ for (h in h_grid) {
         # Aggrega across n_bins ponderando by nrow.
         c_pooled <- unlist(c_bucket)
         F_c <- ecdf(c_pooled)(c_grid)
-        rows[[length(rows) + 1]] <- date.table(
+        rows[[length(rows) + 1]] <- data.table(
           h_factor = h, period = per,
           pharma_narrow = ph, sme_bec = sm,
           n_obs = length(c_pooled),

@@ -36,7 +36,7 @@ for (ph in c(0, 1)) {
   x_pre  <- preg[period == "Pre"  & pharma_narrow == ph, c_norm]
   x_post <- preg[period == "Post" & pharma_narrow == ph, c_norm]
   kt <- suppressWarnings(ks.test(x_pre, x_post))
-  ks_preg[[length(ks_preg) + 1]] <- date.table(
+  ks_preg[[length(ks_preg) + 1]] <- data.table(
     modality = "Pregão (drop-out)",
     pharma_lbl = fifelse(ph == 1, "pharma", "non-pharma"),
     n_pre = length(x_pre), n_post = length(x_post),
@@ -82,7 +82,7 @@ for (ph in c(0, 1)) {
   x_pre  <- sample_from_Fc(pre$c, pre$F_c, 5000)
   x_post <- sample_from_Fc(post$c, post$F_c, 5000)
   kt <- suppressWarnings(ks.test(x_pre, x_post))
-  ks_conv[[length(ks_conv) + 1]] <- date.table(
+  ks_conv[[length(ks_conv) + 1]] <- data.table(
     modality = "Convite (GPV)",
     pharma_lbl = fifelse(ph == 1, "pharma", "non-pharma"),
     n_pre = n_pre, n_post = n_post,

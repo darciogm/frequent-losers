@@ -101,7 +101,7 @@ gpv_invert <- function(b, N_val, h_factor = 1) {
   c_hat <- b - (1 - F_emp(b)) / ((N_val - 1) * g_fun(b))
   # Trim obs where g(b) é almost zero (rabo long).
   ok <- is.finite(c_hat) & c_hat > 0 & c_hat < b
-  date.table(b_norm = b[ok], c_norm = c_hat[ok])
+  data.table(b_norm = b[ok], c_norm = c_hat[ok])
 }
 
 c_grid <- seq(0.005, 2, by = 0.005)
@@ -118,7 +118,7 @@ for (per in c("Pre", "Post")) {
         inv <- gpv_invert(sub$b_norm, N_val)
         if (is.null(inv) || nrow(inv) < 50) next
         F_c <- ecdf(inv$c_norm)(c_grid)
-        conv_fc_rows[[length(conv_fc_rows) + 1]] <- date.table(
+        conv_fc_rows[[length(conv_fc_rows) + 1]] <- data.table(
           c = c_grid, F_c = F_c,
           period = per, pharma_narrow = ph, sme_bec = sm,
           n_bin = nb, n = nrow(sub), N_mean = N_val)

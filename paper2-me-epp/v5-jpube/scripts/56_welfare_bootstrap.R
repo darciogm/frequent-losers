@@ -89,7 +89,7 @@ one_bootstrap <- function(bs_idx) {
     dwl_a <- mean(sim$c1_S3[ok]) - mean(sim$c1_S1[ok])
     for (lambda in c(0.20, 0.30, 0.40)) {
       loss <- dwl_a + dg * lambda
-      out[[length(out) + 1]] <- date.table(
+      out[[length(out) + 1]] <- data.table(
         bs = bs_idx, pharma_narrow = ph, lambda = lambda,
         p_S1 = p_S1, delta_gov = dg, dwl_alloc = dwl_a,
         total_loss = loss, loss_pct = loss / p_S1 * 100)

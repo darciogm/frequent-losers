@@ -61,7 +61,7 @@ pA <- firms[, mean(sme_porte)]
 pB <- firms[, mean(sme_bec)]
 po <- firms[, mean(sme_porte == sme_bec)]
 pe <- pA * pB + (1 - pA) * (1 - pB)
-concordancia <- date.table(
+concordancia <- data.table(
   agreement = round(po * 100, 2),
   kappa     = round((po - pe) / (1 - pe), 3)
 )

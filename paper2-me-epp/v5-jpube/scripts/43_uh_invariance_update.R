@@ -30,7 +30,7 @@ for (ph in c(0, 1)) {
   x_pre  <- preg[period == "Pre"  & pharma_narrow == ph, c]
   x_post <- preg[period == "Post" & pharma_narrow == ph, c]
   kt <- suppressWarnings(ks.test(x_pre, x_post))
-  ks_preg_list[[length(ks_preg_list) + 1]] <- date.table(
+  ks_preg_list[[length(ks_preg_list) + 1]] <- data.table(
     modality = "Pregão (drop-out, UH-clean)",
     pharma_lbl = fifelse(ph == 1, "pharma", "non-pharma"),
     n_pre = length(x_pre), n_post = length(x_post),
@@ -61,7 +61,7 @@ for (ph in c(0, 1)) {
   x_post <- conv[period == "Post" & pharma_narrow == ph, c]
   if (length(x_pre) < 100 || length(x_post) < 100) next
   kt <- suppressWarnings(ks.test(x_pre, x_post))
-  ks_conv_list[[length(ks_conv_list) + 1]] <- date.table(
+  ks_conv_list[[length(ks_conv_list) + 1]] <- data.table(
     modality = "Convite (GPV input, UH-clean)",
     pharma_lbl = fifelse(ph == 1, "pharma", "non-pharma"),
     n_pre = length(x_pre), n_post = length(x_post),
@@ -89,7 +89,7 @@ for (ph in c(0, 1)) {
   x_pre  <- preg_raw[period == "Pre"  & pharma_narrow == ph, c]
   x_post <- preg_raw[period == "Post" & pharma_narrow == ph, c]
   kt <- suppressWarnings(ks.test(x_pre, x_post))
-  ks_raw_list[[length(ks_raw_list) + 1]] <- date.table(
+  ks_raw_list[[length(ks_raw_list) + 1]] <- data.table(
     modality = "Pregão (drop-out, RAW)",
     pharma_lbl = fifelse(ph == 1, "pharma", "non-pharma"),
     D_raw = round(unname(kt$statistic), 4),

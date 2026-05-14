@@ -75,7 +75,7 @@ bound_stratum <- function(b1, b2, N_val) {
   F_b2 <- ecdf(b2)(c_grid)
   F_LB <- 1 - (1 - F_b1)^(1 / N_val)
   F_UB <- F_b2
-  date.table(c = c_grid, F_LB = F_LB, F_UB = F_UB,
+  data.table(c = c_grid, F_LB = F_LB, F_UB = F_UB,
              F_b1 = F_b1, F_b2 = F_b2)
 }
 
@@ -154,7 +154,7 @@ for (p in summary_pts) {
       if (nrow(sub) < 20) next
       c_ub <- approx(sub$F_UB, sub$c, xout = p, rule = 2)$y
       c_lb <- approx(sub$F_LB, sub$c, xout = p, rule = 2)$y
-      sum_rows[[length(sum_rows) + 1]] <- date.table(
+      sum_rows[[length(sum_rows) + 1]] <- data.table(
         period = per, pharma_narrow = ph, q = p,
         c_lower = round(c_ub, 4),   # F_UB → smaller c for atingir p
         c_upper = round(c_lb, 4))   # F_LB → larger c for atingir p

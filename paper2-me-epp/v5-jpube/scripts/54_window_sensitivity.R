@@ -103,7 +103,7 @@ run_bne_win <- function(fc_samples, entry_dt) {
     m1 <- mean(p_S1, na.rm = TRUE)
     m2 <- mean(p_S2, na.rm = TRUE)
     m3 <- mean(p_S3, na.rm = TRUE)
-    rows[[length(rows) + 1]] <- date.table(
+    rows[[length(rows) + 1]] <- data.table(
       pharma_narrow = ph,
       n_sme_pre = round(n_pre$n_sme, 2),
       n_ns_pre  = round(n_pre$n_nonsme, 2),

@@ -114,7 +114,7 @@ for (ph in c(0, 1)) {
     mcpf_dist   <- delta_gov * lambda
     total_loss  <- dwl_alloc + mcpf_dist
     loss_pct_S1 <- total_loss / mean_p_S1 * 100
-    rows[[length(rows) + 1]] <- date.table(
+    rows[[length(rows) + 1]] <- data.table(
       pharma_narrow = ph, lambda = lambda,
       mean_p_S1 = round(mean_p_S1, 4),
       delta_gov = round(delta_gov, 4),

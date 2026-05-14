@@ -107,7 +107,7 @@ for (pharma_lbl in c(0, 1)) {
                      sme_bec == sme_lbl, x][[1]]
     if (is.null(pre) || is.null(post) || length(pre) < 50 || length(post) < 50) next
     kt <- suppressWarnings(ks.test(pre, post))
-    ks_res[[length(ks_res) + 1]] <- date.table(
+    ks_res[[length(ks_res) + 1]] <- data.table(
       pharma_narrow = pharma_lbl,
       sme_bec       = sme_lbl,
       n_pre         = length(pre),

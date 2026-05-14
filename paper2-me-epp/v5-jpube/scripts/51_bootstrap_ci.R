@@ -161,7 +161,7 @@ one_bootstrap <- function(bs_idx) {
                        turnbull = fc_tb)
       r <- run_bne(fc_src, ph)
       if (is.null(r)) next
-      out[[length(out) + 1]] <- date.table(
+      out[[length(out) + 1]] <- data.table(
         bs = bs_idx, regime = reg, pharma_narrow = ph,
         delta_total = r$delta_total,
         share_int   = r$share_int,

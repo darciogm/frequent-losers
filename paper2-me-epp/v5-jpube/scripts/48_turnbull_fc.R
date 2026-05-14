@@ -117,7 +117,7 @@ for (per in c("Pre", "Post")) {
       if (is.null(fit)) next
       F_grid <- approx(fit$nodes, fit$F_c, xout = c_grid,
                        method = "constant", f = 1, rule = 2)$y
-      rows[[length(rows) + 1]] <- date.table(
+      rows[[length(rows) + 1]] <- data.table(
         period = per, pharma_narrow = ph, sme_bec = sm,
         c = c_grid, F_c_turnbull = F_grid,
         n_losers = length(lose_c), n_winners = length(win_c2),

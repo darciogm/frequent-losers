@@ -104,7 +104,7 @@ raw_bne <- rbindlist(lapply(c(0, 1), function(ph) {
   p_S2 <- simulate_auction(n_pre$n_sme, 0, fc_sme_pre, fc_ns_pre)
   set.seed(20260423)
   p_S3 <- simulate_auction(n_post$n_sme, 0, fc_sme_pre, fc_ns_pre)
-  date.table(
+  data.table(
     pharma_narrow = ph,
     mean_S1 = mean(p_S1, na.rm = TRUE),
     mean_S2 = mean(p_S2, na.rm = TRUE),
@@ -132,7 +132,7 @@ raw_welfare <- rbindlist(lapply(c(0, 1), function(ph) {
   p_S3 <- mean(sim$c2_S3[ok])
   dwl <- mean(sim$c1_S3[ok]) - mean(sim$c1_S1[ok])
   total_loss <- dwl + 0.30 * (p_S3 - p_S1)
-  date.table(
+  data.table(
     pharma_narrow = ph,
     mean_p_S1 = p_S1,
     delta_gov = p_S3 - p_S1,
@@ -149,7 +149,7 @@ cat("\n--- raw strict-invariance welfare run ---\n")
 print(raw_welfare)
 sink()
 
-summary_tab <- date.table(
+summary_tab <- data.table(
   pharma_narrow = c(0L, 1L),
   class = c("non-pharma", "pharma"),
   delta_total = c(0.29, 0.47),

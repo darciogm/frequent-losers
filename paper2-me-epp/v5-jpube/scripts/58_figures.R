@@ -113,7 +113,7 @@ log_step("58", "fig1 decomposition written", logf)
 
 # Derive V0 and V2 from dec (V0 = S3, V2 ~ S2 with post count; here
 # approximate V2 as the ratio-to-V0 used in 53_apv.R).
-apv_ratio <- date.table(
+apv_ratio <- data.table(
   pharma_lbl = c("non-pharma", "pharma"),
   delta_V0 = c(0.2585, 0.3079),
   delta_V2 = c(0.3930, 0.4847),
@@ -199,27 +199,27 @@ si_points <- if (file.exists(si_path)) {
 # Welfare(lambda) = (DWL_strict + lambda * Delta_gov_strict) / p_S1.
 if (is.null(si_points)) {
   si_points <- rbind(
-    date.table(pharma_narrow = 0, lambda = 0.20, mean = 26.3,
+    data.table(pharma_narrow = 0, lambda = 0.20, mean = 26.3,
                lo = NA_real_, hi = NA_real_,
                pharma_lbl = "non-pharma",
                spec = "Strict invariance benchmark"),
-    date.table(pharma_narrow = 0, lambda = 0.30, mean = 30.0,
+    data.table(pharma_narrow = 0, lambda = 0.30, mean = 30.0,
                lo = NA_real_, hi = NA_real_,
                pharma_lbl = "non-pharma",
                spec = "Strict invariance benchmark"),
-    date.table(pharma_narrow = 0, lambda = 0.40, mean = 33.7,
+    data.table(pharma_narrow = 0, lambda = 0.40, mean = 33.7,
                lo = NA_real_, hi = NA_real_,
                pharma_lbl = "non-pharma",
                spec = "Strict invariance benchmark"),
-    date.table(pharma_narrow = 1, lambda = 0.20, mean = 32.1,
+    data.table(pharma_narrow = 1, lambda = 0.20, mean = 32.1,
                lo = NA_real_, hi = NA_real_,
                pharma_lbl = "pharma",
                spec = "Strict invariance benchmark"),
-    date.table(pharma_narrow = 1, lambda = 0.30, mean = 39.2,
+    data.table(pharma_narrow = 1, lambda = 0.30, mean = 39.2,
                lo = NA_real_, hi = NA_real_,
                pharma_lbl = "pharma",
                spec = "Strict invariance benchmark"),
-    date.table(pharma_narrow = 1, lambda = 0.40, mean = 46.4,
+    data.table(pharma_narrow = 1, lambda = 0.40, mean = 46.4,
                lo = NA_real_, hi = NA_real_,
                pharma_lbl = "pharma",
                spec = "Strict invariance benchmark"))
@@ -313,7 +313,7 @@ log_step("58", "fig4 cross-modality regenerated with clean title", logf)
 # main and falls to 0.7 in pharma under strict. Bolsa Familia MVPF band
 # (Bergstrom-Dodds-Rios 2025 AEJ:Pol): 0.90-1.12.
 
-weight_df <- date.table(
+weight_df <- data.table(
   pharma_lbl = c("non-pharma", "pharma",
                  "pharma"),
   spec = c("Main (equilibrium selection)",

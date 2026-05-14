@@ -66,7 +66,7 @@ gpv_invert <- function(b, N_val, h_factor = 1) {
   F_emp <- ecdf(b)
   c_hat <- b - (1 - F_emp(b)) / ((N_val - 1) * g_fun(b))
   ok <- is.finite(c_hat) & c_hat > 0 & c_hat < b
-  date.table(b_norm = b[ok], c_norm = c_hat[ok])
+  data.table(b_norm = b[ok], c_norm = c_hat[ok])
 }
 
 conv <- bids[mod == "convite"]
@@ -89,7 +89,7 @@ for (per in c("Pre", "Post")) {
         inv_clean <- gpv_invert(sub$c_norm_clean, N_val)
         inv_raw   <- gpv_invert(sub$c_norm, N_val)
         if (is.null(inv_clean) || is.null(inv_raw)) next
-        conv_fc_rows[[length(conv_fc_rows) + 1]] <- date.table(
+        conv_fc_rows[[length(conv_fc_rows) + 1]] <- data.table(
           c = c_grid,
           F_c_clean = ecdf(inv_clean$c_norm)(c_grid),
           F_c_raw   = ecdf(inv_raw$c_norm)(c_grid),
