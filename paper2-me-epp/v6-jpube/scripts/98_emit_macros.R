@@ -193,8 +193,25 @@ if (file.exists(opt_tab)) {
 }
 
 # Empate ficto trigger band (LC 123/2006 art. 44, Pregão); legal constant, not
-# data-derived. Referenced in §8.4 V4 sketch.
+# data-derived. Referenced in §8.4 V4 quantification.
 emit("empateBand", "5", comment = "empate ficto trigger band, Pregão (LC 123/2006 art. 44)")
+
+# ---------------------------------------------------------------------------
+# 6b. V4 (empate ficto) quantification (script 64_empate_ficto.R)
+# ---------------------------------------------------------------------------
+v4 <- read_if_exists("empate_ficto")
+if (!is.null(v4)) {
+  for (i in seq_len(nrow(v4))) {
+    suf <- if (v4$pharma_narrow[i] == 0) "Np" else "Ph"
+    emit(paste0("vFourDelta",       suf), v4$delta_V4_vs_S1[i], fmt = "%+.4f")
+    emit(paste0("vFourFireRate",    suf), v4$fire_rate[i],      fmt = "%.1f")
+    emit(paste0("vFourSmeWinGain",  suf), v4$sme_win_gain_pp[i], fmt = "%.1f")
+    emit(paste0("vFourDwlAlloc",    suf), v4$dwl_alloc[i],      fmt = "%.4f")
+    emit(paste0("vFourLossPct",     suf), v4$loss_pct_S1[i],    fmt = "%.2f")
+    emit(paste0("vFourSmeWinSone",  suf), v4$sme_win_S1_pct[i], fmt = "%.1f")
+    emit(paste0("vFourSmeWinVfour", suf), v4$sme_win_V4_pct[i], fmt = "%.1f")
+  }
+}
 
 # ---------------------------------------------------------------------------
 # 7. Static descriptors (constants — set here so manuscript never hardcodes)
