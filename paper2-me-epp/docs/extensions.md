@@ -30,20 +30,18 @@ Interacting the treatment indicator with a direct administration dummy reveals b
 
 ---
 
-## Fiscal Cost Quantification
+## Welfare Cost (v6)
 
-A back-of-the-envelope calculation using the estimated price effect and the total procurement volume for group 65 in the pre-period quantifies the fiscal burden of SME-only tenders.
+The v6 manuscript replaces the v4 back-of-the-envelope fiscal calculation with a structural welfare arithmetic. The per-auction welfare loss combines the allocative wedge $\text{DWL}_{\text{alloc}} = c_{(1)}^{S_3} - c_{(1)}^{S_1}$ with an MCPF distortion $\lambda \cdot (p_{S_3} - p_{S_1})$ at $\lambda = 0.30$ (Ballard--Shoven--Whalley benchmark).
 
-| Component | Baseline spec. | PBU FE spec. |
-|-----------|:--------------:|:------------:|
-| Price coefficient (18m) | -0.1309 | -0.1330 |
-| Implied price effect | -12.27% | -12.45% |
-| G65 pre-period total value | R$ 689.0 million | R$ 689.0 million |
-| **Estimated fiscal saving** | **R$ 84.5 million** | **R$ 85.8 million** |
+| Class | **Loss / p<sub>S<sub>1</sub></sub>** at λ = 0.30 |
+|---|:---:|
+| Non-pharma | **28.9%** |
+| Pharma | **44.8%** |
+
+Translated to annual public-finance units on Group~65 alone, the welfare cost spans **R$55--128 million per year** (US$16--37M): R$55M is the realistic central case at the empirically observed adherence rate; R$128M is the upper bound under full SME-eligible adherence. This is one product group of São Paulo's R$13 billion procurement platform.
 
 <div class="key-result" markdown>
-<span class="number">R$ 84.5--85.8 million</span>
-<span class="label">Estimated fiscal cost of restricting tenders to SMEs for group 65 in the pre-period (18-month window)</span>
+<span class="number">R$ 55--128 M / yr</span>
+<span class="label">v6 annual welfare cost of bidder exclusion on Group 65, at λ = 0.30, across the empirical adherence range. (Earlier v4 reduced-form back-of-envelope gave R$84.5--85.8M as the 18-month *fiscal* cost — a different object, superseded.)</span>
 </div>
-
-The calculation applies the percentage price effect ($e^{\beta} - 1$) to the total procurement value of group 65 completed items in the pre-period (Sep 2016--Feb 2018). This is a conservative estimate as it considers only one product group; extrapolating to all groups subject to SME restrictions would yield substantially larger figures. These fiscal costs reinforce the conclusion that policymakers should carefully weigh the benefits of SME promotion against the efficiency losses in public procurement.

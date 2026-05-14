@@ -1,5 +1,9 @@
 # Replication
 
+!!! info "v6 banner"
+    This page describes the v1--v4 reduced-form pipeline (`scripts/00_master.R`). The submission-ready v6 structural pipeline lives in `v6-jpube/scripts/` (~25 numbered R scripts, 32→58). See `v6-jpube/REPRODUCIBILITY.md` for the v6 reproducibility runbook and `v6-jpube/manuscript/paper_v6.tex` for the canonical paper.
+
+
 ## Requirements
 
 | Component | Version |

@@ -1,5 +1,9 @@
 # Main Results
 
+!!! info "v6 banner: this page reflects the v1--v4 reduced-form headline"
+    The tables on this page are the original reduced-form DiDiR estimates that motivated the v6 structural decomposition. The v6 paper (`paper_v6.pdf`) reframes the welfare account around **sheltered bidding** (within-auction component = 2/3--3/4 of the simulated effect; annual welfare cost R$55--128M on Group 65). The v4 fiscal cost figure (R$84.5--85.8M over 18 months) is a *different object* — applies the percentage price effect to total procurement volume — and is superseded as the headline by the v6 structural welfare arithmetic. See `paper_v6.pdf` for canonical CIs and the structural decomposition.
+
+
 ## Event Study: Log Prices
 
 The event study plots semester-by-semester differences between group 65 (switched) and other groups (always treated). The parallel trends assumption requires that the difference is stable in the post-period (after March 2018).
@@ -115,11 +119,11 @@ Translating the estimated price effects into monetary terms provides a concrete 
 | **Estimated fiscal saving** | **R$ 84.5 million** | **R$ 85.8 million** |
 
 <div class="key-result" markdown>
-<span class="number">R$ 84.5--85.8 million</span>
-<span class="label">Fiscal cost of restricting tenders to SMEs for group 65 in the pre-period (18-month window, ~US$17 million)</span>
+<span class="number">R$ 84.5--85.8 M (v4 reduced-form, 18m)</span>
+<span class="label">Earlier reduced-form fiscal benchmark. Superseded as the headline by the v6 structural welfare arithmetic: R$55--128M/yr (~US$16--37M), λ = 0.30, on Group 65 alone of São Paulo's R$13B platform. See `paper_v6.pdf`.</span>
 </div>
 
-This represents about **12% of total procurement value** for group 65. The estimate is conservative: group 65 accounts for only 27% of total BEC procurement, so the aggregate fiscal cost across all product groups subject to SME restrictions is likely several times larger. The heterogeneity results further indicate that these costs are disproportionately concentrated among high-value items.
+This represents about **12% of total procurement value** for group 65 in the reduced-form back-of-envelope. The structural v6 welfare arithmetic delivers a different object — annualized rather than 18-month, structural rather than reduced-form, with explicit MCPF and Saez--Stantcheva welfare-weight treatment.
 
 ---
 
