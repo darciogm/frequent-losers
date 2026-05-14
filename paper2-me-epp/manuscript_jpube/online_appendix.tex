@@ -127,7 +127,7 @@ Figure~\ref{fig:sunab-event} shows the Sun-Abraham dynamic event study, plotting
 \end{figure}
 
 \subsection*{OA.6.3 Goodman-Bacon (2021) Decomposition}
-With a single treated cohort and 76 never-treated controls within the sample window, the \citet{goodmanbacon2021} decomposition collapses to a single comparison type (``Treated vs Untreated''), which carries 100\% of the TWFE weight. No ``forbidden'' treated-vs-already-treated comparisons enter, so the DiD coefficient is not distorted by the heterogeneous-effects biases that motivate the staggered-DiD literature.
+With a single treated cohort and 76 never-treated controls within the sample window, the \citet{goodmanbacon2021} decomposition collapses to a single comparison type (``Treated vs Untreated''), which carries 100\% of the TWFE weight. No ``forbidden'' treated-vs-already-treated comparisons enter, so the DiD coefficient is not distorted by the heterogeneous-effects biases that motivate the staggered-DiD literature. The Bacon-weighted point estimate ($0.370$ after sign-flip) exceeds the item-level headline in magnitude for the same reason CS2021 does---the decomposition runs on the group-month panel and loses within-item variation---and is therefore a different object than the item-month TWFE reported in the main tables.
 
 \clearpage
 
@@ -135,7 +135,7 @@ With a single treated cohort and 76 never-treated controls within the sample win
 
 \IfFileExists{../output/tables/tab_spillover.tex}{\input{../output/tables/tab_spillover.tex}}{}
 
-The spillover test regresses control-group outcomes on $\mathit{Post} \times \mathit{Exposure}$, where $\mathit{Exposure}_c$ is the pre-period share of control group~$c$'s winners whose CNPJ raiz also won at least one Group-65 item in the same pre-period. The coefficient on the interaction is $+0.04$ with a standard error of $0.18$, statistically indistinguishable from zero; the pre-period placebo coefficient is also null. Multiplied by the mean exposure across groups (3.1\%), the implied bias on the headline price coefficient is $+0.001$ log-points, or approximately 1\% of the $-0.109$ estimate. The full diagnostic is in \texttt{output/tables/diag\_spillover.txt}.
+The spillover test regresses control-group outcomes on $\mathit{Post} \times \mathit{Exposure}$, where $\mathit{Exposure}_c$ is the pre-period share of control group~$c$'s winners whose CNPJ raiz also won at least one Group-65 item in the same pre-period. The coefficient on the interaction is $+0.017$ with a standard error of $0.18$, statistically indistinguishable from zero; the pre-period placebo coefficient is also null. Multiplied by the mean exposure across groups (3.1\%), the implied bias on the headline price coefficient is $+0.0005$ log-points, or less than half a percent of the $-0.109$ estimate. The full diagnostic is in \texttt{output/tables/diag\_spillover.txt}.
 
 \clearpage
 
@@ -146,7 +146,7 @@ The spillover test regresses control-group outcomes on $\mathit{Post} \times \ma
 
 \section{Gelbach (2016) Mediation Decomposition}
 
-Figure~\ref{fig:gelbach} in the main text stacks the 94/6 split at a glance. This section unpacks it: Figure~\ref{fig:gelbach-oa} plots the per-channel $\delta$ contributions with standard errors, and the table below reports the underlying coefficients and auxiliary regressions.
+Figure~\ref{fig:gelbach} in the main text stacks the net 95/5 split at a glance (individual channels: competition $+181\%$, composition $-81\%$ of $|\beta_{\text{short}}|$). This section unpacks it: Figure~\ref{fig:gelbach-oa} plots the per-channel $\delta$ contributions with standard errors, and the table below reports the underlying coefficients and auxiliary regressions.
 
 \IfFileExists{../output/figures/fig_15_mediation.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_15_mediation.pdf}\caption{Gelbach (2016) Decomposition: Channel Contributions to the Price Effect}\label{fig:gelbach-oa}\end{figure}}{}
 
@@ -183,6 +183,24 @@ The \citet{canay2011} quantile DiD on the residualized log-price distribution de
 \IfFileExists{../output/figures/fig_14_quantile_did.pdf}{\begin{figure}[htbp]\centering\includegraphics[width=0.7\textwidth]{fig_14_quantile_did.pdf}\caption{Quantile Difference-in-Differences: Treatment Effects Across the Price Distribution}\label{fig:quantile-did-oa}\end{figure}}{}
 
 \IfFileExists{../output/tables/tab_quantile_did.tex}{\input{../output/tables/tab_quantile_did.tex}}{}
+
+\section{Dose-Response by Item Quantity}
+
+Splitting the sample at the median of log item quantity ($=3.18$) delivers the dose-response pattern referenced in the main text. Table~\ref{tab:dose_response} reports the DiD coefficients separately on the high-quantity and low-quantity subsamples. The entry effect (log firms) scales roughly five-to-one between the two halves ($+0.125$ vs.\ $+0.025$), mirroring the causal-forest finding that item quantity is the dominant source of treatment-effect heterogeneity (variable importance $=0.486$; Figure~\ref{fig:cforest-varimp}).
+
+\IfFileExists{../output/tables/tab_dose_response.tex}{\input{../output/tables/tab_dose_response.tex}}{}
+
+\section{Within-Group-65: Medications vs.\ Non-Pharma}
+
+Table~\ref{tab:within_g65} provides a split-sample complement to the interaction specification in Table~\ref{tab:pharma}: $-0.166$ ($-0.174$ with PBU FE) for class 6531, $-0.099$ ($-0.097$ with PBU FE) for non-pharma.
+
+\IfFileExists{../output/tables/tab_within_g65.tex}{\input{../output/tables/tab_within_g65.tex}}{}
+
+\section{Alternative Gelbach Parametrization}
+
+Table~\ref{tab:entry_margin} adds log firms, the SME-winner indicator, and both mediators sequentially to the baseline price regression under item FE only. The direct coefficient grows in magnitude under each mediator, consistent with the negative-weighting suppressor pattern in Table~\ref{tab:mediation}.
+
+\IfFileExists{../output/tables/tab_entry_margin.tex}{\input{../output/tables/tab_entry_margin.tex}}{}
 
 \clearpage
 
