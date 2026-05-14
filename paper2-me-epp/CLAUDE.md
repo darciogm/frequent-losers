@@ -55,6 +55,7 @@ cd manuscript && pdflatex main.tex && bibtex main && pdflatex main.tex && pdflat
 | **CSV format** | Latin-1, semicolon-separated, 373 columns |
 | **Parquet cache** | `data/processed/paper2_me_epp.parquet` (14 selected columns) |
 | **R-squared** | Overall R-squared (to approximate Stata areg output) |
+| **Cache timestamp order** | Pipeline scripts write `output/tables/*.tex` *before* saving `/tmp/p2_*.rds`, so a table file may have an earlier mtime than the RDS it derives from. This is expected and not a staleness signal — inversion is benign. |
 
 ## Datasets
 
