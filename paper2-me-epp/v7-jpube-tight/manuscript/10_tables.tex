@@ -1,0 +1,75 @@
+\clearpage
+\appendix
+
+\section{Appendix: Glossary of Brazilian Institutional Terms}\label{app:glossary}
+
+\begin{description}
+\item[Preg\~ao] Electronic descending-clock English-reverse auction (Federal Law 10.520/2002), implemented on BEC for items above the small-value threshold; the operative auction format of this paper (Section~\ref{sec:model}).
+\item[Convite] Restricted-invitation sealed-bid tender for sub-threshold items (Federal Law 8.666/1993, reorganized under \leiNova); used here as the cross-modality validation sample (Section~\ref{sec:identification}).
+\item[BEC] \emph{Bolsa Eletr\^onica de Compras}, the S\~ao Paulo state procurement platform (since 2005), centralizing standardized-goods procurement for state bureaus and affiliated units.
+\item[CADMAT] BEC product catalog hierarchy: \emph{group} (e.g., 65 = medical/dental/hospital supplies) $\to$ \emph{class} (e.g., 6531 = CMED-regulated medications) $\to$ \emph{item}.
+\item[CMED] \emph{C\^amara de Regula\c{c}\~ao do Mercado de Medicamentos}, the federal pharmaceutical price-cap regulator; CMED-regulated medications = CADMAT class 6531.
+\item[PGE-SP] \emph{Procuradoria-Geral do Estado de S\~ao Paulo} (state attorney general); source of the \policyCutoffMonth{} legal opinion that extended SME-only to medical supplies.
+\item[TCE-SP] \emph{Tribunal de Contas do Estado de S\~ao Paulo} (state audit court); operated the pre-2018 Group-65 exception jointly with the state government.
+\item[Sefaz-SP] \emph{Secretaria da Fazenda e Planejamento}, BEC's parent agency; source of platform totals reported in Section~\ref{sec:institutional}.
+\end{description}
+
+\section{Appendix: Sample and Data}\label{app:sample}
+
+Four tables document the sample construction and descriptive statistics discussed in Section~\ref{sec:data}. Table~\ref{tab:sample_flow} traces the attrition from the \nBidsRaw{}~million raw BEC observations to the \nObsAuctions{} firm-auction observations and \nDistinctAuctions{} distinct auctions of the structural sample, separately for Pre and Post; the attrition is dominated by the Group-65 and Preg\~ao-only restrictions and shows no discontinuity at the \policyCutoffMonth{} cutoff. Table~\ref{tab:v3_s1_handoff} reports the period $\times$ pharma $\times$ type cell counts; Table~\ref{tab:v3_pharma_counts} breaks down the pharma-narrow versus non-pharma split at the item-class level. Table~\ref{tab:v3_sme_proxy_audit} audits the registry-based SME proxies (Receita \emph{porte}, BEC \emph{enquadramento}, and their union) against historical SME-bidder counts: the union proxy is preferred for the structural sample because it maximizes type-completeness, accepting a slightly larger mean absolute deviation than the BEC proxy alone---the trade-off the BNE counterfactual demands, since every bidder must be assigned a type.
+
+\input{../output/tables/tab_sample_flow.tex}
+\input{../output/tables/tab_v3_s1_handoff.tex}
+\input{../output/tables/tab_v3_pharma_counts.tex}
+\input{../output/tables/tab_v3_sme_proxy_audit.tex}
+
+\section{Appendix: Identification Diagnostics}\label{app:id}
+
+Seven tables support the identifying-assumption diagnostics of Sections~\ref{sec:model}--\ref{sec:identification}. Table~\ref{tab:v3_primitive_invariance} reports the KS test of Assumption~\ref{a:setaside}; the non-rejection in pharma Convite non-SMEs ($D=\ksConvitePharmaNS$) is the tightest validation. Table~\ref{tab:v3_cross_modality} compares Convite GPV and Preg\~ao drop-out recoveries, coinciding within two pp at the median in pharma non-SME Pre. Tables~\ref{tab:v3_uh_variance}--\ref{tab:v3_uh_vs_raw} report the auction-level variance decomposition and the shrinkage comparison. Table~\ref{tab:v3_uh_invariance} re-runs the KS test on UH-clean bids: the Convite pharma non-SME stratum still satisfies $D < \ksDistThresh$ ($D = \ksUHinvCheckLo$), the Preg\~ao pharma stratum continues to reject ($D = \ksPharmaPregao \to \ksPharmaPregaoUH$), and the Preg\~ao non-pharma stratum crosses to $D = \ksNpPregaoUH$---i.e.\ its apparent raw-test invariance reflected the common scale, not the firm-level primitive. Tables~\ref{tab:v3_pregao_fc_summary}--\ref{tab:v3_pregao_ht_refined} summarize the Preg\~ao drop-out estimator and the Haile--Tamer refinement.
+
+\input{../output/tables/tab_v3_primitive_invariance.tex}
+\input{../output/tables/tab_v3_cross_modality.tex}
+\input{../output/tables/tab_v3_uh_variance.tex}
+\input{../output/tables/tab_v3_uh_vs_raw.tex}
+\input{../output/tables/tab_v3_uh_invariance.tex}
+\input{../output/tables/tab_v3_pregao_fc_summary.tex}
+\input{../output/tables/tab_v3_pregao_ht_refined.tex}
+
+\section{Appendix: Main Results}\label{app:main}
+
+Five tables deliver the headline numbers of Section~\ref{sec:results}: entry panel by period $\times$ pharma $\times$ type (Table~\ref{tab:v3_entry_rates}), zero-profit implied entry cost per bidder (Table~\ref{tab:v3_entry_cost}), the central decomposition under the three counterfactual scenarios (Table~\ref{tab:v3_bne_decomp}), the $2 \times 2$ methodological grid (Table~\ref{tab:v3_decomp_grid}), and the DiD-to-structural bridge through four mechanical sources of divergence (Table~\ref{tab:did_structural_bridge}).
+
+\input{../output/tables/tab_v3_entry_rates.tex}
+\input{../output/tables/tab_v3_entry_cost.tex}
+\input{../output/tables/tab_v3_bne_decomp.tex}
+\input{../output/tables/tab_v3_decomp_grid.tex}
+\input{../output/tables/tab_did_structural_bridge.tex}
+
+\section{Appendix: Robustness}\label{app:robust}
+
+Seven tables support Section~\ref{sec:robustness}: Turnbull NPMLE CDF vs.\ losers-only and all-bidders (Table~\ref{tab:v3_turnbull_fc}, ordering Turnbull $\le$ all-bidders $\le$ losers-only at the median in all 8 strata); BNE decomposition under the three $F_c$ regimes confirming the headline within \turnbullDeviationPct~percent (Table~\ref{tab:v3_sensitivity_fc}); strict-primitive-invariance benchmark, preserving the intensive-margin result while changing pharma's policy ranking (Table~\ref{tab:v3_strict_invariance}); GPV kernel bandwidth grid (Table~\ref{tab:v3_bandwidth_grid}); cluster-bootstrap 95\% CIs ($\bootReps$ replicates, Table~\ref{tab:v3_bootstrap_ci}); bid-filter sensitivity (Table~\ref{tab:v3_filter_sensitivity}); and temporal-window sensitivity (Table~\ref{tab:v3_window_sensitivity}).
+
+\input{../output/tables/tab_v3_turnbull_fc.tex}
+\input{../output/tables/tab_v3_sensitivity_fc.tex}
+\input{../output/tables/tab_v3_strict_invariance.tex}
+\input{../output/tables/tab_v3_bandwidth_grid.tex}
+\input{../output/tables/tab_v3_bootstrap_ci.tex}
+\input{../output/tables/tab_v3_filter_sensitivity.tex}
+\input{../output/tables/tab_v3_window_sensitivity.tex}
+% Affiliation sensitivity (tab_affiliation_sensitivity) and Maskin-Riley FPSB
+% calibration (tab_maskinriley_v3) reported in the Online Appendix.
+
+\section{Appendix: Welfare and Policy}\label{app:welfare}
+
+Six tables support Sections~\ref{sec:welfare}--\ref{sec:discussion}: per-auction welfare decomposition (allocative DWL, MCPF distortion, total loss as percent of $p_{S_1}$) at $\lambda \in \{0.15, 0.20, \lambdaMain, 0.40, 0.45\}$ (Table~\ref{tab:v3_welfare}); cluster-bootstrap 95\% CIs on the total welfare loss (Table~\ref{tab:v3_welfare_ci}); welfare ranking V0 vs.\ V3 across the $\lambda$ grid (Table~\ref{tab:welfare_ranking_lambda}); the four alternative policy variants V0--V3 against the open-regime baseline (Table~\ref{tab:v3_apv}); welfare and SME-win-rate profile across price-preference rates from \prefGridRange{} percent (Table~\ref{tab:v3_preference_grid}); and a structural quantification of the \emph{empate ficto} right-to-match V4 (Table~\ref{tab:v4_empate}).
+
+\input{../output/tables/tab_v3_welfare.tex}
+\input{../output/tables/tab_v3_welfare_ci.tex}
+\input{../output/tables/tab_welfare_ranking_lambda.tex}
+\input{../output/tables/tab_v3_apv.tex}
+\input{../output/tables/tab_v3_preference_grid.tex}
+\input{../output/tables/tab_v4_empate.tex}
+
+% Supplementary figures (Cross-modality raw, Pregão F_c by stratum,
+% Haile-Tamer bounds, BNE price ECDFs) are reported in the Online Appendix
+% accompanying this manuscript.

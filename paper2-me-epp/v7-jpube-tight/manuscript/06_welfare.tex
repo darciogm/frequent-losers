@@ -1,0 +1,58 @@
+\section{Welfare}\label{sec:welfare}
+
+The welfare cost of the set-aside is the structural object that disciplines the policy comparison. Under the main equilibrium-selection specification it is \welfLossPctLthirtyNp~percent of $p_{S_1}$ in non-pharmaceuticals and \welfLossPctLthirtyPh~percent in pharmaceuticals at $\lambda = \lambdaMain$. The price effect is one piece of that account. Two others matter and are routinely left out of reduced-form accountings. \emph{Allocative waste} arises because the set-aside routes the contract to an SME winner whose cost may exceed the lowest cost in the full pool; the extra production cost is destroyed, not transferred. \emph{Tax-distortion loss} arises because the additional government outlay is financed from distortionary taxation. The transfer from government to SMEs---$\Delta_{\text{gov}} - $ DWL$_{\text{alloc}}$---is zero-sum in a social-planner ledger.
+
+Formally, per-auction welfare loss is
+\begin{equation}\label{eq:welfare}
+\mathrm{Loss} \;=\; \underbrace{c_{(1)}^{S_3} - c_{(1)}^{S_1}}_{\mathrm{DWL}_{\text{alloc}}}
+\;+\; \underbrace{\lambda \cdot (p_{S_3} - p_{S_1})}_{\mathrm{MCPF\ distortion}},
+\end{equation}
+normalized as $\mathrm{Loss} / p_{S_1}$.
+
+\subsection{Point estimates}
+
+Table~\ref{tab:v3_welfare} gives the decomposition at $\lambda = \lambdaMain$, the \citet{ballard1985} benchmark; \citet{hendren2020} and \citet{finkelstein2020} discuss the MVPF connection to the MCPF framework used here. In non-pharmaceuticals, $\Delta_{\text{gov}} = \welfDeltaGovNp$ of the reference price, DWL$_{\text{alloc}} = \welfDwlAllocNp$, implicit transfer $\welfTransferNp$, MCPF distortion $\welfMcpfDistLthirtyNp$, total $\welfTotalLossLthirtyNp$ ($= \welfLossPctLthirtyNp$~percent of $p_{S_1}$). In pharmaceuticals the same accounting is larger on every margin: $\Delta_{\text{gov}} = \welfDeltaGovPh$, DWL$_{\text{alloc}} = \welfDwlAllocPh$, transfer $\welfTransferPh$, MCPF $\welfMcpfDistLthirtyPh$, total $\welfTotalLossLthirtyPh$ ($= \welfLossPctLthirtyPh$~percent). The allocative component dominates in both classes, especially in pharma where a thin SME pool and higher goods heterogeneity make bidder exclusion more likely to route the contract to a high-cost protected winner.
+
+The fixed-pool-vs-realized attenuation documented in Section~\ref{sec:results} (\latentShockRatioNp/\latentShockRatioPh~percent) carries over to the welfare formula: both terms in~\eqref{eq:welfare} load on the simulated price margin, so a fixed-pool calculation overstates the realized burden by the same factor. The participation response is part of the welfare object, not separable from it.
+
+\subsection{Confidence intervals and \texorpdfstring{$\lambda$}{lambda} sensitivity}
+
+Cluster bootstrap with $\bootReps$ replicates (Table~\ref{tab:v3_welfare_ci}) gives 95 percent CIs on $\mathrm{Loss}/p_{S_1}$ at $\lambda = \lambdaMain$ of $[\welfLossPctLoNp\%, \welfLossPctHiNp\%]$ in non-pharma and $[\welfLossPctLoPh\%, \welfLossPctHiPh\%]$ in pharma; even the lower bound in pharma exceeds the non-pharma point estimate. The class heterogeneity is structural, not sampling noise. Figure~\ref{fig:v3_welfare_forest} plots the CIs across the $\lambda$ grid and overlays the strict-invariance benchmark.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.98\textwidth]{../output/figures/fig_v3_welfare_forest.pdf}
+\caption[Welfare loss intervals by class and MCPF $\lambda$.]{\textit{Welfare loss as \% of $p_{S_1}$, by class and MCPF $\lambda$.} Circles and horizontal whiskers report the cluster-bootstrap mean and 95\% CI under the main equilibrium-selection specification ($\bootReps$ replicates); triangles report the strict-primitive-invariance benchmark. Dotted vertical line marks the \didBenchmarkPct\% DiD-implied benchmark. Both specifications place the structural welfare cost two to four times the DiD benchmark; neither CI crosses the benchmark estimate. In pharma the strict benchmark lies below the main specification because it attributes less of $\Delta_{\text{gov}}$ to allocative waste. Numbers from Tables~\ref{tab:v3_welfare_ci} and~\ref{tab:v3_strict_invariance}.}
+\label{fig:v3_welfare_forest}
+\end{figure}
+
+For $\lambda \in \{0.20, \lambdaMain, 0.40\}$, the welfare loss runs \welfLossPctLtwentyNp/\welfLossPctLthirtyNp/\welfLossPctLfortyNp~percent in non-pharma and \welfLossPctLtwentyPh/\welfLossPctLthirtyPh/\welfLossPctLfortyPh~percent in pharma (Table~\ref{tab:v3_welfare}). Across $\lambda \in [\welfLambdaRangeLo, \welfLambdaRangeHi]$ (Table~\ref{tab:welfare_ranking_lambda}), non-pharma preserves V3 $>$ V0 under both specifications; pharma reverses only under strict invariance. The conditional ranking is driven by the modeling treatment of the post-policy SME pool, not by the choice of $\lambda$. Strict invariance preserves the direction of the welfare result (\siWelfLossPctNp/\siWelfLossPctPh~percent; Table~\ref{tab:v3_strict_invariance}); the pharma decline relative to the main specification is the footprint of equilibrium selection in the protected pool.
+
+\subsection{Annual aggregate}\label{sec:annual_aggregate}
+
+Combining the per-auction welfare loss with the empirical Group-65 spend gives the annual welfare cost (Table~\ref{tab:welfare_annual}). The upper bound assumes that every Group-65 reference real falls under the SME-only set-aside, delivering R\$\,\welfAnnualBRLHi~million (US\$\,\welfAnnualUSDHi~million) per year. The realistic case scales by the \adherenceGsixtyfivePost~percent state-level adherence rate documented in Section~\ref{sec:institutional}, delivering R\$\,\welfAnnualBRLLo~million (US\$\,\welfAnnualUSDLo~million) per year. Pharma carries the larger share (R\$\,\welfPharmaAdhBRL{} vs R\$\,\welfNpAdhBRL{} million at adherence-adjusted), reflecting the higher per-auction cost share in thin standardized markets. Across the realistic adherence range $[\welfAdherenceLoPct\%, \welfAdherenceHiPct\%]$ the annual welfare cost spans R\$\,\welfRangeLoBRL--\welfRangeHiBRL~million. The Online Appendix scales these to the furosemida vignette of Section~\ref{sec:data}.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Annual welfare cost of the SME-only set-aside, Group-65 procurement.}
+\label{tab:welfare_annual}
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcc}
+\toprule
+                            & Upper bound          & Adherence-adjusted \\
+                            & (full G-65 coverage)  & (\adherenceGsixtyfivePost\% SME-only)    \\
+\midrule
+Pharma          (R\$~M/yr)  & \welfPharmaUbBRL    & \welfPharmaAdhBRL   \\
+Non-pharma      (R\$~M/yr)  & \welfNpUbBRL    & \welfNpAdhBRL   \\
+\addlinespace
+\textbf{Total Group-65}     & \textbf{R\$\,\welfAnnualBRLHi~M/yr} & \textbf{R\$\,\welfAnnualBRLLo~M/yr}  \\
+                            & (US\$\,\welfAnnualUSDHi~M/yr)        & (US\$\,\welfAnnualUSDLo~M/yr)        \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Per-auction welfare cost at $\lambda = \lambdaMain$: \welfLossPctLthirtyPh~percent of $p_{S_1}$ in pharma, \welfLossPctLthirtyNp~percent in non-pharma (Table~\ref{tab:v3_welfare}). Annual reference outlays from the structural sample: pharma R\$\,\welfRefOutlayPharmaYr~M/yr, non-pharma R\$\,\welfRefOutlayNpYr~M/yr. Upper bound assumes 100\% set-aside coverage; the adherence-adjusted column applies the \adherenceGsixtyfivePost\% state-level rate. R\$/US\$ at R\$\,\fxRate.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

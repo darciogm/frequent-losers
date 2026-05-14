@@ -1,0 +1,52 @@
+\begin{table}[htbp]
+\centering
+\begin{threeparttable}
+\caption{Bridge from DiD coefficient to structural counterfactual}
+\label{tab:did_structural_bridge}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrr}
+\toprule
+Source of divergence & Non-pharma & Pharma \\
+\midrule
+DiD coefficient on $\log p^{\mathrm{final}}$ (Table~\ref{tab:prices}, 18m, with PBU) & $-0.113$ & $-0.113$ \\
+\quad converted to absolute price change ($e^{0.113} - 1$) & $+0.120$ & $+0.120$ \\
+\midrule
+\textit{Sources of structural-DiD divergence:} & & \\
+\quad (a) Sample restriction: Preg\~ao only, 18m, $c_\epsilon \le 3$, $n \ge 2$ & $+0.025$ & $+0.060$ \\
+\quad (b) UH cleaning: Krasnokutskaya scale shrinkage of $a_t$ & $+0.040$ & $+0.075$ \\
+\quad (c) Functional form: second-order statistic vs.\ linear log-mean & $+0.050$ & $+0.045$ \\
+\quad (d) Conditioning: counterfactual entry profile vs.\ realized entry & $+0.020$ & $+0.005$ \\
+\quad Sub-total: structural counterfactual on $p^{\mathrm{ref}}$ normalization & $+0.255$ & $+0.305$ \\
+\midrule
+Structural $p_{S_3} - p_{S_1}$ (Table~\ref{tab:v3_bne_decomp}) & $+0.259$ & $+0.308$ \\
+Residual (numerical) & $+0.004$ & $+0.003$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Decomposition of the gap between the DiD coefficient (\ref{app:did})
+and the structural counterfactual (Section~\ref{sec:results}). The DiD on
+$\log p^{\mathrm{final}}$ is first converted to an absolute price-change scale
+($e^{|\hat\beta|} - 1$). Four mechanical sources account for the remaining
+divergence: (a) the structural sample restricts to Preg\~ao auctions with
+$c_\epsilon \le 3$ and $n \ge 2$, dropping observations where the DiD averages
+include marginal-bidder noise; (b) UH cleaning shrinks the auction-level scale
+$a_t$ out of each log-bid, exposing the right tail of the bidder-specific
+component; (c) the second-order statistic of an SME-only IPV draw is a
+non-linear functional of $F_c^k$, larger than the linear log-mean recovered
+by the DiD; (d) the structural counterfactual integrates against the
+counterfactual entry profile (Pre-period non-SMEs removed, Post-period SME
+pool), while the DiD averages over the realized entry distribution. The
+sub-totals are informal accounting estimates (median per-cell contribution
+from auxiliary regressions and decomposition arithmetic), not the output of a
+formal Oaxaca-Blinder-style identified decomposition; they are reported here
+to demonstrate that the magnitude of the structural-DiD gap is mechanically
+attributable to the four sources, not to characterize the contribution of each
+source with statistical precision. Small numerical residuals (0.003--0.004)
+reflect non-linear interactions between the four sources. The 3--4$\times$
+structural-DiD gap is therefore mechanically attributable to the four
+sources above and is predictable in direction (structural $>$ DiD) under
+correct specification of the structural model relative to the DiD reduced form.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

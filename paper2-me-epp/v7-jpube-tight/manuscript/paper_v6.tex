@@ -1,0 +1,139 @@
+\documentclass[12pt]{elsarticle}
+
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{subfig}
+\usepackage{setspace}
+\usepackage{appendix}
+\usepackage{threeparttable}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    filecolor=magenta,
+    urlcolor=blue,
+    pdftitle={Sheltered Bidding: The Within-Auction Cost of SME Set-Asides},
+    pdfauthor={Darcio Genicolo-Martins}
+}
+\usepackage{color}
+\usepackage{lscape}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{chngcntr}
+\usepackage{etoolbox}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{adjustbox}
+\usepackage{natbib}
+\usepackage{epigraph}
+\setlength\epigraphwidth{0.75\textwidth}
+\setlength\epigraphrule{0pt}
+
+\makeatletter
+\def\ps@pprintTitle{%
+ \let\@oddhead\@empty
+ \let\@evenhead\@empty
+ \def\@oddfoot{\reset@font\hfil\thepage\hfil}
+ \let\@evenfoot\@oddfoot}
+\makeatother
+\setlength{\bibsep}{0pt plus 0.3ex}
+\doublespacing
+\biboptions{authoryear}
+
+\usepackage{silence}\WarningFilter{titlesec}{Non standard}
+\usepackage{titlesec}
+\titleformat*{\section}{\Large\bfseries}
+\titleformat*{\subsection}{\large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+\titleformat{\paragraph}[runin]{\normalfont\bfseries}{\theparagraph}{1em}{}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+
+\geometry{left=28mm,right=30mm,top=28mm,bottom=28mm}
+\interfootnotelinepenalty=50000
+\setlength{\emergencystretch}{3em}
+% Suppress cosmetic underfull/overfull <6pt warnings from theorem-like
+% environments and tabular padding. No visible layout effect.
+\hbadness=10000
+\hfuzz=6pt
+\vfuzz=6pt
+% Suppress benign pdfTeX warning about PDFs with page groups on same page.
+\pdfsuppresswarningpagegroup=1
+\newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+\hyphenation{eco-no-me-tric re-gres-sion dif-fer-ence-in-dif-fer-ences
+             en-do-ge-nei-ty het-e-ro-sce-das-tic-i-ty
+             Krasno-kut-ska-ya Hong-Shum}
+
+\graphicspath{{figures/}{../output/figures/}}
+
+% --------------------------------------------------------------------------
+% Auto-generated macro registry. Every numerical claim, sample size, table
+% cell, and welfare estimate that appears in the manuscript prose is defined
+% in ../output/values.tex by the v6-jpube pipeline (scripts/00_master.R).
+% Do NOT hardcode numerals in the prose below; route them through \macros.
+% --------------------------------------------------------------------------
+\InputIfFileExists{../output/values.tex}{}{%
+  \PackageWarning{paper_v6}{values.tex not found — run scripts/00_master.R}}
+
+\setlength{\emergencystretch}{3em}
+\begin{document}
+
+\begin{frontmatter}
+\title{\textbf{Sheltered Bidding:\\ The Within-Auction Cost of SME Set-Asides\tnoteref{tfoot}}}
+\tnotetext[tfoot]{\emph{This version: April 2026. I thank Paulo Furquim de Azevedo for early discussions, Sergio Firpo, Gustavo Torres, Gabriel Madeira, and Sandro Cabral for valuable comments, and participants at the Insper brown bag for helpful feedback. I also thank the BEC/SEFAZ-SP team for data access. All remaining errors are my own.}}
+\author[INSPER]{Darcio Genicolo-Martins}\ead{darciogm1@insper.edu.br}
+\address[INSPER]{INSPER, S\~ao Paulo}
+
+\begin{abstract}
+Why do SME set-asides raise procurement prices? Two non-exclusive mechanisms operate: the bidder pool shrinks, and the auction clears at a different point in the surviving cost distribution. This paper estimates the total impact and decomposes it into these two channels. A \policyCutoffMonth{} reversal extended an SME-only rule to medical supplies on S\~ao Paulo's centralized procurement platform; a difference-in-differences against \controlGroupCount{} never-treated product groups recovers \emph{a roughly \didLowerPct{}~percent rise in winning prices} and a doubling of SME participation. An asymmetric IPV model identified from Preg\~ao drop-out bids then separates the channels under observed equilibrium entry---a policy-relevant accounting decomposition identified by the auction format plus observed entry, not a full structural entry equilibrium. The within-auction component---\emph{sheltered bidding}---accounts for \emph{two-thirds to three-quarters of the simulated effect} across classes. The implied welfare cost reaches \emph{R\$\,\welfAnnualBRLLo~million per year} on a single product group of S\~ao Paulo's R\$\,\becAnnualVolBRL~billion platform. A \optPrefThreshold{} price preference welfare-dominates the set-aside in thick standardized markets at near-zero fiscal cost; the ranking turns conditional in thin pharmaceutical markets, where the equilibrium-selection treatment of the protected pool becomes first-order. The conditional ranking is the policy-design statement: bidder exclusion is hardest to defend where the protected pool is thick and the good standardized, and most defensible---if at all---where it is not.
+\end{abstract}
+
+\begin{keyword}
+public procurement \sep SME set-asides \sep asymmetric auctions \sep structural estimation \sep welfare \sep marginal cost of public funds
+\MSC[JEL] H32 \sep H57 \sep L26 \sep L53 \sep D44
+\end{keyword}
+
+\end{frontmatter}
+
+\input{00_introduction.tex}
+\input{01_institutional_background.tex}
+\input{02_data.tex}
+\input{03_model.tex}
+\input{04_identification.tex}
+\input{05_results.tex}
+\input{06_welfare.tex}
+\input{07_robustness.tex}
+\input{08_discussion.tex}
+\input{09_conclusion.tex}
+
+\section*{Declaration of competing interests}
+
+The author declares that he has no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Data availability}
+
+The structural sample used in this paper is derived from the BEC (Bolsa Eletr\^onica de Compras) administrative microdata, accessed through a research agreement with the Secretaria da Fazenda e Planejamento do Estado de S\~ao Paulo (Sefaz-SP). The raw extract is not publicly redistributable under the access agreement; aggregated cell-level data, the structural-sample auction-level cleaned residuals, replication code in R, and a data dictionary documenting all variables and filters are available at the project replication repository (URL on acceptance) and on request to the corresponding author. All tables and figures in this paper are reproducible from the replication package conditional on access to the raw BEC extract.
+
+\clearpage
+\bibliographystyle{chicago}
+\bibliography{References}
+
+\input{10_tables.tex}
+\input{11_appendix.tex}
+\input{12_appendix_did.tex}
+
+\end{document}
