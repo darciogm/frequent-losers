@@ -182,7 +182,19 @@ opt_tab <- path_v6("output/tables/tab_v3_preference_grid.tex")
 if (file.exists(opt_tab)) {
   emit("optPrefThreshold", "10\\%",
        comment = "from tab_v3_preference_grid: cheapest welfare-dominant preference")
+  # §8 discussion macros — bands and headline cells of tab_v3_preference_grid.
+  # Safe band = preference rate k for which |welfare loss| < 1% of p_S1.
+  emit("prefSafeBandHiNp",    "15",      comment = "NP welfare-safe up to k = 15%")
+  emit("prefSafeBandHiPh",    "25",      comment = "PH welfare-safe up to k = 25%")
+  emit("welfPrefThirtyNp",    "4.99",    comment = "NP welfare loss % at k = 30%")
+  emit("welfPrefThirtyPh",    "1.92",    comment = "PH welfare loss % at k = 30%")
+  emit("prefSmeWinGainTenNp", "4.3",     comment = "NP SME win-rate gain (pp) at k = 10% vs k = 0%")
+  emit("prefSmeWinGainTenPh", "1.4",     comment = "PH SME win-rate gain (pp) at k = 10% vs k = 0%")
 }
+
+# Empate ficto trigger band (LC 123/2006 art. 44, Pregão); legal constant, not
+# data-derived. Referenced in §8.4 V4 sketch.
+emit("empateBand", "5", comment = "empate ficto trigger band, Pregão (LC 123/2006 art. 44)")
 
 # ---------------------------------------------------------------------------
 # 7. Static descriptors (constants — set here so manuscript never hardcodes)
