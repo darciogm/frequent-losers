@@ -386,8 +386,8 @@ emit("decompGapPhPct",     "44",                fmt = "%s", comment = "clean+end
 # ===========================================================================
 # Already have welfLossPctL{fifteen,twenty,thirty,forty,fortyfive}{Np,Ph}.
 # Add a few transfer/dwl macros for the "0.30 narrative" in sec 6.
-emit("welfDwlPlusMcpfNp",  "0.223",             comment = "DWL_alloc + MCPF distortion at 0.30, non-pharma")
-emit("welfDwlPlusMcpfPh",  "0.308",             comment = "DWL_alloc + MCPF distortion at 0.30, pharma")
+emit("welfDwlPlusMcpfNp",  "0.222",             comment = "DWL_alloc + MCPF distortion at 0.30, non-pharma — matches welfTotalLossLthirtyNp canonical")
+emit("welfDwlPlusMcpfPh",  "0.296",             comment = "DWL_alloc + MCPF distortion at 0.30, pharma — matches welfTotalLossLthirtyPh canonical")
 emit("welfPriceRatioNp",   "34",                fmt = "%s", comment = "p_S3 - p_S1 / p_S1 ratio, non-pharma (percent)")
 emit("welfPriceRatioPh",   "47",                fmt = "%s", comment = "p_S3 - p_S1 / p_S1 ratio, pharma (percent)")
 emit("welfDidImpliedPct",  "12",                fmt = "%s", comment = "DiD-implied price ratio (percent)")
@@ -542,8 +542,8 @@ emit("welfRefOutlayPharma",  "545",             comment = "Group-65 pharma 18m r
 emit("welfRefOutlayNp",      "518",             comment = "Group-65 non-pharma 18m reference outlay R$ M")
 emit("welfRefOutlayPharmaYr","363",             comment = "Group-65 pharma annual reference outlay R$ M")
 emit("welfRefOutlayNpYr",    "345",             comment = "Group-65 non-pharma annual reference outlay R$ M")
-emit("welfPharmaShare",      "0.308",           comment = "pharma per-auction welfare share x p_ref")
-emit("welfNpShare",          "0.204",           comment = "non-pharma per-auction welfare share x p_ref")
+emit("welfPharmaShare",      "0.296",           comment = "pharma per-auction welfare share x p_ref — alias of welfTotalLossLthirtyPh canonical")
+emit("welfNpShare",          "0.222",           comment = "non-pharma per-auction welfare share x p_ref — alias of welfTotalLossLthirtyNp canonical")
 emit("welfPharmaUbBRL",      "73",              comment = "pharma upper bound R$ M/yr")
 emit("welfNpUbBRL",          "55",              comment = "non-pharma upper bound R$ M/yr")
 emit("welfPharmaAdhBRL",     "32",              comment = "pharma adherence-adjusted R$ M/yr")
