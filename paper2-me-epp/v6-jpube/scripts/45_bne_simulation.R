@@ -78,7 +78,7 @@ entry_preg <- entry[mod == "pregao"]
 # Para cada (pharma, cenário): amostra B auctions com (n_sme, n_nonsme)
 # specs e calcula c_(2). Reporta média e quantis.
 
-simulate_auction <- function(n_sme, n_nonsme, fc_sme, fc_nonsme, B = 2000) {
+simulate_auction <- function(n_sme, n_nonsme, fc_sme, fc_nonsme, B = 10000) {
   # n_sme e n_nonsme são esperados (floor + stochastic round).
   prices <- numeric(B)
   for (b in seq_len(B)) {
