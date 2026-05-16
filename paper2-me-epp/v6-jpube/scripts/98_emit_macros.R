@@ -631,6 +631,34 @@ emit("ksUHinvCheckLo",       "0.0225",          comment = "Convite pharma non-SM
 emit("prefGridRange",        "0 to 30",         comment = "preference rate grid range (percent)")
 
 # ===========================================================================
+# 24. Pharma SME firm turnover (script 67_pharma_firm_turnover.R, M6).
+# Empirical discriminating test for the pharma bifurcation: how much of the
+# post-period SME pool consists of NEW firms (= equilibrium selection) vs
+# CONTINUING firms (= strict invariance).
+# ===========================================================================
+to_meta <- read_if_exists("pharma_firm_turnover_meta")
+if (!is.null(to_meta) && nrow(to_meta) == 1) {
+  emit("turnoverNpPctNewFirms", to_meta$np_pct_new_firms[1], fmt = "%.1f",
+       comment = "M6 turnover: NP %% of post-period SME firms that are new")
+  emit("turnoverNpPctNewBids",  to_meta$np_pct_new_bids[1],  fmt = "%.1f",
+       comment = "M6 turnover: NP %% of post-period SME bids from new firms")
+  emit("turnoverPhPctNewFirms", to_meta$ph_pct_new_firms[1], fmt = "%.1f",
+       comment = "M6 turnover: PH %% of post-period SME firms that are new")
+  emit("turnoverPhPctNewBids",  to_meta$ph_pct_new_bids[1],  fmt = "%.1f",
+       comment = "M6 turnover: PH %% of post-period SME bids from new firms")
+  emit("turnoverNpNPre",        to_meta$np_n_pre[1],         fmt = "%s",
+       comment = "M6 turnover: NP pre-period SME firm count")
+  emit("turnoverNpNPost",       to_meta$np_n_post[1],        fmt = "%s",
+       comment = "M6 turnover: NP post-period SME firm count")
+  emit("turnoverPhNPre",        to_meta$ph_n_pre[1],         fmt = "%s",
+       comment = "M6 turnover: PH pre-period SME firm count")
+  emit("turnoverPhNPost",       to_meta$ph_n_post[1],        fmt = "%s",
+       comment = "M6 turnover: PH post-period SME firm count")
+  emit("turnoverPhNNew",        to_meta$ph_n_new[1],         fmt = "%s",
+       comment = "M6 turnover: PH new SME firms post-period")
+}
+
+# ===========================================================================
 # 23. Alternative DiD estimators (script 66_did_alt_estimators.R, M7b).
 # Reports TWFE baseline + BJS imputation + Callaway-Sant'Anna for the
 # Appendix-I DiD on the structural sample.
