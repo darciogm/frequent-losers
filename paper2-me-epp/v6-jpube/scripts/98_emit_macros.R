@@ -50,6 +50,17 @@ if (!is.null(bne)) {
     emit(paste0("bneEffectEntry", suf),    bne$effect_entry[i],     fmt = "%.3f")
     emit(paste0("bneShareIntens", suf),    bne$share_intensive[i],  fmt = "%.1f")
     emit(paste0("bneShareEntry", suf),     bne$share_entry[i],      fmt = "%.1f")
+    # Components expressed as % of the NET effect (signed). Reports the
+    # super-additivity of the intensive component when entry offsets it:
+    # 163%/-63% (NP) and 183%/-83% (PH) in the canonical run. Used in
+    # intro finding (i) and results decomposition for honest reporting
+    # alongside the absolute-magnitude share above.
+    if (!is.na(bne$effect_total[i]) && abs(bne$effect_total[i]) > 1e-9) {
+      emit(paste0("bneIntensRelNet", suf),
+           bne$effect_intensive[i] / bne$effect_total[i] * 100, fmt = "%.0f")
+      emit(paste0("bneEntryRelNet", suf),
+           bne$effect_entry[i]     / bne$effect_total[i] * 100, fmt = "%.0f")
+    }
     emit(paste0("bneNsmePre", suf),        bne$n_sme_pre[i],        fmt = "%.2f")
     emit(paste0("bneNnsPre", suf),         bne$n_ns_pre[i],         fmt = "%.2f")
     emit(paste0("bneNsmePost", suf),       bne$n_sme_post[i],       fmt = "%.2f")
@@ -377,10 +388,14 @@ emit("bridgeSamplePh",     "+0.060",            comment = "bridge contribution: 
 emit("bridgeUhPh",         "+0.075",            comment = "bridge contribution: UH cleaning, ph")
 emit("bridgeFuncPh",       "+0.045",            comment = "bridge contribution: functional form, ph")
 emit("bridgeCondPh",       "+0.005",            comment = "bridge contribution: conditioning set, ph")
-emit("bridgeSumNp",        "+0.255",            comment = "bridge sum, non-pharma")
-emit("bridgeSumPh",        "+0.305",            comment = "bridge sum, pharma")
-emit("bridgeResidNp",      "+0.004",            comment = "bridge residual, non-pharma")
-emit("bridgeResidPh",      "+0.003",            comment = "bridge residual, pharma")
+emit("bridgeSumNp",        "+0.255",            comment = "bridge sum, non-pharma (= +0.120 DiD baseline + 4 contribs)")
+emit("bridgeSumPh",        "+0.305",            comment = "bridge sum, pharma (= +0.120 DiD baseline + 4 contribs)")
+# Bridge residual = structural (bneEffectTotalX, canonical B=10000) - bridgeSumX.
+# NP: 0.227 - 0.255 = -0.028. PH: 0.309 - 0.305 = +0.004. Updated 2026-05-16
+# (M1 fix) — old hardcodes (+0.004 NP, +0.003 PH) were from an earlier B=2000
+# era and inconsistent with canonical structural macros.
+emit("bridgeResidNp",      "-0.028",            comment = "bridge residual NP: structural (0.227) - bridgeSum (0.255), B=10000 canonical")
+emit("bridgeResidPh",      "+0.004",            comment = "bridge residual PH: structural (0.309) - bridgeSum (0.305), B=10000 canonical")
 
 # Bootstrap CIs at all-bidders main spec
 emit("bootCILoNp",         "0.186",             comment = "bootstrap CI lower, non-pharma")
@@ -614,6 +629,66 @@ emit("prefRhoSmall",         "0.10",            comment = "preference parameter 
 emit("ksConvitePharmaNS",    "0.032",           comment = "KS pharma convite non-SME (table reference)")
 emit("ksUHinvCheckLo",       "0.0225",          comment = "Convite pharma non-SME post-UH KS (still passes)")
 emit("prefGridRange",        "0 to 30",         comment = "preference rate grid range (percent)")
+
+# ===========================================================================
+# 22. Bid-coordination screens (scripts 58/60_collusion_screen*.R)
+# Promoted to main-text references in §7 robustness (M4). Headline numbers
+# below; full tables \input'd in App. C (Identification Diagnostics).
+# ===========================================================================
+coll_conley <- tryCatch(
+  data.table::fread(path_v6("output/tables/tab_collusion_screen.csv")),
+  error = function(e) NULL)
+if (!is.null(coll_conley) && nrow(coll_conley) == 4) {
+  for (i in seq_len(nrow(coll_conley))) {
+    r <- coll_conley[i]
+    suf <- paste0(if (r$period == "Pre") "Pre" else "Post",
+                  if (r$pharma_narrow == 0) "Np" else "Ph")
+    emit(paste0("collConleyReal", suf), r$realized_share * 100, fmt = "%.1f",
+         comment = sprintf("Conley screen realized share (%%), %s pharma=%d",
+                           r$period, r$pharma_narrow))
+    emit(paste0("collConleyNull", suf), r$null_mean * 100, fmt = "%.1f",
+         comment = sprintf("Conley screen null mean (%%), %s pharma=%d",
+                           r$period, r$pharma_narrow))
+  }
+}
+
+coll_by <- tryCatch(
+  data.table::fread(path_v6("output/tables/tab_collusion_screen_bajariye.csv")),
+  error = function(e) NULL)
+if (!is.null(coll_by) && nrow(coll_by) == 4) {
+  for (i in seq_len(nrow(coll_by))) {
+    r <- coll_by[i]
+    suf <- paste0(if (r$period == "Pre") "Pre" else "Post",
+                  if (r$pharma_narrow == 0) "Np" else "Ph")
+    # T1 ratio (obs / null), the headline persistence statistic.
+    if (!is.na(r$T1_null_mean) && r$T1_null_mean > 0) {
+      emit(paste0("collBYRatio", suf), r$T1_obs / r$T1_null_mean, fmt = "%.2f",
+           comment = sprintf("Bajari-Ye T1 obs/null ratio, %s pharma=%d",
+                             r$period, r$pharma_narrow))
+    }
+  }
+}
+
+# ===========================================================================
+# 21. Pre-treatment balance (script 65_balance_pretreat.R)
+# ===========================================================================
+bal_meta <- read_if_exists("balance_pretreat_meta")
+if (!is.null(bal_meta) && nrow(bal_meta) == 1) {
+  emit("balanceNGsixfiveItems", bal_meta$n_g65_items[1],
+       fmt = "%s", comment = "Group-65 items in pre-period balance sample")
+  emit("balanceNCtrlItems",     bal_meta$n_ctrl_items[1],
+       fmt = "%s", comment = "Pooled control items in pre-period balance sample")
+  emit("balanceNCtrlGroups",    bal_meta$n_ctrl_groups[1],
+       fmt = "%s", comment = "Number of never-treated control groups (should be 76)")
+  emit("balanceMaxStdDiff",     bal_meta$max_std_diff[1],
+       fmt = "%.3f",            comment = "Max |Imbens-Rubin std diff| across balance variables")
+  emit("balanceNVarsAboveTen",  bal_meta$n_above_10[1],
+       fmt = "%s", comment = "Variables with |std diff| > 0.10 (Imbens-Rubin attention threshold)")
+  emit("balanceNVarsAboveTwentyFive", bal_meta$n_above_25[1],
+       fmt = "%s", comment = "Variables with |std diff| > 0.25 (Imbens-Rubin substantial-imbalance threshold)")
+  emit("balanceNVarsTotal",     bal_meta$n_vars[1],
+       fmt = "%s", comment = "Total balance variables checked")
+}
 
 # ---------------------------------------------------------------------------
 # Done.

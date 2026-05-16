@@ -1,0 +1,31 @@
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Pre-treatment covariate balance: Group 65 vs.\ \balanceNCtrlGroups{} never-treated control groups.}
+\label{tab:balance_pretreat}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{l c cccc c}
+\toprule
+ & \textbf{Group 65} & \multicolumn{4}{c}{\textbf{\balanceNCtrlGroups{} control groups (group-mean distribution)}} & \textbf{Std.\ diff.}\tnote{a} \\
+\cmidrule(lr){3-6}
+Variable & mean & P25 & median & P75 & mean & (Imbens--Rubin) \\
+\midrule
+log reference price & 4.036 & 4.057 & 5.385 & 6.874 & 5.657 & -0.219 \\
+Bids per item & 7.396 & 8.160 & 9.982 & 13.748 & 11.486 & -0.176 \\
+Firms per item & 2.784 & 3.203 & 3.681 & 4.347 & 3.765 & -0.599 \\
+Share Preg\~ao (vs Convite) & 0.645 & 0.358 & 0.471 & 0.805 & 0.559 & 0.445 \\
+Share items $<$ R\$80k threshold & 0.966 & 0.886 & 0.964 & 0.992 & 0.907 & -0.037 \\
+Share SME bids & 0.000 & 0.021 & 0.075 & 0.104 & 0.068 & -0.567 \\
+Share SP-state bidders & 0.704 & 0.719 & 0.794 & 0.835 & 0.768 & -0.331 \\
+log distance bidder $\to$ buyer & 4.126 & 3.579 & 3.858 & 4.197 & 3.853 & 0.160 \\
+Final / reference price & 0.683 & 0.595 & 0.626 & 0.661 & 0.641 & 0.010 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Sample: pre-period items in the DiD panel (Stata months $<$ \dataOcCutoff, i.e.\ Sep 2016--Feb 2018), restricted to auctions with $\ge 2$ bidders. Group 65 contributes 30,718 items; the \balanceNCtrlGroups{} never-treated control groups contribute 92,837 items collectively.
+\item Per-group means are computed by collapsing item-level observations within each group; the P25/median/P75/mean columns summarize the distribution of those \balanceNCtrlGroups{} group-mean values.
+\item[a] Imbens--Rubin normalized difference: $(\mu_{65} - \mu_{\mathrm{ctrl,pool}}) / \sqrt{(\sigma^2_{65} + \sigma^2_{\mathrm{ctrl,pool}})/2}$, computed on the item-level pool (treated vs.\ all \balanceNCtrlGroups{} controls pooled). \citet{imbens2015} flag $|\text{std.\ diff.}| > 0.25$ as ``substantial imbalance'' and $> 0.10$ as warranting attention; item fixed effects in eq.~\eqref{eq:did} absorb time-invariant cross-item heterogeneity, so this check is informative about cross-group composition rather than identifying-assumption violation. The control-group count of \balanceNCtrlGroups{} is the empirically distinct set of non-Group-65 product groups with pre-period items meeting the $n \ge 2$ requirement; the \controlGroupCount{} figure used elsewhere in the paper refers to the DiD-identifying universe under stricter restrictions (both-period presence at the item-FE level).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

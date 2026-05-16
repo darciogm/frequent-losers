@@ -228,7 +228,7 @@ tex_lines <- c(
     "Significance: \\sym{*} $p<0.10$, \\sym{**} $p<0.05$, \\sym{***} $p<0.01$.",
     "Following Bajari and Ye (2003), large $p$-values across the three statistics",
     "indicate that the bid clustering documented in",
-    "Tables~\\ref{tab:collusion_screen}--\\ref{tab:collusion_screen_schurter}",
+    "Tables~\\ref{tab:collusion_screen}--\\ref{tab:collusion_screen_anchor}",
     "is distributed over the bidder population rather than concentrated in",
     "specific coordinated dyads."
   ), MIN_FIRM_BIDS, HI_THRESHOLD, B),
