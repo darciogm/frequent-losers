@@ -420,8 +420,8 @@ emit("decompGapPhPct",     "44",                fmt = "%s", comment = "clean+end
 # Add a few transfer/dwl macros for the "0.30 narrative" in sec 6.
 emit("welfDwlPlusMcpfNp",  "0.222",             comment = "DWL_alloc + MCPF distortion at 0.30, non-pharma — matches welfTotalLossLthirtyNp canonical")
 emit("welfDwlPlusMcpfPh",  "0.296",             comment = "DWL_alloc + MCPF distortion at 0.30, pharma — matches welfTotalLossLthirtyPh canonical")
-emit("welfPriceRatioNp",   "34",                fmt = "%s", comment = "p_S3 - p_S1 / p_S1 ratio, non-pharma (percent)")
-emit("welfPriceRatioPh",   "47",                fmt = "%s", comment = "p_S3 - p_S1 / p_S1 ratio, pharma (percent)")
+emit("welfPriceRatioNp",   "29",                fmt = "%s", comment = "p_S3 - p_S1 / p_S1 ratio, non-pharma (percent) — matches structRatioNp; 0.227/0.774 = 29.3")
+emit("welfPriceRatioPh",   "47",                fmt = "%s", comment = "p_S3 - p_S1 / p_S1 ratio, pharma (percent) — matches structRatioPh; 0.309/0.654 = 47.2")
 emit("welfDidImpliedPct",  "12",                fmt = "%s", comment = "DiD-implied price ratio (percent)")
 
 # ===========================================================================
@@ -539,8 +539,8 @@ emit("didImpliedRatio",        "12",            fmt = "%s", comment = "DiD-impli
 # 19. Misc remaining macros (sec 06/07/08).
 # ===========================================================================
 # sec 06 footnote / lambda-grid fine-grain
-emit("welfPriceRatioPharm",  "50",  fmt = "%s", comment = "Delta_gov/p_S1 ratio in pharma (percent)")
-emit("welfPriceRatioNpFn",   "34",  fmt = "%s", comment = "Delta_gov/p_S1 ratio in non-pharma footnote")
+emit("welfPriceRatioPharm",  "45",  fmt = "%s", comment = "Delta_gov/p_S1 in pharma (percent) — 0.298/0.662 = 45.0 (corrected from 50; M3 fix 2026-05-16)")
+emit("welfPriceRatioNpFn",   "32",  fmt = "%s", comment = "Delta_gov/p_S1 in NP footnote — 0.247/0.767 = 32.2 (corrected from 34; M3 fix 2026-05-16)")
 emit("lambdaInc",            "0.10",            comment = "lambda grid increment")
 emit("welfLossDeltaNpPp",    "3",   fmt = "%s", comment = "welfare loss change per 0.10 lambda, non-pharma (pp)")
 emit("welfLossDeltaPhPp",    "5",   fmt = "%s", comment = "welfare loss change per 0.10 lambda, pharma (pp)")
