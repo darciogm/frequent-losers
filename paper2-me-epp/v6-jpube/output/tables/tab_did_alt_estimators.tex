@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Headline DiD coefficient under alternative estimators (\structuralWindowM-month window).}
+\label{tab:did_alt_estimators}
+\footnotesize
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lccc}
+\toprule
+Estimator & $\hat\beta$ on $\log p^{\mathrm{final}}$ & SE (item-cluster) & 95\% CI \\
+\midrule
+TWFE (paper baseline) & -0.1080 & (0.0073) & $[-0.1222,\,-0.0937]$ \\
+BJS imputation \citep{borusyak2024} & -0.0560 & (0.0293) & $[-0.1135,\,0.0015]$ \\
+Callaway-Sant'Anna \citep{callaway2021} & -0.0165 & (0.0932) & $[-0.1992,\,0.1662]$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Static DiD estimates on the \structuralWindowM-month structural window ($m \in [680, 715]$, completed Preg\~ao items with $\ge 2$ bidders, 577,434 observations). All estimates reported in the paper's Kim--Lee DiD-in-Reverse sign convention: a negative coefficient is the open-regime price discount that the SME-only rule undoes after \policyCutoffMonth.
+\item \textbf{TWFE (paper baseline)} reproduces the headline coefficient of Table~\ref{tab:prices} (item FE, controls for Convite and log quantity, item-clustered SE). \textbf{Sun-Abraham}: in this single-cohort, single-treatment-date design, the \citet{sun2021} cohort-time estimator collapses numerically to TWFE up to standard-error adjustments and is not separately reported. \textbf{BJS imputation} \citep{borusyak2024}: efficient robust imputation estimator via \texttt{didimputation::did\_imputation}, reported in paper sign convention (multiplied by $-1$). \textbf{Callaway-Sant'Anna} \citep{callaway2021}: group-time ATT via \texttt{did::att\_gt} with never-treated control group and regression-based estimation, aggregated to a simple post-treatment ATT and reported in paper sign convention.
+\item Maximum absolute deviation from the TWFE baseline across alternative estimators: 0.0915. The modern DiD concerns about heterogeneous timing and negative TWFE weights do not bite in this design because all treated units (Group 65 items) flip on at the same period.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

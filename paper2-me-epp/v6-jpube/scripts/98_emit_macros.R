@@ -631,6 +631,29 @@ emit("ksUHinvCheckLo",       "0.0225",          comment = "Convite pharma non-SM
 emit("prefGridRange",        "0 to 30",         comment = "preference rate grid range (percent)")
 
 # ===========================================================================
+# 23. Alternative DiD estimators (script 66_did_alt_estimators.R, M7b).
+# Reports TWFE baseline + BJS imputation + Callaway-Sant'Anna for the
+# Appendix-I DiD on the structural sample.
+# ===========================================================================
+alt_meta <- read_if_exists("did_alt_estimators_meta")
+if (!is.null(alt_meta) && nrow(alt_meta) == 1) {
+  emit("didAltTwfeEst",      alt_meta$twfe_est[1],          fmt = "%.4f",
+       comment = "M7b alt-estimators: TWFE g65_pre, panel-aggregated")
+  emit("didAltTwfeSe",       alt_meta$twfe_se[1],           fmt = "%.4f",
+       comment = "M7b alt-estimators: TWFE SE")
+  emit("didAltBjsEst",       alt_meta$bjs_est_paper[1],     fmt = "%.4f",
+       comment = "M7b alt-estimators: BJS post-ATT avg, paper sign convention")
+  emit("didAltBjsSe",        alt_meta$bjs_se[1],            fmt = "%.4f",
+       comment = "M7b alt-estimators: BJS conservative SE (sqrt mean var across horizons)")
+  emit("didAltCsEst",        alt_meta$cs_est_paper[1],      fmt = "%.4f",
+       comment = "M7b alt-estimators: Callaway-Sant'Anna simple ATT, paper sign convention")
+  emit("didAltCsSe",         alt_meta$cs_se[1],             fmt = "%.4f",
+       comment = "M7b alt-estimators: CS SE")
+  emit("didAltMaxAbsDiff",   alt_meta$max_abs_diff_twfe[1], fmt = "%.4f",
+       comment = "M7b alt-estimators: max |est_alt - TWFE| (paper convention)")
+}
+
+# ===========================================================================
 # 22. Bid-coordination screens (scripts 58/60_collusion_screen*.R)
 # Promoted to main-text references in §7 robustness (M4). Headline numbers
 # below; full tables \input'd in App. C (Identification Diagnostics).
