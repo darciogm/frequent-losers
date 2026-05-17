@@ -115,23 +115,36 @@ single legal document as the treatment date.
 
 \subsection{Platform, products, and sample}
 
-The empirical setting is the BEC electronic procurement platform, created under
-Decrees \decreeBECOne{} and \decreeBECTwo{} and later used for Preg\~ao
-auctions under Decree \decreePregao. The extract covers \nDataMonths{} months,
-from \windowStart{} through \windowEnd, and contains \itemTransactionsCount{}
-million item-level transactions and \purchaseOffersCount{} purchase offers.
-Group~65 accounts for \groupSixtyfivePctTx{} percent of platform transactions
-in this window, which is why the item-level reinterpretation has substantial
-empirical bite there.
+The empirical setting is the BEC electronic procurement platform, created
+under Decrees \decreeBECOne{} and \decreeBECTwo{} and later used for
+Preg\~ao auctions under Decree \decreePregao. The appendix uses three
+nested empirical objects: the platform data universe, the reduced-form
+benchmark panel, and the structural Preg\~ao sample. Sections OA-B, OA-C,
+and OA-D draw on different combinations of the three; this subsection
+defines them.
 
-The structural sample restricts attention to Preg\~ao auctions with at
-least \filterMinBidders{} bidders and normalized bids
+The platform data universe covers \nDataMonths{} months, from
+\windowStart{} through \windowEnd, and contains \itemTransactionsCount{}
+million item-level transactions and \purchaseOffersCount{} purchase
+offers. Group~65 accounts for \groupSixtyfivePctTx{} percent of platform
+transactions in this window, which is why the item-level reinterpretation
+has substantial empirical bite there. The reduced-form benchmark in
+Section~OA-B uses this broader panel to compare Group~65 against the
+never-treated control groups (see Section~OA-B for balance and placebo
+diagnostics).
+
+The structural sample restricts attention to Group~65 Preg\~ao auctions
+with at least \filterMinBidders{} bidders and normalized bids
 $b/p_t^{\mathrm{ref}}$, denoted $c_\epsilon$, in $(0,\filterCepsUpper]$.
 The upper-bound filter removes only \nFilteredOutPct{} percent of bids, so
 the main results are not driven by discarding a large fraction of the
-auction data. The main sample contains \nPreAuctions{}
-pre-period auctions and \nPostAuctions{} post-period auctions; pharmaceutical
-Preg\~ao auctions account for \nPharmaPregaoAuc{} auctions.
+auction data. The resulting sample contains \nPreAuctions{} pre-period
+auctions and \nPostAuctions{} post-period auctions; pharmaceutical
+Preg\~ao auctions account for \nPharmaPregaoAuc{} of these. Each auction
+is classified by bidder type (SME versus non-SME from the BEC registry)
+and product class (non-pharmaceutical versus the CMED-regulated
+pharmaceutical class). The classification is used throughout OA-C and
+OA-D.
 
 \section{Reduced-Form Validation}
 
@@ -187,9 +200,12 @@ Final/reference price & 0.683 & 0.595 & 0.626 & 0.661 & 0.641 & 0.010 \\
 least two bidders. Group~65 contributes \balanceNGsixfiveItems{} items; the
 \balanceNCtrlGroups{} never-treated control groups contribute
 \balanceNCtrlItems{} items. Standardized differences are Imbens--Rubin
-normalized differences \citep{imbens2015}. The table is not a parallel-trends
-test; it documents cross-group composition that the fixed-effects design must
-absorb.
+normalized differences \citep{imbens2015}. The table is not a
+parallel-trends test; it documents cross-group composition that the
+fixed-effects design must absorb. The differential-pre-trend question is
+addressed by the placebo-cutoff and alternative-DiD estimators in the
+next subsection (Table~\ref{tab:app_placebo} and
+Table~\ref{tab:app_reduced_form}).
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -357,10 +373,12 @@ Pharma & Non-SME & Pre & 0.619 & 0.604 & 0.574 & 0.762 & 0.725 & 0.708 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
-\item Losers-only uses only drop-out bids and is upward-biased because it omits
-the lowest-cost bidder in each auction. All-bidders treats the winner's final
-price as a point observation and is downward-biased if the final price exceeds
-true cost. Turnbull NPMLE treats the winner as left-censored at the final price.
+\item Losers-only uses only drop-out bids and is upward-biased because it
+omits the lowest-willingness-to-supply bidder under the maintained IPV
+interpretation in each auction. All-bidders treats the winner's final
+price as a point observation and is downward-biased if the final price
+exceeds the underlying model cost. Turnbull NPMLE treats the winner as
+left-censored at the final price.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -631,11 +649,18 @@ the DiD on $\log p^{\mathrm{final}}$ within each quartile.
 \end{threeparttable}
 \end{table}
 
-The internal placebo by quartile of $|\Delta\log p^{\mathrm{ref}}|$ shows
-that items where the reference price was stable across the cutoff still
-display a price effect of \pRefHetQOneNp{} (NP) and \pRefHetQOnePh{} (PH),
-about two-thirds of the class-specific DiD coefficient on
-$\log p^{\mathrm{final}}$. A McCrary density test at the R\$\,\setAsideThreshBRL{}
+The internal placebo by quartile of $|\Delta\log p^{\mathrm{ref}}|$ is
+constructed by splitting items into quartiles of the absolute pre-to-post
+change in $\log p^{\mathrm{ref}}$ and re-running the main DiD on
+$\log p^{\mathrm{final}}$ within each quartile. Items in the lowest
+quartile, where the reference price was effectively stable across the
+cutoff, still display a price effect of \pRefHetQOneNp{} in
+non-pharmaceuticals and \pRefHetQOnePh{} in pharmaceuticals, about
+two-thirds of the class-specific DiD coefficient on
+$\log p^{\mathrm{final}}$. Items in the highest quartile, where the
+reference price moved most, show larger effects (\pRefHetQFourNp{} NP and
+\pRefHetQFourPh{} PH). The headline price effect is therefore not
+concentrated only among items whose reference prices moved. A McCrary density test at the R\$\,\setAsideThreshBRL{}
 item-eligibility threshold detects no bunching (post-period
 $T=\bunchingDensityTPost{}$, $p=\bunchingDensityPPost{}$; pre-period
 $T=\bunchingDensityTPre{}$, $p=\bunchingDensityPPre{}$). The density
@@ -757,9 +782,10 @@ Pharma & Full set-aside & 0.948 & +0.2941 & 100.0 & 100.0\% & 41.99\% \\
 Preference rate \(k\) scores SME bids by a factor \(1-k\) for winner selection
 while paying the actual winning bid. \(\Delta\) is the simulated price effect
 relative to \(S_1\), in reference-price units. Welfare loss is
-\((DWL^{alloc}+\lambda \Delta G)/p_{S_1}\) at \(\lambda=\lambdaMain\). Entries
-that are negative before rounding are reported as 0.00\%, since they lie inside
-Monte Carlo noise around a near-zero welfare effect.
+\((DWL^{alloc}+\lambda \Delta G)/p_{S_1}\) at \(\lambda=\lambdaMain\).
+Entries that are negative before rounding are reported as 0.00\% because
+the underlying welfare effect is economically negligible and lies within
+the Monte Carlo simulation tolerance of the BNE solver.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -795,17 +821,22 @@ SME pool is modeled, not mainly on the marginal cost of public funds.
 
 \subsection{Annual scaling}
 
-Annual scaling is kept out of the main text because it is not part of the core
-identification exercise. For reference, Group~65 annual reference outlays are
-R\$\welfRefOutlayNpYr{} million in non-pharmaceuticals and
-R\$\welfRefOutlayPharmaYr{} million in pharmaceuticals. Applying the structural
-welfare losses and adherence rates between \welfAdherenceLoPct{} and
-\welfAdherenceHiPct{} percent gives an annual welfare-cost range of
-R\$\welfRangeLoBRL--\welfRangeHiBRL{} million, or
-US\$\welfRangeLoUSD--\welfRangeHiUSD{} million at an exchange rate of
-\fxRate{} R\$/US\$. This scaling is useful for magnitude, but it should not be
-read as a claim about all procurement categories or about dynamic long-run SME
-capacity.
+Annual scaling translates the static per-auction welfare comparison into a
+sense of magnitude; it is not part of the identification exercise and is
+not used as a policy forecast. The translation is mechanical and inherits
+all the scope conditions of the structural exercise, including the
+non-pharmaceutical/pharmaceutical split.
+
+For reference, Group~65 annual reference outlays are R\$\welfRefOutlayNpYr{}
+million in non-pharmaceuticals and R\$\welfRefOutlayPharmaYr{} million in
+pharmaceuticals. Applying the structural welfare losses and adherence rates
+between \welfAdherenceLoPct{} and \welfAdherenceHiPct{} percent gives an
+annual welfare-cost range of R\$\welfRangeLoBRL--\welfRangeHiBRL{} million,
+or US\$\welfRangeLoUSD--\welfRangeHiUSD{} million at an exchange rate of
+\fxRate{} R\$/US\$. This scaling is useful for magnitude, but it should
+not be read as a claim about all procurement categories, about dynamic
+long-run SME capacity, or about general-equilibrium adjustments outside
+the auction stage.
 
 \bibliographystyle{chicago}
 \bibliography{References}
