@@ -1,11 +1,17 @@
 \section{Robustness to Core Threats}\label{sec:robustness}
 
-The robustness checks follow the empirical chain. The legal shock must line up
-with the timing of prices; drop-out bids must recover the cost objects needed
-for the order-statistic comparison; the post-policy SME pool must not be the
-sole source of the result; coordination must not intensify after restriction;
-and the preference benchmark must not be a mechanical artifact. The question is
-whether any of these threats overturns the conclusion that bidder exclusion is
+% TODO Fase 4: add \subsection{Reference-price endogeneity}\label{sec:pref_endog}
+% - Event study log(p^ref) ~ g65_pre interactions (item+month FE, controls)
+% - DiD log(p^ref) for the structural window, mirrored on tab:did_benchmark_v8
+% - Macros needed: \pRefDidEst, \pRefDidSe, \pRefEventStudyMaxAbs, \pRefDiffMonthsZero
+% - Institutional note: TCE-SP and PGE rulings do not address p^ref methodology
+% TODO Fase 4: OA-D.4 "Reference-price trajectory" — full p^ref event study figure;
+% absorb redundant OA-9 filter sensitivities into a footnote on the mechanism table.
+% TODO Fase 4: once §6.6 exists, update §2.4 forward reference to \ref{sec:pref_endog}.
+
+The robustness checks discipline the identification architecture set out in
+Section~\ref{sec:identification_architecture}. The question is whether any of
+the threats laid out there overturns the conclusion that bidder exclusion is
 the main source of the price increase.
 
 \subsection{Reduced-form timing and scale}
@@ -69,14 +75,8 @@ pharmaceuticals. The within-auction shares rise to \strictShareNp{} and
 \strictSharePh{} percent. Composition therefore matters, but it is not what
 makes the exclusion component dominate the price decomposition.
 
-Composition does matter for the policy ranking in pharmaceuticals.
-Post-policy pharmaceutical SME participation is heavily composed of new firms:
-\turnoverPhPctNewFirms{} percent of post-period pharma SME firms are absent
-from the pre-period pool, and they account for \turnoverPhPctNewBids{} percent
-of post-period pharma SME bids. In non-pharmaceuticals, new firms account for
-\turnoverNpPctNewBids{} percent of post-period SME bids. The pharmaceutical
-welfare ranking is therefore conditional, while the non-pharmaceutical ranking
-is the more stable policy result.
+Composition matters most for the pharmaceutical welfare ranking, which
+Section~\ref{sec:pharma_scope} treats explicitly as a boundary case.
 
 \subsection{Coordination}
 
@@ -100,13 +100,47 @@ The price-preference comparison is a static design benchmark, so the relevant
 robustness checks are mainly mechanical. The non-pharmaceutical ranking remains
 $V_3 \succ V_0$ over $\lambda\in[\welfLambdaRangeLo,\welfLambdaRangeHi]$ under
 both the main and strict-invariance specifications; the pharmaceutical ranking
-remains conditional on the treatment of the post-policy SME pool. The result is
-also not an artifact of exact Vickrey equivalence. A Maskin--Riley first-price
-upper-bound adjustment \citep{maskinriley2000} is at most
+remains conditional on the treatment of the post-policy SME pool.\footnote{The
+result is not an artifact of exact Vickrey equivalence: a Maskin--Riley
+first-price upper-bound adjustment \citep{maskinriley2000} is at most
 \maskinRileyBoundPct{} percent of the reference price, while the simulated
-$V_0$--$V_3$ price gap is \vZeroVThreeGapLo--\vZeroVThreeGapHi{} percent.
+$V_0$--$V_3$ price gap is \vZeroVThreeGapLo--\vZeroVThreeGapHi{} percent.}
 Online Appendix~OA-E reports the preference grid and welfare-weight
 sensitivities.
+
+\subsection{Reference-price evolution}\label{sec:pref_endog}
+
+The reduced-form benchmark and the structural cost recovery normalize prices
+by the buyer reference price $p^{\mathrm{ref}}$. Both would leak if buyers
+responded to the regime by adjusting $p^{\mathrm{ref}}$ itself. A TWFE DiD on
+$\log p^{\mathrm{ref}}$ under the main specification moves by \pRefDidEstNp{}
+(SE \pRefDidSeNp{}) in non-pharmaceuticals and \pRefDidEstPh{}
+(SE \pRefDidSePh{}) in pharmaceuticals---small in magnitude against the
+corresponding DiD on $\log p^{\mathrm{final}}$ in each class, leaving a
+residual price effect of about \pRefResidPctNp{} percent in non-pharma and
+\pRefResidPctPh{} percent in pharma after subtracting the $p^{\mathrm{ref}}$
+component. Modern estimators (BJS imputation, Callaway-Sant'Anna) are
+consistent in sign; Online Appendix~OA-D.4 reports the full estimator
+comparison and the underlying event study.
+
+The internal placebo by quartile of $|\Delta \log p^{\mathrm{ref}}|$ tightens
+the argument. Items in the lowest quartile, where the reference price was
+effectively stable across the cutoff, still show a price effect of
+\pRefHetQOneNp{} in non-pharmaceuticals and \pRefHetQOnePh{} in
+pharmaceuticals---about two-thirds of the class-specific DiD coefficient.
+The headline price effect is therefore not driven by items where
+$p^{\mathrm{ref}}$ moved. A density test at the
+R\$\,\setAsideThreshBRL{} item-eligibility threshold also fails to detect
+strategic manipulation (T = \bunchingDensityTPost{}, p = \bunchingDensityPPost{}
+in the post-period), ruling out the buyer-side channel through which
+reference-price gaming would naturally operate.
+
+The structural decomposition is constructed in $p^{\mathrm{ref}}$-normalized
+units, so a uniform $p^{\mathrm{ref}}$ shift inside Group~65 leaves
+within-auction cost recovery and the welfare comparison invariant. Only the
+reduced-form benchmark in Section~\ref{sec:setting} is potentially affected,
+and the residual movement after subtracting the $p^{\mathrm{ref}}$ component
+remains economically substantial.
 
 The checks leave a narrow claim. The result does not depend on the reduced-form
 DiD carrying the whole design, on a single treatment of winner censoring, or on

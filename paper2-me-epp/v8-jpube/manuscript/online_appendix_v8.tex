@@ -407,16 +407,16 @@ pre-policy SME cost distribution on the post-policy SME pool.
 \label{tab:app_mechanism}
 \begin{tabular}{lcccc}
 \toprule
-Specification & \multicolumn{2}{c}{Net price effect} & \multicolumn{2}{c}{Exclusion share} \\
+Specification & \multicolumn{2}{c}{Non-pharma (main result)} & \multicolumn{2}{c}{Pharma (boundary case)} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
- & Non-pharma & Pharma & Non-pharma & Pharma \\
+ & Net effect & Excl. share & Net effect & Excl. share \\
 \midrule
-Baseline & \bneEffectTotalNp{} & \bneEffectTotalPh{} & \bneShareIntensNp\% & \bneShareIntensPh\% \\
-Strict invariance & \siDeltaTotalNp{} & \siDeltaTotalPh{} & \strictShareNp\% & \strictSharePh\% \\
-Turnbull cost recovery & \costRegimeTurnNp{} & \costRegimeTurnPh{} & \turnbullShareNp\% & \turnbullSharePh\% \\
-18-month window & \windowTotalEighteenNp{} & \windowTotalEighteenPh{} & \windowShareEighteenNp\% & \windowShareEighteenPh\% \\
-12-month window & \windowTotalTwelveNp{} & \windowTotalTwelvePh{} & \windowShareTwelveNp\% & \windowShareTwelvePh\% \\
-6-month window & \windowTotalSixNp{} & \windowTotalSixPh{} & \windowShareSixNp\% & \windowShareSixPh\% \\
+Baseline & \bneEffectTotalNp{} & \bneShareIntensNp\% & \bneEffectTotalPh{} & \bneShareIntensPh\% \\
+Strict invariance & \siDeltaTotalNp{} & \strictShareNp\% & \siDeltaTotalPh{} & \strictSharePh\% \\
+Turnbull cost recovery & \costRegimeTurnNp{} & \turnbullShareNp\% & \costRegimeTurnPh{} & \turnbullSharePh\% \\
+18-month window & \windowTotalEighteenNp{} & \windowShareEighteenNp\% & \windowTotalEighteenPh{} & \windowShareEighteenPh\% \\
+12-month window & \windowTotalTwelveNp{} & \windowShareTwelveNp\% & \windowTotalTwelvePh{} & \windowShareTwelvePh\% \\
+6-month window & \windowTotalSixNp{} & \windowShareSixNp\% & \windowTotalSixPh{} & \windowShareSixPh\% \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
@@ -425,6 +425,9 @@ the absolute share of the decomposition attributed to removing non-SMEs from
 the price-forming pool. Rows combine different diagnostic families: strict
 invariance disciplines the protected-pool composition margin, Turnbull
 disciplines winner censoring, and window rows discipline timing sensitivity.
+The pharmaceutical boundary case is the scope condition identified in
+main-text~\S4.4; welfare-ranking inversion under strict invariance is reported
+in Table~\ref{tab:app_welfare_ranking}.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -533,19 +536,82 @@ neither statistic rises after the set-aside expands.
 \end{threeparttable}
 \end{table}
 
-\subsection{Reference-price validation}
+\subsection{Reference-price validation}\label{oa:pref_validation}
 
 All structural prices are normalized by buyer reference prices, so mechanical
-changes in reference-price setting would be a problem. I therefore work with
-normalized cost and price objects and use the reduced-form price/reference
-benchmark as an external check. The structural net effects,
-\structRatioNp{} percent of the open-regime price in non-pharmaceuticals and
-\structRatioPh{} percent in pharmaceuticals, are larger than the DiD-implied
-benchmark of \didImpliedRatio{} percent. That gap is consistent with the fact
-that the structural exercise holds the relevant bidder pools fixed and
-simulates the order statistic directly, while the reduced form averages over
-take-up, controls, and product-time variation. The gap is a reason to interpret
-levels carefully, not a reason to discard the mechanism.
+changes in reference-price setting at the cutoff would be a problem. The
+direct evidence below shows that $p^{\mathrm{ref}}$ moves only weakly and
+that the structural decomposition is invariant to that movement.
+
+The TWFE DiD on $\log p^{\mathrm{ref}}$ under the main specification
+(Table~\ref{tab:app_pref_endog}) is \pRefDidEstNp{} (SE \pRefDidSeNp{}) in
+non-pharmaceuticals and \pRefDidEstPh{} (SE \pRefDidSePh{}) in
+pharmaceuticals---an order of magnitude smaller than the corresponding DiD
+on $\log p^{\mathrm{final}}$ in each subset (\pRefSanityFinalEstNp{} and
+\pRefSanityFinalEstPh{}). BJS imputation gives slightly larger magnitudes
+(\pRefDidBjsEstNp{} NP, \pRefDidBjsEstPh{} PH). Callaway-Sant'Anna estimates
+at group-level aggregation have wide standard errors (above 0.3 in each
+subset) and are statistically indistinguishable from zero.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Reference-price endogeneity: DiD on $\log p^{\mathrm{ref}}$ across estimators and classes}
+\label{tab:app_pref_endog}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{3}{c}{Non-pharma} & \multicolumn{3}{c}{Pharma} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Estimator & $\hat\delta$ & SE & N & $\hat\delta$ & SE & N \\
+\midrule
+TWFE                & \pRefDidEstNp{}    & \pRefDidSeNp{}    & \pRefDidObsNp{} & \pRefDidEstPh{}    & \pRefDidSePh{}    & \pRefDidObsPh{} \\
+Callaway--Sant'Anna & \pRefDidCsEstNp{}  & \pRefDidCsSeNp{}  & ---             & \pRefDidCsEstPh{}  & \pRefDidCsSePh{}  & --- \\
+BJS imputation      & \pRefDidBjsEstNp{} & \pRefDidBjsSeNp{} & ---             & \pRefDidBjsEstPh{} & \pRefDidBjsSePh{} & --- \\
+\addlinespace
+\multicolumn{7}{l}{\textit{Sanity: same spec on $\log p^{\mathrm{final}}$ (TWFE)}} \\
+$\quad$ Coefficient & \pRefSanityFinalEstNp{} & ---              & ---             & \pRefSanityFinalEstPh{} & ---              & --- \\
+\addlinespace
+\multicolumn{7}{l}{\textit{Heterogeneity by $|\Delta\log p^{\mathrm{ref}}|$ quartile (DV: $\log p^{\mathrm{final}}$)}} \\
+$\quad$ Q1 (low)    & \pRefHetQOneNp{}   & \pRefHetQOneSeNp{}   & ---           & \pRefHetQOnePh{}   & \pRefHetQOneSePh{}   & --- \\
+$\quad$ Q4 (high)   & \pRefHetQFourNp{}  & \pRefHetQFourSeNp{}  & ---           & \pRefHetQFourPh{}  & \pRefHetQFourSePh{}  & --- \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item TWFE uses item and month fixed effects with item-clustered standard
+errors, mirroring the main DiD specification. Callaway-Sant'Anna aggregates
+to group level for tractability; the standard errors are wide. BJS uses
+item-level imputation. The sanity row reports the main DiD on
+$\log p^{\mathrm{final}}$ in the same NP/PH sample. The quartile rows split
+items by absolute change in $\log p^{\mathrm{ref}}$ pre-to-post and re-run
+the DiD on $\log p^{\mathrm{final}}$ within each quartile.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The internal placebo by quartile of $|\Delta\log p^{\mathrm{ref}}|$ shows
+that items where the reference price was stable across the cutoff still
+display a price effect of \pRefHetQOneNp{} (NP) and \pRefHetQOnePh{} (PH),
+about two-thirds of the class-specific DiD coefficient on
+$\log p^{\mathrm{final}}$. A density test at the R\$\,\setAsideThreshBRL{}
+item-eligibility threshold fails to detect strategic manipulation
+(post-period T = \bunchingDensityTPost{}, p = \bunchingDensityPPost{};
+pre-period T = \bunchingDensityTPre{}, p = \bunchingDensityPPre{}), ruling
+out the natural buyer-side channel.
+
+Independent corroboration comes from the second-lowest bid in the iterative
+Preg\~ao phase. The DiD on $\log b^{(2)}$ delivers \bidSecondDidEstNp{}
+(SE \bidSecondDidSeNp{}) in non-pharmaceuticals and \bidSecondDidEstPh{}
+(SE \bidSecondDidSePh{}) in pharmaceuticals---constructed from raw bid
+units, with no $p^{\mathrm{ref}}$ normalization---and corroborates the
+order-statistic mechanism directly. The structural net effects of
+\structRatioNp{} percent and \structRatioPh{} percent of the open-regime
+price exceed the reduced-form benchmark of \didImpliedRatio{} percent
+because the structural exercise simulates the order statistic under fixed
+bidder pools while the reduced form averages over take-up, controls, and
+product-time variation. That gap is a reason to interpret levels carefully,
+not a reason to discard the mechanism.
 
 \section{Welfare Details}
 

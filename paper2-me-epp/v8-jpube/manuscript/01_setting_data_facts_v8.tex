@@ -83,8 +83,11 @@ used as a boundary case.
 Four facts matter. SME-only adoption rises in Group~65 after the cutoff;
 state-level adherence reaches \adherenceGsixtyfivePost{} percent rather than
 full coverage. Non-SME participation falls. SME participation rises. Winning
-prices move up in the same period. Together, these facts are the reduced-form
-footprint of the price mechanism estimated below.
+prices move up in the same period. The participation responses are the
+reduced-form moments most useful for identification because they do not pass
+through the reference-price normalization; the price movement that follows
+is taken as directional validation, with magnitude estimated structurally in
+Section~\ref{sec:price_formation}.
 
 Table~\ref{tab:first_stage_v8} reports the participation margins in the
 structural sample. In non-pharmaceutical Preg\~ao auctions, the average number
@@ -126,17 +129,29 @@ take-up rate is \adherenceGsixtyfivePost{} percent, not 100 percent.
 \end{threeparttable}
 \end{table}
 
-Prices move in the same period. Table~\ref{tab:did_benchmark_v8} reports a
-compact difference-in-differences benchmark comparing Group~65 to never-treated
-product groups, with item and month fixed effects, auction-format and quantity
-controls, PBU controls, and item-clustered standard errors. The coefficient is
-written in a ``DiD-in-reverse'' convention: a negative coefficient on
-Group~65 interacted with the pre-period means that the open regime was cheaper,
-so the post-cutoff SME-only extension undoes that discount. Across windows, the
-log-price coefficient is between -0.108 and -0.148 with PBU controls; the
-\structuralWindowM-month benchmark is \didPriceEighteenPbu{}. Exponentiating the
-magnitude gives the \didLowerPct--\didUpperPct{} percent price benchmark used in
-the introduction.
+The price-forming order statistic moves in the same direction. The DiD
+specification applied to $\log b^{(2)}$, the second-lowest bid in the
+iterative Preg\~ao phase and the price-forming object in the IPV
+interpretation, delivers \bidSecondDidEstNp{} (SE \bidSecondDidSeNp{}) in
+non-pharmaceuticals and \bidSecondDidEstPh{} (SE \bidSecondDidSePh{}) in
+pharmaceuticals. These estimates are built from raw bid units and do not
+pass through the reference-price normalization, so they corroborate the
+order-statistic channel directly; Online Appendix~OA-D.4 reports the
+full event study.
+
+Winning prices also move. Table~\ref{tab:did_benchmark_v8} reports the DiD
+on $\log p^{\mathrm{final}}$ comparing Group~65 to never-treated product
+groups, with item and month fixed effects, auction-format and quantity
+controls, PBU controls, and item-clustered standard errors. The coefficient
+is written in a ``DiD-in-reverse'' convention: a negative coefficient on
+Group~65 interacted with the pre-period means that the open regime was
+cheaper, so the post-cutoff SME-only extension undoes that discount. Across
+windows, the log-price coefficient is between -0.108 and -0.148 with PBU
+controls; the \structuralWindowM-month benchmark is \didPriceEighteenPbu{}.
+This coefficient is used as a directional and timing check rather than as
+the source of the structural magnitude; the latter is built in
+Section~\ref{sec:price_formation} in $p^{\mathrm{ref}}$-normalized units, and
+Section~\ref{sec:pref_endog} examines reference-price endogeneity directly.
 
 \begin{table}[!htbp]
 \centering
@@ -165,12 +180,56 @@ the structural sections estimate the mechanism.
 \end{threeparttable}
 \end{table}
 
-The reduced form has a limited role. Group~65 differs from the pooled controls
-in several pre-period characteristics, and modern DiD estimators are less
-precise than the two-way fixed-effect benchmark. More importantly, the same
-legal shock both removes non-SMEs from the eligible pool and changes SME
-participation. A price regression can show that prices move at the cutoff; it
-cannot separate lost competitive discipline from the protected-pool offset.
-Online Appendix~OA-B reports the balance, placebo, and alternative-DiD
-diagnostics behind this conservative reading. The rest of the paper uses the
-Preg\~ao cost information to separate those margins.
+The reduced form has a limited role: the same legal shock changes
+admissibility, the active bidder pool, and prices in a single step.
+Section~\ref{sec:identification_architecture} sets out how the structural
+exercise separates those margins; OA-B reports the balance, placebo, and
+alternative-DiD diagnostics behind the conservative reading.
+
+\subsection{Identification architecture}\label{sec:identification_architecture}
+
+The argument rests on three pieces of evidence that carry separate identifying
+weight. The difference-in-differences against \controlGroupCount{}
+never-treated groups validates a real first-stage footprint at
+\policyCutoffMonth{}; the structural decomposition, conditional on observed
+entry and recovered costs, identifies the price-forming mechanism; the static
+welfare comparison of $V_0$ against $V_3$, conditional on recovered
+primitives, identifies the policy implication. None of the three inherits
+fragilities from the others. Each piece can fail in a different way without
+compromising the rest.
+
+The reduced form requires only that the legal episode be the dominant shock
+to Group~65 around \policyCutoffMonth{}. Modern estimators reduce magnitude
+relative to TWFE (\didAltCsEst{} versus \didAltTwfeEst{}), which is consistent
+with the role assigned: timing and sign, not structural magnitude. The
+structural decomposition does not require cross-group balance, because it
+conditions on within-period type-specific cost distributions and equilibrium
+bidder counts; it requires the IPV interpretation of Preg\~ao drop-outs,
+disciplined in Section~\ref{sec:robustness}. The welfare comparison requires
+neither balance nor the DiD; it requires that the recovered primitives be
+interpretable, which is what the same section examines.
+
+Five concerns recur. Pre-treatment imbalance between Group~65 and the pooled
+controls limits the force of the reduced form (OA-B reports the balance
+table); it does not affect the structural exercise, which uses no
+cross-group comparison. Modern DiD attenuation is consistent with the
+conservative reading the paper assigns to the reduced form (\didAltCsEst{}
+versus \didAltTwfeEst{}, OA-B). Reference-price endogeneity is examined directly in
+Section~\ref{sec:pref_endog} and Online Appendix~OA-D.4: a static DiD on
+$\log p^{\mathrm{ref}}$ moves by \pRefDidEstNp{} (NP) and \pRefDidEstPh{}
+(PH), well below the corresponding DiD on $\log p^{\mathrm{final}}$, and an
+internal placebo confirms the headline price effect survives where
+$p^{\mathrm{ref}}$ is stable.
+IPV is the maintained restriction, disciplined in
+Section~\ref{sec:robustness} and OA-C through censoring, common-scale, and
+cross-modality diagnostics. The empirical cutoff is the mass take-up date
+rather than a legal moment; Section~\ref{sec:setting} documents the
+institutional sequence, and the phased-adoption sensitivity in OA-B excludes
+platform enablement months and retains the qualitative result.
+
+The exercise does not identify a free-entry primitive, a structural model of
+SME selection, or dynamic capacity gains. Entry rates are observed
+equilibrium objects in the spirit of \citet{atheyseira2011}, and the
+post-policy SME cost distribution is an observed active-bidder distribution
+with strict invariance reported as a bounding exercise in
+Section~\ref{sec:robustness}.
