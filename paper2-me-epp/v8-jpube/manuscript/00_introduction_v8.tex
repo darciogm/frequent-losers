@@ -1,0 +1,146 @@
+\section{Introduction}
+
+Procurement set-asides for small and medium-size enterprises (SMEs) are meant
+to widen access to public contracts. They do so by changing eligibility: some
+contracts are reserved for small firms, and larger firms are not allowed to
+compete. That design creates a basic tension. A set-aside may attract protected
+firms into the auction, but it also removes the unprotected firms that would
+otherwise discipline price formation. These two forces have opposite signs. The
+entry response pushes prices down; the loss of competitive discipline pushes
+prices up. The welfare case for a set-aside depends on which force dominates.
+
+This paper estimates that decomposition. The question is not whether SME
+set-asides raise procurement prices; a large empirical literature already shows
+that bidder-preference and set-aside programs can be costly
+\citep{marion2007,krasnokutskaya2011,athey2013,nakabayashi2013,hyytinen2018}.
+The question is why they are costly, and what that implies for policy design.
+Reduced-form price effects cannot answer that question because a set-aside
+changes two margins at once: it excludes non-SMEs from the price-forming bidder
+pool and it changes SME participation and composition. A policy that supports
+SMEs while keeping non-SMEs inside the auction, such as a price preference, has
+a different economic logic from a policy that supports SMEs by removing their
+rivals. The relevant design question is therefore not simply whether the
+government should support SMEs. It is whether SME support should preserve or
+remove the bidders that discipline the auction.
+
+The empirical setting is S\~ao Paulo's centralized electronic procurement
+platform, the Bolsa Eletr\^onica de Compras (BEC). In late 2017 and early 2018,
+a legal reinterpretation shifted how the state applied Brazil's SME-only
+procurement rule. The old interpretation applied the eligibility threshold to
+the total value of a purchase notice; the new interpretation applied it
+item-by-item. That change mechanically exposed medical and hospital supplies
+(Group 65) to SME-only tendering because these purchases often combine many
+small items inside large purchase notices. The empirical cutoff is
+\policyCutoffMonth{}, when Group-65 public buyers began mass take-up of the
+new functionality. The trigger was legal and administrative rather than a
+medical-supply-specific policy initiative, and it changed admissibility rather
+than the production technology of the goods.
+
+The first-stage facts line up with the institutional story. After the cutoff,
+SME-only adoption in Group 65 rises sharply, non-SME participation falls, and
+SME participation roughly doubles. Winning prices also rise. A
+difference-in-differences benchmark against \controlGroupCount{} never-treated
+product groups estimates that absolute winning prices increase by about
+\didLowerPct--\didUpperPct{} percent in the structural window. I use that
+reduced-form evidence as a sign, timing, and scale benchmark. The paper's main
+object is structural: separating the price increase into the loss of non-SME
+competitive discipline and the offsetting entry/composition response of SMEs.
+
+The auction format makes that decomposition feasible. BEC's main procurement
+format is the electronic \emph{Preg\~ao}, an English-reverse auction in which
+firms submit successively lower offers until only one remains. Under independent
+private values, losing bidders' drop-out prices reveal their costs
+\citep{haile2003}. This feature is valuable in a setting where the policy
+changes the composition of the bidder pool. It allows the paper to recover
+type-specific cost distributions for SMEs and non-SMEs, correct for
+auction-level scale heterogeneity in the spirit of \citet{krasnokutskaya2011},
+and simulate counterfactual auctions under observed equilibrium entry. The
+exercise is deliberately weaker than a full entry equilibrium: observed pre-
+and post-policy entry rates are taken as primitives, and the post-policy SME
+cost distribution is estimated from post-policy exits rather than derived from
+a formal selection model. This is an accounting decomposition under explicit
+auction assumptions, not a complete model of firm participation.
+
+Three counterfactual prices summarize the paper. Let $S_1$ be the open auction
+with the pre-policy bidder pool, $S_2$ the SME-only auction holding the
+pre-policy SME pool fixed, and $S_3$ the SME-only auction with the observed
+post-policy SME pool. Then
+\[
+    p_{S_3} - p_{S_1}
+    =
+    \underbrace{p_{S_2} - p_{S_1}}_{\text{lost competitive discipline}}
+    +
+    \underbrace{p_{S_3} - p_{S_2}}_{\text{entry/composition offset}}.
+\]
+The first term is the cost of removing non-SMEs from the price-forming pool.
+The second term is the offset created by the post-policy SME pool. This
+decomposition is the paper's organizing object. It turns a set-aside price
+effect into a design question: how much of the cost comes from replacing
+competition by eligibility, and how much is recovered by protected entry?
+
+The main result is that entry responds, but exclusion dominates. In the baseline
+structural simulation, moving from the open auction to an SME-only auction at
+the pre-policy SME pool raises the simulated clearing price by
+\bneEffectIntensNp{} of the reference price in non-pharmaceutical supplies and
+\bneEffectIntensPh{} in pharmaceuticals. Allowing the post-policy SME pool to
+enter offsets part of that shock, by \bneEffectEntryNp{} and
+\bneEffectEntryPh{} respectively. The net effect remains positive:
+\bneEffectTotalNp{} in non-pharmaceuticals and \bneEffectTotalPh{} in
+pharmaceuticals. Relative to the net effect, the exclusion component is
+super-additive, \bneIntensRelNetNp{} percent in non-pharmaceuticals and
+\bneIntensRelNetPh{} percent in pharmaceuticals, because SME entry partially
+undoes the initial shock. In absolute-magnitude terms, the exclusion component
+accounts for \bneShareIntensNp{} and \bneShareIntensPh{} percent of the two
+components. The interpretation is simple: the policy attracts SMEs, but it
+does not recreate the competitive discipline supplied by excluded non-SMEs.
+
+This mechanism changes the policy comparison. A full set-aside supports SMEs by
+removing their rivals. A price preference supports SMEs while leaving non-SMEs
+inside the auction. The difference matters because non-SMEs can remain
+price-forming even when the scoring rule favors SMEs. I compare the observed
+SME-only design to a 10 percent SME price preference using the same recovered
+cost distributions and entry primitives. In thick, standardized
+non-pharmaceutical markets, the price preference has near-zero price and
+welfare cost while the full set-aside generates a substantial welfare loss. The
+preference is not a free version of the set-aside: it delivers a smaller
+redistributive intervention. The correct comparison is a frontier. The
+set-aside is a high-cost, high-redistribution instrument; the price preference
+is a low-cost, lower-redistribution instrument that preserves competitive
+discipline. A social planner should prefer the set-aside only if the additional
+SME surplus is worth the allocative and fiscal cost of removing non-SMEs from
+the auction.
+
+The strongest policy result is in thick standardized markets. In thinner and
+more heterogeneous pharmaceutical markets, the ranking depends on how the
+post-policy SME pool is modeled. The main specification estimates the
+post-policy SME cost distribution directly from post-policy exits; a strict
+invariance benchmark instead imposes that the SME cost distribution is the same
+before and after the policy. The non-pharmaceutical ranking is stable across
+these readings. The pharmaceutical ranking is not. I treat that difference as a
+scope condition rather than as a second headline: bidder exclusion is hardest
+to justify where the protected pool is thick enough for a preference rule to
+tilt allocation without removing competitive discipline, and most defensible,
+if at all, where the protected pool is thin, the good is heterogeneous, and the
+planner places high value on SME surplus.
+
+The paper makes three contributions. First, it decomposes the price effect of
+SME set-asides into two opposing channels: the loss of competitive discipline
+from excluding non-SMEs and the protected-entry/composition offset. Second, it
+uses the cost-revealing structure of electronic reverse auctions to estimate
+that decomposition from drop-out bids in a real procurement reform, linking a
+legal shock to structural price formation without relying on first-price
+bid-function inversion. Third, it recasts the set-aside-versus-preference
+comparison as a question of preserving competition inside the auction. This
+connects the empirical procurement-preference literature
+\citep{marion2007,krasnokutskaya2011,krasnokutskayaseim2011,athey2013} to a
+public-finance welfare-weight interpretation in which transfers to SMEs,
+allocative waste, and the marginal cost of public funds are kept separate
+\citep{saezstantcheva2016}.
+
+The broader lesson is that eligibility is a costly way to buy redistribution
+when excluded firms are the ones disciplining the auction. Set-asides can be
+defensible, but their defense must be explicit: the planner must value the
+additional SME surplus enough to justify the allocative and fiscal cost of
+removing rival bidders. Where protected firms are already numerous and goods
+are standardized, that case is hard to make. The natural benchmark is therefore
+not no SME support, but SME support that keeps competition in the room.

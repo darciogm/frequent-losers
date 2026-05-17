@@ -1,0 +1,189 @@
+\section{Model and Identification}\label{sec:model}
+
+The empirical facts in Section~\ref{sec:setting} show that the reform moves
+participation and prices in the direction implied by the institutional shock.
+This section defines the structural objects used to separate the two channels.
+The model is intentionally spare. It uses the auction format to recover
+type-specific costs, takes observed entry as an equilibrium object, and
+simulates three counterfactual bidder pools. The goal is not to estimate a full
+entry equilibrium; it is to decompose the price effect of exclusion into lost
+competitive discipline and the offset created by protected entry and
+composition.
+
+\subsection{Auction environment}
+
+Consider a single procurement auction for one indivisible contract. Each firm
+$i$ has type $k_i\in\{\mathrm{SME},\neg\}$ and draws a private supply cost
+$c_i$ from a type-specific distribution $F_c^k$. The two distributions are
+allowed to differ. The buyer runs an electronic Preg\~ao, an English-reverse
+auction in which the price clock moves downward from the buyer's reference
+price and firms remain active until they are no longer willing to supply at the
+current price. The last active firm wins and supplies the contract at the
+clearing price.
+
+Under the independent-private-values interpretation, exit at cost is weakly
+dominant in this format \citep{haile2003}. A losing firm's drop-out price is
+therefore a direct observation of its cost. This is the key identifying
+advantage of the setting. In first-price procurement auctions, the researcher
+observes strategically shaded bids and must recover costs by inverting a bid
+function. Here the price-forming statistic can be recovered from exits. The
+winner is censored because the winner does not drop out; its cost is known only
+to be no higher than the second-lowest exit. The baseline estimator includes
+the winner's final price as a tight upper-bound observation, while the
+robustness section reports a Turnbull NPMLE that treats the winner as
+left-censored at that bound.
+
+The expected transaction price in the clock interpretation is the expected
+second-lowest cost, $E[c_{(2)}]$, while the production cost of the allocation is
+the winner's cost, $E[c_{(1)}]$. This distinction matters later for welfare:
+$c_{(2)}$ determines the government's payment, while $c_{(1)}$ determines
+allocative efficiency.
+
+\subsection{Recovering cost primitives}
+
+The structural sample is organized by class, period, and bidder type. For each
+cell, loser drop-outs identify the corresponding empirical distribution of
+normalized costs. Costs are normalized by the buyer's reference price, so the
+object entering the simulation is a distribution of $c_i/p^{\mathrm{ref}}$.
+Reference-price normalization absorbs the main cross-item scale differences,
+but it does not remove all auction-level heterogeneity. Two auctions in the
+same product class can differ in volume, delivery burden, regulatory
+documentation, or item-specific complexity in ways that move every bid in the
+auction together.
+
+I therefore use the standard multiplicative auction-level heterogeneity
+correction of \citet{krasnokutskaya2011}. Let
+\[
+    y_{it}=\log(b_{it}/p_t^{\mathrm{ref}})=a_t+e_{it},
+\]
+where $a_t$ is an auction-level scale component and $e_{it}$ is the
+bidder-specific cost component. A method-of-moments variance decomposition
+estimates the between-auction and within-auction components, and a
+best-linear-predictor shrinkage removes $\hat a_t$ from each observation. The
+simulation uses the cleaned residual cost distribution
+$\exp(\hat e_{it})$. In the v6 estimates, the resulting Preg\~ao intraclass
+correlations range from \iccNpSme{} to \iccPharmaNonSme{} in the main cells,
+with values comparable to procurement settings where this correction is
+standard.
+
+Two diagnostics discipline the cost-recovery step. First, in a pre-policy cell
+unaffected by the set-aside, the cost distribution recovered from Preg\~ao
+drop-outs can be compared to a GPV recovery from Convite first-price bids
+\citep{gpv2000}. The two recoveries are close in the pharma non-SME pre-period
+cell, which is the cleanest falsification cell because those firms are not
+targeted by the policy. Second, the Turnbull NPMLE for winner censoring delivers
+the same decomposition qualitatively: the within-auction share remains large
+(\turnbullShareNp{} percent in non-pharma and \turnbullSharePh{} percent in
+pharma), and the total effect differs from the baseline by at most
+\turnbullDeviationPct{} percent across the reported cells. These checks do not
+prove IPV. They show that the main cost-recovery step is not being driven by
+winner censoring or by an obvious conflict between auction formats.
+
+\subsection{Entry and the post-policy SME distribution}
+
+Entry is treated as observed equilibrium entry. For each class and period, I
+use the observed average numbers of SME and non-SME bidders per auction as the
+arrival rates for the simulation. In the open pre-policy regime, both SMEs and
+non-SMEs may enter. In the SME-only counterfactual, non-SMEs are removed from
+the eligible pool. The observed post-policy SME count is used for the
+post-policy SME-only scenario.
+
+This choice is deliberate. A full entry model would require assumptions on
+fixed costs, information, bidder-specific participation decisions, and how the
+legal shock changes expected profits. The legal shock directly identifies
+admissibility and observed participation, not a free-entry primitive. The paper
+therefore follows the reduced-form-entry spirit of
+\citet{atheyseira2011}: observed pre- and post-policy bidder counts are
+equilibrium objects used in counterfactual price formation.
+
+The same caution applies to the post-policy SME cost distribution. The baseline
+simulation estimates $F_c^{\mathrm{SME,Post}}$ directly from post-policy
+drop-outs and uses it as the cost distribution of active post-policy SME
+bidders. This object may reflect selection into the protected market,
+technology or sourcing changes within the SME segment, or other composition
+changes around the cutoff. The baseline does not derive that difference from a
+formal selection model. The strict-invariance benchmark instead imposes
+$F_c^{\mathrm{SME,Post}}=F_c^{\mathrm{SME,Pre}}$. The two readings bracket how
+much the policy conclusion depends on the empirical post-policy SME
+distribution. The non-pharmaceutical policy ranking is stable across them; the
+pharmaceutical ranking is not, which is why pharma is treated as a boundary
+case rather than as the headline.
+
+\subsection{Counterfactual objects}
+
+The decomposition uses three simulated auction environments:
+\begin{itemize}
+    \item $S_1$: open auction, pre-policy bidder pool. SMEs and non-SMEs enter
+    at their observed pre-policy rates, with pre-policy cost distributions.
+    \item $S_2$: SME-only auction, pre-policy SME pool. Non-SMEs are removed,
+    while the SME arrival rate and SME cost distribution are held at their
+    pre-policy values.
+    \item $S_3$: SME-only auction, post-policy SME pool. Non-SMEs are removed,
+    and SMEs enter with the observed post-policy arrival rate and the baseline
+    post-policy SME cost distribution.
+\end{itemize}
+
+For each scenario, I draw bidder counts from the corresponding type-specific
+arrival process, draw costs from the recovered cost distributions, sort the
+draws, and record $c_{(1)}$ and $c_{(2)}$. The simulated price is
+$p_S=E_S[c_{(2)}]$, normalized by the reference price. The simulated production
+cost is $E_S[c_{(1)}]$.
+
+The total set-aside price effect is
+\[
+    \Delta^{SA}=p_{S_3}-p_{S_1}.
+\]
+It decomposes mechanically into two terms:
+\begin{equation}\label{eq:main_decomp}
+    p_{S_3}-p_{S_1}
+    =
+    \underbrace{p_{S_2}-p_{S_1}}_{\Delta^{excl}
+    \text{ lost competitive discipline}}
+    +
+    \underbrace{p_{S_3}-p_{S_2}}_{\Delta^{entry}
+    \text{ entry/composition offset}}.
+\end{equation}
+The first term holds the SME pool fixed and removes non-SMEs. It captures the
+price-forming cost of bidder exclusion: the second-order statistic is now drawn
+from the protected pool rather than from the full pool. The second term allows
+the post-policy SME pool to enter. It captures the extent to which protected
+entry and composition offset the exclusion shock. This term can be negative,
+and in the data it is: additional SME participation partially restores
+competition, but not enough to undo the price increase.
+
+The labels in equation~\eqref{eq:main_decomp} are intentionally descriptive
+rather than behavioral. In an English-reverse IPV auction, surviving bidders do
+not need to shade bids differently when rivals are excluded; exit at cost
+remains weakly dominant. The lost-discipline component is therefore an
+order-statistic effect of admissibility, not evidence that SMEs bid less
+aggressively. This is the distinction between the mechanism in this paper and
+the first-price settings in which bidder preferences combine cost differences,
+order statistics, and strategic bid shading.
+
+\subsection{Identification threats and what disciplines them}
+
+Four threats matter for the interpretation. The first is the IPV/drop-out
+restriction. If drop-outs are not informative about costs, the recovered
+$F_c^k$ distributions are not structural cost primitives. The cross-modality
+check and the Turnbull censoring exercise are the main diagnostics, and Section
+6 summarizes an affiliation sensitivity that allows within-auction cost
+correlation up to $\rho_c=\ipvRhoMax$.
+
+The second threat is primitive stability. The institutional shock shifts
+admissibility, but the recovered SME distribution changes across periods. The
+baseline treats that empirical post-policy distribution as the relevant active
+SME pool; strict invariance imposes no change. The comparison between those
+readings is central to the scope conditions.
+
+The third threat is entry aggregation. The baseline uses average
+class-by-period arrival rates. That is enough for the main accounting exercise,
+but it is coarse. Section 6 therefore treats empirical entry-count
+distributions and finer arrival specifications as robustness checks rather than
+as new mechanisms.
+
+The fourth threat is coordination. Bidder-pair screens detect clustering in
+the data, so the interpretation of drop-out prices as costs requires care. The
+important diagnostic is whether clustering intensifies after non-SMEs are
+removed, and whether the decomposition survives in low-coordination samples.
+The paper treats this as a first-order threat to interpretation, not as a
+cosmetic robustness exercise.
