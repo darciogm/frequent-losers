@@ -15,79 +15,81 @@ statistic.
 \subsection{Auction environment}
 
 Consider a single procurement auction for one indivisible contract. Each firm
-$i$ has type $k_i\in\{\mathrm{SME},\neg\}$ and draws a private supply cost
-$c_i$ from a type-specific distribution $F_c^k$. The two distributions are
-allowed to differ. The buyer runs an electronic Preg\~ao, an English-reverse
-auction in which the price clock moves downward from the buyer's reference
-price and firms remain active until they are no longer willing to supply at the
-current price. The last active firm wins and supplies the contract at the
-clearing price.
+$i$ has type $k_i \in \{\mathrm{SME}, \neg\mathrm{SME}\}$ and draws a private
+supply cost $c_i$ from a type-specific distribution $F_c^k$. The two
+distributions are allowed to differ. The buyer runs an electronic
+Preg\~ao, an English-reverse auction in which the price clock moves downward
+from the buyer's reference price and firms remain active until they are no
+longer willing to supply at the current price. The last active firm wins and
+supplies the contract at the clearing price.
 
-Under the independent-private-values interpretation, exit at cost is weakly
-dominant in this format \citep{haile2003}. A losing firm's drop-out price is
-therefore a direct observation of its willingness to supply. This is the key
-identifying advantage of the setting, but it is also the main structural
-restriction in the paper. In first-price procurement auctions, the researcher
-observes strategically shaded bids and must recover costs by inverting a bid
-function. Here the price-forming statistic can be recovered from exits only if
-drop-outs are informative about costs rather than about collusive rotation,
-budget constraints, or other non-cost stopping rules.
+Under the maintained IPV clock interpretation, a losing bidder's exit price
+is treated as its willingness to supply at the auction scale, following the
+English-auction logic in \citet{haile2003}. In the benchmark IPV clock model,
+exit at cost is the relevant bidding rule; empirically, I use losing exits as
+willingness-to-supply observations and interpret them as costs under the
+maintained model. This is the key identifying advantage of the setting, but
+it is also the main structural restriction in the paper. In first-price
+procurement auctions the researcher observes strategically shaded bids and
+must recover costs by inverting a bid function. Here the price-forming
+statistic can be recovered from exits only if drop-outs are informative
+about willingness to supply rather than about collusive rotation, budget
+constraints, or other non-cost stopping rules.
 
-The winner is censored because the winner does not drop out; its cost is known
-only to be no higher than the second-lowest exit. The baseline estimator
-includes the winner's final price as a tight upper-bound observation, while
+The winner is censored because the winner does not drop out. Its cost is
+known only to be no higher than the second-lowest exit, or the corresponding
+final-price bound used in the data. The baseline estimator treats the
+winner's final price as a tight upper-bound observation;
 Section~\ref{sec:robustness} reports both a losers-only estimator and a
 Turnbull NPMLE that treats the winner as left-censored at that bound. The
-relevant test for the decomposition is not whether every observed exit is a
-literal engineering cost, but whether alternative treatments of censoring,
-common auction shocks, and bidder dependence overturn which bidder pool supplies
-the price-forming order statistic.
-
-The expected transaction price in the clock interpretation is the expected
-second-lowest cost, $E[c_{(2)}]$, while the production cost of the allocation is
-the winner's cost, $E[c_{(1)}]$. This distinction matters later for welfare:
-$c_{(2)}$ determines the government's payment, while $c_{(1)}$ determines
-allocative efficiency.
+expected transaction price in the clock interpretation is the expected
+second-lowest cost, $E[c_{(2)}]$, while the production cost of the
+allocation is the winner's cost, $E[c_{(1)}]$. This distinction matters
+later for welfare: $c_{(2)}$ determines the government's payment, while
+$c_{(1)}$ determines allocative efficiency.
 
 \subsection{Recovering willingness-to-supply primitives}
 
-The structural sample is organized by class, period, and bidder type. For each
-cell, loser drop-outs identify the empirical distribution of normalized
-willingness to supply, which the maintained IPV clock model interprets as a
-cost distribution. The relevant object is normalized by the buyer's reference
-price, so the input to the simulation is a distribution of
-$c_i/p^{\mathrm{ref}}$.
-Reference-price normalization absorbs the main cross-item scale differences,
-but it does not remove all auction-level heterogeneity. Two auctions in the
-same product class can differ in volume, delivery burden, regulatory
-documentation, or item-specific complexity in ways that move every bid in the
-auction together.
+The structural sample is organized by class, period, and bidder type. For
+each cell, loser drop-outs identify empirical distributions of normalized
+willingness to supply, which the maintained IPV clock model interprets as
+cost distributions. I first normalize exit prices by the buyer's reference
+price, so the object entering the simulation is measured in units of
+$p_t^{\mathrm{ref}}$. This normalization absorbs the main cross-item scale
+differences, but it does not remove all auction-level heterogeneity. Two
+auctions in the same product class can differ in volume, delivery burden,
+regulatory documentation, or item-specific complexity in ways that move
+every bid in the auction together.
 
-I therefore use the standard multiplicative auction-level heterogeneity
-correction of \citet{krasnokutskaya2011}. Let
+I therefore use a multiplicative auction-level heterogeneity correction in
+the spirit of \citet{krasnokutskaya2011}. Let
 \[
-    y_{it}=\log(b_{it}/p_t^{\mathrm{ref}})=a_t+e_{it},
+    y_{it} = \log(b_{it}/p_t^{\mathrm{ref}}) = a_t + e_{it},
 \]
 where $a_t$ is an auction-level scale component and $e_{it}$ is the
-bidder-specific cost component. A method-of-moments variance decomposition
+bidder-specific component. A method-of-moments variance decomposition
 estimates the between-auction and within-auction components, and a
-best-linear-predictor shrinkage removes $\hat a_t$ from each observation. The
-simulation uses the cleaned residual cost distribution
-$\exp(\hat e_{it})$. In the current estimates, the resulting Preg\~ao intraclass
-correlations range from \iccNpSme{} to \iccPharmaNonSme{} in the main cells,
-with values comparable to procurement settings where this correction is
-standard.
+best-linear-predictor shrinkage removes $\hat a_t$ from each observation.
+The simulation uses $\exp(\hat e_{it})$ as the cleaned willingness-to-supply
+distribution, interpreted as a cost distribution under the maintained model.
+The correction removes common auction-level scale variation before comparing
+type-specific order statistics; it does not purge bidder-type selection,
+product-level composition, or post-policy changes in the active SME pool.
+In the current estimates, the resulting Preg\~ao intraclass correlations
+range from \iccNpSme{} to \iccPharmaNonSme{} in the main cells, with values
+comparable to procurement settings where this correction is standard.
 
-Section~\ref{sec:robustness} disciplines this cost-recovery step. It reports
+Section~\ref{sec:robustness} disciplines this recovery step. It reports
 alternative treatments of winner censoring, a cross-modality check comparing
 Preg\~ao drop-outs with a GPV recovery from Convite first-price bids
 \citep{gpv2000}, dependence sensitivities, and bidder-pair coordination
-screens. These checks do not prove IPV. They ask the narrower question needed
-for this paper: whether the exclusion-dominant decomposition is mechanically
-produced by winner censoring, common auction-level scale heterogeneity, an
-obvious conflict between auction formats, or a post-policy increase in bidder
-clustering among the surviving SME pool. Online Appendix~OA-C reports the
-corresponding quantile, KS, and censoring diagnostics.
+screens. These checks do not prove IPV. They ask the narrower question
+needed for this paper: whether the exclusion-dominant decomposition is
+mechanically produced by winner censoring, common auction-level scale
+heterogeneity, an obvious conflict between auction formats, or a post-policy
+increase in bidder clustering among the surviving SME pool. Online
+Appendix~OA-C reports the corresponding quantile, KS, and censoring
+diagnostics.
 
 \subsection{Entry and the post-policy SME distribution}
 
