@@ -127,25 +127,31 @@ $F_c^{\mathrm{SME,Post}}=F_c^{\mathrm{SME,Pre}}$. The comparison between
 these readings is a scope condition: the non-pharmaceutical policy ranking
 is stable, while the pharmaceutical ranking is not.
 
-\subsection{Counterfactual objects}
+\subsection{Counterfactual price-formation objects}
 
-The decomposition uses three simulated auction environments:
+The decomposition uses three simulated auction environments. These scenarios
+are not alternative legal regimes solved in equilibrium. They are
+counterfactual price-formation objects designed to isolate which bidder pool
+supplies the price-forming order statistic.
+
 \begin{itemize}
-    \item $S_1$: open auction, pre-policy bidder pool. SMEs and non-SMEs enter
-    at their observed pre-policy rates, with pre-policy cost distributions.
+    \item $S_1$: open auction, pre-policy bidder pool. SMEs and non-SMEs
+    enter according to their observed pre-policy Poisson participation
+    rates, with pre-policy willingness-to-supply primitives.
     \item $S_2$: SME-only auction, pre-policy SME pool. Non-SMEs are removed,
-    while the SME arrival rate and SME cost distribution are held at their
-    pre-policy values.
-    \item $S_3$: SME-only auction, observed post-policy SME pool. Non-SMEs are
-    removed, and SMEs enter with the observed post-policy arrival rate and the
-    baseline post-policy SME cost distribution.
+    while the pre-policy SME participation rate and pre-policy SME
+    willingness-to-supply primitives are held fixed.
+    \item $S_3$: SME-only auction, observed post-policy SME pool. Non-SMEs
+    are removed, and SMEs enter with the observed post-policy participation
+    rate and the baseline post-policy willingness-to-supply primitives.
 \end{itemize}
 
 For each scenario, I draw bidder counts from the corresponding type-specific
-arrival process, draw costs from the recovered cost distributions, sort the
+Poisson process, draw willingness-to-supply values from the recovered
+distributions---interpreted as costs under the maintained model---sort the
 draws, and record $c_{(1)}$ and $c_{(2)}$. The simulated price is
-$p_S=E_S[c_{(2)}]$, normalized by the reference price. The simulated production
-cost is $E_S[c_{(1)}]$.
+$p_S=E_S[c_{(2)}]$, normalized by the reference price. The simulated
+production cost is $E_S[c_{(1)}]$.
 
 The total set-aside price effect is
 \[
@@ -161,23 +167,24 @@ It decomposes mechanically into two terms:
     \underbrace{p_{S_3}-p_{S_2}}_{\Delta^{pool}
     \text{ protected-pool offset}}.
 \end{equation}
-The first term holds the SME pool fixed and removes non-SMEs. It captures the
-price-forming cost of bidder exclusion: the second-order statistic is now drawn
-from the protected pool rather than from the full pool. The second term replaces
-the fixed pre-policy SME pool with the observed post-policy SME pool. It
-captures the extent to which additional protected participation and changes in
-the active SME composition offset the exclusion shock. This term can be
-negative, and in the data it is: the realized protected pool partially restores
-competition, but not enough to undo the price increase. I refer to it as the
-protected-pool offset because the legal shock does not separately identify a
-pure entry primitive from selection into the active protected-pool composition.
+The first term holds the SME pool fixed and removes non-SMEs. It captures
+the price-forming cost of bidder exclusion: the second-order statistic is
+now drawn from the protected pool rather than from the full pool. The
+second term replaces the fixed pre-policy SME pool with the observed
+post-policy SME pool. It captures the extent to which additional protected
+participation and changes in active SME composition offset the exclusion
+shock. This term can be negative, and in the data it is: the realized
+protected pool partially restores competition, but not enough to undo the
+price increase. I refer to it as the protected-pool offset because the
+legal shock does not separately identify a pure entry primitive from
+selection into the active protected-pool composition.
 
-The labels in equation~\eqref{eq:main_decomp} are order-statistic, not
-behavioral: exit at cost remains weakly dominant in an English-reverse IPV
-auction, so the lost-discipline component is an admissibility effect rather
-than evidence of less aggressive SME bidding. This separates the channel
-studied here from first-price settings, where bidder preferences combine cost
-differences, order statistics, and strategic shading.
+The labels in equation~\eqref{eq:main_decomp} are order-statistic labels,
+not behavioral ones. In the maintained IPV clock model, bidders exit at
+willingness to supply, so the lost-discipline component is an admissibility
+effect rather than evidence of less aggressive SME bidding. This separates
+the channel studied here from first-price settings, where bidder preferences
+combine cost differences, order statistics, and strategic shading.
 
 \subsection{Scope of identification}
 
