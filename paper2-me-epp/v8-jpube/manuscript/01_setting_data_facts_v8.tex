@@ -1,12 +1,10 @@
 \section{Setting, Data, and First-Stage Facts}\label{sec:setting}
 
-This section establishes the institutional shock and the first-stage facts that
-the decomposition uses. The reform changed which firms could compete for
-eligible Group~65 items. In the data, the change raises SME-only take-up,
-reduces non-SME participation, increases SME participation, and is associated
-with higher winning prices. Those facts are not the paper's mechanism; they are
-the reduced-form footprint of the mechanism estimated in the structural
-sections.
+The empirical episode is a legal change that shifted which firms could compete
+for eligible Group~65 items. Around the same cutoff, SME-only take-up rises,
+non-SME participation falls, SME participation rises, and prices move up. These
+facts establish timing and direction. They do not, by themselves, identify the
+structural price mechanism.
 
 \subsection{Legal shock}
 
@@ -14,13 +12,14 @@ Brazil's federal SME statute, \LCSmeStatute{}, requires exclusive SME tenders
 for procurement items valued at R\$\,\setAsideThreshBRL{} or less. The 2014
 amendment, \LCSetAsideAct{}, made the SME-only rule mandatory rather than
 optional. For most goods on S\~ao Paulo's BEC platform, that rule already
-operated before the period studied here. Group~65---medical, dental, and
-hospital equipment and supplies---was different for a legal reason. The
-prevailing interpretation applied the R\$\,\setAsideThreshBRL{} threshold to
-the total value of the purchase notice, not to each item or lot. Because
-medical-supply notices often bundle many small items inside large purchase
-orders, the total-notice interpretation mechanically kept Group~65 outside the
-SME-only default even when individual items were below the threshold.
+operated before the period studied here.
+
+Group~65---medical, dental, and hospital equipment and supplies---was different
+for a legal reason. The prevailing interpretation applied the
+R\$\,\setAsideThreshBRL{} threshold to the total value of the purchase notice,
+not to each item or lot. Because medical-supply notices often bundle many small
+items inside large purchase orders, the total-notice interpretation kept many
+individually eligible items outside the SME-only default.
 
 The relevant change was a generic legal reinterpretation. BEC enabled
 SME-only purchase-order functionality in COMUNICADO BEC
@@ -35,14 +34,14 @@ the functionality. TCE-SP aligned with the new interpretation on 16 May 2018,
 after the empirical cutoff, ratifying rather than initiating the operational
 sequence.
 
-This timing matters for identification. The trigger was not a Group~65 market
+The institutional claim is narrow. The trigger was not a Group~65 market
 intervention and did not speak to medical-supply prices, supplier complaints,
 or technology. It was a general reading of procurement law that interacted with
-the way Group~65 notices were written. The institutional claim is therefore
-narrow: the cutoff shifts admissibility and the composition of the active bidder
-pool. It does not by itself identify a full entry model, and it does not
-preclude composition changes among SMEs. Those are treated explicitly in the
-structural decomposition and robustness checks.
+the way Group~65 notices were written. The cutoff shifts admissibility and the
+active bidder pool; it does not by itself identify a full entry model or rule
+out composition changes among SMEs.
+Online Appendix~OA-A reports the institutional timeline and platform sample
+details.
 
 \subsection{Data and auction format}
 
@@ -50,17 +49,18 @@ The data are administrative microdata from BEC, S\~ao Paulo's centralized
 electronic procurement platform. The raw extract contains \nBidsRaw{} million
 bid-level observations across \nItemsRaw{} items, \nPurchaseOrders{} purchase
 orders, and \nPbu{} public buyer units. Group~65 accounts for roughly
-\groupSixtyfivePctTx{} percent of platform transactions in the window used
-here and is the treated group. The reduced-form benchmark compares Group~65 to
-\controlGroupCount{} never-treated product groups. The structural exercise
-uses Group~65 Preg\~ao auctions in a symmetric \structuralWindowM-month window
-on each side of the \policyCutoffMonth{} cutoff, from \windowStart{} through
-\windowEnd{}.
+\groupSixtyfivePctTx{} percent of platform transactions in the window used here
+and is the treated group. The reduced-form benchmark compares Group~65 to
+\controlGroupCount{} never-treated product groups.
 
-The Preg\~ao format is central. It is an electronic English-reverse auction:
-the auction opens at a buyer reference price, firms submit lower offers, and
-firms exit as the clock falls. Under the independent-private-values
-interpretation used in the model, losing drop-out prices are cost observations.
+The structural exercise uses Group~65 Preg\~ao auctions in a symmetric
+\structuralWindowM-month window on each side of the \policyCutoffMonth{} cutoff,
+from \windowStart{} through \windowEnd{}. The Preg\~ao format is central: it is
+an electronic English-reverse auction in which the auction opens at a buyer
+reference price, firms submit lower offers, and firms exit as the clock falls.
+Under the independent-private-values interpretation used in the model, losing
+drop-out prices are cost observations.
+
 For that reason, the structural sample restricts attention to Preg\~ao auctions
 with at least \filterMinBidders{} active firms and normalized bids
 $c_\epsilon=b/p^{\mathrm{ref}}\in(0,\filterCepsUpper]$. The resulting sample
@@ -76,23 +76,24 @@ split is not a second treatment. It is a market-thickness distinction: the
 non-pharmaceutical segment is closer to a thick standardized market, while
 pharmaceutical procurement has fewer SME bidders and more within-class
 heterogeneity. The main policy claim is strongest in the former; the latter is
-used as a boundary case for external validity.
+used as a boundary case.
 
 \subsection{First-stage facts}
 
-Table~\ref{tab:first_stage_v8} reports the participation facts that motivate
-the structural decomposition. In Preg\~ao non-pharmaceutical auctions, the
-average number of SME bidders rises from \bneNsmePreNp{} before the cutoff to
-\bneNsmePostNp{} after it, while non-SME participation falls from
-\bneNnsPreNp{} to \nonSmePostNp{}. In pharmaceutical auctions, SME
-participation rises from \bneNsmePrePh{} to \bneNsmePostPh{}, while non-SME
-participation falls from \bneNnsPrePh{} to \nonSmePostPh{}. The post-period
-non-SME counts are not zero because Group~65 take-up is incomplete:
-state-level SME-only adherence in Group~65 reaches \adherenceGsixtyfivePost{}
-percent after the cutoff rather than full coverage. The policy nevertheless
-moves both margins in the direction required by the paper's mechanism:
-non-SMEs become less present in the treated market and SMEs become more
-present.
+Four facts matter. SME-only adoption rises in Group~65 after the cutoff;
+state-level adherence reaches \adherenceGsixtyfivePost{} percent rather than
+full coverage. Non-SME participation falls. SME participation rises. Winning
+prices move up in the same period. Together, these facts are the reduced-form
+footprint of the price mechanism estimated below.
+
+Table~\ref{tab:first_stage_v8} reports the participation margins in the
+structural sample. In non-pharmaceutical Preg\~ao auctions, the average number
+of SME bidders rises from \bneNsmePreNp{} to \bneNsmePostNp{}, while non-SME
+participation falls from \bneNnsPreNp{} to \nonSmePostNp{}. In pharmaceutical
+auctions, SME participation rises from \bneNsmePrePh{} to \bneNsmePostPh{},
+while non-SME participation falls from \bneNnsPrePh{} to \nonSmePostPh{}. The
+post-period non-SME counts remain positive because take-up is incomplete, but
+both margins move in the direction required by the decomposition.
 
 \begin{table}[!htbp]
 \centering
@@ -126,16 +127,16 @@ take-up rate is \adherenceGsixtyfivePost{} percent, not 100 percent.
 \end{table}
 
 Prices move in the same period. Table~\ref{tab:did_benchmark_v8} reports a
-compact difference-in-differences benchmark. The estimating equation compares
-Group~65 to never-treated product groups, with item and month fixed effects,
-auction-format and quantity controls, and item-clustered standard errors. The
-coefficient is written in the paper's ``DiD-in-reverse'' convention: a negative
-coefficient on Group~65 interacted with the pre-period means that the open
-regime was cheaper, so the post-cutoff SME-only extension undoes that discount.
-Across windows, the log-price coefficient is between -0.108 and -0.148 with
-PBU controls; the \structuralWindowM-month benchmark is \didPriceEighteenPbu{}.
-Exponentiating the magnitude gives the \didLowerPct--\didUpperPct{} percent
-price benchmark used in the introduction.
+compact difference-in-differences benchmark comparing Group~65 to never-treated
+product groups, with item and month fixed effects, auction-format and quantity
+controls, PBU controls, and item-clustered standard errors. The coefficient is
+written in a ``DiD-in-reverse'' convention: a negative coefficient on
+Group~65 interacted with the pre-period means that the open regime was cheaper,
+so the post-cutoff SME-only extension undoes that discount. Across windows, the
+log-price coefficient is between -0.108 and -0.148 with PBU controls; the
+\structuralWindowM-month benchmark is \didPriceEighteenPbu{}. Exponentiating the
+magnitude gives the \didLowerPct--\didUpperPct{} percent price benchmark used in
+the introduction.
 
 \begin{table}[!htbp]
 \centering
@@ -156,7 +157,7 @@ Observations & 219,535 & 439,054 & 649,714 \\
 \begin{tablenotes}\footnotesize
 \item Estimates use item and month fixed effects, controls for sealed-bid
 format and log quantity, PBU controls, and item-clustered standard errors.
-The coefficient is reported in the paper's sign convention: a negative
+The coefficient is reported in the same sign convention: a negative
 pre-period coefficient is the open-regime price discount that disappears after
 the SME-only extension. The DiD is used as a sign, timing, and scale benchmark;
 the structural sections estimate the mechanism.
@@ -164,12 +165,12 @@ the structural sections estimate the mechanism.
 \end{threeparttable}
 \end{table}
 
-Two qualifications are important. First, the reduced-form design is not asked to
-do the paper's full work. Group~65 differs from the pooled controls in several
-pre-period characteristics, and modern DiD estimators produce less precise
-estimates than the two-way fixed-effect benchmark. I therefore use the DiD as
-evidence on sign, timing, and approximate scale rather than as the final
-estimand. Second, the first-stage facts already imply that a price regression
-cannot identify the mechanism. The same legal shock both removes non-SMEs from
-the eligible pool and induces additional SME participation. The rest of the
-paper uses the Preg\~ao cost information to separate those margins.
+The reduced form has a limited role. Group~65 differs from the pooled controls
+in several pre-period characteristics, and modern DiD estimators are less
+precise than the two-way fixed-effect benchmark. More importantly, the same
+legal shock both removes non-SMEs from the eligible pool and changes SME
+participation. A price regression can show that prices move at the cutoff; it
+cannot separate lost competitive discipline from the protected-pool offset.
+Online Appendix~OA-B reports the balance, placebo, and alternative-DiD
+diagnostics behind this conservative reading. The rest of the paper uses the
+Preg\~ao cost information to separate those margins.

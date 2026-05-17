@@ -1,151 +1,117 @@
 \section{Robustness to Core Threats}\label{sec:robustness}
 
-The robustness exercise is organized around the mechanism, not around a table
-inventory. The paper's empirical chain has four possible weak points: the legal
-shock may not isolate the relevant timing; drop-out bids may not recover the
-cost primitives needed for the order-statistic comparison; the post-policy SME
-pool may mix entry and selection in a way the model does not structurally
-derive; and the restricted auctions may intensify coordination among the
-remaining bidders. The checks below ask whether any of these threats overturns
-the central result that bidder exclusion, rather than SME entry, is the main
-source of the price increase.
+The robustness checks follow the empirical chain. The legal shock must line up
+with the timing of prices; drop-out bids must recover the cost objects needed
+for the order-statistic comparison; the post-policy SME pool must not be the
+sole source of the result; coordination must not intensify after restriction;
+and the preference benchmark must not be a mechanical artifact. The question is
+whether any of these threats overturns the conclusion that bidder exclusion is
+the main source of the price increase.
 
 \subsection{Reduced-form timing and scale}
 
-The reduced-form evidence is useful for timing and scale, but it is not asked
-to carry the mechanism. The \structuralWindowM-month price benchmark in
+The reduced-form evidence is used for timing and scale, not for the structural
+decomposition. The \structuralWindowM-month benchmark in
 Table~\ref{tab:did_benchmark_v8} is \didPriceEighteenPbu{} in the paper's
 DiD-in-reverse convention, implying a \didLowerPct--\didUpperPct{} percent
 price movement. The estimate is stable across the 6-, 12-, and 18-month
-windows, and the legal timing survives a direct adoption-window check: excluding
-the BEC enablement months before the mass-take-up cutoff changes the coefficient
-from \phasedDidFull{} to \phasedDidTrunc{} with a standard error of
-\phasedDidSe. Placebo cutoffs before the reform are smaller in magnitude
-(\placeboSeventeenSep, \placeboSeventeenMar, and \placeboSeventeenJun) than the
-real-cutoff estimates.
+windows. Excluding the BEC enablement months before the mass-take-up cutoff
+changes the coefficient from \phasedDidFull{} to \phasedDidTrunc{} with a
+standard error of \phasedDidSe, and placebo cutoffs before the reform are
+smaller in magnitude (\placeboSeventeenSep, \placeboSeventeenMar, and
+\placeboSeventeenJun) than the real-cutoff estimates.
 
-The conservative reading is still necessary. Group~65 is not perfectly balanced
+The conservative reading remains necessary. Group~65 is not perfectly balanced
 against the pooled controls: \balanceNVarsAboveTen{} of \balanceNVarsTotal{}
-pre-period covariates exceed the 0.10 normalized-difference attention threshold,
-and \balanceNVarsAboveTwentyFive{} exceed 0.25. Modern DiD variants also reduce
+pre-period covariates exceed the 0.10 normalized-difference threshold, and
+\balanceNVarsAboveTwentyFive{} exceed 0.25. Modern DiD variants also reduce
 precision: the BJS imputation estimate is \didAltBjsEst{} and the
-Callaway--Sant'Anna estimate is \didAltCsEst, both weaker than the two-way
-fixed-effect benchmark. This is why the reduced form is deliberately demoted in
-the paper. It validates that prices move at the policy cutoff and that the
-movement has the right order of magnitude; it does not identify the exclusion
-and entry-composition channels.
+Callaway--Sant'Anna estimate is \didAltCsEst. The reduced form therefore
+validates the episode's sign and timing; it does not identify the exclusion and
+protected-pool channels. Online Appendix~OA-B reports the balance table,
+placebos, and alternative estimators.
 
 \subsection{Cost recovery and auction primitives}
 
-The structural result would be fragile if it depended on a particular treatment
-of winner censoring or on an implausible cost-recovery assumption. It does not.
-The main estimator uses all observed Preg\~ao drop-out information, while a
-Turnbull NPMLE treats the winner as left-censored and a losers-only estimator
-drops the winner altogether. The resulting net price effects remain close: in
-non-pharmaceuticals, $p_{S_3}-p_{S_1}$ is
-\costRegimeLosersNp/\costRegimeAllNp/\costRegimeTurnNp{} under
-losers-only/all-bidders/Turnbull inputs; in pharmaceuticals, the corresponding
-values are \costRegimeLosersPh/\costRegimeAllPh/\costRegimeTurnPh. The maximum
-Turnbull deviation from the baseline is \turnbullDeviationPct{} percent, and
-the within-auction component remains dominant: \turnbullShareNp{} percent in
-non-pharmaceuticals and \turnbullSharePh{} percent in pharmaceuticals.
+The cost-recovery concern is that the decomposition could be an artifact of
+winner censoring, common auction-level shocks, or bidder dependence. The
+diagnostics do not support that reading.
+Alternative treatments of winner censoring give similar net price effects:
+\costRegimeLosersNp/\costRegimeAllNp/\costRegimeTurnNp{} in non-pharmaceuticals
+under losers-only/all-bidders/Turnbull inputs, and
+\costRegimeLosersPh/\costRegimeAllPh/\costRegimeTurnPh{} in pharmaceuticals.
+The Turnbull within-auction share remains large
+(\turnbullShareNp{} percent in non-pharmaceuticals and \turnbullSharePh{}
+percent in pharmaceuticals), so the result is not driven by treating the
+winner's final bid as an exact cost observation.
 
-The same conclusion survives the other cost-recovery diagnostics. The
-cross-modality check compares a Convite first-price recovery with the Preg\~ao
-drop-out recovery in pre-policy cells that the set-aside does not target; after
-the auction-level heterogeneity correction, the recoveries line up in the key
-pharmaceutical non-SME pre-period cell. A Gaussian-copula relaxation of
-independent private values allows within-auction cost correlation up to
-$\rho_c=\ipvRhoMax$; across that grid, the within-auction share moves by less
-than \ipvShareDriftPp{} percentage points and the total effect by less than
-\ipvTotalDriftPct{} percent. Sample filters and windows also do not change the
-ordering. The baseline $c_\epsilon\le\filterCepsUpper$ filter preserves
-\filterPreservedPct{} percent of the data; tightening it lowers the total
-effect by \filterTightDropNp/\filterTightDropPh{} percent in
-non-pharmaceuticals/pharmaceuticals, while loosening it raises the effect by
-only \filterLooseUpNp/\filterLooseUpPh{} percent. Across 18-, 12-, and 6-month
-windows, the within-auction component remains the larger component in both
-classes, with share variation of only \windowShareDriftNp{} and
-\windowShareDriftPh{} percentage points.
+The other diagnostics point the same way. The auction-level heterogeneity
+correction removes common scale shocks before simulation. A Convite first-price
+GPV recovery and the Preg\~ao drop-out recovery line up in the key
+pharmaceutical non-SME pre-period cell after that correction. A Gaussian-copula
+relaxation allows within-auction cost correlation up to $\rho_c=\ipvRhoMax$;
+across that grid, the within-auction share moves by less than
+\ipvShareDriftPp{} percentage points and the total effect by less than
+\ipvTotalDriftPct{} percent. Tightening or loosening the
+$c_\epsilon\le\filterCepsUpper$ filter and using 18-, 12-, or 6-month windows
+also leave the within-auction component as the larger component in both
+classes. Online Appendix~OA-C reports the cost-distribution quantiles and
+primitive-stability diagnostics behind these summaries.
 
-\subsection{Primitive stability and SME composition}
+\subsection{Protected-pool composition}
 
-The most important modeling threat is not whether entry responds; it does. The
-threat is that $S_3-S_2$ combines two objects: more SME bidders and a changed
-post-policy SME cost distribution. The baseline specification treats the
-post-policy SME pool as the observed equilibrium participant pool. The
-strict-primitive-invariance benchmark imposes the opposite limiting case:
-$F_c^{\mathrm{SME,Post}}=F_c^{\mathrm{SME,Pre}}$, while keeping the observed
-post-policy SME entry counts.
+The main modeling threat is that $S_3-S_2$ mixes additional SME bidders with a
+changed post-policy SME cost distribution. The strict-invariance benchmark
+sets $F_c^{\mathrm{SME,Post}}=F_c^{\mathrm{SME,Pre}}$ while keeping observed
+post-policy SME entry counts. The total price effect remains positive:
+\siDeltaTotalNp{} in non-pharmaceuticals and \siDeltaTotalPh{} in
+pharmaceuticals. The within-auction shares rise to \strictShareNp{} and
+\strictSharePh{} percent. Composition therefore matters, but it is not what
+makes the exclusion component dominate the price decomposition.
 
-That benchmark preserves the main mechanism. The simulated total price effect
-is still positive, at \siDeltaTotalNp{} in non-pharmaceuticals and
-\siDeltaTotalPh{} in pharmaceuticals, and the within-auction shares rise to
-\strictShareNp{} and \strictSharePh{} percent. Thus, even when the post-policy
-SME primitive is forced to be the pre-policy primitive, the price increase is
-still mainly the effect of excluding non-SMEs from the price-forming pool.
-
-What changes is the policy ranking in the thin pharmaceutical market. In
-non-pharmaceuticals, the price-preference benchmark continues to dominate the
-full set-aside under both the main and strict-invariance readings. In
-pharmaceuticals, the ranking is conditional: the main specification favors the
-preference, while strict invariance reverses the ranking and lowers the implied
-SME welfare weight to \welfWeightSiPh. The turnover evidence explains why this
-is the right boundary of the paper rather than a cosmetic robustness issue.
+Composition does matter for the policy ranking in pharmaceuticals.
 Post-policy pharmaceutical SME participation is heavily composed of new firms:
 \turnoverPhPctNewFirms{} percent of post-period pharma SME firms are absent
 from the pre-period pool, and they account for \turnoverPhPctNewBids{} percent
 of post-period pharma SME bids. In non-pharmaceuticals, new firms account for
-\turnoverNpPctNewBids{} percent of post-period SME bids. The composition shift
-is real, especially in pharmaceuticals; the paper therefore treats the
-pharmaceutical welfare ranking as informative but conditional, and treats the
-non-pharmaceutical ranking as the robust policy result.
+\turnoverNpPctNewBids{} percent of post-period SME bids. The pharmaceutical
+welfare ranking is therefore conditional, while the non-pharmaceutical ranking
+is the more stable policy result.
 
 \subsection{Coordination}
 
-Bid coordination is the threat that would most directly contaminate the
-cost-recovery exercise. If the post-policy restricted auctions induced surviving
-SMEs to coordinate more intensely, the recovered cost distributions could embed
-a conduct change rather than only the order-statistic effect of bidder
-exclusion. The data do show bidder clustering, so this concern cannot be waved
-away. Conley-style close-pair screens \citep{conley2016} reject the independent
-draw null in all four class-by-period cells, and persistent-pair diagnostics in
-the spirit of \citet{bajariye2003} also flag excess repeated co-bidding.
+Coordination is the conduct threat that would most directly contaminate the
+drop-out interpretation. The data show bidder clustering: Conley-style
+close-pair screens \citep{conley2016} reject the independent-draw null in all
+four class-by-period cells, and persistent-pair diagnostics in the spirit of
+\citet{bajariye2003} flag excess repeated co-bidding. The relevant question is
+whether clustering increases after non-SMEs are removed. It does not. The
+Conley realized close-pair share is essentially flat in non-pharmaceuticals
+(\collConleyRealPreNp{} to \collConleyRealPostNp{} percent) and falls in
+pharmaceuticals (\collConleyRealPrePh{} to \collConleyRealPostPh{} percent).
+The Bajari--Ye $T_1$ observed-to-null ratio also falls in both classes. Residual
+baseline clustering remains a limitation, but the strongest alternative story,
+a post-restriction coordination shock among surviving SMEs, is not supported by
+the diagnostics. Online Appendix~OA-D reports the coordination-screen table.
 
-The relevant question, however, is whether clustering increases after the
-restriction. It does not. The Conley realized close-pair share is essentially
-flat in non-pharmaceuticals (\collConleyRealPreNp{} to
-\collConleyRealPostNp{} percent) and falls in pharmaceuticals
-(\collConleyRealPrePh{} to \collConleyRealPostPh{} percent). The Bajari--Ye
-$T_1$ observed-to-null ratio falls from \collBYRatioPreNp{} to
-\collBYRatioPostNp{} in non-pharmaceuticals and from \collBYRatioPrePh{} to
-\collBYRatioPostPh{} in pharmaceuticals. This pattern is inconsistent with the
-strongest alternative story: a post-restriction coordination shock among the
-surviving SME pool. Residual baseline clustering remains a limitation, but it
-does not explain why the set-aside raises prices at the cutoff or why the
-within-auction component dominates the entry-composition offset.
+\subsection{Policy benchmark}
 
-\subsection{Robustness of the policy comparison}
-
-The policy conclusion also survives the two mechanical concerns that could make
-the price-preference benchmark look artificially good. First, the welfare
-ranking is not driven by the marginal cost of public funds: over
-$\lambda\in[\welfLambdaRangeLo,\welfLambdaRangeHi]$, the non-pharmaceutical
-ranking remains $V_3 \succ V_0$ under both the main and strict-invariance
-specifications, while the pharmaceutical ranking remains conditional on the
-treatment of the post-policy SME pool. Second, the 10 percent price preference
-is not relying on exact Vickrey equivalence. A Maskin--Riley first-price
+The price-preference comparison is a static design benchmark, so the relevant
+robustness checks are mainly mechanical. The non-pharmaceutical ranking remains
+$V_3 \succ V_0$ over $\lambda\in[\welfLambdaRangeLo,\welfLambdaRangeHi]$ under
+both the main and strict-invariance specifications; the pharmaceutical ranking
+remains conditional on the treatment of the post-policy SME pool. The result is
+also not an artifact of exact Vickrey equivalence. A Maskin--Riley first-price
 upper-bound adjustment \citep{maskinriley2000} is at most
 \maskinRileyBoundPct{} percent of the reference price, while the simulated
-$V_0$--$V_3$ price gap is \vZeroVThreeGapLo--\vZeroVThreeGapHi{} percent. The
-ranking in thick standardized markets is therefore not a knife-edge artifact of
-auction format.
+$V_0$--$V_3$ price gap is \vZeroVThreeGapLo--\vZeroVThreeGapHi{} percent.
+Online Appendix~OA-E reports the preference grid and welfare-weight
+sensitivities.
 
-Taken together, the checks leave a narrow and defensible claim. The paper does
-not require the reduced-form DiD to estimate the mechanism, does not require a
-single cost-recovery estimator, and does not require post-policy SME entry to be
-ignored. What remains is the design principle: when the excluded bidders are
-the ones disciplining the order statistic, set-asides are costly because they
-replace competition with eligibility. SME entry offsets part of that cost, but
-in the observed markets it does not replace the competitive discipline that the
-policy removes.
+The checks leave a narrow claim. The result does not depend on the reduced-form
+DiD carrying the whole design, on a single treatment of winner censoring, or on
+holding the post-policy SME pool fixed. When the excluded bidders are the ones
+disciplining the order statistic, set-asides are costly because they replace
+competition with eligibility. The protected-pool response offsets part of that
+cost, but it does not replace the competitive discipline that the policy
+removes.

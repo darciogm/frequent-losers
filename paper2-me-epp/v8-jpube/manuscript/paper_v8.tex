@@ -30,12 +30,10 @@
 \setlength{\bibsep}{0pt plus 0.3ex}
 \setlength{\emergencystretch}{3em}
 
-\graphicspath{{figures/}{../output/figures/}{../../v6-jpube/output/figures/}}
+\graphicspath{{figures/}{../output/figures/}}
 
-% v8 should eventually have its own generated macro registry. During drafting,
-% fall back to the v6 registry so section drafts can reuse existing magnitudes.
 \InputIfFileExists{../output/values.tex}{}{%
-  \InputIfFileExists{../../v6-jpube/output/values.tex}{}{}}
+  \PackageError{paper_v8}{Missing generated macro registry}{Run the analysis pipeline before compiling the manuscript.}}
 
 \begin{document}
 
@@ -47,23 +45,25 @@
 \address[INSPER]{INSPER, S\~ao Paulo}
 
 \begin{abstract}
-SME set-asides support protected firms by excluding their rivals. This paper
-shows why that design is costly. I study a legal reinterpretation that expanded
-SME-only tendering in S\~ao Paulo's electronic procurement platform and use
-reverse-auction drop-out bids to recover type-specific cost distributions. The
-set-aside changes two margins with opposite signs: it removes non-SME bidders
-from the price-forming pool, but it also induces SME entry and changes SME
-composition. A structural decomposition shows that entry responds, but
-exclusion dominates. Removing non-SMEs raises simulated prices by
+SME set-asides help protected firms by excluding their rivals. That exclusion
+has a price. I study a legal reinterpretation that expanded SME-only tendering
+in S\~ao Paulo's electronic procurement platform and use reverse-auction
+drop-out bids to recover type-specific cost distributions. The set-aside moves
+two margins in opposite directions: it removes non-SME bidders from the
+price-forming pool, while changing the protected SME pool through participation
+and composition. A structural decomposition shows that the protected-pool
+offset recovers only part of the lost competitive discipline. Removing
+non-SMEs raises simulated prices by
 \bneEffectIntensNp/\bneEffectIntensPh{} of the reference price in
-non-pharmaceutical/pharmaceutical procurement; post-policy SME entry offsets
-\bneEffectEntryNp/\bneEffectEntryPh, leaving positive net effects. Welfare
-losses equal \welfLossPctLthirtyNp/\welfLossPctLthirtyPh{} percent of the
-open-regime price at $\lambda=\lambdaMain$. A 10 percent SME price preference
-preserves non-SME participation and has near-zero price effects in thick
-standardized markets, but delivers less redistribution. The policy implication
-is a frontier, not a ban on SME support: use exclusion only when the planner is
-prepared to pay for the missing competitive discipline.
+non-pharmaceutical/pharmaceutical procurement; the observed post-policy SME
+pool offsets \bneEffectEntryNp/\bneEffectEntryPh, leaving positive net effects.
+Static welfare losses equal \welfLossPctLthirtyNp/\welfLossPctLthirtyPh{}
+percent of the open-regime price at $\lambda=\lambdaMain$. A 10 percent SME
+price preference keeps non-SMEs in the auction and has near-zero price effects
+in thick standardized markets, though it delivers less redistribution. The
+policy lesson is a frontier, not a ban on SME support: full exclusion is
+attractive only when the planner values additional SME surplus, access, or
+dynamic capacity gains enough to pay for the missing competitive discipline.
 \end{abstract}
 
 \begin{keyword}
@@ -91,8 +91,10 @@ in this paper.
 
 The structural sample is derived from BEC administrative microdata accessed
 through a research agreement with the Secretaria da Fazenda e Planejamento do
-Estado de S\~ao Paulo. Public replication materials will be organized for the v8
-version once the analysis set is frozen.
+Estado de S\~ao Paulo. The raw administrative records are not publicly
+redistributable under the agreement. Replication materials with code, generated
+tables, figures, and non-confidential derived outputs will be made available in
+a public repository, subject to the data-use restrictions.
 
 \clearpage
 \bibliographystyle{chicago}

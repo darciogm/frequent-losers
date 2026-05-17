@@ -1,0 +1,694 @@
+\documentclass[12pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{natbib}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+\geometry{left=28mm,right=30mm,top=28mm,bottom=28mm}
+\onehalfspacing
+\setlength{\bibsep}{0pt plus 0.3ex}
+\setlength{\emergencystretch}{3em}
+\providecommand{\sym}[1]{\textsuperscript{#1}}
+\renewcommand{\thepage}{OA-\arabic{page}}
+\renewcommand{\thesection}{OA-\Alph{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thetable}{OA-\arabic{table}}
+\renewcommand{\theequation}{OA-\arabic{equation}}
+\renewcommand{\refname}{References for the Online Appendix}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    filecolor=magenta,
+    urlcolor=blue,
+    pdftitle={Online Appendix: The Price of Exclusion},
+    pdfauthor={Darcio Genicolo-Martins}
+}
+
+\InputIfFileExists{../output/values.tex}{}{%
+  \PackageError{online_appendix_v8}{Missing generated macro registry}{Run the analysis pipeline before compiling the appendix.}}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{Online Appendix for}}\\[0.5em]
+{\large \textbf{The Price of Exclusion: SME Set-Asides in Public Procurement}}\\[0.5em]
+Darcio Genicolo-Martins
+\end{center}
+
+\noindent This appendix reports the checks behind the identification and
+policy claims in the paper: institutional timing, reduced-form validation,
+structural cost recovery, mechanism robustness, coordination screens, and
+welfare calculations. The main text keeps only the evidence needed for the
+argument. The appendix records the diagnostics that support, qualify, or bound
+that interpretation.
+Appendix~OA-A documents the institutional setting; OA-B reports reduced-form
+diagnostics; OA-C covers structural cost recovery; OA-D reports mechanism and
+coordination robustness; and OA-E gives welfare and policy-design details.
+
+\appendix
+
+\section{Institutional Details}
+
+\subsection{Legal timeline}
+
+Brazil's federal SME procurement framework begins with \LCSmeStatute, which
+defined the SME categories used in procurement policy. The statute distinguishes
+MicroEmpresas, with annual revenue up to R\$\MERevCeilingBRL, from Empresas de
+Pequeno Porte, with annual revenue up to R\$\EPPRevCeilingBRL{} after the
+\LCRevenueAct{} update. \LCSetAsideAct{} made SME-only procurement mandatory
+for eligible purchases below R\$\setAsideThreshBRL, but implementation depended
+on how procurement authorities interpreted the threshold.
+
+In S\~ao Paulo, the relevant interpretation changed from a purchase-notice view
+to an item-by-item view. Under the restrictive view, a purchase notice whose
+total value exceeded the statutory threshold was not treated as SME-only even
+when individual items were below the threshold. The item-level interpretation
+made many more items eligible for SME-only treatment. BEC communicated the
+technical implementation through Comunicados \comunicadoBECone{} and
+\comunicadoBECtwo, while operational take-up in Group~65 occurs around
+\policyCutoffMonth. I therefore treat \policyCutoffMonth{} as the empirical
+cutoff: it is the mass-adoption date, not the first legal moment at which SME
+preferences existed.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Institutional timeline}
+\label{tab:app_timeline}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.23\textwidth}c>{\raggedright\arraybackslash}p{0.56\textwidth}}
+\toprule
+Instrument & Date & Role in the empirical design \\
+\midrule
+\LCSmeStatute & 2006 & Federal SME statute; defines SME procurement treatment and preference tools. \\
+\leiEstadualSp & 2008 & S\~ao Paulo state SME procurement law. \\
+\LCSetAsideAct & 2014 & Makes SME-only procurement mandatory for purchases below R\$\setAsideThreshBRL. \\
+TCE-SP eTC \eTCRestrictive & 2015 & Illustrates the restrictive interpretation of the threshold. \\
+PGE-SP Parecer \pareceNum & 2017 & Supports the item-level interpretation used in BEC implementation. \\
+BEC Comunicados \comunicadoBECone--\comunicadoBECtwo & 2017 & Platform communication enabling SME-only and mixed-exclusivity functionality. \\
+\policyCutoffMonth & 2018 & Mass take-up of SME-only treatment in Group~65; empirical cutoff. \\
+TCE-SP eTC \eTCExpansive & 2018 & Later ruling consistent with the expansive item-level interpretation. \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item The table separates legal authority from empirical timing. The design
+uses the observed mass take-up in Group~65 rather than treating any
+single legal document as the treatment date.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Platform, products, and sample}
+
+The empirical setting is the BEC electronic procurement platform, created under
+Decrees \decreeBECOne{} and \decreeBECTwo{} and later used for Preg\~ao
+auctions under Decree \decreePregao. The extract covers \nDataMonths{} months,
+from \windowStart{} through \windowEnd, and contains \itemTransactionsCount{}
+million item-level transactions and \purchaseOffersCount{} purchase offers.
+Group~65 accounts for \groupSixtyfivePctTx{} percent of platform transactions
+in this window, which is why the item-level reinterpretation has substantial
+empirical bite there.
+
+The structural sample restricts attention to Preg\~ao auctions with at least
+\filterMinBidders{} bidders and normalized costs below \(c_\epsilon =
+\filterCepsUpper\). The upper-cost filter removes only \nFilteredOutPct{}
+percent of bids, so the main results are not driven by discarding a large
+fraction of the auction data. The main sample contains \nPreAuctions{}
+pre-period auctions and \nPostAuctions{} post-period auctions; pharmaceutical
+Preg\~ao auctions account for \nPharmaPregaoAuc{} auctions.
+
+\section{Reduced-Form Evidence}
+
+\subsection{Balance and scope of the comparison}
+
+The reduced form is a timing, sign, and scale check for the structural
+exercise, not the source of the decomposition. This distinction matters because
+Group~65 is an exposed product group rather than a randomized treated unit. In
+pre-period balance checks, Group~65 contributes \balanceNGsixfiveItems{} items
+and the pooled controls contribute \balanceNCtrlItems{} items across
+\balanceNCtrlGroups{} never-treated groups. The largest absolute standardized
+difference is \balanceMaxStdDiff; \balanceNVarsAboveTen{} of
+\balanceNVarsTotal{} variables exceed 0.10 in absolute value and
+\balanceNVarsAboveTwentyFive{} exceed 0.25. These diagnostics justify the main
+text's conservative use of the DiD estimates. Table~\ref{tab:app_balance}
+reports the covariates behind this summary.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Pre-treatment covariate balance: Group~65 versus never-treated controls}
+\label{tab:app_balance}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccccc}
+\toprule
+ & \textbf{Group 65} & \multicolumn{4}{c}{\textbf{Control-group mean distribution}} & \textbf{Std. diff.} \\
+\cmidrule(lr){3-6}
+Variable & Mean & P25 & Median & P75 & Mean & Imbens--Rubin \\
+\midrule
+Log reference price & 4.036 & 4.057 & 5.385 & 6.874 & 5.657 & -0.219 \\
+Bids per item & 7.396 & 8.160 & 9.982 & 13.748 & 11.486 & -0.176 \\
+Firms per item & 2.784 & 3.203 & 3.681 & 4.347 & 3.765 & -0.599 \\
+Share Preg\~ao & 0.645 & 0.358 & 0.471 & 0.805 & 0.559 & 0.445 \\
+Share items below R\$80k & 0.966 & 0.886 & 0.964 & 0.992 & 0.907 & -0.037 \\
+Share SME bids & 0.000 & 0.021 & 0.075 & 0.104 & 0.068 & -0.567 \\
+Share S\~ao Paulo-state bidders & 0.704 & 0.719 & 0.794 & 0.835 & 0.768 & -0.331 \\
+Log bidder-buyer distance & 4.126 & 3.579 & 3.858 & 4.197 & 3.853 & 0.160 \\
+Final/reference price & 0.683 & 0.595 & 0.626 & 0.661 & 0.641 & 0.010 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Sample: pre-period items in the DiD panel, restricted to auctions with at
+least two bidders. Group~65 contributes \balanceNGsixfiveItems{} items; the
+\balanceNCtrlGroups{} never-treated control groups contribute
+\balanceNCtrlItems{} items. Standardized differences are Imbens--Rubin
+normalized differences \citep{imbens2015}. The table is not a parallel-trends
+test; it documents cross-group composition that the fixed-effects design must
+absorb.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The imbalances in Table~\ref{tab:app_balance} are taken seriously.
+They do not by themselves test the identifying assumption. The relevant
+question is whether Group~65 had differential pre-trends or anticipatory breaks
+relative to the comparison groups, which is why the placebo and alternative-DiD
+diagnostics below are reported explicitly.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Reduced-form diagnostics with reported standard errors}
+\label{tab:app_reduced_form}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.36\textwidth}cc>{\raggedright\arraybackslash}p{0.31\textwidth}}
+\toprule
+Diagnostic & Estimate & Standard error & Sample / notes \\
+\midrule
+TWFE, headline estimator & \didAltTwfeEst{} & \didAltTwfeSe{} & Item-clustered; \structuralWindowM-month window \\
+BJS imputation estimator & \didAltBjsEst{} & \didAltBjsSe{} & Robust imputation; post-treatment ATT \\
+Callaway--Sant'Anna estimator & \didAltCsEst{} & \didAltCsSe{} & Never-treated controls; simple post ATT \\
+Phased-adoption check, full sample & \phasedDidFull{} & \phasedDidSe{} & Platform enablement period retained \\
+Phased-adoption check, excluding enablement months & \phasedDidTrunc{} & \phasedDidSe{} & Months \phasedExcludedFrom--\phasedExcludedTo{} excluded \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Estimates use the paper's sign convention. Negative coefficients mean
+the treated Group~65 price/reference discount narrows after SME-only adoption,
+so prices rise relative to the pre-policy benchmark. The headline TWFE row uses
+item fixed effects and item-clustered standard errors. The modern DiD rows are
+reported because they discipline the reduced-form validation rather than because
+the paper relies on their magnitude for the structural decomposition.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Placebo timing checks on log prices}
+\label{tab:app_placebo}
+\footnotesize
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lccc}
+\toprule
+Fake cutoff & Estimate & Standard error & Observations \\
+\midrule
+September 2017 & \placeboSeventeenSep{} & 0.0182 & 311,883 \\
+March 2017 & \placeboSeventeenMar{} & 0.0132 & 215,611 \\
+June 2017 & \placeboSeventeenJun{} & 0.0128 & 237,625 \\
+Real-cutoff benchmark range & \placeboLowerNp{} to \placeboHigherNp{} & -- & -- \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Placebo regressions use pre-treatment data only, item and month fixed
+effects, sealed-bid and log-quantity controls, and item-level clustering. The
+placebo estimates are not all zero, so they limit the force of a
+reduced-form-only design. Their magnitudes are smaller than the real-cutoff
+benchmark, which is why the main text uses the DiD as validation for timing and
+sign rather than as the source of the structural price effect.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Placebo timing and alternative estimators}
+
+Placebo cutoffs before the reform are smaller in magnitude than the real-cutoff
+estimates: \placeboSeventeenSep, \placeboSeventeenMar, and
+\placeboSeventeenJun. They are not zero in every case, so they do not support a
+strong reduced-form-only interpretation. They do support the narrower claim
+used in the main text: the largest movement occurs around the institutional
+take-up date and has the sign predicted by the set-aside.
+
+Modern DiD estimators reduce precision and attenuate the point estimate. The
+BJS imputation estimate is \didAltBjsEst{} and the Callaway--Sant'Anna estimate
+is \didAltCsEst, compared with a panel-aggregated TWFE estimate of
+\didAltTwfeEst. The reduced form is therefore not asked to carry the structural
+price magnitude or a reduced-form welfare calculation. The decomposition uses
+the auction model and treats the DiD as external validation for timing and
+sign.
+
+\section{Cost Recovery and Structural Estimation}
+
+\subsection{Drop-out bids and winner censoring}
+
+In a Preg\~ao reverse auction, losing firms exit as the price clock falls. Under
+the maintained IPV clock interpretation, those exits reveal willingness to
+supply at the auction scale. The winner is censored because the winning firm
+does not need to reveal the lowest price at which it would still supply. The
+baseline estimator treats the winning price as a tight upper-bound observation;
+the appendix checks a losers-only estimator and a Turnbull NPMLE
+\citep{turnbull1976} that treats the winning observation as left-censored.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Winner-censoring and cost-recovery checks}
+\label{tab:app_cost_recovery}
+\begin{tabular}{lcccc}
+\toprule
+Estimator & \multicolumn{2}{c}{Net price effect} & \multicolumn{2}{c}{Deviation from baseline} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & Non-pharma & Pharma & Non-pharma & Pharma \\
+\midrule
+All bidders, baseline & \costRegimeAllNp{} & \costRegimeAllPh{} & -- & -- \\
+Losers only & \costRegimeLosersNp{} & \costRegimeLosersPh{} & \costRegimeDevLoNp\% & \costRegimeDevLoPh\% \\
+Turnbull NPMLE & \costRegimeTurnNp{} & \costRegimeTurnPh{} & \costRegimeDevTurnNp\% & \costRegimeDevTurnPh\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Net price effects are \(p_{S_3}-p_{S_1}\), normalized by the buyer
+reference price. The largest Turnbull deviation from the baseline is
+\turnbullDeviationPct{} percent; in non-pharmaceuticals it is
+\turnbullDeviationNpPct{} percent.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The rejections in Table~\ref{tab:app_ks} are not treated as failed robustness
+checks. They are the empirical reason for using the observed post-policy SME
+pool in the baseline and reporting strict primitive invariance as a bounding
+exercise. The policy ranking is therefore emphasized where it survives that
+choice, especially in non-pharmaceutical markets.
+
+The conclusion is not that censoring is irrelevant. It is that the central
+price-formation ranking does not hinge on the baseline treatment of the winner.
+The Turnbull estimator still gives exclusion shares of \turnbullShareNp{}
+percent in non-pharmaceuticals and \turnbullSharePh{} percent in
+pharmaceuticals.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Cost-distribution quantiles under alternative winner treatments}
+\label{tab:app_turnbull_quantiles}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllrrrrrr}
+\toprule
+ & & & \multicolumn{3}{c}{Median cost \(c_{0.5}\)} & \multicolumn{3}{c}{Upper-quartile cost \(c_{0.75}\)} \\
+\cmidrule(lr){4-6}\cmidrule(lr){7-9}
+Class & Type & Period & Losers & All & Turnbull & Losers & All & Turnbull \\
+\midrule
+Non-pharma & SME & Post & 0.922 & 0.861 & 0.840 & 1.215 & 1.097 & 1.117 \\
+Non-pharma & SME & Pre & 0.947 & 0.881 & 0.862 & 1.314 & 1.193 & 1.212 \\
+Non-pharma & Non-SME & Post & 0.802 & 0.762 & 0.726 & 1.068 & 0.964 & 0.971 \\
+Non-pharma & Non-SME & Pre & 0.768 & 0.719 & 0.684 & 1.028 & 0.918 & 0.932 \\
+Pharma & SME & Post & 0.860 & 0.799 & 0.781 & 1.078 & 0.966 & 1.002 \\
+Pharma & SME & Pre & 0.863 & 0.800 & 0.710 & 1.441 & 1.188 & 1.245 \\
+Pharma & Non-SME & Post & 0.674 & 0.657 & 0.633 & 0.814 & 0.774 & 0.765 \\
+Pharma & Non-SME & Pre & 0.619 & 0.604 & 0.574 & 0.762 & 0.725 & 0.708 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Losers-only uses only drop-out bids and is upward-biased because it omits
+the lowest-cost bidder in each auction. All-bidders treats the winner's final
+price as a point observation and is downward-biased if the final price exceeds
+true cost. Turnbull NPMLE treats the winner as left-censored at the final price.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Auction-level heterogeneity and cross-modality comparison}
+
+The baseline removes auction-level scale heterogeneity before simulating
+counterfactual bidder pools. The Preg\~ao intraclass correlations range from
+\iccNpSme{} for non-pharmaceutical SMEs to \iccPharmaNonSme{} for
+pharmaceutical non-SMEs. These magnitudes are comparable to settings where
+auction-level unobserved heterogeneity is important: \citet{krasnokutskaya2011}
+reports an ICC benchmark of \krasICC{} in highway procurement.
+
+The cross-modality check compares Preg\~ao drop-out recovery with a GPV
+first-price recovery from Convite auctions \citep{gpv2000}. The operational
+Kolmogorov--Smirnov distance threshold is \ksDistThresh. The cleanest
+falsification cell, pharmaceutical non-SMEs in Convite, has distance
+\ksConvitePharmaNS. Non-pharmaceutical Preg\~ao is close to the threshold
+(\ksNpPregao), while pharmaceutical Preg\~ao before the heterogeneity correction
+is farther away (\ksPharmaPregao). This pattern supports the maintained
+correction but also motivates the main text's cautious treatment of IPV.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Primitive-stability and cross-modality diagnostics}
+\label{tab:app_ks}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.33\textwidth}cc>{\raggedright\arraybackslash}p{0.36\textwidth}}
+\toprule
+Diagnostic cell & KS distance & Threshold & Interpretation \\
+\midrule
+Non-pharma Preg\~ao, raw drop-outs & \ksNpPregao{} & \ksDistThresh{} & Close to the operational threshold. \\
+Pharma Preg\~ao, raw drop-outs & \ksPharmaPregao{} & \ksDistThresh{} & Fails the threshold before common-scale cleaning. \\
+Non-pharma Preg\~ao, UH-clean & \ksNpPregaoUH{} & \ksDistThresh{} & Moves above the threshold after removing common scale. \\
+Pharma Preg\~ao, UH-clean & \ksPharmaPregaoUH{} & \ksDistThresh{} & Remains far from strict primitive invariance. \\
+Non-pharma Convite GPV & \ksNpConvite{} & \ksDistThresh{} & Borderline cross-modality comparison. \\
+Pharma Convite GPV, non-SME & \ksConvitePharmaNS{} & \ksDistThresh{} & Cleanest validation cell; passes the threshold. \\
+Convite pharma non-SME, post-UH & \ksUHinvCheckLo{} & \ksDistThresh{} & Continues to pass after the heterogeneity correction. \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item The table reports Kolmogorov--Smirnov distances for diagnostics used to
+discipline the cost-recovery step. The goal is not to prove primitive
+invariance in every cell; the pharmaceutical Preg\~ao cells visibly reject that
+strong restriction. The point is to locate where the recovery is most credible
+and where the paper must treat policy rankings as conditional.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\section{Robustness to the Core Mechanism}
+
+\subsection{Strict invariance and protected-pool composition}
+
+The decomposition separates the effect of lost non-SME competition from the
+protected-pool offset. The weakest interpretive link is the offset, because
+\(S_3-S_2\) combines additional SME participation with changes in the active
+SME cost distribution. The strict-invariance benchmark therefore imposes the
+pre-policy SME cost distribution on the post-policy SME pool.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Mechanism robustness}
+\label{tab:app_mechanism}
+\begin{tabular}{lcccc}
+\toprule
+Specification & \multicolumn{2}{c}{Net price effect} & \multicolumn{2}{c}{Exclusion share} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & Non-pharma & Pharma & Non-pharma & Pharma \\
+\midrule
+Baseline & \bneEffectTotalNp{} & \bneEffectTotalPh{} & \bneShareIntensNp\% & \bneShareIntensPh\% \\
+Strict invariance & \siDeltaTotalNp{} & \siDeltaTotalPh{} & \strictShareNp\% & \strictSharePh\% \\
+Turnbull cost recovery & \costRegimeTurnNp{} & \costRegimeTurnPh{} & \turnbullShareNp\% & \turnbullSharePh\% \\
+18-month window & \windowTotalEighteenNp{} & \windowTotalEighteenPh{} & \windowShareEighteenNp\% & \windowShareEighteenPh\% \\
+12-month window & \windowTotalTwelveNp{} & \windowTotalTwelvePh{} & \windowShareTwelveNp\% & \windowShareTwelvePh\% \\
+6-month window & \windowTotalSixNp{} & \windowTotalSixPh{} & \windowShareSixNp\% & \windowShareSixPh\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Net effects are normalized by the reference price. Exclusion share is
+the absolute share of the decomposition attributed to removing non-SMEs from
+the price-forming pool. Rows combine different diagnostic families: strict
+invariance disciplines the protected-pool composition margin, Turnbull
+disciplines winner censoring, and window rows discipline timing sensitivity.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The non-pharmaceutical result is stable: the exclusion component remains the
+dominant force under baseline, strict invariance, Turnbull censoring, and
+alternative windows. The pharmaceutical result is informative but more
+conditional. Post-policy SME turnover is larger in pharmaceuticals:
+\turnoverPhPctNewFirms{} percent of post-policy SME firms are new relative to
+the pre-period pool and these firms account for \turnoverPhPctNewBids{} percent
+of post-policy SME bids. In non-pharmaceuticals, new firms account for
+\turnoverNpPctNewBids{} percent of post-policy SME bids. Pharmaceuticals are
+therefore a boundary case for policy ranking rather than the headline market.
+
+\subsection{Entry counts, filters, and dependence}
+
+The baseline summarizes entry using class-by-period arrival rates. Window
+checks show little drift in the non-pharmaceutical exclusion share:
+\windowShareDriftNp{} percentage points across the 18-, 12-, and 6-month
+windows. The pharmaceutical drift is larger, at \windowShareDriftPh{} points,
+again matching the interpretation that pharma is composition-sensitive.
+
+Cost-filter checks also preserve the qualitative result. Tightening the filter
+reduces the non-pharmaceutical net effect by \filterTightDropNp{} percent and
+the pharmaceutical net effect by \filterTightDropPh{} percent; loosening it
+raises the effects by at most \filterLooseUpNp{} percent and
+\filterLooseUpPh{} percent, respectively. Allowing within-auction cost
+correlation up to \(\rho_c=\ipvRhoMax\) moves the exclusion share by at most
+\ipvShareDriftPp{} percentage points and the total effect by at most
+\ipvTotalDriftPct{} percent.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Filter, window, and dependence sensitivities}
+\label{tab:app_filter_dependence}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.31\textwidth}cc>{\raggedright\arraybackslash}p{0.39\textwidth}}
+\toprule
+Sensitivity & Non-pharma & Pharma & Interpretation \\
+\midrule
+Tight cost filter: net effect & \filterTightNp{} & \filterTightPh{} & Smaller net effect after removing high normalized costs. \\
+Baseline filter: net effect & \filterBaseNp{} & \filterBasePh{} & Benchmark filter used in the robustness registry. \\
+Tight-filter drop & \filterTightDropNp\% & \filterTightDropPh\% & Attenuation relative to the benchmark filter. \\
+Loose-filter increase & \filterLooseUpNp\% & \filterLooseUpPh\% & Maximum increase under the looser filter. \\
+Exclusion-share drift across windows & \windowShareDriftNp{} pp & \windowShareDriftPh{} pp & Difference across 18-, 12-, and 6-month windows. \\
+Dependence grid & \multicolumn{2}{c}{\(\rho_c \in \ipvRhoGrid\)} & Total-effect drift at most \ipvTotalDriftPct\%; exclusion-share drift at most \ipvShareDriftPp{} pp. \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Net effects are \(p_{S_3}-p_{S_1}\), normalized by the reference price.
+The dependence sensitivity allows within-auction cost correlation up to
+\(\rho_c=\ipvRhoMax\). The table does not require every specification to have
+the same level. It asks whether the exclusion-dominant decomposition survives
+the main filter, window, and dependence perturbations.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Coordination screens}
+
+Coordination is a first-order threat because repeated bidder pairs could make
+drop-out prices reflect conduct rather than costs. The screens detect
+clustering, but the important question for this paper is whether clustering
+intensifies after non-SMEs are removed. The Conley-style screen is stable in
+non-pharmaceuticals: realized shares are \collConleyRealPreNp{} percent before
+and \collConleyRealPostNp{} percent after the cutoff, compared with null means
+of \collConleyNullPreNp{} and \collConleyNullPostNp. In pharmaceuticals, the
+realized share falls from \collConleyRealPrePh{} to \collConleyRealPostPh{}
+percent. Bajari--Ye-style ratios show the same directional pattern: the
+non-pharmaceutical ratio falls from \collBYRatioPreNp{} to
+\collBYRatioPostNp, and the pharmaceutical ratio falls from
+\collBYRatioPrePh{} to \collBYRatioPostPh.
+
+These screens do not prove competitive conduct. They answer the narrower threat
+to the decomposition: the main post-policy price increase is not obviously
+driven by a new coordination shock among the surviving SME pool.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Bidder-pair coordination screens}
+\label{tab:app_coordination}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Stratum & Conley realized & Conley null mean & Bajari--Ye \(T_1\) obs/null \\
+\midrule
+Non-pharma Pre & \collConleyRealPreNp\% & \collConleyNullPreNp\% & \collBYRatioPreNp{} \\
+Non-pharma Post & \collConleyRealPostNp\% & \collConleyNullPostNp\% & \collBYRatioPostNp{} \\
+Pharma Pre & \collConleyRealPrePh\% & \collConleyNullPrePh\% & \collBYRatioPrePh{} \\
+Pharma Post & \collConleyRealPostPh\% & \collConleyNullPostPh\% & \collBYRatioPostPh{} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item The Conley-style statistic is the share of auctions in which the closest
+pair of UH-clean residual bids lies within a narrow reference-price band. The
+null resamples bid sequences within cell while preserving bidder counts. The
+Bajari--Ye statistic is the ratio of the observed maximum pair co-bidding count
+to its permutation-null mean among repeated bidder pairs. Both screens detect
+baseline clustering. The identifying question here is the pre/post direction:
+neither statistic rises after the set-aside expands.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Reference-price validation}
+
+All structural prices are normalized by buyer reference prices, so mechanical
+changes in reference-price setting would be a problem. I therefore work with
+normalized cost and price objects and use the reduced-form price/reference
+benchmark as an external check. The structural net effects,
+\structRatioNp{} percent of the open-regime price in non-pharmaceuticals and
+\structRatioPh{} percent in pharmaceuticals, are larger than the DiD-implied
+benchmark of \didImpliedRatio{} percent. That gap is consistent with the fact
+that the structural exercise holds the relevant bidder pools fixed and
+simulates the order statistic directly, while the reduced form averages over
+take-up, controls, and product-time variation. The gap is a reason to interpret
+levels carefully, not a reason to discard the mechanism.
+
+\section{Welfare Details}
+
+\subsection{Lambda grid}
+
+The main text reports welfare losses at \(\lambda=\lambdaMain\). The welfare
+loss is
+\[
+    L(\lambda)=DWL^{alloc}+\lambda\Delta G,
+\]
+where \(DWL^{alloc}\) is the allocative loss and \(\Delta G\) is the extra
+government outlay. The grid ranges from \welfLambdaRangeLo{} to
+\welfLambdaRangeHi{} in increments of \lambdaInc. Moving \(\lambda\) by 0.10
+changes the welfare loss by about \welfLossDeltaNpPp{} percentage points in
+non-pharmaceuticals and \welfLossDeltaPhPp{} points in pharmaceuticals.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Welfare loss across marginal-cost-of-public-funds values}
+\label{tab:app_lambda_grid}
+\begin{tabular}{lccccc}
+\toprule
+Class & \(\lambda=0.15\) & \(\lambda=0.20\) & \(\lambda=0.30\) & \(\lambda=0.40\) & \(\lambda=0.45\) \\
+\midrule
+Non-pharma & \welfLossPctLfifteenNp\% & \welfLossPctLtwentyNp\% & \welfLossPctLthirtyNp\% & \welfLossPctLfortyNp\% & \welfLossPctLfortyfiveNp\% \\
+Pharma & \welfLossPctLfifteenPh\% & \welfLossPctLtwentyPh\% & \welfLossPctLthirtyPh\% & \welfLossPctLfortyPh\% & \welfLossPctLfortyfivePh\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Losses are reported as percentages of the open-regime simulated price.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Preference grid and welfare weights}
+
+The 10 percent SME price preference is a benchmark instrument. It keeps
+non-SMEs inside the auction and tilts allocation through the scoring rule. In
+the simulated preference grid from 0 to 30 percent, the 10 percent preference
+is the cheapest welfare-dominant preference threshold in the current grid. At
+10 percent, the price shift is \vThreeDeltaNp{} in non-pharmaceuticals and
+\vThreeDeltaPh{} in pharmaceuticals, while SME win rates rise by
+\prefSmeWinGainTenNp{} and \prefSmeWinGainTenPh{} percentage points.
+
+The preference is not a costless substitute for the set-aside. At 30 percent,
+the welfare loss remains \welfPrefThirtyNp{} percent in non-pharmaceuticals and
+\welfPrefThirtyPh{} percent in pharmaceuticals, but the instrument still
+delivers less redistribution than full exclusion. The relevant comparison is
+therefore a frontier: how much additional SME surplus, access, or dynamic
+capacity does the planner require to justify removing non-SMEs from the
+price-forming pool? In the main specification, the implicit SME welfare weights
+required to prefer the set-aside to the 10 percent preference are
+\welfWeightMainNp{} in non-pharmaceuticals and \welfWeightMainPh{} in
+pharmaceuticals. Under strict invariance, the non-pharmaceutical comparison
+continues to require a weight above one, while the pharmaceutical comparison
+falls to \welfWeightSiPh.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Preference grid: price effects, SME win rates, and welfare loss}
+\label{tab:app_preference_grid}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrrr}
+\toprule
+Class & Preference & \(\bar p\) & \(\Delta\) vs. \(S_1\) & \% of V0 \(\Delta\) & SME win rate & Welfare loss \\
+\midrule
+Non-pharma & 0\% & 0.772 & +0.0046 & 2.0 & 17.1\% & 0.14\% \\
+Non-pharma & 5\% & 0.768 & +0.0015 & 0.7 & 20.0\% & 0.00\% \\
+Non-pharma & 10\% & 0.764 & -0.0028 & -1.2 & 21.4\% & 0.25\% \\
+Non-pharma & 15\% & 0.766 & -0.0013 & -0.6 & 24.6\% & 0.00\% \\
+Non-pharma & 20\% & 0.775 & +0.0081 & 3.5 & 27.8\% & 1.40\% \\
+Non-pharma & 25\% & 0.790 & +0.0227 & 9.7 & 30.2\% & 2.43\% \\
+Non-pharma & 30\% & 0.809 & +0.0420 & 17.9 & 34.0\% & 4.99\% \\
+Non-pharma & Full set-aside & 1.001 & +0.2342 & 100.0 & 100.0\% & 27.13\% \\
+Pharma & 0\% & 0.648 & -0.0061 & -2.1 & 16.2\% & 0.00\% \\
+Pharma & 5\% & 0.670 & +0.0161 & 5.5 & 16.5\% & 1.24\% \\
+Pharma & 10\% & 0.648 & -0.0061 & -2.1 & 17.6\% & 0.00\% \\
+Pharma & 15\% & 0.655 & +0.0009 & 0.3 & 19.6\% & 0.00\% \\
+Pharma & 20\% & 0.655 & +0.0015 & 0.5 & 19.8\% & 0.00\% \\
+Pharma & 25\% & 0.656 & +0.0019 & 0.7 & 22.1\% & 0.00\% \\
+Pharma & 30\% & 0.676 & +0.0219 & 7.5 & 25.7\% & 1.92\% \\
+Pharma & Full set-aside & 0.948 & +0.2941 & 100.0 & 100.0\% & 41.99\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Bayes--Nash simulation with \prefGridB{} Monte Carlo draws per cell.
+Preference rate \(k\) scores SME bids by a factor \(1-k\) for winner selection
+while paying the actual winning bid. \(\Delta\) is the simulated price effect
+relative to \(S_1\), in reference-price units. Welfare loss is
+\((DWL^{alloc}+\lambda \Delta G)/p_{S_1}\) at \(\lambda=\lambdaMain\). Entries
+that are negative before rounding are reported as 0.00\%, since they lie inside
+Monte Carlo noise around a near-zero welfare effect.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Set-aside versus preference ranking across \(\lambda\)}
+\label{tab:app_welfare_ranking}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccccc}
+\toprule
+ & \multicolumn{2}{c}{Non-pharma} & \multicolumn{3}{c}{Pharma} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}
+\(\lambda\) & Loss(V0) & Ranking & Loss(V0) & Ranking, main & Ranking, strict inv. \\
+\midrule
+0.15 & 24.0\% & V3 \(>\) V0 & 38.4\% & V3 \(>\) V0 & V0 \(>\) V3 \\
+0.20 & 25.6\% & V3 \(>\) V0 & 40.8\% & V3 \(>\) V0 & V0 \(>\) V3 \\
+0.30 & 28.7\% & V3 \(>\) V0 & 47.0\% & V3 \(>\) V0 & V0 \(>\) V3 \\
+0.40 & 31.8\% & V3 \(>\) V0 & 50.2\% & V3 \(>\) V0 & V0 \(>\) V3 \\
+0.45 & 33.3\% & V3 \(>\) V0 & 52.5\% & V3 \(>\) V0 & V0 \(>\) V3 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item \(V0\) is the full SME-only set-aside and \(V3\) is the 10 percent
+preference benchmark. The non-pharmaceutical ranking is stable across the
+\(\lambda\) grid. In pharmaceuticals, the ranking depends on how the post-policy
+SME pool is modeled, not mainly on the marginal cost of public funds.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Annual scaling}
+
+Annual scaling is kept out of the main text because it is not part of the core
+identification exercise. For reference, Group~65 annual reference outlays are
+R\$\welfRefOutlayNpYr{} million in non-pharmaceuticals and
+R\$\welfRefOutlayPharmaYr{} million in pharmaceuticals. Applying the structural
+welfare losses and adherence rates between \welfAdherenceLoPct{} and
+\welfAdherenceHiPct{} percent gives an annual welfare-cost range of
+R\$\welfRangeLoBRL--\welfRangeHiBRL{} million, or
+US\$\welfRangeLoUSD--\welfRangeHiUSD{} million at an exchange rate of
+\fxRate{} R\$/US\$. This scaling is useful for magnitude, but it should not be
+read as a claim about all procurement categories or about dynamic long-run SME
+capacity.
+
+\bibliographystyle{chicago}
+\bibliography{References}
+
+\end{document}
