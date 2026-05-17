@@ -110,16 +110,15 @@ sensitivities.
 
 \subsection{Reference-price evolution}\label{sec:pref_endog}
 
-The reduced-form benchmark and the structural cost recovery normalize prices
-by the buyer reference price $p^{\mathrm{ref}}$. Both would leak if buyers
-responded to the regime by adjusting $p^{\mathrm{ref}}$ itself. A TWFE DiD on
-$\log p^{\mathrm{ref}}$ under the main specification moves by \pRefDidEstNp{}
-(SE \pRefDidSeNp{}) in non-pharmaceuticals and \pRefDidEstPh{}
-(SE \pRefDidSePh{}) in pharmaceuticals---small in magnitude against the
-corresponding DiD on $\log p^{\mathrm{final}}$ in each class, leaving a
-residual price effect of about \pRefResidPctNp{} percent in non-pharma and
-\pRefResidPctPh{} percent in pharma after subtracting the $p^{\mathrm{ref}}$
-component. Modern estimators (BJS imputation, Callaway-Sant'Anna) are
+A direct TWFE DiD on $\log p^{\mathrm{ref}}$ at the cutoff moves by only
+\pRefDidEstNp{} (SE \pRefDidSeNp{}) in non-pharmaceuticals and
+\pRefDidEstPh{} (SE \pRefDidSePh{}) in pharmaceuticals---small in magnitude
+against the corresponding DiD on $\log p^{\mathrm{final}}$ in each class,
+and leaving the reference-price normalization used by both the reduced-form
+benchmark and the structural cost recovery substantially intact. The residual
+price effect after subtracting the $p^{\mathrm{ref}}$ component is about
+\pRefResidPctNp{} percent in non-pharma and \pRefResidPctPh{} percent in
+pharma. Modern estimators (BJS imputation, Callaway-Sant'Anna) are
 consistent in sign; Online Appendix~OA-D.4 reports the full estimator
 comparison and the underlying event study.
 
@@ -142,23 +141,22 @@ remains economically substantial.
 
 \subsection{Threshold manipulation}\label{sec:threshold}
 
-The item-level reinterpretation of the R\$\,\setAsideThreshBRL{} threshold
-creates a natural incentive for buyers to split or restructure purchase
-notices in order to push items below it. A McCrary density test at
-$\log\setAsideThreshBRL$ fails to detect such manipulation in either period
-(post: T = \bunchingDensityTPost{}, p = \bunchingDensityPPost{}; pre:
-T = \bunchingDensityTPre{}, p = \bunchingDensityPPre{}). Group~65 items also
-sit well below the threshold in mass---over 90 percent of items have
-reference values below R\$\,30,000---so any manipulation around the
-R\$\,\setAsideThreshBRL{} threshold would be visible if present. The negative
-result is consistent with the reference-price evidence in
+A McCrary density test at the R\$\,\setAsideThreshBRL{} item-eligibility
+threshold shows no strategic bunching of items (post:
+T = \bunchingDensityTPost{}, p = \bunchingDensityPPost{}; pre:
+T = \bunchingDensityTPre{}, p = \bunchingDensityPPre{}). Buyers did not
+split or restructure purchase notices to comply with item-level SME-only
+treatment. Group~65 items also sit well below the threshold in mass---over
+90 percent of items have reference values below R\$\,30,000---so any
+manipulation around it would be visible if present. The result is
+consistent with the reference-price evidence in
 Section~\ref{sec:pref_endog}: the mild $p^{\mathrm{ref}}$ movement detected
 there is not aligned with the threshold-gaming channel.
 
-The checks leave a narrow claim. The result does not depend on the reduced-form
-DiD carrying the whole design, on a single treatment of winner censoring, or on
-holding the post-policy SME pool fixed. When the excluded bidders are the ones
-disciplining the order statistic, set-asides are costly because they replace
-competition with eligibility. The protected-pool response offsets part of that
-cost, but it does not replace the competitive discipline that the policy
-removes.
+The mechanism is stable across the checks. The result does not depend on the
+reduced-form DiD carrying the whole design, on a single treatment of winner
+censoring, or on holding the post-policy SME pool fixed. When the excluded
+bidders are the ones disciplining the order statistic, set-asides are costly
+because they replace competition with eligibility. The protected-pool response
+offsets part of that cost, but it does not replace the competitive discipline
+that the policy removes.
