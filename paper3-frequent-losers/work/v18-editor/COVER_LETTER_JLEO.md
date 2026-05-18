@@ -18,7 +18,7 @@ Three findings on São Paulo's BEC platform (2009–2019) deliver the architectu
 
 1. Routing forensic interrogation through the award-layer screen reduces the bid-microdata pool the forensic stage must work on by **83%** (1,985 of 11,676 firms) while still recovering **131 of 193** adjudicated cobidders. The screen triages; it does not adjudicate cartel membership.
 2. Award-layer and bid-distribution screens are **informational complements**, not substitutes: combination yields +0.035 AUC over the seven-feature Imhof–Wallimann pipeline (DeLong $p = 0.014$). Sequencing is therefore well-defined.
-3. The architecture is **portable**. Firm-level discrimination AUC is 0.864 under temporal holdout, the technology that makes the architecture feasible. A simple separating-equilibrium argument (Online Appendix A) motivates endogenous loser-side participation as the ranking primitive on the award layer.
+3. The screen is **out-of-sample**, not retrospective fitting. Computed from 2009–2016 participation only, it discriminates later-adjudicated CADE cobidders in 2017–2019 at firm-level AUC 0.864 under temporal holdout. A simple separating-equilibrium argument (Online Appendix A) motivates endogenous loser-side participation as the ranking primitive on the award layer.
 
 The paper sits within JLEO's organization-of-enforcement tradition (Becker, Stigler, Baker, Harrington), not within the bid-rigging-detection toolbox proper. We are explicit about what the construct does *not* do: it does not adjudicate cartel membership, it is not a causal estimate of cover bidding's effect on prices, and the modal pregão–convite asymmetry is reported as scope information for the screening object, not as a positive test of the institutional channel.
 
