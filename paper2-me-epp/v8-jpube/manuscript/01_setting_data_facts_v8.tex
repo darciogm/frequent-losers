@@ -131,8 +131,8 @@ Pre: non-SME bidders per auction & \bneNnsPreNp{} & \bneNnsPrePh{} \\
 Post: SME bidders per auction & \bneNsmePostNp{} & \bneNsmePostPh{} \\
 Post: non-SME bidders per auction & \nonSmePostNp{} & \nonSmePostPh{} \\
 \addlinespace
-Change in SME bidders & +0.93 & +0.67 \\
-Change in non-SME bidders & -1.18 & -0.95 \\
+Change in SME bidders & \bneNsmeDeltaNp{} & \bneNsmeDeltaPh{} \\
+Change in non-SME bidders & \bneNnsDeltaNp{} & \bneNnsDeltaPh{} \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
@@ -165,18 +165,14 @@ coefficient on Group~65 interacted with the pre-period means that the open
 regime was cheaper, so the post-cutoff SME-only extension undoes that
 discount. With this sign convention, negative coefficients correspond to a
 post-cutoff price increase relative to the open-regime benchmark. Across
-windows, the log-price coefficient is between -0.108 and -0.148 with PBU
-controls; the \structuralWindowM-month benchmark is
-\didPriceEighteenPbu{}. This coefficient is used as a directional and
+windows, the log-price coefficient is between \didPriceTwelvePbu{} and
+\didPriceSixPbu{} with PBU controls; the \structuralWindowM-month
+benchmark is \didPriceEighteenPbu{}. This coefficient is used as a directional and
 timing check rather than as the source of the structural magnitude; the
 latter is built in Section~\ref{sec:price_formation} in
 $p^{\mathrm{ref}}$-normalized units, and Section~\ref{sec:pref_endog}
 examines reference-price evolution directly.
 
-% TODO macro-pipeline: replace hardcoded -0.148 (6m) and -0.108 (12m) with
-% \didPriceSixMonthsPbu and \didPriceTwelveMonthsPbu macros emitted by
-% scripts/02_analysis.R, mirroring \didPriceEighteenPbu for the 18m column.
-% Same fix in the prose paragraph above ("between -0.108 and -0.148").
 \begin{table}[!htbp]
 \centering
 \begin{threeparttable}
@@ -188,9 +184,9 @@ examines reference-price evolution directly.
 \toprule
 Window around cutoff & 6 months & 12 months & 18 months \\
 \midrule
-$g65 \times Pre$ on $\log p^{\mathrm{final}}$ & -0.148 & -0.108 & \didPriceEighteenPbu{} \\
-Standard error & (0.014) & (0.013) & (0.012) \\
-Observations & 219,535 & 439,054 & 649,714 \\
+$g65 \times Pre$ on $\log p^{\mathrm{final}}$ & \didPriceSixPbu{} & \didPriceTwelvePbu{} & \didPriceEighteenPbu{} \\
+Standard error & (\didPriceSixSe{}) & (\didPriceTwelveSe{}) & (\didPriceEighteenSe{}) \\
+Observations & \didPriceSixN{} & \didPriceTwelveN{} & \didPriceEighteenN{} \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
