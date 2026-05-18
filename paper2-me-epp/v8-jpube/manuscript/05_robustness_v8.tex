@@ -34,10 +34,14 @@ precision: the BJS imputation estimate \citep{borusyak2024} is
 consistent with the heterogeneity diagnostics of
 \citet{dechaisemartin2020}, \citet{goodmanbacon2021}, and
 \citet{sun2021}, all of which predict TWFE-versus-modern-DiD divergence
-when treatment timing or effects vary across units. The reduced form is
-therefore robust enough for timing and sign, but not strong enough to
-carry the structural magnitude. The paper uses it as external validation
-and estimates the mechanism with the auction decomposition. Online
+when treatment timing or effects vary across units. The reduced form is therefore robust enough for timing and sign, but not
+strong enough to carry the structural magnitude or the welfare ranking.
+The paper uses it as external validation and estimates the mechanism with
+the auction decomposition. The structural magnitudes are not intended to
+match the reduced-form ATT: the DiD averages over incomplete take-up,
+product-time variation, and realized implementation, whereas $S_1$, $S_2$,
+and $S_3$ are counterfactual price-formation objects that isolate how the
+order statistic changes when the eligible bidder pool is altered. Online
 Appendix~OA-B reports the balance table, placebos, and alternative
 estimators.
 
@@ -196,10 +200,74 @@ reference-price evidence in Section~\ref{sec:pref_endog}: the mild
 $p^{\mathrm{ref}}$ movement detected there is not aligned with threshold
 gaming.
 
-Taken together, the checks do not prove the maintained auction model. They
-show that the exclusion-dominant decomposition is not overturned by the
-main mechanical threats: reduced-form timing, winner censoring, common
-scale shocks, protected-pool composition, bidder dependence,
+Table~\ref{tab:threat_assessment_v8} summarizes the threat assessment.
+The diagnostics discipline the maintained interpretation; they do not
+prove the auction model.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Threat assessment: diagnostics, findings, and residual limitations}
+\label{tab:threat_assessment_v8}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.23\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}}
+\toprule
+Threat & Diagnostic & Finding & Remaining limitation \\
+\midrule
+Weak reduced form
+  & Balance checks, placebo cutoffs, modern DiD estimators
+  & Timing and sign supported; magnitude attenuates under CS/BJS
+  & Not a stand-alone causal estimate of the legal reinterpretation \\
+Winner censoring
+  & Losers-only, all-bidders, Turnbull NPMLE
+  & Exclusion share remains large under each treatment
+  & Winner costs are not directly observed \\
+Bidder-count process
+  & Poisson process parameterized by observed class-period-type rates
+  & Baseline uses Poisson participation; counts enter as equilibrium objects
+  & No full entry model; empirical-count robustness is a natural extension \\
+Protected-pool composition
+  & Strict-invariance benchmark
+  & Exclusion still dominates the price decomposition
+  & Pharmaceutical welfare ranking remains sensitive to composition \\
+Coordination and conduct
+  & Conley-style close-pair screens; Bajari--Ye ratios
+  & No post-policy intensification of clustering
+  & Baseline clustering remains; broader noncompetitive conduct not ruled out \\
+Reference-price evolution
+  & DiD on $\log p^{\mathrm{ref}}$; stable-reference quartile placebo
+  & Price effect survives where $p^{\mathrm{ref}}$ is stable
+  & Heterogeneous $p^{\mathrm{ref}}$ movement cannot be fully ruled out \\
+Threshold manipulation
+  & McCrary density test at R\$\,\setAsideThreshBRL{} threshold
+  & No detectable bunching of items at the threshold
+  & Does not rule out all buyer-side adaptation \\
+Static policy benchmark
+  & $\lambda$ grid; strict invariance; preference grid
+  & Non-pharmaceutical static welfare ranking is stable
+  & Not an implementation forecast; pharmaceutical ranking conditional \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Each row maps one identification or sensitivity threat to the
+diagnostic that disciplines it. The findings column reports the
+direction of the diagnostic, not a proof of the maintained auction model
+or the welfare ranking. Cross-references are
+Section~\ref{sec:robustness}.1 (reduced-form), \ref{sec:robustness}.2
+(winner censoring), \ref{sec:robustness}.3 (protected-pool composition),
+\ref{sec:robustness}.4 (coordination), \ref{sec:robustness}.5 (policy
+benchmark), \ref{sec:robustness}.6 (reference-price evolution), and
+\ref{sec:robustness}.7 (threshold manipulation).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Taken together, the checks do not prove the maintained auction model.
+They show that the exclusion-dominant decomposition is not overturned by
+the main mechanical threats: reduced-form timing, winner censoring,
+common scale shocks, protected-pool composition, bidder dependence,
 reference-price evolution, or threshold manipulation. The remaining
 interpretation is the one the decomposition emphasizes: when the excluded
 bidders are the ones disciplining the price-forming order statistic,
