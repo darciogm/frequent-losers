@@ -2,25 +2,28 @@
 
 ## Download
 
-- [Main paper (v6, JPubE format) &mdash; PDF](assets/paper/paper_v6.pdf)
+- [Main paper &mdash; PDF](assets/paper/paper.pdf)
 - [Online appendix &mdash; PDF](assets/paper/online_appendix.pdf)
 - [Highlights &mdash; PDF](assets/paper/highlights.pdf)
+- [Cover letter &mdash; PDF](assets/paper/cover_letter.pdf)
 
-Submission-ready version, May 2026.
+JPubE submission, May 2026.
 
 ## Title
 
-**Sheltered Bidding: The Within-Auction Cost of SME Set-Asides**
+**The Price of Exclusion: SME Set-Asides in Public Procurement**
 
 ## Contribution
 
-This paper makes three main contributions:
+The paper makes three contributions:
 
-1. **Total impact:** A March 2018 SME set-aside reversal on São Paulo's centralized procurement platform identifies a causal DiD effect of roughly **10% on winning prices** against 76 never-treated product groups, surviving Callaway-Sant'Anna, Sun-Abraham, and Goodman-Bacon estimators.
+1. **A price-formation decomposition.** I decompose the price effect of an SME set-aside into a **lost-discipline component** (non-SMEs removed from the price-forming pool, SME pool held fixed) and a **protected-pool offset** (post-policy SME pool replacing the pre-policy one). The decomposition turns the set-aside price effect into a design question: how much is mechanical exclusion of rival bidders, and how much is the protected pool's response?
 
-2. **Decomposition into channels (the novelty):** An asymmetric IPV model identified from Pregão drop-out bids decomposes the total impact under observed equilibrium entry. The **within-auction component---*sheltered bidding*---accounts for two-thirds to three-quarters** of the simulated effect across classes. This is a policy-relevant accounting decomposition identified by the auction format plus observed entry, not a full structural entry equilibrium.
+2. **Implementation via a reverse-auction setting.** In São Paulo's *Pregão* (electronic English-reverse auction), losing bidders' drop-out prices reveal type-specific willingness to supply under the maintained independent-private-values clock interpretation (Vickrey 1961; Milgrom and Weber 1982; Haile and Tamer 2003; Athey and Haile 2002). I use the recovered primitives, an auction-level heterogeneity correction in the spirit of Krasnokutskaya (2011), and observed equilibrium entry to simulate counterfactual price-formation objects under three pools.
 
-3. **Policy ranking:** A **10% price preference** welfare-dominates the set-aside in thick standardized markets at near-zero fiscal cost; the ranking turns conditional in thin pharmaceutical markets, where equilibrium-selection treatment of the protected pool becomes first-order. Bidder exclusion is hardest to defend where the protected pool is thick and the good standardized, and most defensible---if at all---where it is not.
+3. **Recast of policy design.** The relevant policy frontier is not SME support versus no support, but **exclusionary redistribution versus support that preserves the price-forming bidder pool**. A 10 percent SME price preference enters as a static design benchmark: it preserves the non-SME bidders that discipline the price-forming order statistic but delivers less redistribution than full exclusion.
+
+In **standardized non-pharmaceutical** procurement, the protected pool responds (SME participation roughly doubles) but does not replace the excluded discipline: the full set-aside generates a **static welfare loss of 28.9% of the open-regime price** at &lambda;=0.30, with the exclusion component accounting for ~72% of the decomposition. The implied SME welfare weight required for a planner to prefer full exclusion is **2.42**. **Pharmaceutical** procurement is reported as a **boundary case**, not as a second headline: there the protected pool is thinner, composition changes more under the policy, and the welfare ranking becomes sensitive to how the post-policy SME pool is modeled.
 
 ---
 

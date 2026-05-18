@@ -1,7 +1,7 @@
 # Replication
 
-!!! info "v6 banner"
-    This page describes the v1--v4 reduced-form pipeline (`scripts/00_master.R`). The submission-ready v6 structural pipeline lives in `v6-jpube/scripts/` (~25 numbered R scripts, 32→58). See `v6-jpube/REPRODUCIBILITY.md` for the v6 reproducibility runbook and `v6-jpube/manuscript/paper_v6.tex` for the canonical paper.
+!!! info "v8 banner"
+    This page describes the v1--v4 reduced-form pipeline (`scripts/00_master.R`). The JPubE submission-ready v8 structural pipeline lives in `v7-jpube-tight/scripts/` (canonical BNE simulation `45_bne_simulation.R`) and `v8-jpube/scripts/` (empirical bidder-count robustness `46_bne_empirical_counts.R`). See `v8-jpube/manuscript/paper_v8.tex` for the canonical paper. Replication materials with code, generated tables, figures, and non-confidential derived outputs are described in the **Data availability** section of the manuscript; raw BEC administrative records are not publicly redistributable under the research-access agreement.
 
 
 ## Requirements

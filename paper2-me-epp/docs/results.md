@@ -1,7 +1,7 @@
 # Main Results
 
-!!! info "v6 banner: this page reflects the v1--v4 reduced-form headline"
-    The tables on this page are the original reduced-form DiDiR estimates that motivated the v6 structural decomposition. The v6 paper (`paper_v6.pdf`) reframes the welfare account around **sheltered bidding** (within-auction component = 2/3--3/4 of the simulated effect; annual welfare cost R$55--128M on Group 65). The v4 fiscal cost figure (R$84.5--85.8M over 18 months) is a *different object* — applies the percentage price effect to total procurement volume — and is superseded as the headline by the v6 structural welfare arithmetic. See `paper_v6.pdf` for canonical CIs and the structural decomposition.
+!!! info "v8 banner: this page reflects v1--v4 reduced-form figures; canonical results are in v8"
+    The tables and figures on this page are the original reduced-form DiD estimates from the early reduced-form layer. The canonical **v8 paper** (`paper.pdf`) reframes the policy account around **the price-forming order statistic**: the set-aside price effect is decomposed into a lost-discipline component (non-SMEs removed) and a protected-pool offset (post-policy SME pool), with exclusion accounting for ~72% of the absolute price decomposition in standardized non-pharmaceutical procurement. See `paper.pdf` for the canonical estimates, the threat-assessment table (Table 5), and the empirical bidder-count robustness (Online Appendix OA-D.2).
 
 
 ## Event Study: Log Prices

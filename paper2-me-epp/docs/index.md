@@ -5,45 +5,31 @@ hide:
 
 <div class="hero-section" markdown>
 
-# Sheltered Bidding
+# The Price of Exclusion
 
-<p class="subtitle">The Within-Auction Cost of SME Set-Asides</p>
+<p class="subtitle">SME Set-Asides in Public Procurement</p>
 <p class="authors">Darcio Genicolo-Martins</p>
 <p class="affiliation">Insper Institute of Education and Research, Sao Paulo, Brazil</p>
 
 <p class="downloads" markdown>
-[Download paper (PDF)](assets/paper/paper_v6.pdf){ .md-button .md-button--primary } &nbsp;
+[Download paper (PDF)](assets/paper/paper.pdf){ .md-button .md-button--primary } &nbsp;
 [Online appendix](assets/paper/online_appendix.pdf){ .md-button } &nbsp;
-[Highlights](assets/paper/highlights.pdf){ .md-button }
+[Highlights](assets/paper/highlights.pdf){ .md-button } &nbsp;
+[Cover letter](assets/paper/cover_letter.pdf){ .md-button }
 </p>
 
-<p class="version-tag"><em>Submission-ready version (v6, JPubE format) &mdash; May 2026.</em></p>
-
-</div>
-
-<div class="video-embed" markdown>
-
-## Video summary &mdash; 17 min
-
-<video controls preload="metadata" width="100%" poster="assets/paper/cost_of_inclusion.mp4">
-  <source src="assets/paper/cost_of_inclusion.mp4" type="video/mp4">
-  Your browser does not support embedded video.
-</video>
-
-<em>Conversational explainer in English. Audio generated with NotebookLM
-(two-host podcast format); animation built in Remotion to match the
-paper's typography and palette.</em>
+<p class="version-tag"><em>JPubE submission &mdash; May 2026.</em></p>
 
 </div>
 
 <div class="key-result" markdown>
-<span class="number">2/3 to 3/4</span>
-<span class="label">of the simulated price effect of SME set-asides operates within auctions through *sheltered bidding* &mdash; not through entry &mdash; identified by the Pregão drop-out structure under observed equilibrium entry</span>
+<span class="number">28.9%</span>
+<span class="label">static welfare loss from the full SME set-aside in standardized non-pharmaceutical procurement, at &lambda;=0.30 &mdash; with the exclusion of non-SMEs accounting for ~72% of the price decomposition</span>
 </div>
 
 ## Abstract
 
-Why do SME set-asides raise procurement prices? Two non-exclusive mechanisms operate: the bidder pool shrinks, and the auction clears at a different point in the surviving cost distribution. This paper estimates the total impact and decomposes it into these two channels. A March 2018 reversal extended an SME-only rule to medical supplies on São Paulo's centralized procurement platform; a difference-in-differences against 76 never-treated product groups recovers *a roughly 10 percent rise in winning prices* and a doubling of SME participation. An asymmetric IPV model identified from Pregão drop-out bids then separates the channels under observed equilibrium entry---a policy-relevant accounting decomposition identified by the auction format plus observed entry, not a full structural entry equilibrium. The within-auction component---*sheltered bidding*---accounts for *two-thirds to three-quarters of the simulated effect* across classes. The implied welfare cost reaches *R\$ 55 million per year* on a single product group of São Paulo's R\$ 13 billion platform. A 10% price preference welfare-dominates the set-aside in thick standardized markets at near-zero fiscal cost; the ranking turns conditional in thin pharmaceutical markets, where the equilibrium-selection treatment of the protected pool becomes first-order. The conditional ranking is the policy-design statement: bidder exclusion is hardest to defend where the protected pool is thick and the good standardized, and most defensible---if at all---where it is not.
+Set-asides expand SME access to public procurement by removing rival bidders from the auction. This paper shows that, when the excluded bidders are the price-forming ones, the policy replaces competition with eligibility at high static cost. I study São Paulo's centralized electronic procurement platform, where a legal reinterpretation expanded SME-only tendering into medical and hospital supplies. The platform's reverse auctions record drop-out prices that, under the maintained independent-private-values clock interpretation, reveal type-specific willingness to supply. I use these exits to decompose the set-aside price effect into lost competitive discipline from excluding non-SMEs and a protected-pool offset from the post-policy SME pool. In standardized non-pharmaceutical procurement, the protected pool responds but does not replace the excluded discipline: the full set-aside generates a static welfare loss of **28.9 percent** of the open-regime price at &lambda;=0.30. Pharmaceutical procurement exhibits larger but more model-sensitive losses. A **10 percent SME price preference**, simulated as a static design benchmark, keeps non-SMEs in the auction at near-zero price cost in standardized markets, but delivers less redistribution than full exclusion. The relevant frontier is therefore not SME support versus no support; it runs between exclusionary redistribution and support that preserves the price-forming bidder pool.
 
 **JEL Classification:**
 <span class="badge">H32</span>
@@ -55,26 +41,24 @@ Why do SME set-asides raise procurement prices? Two non-exclusive mechanisms ope
 **Keywords:**
 <span class="badge badge-kw">public procurement</span>
 <span class="badge badge-kw">SME set-asides</span>
-<span class="badge badge-kw">asymmetric auctions</span>
-<span class="badge badge-kw">structural estimation</span>
+<span class="badge badge-kw">auctions</span>
 <span class="badge badge-kw">welfare</span>
-<span class="badge badge-kw">marginal cost of public funds</span>
 
 ---
 
 ## Key Findings
 
-!!! success "SME set-asides raise winning prices by ~10%"
-    A March 2018 reversal extended São Paulo's SME-only rule to medical supplies (Group 65). A DiD against **76 never-treated product groups** recovers a **roughly 10% rise in winning prices** and a doubling of SME participation, surviving Callaway-Sant'Anna, Sun-Abraham, and Goodman-Bacon estimators.
+!!! success "Exclusion dominates the price decomposition"
+    Removing non-SMEs while holding the pre-policy SME pool fixed (the &Delta;<sup>excl</sup> channel) accounts for **~72% of the price decomposition** in absolute magnitude in standardized non-pharmaceutical procurement. The post-policy protected pool responds (SME participation roughly doubles) but does not recreate the price discipline supplied by the excluded non-SMEs.
 
-!!! danger "Sheltered bidding — not entry — drives most of the effect"
-    An asymmetric IPV model identified from Pregão drop-out bids decomposes the total impact under observed equilibrium entry. The **within-auction component (*sheltered bidding*) accounts for two-thirds to three-quarters of the simulated effect** across classes. Composition effects from a thinner bidder pool explain the remainder.
+!!! danger "Static welfare cost of the full set-aside: 28.9% in standardized markets"
+    At a marginal cost of public funds of &lambda;=0.30, the full SME-only regime generates a **static welfare loss of 28.9% of the open-regime price** in standardized non-pharmaceutical procurement. Pharmaceuticals exhibit larger but more composition-sensitive losses, reported as a boundary case.
 
-!!! warning "R$ 55 million per year on a single product group"
-    The implied welfare cost reaches **~R\$ 55 million per year on Group 65 alone**, on a São Paulo procurement platform of R\$ 13 billion annually. The cost is concentrated where the protected pool is thick and the good is standardized.
+!!! info "A 10% price preference preserves the price-forming pool at near-zero static cost"
+    Simulated as a static design benchmark, a **10 percent SME price preference** keeps non-SMEs inside the auction and delivers positive SME-favoring redistribution at near-zero static welfare cost in standardized markets. The implied welfare weight required for a planner to prefer the full set-aside is 2.42 in non-pharmaceuticals.
 
-!!! info "A 10% price preference welfare-dominates the set-aside"
-    In thick standardized markets, a **10% price preference** delivers the SME preference at near-zero fiscal cost and welfare-dominates exclusion. In thin pharmaceutical markets the ranking turns conditional — bidder exclusion is hardest to defend where the protected pool is thick and the good standardized, and most defensible (if at all) where it is not.
+!!! warning "Pharmaceutical procurement is a boundary case, not a second headline"
+    The protected pool is thinner, composition changes more under the policy, and the welfare ranking becomes sensitive to how the post-policy SME pool is modeled. The non-pharmaceutical ranking is stable across the main and strict-invariance specifications; the pharmaceutical ranking is not.
 
 ---
 
