@@ -1,0 +1,153 @@
+\section{Introduction}
+\label{sec:intro}
+
+Cartel enforcement begins before cartel proof exists. Agencies
+must decide where to spend investigative resources while the
+evidence needed for liability is still costly to recover. That
+sequencing problem is familiar in the economics of law
+enforcement: when observation is costly, the first screen should
+use information already in the agency's hands, and the expensive
+evidentiary stage should be reserved for the candidates that
+screen ranks highest
+\citep{becker1968crime,stigler1970optimum,baker2002case,harrington2008detecting}.
+Procurement-cartel detection usually begins one layer later. The
+empirical industrial-organization literature reads coordination
+off the distribution of submitted bids
+\citep{porter1993detection,bajari2003deciding,imhof2019detecting,wallimann2023machine,chassang2022robust}.
+Those methods are powerful, but they presume the bid layer:
+per-bidder bid amounts, within-tender dispersion, bid
+rankings, and sometimes bid histories. Many enforcement
+environments routinely expose only a thinner layer: who
+participated, who won, what was bought, and at what price. The
+bid-by-bid record may exist, but it sits in operational files
+that have to be recovered through a case-specific forensic
+request.
+
+The question here is what antitrust enforcement can do at that
+earlier layer. The answer is not cartel proof. It is evidentiary
+triage: a cheap award-layer ranking of firms and procurement
+environments that indicates where bid-layer forensics should
+begin. We study this architecture on Sao Paulo's BEC procurement
+platform
+($\valYearStart$--$\valYearEnd$, $\valSampleN$ tender-items).
+The screen uses four award-record fields only: participant
+identity, winner identity, item code, and negotiated price. It
+flags \emph{frequent losers}: firms with zero wins whose
+participation intensity among always-loser firms lies above a
+median plus $1.5$ interquartile-range rule. The logic is simple.
+In a cover-bidding arrangement, loser-side firms are
+deployed to create the appearance of competition while avoiding
+the win. The wins-zero filter isolates the side of the bidding
+pool the award layer can plausibly see; participation intensity
+within that stratum ranks exposure to the cartel's deployment
+problem. The binary frequent-loser rule is a coarsening of that
+rank, not a claim of legal membership.
+
+That scope determines the validation target. We do not ask
+whether award records identify cartel members for sanction. They
+do not contain the evidence for that claim. Instead, we validate
+against loser-side cartel adjacency: firms in the always-loser
+stratum that bid alongside direct defendants in adjudicated CADE
+procurement-cartel cases. Direct defendants and cobidders play
+different roles in the evidence. Direct defendants are the
+membership labels in the legal file and are often winner-side
+firms. Cobidders are the loser-side footprint the award-layer
+screen is meant to rank. Stronger discrimination against
+cobidders than against direct defendants is therefore a design
+signature, not a fallback target.
+
+Five empirical implications organize the exercise. A useful
+award-layer screen should discriminate adjudicated cobidders
+inside the always-loser population, including when the score is
+formed before the labels are observed. Because the statistic is a
+loser-side screen, it should perform worse against direct CADE
+defendants than against cobidders. If cobidders are more than
+active losing firms, their firm-level and bid-level profiles
+should resemble credible cover bidding: deployment near direct
+defendants, concentrated market portfolios, plausibly close
+losing bids, and dispersion consistent with rotation across cover
+roles. If award records and bid records carry different
+information, the award-layer statistic should complement rather
+than replace bid-distribution methods. Finally, if the
+architecture has enforcement value, placing the award-layer
+screen before bid-layer forensics should reduce the
+bid-microdata pool while preserving most recall against
+adjudicated cobidders.
+
+The results line up with those implications. Built on
+$2009$--$2016$ participation and evaluated on $2017$--$2019$
+labels, the screen prospectively flags adjudicated cobidders at
+firm-level AUC $\valAUCFLfirmTemp$. On the same
+cartel-adjacency target, it reaches discrimination comparable to
+a seven-feature Imhof--Wallimann bid-distribution pipeline and
+adds non-redundant signal when the two are combined
+($+\valImhofIncFL$ AUC, DeLong $p=\valImhofIncFLp$). In the
+sequential gatekeeper exercise, the award-layer screen reduces
+the bid-microdata pool for the forensic stage by
+$\valArchFootprintReduction$ while still recovering
+$\valArchTPThouSeqK$ of $\valArchNPos$ adjudicated cobidders.
+The point is not that a four-field award-layer statistic
+dominates bid-distribution forensics. It does not. The point is
+that the two layers are complements, and the cheap layer can
+tell the agency where the costly layer should be applied first.
+
+The cobidder evidence also narrows the interpretation. Within
+the frequent-loser stratum, cobidders face more unique winners,
+bid more often alongside direct CADE defendants, and concentrate
+activity in narrower item-group portfolios than other frequent
+losers. The LANCES export lets us look one layer deeper:
+cobidders bid closer to winners and show higher within-firm
+dispersion in the bid gap, with both signs surviving a
+multivariate logit that controls for participation intensity.
+Those facts do not prove cartel membership. They do address the
+most direct objection to the validation exercise. Cobidders are
+not merely high-volume losing firms; their loser-side profile is
+consistent with credible cover bidding in the modern
+cover-bidding literature
+\citep{asker2010leniency,marshall2012economics}.
+
+The price evidence has a narrower role. Frequent-loser presence is
+associated with a $\valHeadlineRange$ higher conditional log
+negotiated unit price across four broad-sample estimators, and
+the positive imprint is concentrated in the highest tender-value
+segment. Under overlap restriction the aggregate sign reverses:
+three lower tender-value segments are negative and the highest
+segment remains positive. We report this as economic
+corroboration that the screen tracks environments where
+collusion-relevant behavior matters, not as a damages estimate
+or a causal effect of cover bidding on prices. The main claim
+does not rest on either sign of the price coefficient.
+
+The contribution is to change where several familiar tools enter
+the enforcement sequence. For enforcement-design work, we provide
+an empirical architecture for staged information acquisition under
+incomplete observability. For bid-distribution
+screening, it supplies a first-stage award-layer ranking that
+indicates where bid-distribution moments should be recovered,
+rather than a substitute for those moments. For bid-coordination
+tests, it offers an ex ante firm-level partition computable
+before a case record defines suspected colluders and competitive
+fringe. For cover-bidding studies, which usually identify cover
+bidders ex post through leniency or judicial records
+\citep{porter1999ohio,pesendorfer2000study,asker2010leniency},
+it offers prospective loser-side candidates from public award
+records alone.
+
+Three boundaries matter throughout. The screen creates
+suspicion, not legal proof. The validation target is
+cartel-adjacent cobidding, not cartel membership. The price
+imprint is descriptive, not a damages calculation. These limits
+are not cosmetic disclaimers; they define the stage of
+enforcement studied here. Award-layer triage is useful
+precisely because it occurs before bid-layer evidence is
+recovered and before legal proof can be assembled.
+
+The resulting claim is deliberately narrower than cartel
+detection and broader than a new statistic. When proof is costly
+and suspicion can be generated from records the agency already
+holds, the first policy question is not whether the cheap layer
+can decide liability. It cannot. The question is whether that
+layer can discipline the allocation of costly forensic attention.
+In this setting it can. The award layer supplies a legally
+limited but empirically informative triage stage; the bid layer
+remains where proof is assembled.

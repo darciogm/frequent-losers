@@ -1,0 +1,214 @@
+\section{Sequencing Screening and Forensic Proof}
+\label{sec:screening_forensics}
+
+The previous sections establish the target and the type. The
+remaining question is institutional: what should an agency do
+with a signal that is cheap enough to compute before it has the
+evidence needed for proof? The answer is not to treat the
+award-layer screen as a substitute for bid analysis. The answer
+is to put it before bid analysis. In that sequence, suspicion is
+created on the record layer the agency already observes, and
+forensic work is reserved for a smaller set of firms and
+environments where the expected return to costly bid-level
+inspection is higher.
+
+\subsection{Bid-Layer Benchmark}
+\label{sec:bid_layer_benchmark}
+
+The natural benchmark is the bid-distribution tradition in
+cartel screening. Imhof--Wallimann-style detectors use
+within-tender bid moments, such as dispersion, skewness, spread,
+and distance from the winning bid, to detect patterns consistent
+with coordinated bidding \citep{imhof2019detecting,wallimann2023machine}.
+Those moments live one layer deeper than the frequent-loser
+screen. They require per-bid offer values and enough usable bid
+microdata to construct a firm-level forensic profile. The
+award-layer screen requires only participation counts and the
+absence of wins.
+
+Table~\ref{tab:imhof_cost_v18} puts the two layers on the same
+cartel-adjacency target. Within the always-loser pool for which
+bid-distribution features can be computed
+($N=\valImhofPoolN$), the binary frequent-loser flag reaches AUC
+$\valImhofFLBin$ ($95\%$ CI $\valImhofFLBinCI$). The continuous
+participation score reaches AUC $\valImhofFLcont$
+($\valImhofFLcontCI$). The full bid-layer pipeline reaches AUC
+$\valImhofFull$ ($\valImhofFullCI$). This is not an
+outperformance claim. The point is sharper: a record-layer
+statistic, computed before forensic recovery of bid values,
+discriminates the same adjudication-anchored target in the same
+range as a much richer bid-layer benchmark.
+
+\begin{table}[htbp]
+\centering
+\caption{Discrimination at Different Information Costs}
+\label{tab:imhof_cost_v18}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{4.6cm}p{5.4cm}cc}
+\toprule
+Model & Information required & AUC & 95\% CI \\
+\midrule
+Frequent-loser flag & Award records: participation count and zero wins
+& $\valImhofFLBin$ & $\valImhofFLBinCI$ \\
+Participation intensity & Award records: $\log(1+\text{tenders\_count})$ and zero wins
+& $\valImhofFLcont$ & $\valImhofFLcontCI$ \\
+Bid-layer benchmark & Per-bid offer values and within-tender bid moments
+& $\valImhofFull$ & $\valImhofFullCI$ \\
+Award layer $+$ bid layer & Participation intensity plus bid-distribution moments
+& $\valImhofComboCont$ & $\valImhofComboContCI$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Five-fold cross-validated AUC against
+CADE-cobidder labels within the always-loser pool for which the
+bid-distribution benchmark can be computed
+($N=\valImhofPoolN$). The combined specification uses the same
+target and adds the award-layer score to the bid-layer moments.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Complementary Signals}
+\label{sec:complementary_signals}
+
+Comparable AUCs do not by themselves justify a two-stage
+architecture. If the award-layer statistic were just a noisy
+version of the bid-layer score, it would be useful only where
+bid microdata are missing. The stronger result is that the two
+layers are not redundant. Adding the award-layer statistic to
+the bid-layer benchmark raises discrimination to
+$\valImhofComboCont$ ($\valImhofComboContCI$). In the identical
+same-sample audit, where all models are evaluated only on firms
+with complete bid-layer features, the frequent-loser flag adds
+$+\valImhofIncFL$ AUC over the full Imhof--Wallimann benchmark
+alone (DeLong $p=\valImhofIncFLp$). The combined specifications
+gain $\valImhofIncCombo$ AUC over the bid-layer benchmark
+($p<0.001$).
+
+That gain is substantively important for JLEO purposes because
+it separates two legal-economic objects. Bid moments are closer
+to forensic proof: they speak to the shape of bidding inside a
+tender. Participation intensity is closer to investigative
+priority: it asks whether a firm repeatedly supplies losing
+participation in markets where winners rotate through the award
+layer. A regulator should not collapse those objects. The first
+creates a reason to look; the second helps evaluate what is
+found after looking. Their combination improves prediction
+because the two stages measure different parts of the suspected
+coordination process.
+
+\subsection{A Sequential Gatekeeper}
+\label{sec:sequential_gatekeeper}
+
+The operational test is not whether the cheap screen
+beats the forensic benchmark. The relevant test is whether it can
+reduce the forensic workload without throwing away too many
+adjudication-anchored positives. Table~\ref{tab:gatekeeper_v18}
+reports that exercise for $\valArchPoolSize$ always-loser firms
+with bid-layer features and $\valArchNPos$ CADE-cobidder
+positives. Joint scoring, which gives the classifier both the
+award-layer score and bid-layer moments for every firm, is the
+upper bound for an agency willing to recover bid microdata on
+the full pool. At the top $1{,}000$ flags, it finds
+$\valArchTPThouJoint$ cobidders, or recall
+$\valArchRecallThouJoint$.
+
+The sequential design asks for less. It first ranks firms using
+the award layer. It keeps the top
+$K_1=\valArchSeqKone$ firms. Only then does it recover or
+process bid microdata and apply the bid-layer benchmark within
+that survivor pool. At the top $1{,}000$ final flags, the
+sequential rule finds $\valArchTPThouSeqK$ of
+$\valArchNPos$ cobidders, or recall $\valArchRecallThouSeqK$.
+The loss relative to joint scoring is
+$\valArchRecallCost$, while the bid-microdata footprint falls by
+$\valArchFootprintReduction$.
+
+\begin{table}[htbp]
+\centering
+\caption{Gatekeeping the Bid-Layer Forensic Stage}
+\label{tab:gatekeeper_v18}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{5.2cm}rrrrr}
+\toprule
+Rule & $k$ & TP & Precision & Recall & Bid-microdata firms \\
+\midrule
+Award-layer only & $500$ & $66$ & $\valArchPrecAtFiveHundFL$ & $0.342$ & $0$ \\
+Bid-layer only & $500$ & $73$ & $\valArchPrecAtFiveHundImhof$ & $0.378$ & $\valArchPoolSize$ \\
+Joint scoring, award $+$ bid & $500$ & $112$ & $\valArchPrecAtFiveHundJoint$ & $0.580$ & $\valArchPoolSize$ \\
+Sequential: award $\rightarrow$ bid, $K_1=\valArchSeqKone$
+& $500$ & $96$ & $\valArchPrecAtFiveHundSeqK$ & $0.497$ & $\valArchSeqKone$ \\
+\midrule
+Joint scoring, award $+$ bid & $1{,}000$ & $\valArchTPThouJoint$
+& $0.142$ & $\valArchRecallThouJoint$ & $\valArchPoolSize$ \\
+Sequential: award $\rightarrow$ bid, $K_1=\valArchSeqKone$
+& $1{,}000$ & $\valArchTPThouSeqK$
+& $0.131$ & $\valArchRecallThouSeqK$ & $\valArchSeqKone$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Evaluation pool:
+$\valArchPoolSize$ always-loser firms with computable
+bid-distribution features; positives are $\valArchNPos$
+CADE-cobidders. The bid-microdata column reports how many firms
+require per-bid offer values before the rule can be applied.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The sequential rule is not the precision champion; joint scoring
+has the easier job because it uses every information layer for
+every firm. The sequential rule earns its place in a different
+way. It makes the expensive forensic stage conditional on a
+cheap suspicion stage, and the empirical cost of doing so is
+modest relative to the reduction in bid-microdata exposure. That
+is the tradeoff faced by an enforcement agency that cannot
+inspect every bidder, every bid, and every tender with the same
+forensic intensity.
+
+\subsection{Temporal Audit}
+\label{sec:temporal_gatekeeper}
+
+The in-sample gatekeeper exercise still deserves skepticism. A
+classifier trained and evaluated inside the full sample may rank
+firms well because it sees a long history close to the
+adjudicated outcome. We repeat the gatekeeper audit
+with features restricted to the pre-target window,
+$2009$--$2016$, while evaluating against the same post-sample
+adjudication-anchored cobidder target. The temporal-holdout pool
+contains $\valArchTHPoolSize$ always-loser firms with complete
+train-window bid features and $\valArchTHNPos$ positives.
+
+The temporal audit preserves the architecture. At top $500$, the
+award-only rule loses $\valArchTHFLDrop$ of its in-sample true
+positives, joint scoring loses $\valArchTHJointDrop$, and the
+sequential rule loses only $\valArchTHSeqDrop$. In levels, the
+sequential rule recovers $\valArchTHTPFiveHundSeqK$ positives at
+top $500$, compared with $\valArchTHTPFiveHundJoint$ for joint
+scoring. At top $1{,}000$, it recovers
+$\valArchTHTPThouSeqK$ positives, compared with
+$\valArchTHTPThouJoint$ under joint scoring. The result is not
+that temporal holdout eliminates all fragility. It does not. The
+result is narrower and more useful: conditioning bid-layer
+forensics on an earlier award-layer screen remains competitive
+out of time while keeping the forensic footprint small.
+
+The legal interpretation follows the same boundary as the
+empirical design. A frequent-loser flag cannot establish an
+agreement, identify a damages base, or prove that a particular
+bid was cover. It can identify where the agency should spend the
+next unit of investigative effort. The bid-layer stage then
+examines whether the bidding record contains the richer patterns
+needed for proof. For a journal concerned with how law works
+under institutional constraint, that sequencing is the
+contribution: a cheap administrative record can improve the
+allocation of costly legal evidence gathering without pretending
+to be legal evidence itself.

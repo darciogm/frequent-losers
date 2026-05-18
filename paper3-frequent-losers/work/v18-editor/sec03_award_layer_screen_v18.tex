@@ -1,0 +1,111 @@
+\section{A Loser-Side Screen for Cartel Adjacency}
+\label{sec:award_screen}
+
+\subsection{The Participation Primitive}
+\label{sec:award_primitive}
+
+The award layer cannot observe whether a losing bid was sincere,
+strategic, or coordinated. It can observe something more basic:
+which firms repeatedly entered tenders and never won. That is the
+primitive used here. The screen begins with the zero-win subset
+and then ranks firms inside that subset by participation
+intensity. In the BEC data this conditioning set contains
+$\valAlwaysLosers$ always-loser firms. A firm above the
+participation cutoff is a frequent loser.
+
+The economic reason for starting on the loser side is simple.
+Cover bidding is useful to a cartel because it supplies the
+appearance of competition while leaving the designated winner in
+place. A cover bidder is therefore expected to lose in the
+cartel-targeted tenders where it is deployed. Zero wins alone is
+not enough, of course. Many firms lose because they are small,
+inexperienced, poorly matched to the item, or simply unlucky.
+The additional signal is persistence: among firms that never
+win, repeated participation is harder to rationalize as ordinary
+competitive entry, and easier to reconcile with a role that pays
+off outside the observed award outcome. The formal appendix
+states this as a monotone-ranking result: conditional on zero
+wins, $\log(1+\text{tenders\_count})$ ranks the posterior
+probability of the cover-bidder type under a sparse
+separating-equilibrium framework.
+
+This argument is intentionally modest. It does not say every
+frequent loser is a cover bidder, nor that cover bidding is the
+only reason for repeated zero-win participation. Capacity
+signaling, subcontracting relationships, eligibility
+maintenance, and market-intelligence gathering are also possible.
+The claim is narrower: the award layer supplies a ranking
+statistic for loser-side cartel adjacency, and that statistic is
+worth validating against adjudicated cartel records before any
+membership language is used.
+
+\subsection{The Binary Rule}
+\label{sec:award_rule}
+
+The continuous score is
+$\log(1+\text{tenders\_count})$ computed among always-loser
+firms. For a discrete screen, we use the median plus
+$1.5\times$ interquartile range of the always-loser participation
+distribution. The resulting cutoff is $\valThreshold$
+tender-items with zero wins and flags $\valFL$ frequent losers.
+The rule is fixed from the participation distribution, before
+using CADE labels, and requires no bid amounts, bid rankings, or
+within-tender dispersion measures.
+
+The binary cutoff is useful because enforcement programs often
+need a list, not only a rank. Still, the rank is the economic
+object. The binary rule compresses a continuous participation
+gradient into a manageable first-stage flag. Later sections
+therefore report both objects where possible: the frequent-loser
+indicator as the administrable screen, and
+$\log(1+\text{tenders\_count})$ as the underlying ranking
+statistic. This distinction matters in two places. First, a
+sharp cutoff is easier for firms to manipulate than a rank, a
+point we return to when discussing adversarial adaptation.
+Second, bid-distribution forensics can be sequenced after either
+object: the agency may request bid microdata for all firms above
+the cutoff, or for the top-ranked firms under the continuous
+score.
+
+\subsection{Populations and Legal-Economic Role}
+\label{sec:award_populations}
+
+Table~\ref{tab:populations_v18} fixes the populations used in
+the analysis. The broad BEC universe contains all firms that appear
+as participants during the sample window. The screen operates
+inside the always-loser stratum. Frequent losers are the flagged
+subset of that stratum. CADE direct defendants are firms named in
+adjudicated procurement-cartel cases and active in BEC. Cobidders
+are always-loser firms that appear alongside those direct
+defendants in BEC tender-items.
+
+\begin{table}[htbp]
+\centering
+\caption{Populations and legal-economic role}
+\label{tab:populations_v18}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{p{4.0cm}p{2.1cm}p{7.0cm}}
+\toprule
+Population & Size & Role in the analysis \\
+\midrule
+All BEC participants & $41{,}444$ & Firms participating in BEC tenders during $2009$--$2019$; the outer procurement universe. \\
+Always-losers & $\valAlwaysLosers$ & Firms with zero wins; the loser-side stratum within which the award-layer screen ranks firms. \\
+Frequent losers & $\valFL$ & Always-losers above the participation cutoff; the discrete first-stage screen. \\
+CADE direct defendants in BEC & $\valDirectCADE$ & Firms named in CADE procurement-cartel rulings and active in BEC; the legal membership anchors. \\
+Cobidders in the always-loser stratum & $\valCobidders$ & Always-losers that participated alongside direct defendants; the cartel-adjacency target for validation. \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+The table also clarifies what the screen is not designed to do.
+Direct defendants are the legal membership anchors, but they are
+not the natural target of a loser-side award-layer statistic.
+Cobidders are indirect labels and cannot adjudicate liability.
+They are the validation object because they occupy the part of
+the bidding pool the screen can observe: firms that lose, keep
+showing up, and appear near adjudicated cartel defendants. The
+next section asks whether the frequent-loser ranking actually
+concentrates on that population at rates above what participation
+volume alone would imply.

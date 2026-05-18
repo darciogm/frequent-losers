@@ -1,0 +1,635 @@
+\section{Cover-Bidding Framework and Proofs}\label{app:proofs}
+
+This appendix formalizes the reduced-form separating-equilibrium
+framework the paper reads against. We deliberately keep the
+framework spare: the empirical contribution is screening under
+incomplete observability, and the role of the framework is to
+identify the participation primitive a cartel-deployed cover
+bidder generates in award-record data and to discipline the
+interpretation of the empirical objects, not to provide a
+fully-specified mechanism-design treatment of cartel
+formation.\footnote{The cartel's allocation rule, side-payment
+scheme, and within-cartel sanctions are micro-founded in
+\citet{marshall2012economics} and \citet{asker2010leniency};
+we take their characterization as given and parameterize the
+cartel's reduced-form deployment problem.}
+
+\paragraph{Primitives.} A cartel of $n$ firms is active in a
+procurement market $k$ with $|k|$ auctions per period. The
+cartel allocates the designated winner to one cartel member
+submitting bid $b^*$ in each cartel-targeted auction and chooses
+the per-period deployment count $m \geq 0$, defined as the
+number of auctions per period in which the cartel deploys at
+least one cover bidder.\footnote{For tractability we treat each
+cartel-targeted auction as covered by a single cover bidder;
+the framework is unchanged if multiple cover bidders are deployed
+per auction provided the per-deployment cost $c_1$ is
+re-interpreted accordingly.} A cover bidder in a cartel-targeted
+auction submits a bid $b_\ell > b^*$. Per-deployment cost is
+$c_1 > 0$. Market-level detection probability is
+$\theta_k \in (0,1)$, declining in oversight capacity. Let
+$R(m, \theta_k)$ denote gross expected cartel rents from
+deploying $m$ auctions in market $k$ per period; rents are net
+of the cartel's distributive sharing rule (whose details are not
+material to the empirical claims). The cartel's expected net
+surplus per period is
+$\pi(m, \theta_k, c_1) = R(m, \theta_k) - (c_1 + \theta_k
+\phi_0)\,m$, where $\phi_0 > 0$ is the cartel-wide marginal
+detection penalty per cover-deployment; we treat detection
+penalty as cartel-level (not pegged to individual cover-bidder
+identity), consistent with oversight that detects the
+\emph{pattern} of cover bidding rather than individual
+outcomes.
+
+\paragraph{Assumptions.} We impose:
+\begin{itemize}
+\item[\textbf{A1}] (Rent positivity at the margin)
+$\partial R / \partial m |_{m=0} > c_1 + \theta_k \phi_0$ at
+the observed $\theta_k$, ensuring the cartel optimally deploys
+at least one cover bidder.
+\item[\textbf{A2}] (Diminishing rents)
+$\partial^2 R / \partial m^2 < 0$, which by linearity of the
+cost terms in $m$ yields $\partial^2 \pi / \partial m^2 < 0$.
+\item[\textbf{A3}] (Cartel-allocation incentive compatibility)
+The within-cartel allocation rule is incentive-compatible in
+the bidding subgame: for any non-designated cartel firm,
+$\mathrm{rents} < \kappa$, where $\mathrm{rents}$ is the per-auction
+profit from deviating to a winning bid and $\kappa > 0$ is the
+internal cartel sanction or capacity-revelation cost triggered
+by the deviation. We treat A3 as a primitive equilibrium
+condition the cartel's optimal contract design is required to
+satisfy; \citet{marshall2012economics} and
+\citet{asker2010leniency} derive sufficient conditions on
+side-payment and trigger-strategy schemes.
+\item[\textbf{A4}] (Type partition) Each non-cartel firm $i$ is
+of type $C$ (cover bidder, deployed by the cartel in some
+fraction of auctions) or type $G$ (genuine entrant). Hybrid or
+intermediate types are absorbed into the empirical type-$G$
+class.\footnote{The empirical implementation does not require
+the binary partition to be the unique data-generating process;
+hybrid types whose deployment intensity is intermediate are
+absorbed by the rank-based screening statistic of
+Proposition~\ref{prop:exposure_stmt}.}
+\item[\textbf{A5}] (Stationary deployment within market) The
+cartel's per-period deployment $m$ is constant within market
+$k$ over the analysis window; deployment events are conditionally
+independent across auctions given $m$ and $|k|$.
+\item[\textbf{A6}] (Selection on the wins-zero subset)
+Conditional on $\{\text{wins}_i = 0\}$, type-$G$ firms are
+permanent competitive losers (low-intensity participants, in
+the market at low rate) while type-$C$ firms are cartel-deployed
+participants. This selection effect implies $\lambda_G <
+\lambda_C$ on the wins-zero subset, where $\lambda_C, \lambda_G$
+are per-period auction-participation rates of type $C$ and
+type $G$ firms respectively. A6 is the model-completing
+assumption that disciplines the type-discrimination claim of
+Proposition~\ref{prop:exposure_stmt}; without A6 the wins-zero
+subset is uninformative about type.
+\end{itemize}
+
+\paragraph{Empirical observables.} Award-record data report a
+participation count $T_i = \text{tenders\_count}_i$, a win
+indicator $\text{wins}_i \in \{0, 1\}$, and a tenure $\tau_i$
+(years active) for each firm $i$.
+
+\paragraph{Roadmap.} Lemma~\ref{lem:wins_zero_stmt} identifies
+the $\text{wins} = 0$ filter as the equilibrium choice of
+type $C$. Proposition~\ref{prop:exposure_stmt} establishes
+$\log(1 + T_i)$ as a Bayesian-monotone ranking statistic for
+type $C$ on the conditioning set $\{\text{wins} = 0\}$.
+Proposition~\ref{prop:optimal_m} characterizes the cartel's
+optimal deployment $m^*$ and its comparative statics.
+Proposition~\ref{prop:screening_value} discusses why the
+broad-sample association $\beta$ and the overlap-restricted
+$\beta^{\text{ov}}$ are different empirical objects under the
+framework's deployment problem.
+
+\begin{lemma}[Wins-zero separating equilibrium]\label{lem:wins_zero_stmt}
+Consider the bidding subgame in which a cartel allocates the
+designated winner to one cartel member submitting bid $b^*$ and
+deploys $m$ cover bidders in a cartel-targeted auction, each
+cover bidder $\ell$ choosing a bid $b_\ell$. Under A3, every
+separating equilibrium of this subgame has $b_\ell > b^*$ for
+every cover bidder $\ell$, so $\Pr(\text{win} \mid C) = 0$: the
+bright-line filter $\text{wins} = 0$ identifies the type-$C$
+subset of bidders. Genuine entrants of type $G$ face no
+$\kappa$-sanction constraint and bid $b_G < b^*$ whenever
+expected payoff from winning is positive. The cover-bidder
+strategy correspondence is $\{b : b > b^*\}$; the lemma pins
+down the equilibrium win probability and the wins-zero filter,
+not a unique numerical bid.
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lem:wins_zero_stmt}]
+At the bidding stage, the cartel's deployment $m$ and market
+detection probability $\theta_k$ are taken as given; the
+cartel-wide detection penalty $\theta_k \phi_0 m$ is therefore
+sunk from the perspective of any individual cover bidder
+choosing $b_\ell$. Write the cover bidder's bidding-stage payoff
+conditional on choosing $b$ as
+$u_C(b) = -c_1 - \tilde{\phi} - \kappa \cdot \Pr(\text{win}
+\mid b)$, where $c_1$ is the per-deployment cost, the sunk term
+$\tilde{\phi} = \theta_k \phi_0$ is the cover bidder's share of
+the cartel-wide detection cost (independent of own bid), and
+$\kappa$ is the personal cartel-internal sanction triggered
+\emph{only} by an off-equilibrium winning deviation. Compare
+the equilibrium-candidate strategy $b > b^*$ against the
+single deviation $b' < b^*$ that becomes the winning bid (i.e.,
+$b'$ undercuts both $b^*$ and any genuine-entrant bid).
+Equilibrium-candidate payoff: $\Pr(\text{win} \mid b) = 0$ and
+$u_C(b) = -c_1 - \tilde{\phi}$. Deviation payoff:
+$\Pr(\text{win} \mid b') = 1$ and
+$u_C(b') = -c_1 - \tilde{\phi} - \kappa + \mathrm{rents}$. Under
+A3, $\mathrm{rents} < \kappa$, so $u_C(b') < u_C(b)$ and no
+profitable deviation exists. Therefore in any separating
+equilibrium, every cover bidder chooses some $b > b^*$. By the
+auction's lowest-bid rule and the assumption that $b^*$ is the
+designated winning bid, $\Pr(\text{win} \mid C) = 0$ in every
+such equilibrium. Type $G$ faces no $\kappa$ penalty and prefers
+$b_G < b^*$ whenever the post-cost rent from winning is
+positive. The argument pins down the equilibrium win probability
+and the wins-zero filter; it does not pin down a unique cover
+bidder bid, since any $b > b^*$ delivers the same payoff
+$-c_1 - \tilde{\phi}$. The bid correspondence is $\{b : b > b^*\}$,
+and the empirical filter $\text{wins} = 0$ identifies the
+type-$C$ subset across this entire correspondence. \qed
+\end{proof}
+
+\begin{proposition}[Linearized cumulative exposure]\label{prop:exposure_stmt}
+Define the per-period auction-participation rate of a type-$C$
+firm in market $k$ as
+$\lambda_C(\theta_k, c_1) \equiv m^* / |k|$, where $m^*$ is the
+cartel's optimal per-period deployment count
+(Proposition~\ref{prop:optimal_m}) and $|k|$ is the number of
+auctions per period in market $k$; $\lambda_C$ is therefore the
+fraction of auctions per period in which a typical cover bidder
+participates. Under A5 (stationary deployment with conditional
+independence) and the Poisson approximation
+$T_i \sim \mathrm{Poisson}(\lambda \tau_i)$, the expected
+participation count over tenure $\tau_i$ years is
+$\mathbb{E}[T_i \mid \text{type}=C, \tau_i] =
+\lambda_C \tau_i$ for type $C$ and
+$\mathbb{E}[T_i \mid \text{type}=G, \tau_i] =
+\lambda_G \tau_i$ for type $G$, with $\lambda_G < \lambda_C$ on
+the conditioning subset $\{\text{wins}_i = 0\}$ by A6. The
+log-statistic $\log(1+T_i)$ is a monotone, rank-equivalent
+transformation of $T_i$. Under the monotone-likelihood-ratio
+property of the Poisson family with $\lambda_C > \lambda_G$,
+the posterior $\Pr(\text{type}=C \mid T_i = t,\,\text{wins}_i =
+0)$ is non-decreasing in $t$; equivalently, $\log(1+T_i)$ is a
+Bayesian-monotone ranking statistic for type $C$ on the
+conditioning set $\{\text{wins} = 0\}$. Combined with
+Lemma~\ref{lem:wins_zero_stmt}, the joint statistic
+$(\log(1+T_i),\,\mathbf{1}[\text{wins}_i = 0])$ is the
+sufficient pair of award-record observables for type-$C$
+discrimination under A4--A6; the binary frequent-loser rule
+$\mathbf{1}[T_i > k]$ is one information-coarsening of this
+posterior, with the empirical choice
+$k = \mathrm{med} + 1.5 \times \mathrm{IQR}$ a convention
+motivated by the empirical participation distribution rather
+than by the framework.
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:exposure_stmt}]
+The expectation result $\mathbb{E}[T_i \mid \text{type},
+\tau_i] = \lambda \tau_i$ is the mean of a Poisson process with
+rate $\lambda$ over horizon $\tau_i$ (A5). The monotonicity
+claim follows from Bayes' rule on the wins-zero subset:
+$\Pr(C \mid t,\,\text{wins} = 0) = \Pr(t \mid C, \text{wins} = 0)
+\,\pi'_C / [\Pr(t \mid C, \text{wins} = 0)\,\pi'_C +
+\Pr(t \mid G, \text{wins} = 0)\,(1 - \pi'_C)]$, where $\pi'_C$
+is the prior conditional on wins=0. This posterior is
+non-decreasing in $t$ if and only if the likelihood ratio
+$\Pr(t \mid C, \text{wins}=0)/\Pr(t \mid G, \text{wins}=0)$ is
+non-decreasing in $t$. For Poisson likelihoods with rates
+$\lambda_C > \lambda_G$ (the inequality holds on
+$\{\text{wins} = 0\}$ by A6), the monotone-likelihood-ratio
+property of the Poisson family is standard
+\citep{karlin1956mlr}. Hence the posterior is non-decreasing in
+$T_i$, and the log transform $\log(1 + T_i)$ inherits the
+ranking. Coarsening to a binary indicator
+$\mathbf{1}[T_i > k]$ preserves rank-monotonicity above and
+below $k$ but is no longer Bayesian-sufficient; this
+information-loss is the price of operational simplicity. \qed
+\end{proof}
+
+\begin{proposition}[Optimal cover-bidder deployment]\label{prop:optimal_m}
+Under A1--A2 and the net-surplus definition $\pi(m, \theta_k,
+c_1) = R(m, \theta_k) - (c_1 + \theta_k \phi_0)\,m$, the
+cartel's optimal cover-bidder deployment rate $m^*$ satisfies
+the first-order condition
+$\partial R / \partial m = c_1 + \theta_k \phi_0$. By A2 the
+solution is unique and interior. Implicit differentiation of
+the FOC yields the comparative statics
+$\partial m^*/\partial \theta_k = \phi_0 / (\partial^2 R /
+\partial m^2) < 0$ and $\partial m^*/\partial c_1 = 1 /
+(\partial^2 R / \partial m^2) < 0$; both ratios are negative
+because A2 ensures the denominator
+$\partial^2 R / \partial m^2 = \partial^2 \pi / \partial m^2$
+is negative. Cover-bidder deployment is more aggressive where
+the principal cost of detection is lower
+(\S\ref{sec:results_oversight}).
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:optimal_m}]
+Differentiating $\pi(m, \theta_k, c_1) = R(m, \theta_k) -
+(c_1 + \theta_k \phi_0) m$ with respect to $m$ and setting
+$\partial \pi / \partial m = 0$ yields $\partial R / \partial m
+= c_1 + \theta_k \phi_0$. A1 ensures the optimum is interior
+($m^* > 0$); A2 ensures the solution is unique. Define
+$F(m, \theta_k, c_1) = \partial R / \partial m - c_1 - \theta_k
+\phi_0$; the FOC is $F = 0$. By the implicit function theorem,
+$\partial m^* / \partial \theta_k = -F_{\theta_k} / F_m =
+\phi_0 / (\partial^2 R / \partial m^2)$ and
+$\partial m^* / \partial c_1 = -F_{c_1} / F_m = 1 /
+(\partial^2 R / \partial m^2)$. Both are negative because A2
+gives $\partial^2 R / \partial m^2 < 0$. \qed
+\end{proof}
+
+Propositions~\ref{prop:exposure_stmt}--\ref{prop:optimal_m}
+together imply that frequent-loser participation is not
+distributed uniformly over items: under A1--A2, the cartel
+deploys cover bidders preferentially in items where its expected
+surplus is highest, conditional on the deployment cost $c_1$ and
+the local detection probability $\theta_k$. Items the cartel
+selects into therefore differ from items it does not on a vector
+of unobserved characteristics $\mathbf{u}$ that governs the
+cartel's expected surplus---chiefly, the rents available from
+the designated winner's bid relative to the competitive
+equilibrium price. The next proposition formalizes the
+implication for the two empirical objects $\beta$ and
+$\beta^{\text{ov}}$.
+
+\begin{proposition}[Screening-value vs.\ treatment-effect objects]\label{prop:screening_value}
+Let $D_i \in \{0,1\}$ indicate frequent-loser presence in item
+$i$, $\mathbf{x}_i$ the vector of observables absorbed by fixed
+effects and matching covariates, and $\mathbf{u}_i$ the vector
+of unobservables governing the cartel's deployment optimum.
+Suppose the cartel's optimal deployment satisfies
+$\Pr(D_i=1 \mid \mathbf{x}_i, \mathbf{u}_i) = g(\mathbf{x}_i,
+\mathbf{u}_i)$ with $g$ strictly increasing in the rent
+component of $\mathbf{u}_i$. Then (1) the broad-sample
+$\beta = \mathbb{E}[y_i \mid D_i=1, \mathbf{x}_i] -
+\mathbb{E}[y_i \mid D_i=0, \mathbf{x}_i]$ integrates over
+conditional distributions of $\mathbf{u}_i$ that differ
+systematically in the rent component (Bayes' rule on the
+deployment density $g(\mathbf{x}, \mathbf{u}) f(\mathbf{u} \mid
+\mathbf{x})$); (2) within the common-support cell $\Omega$,
+defined by propensity scores $\Pr(D_i=1 \mid \mathbf{x}_i)$
+bounded away from $0$ and $1$, the conditional support of
+$\mathbf{u}_i$ overlaps strictly across $D_i=1$ and $D_i=0$ at
+each $\mathbf{x}_i \in \Omega$, so within-cell comparisons
+between treated and untreated items are well-defined; the
+proposition makes no claim that the conditional distributions
+of $\mathbf{u}_i$ within $\Omega$ are equal or that the
+conditional means are bounded, only that their supports
+overlap and that ATT or PS-trimmed reweighting is mathematically
+applicable; and (3) under the auxiliary premise that the
+rent component shifts the realized log price in the same
+direction it shifts the deployment probability, the gap
+$\beta - \beta^{\text{ov}}$ inherits the sign of the rent
+co-movement, and an observed sign reversal $\beta>0$,
+$\beta^{\text{ov}}<0$ is consistent with the deployment problem
+rather than refuting it. The proposition does not derive the
+sign reversal; it identifies the rent-component-co-movement
+premise as a sufficient condition under which the observed sign
+reversal is rationalizable within the framework. The
+proposition is therefore better read as a structural remark
+than as an identification result; we retain the proposition
+form for cross-reference convenience.
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:screening_value}]
+Claim 1 follows from the law of iterated expectations: the
+broad-sample $\beta$ averages
+$\mathbb{E}[y_i \mid D_i, \mathbf{x}_i, \mathbf{u}_i]$ over the
+conditional distributions of $\mathbf{u}_i$ given $D_i$ and
+$\mathbf{x}_i$, and Proposition~\ref{prop:optimal_m} combined
+with Bayes' rule applied to
+$f(\mathbf{u} \mid D=1, \mathbf{x}) \propto g(\mathbf{x},
+\mathbf{u}) f(\mathbf{u} \mid \mathbf{x})$ implies
+$\mathbf{u}_i \mid D_i=1$ first-order stochastically dominates
+$\mathbf{u}_i \mid D_i=0$ in the rent component at the same
+$\mathbf{x}_i$. Claim 2 follows from the definition of common
+support: cells in $\Omega$ have propensity score
+$\Pr(D_i=1 \mid \mathbf{x}_i) \in (a, b)$ for some
+$0 < a < b < 1$. By Bayes' rule, the conditional density
+$f(\mathbf{u} \mid D_i=d, \mathbf{x}_i)$ is positive at any
+$\mathbf{u}$ where $f(\mathbf{u} \mid \mathbf{x}_i)$ is positive
+and $g(\mathbf{x}_i, \mathbf{u}) \in (0,1)$; the latter holds
+generically when $g$ is strictly monotone and the propensity
+score is interior. Therefore the conditional supports of
+$\mathbf{u}$ across $D=1$ and $D=0$ within $\Omega$ overlap
+strictly. The proposition asserts only this support-overlap
+condition, not that the conditional distributions of
+$\mathbf{u}$ within $\Omega$ are equal or that conditional
+means are bounded; common support is a necessary condition for
+ATT or PS-trimmed estimators to be mathematically defined, not
+for the unobservable distributions across treatment status to
+match. Claim 3 is the comparative statement: under the
+rent-component co-movement premise, the broad-sample average
+inherits a positive contribution from the high-rent cells, while
+$\beta^{\text{ov}}$ averages over a sub-population in which the
+high-rent contribution is mechanically attenuated. The gap
+$\beta - \beta^{\text{ov}}$ therefore inherits the sign of the
+rent co-movement under the premise; an observed sign reversal is
+consistent with this gap exceeding $|\beta^{\text{ov}}|$, but
+the proposition does not derive sign-reversal as a unique
+prediction. If the premise fails, the proposition is silent and
+the observed sign reversal must be explained by some channel
+other than the deployment problem. \qed
+\end{proof}
+
+The proposition is the formal counterpart to the screening-value
+reading in \S\ref{sec:results_overlap}: under the rent-component
+co-movement premise, the observed sign reversal is consistent
+with the deployment problem rather than refuting it. The
+proposition does not assert that the deployment problem
+\emph{predicts} the sign reversal; it identifies a sufficient
+condition (the rent-component co-movement) under which the sign
+reversal is rationalizable within the framework. The model does
+not by itself adjudicate whether the premise holds; the empirical
+evidence of \S\ref{sec:cade}, \S\ref{sec:mech_horse_race}, and
+the segment-level decomposition of \S\ref{sec:results_overlap}
+together discipline the interpretation.
+
+The framework is silent on the bid-level shape of $b_C$ beyond
+the equilibrium constraint $b_C > b^*$. The early empirical
+cover-bidding literature
+\citep{porter1993detection,porter1999ohio,bajari2003deciding}
+reads the constraint loosely: cover bidders submit bids
+\emph{visibly} above the winning bid because the cartel's purpose
+is to manufacture the appearance of competition, not to compete
+credibly (the \emph{textbook} reading, R1). A more recent strand
+reads it tighter: cover bids must remain plausible enough that
+the procurement officer does not flag the bid distribution as
+anomalous, and the cover bidder cycles through cover roles
+across tenders generating cross-bid dispersion within firm
+(the \emph{credible-cover-bidding} reading, R2;
+\citealt{marshall2012economics,asker2010leniency}). The framework
+above is consistent with either reading. The within-stratum
+bridge of \S\ref{sec:cade_bridge} discriminates between them:
+cobidders bid systematically closer to the eventual winner than
+FL non-cobidders ($d=\valTBBLMedGapD$, $p<10^{-6}$) with
+elevated within-firm dispersion ($d=\valTBBLSDGapD$); a
+multivariate logit holding $\log(1+\text{tenders\_count})$
+constant confirms both signs at $p<10^{-3}$. The directions are
+opposite to R1 and consistent with R2; we adopt R2 as the
+operational reading. The framework's predictions about firm-level
+participation intensity (Proposition~\ref{prop:exposure_stmt}),
+deployment proximity to direct CADE defendants, and portfolio
+specialization are unaffected by the R1/R2 distinction; only the
+bid-level reading of $b_C$ is.
+
+\section{Core Supporting Tables and Figures}
+\label{app:supporting}
+
+The sample-construction tables (modal mix, conditional
+descriptive statistics) and the heterogeneity tables
+(detection-regime quartiles, modal contrast, McCrary density,
+robustness to exclusion of CADE-involved items) referenced in
+the body are collected here, together with the always-loser
+participation distribution that motivates the
+median$\,+\,1.5\!\times\!$IQR cutoff
+(Figures~\ref{fig:losses}--\ref{fig:iqr}) and the
+detection-regime gradient (Figure~\ref{fig:oversight}).
+
+\input{./output/tables/tab_modality_by_year}
+
+\input{./tables/tab_conditional_descstats}
+
+\input{./output/tables/tab_regime_oversight}
+
+\input{./output/tables/tab_falsification_modal}
+
+\input{./tables/tab_mccrary}
+
+\input{./output/tables/tab_excl_cade}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{fig_01_losses_distribution}
+\caption{Distribution of tender-item participation counts across
+always-loser firms in BEC, $\valYearStart$--$\valYearEnd$.}
+\label{fig:losses}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{fig_02_iqr_identification}
+\caption{Identification of the frequent-loser threshold via
+median + $1.5 \times$ IQR on the always-loser participation
+distribution; the cutoff yields $\valThreshold$ tender-items
+($\valThresholdStat$ statistical threshold) and flags $\valFL$
+firms.}
+\label{fig:iqr}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{fig_14_oversight_heterogeneity}
+\caption{Frequent-loser price coefficient by procuring-unit-size
+quartile; the Q1-vs-Q4 contrast (smallest to largest buyers) is
+$\valPBUgradientRatio\!\!\times$, intermediate quartiles
+imprecisely estimated. Companion to
+Table~\ref{tab:regime_oversight}.}
+\label{fig:oversight}
+\end{figure}
+
+\section{Identification Audits}
+\label{app:online_robustness}
+
+Table~\ref{tab:oster_delta} reports the
+\citet{cinelli2020making} robustness value and
+\citet{oster2019unobservable} bounds for the broad-sample
+association; the leakage decomposition and the permutation null
+behind the conservative benchmark are reported in
+Tables~\ref{tab:leakage_audit} and~\ref{tab:cade_permutation}
+of \S\ref{sec:cade} (kept there as the discrimination centerpiece
+rather than as appendix audits). The leave-one-out
+instrumental-variable placebo (Table~\ref{tab:iv_placebo})
+confirms the participation primitive operates through the
+threshold-crossing population the construct identifies; random
+subsamples of below-threshold always-losers do not produce
+comparable discrimination. Table~\ref{tab:temporal_holdout_year}
+reports the rolling-origin temporal-holdout AUC by test year
+(year-by-year decomposition of
+Figure~\ref{fig:temporal_holdout_roc} in the body).
+Table~\ref{tab:mde_summary} reports
+minimum-detectable-effect calculations for the failed RDD and
+DiD designs of \S\ref{sec:emp_estimand}: observed-to-MDE ratios
+well below one indicate the null findings are structurally
+underpowered, not refutations of the underlying mechanism.
+Tables~\ref{tab:item_level_scope_match}
+and~\ref{tab:sign_reversal_decomp} carry the overlap-restricted
+ATT estimates and the cell-dropping decomposition discussed in
+\S\ref{sec:results_overlap}, kept here rather than in the body
+so the price-imprint section remains compact: the overlap-cell
+ATT and propensity-score-trimmed ATT formalize the
+within-support reweighting that produces the sign reversal, and
+the cell-dropping decomposition shows that only
+$\valDroppedItemsShare$ of treated items lack a within-cell
+counterfactual and are strictly dropped.
+
+\input{./output/tables/tab_oster_delta}
+
+\input{./output/tables/tab_iv_placebo}
+
+\input{./output/tables/tab_temporal_holdout_year}
+
+\input{./output/tables/tab_mde_summary}
+
+\input{./output/tables/tab_item_level_scope_match}
+
+\input{./output/tables/tab_sign_reversal_decomp}
+
+\section{Threshold and Specification Robustness}
+\label{app:robustness_tables}
+
+The IQR-multiplier sensitivity (Table~\ref{tab:threshold}) places
+the headline price coefficient as positive and significant under
+five multipliers ranging from $1.0\!\times$ to $3.0\!\times$
+IQR, declining monotonically as the cutoff tightens---the pattern
+the framework's continuous primitive predicts
+(\S\ref{sec:mech_horse_race}). Standard-error clustering
+(Table~\ref{tab:clustering}) under item-level (baseline),
+procuring-unit-level, and two-way \citet{cameron2011robust}
+clustering keeps the coefficient significant at $p<0.01$ under
+all three regimes.
+
+\begin{table}[htbp]
+\centering
+\caption{Price Coefficient Across IQR Multiplier Thresholds}
+\label{tab:threshold}
+\input{./output/tables/tab_threshold_robustness}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Alternative Clustering of Standard Errors}
+\label{tab:clustering}
+\input{./output/tables/tab_clustering_robustness}
+\end{table}
+
+\section{Generalization Audit and Detector Comparison}
+\label{app:operational}
+
+The operational-metrics temporal-holdout audit
+(Table~\ref{tab:operational_metrics}) referenced in
+\S\ref{sec:rob_operational} and the same-sample
+incremental-AUC comparison
+(Table~\ref{tab:imhof_incremental}) referenced in
+\S\ref{sec:forensic} are reported here, together with the
+cross-sector external-validity scope
+(Table~\ref{tab:external_validity_scope}) that quantifies the
+within-product-code identifying variation underwriting the
+headline price gap and the AUC decomposition
+(Table~\ref{tab:auc_decomposition}) that reports the marginal
+contribution of each feature block to discrimination on the
+cobidder ground truth. The participation primitive
+$\log(1+\text{tenders\_count})$ alone reaches AUC near the
+full-feature ceiling; bid-based features contribute non-trivially
+and dropping the participation primitive collapses discrimination
+to bid-distribution-only performance, supporting the framework's
+identification of the participation primitive as the dominant
+signal at the award layer.
+
+\input{./output/tables/tab_operational_metrics}
+
+\input{./output/tables/tab_imhof_incremental}
+
+\input{./output/tables/tab_external_validity_scope}
+
+\input{./output/tables/tab_auc_decomposition}
+
+\section{Adversarial-Adaptation Simulation}
+\label{app:adversarial}
+
+The screen's behavior under deliberate adversarial adaptation
+(\S\ref{sec:lim_construct}) is bounded but not invariant. We
+examine four strategic adaptations. Each holds the screening
+statistic fixed and modifies the always-loser pool to mimic
+plausible evasive behavior, and we recompute the firm-level
+AUC of $\log(1+\text{tenders\_count})$ against the
+$\valCobidders$ CADE-cobidder labels under each
+(Table~\ref{tab:adversarial_adaptation}). Two are observable
+adaptations the screen absorbs cleanly. Rotation ($20\%$ of
+cover bidders retire annually and are replaced by fresh CNPJs)
+and occasional wins ($5\%$ of threshold-crossing firms win one
+tender) leave AUC essentially unchanged: the bright-line
+$\text{wins}=0$ filter eliminates the small share of
+newly-winning cover bidders---a feature of the framework's
+separating equilibrium (Lemma~\ref{lem:wins_zero_stmt}), not a
+heuristic robustness---and rotation does not compress the
+$\log(1+\text{tenders\_count})$ ranking statistic across the
+always-loser pool.
+
+\input{./output/tables/tab_adversarial_adaptation}
+
+Two are threshold-aware adaptations that degrade discrimination.
+CNPJ splitting (each frequent loser splits into two CNPJs
+carrying half the participation count) degrades AUC by
+$\valAdaptCNPJAbs$ percentage points; threshold-aware capping
+(firms cap participation at $13$ tender-items to stay below the
+cutoff) degrades AUC by $\valAdaptCapAbs$ points; the combined
+attack (capping plus $20\%$ rotation) drives AUC from
+$\valAUCBase$ to $\valAUCAdaptCombined$, a
+$\valAdaptCombinedAbs$-point compression. These adaptations
+target the binary cutoff specifically; the continuous primitive
+$\log(1+\text{tenders\_count})$ that
+Proposition~\ref{prop:exposure_stmt} identifies as the
+sufficient ranking statistic is not directly altered, but the
+binary discretization is. Threshold capping is the most exposed
+margin: a cartel that knows the cutoff can instruct cover
+bidders to remain below it.
+
+The implication for the screening-vs-forensic-stage architecture
+of \S\ref{sec:forensic} is asymmetric. Under combined adaptation
+AUC drops to $\valAUCAdaptCombined$---still above random
+matching, still informative as a screening statistic, but
+substantially reduced. The forensic stage is unaffected by
+threshold-aware adaptation at the screening layer:
+bid-distribution moments operate on a different data envelope
+and are robust to the participation-pattern engineering that
+defeats the binary rule. A combined two-stage architecture in
+which a refreshable screening rule feeds a forensic stage on bid
+microdata is therefore more adaptation-robust than either
+component alone---the empirical evidence in \S\ref{sec:forensic}
+shows the same conclusion by distinct means. The screening
+statistic is not adaptation-proof; practical lifetime depends on
+whether the threshold can be periodically refreshed against new
+data and whether the screening stage is deployed alongside the
+bid-layer forensic stage where microdata are available.
+
+\section{Staggered Designs Attempted and Rejected}
+\label{app:staggered}
+
+Two design-based strategies that would extract a causal estimate
+return null at the available bandwidths
+(\S\ref{sec:lim_identification}). The sharp-RDD failure (gated
+by the McCrary density test) is documented in
+Table~\ref{tab:mccrary} of Online Appendix~B; this appendix
+reports the parallel diagnostic for the
+difference-in-differences strategy exploiting
+Decreto~$\valDecreto$'s $2018$ raise of the convite cap. The
+\citet{sun2021estimating} interaction-weighted estimator yields
+imprecise coefficients with non-monotone dynamic patterns
+incompatible with the smooth treatment-onset narrative the cap
+raise would imply (Table~\ref{tab:did_revised}); a stacked
+difference-in-differences design constructed around the
+cap-raise event window returns coefficients that flip sign
+across stacks and lack a clean pre-period
+(Table~\ref{tab:stacked_did}). We treat both estimators as null
+at the available bandwidths. The interpretive consequences are
+limited to identification scope: the screening statistic does
+not require the cap raise to be a clean treatment, and the
+broad-sample $\beta$ of \S\ref{sec:results_ols} does not depend
+on the staggered design surviving. What the null does constrain
+is alternative framings of the empirical object that would
+require a causal identification of $\beta$; the screening framing
+trades that claim for the screening-value interpretation of
+$\beta$ and reports the failures here for full disclosure.
+
+\input{./output/tables/tab_did_revised}
+
+\input{./output/tables/tab_stacked_did}

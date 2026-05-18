@@ -1,0 +1,106 @@
+\documentclass[12pt,authoryear]{elsarticle}
+
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage[left=28mm,right=30mm,top=28mm,bottom=28mm]{geometry}
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{url,xurl}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\pdfstringdefDisableCommands{%
+  \def\corref#1{}%
+  \def\fnref#1{}%
+  \def\cortext#1{}%
+  \def\ead#1{}%
+}
+\usepackage{adjustbox}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{natbib}
+\usepackage{xr}
+\externaldocument{paper_v18editor}
+
+\usepackage{silence}
+\WarningFilter{latexfont}{Font shape `U/wasy/b/n'}
+\WarningFilter{latex}{Float too large for page}
+\WarningFilter{latex}{Label(s) may have changed}
+\WarningFilter{natbib}{Citation}
+\WarningFilter{natbib}{There were multiply defined citations}
+
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+\newenvironment{proof}[1][Proof]{\noindent\textit{#1.} }{\hfill$\square$\par\medskip}
+
+\renewcommand{\baselinestretch}{1.38}
+\setlength{\bibsep}{0pt}
+\renewcommand{\bibfont}{\small}
+\biboptions{authoryear}
+
+\input{values.tex}
+\input{values_adversarial.tex}
+
+% Local macros mirrored from the v18 main manuscript.
+\newcommand{\valHeadlineRange}{+3.6\%\,\text{--}\,+7.7\%}
+\newcommand{\valSRQfourBroad}{+0.046}
+\newcommand{\valSRQfourATT}{+0.041}
+\newcommand{\valSRQfourATTp}{0.045}
+\newcommand{\valSRQoneBroad}{-0.065}
+\newcommand{\valSRQtwoBroad}{-0.057}
+\newcommand{\valSRQthreeBroad}{-0.040}
+\newcommand{\valSRTrimNone}{-0.097}
+\newcommand{\valSRTrimTen}{-0.118}
+\newcommand{\valSRTrimFifty}{-0.133}
+
+\begin{document}
+\sloppy
+\hfuzz=300pt
+
+\begin{frontmatter}
+
+\title{Online Appendix to:\\
+Cheap Signals, Costly Proof:\\
+Award-Layer Triage in Cartel Enforcement}
+
+\author[insper]{Darcio Genicolo-Martins\corref{cor1}}
+\ead{darciogm1@insper.edu.br}
+\author[insper]{Paulo Furquim de Azevedo}
+\affiliation[insper]{organization={INSPER},
+  city={S\~ao Paulo}, country={Brazil}}
+\cortext[cor1]{Corresponding author.}
+
+\begin{abstract}
+\noindent This appendix collects the supporting material for the
+main text. Appendix A gives the screening framework and the
+legal-scope result. Later appendices report construction details,
+validation audits, price-scope checks, and adversarial-adaptation
+diagnostics.
+\end{abstract}
+
+\end{frontmatter}
+
+\appendix
+
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\makeatletter
+\@addtoreset{table}{section}
+\@addtoreset{figure}{section}
+\makeatother
+
+\input{sec_app01_framework_v18}
+\input{sec_app02_data_labels_v18}
+\input{sec_app03_validation_audits_v18}
+\input{sec_app04_scope_adaptation_v18}
+\input{sec_app05_forensic_sequence_v18}
+
+\bibliographystyle{chicago}
+\bibliography{references}
+
+\end{document}

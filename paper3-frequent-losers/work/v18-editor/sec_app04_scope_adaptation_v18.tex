@@ -1,0 +1,79 @@
+\section{Price Scope and Adaptation Checks}
+\label{app:scope_adaptation_v18}
+
+The main text treats price evidence as corroboration rather than
+identification. This appendix records the two checks that keep
+that interpretation disciplined: the overlap sign reversal and
+the adversarial-adaptation simulation.
+
+\subsection{Overlap and Segment Scope}
+\label{app:overlap_scope_v18}
+
+The broad price association is positive, with the headline range
+$\valHeadlineRange$. Under overlap-cell ATT reweighting, the
+aggregate coefficient reverses to $\valScopeOverlapCoef$; under
+propensity-score trimming it becomes $\valScopePSCoef$. This
+does not refute the screening interpretation. It shows that the
+broad estimate and the overlap estimate average different parts
+of the procurement distribution.
+
+The segment decomposition is the useful object. The lowest three
+tender-value quartiles have negative coefficients
+($\valSRQoneBroad$, $\valSRQtwoBroad$, and
+$\valSRQthreeBroad$ in the broad specification). The highest
+tender-value quartile is positive in both the broad and overlap
+designs: $\valSRQfourBroad$ and $\valSRQfourATT$
+($p=\valSRQfourATTp$). Trimming heavily weighted overlap cells
+does not eliminate the negative aggregate estimate; it moves from
+$\valSRTrimNone$ with no trim to $\valSRTrimTen$ after dropping
+the top decile of cell weights and $\valSRTrimFifty$ after
+dropping the top half.
+
+The legal consequence is narrow. The price results show that
+flagged environments are economically non-neutral, especially in
+the high-value segment where cartel rents are most plausible.
+They do not supply a causal price effect, a markup, or a damages
+calculation.
+
+\subsection{Adversarial Adaptation}
+\label{app:adaptation_v18}
+
+The screen is not invariant to strategic response. The
+simulation holds the empirical environment fixed and asks how the
+participation score behaves under simple evasive changes. Rotation
+of cover bidders leaves AUC essentially unchanged
+($\valAUCAdaptRotation$ versus baseline $\valAUCBase$).
+Occasional wins also leave AUC nearly unchanged
+($\valAUCAdaptOccWins$), because the strict zero-win rule removes
+those firms from the flagged set. CNPJ splitting lowers AUC to
+$\valAUCAdaptCNPJsplit$. Threshold-aware capping is more damaging,
+lowering AUC to $\valAUCAdaptThreshCap$. Combining capping with
+rotation lowers AUC to $\valAUCAdaptCombined$.
+
+\begin{table}[htbp]
+\centering
+\caption{Adversarial-Adaptation Summary}
+\label{tab:adaptation_summary_v18}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{p{4.4cm}cc}
+\toprule
+Scenario & AUC & Change vs baseline \\
+\midrule
+Baseline & $\valAUCBase$ & --- \\
+Rotation & $\valAUCAdaptRotation$ & $\valAdaptRotationDeltaPP$ pp \\
+Occasional wins & $\valAUCAdaptOccWins$ & $\valAdaptOccWinsDeltaPP$ pp \\
+CNPJ splitting & $\valAUCAdaptCNPJsplit$ & $\valAdaptCNPJDeltaPP$ pp \\
+Threshold capping & $\valAUCAdaptThreshCap$ & $\valAdaptCapDeltaPP$ pp \\
+Capping plus rotation & $\valAUCAdaptCombined$ & $\valAdaptCombinedDeltaPP$ pp \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+The practical lesson is not to hide the cutoff. It is to treat
+the cutoff as operational rather than structural. Agencies should
+refresh thresholds, monitor bunching below the rule, and pair the
+award-layer screen with bid-layer forensics when bid microdata
+can be recovered. Strategic response weakens a static binary rule
+more than it weakens the two-stage architecture.

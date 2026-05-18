@@ -1,0 +1,236 @@
+\documentclass[12pt,authoryear]{elsarticle}
+
+% ---- Packages ----------------------------------------------------------------
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage[left=28mm,right=30mm,top=28mm,bottom=28mm]{geometry}
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{url,xurl}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue]{hyperref}
+\pdfstringdefDisableCommands{%
+  \def\corref#1{}%
+  \def\fnref#1{}%
+  \def\cortext#1{}%
+  \def\ead#1{}%
+}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{multicol}
+\usepackage{wasysym}
+\usepackage{lscape}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{natbib}
+\usepackage{xr}
+\externaldocument{paper_v17editor}
+
+\pdfsuppresswarningpagegroup=1
+
+\tolerance=2000
+\emergencystretch=4em
+\hbadness=10000
+\vbadness=10000
+\hfuzz=300pt
+\vfuzz=300pt
+\setlength{\parfillskip}{0pt plus 1fil}
+
+\usepackage{silence}
+\WarningFilter{latexfont}{Font shape `U/wasy/b/n'}
+\WarningFilter{latex}{Float too large for page}
+\WarningFilter{natbib}{Citation}
+\WarningFilter{natbib}{There were multiply defined citations}
+\WarningFilter{latex}{There were multiply-defined labels}
+\WarningFilter{latex}{There were undefined references}
+\WarningFilter{latex}{Label(s) may have changed}
+
+\usepackage{silence}
+\WarningFilter{latexfont}{Font shape `U/wasy/b/n'}
+\WarningFilter{latex}{Float too large for page}
+\WarningFilter{natbib}{Citation}
+\WarningFilter{latex}{There were multiply-defined labels}
+\WarningFilter{latex}{Label(s) may have changed}
+
+\newcommand{\cites}[1]{\citeauthor{#1}'s (\citeyear{#1})}
+
+\makeatletter
+\def\ps@pprintTitle{%
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \def\@oddfoot{\centerline{\thepage}}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+
+\renewcommand\theaffn{\arabic{affn}}
+
+% Theorem-like environments
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}[definition]{Hypothesis}
+\newtheorem{prediction}[definition]{Prediction}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+
+% Proof environment (amsthm not loaded with elsarticle)
+\newenvironment{proof}[1][Proof]{\noindent\textit{#1.} }{\hfill$\square$\par\medskip}
+
+% Spacing
+\renewcommand{\baselinestretch}{1.48}
+\setlength{\abovedisplayskip}{8pt plus 2pt minus 4pt}
+\setlength{\belowdisplayskip}{8pt plus 2pt minus 4pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 4pt}
+\setlength{\floatsep}{8pt plus 2pt minus 4pt}
+\setlength{\intextsep}{8pt plus 2pt minus 4pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+\biboptions{authoryear}
+\setlength{\bibsep}{0pt}
+\renewcommand{\bibfont}{\small}
+\renewcommand{\arraystretch}{1.3}
+
+\hyphenation{eco-no-me-tric re-gres-sion dif-fer-ence-in-dif-fer-ences
+  en-do-ge-nei-ty het-e-ro-sce-das-tic-i-ty pro-cure-ment}
+
+\graphicspath{{./output/figures/}{./images/}}
+
+\input{values.tex}
+\input{values_adversarial.tex}
+
+% v15 local macros (mirror main paper)
+\newcommand{\valOversightQonePct}{+21.4\%}
+\newcommand{\valOversightQtwoPct}{+9.8\%}
+\newcommand{\valOversightQthreePct}{+4.5\%}
+\newcommand{\valOversightQfourPct}{+1.7\%}
+\newcommand{\valHeadlineLow}{+3.6\%}
+\newcommand{\valHeadlineHigh}{+7.7\%}
+\newcommand{\valHeadlineRange}{+3.6\%\,\text{--}\,+7.7\%}
+\newcommand{\valBidConvCoefPct}{+4.3\%}
+\newcommand{\valClassNoiseGapPct}{+2.8}
+\newcommand{\valAUCFLBinSameSample}{0.911}
+\newcommand{\valAUCFLBinSameSampleCI}{[0.898,\ 0.925]}
+\newcommand{\valAUCpregPrim}{0.952}
+\newcommand{\valAUCconvPrim}{0.816}
+\newcommand{\valAUCmodalDiff}{-0.136}
+\newcommand{\valConvNcobidders}{6}
+
+% Route 2 v17 macros (mirror main paper)
+\newcommand{\valArchPoolSize}{11{,}676}
+\newcommand{\valArchNPos}{193}
+\newcommand{\valArchBaseRate}{0.0165}
+\newcommand{\valArchPrecAtFiveHundFL}{0.132}
+\newcommand{\valArchPrecAtFiveHundImhof}{0.146}
+\newcommand{\valArchPrecAtFiveHundJoint}{0.224}
+\newcommand{\valArchPrecAtFiveHundSeqK}{0.192}
+\newcommand{\valArchRecallThouJoint}{0.736}
+\newcommand{\valArchRecallThouSeqK}{0.679}
+\newcommand{\valArchTPThouJoint}{142}
+\newcommand{\valArchTPThouSeqK}{131}
+\newcommand{\valArchSeqKone}{2{,}000}
+\newcommand{\valArchFootprintReduction}{83\%}
+\newcommand{\valArchRecallCost}{8\%}
+\newcommand{\valArchTHPoolSize}{8{,}257}
+\newcommand{\valArchTHNPos}{142}
+\newcommand{\valArchTHFLDrop}{47\%}
+\newcommand{\valArchTHJointDrop}{24\%}
+\newcommand{\valArchTHSeqDrop}{9\%}
+\newcommand{\valArchTHTPFiveHundJoint}{85}
+\newcommand{\valArchTHTPFiveHundSeqK}{87}
+\newcommand{\valArchTHTPThouJoint}{111}
+\newcommand{\valArchTHTPThouSeqK}{114}
+\newcommand{\valArchTHPrecFiveHundJoint}{0.170}
+\newcommand{\valArchTHPrecFiveHundSeqK}{0.174}
+\newcommand{\valArchTHPrecThouJoint}{0.111}
+\newcommand{\valArchTHPrecThouSeqK}{0.114}
+\newcommand{\valTBBLnCob}{182}
+\newcommand{\valTBBLnFLnc}{2{,}369}
+\newcommand{\valTBBLMedGapCob}{0.582}
+\newcommand{\valTBBLMedGapFLnc}{0.809}
+\newcommand{\valTBBLMedGapD}{-0.281}
+\newcommand{\valTBBLPSGapCob}{1.300}
+\newcommand{\valTBBLPSGapFLnc}{1.498}
+\newcommand{\valTBBLPSGapD}{-0.156}
+\newcommand{\valTBBLSDGapCob}{1.207}
+\newcommand{\valTBBLSDGapFLnc}{1.099}
+\newcommand{\valTBBLSDGapD}{+0.147}
+\newcommand{\valTBBLLogitMedCoef}{-0.708}
+\newcommand{\valTBBLLogitMedZ}{-4.14}
+\newcommand{\valTBBLLogitSDCoef}{+0.442}
+\newcommand{\valTBBLLogitSDZ}{+3.62}
+\newcommand{\valTBBLLogitTCCoef}{+0.651}
+\newcommand{\valTBBLRefCovConvite}{22\%}
+\newcommand{\valTBBLRefCovPregao}{32\%}
+\newcommand{\valSRQfourBroad}{+0.046}
+\newcommand{\valSRQfourATT}{+0.041}
+\newcommand{\valSRQfourATTp}{0.045}
+\newcommand{\valSRQoneBroad}{-0.065}
+\newcommand{\valSRQtwoBroad}{-0.057}
+\newcommand{\valSRQthreeBroad}{-0.040}
+\newcommand{\valSRTrimNone}{-0.097}
+\newcommand{\valSRTrimOne}{-0.107}
+\newcommand{\valSRTrimTen}{-0.118}
+\newcommand{\valSRTrimFifty}{-0.133}
+\newcommand{\valSRHHIWeights}{0.000596}
+\newcommand{\valSRTopOnePctShare}{15.2\%}
+\newcommand{\valSRTopTenPctShare}{54.6\%}
+\newcommand{\valSRTopDecileConvShare}{78.9\%}
+
+\begin{document}
+
+\sloppy
+\hfuzz=300pt
+
+\begin{frontmatter}
+
+\title{Online Appendix to:\\
+Cheap Signals, Costly Proof:\\
+Award-Layer Triage for Cartel Enforcement}
+
+\author[insper]{Darcio Genicolo-Martins\corref{cor1}}
+\ead{darciogm1@insper.edu.br}
+\author[insper]{Paulo Furquim de Azevedo}
+\affiliation[insper]{organization={INSPER},
+  city={S\~ao Paulo}, country={Brazil}}
+\cortext[cor1]{Corresponding author.}
+
+\begin{abstract}
+\noindent This online appendix accompanies \emph{Cheap Signals,
+Costly Proof: Award-Layer Triage for Cartel Enforcement} and contains: (A) the
+cover-bidding framework, assumptions A1--A6, and proofs of
+Lemma~\ref{lem:wins_zero_stmt} and Propositions~\ref{prop:exposure_stmt}--\ref{prop:screening_value}
+invoked in the main text; (B) core supporting tables and
+figures; (C) identification audits (overlap-restricted
+estimates, sign-reversal decomposition, Oster bounds, and the
+anti-leakage audit); (D) threshold and specification robustness
+tables; (E) operational metrics and detector comparison; and
+(F) the staggered-design estimators that return null at the
+available bandwidths. References to sections, equations, and
+tables in the main text use the same labels as the published
+manuscript.
+\end{abstract}
+
+\end{frontmatter}
+
+\appendix
+
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\makeatletter
+\@addtoreset{table}{section}
+\@addtoreset{figure}{section}
+\makeatother
+
+\input{sec_appendix_v17}
+
+\bibliographystyle{chicago}
+\bibliography{references}
+
+\end{document}

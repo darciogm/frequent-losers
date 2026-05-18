@@ -1,0 +1,237 @@
+\section{Validation: Cartel Adjacency Under Coarsened Observability}
+\label{sec:cade}
+
+The award-layer envelope (\S\ref{sec:institutional}) does not
+contain the information required for firm-level cartel
+\emph{membership} identification, and the screening framing does
+not require it: the participation primitive the framework
+identifies is a loser-side exposure measure, not a winner-side
+label. The validation object is therefore cartel \emph{adjacency},
+operationalized as the cobidder population---always-loser firms
+that participated alongside CADE direct defendants. We test the
+construct against this population on two benchmarks (a strict
+pre-$2020$ contemporaneous one and a more permissive prospective
+one), bridge the population to the modeled cover-bidder type
+along firm- and bid-level dimensions, and document the design's
+empirical signature against direct defendants.
+
+\subsection{Validation populations}
+\label{sec:cade_objects}
+
+The validation reads against five nested populations
+(Table~\ref{tab:cade_populations}): from the broadest universe
+of $41{,}444$ BEC participants inward through the
+$\valAlwaysLosers$-firm always-loser stratum to the $\valFL$
+flagged frequent losers; the CADE adjudication record splits
+into $\valDirectCADE$ direct defendants---typically frequent
+winners and outside the construct's target---and $\valCobidders$
+cobidders inside the always-loser stratum, which are the
+cartel-adjacency labels the screening statistic is designed to
+recover. Strong AUC against the cobidder label corroborates that
+the screening statistic concentrates on cartel-relevant
+environments; it does not adjudicate membership.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation populations and object discipline}
+\label{tab:cade_populations}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{p{4.0cm}p{2.0cm}p{6.5cm}}
+\toprule
+Population & Size & Definition and role \\
+\midrule
+All BEC participants & $41{,}444$ & Universe of firms bidding in BEC, $2009$--$2019$. \\
+Always-losers & $\valAlwaysLosers$ & Firms with zero wins; stratum within which the screening statistic operates. \\
+Frequent losers & $\valFL$ & Always-losers above the median $+\,1.5\!\times$IQR participation threshold. \\
+CADE direct defendants in BEC & $\valDirectCADE$ & Firms named in CADE rulings; typically frequent winners; outside target. \\
+Cobidders in the always-loser stratum & $\valCobidders$ & Always-losers that participated alongside CADE direct defendants; the cartel-adjacency label the screening statistic is designed to recover. \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{Within-stratum profile of cobidders}
+\label{sec:cade_bridge}
+
+A natural objection is that cobidders are just always-loser
+firms with a proximity label glued on, and that any
+discrimination AUC against them reflects participation intensity
+rather than cover-bidder type. We address this directly:
+Table~\ref{tab:theory_bridge} compares cobidders against three
+reference populations along four firm-level operational
+predictions of the cover-bidder type formalized in Online
+Appendix~A. The within-stratum comparison---cobidders
+versus FL non-cobidders, both above the FL threshold---moves in
+the direction the framework predicts on four of five measured
+dimensions. Cobidders deploy at higher intensity
+($\valBridgeTendCob$ vs $\valBridgeTendFLnc$ mean total
+participations, Cohen's $d=\valBridgeTendD$, $p<10^{-15}$;
+sharper still on unique winners faced,
+$d=\valBridgeUniqWinD$, $p<10^{-22}$), are deployed proximally
+to the cartel ($\valBridgeDirectCob$ of their loss-bids face a
+direct CADE defendant against $\valBridgeDirectFLnc$ for FL
+non-cobidders, $d=\valBridgeDirectD$, $p<10^{-70}$), and
+specialize in narrower market slices (portfolio item-group HHI
+$\valBridgeHHICob$ vs $\valBridgeHHIFLnc$,
+$d=\valBridgeHHID$, $p<10^{-13}$; touching $\valBridgeNGroupsCob$
+vs $\valBridgeNGroupsFLnc$ distinct item-groups,
+$d=\valBridgeNGroupsD$, $p<10^{-6}$). The one wrong-direction
+dimension is the share of own loss-bids in repeat-pair clusters
+of count $\geq 5$ ($d=\valBridgeRepeatShareD$); we report it
+without leaning on it.
+
+\input{./output/tables/tab_theory_bridge}
+
+The bridge extends to the bid level. We read per-bid
+\textit{Valor Unitário Proposta} and \textit{Flag Vencedor} from
+the forensic-recoverable LANCES export, and for each firm with
+at least five usable losing bids in convite or pregão we compute
+the per-bid ratio
+$(\text{bid}-\text{winning bid})/\text{winning bid}$ within each
+$(\text{OC}, \text{item})$ pair, winsorize at $[-0.99, 10]$, and
+aggregate at the firm level ($\valTBBLnCob$ cobidders,
+$\valTBBLnFLnc$ FL non-cobidders). Reference-price ratios are
+not aggregated, because \textit{Valor Unitário Referência} is
+populated for only $\valTBBLRefCovConvite$ of convite and
+$\valTBBLRefCovPregao$ of pregão losing bids and most firms
+end up without coverage. Three new dimensions move in a
+consistent direction. The median gap to the winning bid is
+$\valTBBLMedGapCob$ for cobidders against $\valTBBLMedGapFLnc$
+for FL non-cobidders ($d=\valTBBLMedGapD$, $p<10^{-6}$); the
+same ordering holds at the 75th percentile
+($d=\valTBBLPSGapD$, $p=0.007$); and the within-firm standard
+deviation of the gap is $\valTBBLSDGapCob$ vs.\
+$\valTBBLSDGapFLnc$ ($d=\valTBBLSDGapD$, $p=0.05$). A
+multivariate logit on cobidder status (within the FL stratum)
+holding $\log(1+\text{tenders\_count})$ constant returns a
+median-gap coefficient of $\valTBBLLogitMedCoef$
+($z=\valTBBLLogitMedZ$, $p<10^{-4}$) and a within-firm
+dispersion coefficient of $\valTBBLLogitSDCoef$
+($z=\valTBBLLogitSDZ$, $p<10^{-3}$). Both bid-level signs
+survive controlling for participation intensity, so the
+bid-level signature is not a multicollinearity artefact of the
+firm-level deployment-intensity result.
+
+\input{./output/tables/tab_theory_bridge_bidlevel}
+
+The signs run against the textbook reading of the cover-bidder
+type. A deliberately uncompetitive cover bid would put cobidders
+\emph{further} from the winner, not closer. What we see lines up
+instead with the credible-cover-bidding reading of
+\citet{marshall2012economics} and \citet{asker2010leniency}, in
+which cover bids must remain plausible enough to disguise
+coordination and the firm cycles through cover roles across
+tenders. We adopt that reading explicitly (Online Appendix~A
+records the formal R1/R2 distinction). Within what the data can
+measure, cobidders match the modeled type along seven of nine
+dimensions, and the discrimination evidence in the rest of this
+section reads against a validation object whose firm-level
+\emph{and} bid-level profile match the modeled type rather than
+a label of convenience.
+
+\subsection{Conservative benchmark}
+\label{sec:cade_contemporaneous}
+
+The primary benchmark restricts the ground truth to
+$\valConservativeCases$ CADE cases adjudicated before
+$\valConservativeCutoff$: $\valConservativeFD$ firm-defendants
+active in BEC, with $\valConservativeCobidders$ always-losers
+co-bidding with at least one of them, of which
+$\valConservativeFL$ are frequent losers. We construct the
+counterfactual baseline by stratified permutation: for each of
+$\valPermPilot$ iterations we permute cobidder/non-cobidder
+labels within strata defined by participation-volume quartile,
+recompute the share of frequent losers among the relabeled
+cobidders, and accumulate the empirical distribution under the
+null of random matching conditional on participation volume. The
+participation-stratified co-bidding rate observed in the data is
+$\valCADEenrich$ against a permutation baseline of
+$\valCADEbase$ ($p<0.001$, $\valPermPilot$ iterations), an excess
+ratio of $\valMultThreeTwo\!\!\times$; the ROC AUC against the
+contemporaneous ground truth is $\valAUCprePost$
+($95\%$ DeLong CI $\valAUCprePostCI$). This is the primary
+benchmark on three grounds: the construct uses no information
+from cases adjudicated post-sample; cartel existence and
+membership were established by enforcement before the screening
+statistic was built; and the permutation baseline strips out the
+mechanical co-bidding rate that participation volume would
+produce by itself, isolating the residual concentration the
+screening statistic is meant to identify.
+
+\subsection{Prospective benchmark}
+\label{sec:cade_prospective}
+
+A more permissive benchmark uses CADE's full procurement-cartel
+portfolio ($12$ cases, $65$ firm-defendants, of which
+$\valDirectCADE$ are active in BEC). Among $\valFL$ frequent
+losers, $\valCobidders$ ($\valCobidShareFL$) co-participate with
+at least one direct defendant; the participation-stratified excess
+ratio is $\valMultThreeFive\!\!\times$ ($p<0.001$). Firm-level
+AUC is $\valAUCFLfirm$ in-sample
+($95\%$ CI $\valAUCFLfirmCI$) and $\valAUCFLfirmTemp$ under
+temporal holdout (train $2009$--$2016$, test $2017$--$2019$;
+CI $\valAUCFLfirmTempCI$). Figure~\ref{fig:temporal_holdout_roc}
+shows the rolling-origin temporal-holdout ROC curves separating
+cleanly from the diagonal across all six test years; year-by-year
+AUCs are in Online Appendix~B. The benchmark treats post-sample
+adjudications as informative labels for cartel involvement during
+the BEC window, a reasonable but non-trivial assumption that the
+conservative benchmark avoids.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{./output/figures/fig_temporal_holdout_roc}
+\caption[Temporal-holdout ROC]{ROC curves under rolling-origin
+temporal holdout; training window is $2009$ through
+$\text{test year}-1$, the test year provides the out-of-sample
+cobidder ground truth.}
+\label{fig:temporal_holdout_roc}
+\end{figure}
+
+Two further diagnostics tighten the discrimination evidence
+(Tables~\ref{tab:cade_permutation}--\ref{tab:leakage_audit}). The
+participation-stratified permutation null behind the conservative
+benchmark places the empirical excess ratio of
+$\valMultThreeTwo\!\!\times$ in the upper tail of the null
+distribution at $p<0.001$. The leakage decomposition separates
+the in-sample item-level discrimination AUC of $\valAUClogtc$
+into a structural component recovered when cobidder firms are
+held out of score construction within cross-validation folds
+(AUC $\approx \valLeakStructLow$--$\valLeakStructHigh$) and a
+mechanical-tautology component
+($\approx \valLeakTautLow$--$\valLeakTautHigh$); the structural
+component is what the screening interpretation rests on. A
+within-firm exercise on the same portfolio: $3$ of $7$
+always-loser direct defendants ($\valPctFortythree$) cross the
+frequent-loser threshold against a population baseline of
+$\valPctSixteenRef$; these are the exception within a
+direct-defendant population that is otherwise frequent-winner-heavy.
+
+\input{./output/tables/tab_cade_permutation}
+
+\input{./output/tables/tab_leakage_audit}
+
+The AUC asymmetry between cobidder discrimination
+($\valAUCFLfirm$ in-sample, $\valAUCFLfirmTemp$ under temporal
+holdout) and direct-defendant discrimination
+($\valAUCdirectStd$ across the broader BEC firm universe) is
+not a failure of validation but the design's empirical
+signature: the screen recovers loser-side participation
+footprints, and direct defendants are by construction the
+winner side of the same arrangements. Dropping the
+$\valCADEpermPerm$ CADE-involved tender-items and re-estimating
+the within-PBU baseline yields $\hat\beta = \valExclCADECoef$
+($N = \valCADEpermObs{,}954$), virtually unchanged from
+$\valPctSixfour$, so the broad-sample screening signal does not
+depend on within-sample CADE adjudications for its content. The
+four pieces of evidence point in one direction: a
+$\valMultThreeTwo\!\!\times$ contemporaneous excess, a
+$\valMultThreeFive\!\!\times$ prospective excess, cobidder AUCs
+of $\valAUCprePost$ and $\valAUCFLfirmTemp$, and the within-firm
+direct-defendant exception. Inside the always-loser stratum,
+frequent losers concentrate near adjudicated cartel members at
+rates well above what participation-stratified random matching
+would produce. That is what the validation establishes. It does
+not adjudicate firm-level membership, and the screening framing
+does not require it to.
