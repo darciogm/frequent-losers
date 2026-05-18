@@ -503,14 +503,30 @@ checks show little drift in the non-pharmaceutical exclusion share:
 windows. The pharmaceutical drift is larger, at \windowShareDriftPh{} points,
 again matching the interpretation that pharma is composition-sensitive.
 
-Cost-filter checks also preserve the qualitative result. Tightening the filter
-reduces the non-pharmaceutical net effect by \filterTightDropNp{} percent and
-the pharmaceutical net effect by \filterTightDropPh{} percent; loosening it
-raises the effects by at most \filterLooseUpNp{} percent and
-\filterLooseUpPh{} percent, respectively. Allowing within-auction cost
-correlation up to \(\rho_c=\ipvRhoMax\) moves the exclusion share by at most
-\ipvShareDriftPp{} percentage points and the total effect by at most
-\ipvTotalDriftPct{} percent.
+Cost-filter checks also preserve the qualitative result. Tightening the
+filter reduces the non-pharmaceutical net effect by \filterTightDropNp{}
+percent and the pharmaceutical net effect by \filterTightDropPh{}
+percent; loosening it raises the effects by at most \filterLooseUpNp{}
+percent and \filterLooseUpPh{} percent, respectively. Allowing
+within-auction cost correlation up to \(\rho_c=\ipvRhoMax\) moves the
+exclusion share by at most \ipvShareDriftPp{} percentage points and the
+total effect by at most \ipvTotalDriftPct{} percent.
+
+Replacing the Poisson bidder-count draws in the baseline simulation with
+sampling from the empirical class-period-type bidder-count distributions
+attenuates net effects but leaves the exclusion-dominant decomposition
+intact. Under empirical counts, the non-pharmaceutical net effect is
+\bneEffEmpTotalNp{} (versus baseline \bneEffectTotalNp{}), with
+exclusion component \bneEffEmpIntensNp{} and protected-pool offset
+\bneEffEmpEntryNp{}; in pharmaceuticals the net effect is
+\bneEffEmpTotalPh{} (versus baseline \bneEffectTotalPh{}), with
+components \bneEffEmpIntensPh{} and \bneEffEmpEntryPh{}. The
+corresponding exclusion shares are \bneEffEmpShareNp{} percent in
+non-pharmaceuticals and \bneEffEmpSharePh{} percent in pharmaceuticals
+(against baseline \bneShareIntensNp{} and \bneShareIntensPh{} percent).
+The Poisson specification therefore slightly overstates the dispersion
+of bidder counts, which inflates the simulated price spread; the ranking
+of the two channels is unaffected.
 
 \begin{table}[!htbp]
 \centering
