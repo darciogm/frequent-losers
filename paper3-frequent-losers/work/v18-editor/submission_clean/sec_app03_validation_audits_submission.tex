@@ -1,0 +1,149 @@
+\section{Validation Audits}
+\label{app:validation_audits_submission}
+
+The validation design has to address two concerns. First,
+frequent participants have more chances to appear near any
+defendant, so raw co-bidding rates are not enough. Second,
+item-level labels can mechanically reuse the same participation
+history that constructs the score. The main text reports the
+headline results; this appendix records the audit logic and the
+interpretation each audit licenses.
+
+\subsection{Participation-Stratified Permutation}
+\label{app:permutation_submission}
+
+The conservative CADE benchmark fixes the direct-defendant list
+using cases adjudicated before the end of
+$\valConservativeCutoff$. Within the always-loser stratum, we
+then compare the observed frequent-loser share among cobidders
+with a permutation distribution that preserves participation
+volume. Specifically, firms are grouped by participation-volume
+quartile defined within the always-loser stratum, cobidder
+status is randomly permuted within those quartiles, and the
+frequent-loser share among placebo cobidders is recomputed
+$\valPermPilot$ times. The number of cobidders per quartile is
+preserved across permutations by construction; the within-
+quartile shuffle reassigns the cobidder marker over the same
+set of firms, leaving the per-quartile marginal unchanged. The
+$p$-value reports the share of permutations whose placebo
+frequent-loser share is at least as extreme as the observed
+share.
+
+The observed share is $\valCADEenrich$, compared with a
+permutation mean of $\valCADEbase$. The ratio is
+$\valMultThreeTwo\!\times$, with $p<0.001$, and the conservative
+ROC AUC is $\valAUCprePost$ (95\% CI $\valAUCprePostCI$,
+computed via the DeLong method, which is the default for
+\texttt{pROC::ci} on a binary outcome). The permutation answers
+the exposure concern directly: the frequent-loser concentration
+near CADE defendants is larger than participation volume alone
+predicts.
+
+\subsection{Leakage Decomposition}
+\label{app:leakage_submission}
+
+The in-sample item-level AUC is intentionally not treated as the
+main validation number. It is $\valLeakRefAUC$, and part of that
+performance is mechanical: the same firms can help define both
+the participation score and the item-level cobidder label. The
+audit decomposes that headline into a structural component and a
+leakage component.
+
+\begin{table}[htbp]
+\centering
+\caption{Leakage Audit}
+\label{tab:leakage_audit_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{L{4.4cm}L{5.4cm}cc}
+\toprule
+Audit & What changes & AUC & 95\% CI \\
+\midrule
+In-sample reference & Full-sample score predicts any-cobidder item label
+& $\valLeakRefAUC$ & $\valLeakRefAUCCI$ \\
+Direct-defendant scope check & Same score predicts direct-CADE item label
+& $\valLeakDirectAUC$ & $\valLeakDirectAUCCI$ \\
+Cobidder-firm holdout & Held-out cobidders are removed from score construction within folds
+& $\valLeakCVAUC$ & $\valLeakCVAUCCI$ \\
+Temporal holdout & $2009$--$2016$ score predicts $2017$--$2019$ cobidder labels
+& $\valAUCFLfirmTemp$ & $\valAUCFLfirmTempCI$ \\
+Temporal direct-defendant check & Same temporal score predicts direct-CADE labels
+& $\valLeakDirectTempAUC$ & $\valLeakDirectTempAUCCI$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} The reference AUC is partly tautological.
+The firm-holdout and temporal rows isolate the component that
+survives when labels are withheld from score construction or
+placed out of time. Direct-defendant rows check whether the
+loser-side statistic accidentally behaves like a general
+membership detector.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The surviving component is large: AUC remains in the
+$\valLeakStructLow$--$\valLeakStructHigh$ range under the
+holdout audits. The lost component, roughly
+$\valLeakTautLow$--$\valLeakTautHigh$ AUC, is disclosed as
+mechanical. That disclosure is important because the main claim
+is an evidence-allocation claim. A cheap record-layer statistic
+retains meaningful ranking power after the most obvious
+mechanical channels are removed.
+
+\subsection{Direct-Defendant Scope Check}
+\label{app:direct_scope_submission}
+
+The direct-defendant result is a falsification of overreach. If
+the statistic were a generic cartel-membership detector, it
+should classify direct CADE defendants as well as cobidders. It
+does not. The direct-defendant AUC is $\valAUCdirectStd$, close
+to random classification. That pattern is informative: the
+statistic behaves like a loser-side ranking, while direct
+defendants are legal anchors that often appear on the winner side
+of the arrangement.
+
+\subsection{Year-by-Year Holdout}
+\label{app:year_holdout_submission}
+
+The rolling-origin exercise trains the score on years preceding
+each test year and evaluates cobidder discrimination in the test
+year. Table~\ref{tab:temporal_holdout_year_submission} reports the
+year-by-year decomposition behind the temporal-holdout figure in
+the main text.
+
+\begin{table}[htbp]
+\centering
+\caption{Temporal-Holdout AUC by Test Year}
+\label{tab:temporal_holdout_year_submission}
+\footnotesize
+\begin{threeparttable}
+\begin{tabular}{ccccc}
+\toprule
+Test year & AUC & 95\% CI & $N$ firms & $N$ CADE \\
+\midrule
+$2014$ & $0.819$ & $[0.779,\ 0.860]$ & $8{,}631$ & $88$ \\
+$2015$ & $0.817$ & $[0.776,\ 0.858]$ & $10{,}122$ & $102$ \\
+$2016$ & $0.851$ & $[0.821,\ 0.881]$ & $11{,}699$ & $127$ \\
+$2017$ & $0.862$ & $[0.832,\ 0.891]$ & $13{,}057$ & $148$ \\
+$2018$ & $0.897$ & $[0.877,\ 0.918]$ & $14{,}391$ & $161$ \\
+$2019$ & $0.922$ & $[0.912,\ 0.933]$ & $15{,}597$ & $181$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Each row computes the screening score using
+participation observed before the test year and evaluates AUC
+against the cobidder label in that test year.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The year-by-year pattern is not a claim that the environment
+becomes progressively easier to police. The samples and
+adjudication links change across years. The relevant point is
+that the score remains separated from random classification in
+each rolling-origin test year.

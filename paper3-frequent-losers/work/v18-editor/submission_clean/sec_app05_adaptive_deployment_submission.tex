@@ -1,0 +1,83 @@
+\section{Adaptive Deployment Diagnostics}
+\label{app:strategic_adaptation_submission}
+
+The award-layer screen is an operational rule, so its performance
+must be evaluated under plausible adaptive responses. This
+appendix records a diagnostic simulation that holds the empirical
+environment fixed and asks how the participation score behaves
+under simple evasive changes. The scenarios are intentionally
+simple. Their purpose is to identify which adaptations weaken a
+static binary rule more than others and to inform the operational
+recommendations in the main text.
+
+\subsection{Simulation Scenarios}
+\label{app:adaptation_scenarios_submission}
+
+Five candidate adaptation strategies are tested against the
+baseline frequent-loser rule. Rotation of cover bidders
+distributes losing participation across a larger pool of
+identities. Occasional wins introduce a small positive
+win-share so that targeted firms do not satisfy the strict
+$W_i=0$ filter. CNPJ splitting fragments a single firm's
+participation across multiple legal identifiers. Threshold-aware
+capping holds participation just below the median-plus-$1.5\times$IQR
+cutoff so that the firm avoids the flag. The final scenario
+combines capping with rotation.
+
+Rotation leaves AUC essentially unchanged
+($\valAUCAdaptRotation$ versus baseline $\valAUCBase$).
+Occasional wins also leave AUC nearly unchanged
+($\valAUCAdaptOccWins$), because the strict zero-win rule
+removes those firms from the flagged set rather than
+mis-ranking them. CNPJ splitting lowers AUC to
+$\valAUCAdaptCNPJsplit$ by breaking the participation history
+that the persistence signal depends on. Threshold-aware capping
+is more damaging, lowering AUC to $\valAUCAdaptThreshCap$.
+Combining capping with rotation lowers AUC to
+$\valAUCAdaptCombined$.
+
+\begin{table}[htbp]
+\centering
+\caption{Strategic-Adaptation Summary}
+\label{tab:adaptation_summary_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{p{4.4cm}cc}
+\toprule
+Scenario & AUC & Change vs baseline \\
+\midrule
+Baseline & $\valAUCBase$ & --- \\
+Rotation & $\valAUCAdaptRotation$ & $\valAdaptRotationDeltaPP$ pp \\
+Occasional wins & $\valAUCAdaptOccWins$ & $\valAdaptOccWinsDeltaPP$ pp \\
+CNPJ splitting & $\valAUCAdaptCNPJsplit$ & $\valAdaptCNPJDeltaPP$ pp \\
+Threshold capping & $\valAUCAdaptThreshCap$ & $\valAdaptCapDeltaPP$ pp \\
+Capping plus rotation & $\valAUCAdaptCombined$ & $\valAdaptCombinedDeltaPP$ pp \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{Implementation Implications}
+\label{app:adaptation_implementation_submission}
+
+The hierarchy is informative for implementation. The screen is
+not equally vulnerable to every adaptation strategy. Simple
+rotation and occasional wins are absorbed by the persistence
+signal; identity fragmentation begins to break the participation
+history; behavior targeted at the static cutoff is the most
+damaging. The implementation lessons are correspondingly
+specific. The rule should be refreshed periodically as new
+participation data arrive. Bunching just below the cutoff should
+be monitored, because threshold-aware capping leaves a
+detectable pile-up. Continuous ranks or capacity-constrained
+top-$k$ queues should be preferred where they are operationally
+feasible, since they are harder to game than a single published
+cutoff. And the award-layer screen should be paired with
+bid-layer forensics whenever bid files can be recovered, so
+that strategic adaptation against the cheap layer does not also
+succeed against the costly layer.
+
+The simulation is a diagnostic rather than a full equilibrium
+model of evasion. Its implication is operational: strategic
+response weakens a static binary rule more than it invalidates
+the two-stage architecture.

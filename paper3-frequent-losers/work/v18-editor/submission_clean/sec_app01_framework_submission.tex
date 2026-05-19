@@ -1,0 +1,166 @@
+\section{Evidence-Allocation Framework and Legal Scope}
+\label{app:framework_submission}
+
+The model used in the main text is intentionally spare. Its job
+is to justify an ordering rule for scarce forensic attention,
+not to model the full internal organization of a cartel. Issues
+such as side payments, discipline, and leniency incentives are
+treated in the cartel literature
+\citep{asker2010leniency,marshall2012economics}. The narrower
+object here is the pre-proof enforcement problem: why a firm
+that repeatedly loses, while continuing to appear in procurement
+records, can be a useful target for bid-level follow-up.
+
+\subsection{Primitives}
+\label{app:framework_primitives}
+
+Consider a procurement environment with repeated tender-items.
+In a cartel-targeted tender, one firm is assigned the winning
+role and submits the designated bid $b^*$. A cover bidder submits
+a bid $b_\ell>b^*$ and is not meant to win. The cover role has a
+cost $c_1>0$. Winning by mistake or by deviation creates an
+internal cartel sanction $\kappa>0$, interpreted broadly as the
+loss of cartel discipline, future rents, or capacity-allocation
+rights. Let $r$ denote the private gain from deviating into the
+winner role in a tender where the firm was supposed to provide
+cover.
+
+Firms outside the winning role are of two reduced-form types.
+Type $C$ firms are cartel-deployed cover bidders. Type $G$ firms
+are genuine losing participants: they may be inefficient,
+capacity constrained, inexperienced, or simply unlucky. The
+empirical screen conditions on the observed event
+$W_i=0$, where $W_i$ is the firm's number of wins, and ranks
+firms by participation count $T_i$.
+
+\begin{lemma}[Zero-win cover role]
+\label{lem:submission_zero_win}
+If the internal sanction from winning in a cover role exceeds
+the private deviation gain, $\kappa>r$, a cover bidder's
+equilibrium bid lies above the designated winning bid:
+$b_\ell>b^*$. Hence $\Pr(W_i>0\mid C)=0$ over tenders in which
+the firm is deployed as cover.
+\end{lemma}
+
+\begin{proof}
+If the cover bidder submits $b_\ell>b^*$, it loses and receives
+the cover-role payoff net of the deployment cost. If it deviates
+to a winning bid, it gains $r$ but pays the sanction $\kappa$.
+The deviation is unprofitable when $\kappa>r$. The result fixes
+the win probability of the cover role, not the exact numerical
+cover bid. Any bid above the designated winner's bid is
+consistent with the reduced-form cover role. 
+\end{proof}
+
+Lemma~\ref{lem:submission_zero_win} explains why the zero-win
+conditioning set is a coherent place to begin. The conditioning
+set is intentionally broad: many genuine firms also never win.
+The evidentiary content comes from the second observable,
+participation intensity.
+
+\subsection{Participation as a Ranking Statistic}
+\label{app:framework_participation}
+
+Within the zero-win set, let participation counts follow a
+Poisson approximation:
+\[
+  T_i \mid \tau_i, q \sim \text{Poisson}(\lambda_q \tau_i),
+  \qquad q\in\{C,G\},
+\]
+where $\tau_i$ is the length of time firm $i$ is observed and
+$\lambda_q$ is the type-specific participation rate. The
+screening assumption is
+\[
+  \lambda_C>\lambda_G
+  \quad\text{on the conditioning set } W_i=0.
+\]
+This is the substantive assumption behind the frequent-loser
+ranking. Cover bidders are repeatedly deployed to provide losing
+participation; ordinary zero-win firms participate less often.
+The condition $\lambda_C>\lambda_G$ is \emph{maintained}, not
+derived: it is the behavioral assumption under which repeated
+zero-win participation becomes a monotone ranking statistic for
+loser-side exposure. The empirical sections then ask whether
+the ranking implied by this assumption has validation content
+against adjudication-adjacent labels.
+
+\begin{proposition}[Monotone loser-side suspicion]
+\label{prop:submission_monotone}
+Under the Poisson approximation and $\lambda_C>\lambda_G$, the
+posterior probability $\Pr(C\mid T_i=t,W_i=0,\tau_i)$ is
+non-decreasing in $t$. Consequently, $T_i$ and
+$\log(1+T_i)$ are rank-equivalent screening statistics for
+cover-bidder exposure within the zero-win stratum.
+\end{proposition}
+
+\begin{proof}
+By Bayes' rule, the posterior odds of type $C$ against type $G$
+are proportional to the likelihood ratio
+\[
+  \frac{\Pr(T_i=t\mid C,\tau_i)}
+       {\Pr(T_i=t\mid G,\tau_i)}
+  =
+  \exp[-(\lambda_C-\lambda_G)\tau_i]
+  \left(\frac{\lambda_C}{\lambda_G}\right)^t .
+\]
+Because $\lambda_C>\lambda_G$, the likelihood ratio is increasing
+in $t$. This is the monotone-likelihood-ratio property of the
+Poisson family \citep{karlin1956mlr}. The posterior increases
+with participation count, and the log transformation
+$\log(1+T_i)$ preserves the ranking.
+\end{proof}
+
+The empirical binary rule used in the main text is an operational
+coarsening of Proposition~\ref{prop:submission_monotone}. It flags firms above the
+median plus $1.5$ times the interquartile range of zero-win
+participation. The threshold is not a structural parameter. It
+is an auditable way to turn a monotone ranking into an
+operational list. Agencies could instead use the continuous
+score, a capacity-constrained top-$k$ list, or a threshold
+calibrated to their investigative budget.
+
+\subsection{Evidentiary Scope}
+\label{app:framework_scope}
+
+The proposition delivers a ranking result. Even if the model is
+correct, a high value of
+$\log(1+T_i)$ raises the posterior probability of cover-bidder
+exposure only relative to other zero-win firms. It does not
+identify an agreement, assign cartel membership, prove that any
+specific bid was cover, or establish a damages base. Those
+claims require evidence from the richer record: bid values,
+communications, leniency material, repeated winner rotation, or
+other case-specific facts.
+
+This boundary is the legal reason for the staged architecture in
+the main text. The award layer can allocate attention because it
+ranks firms on a statistic that is cheap, observable, and
+monotone under a transparent behavioral assumption. The bid layer
+and case record then do the evidentiary work that liability
+requires, because liability turns on conduct and agreement, not
+on suspicious participation alone.
+
+The framework does not imply that all zero-win firms are cover
+bidders, that frequent-loser status is legal membership, or that
+any specific bid is a cover bid. It supplies only the ranking
+logic for triage.
+
+\begin{proposition}[Scope separation]
+\label{prop:submission_scope}
+Under Lemma~\ref{lem:submission_zero_win} and
+Proposition~\ref{prop:submission_monotone}, the frequent-loser statistic
+is sufficient to order expected investigative value within the
+zero-win stratum. It is not sufficient for liability or damages.
+\end{proposition}
+
+\begin{proof}
+Triage requires an ordering of expected investigative value.
+Proposition~\ref{prop:submission_monotone} supplies that ordering
+within the zero-win stratum. Liability and damages require
+different predicates: proof of agreement, conduct in particular
+tenders, and an economic measure of harm. The statistic contains
+participation and win information only. It omits the facts needed
+for those predicates. The same statistic can be useful for
+allocating forensic attention and insufficient for legal
+adjudication.
+\end{proof}
