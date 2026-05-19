@@ -68,13 +68,35 @@ validation exercise then asks a genuine question: whether a
 pre-specified award-layer rule concentrates firms later observed
 near adjudicated cartel defendants.
 
+\subsection{Matching CADE Defendants to BEC Firms}
+\label{app:cade_matching_v18}
+
+CADE adjudications identify firms by legal name and tax
+identifier (CNPJ). The starting CADE portfolio contains $65$
+firm-defendants across $12$ adjudicated procurement-cartel
+cases linked to BEC subject matter. We match CADE defendants
+to BEC participant records on the full $14$-digit CNPJ string,
+zero-padded to preserve leading zeros that would otherwise be
+truncated by numeric parsing. The match is implemented as exact
+string equality on the firm-identifier field
+(\emph{c\'odigofornecedor}) common to the CADE and BEC extracts;
+no fuzzy or name-based matching is used, and no manual
+overrides enter the direct-defendant set. Of the $65$
+firm-defendants, $\valDirectCADE$ have at least one BEC
+tender-item record during the sample window and define the
+direct-defendant set used in validation. The remaining
+defendants either operate outside BEC or do not appear under
+matchable identifiers in the BEC participation extract; they are
+omitted from the direct-defendant label.
+
 \subsection{CADE Anchors and Cobidder Labels}
 \label{app:cade_labels_v18}
 
 CADE adjudications provide the legal anchors. A direct CADE
 defendant is a firm named in an adjudicated procurement-cartel
-case and matched to BEC participation records. The linked BEC
-portfolio contains $\valDirectCADE$ direct defendants. Direct
+case and matched to BEC participation records as described in
+Appendix~\ref{app:cade_matching_v18}. The linked BEC portfolio
+contains $\valDirectCADE$ direct defendants. Direct
 defendants are not the main target of the frequent-loser screen.
 They are used to locate cartel-affected bidding environments.
 

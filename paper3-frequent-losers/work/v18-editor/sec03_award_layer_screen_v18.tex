@@ -4,84 +4,134 @@
 \subsection{The Participation Primitive}
 \label{sec:award_primitive}
 
-The award layer cannot observe whether a losing bid was sincere,
-strategic, or coordinated. It can observe something more basic:
-which firms repeatedly entered tenders and never won. That is the
-primitive used here. The screen begins with the zero-win subset
-and then ranks firms inside that subset by participation
-intensity. In the BEC data this conditioning set contains
-$\valAlwaysLosers$ always-loser firms. A firm above the
-participation cutoff is a frequent loser.
+The award layer cannot reveal why a firm lost. A losing bid may
+be sincere, poorly priced, capacity constrained, exploratory,
+strategic, or coordinated; the analyst querying award records
+cannot distinguish these from one tender's outcome. What the
+award layer can observe is thinner: which firms appeared, which
+firms won, and how often the same firm kept appearing without
+ever winning. The primitive used here is therefore not a
+behavioral type. It is an observable loser-side exposure measure
+built from participation and zero wins. In the BEC data the
+relevant conditioning set contains $\valAlwaysLosers$
+always-loser firms.
 
-The economic reason for starting on the loser side is simple.
-Cover bidding is useful to a cartel because it supplies the
-appearance of competition while leaving the designated winner in
-place. A cover bidder is therefore expected to lose in the
-cartel-targeted tenders where it is deployed. Zero wins alone is
-not enough, of course. Many firms lose because they are small,
-inexperienced, poorly matched to the item, or simply unlucky.
-The additional signal is persistence: among firms that never
-win, repeated participation is harder to rationalize as ordinary
-competitive entry, and easier to reconcile with a role that pays
-off outside the observed award outcome. The formal appendix
-states this as a monotone-ranking result: conditional on zero
-wins, $\log(1+\text{tenders\_count})$ ranks the posterior
-probability of the cover-bidder type under a sparse
-separating-equilibrium framework.
+Zero wins alone is not enough. Many firms never win for
+ordinary competitive reasons. They may be too small or poorly
+matched to a particular item; they may face binding capacity
+constraints in the periods when they would otherwise have won;
+they may be using procurement participation for market
+intelligence, eligibility maintenance, subcontracting
+positioning, or relationship-building with procuring units.
+Without an additional discriminating signal, the always-loser
+stratum is too heterogeneous for triage. The screening signal is
+persistence inside that stratum: among firms that never win,
+how often do they keep showing up?
 
-This argument is intentionally modest. It does not say every
-frequent loser is a cover bidder, nor that cover bidding is the
-only reason for repeated zero-win participation. Capacity
-signaling, subcontracting relationships, eligibility
-maintenance, and market-intelligence gathering are also possible.
-The claim is narrower: the award layer supplies a ranking
-statistic for loser-side cartel adjacency, and that statistic is
-worth validating against adjudicated cartel records before any
-membership language is used.
+The maintained condition is monotonic rather than
+classificatory: within the zero-win stratum, cartel-deployed
+losing participants, if present, should participate more
+persistently than ordinary losing firms, because their function
+in the cartel---supplying the appearance of competition while
+leaving the designated winner in place---pays off through
+repeated deployment in cartel-targeted tenders. Under that
+condition, participation intensity inside the zero-win stratum,
+implemented as $\log(1+\text{tenders\_count})$, is a monotone
+ranking statistic for loser-side cartel-adjacency risk. The
+appendix formalizes this condition in a sparse screening
+framework; the main text uses it only to discipline the ranking
+interpretation.
+
+This primitive does not identify cover bidders or cartel
+members. It does not establish agreement, liability, or damages.
+It defines a first-stage ranking: among firms the award layer
+only observes as losers, which ones appear persistently enough
+to justify bid-layer forensic attention? The binary rule in
+subsection~\ref{sec:award_rule} is only an operational
+coarsening of this continuous ranking.
 
 \subsection{The Binary Rule}
 \label{sec:award_rule}
 
-The continuous score is
-$\log(1+\text{tenders\_count})$ computed among always-loser
-firms. For a discrete screen, we use the median plus
-$1.5\times$ interquartile range of the always-loser participation
-distribution. The resulting cutoff is $\valThreshold$
-tender-items with zero wins and flags $\valFL$ frequent losers.
-The rule is fixed from the participation distribution, before
-using CADE labels, and requires no bid amounts, bid rankings, or
-within-tender dispersion measures.
+The continuous ranking is the economic object. Within the
+always-loser stratum, we score firms by
+$\log(1+\text{tenders\_count})$, which orders repeated zero-win
+participation under the monotonicity condition stated in
+subsection~\ref{sec:award_primitive}.
 
-The binary cutoff is useful because enforcement programs often
-need a list, not only a rank. Still, the rank is the economic
-object. The binary rule compresses a continuous participation
-gradient into a manageable first-stage flag. Later sections
-therefore report both objects where possible: the frequent-loser
-indicator as the administrable screen, and
-$\log(1+\text{tenders\_count})$ as the underlying ranking
-statistic. This distinction matters in two places. First, a
-sharp cutoff is easier for firms to manipulate than a rank, a
-point we return to when discussing adversarial adaptation.
-Second, bid-distribution forensics can be sequenced after either
-object: the agency may request bid microdata for all firms above
-the cutoff, or for the top-ranked firms under the continuous
-score.
+A binary frequent-loser flag is useful for a different reason.
+Enforcement programs need more than a rank: agencies must
+decide which firms enter a survivor pool, which records justify
+a costly bid-microdata recovery, and where a forensic queue
+begins on Monday morning. The cutoff converts the continuous
+score into an administrable first-stage list, with the
+auditable property that two analysts applying the same rule to
+the same participation distribution will obtain the same
+survivor pool.
+
+For the discrete rule, we use the median plus $1.5\times$
+interquartile range of the always-loser participation
+distribution. In BEC this gives a cutoff of $\valThreshold$
+tender-items with zero wins and flags $\valFL$ frequent losers.
+The rule is fixed from the participation distribution before
+any CADE label enters the analysis and requires no bid amounts,
+bid ranks, or within-tender dispersion measures. The cutoff
+therefore inherits the low-information property that motivates
+the architecture.
+
+The number $\valThreshold$ has no independent legal or
+structural status. It does not divide cartel firms from
+non-cartel firms, and it does not make participants below the
+threshold competitive or those above it liable. It is an
+auditable implementation of a continuous ranking, calibrated to
+the spread of zero-win participation in the data rather than to
+any structural parameter of the bidding environment.
+
+Agencies could implement the same architecture differently. A
+capacity-constrained top-$k$ list would draw a fixed number of
+firms from the highest-ranked end of the continuous score; a
+budget-calibrated threshold would set the cutoff to match the
+bid-microdata recovery capacity of an investigative team; a
+dynamically refreshed rule would update the threshold as new
+participation records arrive. The paper reports both the binary
+flag and the continuous score where the analysis allows, so
+that the validation in Section~\ref{sec:validation} can be read
+as evidence on the ranking architecture rather than on any one
+cutoff. Threshold manipulability by firms aware of the rule is
+a practical concern about the binary implementation, not a
+conceptual collapse of the architecture, and we return to it
+under adversarial adaptation.
 
 \subsection{Populations and Legal-Economic Role}
 \label{sec:award_populations}
 
-Table~\ref{tab:populations_v18} fixes the populations used in
-the analysis. The broad BEC universe contains all firms that appear
-as participants during the sample window. The screen operates
-inside the always-loser stratum. Frequent losers are the flagged
-subset of that stratum. CADE direct defendants are firms named in
-adjudicated procurement-cartel cases and active in BEC. Cobidders
-are always-loser firms that appear alongside those direct
-defendants in BEC tender-items.
+The empirical design turns on keeping five populations
+separate. The broad BEC universe defines where procurement
+participation is observed. The always-loser stratum defines the
+side of the bidding pool that the award layer can rank.
+Frequent losers are the administrable subset flagged by the
+screen. Direct CADE defendants are legal membership anchors from
+adjudicated cases. Cobidders are always-loser firms observed
+alongside those anchors. These populations overlap in the data,
+but they do not play the same legal or empirical role.
+
+Table~\ref{tab:populations_v18} fixes those roles. The screen
+operates only inside the always-loser stratum. Frequent-loser
+status is an operational flag, not a legal category. Direct
+defendants locate cartel-affected environments, but a zero-win
+loser-side statistic is not designed to classify them. Cobidders
+define the cartel-adjacency target for validation: they are
+firms that lose, keep appearing, and are observed near
+adjudicated cartel defendants. That label is informative for
+validation but is not proof of agreement, membership, or
+liability.
 
 \begin{table}[htbp]
 \centering
-\caption{Populations and legal-economic role}
+\caption{Populations and legal-economic role. Frequent losers
+are an operational screen; direct defendants are legal anchors;
+cobidders are cartel-adjacent loser-side labels. The table
+separates legal membership from screening exposure.}
 \label{tab:populations_v18}
 \footnotesize
 \begin{adjustbox}{max width=\textwidth,center}
@@ -99,13 +149,16 @@ Cobidders in the always-loser stratum & $\valCobidders$ & Always-losers that par
 \end{adjustbox}
 \end{table}
 
-The table also clarifies what the screen is not designed to do.
-Direct defendants are the legal membership anchors, but they are
-not the natural target of a loser-side award-layer statistic.
-Cobidders are indirect labels and cannot adjudicate liability.
-They are the validation object because they occupy the part of
-the bidding pool the screen can observe: firms that lose, keep
-showing up, and appear near adjudicated cartel defendants. The
-next section asks whether the frequent-loser ranking actually
-concentrates on that population at rates above what participation
-volume alone would imply.
+This separation is what makes the validation design legally
+limited rather than opportunistic. The paper does not collapse
+defendants and cobidders into one cartel class. Frequent-loser
+status is not cartel membership; cobidder status is not legal
+membership; direct-defendant status is the legal-anchor role,
+not the screen target. The screen ranks loser-side exposure;
+CADE labels anchor the validation step.
+
+Section~\ref{sec:validation} therefore validates the ranking,
+not the legal status of the ranked firms. It asks whether the
+frequent-loser ranking concentrates on the cartel-adjacent
+loser-side population at rates above what participation volume
+alone would imply.

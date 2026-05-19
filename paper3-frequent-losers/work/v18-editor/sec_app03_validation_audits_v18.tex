@@ -17,18 +17,27 @@ $\valConservativeCutoff$. Within the always-loser stratum, we
 then compare the observed frequent-loser share among cobidders
 with a permutation distribution that preserves participation
 volume. Specifically, firms are grouped by participation-volume
-quartile, cobidder status is randomly permuted within those
-quartiles, and the frequent-loser share among placebo cobidders
-is recomputed $\valPermPilot$ times.
+quartile defined within the always-loser stratum, cobidder
+status is randomly permuted within those quartiles, and the
+frequent-loser share among placebo cobidders is recomputed
+$\valPermPilot$ times. The number of cobidders per quartile is
+preserved across permutations by construction; the within-
+quartile shuffle reassigns the cobidder marker over the same
+set of firms, leaving the per-quartile marginal unchanged. The
+$p$-value reports the share of permutations whose placebo
+frequent-loser share is at least as extreme as the observed
+share.
 
 The observed share is $\valCADEenrich$, compared with a
 permutation mean of $\valCADEbase$. The ratio is
 $\valMultThreeTwo\!\times$, with $p<0.001$, and the conservative
-ROC AUC is $\valAUCprePost$ (95\% CI $\valAUCprePostCI$). The
-permutation does not make cobidder status causal or legal proof.
-It answers the narrower exposure concern: the frequent-loser
-concentration near CADE defendants is larger than participation
-volume alone predicts.
+ROC AUC is $\valAUCprePost$ (95\% CI $\valAUCprePostCI$,
+computed via the DeLong method, which is the default for
+\texttt{pROC::ci} on a binary outcome). The permutation does
+not make cobidder status causal or legal proof. It answers the
+narrower exposure concern: the frequent-loser concentration
+near CADE defendants is larger than participation volume alone
+predicts.
 
 \subsection{Leakage Decomposition}
 \label{app:leakage_v18}

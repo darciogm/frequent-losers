@@ -4,55 +4,102 @@
 \subsection{Screening, Investigation, and Proof}
 \label{sec:setting_screening}
 
-Antitrust agencies rarely begin with the evidence they need at
-the end. They begin with coarse records, complaints, leniency
-leads, procurement anomalies, or repeated interactions that make
-some firms and markets worth a closer look. Legal proof of a
-procurement cartel comes later. It combines case records, bid
-histories, communications, leniency testimony, and economic
-evidence into a file that can support adjudication. The
-organizational problem is therefore not only how to classify
-conduct once rich evidence is available. It is also how to decide
-which files should receive the costly evidence-gathering effort
-in the first place.
+Antitrust agencies rarely begin with the evidence they need to
+prove a procurement cartel. They begin with coarse records,
+complaints, leniency leads, procurement anomalies, or repeated
+interactions that make some firms and markets worth a closer
+look. Legal proof comes later, after the agency recovers bid
+histories, communications, leniency testimony, and other
+case-specific evidence sufficient to support adjudication. The
+first institutional problem is therefore not classification once
+rich evidence is available; it is allocation of costly
+proof-producing effort.
 
-That distinction changes what a screen is asked to do.
-Bid-distribution methods ask whether the submitted bids look
-suspicious, conditional on access to per-bidder bid amounts. An
-award-layer screen asks an earlier question: before recovering
-those bid amounts, can the agency rank the firms and procurement
-environments where bid-level forensics is most likely to pay off?
-The first exercise is closer to proof; the second is triage. Our
-interest is in the second exercise. Bid-distribution forensics
-remains indispensable at the evidentiary stage, but award records
-may help decide where that stage should start.
+That distinction defines the role of an award-layer screen. The
+relevant performance criterion is not whether the screen
+establishes liability, but whether it improves the allocation of
+costly forensic attention. Bid-distribution methods ask whether
+the submitted bids look suspicious once per-bidder bid amounts
+are available. An award-layer screen asks an earlier question:
+before recovering those bid amounts, can the agency rank the
+firms and procurement environments where bid-layer forensics is
+most likely to pay off? Bid-distribution forensics remains
+indispensable at the evidentiary stage; award-layer triage helps
+decide where that stage should start.
+
+The institutional sequencing problem has a substantial
+law-and-economics tradition. The Becker--Stigler framework
+treats enforcement intensity as a choice variable under costly
+observation \citep{becker1968crime,stigler1970optimum}.
+Subsequent work formalizes screening as a first-stage filter
+that allocates investigative effort over a population of
+potentially infringing firms
+\citep{harrington2008detecting,baker2002case}: when proof is
+expensive and conduct is partially observable, an inexpensive
+ranking step on routinely available data is the rational
+starting point of investigation. The award-layer construction
+in this paper instantiates that filter. It scores firms using
+information the agency already has, before deciding whether to
+mobilize the costly bid-layer evidentiary stage.
+
+What counts as proof in a procurement-cartel case is more
+substantial. The agency must establish a coordinated
+bid-rigging arrangement that produced anticompetitive harm,
+typically through evidence of communication, allocation rules,
+or bid patterns inconsistent with independent decision-making.
+Brazilian competition law treats such conduct as an infraction
+under Lei~$12.529/2011$; comparable frameworks in the United
+States and the European Union also place the agreement element
+and its effect at the center of the case
+\citep{hovenkamp2005federal}. The screening object analyzed here
+does none of this. It produces a ranking that helps the agency
+decide where to seek the evidence those legal frameworks
+require.
 
 \subsection{The BEC Enforcement Environment}
 \label{sec:setting_bec}
 
-São Paulo's BEC platform contains both sides of this information
-problem. It is a large electronic procurement environment,
-covering
-$\valSampleN$ tender-items during
-$\valYearStart$--$\valYearEnd$, and it preserves a public
-contract-award envelope for each tender-item. It also sits inside
-a legal environment in which cartel cases are adjudicated by
-CADE, the Brazilian competition authority, creating an external
-source of legal labels against which an award-layer screen can be
-evaluated.
+São Paulo's BEC platform is the right environment for this
+design because it places the routine record layer on which
+triage can run, the forensic-recoverable bid records, and
+external CADE adjudication labels in the same procurement
+system. It covers $\valSampleN$ tender-items during
+$\valYearStart$--$\valYearEnd$ and preserves a contract-award
+envelope for each tender-item. Procurement-cartel cases are
+adjudicated by CADE, the Brazilian competition authority,
+supplying external legal anchors for validation. The
+combination lets us study the paper's central allocation
+problem: whether information available before bid recovery can
+rank where costly forensic effort should begin.
 
-Two procurement modalities dominate the sample. \emph{Convite}
-is a sealed-bid invitation procedure under Lei~$8.666/93$ with a
-statutory three-bidder quorum and a low value cap. \emph{Pregão}
-is a reverse electronic auction under Lei~$\valLeiPregao$ in
-which bidders submit progressively lower offers in real time,
-with no minimum-bidder rule. These modalities differ in both
-bidding rule and observability regime. Convite is closer to an
-award-only environment from the analyst's perspective; pregão
-generates a richer real-time interaction footprint. We use this
-contrast later as scope information for the screen, not as a
-source of causal identification. The common element is the award
-layer that survives across modalities.
+Two procurement modalities dominate. \emph{Convite} is a
+sealed-bid invitation under Lei~$8.666/93$ with a statutory
+three-bidder quorum and a low value cap; \emph{Pregão} is a
+reverse electronic auction under Lei~$\valLeiPregao$ with
+progressively lower real-time offers and no minimum-bidder rule.
+The modalities differ in bidding rule and observability regime:
+convite is closer to an award-only environment, while pregão
+generates a richer real-time interaction footprint. We treat
+this contrast as scope information, not causal identification.
+The common feature matters more for the architecture: both
+modalities leave an award layer that can be queried before
+bid-layer evidence is recovered.
+
+Cartel enforcement in Brazilian procurement is divided across
+institutions. CADE, the federal antitrust authority,
+investigates and adjudicates anticompetitive conduct including
+bid rigging. Federal and state audit courts---TCU at the federal
+level, TCE-SP at the state level---supervise procurement
+regularity and refer cases to CADE or to the Public
+Prosecutor's Office (\emph{Ministério Público}) when collusion
+is suspected. The screen analyzed here lives in the
+institutional space of CADE's bid-rigging caseload: it ranks
+firms whose award-layer behavior warrants the costly bid-layer
+recovery a CADE investigation would require. The same record
+layer is, however, already routinely consumed by audit-court and
+prosecutorial staff during procurement oversight
+\citep{oecd2019government}, which is one reason the architecture
+is institutionally implementable rather than purely academic.
 
 \subsection{Award Layer and Forensic-Recoverable Bid Layer}
 \label{sec:setting_layers_two}
@@ -66,22 +113,25 @@ per-bidder bid amounts, bid timestamps, and bid-revision
 sequences. Those bid records exist in the BEC operational system,
 but they are not exported to the ordinary analytical warehouse.
 They must be recovered through an administrative LANCES export:
-feasible for evaluation and forensic use, but costly relative to
+feasible for evaluation and case work, but costly relative to
 querying the award layer. OECD reviews of Brazilian procurement
 infrastructure describe this kind of administrative latency as a
 practical constraint on routine monitoring
-\citep{oecd2019government}.
+\citep{oecd2019government}. The constraint is not data
+non-existence; it is the cost and timing of turning operational
+bid files into analyzable forensic evidence.
 
-Figure~\ref{fig:coarsening_v18} summarizes the distinction. The
-left side reports the bid-layer features required by the
-Imhof--Wallimann-style forensic benchmark: within-tender
-coefficient of variation, dispersion across tenders, skewness,
-kurtosis, normalized spread, log min--max, and second-lowest bid
-distance. The right side reports the four fields used by the
-award-layer screen. Our screen uses only the right side. The
-bid-layer features enter as the forensic-stage benchmark and as a
-bid-level validation bridge after the LANCES export has been
-recovered.
+Figure~\ref{fig:coarsening_v18} is not an accuracy horse race; it
+is an information-cost diagram. The left side reports the
+bid-layer features required by the Imhof--Wallimann-style forensic
+benchmark: within-tender coefficient of variation, dispersion
+across tenders, skewness, kurtosis, normalized spread, log
+min--max, and second-lowest bid distance. The right side reports
+the four fields used by the award-layer screen. The empirical
+question is whether the right-hand layer can rank where the
+left-hand layer should be opened first; the bid-layer features
+remain the forensic-stage benchmark, recovered through LANCES
+only after triage has selected where to look.
 
 \begin{figure}[htbp]
 \centering
@@ -96,55 +146,93 @@ should be recovered first.}
 \label{fig:coarsening_v18}
 \end{figure}
 
-The two-layer problem is not peculiar to BEC. In the United
-States, FPDS-NG preserves federal contract awards as routine
-administrative records, while bid files sit with contracting
-agencies and are typically recovered through case-specific
-process. In the European Union, TED mandates publication of
-contract-award notices, but per-bidder bid amounts are preserved
-heterogeneously across member-state systems; a recent procurement
-screening review reports that fewer than half of surveyed systems
-make bid amounts retrievable at the analytical-warehouse layer
-\citep{sanchezgraells2019screening}. These examples are not used
-as external validation. They establish the portability of the
-information problem: award records are often routine, bid
-microdata often forensic.
+The same institutional distinction appears outside BEC. In the
+United States, FPDS-NG preserves federal contract awards as
+routine administrative records, while bid files sit with
+contracting agencies and are typically recovered through
+case-specific process. In the European Union, TED mandates
+publication of contract-award notices, but per-bidder bid
+amounts are preserved heterogeneously across member-state
+systems; a recent procurement-screening review reports that
+fewer than half of surveyed systems make bid amounts retrievable
+at the analytical-warehouse layer
+\citep{sanchezgraells2019screening}. These comparisons are not
+external validation of the BEC estimates. They establish a
+narrower point: the institutional distinction between routine
+award records and costly bid files is recognizable outside this
+setting.
+
+The bid-distribution literature presumes the left-hand side of
+Figure~\ref{fig:coarsening_v18}. The variance and dispersion
+screens of \citet{abrantesmetz2006a} use within-tender bid
+moments; the machine-learning extensions of
+\citet{imhof2018screening,imhof2019detecting,huber2019machine,wallimann2023machine}
+apply richer functions to the same per-bidder bid amounts. The
+coalition-inference apparatus of \citet{conley2016detecting}
+requires bid-level histories. These methods are not portable to
+the right-hand side because their inputs are not yet recovered
+there, not because the underlying logic fails. The paper's
+question is therefore not whether to use bid-distribution
+moments---we use them at the forensic stage---but whether
+award-layer information can decide where to recover those
+moments first.
 
 \subsection{CADE Labels and the Cartel-Adjacency Target}
 \label{sec:setting_cade}
 
-The legal labels come from CADE's procurement-cartel
-adjudications. CADE enforces Brazilian competition law under
-Lei~$12.529/2011$, and its leniency and adjudication records
-identify direct defendants in procurement-cartel cases. The
-portfolio linked to BEC contains $12$ adjudicated procurement
-cartel cases with $65$ firm-defendants, of which
-$\valDirectCADE$ are active in BEC during the sample window.
-Final decisions span $2015$--$2025$, with process-to-ruling
-intervals of $4$--$16$ years. That lag is central to the
-screening interpretation. An award-layer screen is valuable only
-if it can move suspicion toward forensic investigation before
-the adjudication record exists.
+CADE adjudications provide the legal anchors for the validation
+exercise. CADE enforces Brazilian competition law under
+Lei~$12.529/2011$, and its procurement-cartel decisions identify
+firms legally named in cartel cases. The portfolio linked to
+BEC contains $12$ adjudicated procurement-cartel cases with $65$
+firm-defendants, of which $\valDirectCADE$ are active in BEC
+during the sample window. Final decisions span
+$2015$--$2025$, with process-to-ruling intervals of $4$--$16$
+years. That lag is central to the screening interpretation: an
+award-layer screen has value only if it can move suspicion
+toward forensic investigation before the completed adjudication
+record exists.
 
-The adjudication record creates two empirical targets. Direct
-CADE defendants are the membership labels in the legal file, but
-they are not the natural target of a loser-side award-layer
-screen. They are often designated winners or otherwise
-winner-side firms in the cartel's allocation. Cobidders are
-different: always-loser firms that appear alongside direct
-defendants in BEC tender-items. They are indirect labels, and we
-do not treat them as proof of membership. They are, however, the
-cartel-adjacency object the award layer can plausibly recover:
-the loser-side participation footprint adjacent to adjudicated
-cartel members.
+The adjudication process behind those labels has a standard
+structure. An investigation is opened by CADE's
+\emph{Superintend\^encia-Geral} (SG), often following a
+leniency application, a \emph{Termo de Compromisso de Cessa\c{c}\~ao}
+settlement, or a referral from another enforcement body. The
+SG issues a recommendation; CADE's Tribunal reviews and rules.
+Cartel cases are heavily leniency-driven: the leniency
+provisions of Lei~$12.529/2011$, operationalized through CADE
+regulations, supply most of the direct-defendant identifications
+in our portfolio. This matters for what direct defendants are.
+They are firms whose membership was established through legal
+process, often via the cooperation of another cartelist. The
+award-layer screen has no equivalent legal authority and
+produces no analogous identification.
 
-The rest of the analysis follows that boundary. We evaluate the
-screen primarily against cobidders inside the always-loser
-stratum. Weak performance against direct defendants is not a
-failure of the design; it is the expected consequence of a
-statistic built to rank loser-side exposure. CADE adjudications
-are used in a legally limited way: as external evidence that some
-bidding environments were cartel-affected and as
-direct-defendant anchors for constructing cartel-adjacent
-cobidder labels. The screen remains a triage device. It does not
-adjudicate liability.
+The adjudication record creates two distinct empirical objects.
+Direct CADE defendants are legal membership anchors: they
+locate cartel-affected environments but are not the natural
+target of a loser-side award-layer statistic, because in
+procurement cartels they often occupy winner-side or allocation
+roles. Cobidders are different. They are always-loser firms
+that appear alongside direct defendants in BEC tender-items;
+they are indirect labels, and we do not treat them as proof of
+cartel membership. They are the loser-side adjacency object the
+award layer can plausibly recover: firms that lose, continue to
+appear, and are observed near legally adjudicated cartel
+anchors.
+
+This distinction is not a fallback after failed defendant
+classification. It follows from the information layer. Award
+records contain participation and outcome information; they do
+not contain agreements, communications, or the tender-specific
+conduct needed for liability. A statistic built from zero wins
+and repeated participation should therefore be evaluated against
+loser-side exposure, not legal membership. Weak performance
+against direct defendants is a scope check rather than a
+failure: it shows that the statistic is not a generic
+cartel-membership detector.
+
+The rest of the analysis follows that boundary. We evaluate
+whether award records rank cartel-adjacent loser-side firms well
+enough to allocate bid-layer forensic effort. The screen remains
+a triage device; it does not adjudicate liability.

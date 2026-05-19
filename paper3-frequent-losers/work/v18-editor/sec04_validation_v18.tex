@@ -1,51 +1,108 @@
-\section{Validation Against Adjudicated Cartel Adjacency}
+\section{Validating the Loser-Side Ranking}
 \label{sec:validation}
+
+This section validates the loser-side ranking, not the legal
+status of ranked firms. The target is loser-side cartel
+adjacency: always-loser firms observed alongside direct CADE
+defendants in adjudicated procurement-cartel environments. That
+target follows from the data layer. Award records observe
+participation and outcomes; they do not observe agreements,
+communications, or tender-specific conduct. The question is
+therefore not whether the screen proves cartel membership, but
+whether it concentrates the loser-side firms most plausibly
+worth bid-layer forensic attention.
+
+We organize the evidence as a validation architecture, with one
+exercise per threat to interpretation. The conservative
+adjudication benchmark
+(subsection~\ref{sec:validation_conservative}) anchors the
+target in cases resolved before the end of 2020, reducing
+reliance on later case outcomes. The temporal holdout
+(subsection~\ref{sec:validation_temporal}) asks whether the
+ranking discriminates later-adjudicated cobidders when the
+score is fixed before their labels exist. The participation-
+volume and leakage audit
+(subsection~\ref{sec:validation_leakage}) asks whether frequent
+losers are overrepresented near defendants beyond what
+participation volume mechanically predicts, and whether the
+result survives stratification on participation history. The
+direct-defendant asymmetry
+(subsection~\ref{sec:validation_direct}) asks whether the
+statistic is mistakenly behaving like a generic cartel-
+membership detector; for a loser-side screen, it should not.
+
+The section therefore evaluates the ranking against the threats
+that would make it uninformative for enforcement: mechanical
+exposure through participation volume, label leakage,
+retrospective fitting, and legal overclaiming. The performance
+criterion is not proof. It is whether award records rank
+cartel-adjacent loser-side exposure well enough to allocate
+costly bid-layer forensic effort.
 
 \subsection{A Conservative Adjudication Benchmark}
 \label{sec:validation_conservative}
 
-The cleanest validation uses only cartel cases already
-adjudicated before the end of 2020. This leaves
-$\valConservativeCases$ CADE cases, $\valConservativeFD$
-firm-defendants active in BEC, and
+The first benchmark is deliberately restrictive. We use only
+CADE procurement-cartel cases adjudicated before the end of
+2020, leaving $\valConservativeCases$ cases,
+$\valConservativeFD$ firm-defendants active in BEC, and
 $\valConservativeCobidders$ always-loser firms that bid
 alongside at least one of those defendants. Of those cobidders,
 $\valConservativeFL$ are frequent losers. Because both the
 cartel finding and the defendant list precede the construction
-of the screen, this benchmark avoids relying on later
-adjudications to define the ground truth.
+of the screen, this benchmark anchors the initial validation
+target in adjudications available early relative to the
+temporal-holdout exercises that follow. The restriction trades
+sample size for legal-timing discipline.
 
-The main concern is mechanical: firms that participate often are
-more likely to appear near anyone, including CADE defendants.
-The benchmark therefore uses a participation-stratified
-permutation rather than a raw co-bidding rate. Within quartiles
-of participation volume, we randomly permute cobidder status
-$\valPermPilot$ times and recompute the frequent-loser share
-among the relabeled cobidders. The observed co-bidding rate is
-$\valCADEenrich$, against a permutation mean of $\valCADEbase$,
-an excess ratio of $\valMultThreeTwo\!\!\times$ with
-$p<0.001$. The ROC AUC against the same conservative ground
-truth is $\valAUCprePost$ (95\% DeLong CI
-$\valAUCprePostCI$). The result is not that the screen proves
-membership. It is that frequent losers are concentrated near
-adjudicated cartel defendants at rates that participation volume
-alone does not explain.
+The main threat is mechanical exposure. Firms that participate
+often have more opportunities to appear near any defendant,
+regardless of cartel adjacency. Raw co-bidding rates would
+therefore overstate what the screen contributes. The relevant
+question is whether frequent losers are overrepresented near
+adjudicated defendants beyond what their participation volume
+alone would mechanically generate.
 
-\subsection{Prospective Discrimination}
+We address that concern with a participation-stratified
+permutation. Within quartiles of participation volume, we
+randomly permute cobidder status $\valPermPilot$ times and
+recompute the frequent-loser share among placebo cobidders. The
+procedure preserves the exposure created by participation
+intensity while breaking the specific adjacency to CADE
+defendants. The observed co-bidding rate is $\valCADEenrich$,
+against a permutation mean of $\valCADEbase$, an excess ratio of
+$\valMultThreeTwo\!\!\times$ with $p<0.001$. The ROC AUC against
+the same conservative ground truth is $\valAUCprePost$ (95\%
+DeLong CI $\valAUCprePostCI$).
+
+This benchmark does not turn cobidder status into legal proof.
+It answers the narrower validation question appropriate for a
+loser-side screen: whether the ranking concentrates firms
+adjacent to adjudicated cartel anchors at rates above what
+participation volume mechanically predicts. The temporal-holdout
+exercise in the next subsection extends the test to cases
+adjudicated after the BEC sample closes, where the labels are
+observed strictly after the score is constructed.
+
+\subsection{Temporal Holdout Discrimination}
 \label{sec:validation_temporal}
 
 The broader CADE portfolio is more informative but less clean:
-it includes cases adjudicated after the BEC sample closes. We
-use it as a prospective benchmark. The question is whether
-participation observed before the test window ranks cobidders
-whose cartel adjacency is revealed only later by the
-adjudication record. Computing the score from $2009$--$2016$
-participation and evaluating it on $2017$--$2019$ labels gives
-firm-level AUC $\valAUCFLfirmTemp$ (95\% CI
-$\valAUCFLfirmTempCI$). In-sample AUC is higher,
-$\valAUCFLfirm$, as expected; the holdout estimate is the better
-reference for an enforcement screen that would be run before the
-case file is complete.
+several linked cases are adjudicated after the BEC sample
+closes. We treat it as a temporal holdout exercise rather than
+as a pure contemporaneous benchmark. The labels are
+later-adjudicated, so the exercise is not a real-time field
+deployment. Its value is narrower: it asks whether a score
+built from earlier award records ranks firms whose loser-side
+cartel adjacency is revealed later by the adjudication record.
+
+The holdout performance is strong. Computing the score from
+$2009$--$2016$ participation and evaluating it on
+$2017$--$2019$ labels gives firm-level AUC
+$\valAUCFLfirmTemp$ (95\% CI $\valAUCFLfirmTempCI$). The
+in-sample AUC is higher, $\valAUCFLfirm$, as expected. For an
+enforcement screen that would be run before the case file is
+complete, the holdout estimate is the more relevant benchmark.
 
 \begin{figure}[htbp]
 \centering
@@ -57,58 +114,103 @@ label.}
 \label{fig:temporal_holdout_roc_v18}
 \end{figure}
 
-Figure~\ref{fig:temporal_holdout_roc_v18} shows the
-rolling-origin ROC curves. The point of the figure is not the
-smoothness of any single year, but the separation from the
-diagonal across the holdout exercise. A participation statistic
-constructed before the labels are observed still ranks the
-loser-side firms later revealed to be adjacent to adjudicated
-cartel defendants.
+Figure~\ref{fig:temporal_holdout_roc_v18} reports the
+rolling-origin version of the same exercise: for each test
+year, scores are constructed using only prior participation.
+The relevant point is not that every year behaves identically,
+but that the ranking remains separated from random
+classification out of time.
+
+The exercise supports temporal discrimination, not field
+deployment, causal prediction, or legal proof. It addresses
+retrospective fitting, since the score is fixed before the
+test-period labels exist, but it does not eliminate every
+timing concern: the labels are themselves observed later
+through adjudication, and that informational content is
+meaningful without being equivalent to real-time enforcement
+evidence. The next subsection turns to a different threat:
+whether the discrimination is driven by participation-volume
+mechanics or by reuse of the same participation history.
 
 \subsection{Participation Volume and Leakage}
 \label{sec:validation_leakage}
 
-The validation would be uninteresting if it only recovered its
-own construction. We therefore separate the structural signal
-from two mechanical components. The first is ordinary exposure:
-active firms appear in more tenders and have more chances to
-co-bid with any defendant. The stratified permutation above
-handles that margin. The second is leakage in item-level
-classification. If the same cobidder firms help construct the
-participation score and define the label, in-sample item-level
-AUC becomes almost tautological; the reference value is
-$\valLeakRefAUC$.
+The validation would be uninformative if it only reproduced
+its own construction. Two mechanical concerns matter. The first
+is \emph{exposure}: firms that participate often have more
+opportunities to appear near any defendant, and the
+participation-stratified permutation in
+subsection~\ref{sec:validation_conservative} addresses that
+margin. The second is \emph{leakage}: in item-level validation,
+the same firms can help construct both the participation score
+and the cobidder label. The two concerns are distinct and call
+for different audits.
 
-Two audits reduce that concern. Holding cobidder firms out of
-score construction within cross-validation folds leaves AUC
-$\valLeakCVAUC$ (95\% CI $\valLeakCVAUCCI$). Computing the score
-only on $2009$--$2016$ participation and predicting
-$2017$--$2019$ items leaves AUC $\valAUCFLfirmTemp$ at the firm
-level. The drop from the in-sample reference is real and should
-be disclosed; it is the mechanical component. What remains is
-the part that matters for the screening interpretation: the
-participation primitive continues to rank cartel-adjacent
-loser-side firms when the labels are held out of score
-construction or placed out of time.
+We therefore do not use the in-sample item-level AUC of
+$\valLeakRefAUC$ as evidence of screening performance. That
+number is a reference value for the mechanical upper bound: it
+shows what happens before reuse of the same participation
+history is disciplined. The credibility of the validation comes
+from the audits that weaken that mechanical channel.
 
-\subsection{The Direct-Defendant Asymmetry}
+Two audits do the work. Holding cobidder firms out of score
+construction within cross-validation folds leaves AUC
+$\valLeakCVAUC$ (95\% CI $\valLeakCVAUCCI$); this addresses
+reuse of the same firms in score and label construction.
+Computing the score only on $2009$--$2016$ participation and
+evaluating it against $2017$--$2019$ items leaves AUC
+$\valAUCFLfirmTemp$ at the firm level; this addresses
+retrospective fitting by placing the labels out of time.
+
+The drop from the in-sample reference is real and disclosed; it
+is the mechanical component. What remains is the relevant
+signal for the screening interpretation: the participation
+primitive continues to rank cartel-adjacent loser-side firms
+when labels are held out of score construction or placed out of
+time. The audits do not eliminate every source of mechanical
+overrepresentation, but they isolate the surviving signal from
+the channels they target. The next subsection turns to the
+opposite check: whether the same statistic also classifies
+direct CADE defendants, where a loser-side screen should
+perform worse.
+
+\subsection{Direct-Defendant Asymmetry as a Scope Check}
 \label{sec:validation_direct}
 
 The final validation check runs in the opposite direction. If
-the award-layer statistic were a general cartel-membership
-detector, it should also classify direct CADE defendants. It
-does not. Against direct defendants in the broader BEC firm
-universe, AUC is $\valAUCdirectStd$, essentially random. This is
-the expected result for a loser-side screen. Direct defendants
-are the firms named in the legal file and are often on the
-winner side of the arrangement; the statistic is built from zero
-wins and repeated loser-side participation. A screen designed to
-rank that side of the bidding pool should not recover the
-membership object symmetrically.
+the award-layer statistic were a generic cartel-membership
+detector, it should classify direct CADE defendants. A
+loser-side ranking need not. The scope of the statistic predicts
+asymmetric performance: it is built from zero wins and repeated
+loser-side participation, while direct defendants are legal
+membership anchors that often occupy winner-side or allocation
+roles in the cartel environment.
+
+That is what the data show. Against direct defendants in the
+broader BEC firm universe, AUC is $\valAUCdirectStd$,
+essentially random. We do not treat this as a hidden failure.
+It is a scope check: the statistic is not behaving like a
+general detector of cartel membership.
+
+The interpretation is narrow. Direct defendants anchor
+adjudicated cartel environments; cobidders are the loser-side
+footprint the award layer can plausibly rank. Stronger
+performance against cobidders than against direct defendants is
+therefore not target shopping. It is the empirical signature of
+the screen's stated scope.
+
+The result rules out the wrong reading---that the screen
+detects cartel membership generically---and supports the right
+one: the screen ranks cartel-adjacent loser-side exposure
+around adjudicated cartel environments. It should be read
+together with the cobidder validation in the preceding
+subsections, where the same statistic concentrates on the
+population it was designed to rank.
 
 \begin{table}[htbp]
 \centering
-\caption{Validation benchmarks}
+\caption{Validation benchmarks for the loser-side ranking. Each
+row addresses a distinct threat to interpretation.}
 \label{tab:validation_benchmarks_v18}
 \footnotesize
 \begin{adjustbox}{max width=\textwidth,center}
@@ -119,7 +221,7 @@ Benchmark & Question & Result \\
 Conservative CADE cases & Are frequent losers overrepresented among pre-2020 adjudicated cobidders, net of participation volume? & $\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ \\
 Temporal holdout & Does pre-window participation rank later cartel-adjacent cobidders? & AUC $\valAUCFLfirmTemp$ \\
 Leakage audit & Does signal survive when cobidders are held out of score construction? & Out-of-fold AUC $\valLeakCVAUC$ \\
-Direct-defendant asymmetry & Does the loser-side screen classify legal defendants symmetrically? & Direct-defendant AUC $\valAUCdirectStd$ \\
+Direct-defendant scope check & Does the loser-side screen classify legal defendants symmetrically? & Direct-defendant AUC $\valAUCdirectStd$ \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
@@ -130,7 +232,7 @@ view. The four rows are meant to be read together. The
 conservative benchmark anchors the label in adjudicated cases;
 the temporal holdout addresses retrospective fitting; the
 leakage audit owns the mechanical component; and the
-direct-defendant result keeps the legal object straight. Taken
+direct-defendant scope check keeps the legal object straight. Taken
 together, they support a limited but useful claim: award records
 can rank cartel-adjacent loser-side firms before bid-level proof
 is recovered. They do not adjudicate membership, and they are not

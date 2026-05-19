@@ -53,3 +53,41 @@ is a prediction exercise under full observability. Sequencing is
 an evidence-allocation rule under partial observability. The
 second problem is the one agencies face when award records are
 routine but bid files require costly recovery.
+
+\subsection{Algorithm}
+\label{app:gatekeeping_algorithm_v18}
+
+The full gatekeeping procedure can be stated compactly.
+
+\begin{quote}
+\textbf{Algorithm F.1: Award-Layer Gatekeeping}
+\begin{enumerate}
+\item Define the firm universe from award records (participant
+identity, winner identity, item code, negotiated price,
+procuring unit, year, modality).
+\item For each firm $i$, compute the win count $W_i$ and the
+participation count $T_i$ over the calibration window.
+\item Restrict to the zero-win stratum $\{i : W_i = 0\}$.
+\item Compute the award-layer score $s_i = \log(1+T_i)$.
+\item Select the survivor pool $\mathcal{S}$ using one of: a
+median-plus-$1.5\times$IQR threshold, a top-$K_1$ rule, or a
+capacity-constrained budget rule.
+\item Recover bid microdata only for firms in $\mathcal{S}$.
+\item Compute the bid-layer forensic features inside
+$\mathcal{S}$.
+\item Rank survivor firms using the bid-layer benchmark alone
+or a combined award-plus-bid rule, depending on the
+investigative protocol.
+\item Deliver the top-$k$ queue from that ranking for
+investigative review.
+\item Treat the output as forensic priority, not as a liability
+finding.
+\end{enumerate}
+\end{quote}
+
+Joint scoring requires bid microdata for the full pool before
+triage; sequential gatekeeping requires bid microdata only
+after the award-layer survivor pool is formed. The size of the
+survivor pool, the choice of threshold or top-$K_1$, and the
+recalibration cadence are all institutional choices that the
+algorithm leaves to the agency.
