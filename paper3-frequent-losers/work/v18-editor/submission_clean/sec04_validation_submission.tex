@@ -1,14 +1,15 @@
-\section{Validation Against Cartel-Adjacent Losers}
+\section{Validating the Loser-Side Ranking}
 \label{sec:validation}
 
-The frequent-loser ranking is useful for enforcement only if it
-orders the loser-side firms for which bid-layer follow-up is most
-valuable. The validation target is therefore the one defined in
-Section~\ref{sec:cade_adjacency_labels}: always-loser firms
-observed alongside direct CADE defendants in adjudicated
-procurement-cartel environments. These cobidders are not treated
-as legal members of a cartel. They are an adjudication-anchored
-exposure target for evaluating forensic priority.
+This section validates the award-layer ranking, not the legal
+status of ranked firms. The ranking is useful for enforcement
+only if it orders the loser-side firms for which bid-layer
+follow-up is most valuable. The validation target is therefore
+the one defined in Section~\ref{sec:cade_adjacency_labels}:
+always-loser firms observed alongside direct CADE defendants in
+adjudicated procurement-cartel environments. These cobidders are
+adjudication-anchored exposure labels. They are not treated as
+legal members of a cartel.
 
 The validation exercise has to do more than report a high AUC.
 The main empirical threat is exposure. Firms that participate
@@ -25,7 +26,7 @@ firms beyond what participation volume and market exposure alone
 would imply. A second threat is timing: an enforcement screen
 should rank candidates before the target information is used.
 A third threat is legal overreach: a loser-side screen should
-not be read as a generic detector of cartel membership.
+not be read as a generic cartel-membership detector.
 
 This section evaluates the ranking against those threats.
 Subsection~\ref{sec:validation_baseline} reports the baseline
@@ -66,9 +67,10 @@ adjudication-anchored loser-side exposure.
 
 The second benchmark adds timing discipline. The score is
 computed from $2009$--$2016$ participation and evaluated against
-$2017$--$2019$ cobidder labels. This asks whether earlier award
-records rank firms whose cartel adjacency is revealed later by
-the adjudication record. The firm-level AUC is
+$2017$--$2019$ cobidder labels. This is a temporal holdout, not a
+real-time field deployment: it asks whether earlier award records
+rank firms whose cartel adjacency is later observed in the
+adjudication-anchored record. The firm-level AUC is
 $\valAUCFLfirmTemp$ (95\% CI $\valAUCFLfirmTempCI$), below the
 full-sample AUC $\valAUCFLfirm$ but well separated from random
 ranking. Figure~\ref{fig:temporal_holdout_roc_submission} reports the
@@ -87,7 +89,8 @@ exposure, leakage, and strict timing.
 \caption[Temporal-holdout discrimination]{Temporal-holdout ROC
 curves. Scores are computed using participation observed before
 the test year; the test year supplies the out-of-time cobidder
-label.}
+label. The exercise measures out-of-time discrimination against
+later-adjudicated cobidder labels, not field deployment.}
 \label{fig:temporal_holdout_roc_submission}
 \end{figure}
 
@@ -105,10 +108,10 @@ distribution fixed while breaking the particular adjacency to
 CADE defendants. The observed share, $\valCADEenrich$, remains
 well above the placebo mean, $\valCADEbase$.
 
-The second source is market opportunity. Firms that buy and sell
-in the same procurement niches as CADE defendants have more
+The second source is market opportunity. Firms active in the
+same procurement niches as CADE defendants have more
 chances to appear near those anchors even when conduct is
-ordinary. The validation design therefore treats exposure adjustment
+ordinary. The validation architecture therefore treats exposure adjustment
 as a required audit rather than as an optional robustness check.
 The audit compares firms within more similar opportunity sets,
 using item, modality, year, and buyer information where support
@@ -130,7 +133,8 @@ continuous score gives AUC $\valAUCStrictFirmTC$ (95\% CI
 $\valAUCStrictFirmTCCI$). The decline relative to the relaxed
 holdout is informative: real-time screening has less information
 than a full-window reconstruction, but the ranking remains
-useful under a stricter field-like information set.
+useful under a stricter field-like information set. It remains a
+timing audit, not causal prediction.
 
 The leakage audit addresses a different concern: item-level
 validation can mechanically reuse the same firm histories that
@@ -159,11 +163,15 @@ less informative for direct defendants.
 
 The data follow that prediction. Against direct defendants in
 the broader BEC firm universe, AUC is $\valAUCdirectStd$, close
-to random classification. Read together with the cobidder
-results, this pattern supports the staged interpretation. Direct
-defendants anchor cartel-affected environments; the award layer
-ranks the loser-side exposure around those anchors; the bid layer
-then supplies the conduct evidence for case-specific evaluation.
+to random classification. This is the scope check doing its
+work. If the statistic were a generic cartel-membership detector,
+it should rank direct defendants as well as cobidders. It does
+not, which is the expected result for a zero-win loser-side
+ranking. Read together with the cobidder results, this pattern
+supports the staged interpretation. Direct defendants anchor
+cartel-affected environments; the award layer ranks the
+loser-side exposure around those anchors; the bid layer then
+supplies the conduct evidence for case-specific evaluation.
 
 \subsection{Validation Summary}
 \label{sec:validation_summary}
@@ -171,10 +179,10 @@ then supplies the conduct evidence for case-specific evaluation.
 Table~\ref{tab:validation_benchmarks_submission} summarizes the
 validation architecture. Each row corresponds to a threat
 identified before the tests are read: legal anchoring,
-participation volume, exposure, timing, leakage, and scope. The
-resulting claim is staged: the award-layer ranking identifies a
-priority queue for the bid-layer stage, where tender-level
-conduct can be examined with richer evidence.
+participation volume, market exposure, timing, leakage, and
+scope asymmetry. The resulting claim is staged: the award-layer
+ranking supports a priority queue for the bid-layer stage, where
+tender-level conduct can be examined with richer evidence.
 
 \begin{table}[htbp]
 \centering
@@ -182,25 +190,34 @@ conduct can be examined with richer evidence.
 \label{tab:validation_benchmarks_submission}
 \footnotesize
 \begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
 \begin{tabular}{p{3.5cm}p{5.3cm}p{4.3cm}}
 \toprule
 Benchmark & Question & Result \\
 \midrule
 Conservative CADE benchmark & Are frequent losers overrepresented among pre-$\valConservativeCutoff$ adjudication-anchored cobidders? & $\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ \\
 Participation discipline & Does concentration survive volume-preserving placebo assignment? & Placebo mean $\valCADEbase$ versus observed $\valCADEenrich$ \\
-Exposure discipline & Does the ranking survive more comparable market opportunities to meet CADE anchors? & Exposure-adjusted audit; see \ref{app:validation_audits_submission} \\
+Exposure discipline & Does the ranking remain informative under more comparable market opportunities to meet CADE anchors? & Exposure-adjusted audit; see \ref{app:validation_audits_submission} \\
 Temporal holdout & Does pre-window participation rank later cobidder labels? & AUC $\valAUCFLfirmTemp$ \\
 Leakage audit & Does signal survive when cobidders are held out of score construction? & Out-of-fold AUC $\valLeakCVAUC$ \\
 Direct-defendant scope check & Does the ranking preserve the distinction between legal anchors and loser-side exposure? & Direct-defendant AUC $\valAUCdirectStd$ \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Benchmarks evaluate whether the award-layer
+ranking is useful for forensic priority. They do not validate
+legal membership or proof.
+\end{tablenotes}
+\end{threeparttable}
 \end{adjustbox}
 \end{table}
 
 Taken together, the benchmarks support the screen at the stage
 for which it is designed. Persistent zero-win participation
 orders adjudication-anchored loser-side exposure well enough to
-allocate forensic attention. The next step is economic
-interpretation: among firms already selected by the frequent-
-loser rule, do cobidders look like a distinct loser-side type
-rather than a mechanical collection of high-volume losers?
+allocate forensic attention, not to validate the legal status of
+ranked firms. The next step is economic interpretation: among
+firms already selected by the frequent-loser rule, do cobidders
+look like a distinct loser-side type rather than a mechanical
+collection of high-volume losers?
