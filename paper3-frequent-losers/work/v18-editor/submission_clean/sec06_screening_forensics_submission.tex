@@ -15,60 +15,48 @@ requires.
 
 This section therefore turns from validation to sequencing. The
 screen is useful because it sits before costly proof-producing
-work. It is computed from records the agency can observe broadly:
-who participated, who won, and who kept appearing without
-winning. Bid-layer forensics, by contrast, uses submitted offers,
-within-tender bid moments, and distance from the winning bid.
-Those data are more probative but also more expensive to recover,
-clean, harmonize, and inspect at scale. The institutional problem
-is not whether a cheap signal should replace a costly one; it is
-whether the cheap signal can discipline where the costly one
-should be opened first.
+work. It uses records the agency can observe broadly: who
+participated, who won, and who kept appearing without winning.
+Bid-layer forensics uses submitted offers, within-tender bid
+moments, and distance from the winning bid. Those data are more
+probative but also more expensive to recover, clean, harmonize,
+and inspect at scale. The issue is not whether a cheap signal
+should replace a costly one; it is whether the cheap signal can
+discipline where the costly one should be opened first.
 
 The section evaluates that architecture in three steps. First, it
 places the award-layer ranking and an Imhof--Wallimann-style
 bid-distribution benchmark on the same adjudication-anchored
-target, so that differences in performance can be read against
-differences in information cost. Second, it asks whether the two
-layers are complements: the award layer measures repeated
-loser-side exposure across tenders, while the bid layer measures
-conduct inside tenders after the bid file is opened. Third, it
-implements the operational gatekeeper. The award layer first
-selects a survivor pool; only then does the bid layer rank firms
-inside that pool. The object is a cost-recall frontier for
-forensic attention, not a horse race among detectors under full
-observability.
+target, so performance can be read against information cost.
+Second, it asks whether the two layers are complements: the award
+layer measures repeated loser-side exposure across tenders, while
+the bid layer measures conduct inside tenders after the bid file
+is opened. Third, it implements the operational gatekeeper:
+award records create a survivor pool, and bid forensics rank
+firms inside that pool. The object is a cost-recall frontier for
+forensic attention, not a horse race under full observability.
 
-This sequencing is the paper's central enforcement implication.
-It turns a legally limited screen into a practical allocation
-rule: administrative records identify where proof-producing
-forensics should begin, and bid-level evidence remains the stage
-at which conduct is evaluated. The value of the method is
-therefore measured by how much forensic scope it can reduce while
-preserving adjudication-anchored signal.
+This sequencing is the paper's central enforcement implication:
+administrative records rank where proof-producing forensics
+should begin, while bid-level evidence remains the stage at
+which conduct is evaluated. The value is measured by how much
+forensic scope falls while adjudication-anchored signal is
+preserved.
 
 \subsection{Bid-Layer Benchmark Under Costly Observability}
 \label{sec:bid_layer_benchmark}
 
 The natural forensic comparator is the bid-distribution
-tradition. Imhof--Wallimann-style detectors use within-tender
-bid moments---dispersion, skewness, spread, distance from the
-winning bid, and related features---to flag patterns consistent
-with coordinated bidding. This family of screens begins with
-simple distributional abnormalities
-\citep{abrantesmetz2006a}. Procurement applications develop
-descriptive bid-rigging indicators
-\citep{imhof2018screening,imhof2019detecting} and extend to
-machine-learning implementations that combine
-multiple bid moments \citep{huber2019machine,wallimann2023machine}.
-These features
-are closer to conduct than the award-layer screen is. They use
-information from the bids themselves rather than only the
-administrative trace of participation and awards. For that
-reason, they are also a more costly evidentiary object: the
-agency must recover usable bid histories, harmonize submitted
-offers, construct within-tender moments, and map those moments
-back to firms.
+tradition. Imhof--Wallimann-style screens use within-tender bid
+moments---dispersion, skewness, spread, distance from the winning
+bid, and related features---to flag patterns consistent with
+coordinated bidding
+\citep{abrantesmetz2006a,imhof2018screening,imhof2019detecting,huber2019machine,wallimann2023machine}.
+These features are closer to conduct than the award-layer screen
+is. They use bids themselves rather than the administrative trace
+of participation and awards. They are also more costly: the
+agency must recover usable bid histories, harmonize offers,
+construct within-tender moments, and map those moments to firms.
 
 The relevant comparison is therefore not sophistication. The
 bid-layer benchmark is more forensic by construction. The
@@ -128,8 +116,9 @@ Award layer $+$ bid layer & Participation intensity plus bid-distribution moment
 \item \textit{Notes:} Five-fold cross-validated AUC against
 CADE-cobidder labels within the always-loser pool for which the
 bid-distribution benchmark can be computed
-($N=\valImhofPoolN$). The combined specification uses the same
-target and adds the award-layer score to the bid-layer moments.
+($N=\valImhofPoolN$). The target is fixed; models differ in
+required information. The combined specification is a
+full-observability diagnostic, not the operating rule.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
@@ -155,9 +144,9 @@ $+\valImhofIncFL$ AUC over the full Imhof--Wallimann benchmark
 alone (DeLong $p=\valImhofIncFLp$) \citep{delong1988comparing}.
 The combined specifications
 gain $\valImhofIncCombo$ AUC over the bid-layer benchmark
-($p<0.001$). The increment is not needed to claim that the award
-layer dominates the bid layer; it shows that the two layers are
-not measuring the same thing.
+($p<0.001$). The increment is not a claim that the award layer
+dominates the bid layer; it shows that the two layers are not
+measuring the same thing.
 
 The distinction is substantive. Bid moments describe conduct
 inside tenders after the bid file has been opened: spread,
@@ -171,7 +160,7 @@ reason to look first in some places rather than others. The bid
 layer then helps evaluate what is found after looking.
 
 The combined model in Table~\ref{tab:imhof_cost_submission} is thus a
-diagnostic for complementarity, not the operational baseline.
+complementarity diagnostic, not the operational architecture.
 Running the combined model for every firm assumes full
 bid-layer observability before triage has occurred, which is
 precisely the resource problem the paper studies. The enforcement
@@ -226,7 +215,13 @@ $\valArchRecallThouSeqK$, while requiring bid microdata for only
 $\valArchSeqKone$ firms. Relative to joint scoring, the
 sequential architecture reduces the bid-microdata footprint by
 $\valArchFootprintReduction$ at a recall cost of
-$\valArchRecallCost$.
+$\valArchRecallCost$. Put differently, at the top-$1{,}000$
+cutoff the sequential rule recovers $\valArchTPThouSeqK$ of
+$\valArchNPos$ cobidders while requiring bid microdata for only
+$\valArchSeqKone$ of $\valArchPoolSize$ firms. This is the
+cost-of-evidence result: much of the signal is retained after
+the forensic bid layer is opened for a much smaller survivor
+pool.
 
 \begin{table}[htbp]
 \centering
@@ -259,12 +254,14 @@ $\valArchPoolSize$ always-loser firms with computable
 bid-distribution features; positives are $\valArchNPos$
 CADE-cobidders. The bid-microdata column reports how many firms
 require per-bid offer values before the rule can be applied.
+Joint scoring is a full-observability upper bound; the sequential
+rule is the operational gatekeeper.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
 \end{table}
 
-The sequential rule is not meant to dominate the full-information
+The sequential rule is not designed to dominate the full-information
 joint model. Its value is that it approaches much of the
 full-information signal without requiring full-information
 forensic scope. That is the enforcement margin on which the
@@ -307,9 +304,10 @@ corresponding precisions are $\valArchTHPrecFiveHundSeqK$ and
 $\valArchTHPrecThouSeqK$ for the sequential rule.
 
 The temporal result reinforces the sequencing interpretation
-rather than expanding it. It does not show that a fixed cutoff is
-universally optimal, nor that an agency can infer agreement from
-the award layer alone. It shows that conditioning costly
+rather than expanding it. It should not be read as proof that
+sequential gatekeeping dominates joint scoring, that a fixed
+cutoff is universally optimal, or that an agency can infer
+agreement from the award layer alone. It shows that conditioning
 bid-layer forensics on an earlier award-layer screen remains
 competitive under timing discipline while preserving the smaller
 forensic footprint. The conclusion of Section~\ref{sec:screening_forensics}
