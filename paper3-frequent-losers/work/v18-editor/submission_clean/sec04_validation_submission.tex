@@ -109,16 +109,18 @@ CADE defendants. The observed share, $\valCADEenrich$, remains
 well above the placebo mean, $\valCADEbase$.
 
 The second source is market opportunity. Firms active in the
-same procurement niches as CADE defendants have more
-chances to appear near those anchors even when conduct is
-ordinary. The validation architecture therefore treats exposure adjustment
-as a required audit rather than as an optional robustness check.
-The audit compares firms within more similar opportunity sets,
-using item, modality, year, and buyer information where support
-permits. Its purpose is to ask whether the award-layer rank
-continues to concentrate adjudication-anchored cobidders after
-the markets in which firms could meet CADE anchors are made more
-comparable.
+same procurement niches as CADE defendants have more chances to
+appear near those anchors even when conduct is ordinary. A
+separate exposure-adjusted audit therefore asks whether the
+ranking survives after comparing firms within more similar
+opportunity sets---defined by procurement environments in which
+a firm could have appeared with CADE anchors, using item,
+modality, year, and buyer information where support permits.
+The audit is not a legal-membership test; it checks that the
+cobidder concentration is not only the mechanical result of
+appearing in markets where defendants also bid.
+\ref{app:validation_audits_submission} reports the construction
+and retained support.
 
 Timing is disciplined in two layers. The temporal holdout above
 forms the participation score before the evaluation window and
@@ -176,8 +178,8 @@ supplies the conduct evidence for case-specific evaluation.
 \subsection{Validation Summary}
 \label{sec:validation_summary}
 
-Table~\ref{tab:validation_benchmarks_submission} summarizes the
-validation architecture. Each row corresponds to a threat
+Table~\ref{tab:validation_benchmarks_submission} is a threat map
+rather than a proof table. Each row corresponds to a threat
 identified before the tests are read: legal anchoring,
 participation volume, market exposure, timing, leakage, and
 scope asymmetry. The resulting claim is staged: the award-layer
@@ -186,7 +188,7 @@ tender-level conduct can be examined with richer evidence.
 
 \begin{table}[htbp]
 \centering
-\caption{Validation benchmarks for the award-layer ranking}
+\caption{Validation Architecture for the Award-Layer Ranking}
 \label{tab:validation_benchmarks_submission}
 \footnotesize
 \begin{adjustbox}{max width=\textwidth,center}
@@ -195,9 +197,9 @@ tender-level conduct can be examined with richer evidence.
 \toprule
 Benchmark & Question & Result \\
 \midrule
-Conservative CADE benchmark & Are frequent losers overrepresented among pre-$\valConservativeCutoff$ adjudication-anchored cobidders? & $\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ \\
-Participation discipline & Does concentration survive volume-preserving placebo assignment? & Placebo mean $\valCADEbase$ versus observed $\valCADEenrich$ \\
-Exposure discipline & Does the ranking remain informative under more comparable market opportunities to meet CADE anchors? & Exposure-adjusted audit; see \ref{app:validation_audits_submission} \\
+Legal anchoring & Are frequent losers overrepresented among pre-$\valConservativeCutoff$ adjudication-anchored cobidders? & $\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ \\
+Participation-volume discipline & Does concentration survive volume-preserving placebo assignment? & Placebo mean $\valCADEbase$ versus observed $\valCADEenrich$ \\
+Exposure discipline & Does the ranking remain informative under more comparable opportunity sets for meeting CADE anchors? & Exposure-adjusted audit over comparable opportunity sets; see \ref{app:market_opportunity_submission} \\
 Temporal holdout & Does pre-window participation rank later cobidder labels? & AUC $\valAUCFLfirmTemp$ \\
 Leakage audit & Does signal survive when cobidders are held out of score construction? & Out-of-fold AUC $\valLeakCVAUC$ \\
 Direct-defendant scope check & Does the ranking preserve the distinction between legal anchors and loser-side exposure? & Direct-defendant AUC $\valAUCdirectStd$ \\
@@ -205,9 +207,10 @@ Direct-defendant scope check & Does the ranking preserve the distinction between
 \end{tabular}
 \begin{tablenotes}
 \footnotesize
-\item \textit{Notes:} Benchmarks evaluate whether the award-layer
-ranking is useful for forensic priority. They do not validate
-legal membership or proof.
+\item \textit{Notes:} Rows address distinct threats to
+interpreting the ranking as forensic priority. The benchmarks
+validate a legally limited ranking, not cartel membership,
+liability, or proof.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}

@@ -38,6 +38,90 @@ the exposure concern directly: the frequent-loser concentration
 near CADE defendants is larger than participation volume alone
 predicts.
 
+\subsection{Exposure-Adjusted Audit}
+\label{app:market_opportunity_submission}
+
+The participation permutation does not by itself address market
+opportunity. Firms can appear near CADE anchors because they buy
+or sell in the same procurement environments, not because their
+loser-side behavior is informative for triage. The
+exposure-adjusted audit addresses that threat at the firm level:
+it asks whether the frequent-loser ranking remains informative
+after comparing firms within more similar opportunity sets for
+meeting direct CADE defendants.
+
+The opportunity set is defined from the award layer, using the
+procurement environments in which a firm could have appeared
+with a CADE anchor. The construction uses item, modality, year,
+and buyer/procuring-unit information where the data provide
+common support. Observations without the information needed to
+place a firm in a comparable opportunity set are not used for
+that comparison. The retained support is therefore the subset in
+which firms can be compared to others facing similar chances to
+encounter direct CADE defendants in routine procurement records.
+
+The result is reported as an exposure-discipline check rather
+than as a new liability measure. Its interpretation is limited:
+it reduces the concern that the cobidder concentration is only a
+mechanical byproduct of participation in defendant markets. It
+does not prove agreement, identify cartel members, estimate
+damages, or establish that all market-opportunity confounding
+has been removed.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation Audits and Threats Addressed}
+\label{tab:validation_audit_map_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{L{3.2cm}L{3.7cm}L{2.4cm}L{3.8cm}L{3.2cm}L{3.7cm}}
+\toprule
+Audit & Threat addressed & Unit & What is held fixed or withheld & Main result or location & Interpretation \\
+\midrule
+Participation-stratified permutation &
+Participation volume alone creates cobidder concentration &
+Firm &
+Participation-volume quartile within always-losers &
+$\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ &
+Concentration exceeds volume-preserving placebo assignment \\
+Exposure-adjusted audit &
+Market opportunity to meet CADE anchors drives adjacency &
+Firm &
+Comparable opportunity sets using item, modality, year, and buyer/procuring-unit support &
+Reported in text; see Appendix D.2 &
+Disciplines, but does not eliminate, opportunity-set exposure \\
+Leakage audit &
+Score construction reuses firms that define item-level labels &
+Item/firm &
+Cobidder firms withheld from score construction within folds &
+Out-of-fold AUC $\valLeakCVAUC$ &
+Signal survives the most direct label-reuse channel \\
+Temporal holdout &
+Retrospective score uses later information &
+Firm/year &
+Score formed before the test year &
+AUC $\valAUCFLfirmTemp$; Table~\ref{tab:temporal_holdout_year_submission} &
+Ranking remains separated from random classification out of time \\
+Direct-defendant scope check &
+Loser-side ranking is misread as generic cartel-membership detection &
+Firm/item &
+Target changed from cobidders to direct CADE defendants &
+Direct-defendant AUC $\valAUCdirectStd$ &
+Near-random direct-defendant classification is expected under loser-side scope \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} The audits validate forensic priority, not
+cartel membership, liability, damages, or proof. ``Held fixed''
+and ``withheld'' describe the identifying discipline each audit
+adds relative to the baseline adjudication benchmark.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
 \subsection{Leakage Decomposition}
 \label{app:leakage_submission}
 
