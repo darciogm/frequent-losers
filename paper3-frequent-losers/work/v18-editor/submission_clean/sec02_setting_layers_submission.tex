@@ -5,11 +5,11 @@ The paper's empirical object is an institutional sequence, not
 a stand-alone classifier. An enforcement agency first observes a
 thin administrative record, then decides whether to spend
 resources recovering richer evidence, and only later can that
-evidence support legal proof. This section defines the sequence
+evidence support legal proof. This section defines that sequence
 for BEC procurement. Subsection~\ref{sec:screening_before_proof}
 states the screening-before-proof problem. Subsection
 \ref{sec:data_layers_bec} separates the award layer from the
-forensic bid layer. Subsection~\ref{sec:cade_adjacency_labels}
+forensic-recoverable bid layer. Subsection~\ref{sec:cade_adjacency_labels}
 defines the CADE anchors and the loser-side cartel-adjacency
 target used for validation.
 
@@ -23,15 +23,15 @@ requires evidence of coordinated conduct: communications,
 allocation rules, bid rotation, cover bidding, or tender-level
 patterns inconsistent with independent rivalry. Brazilian
 competition law treats bid rigging as an infraction under
-Lei~$12.529/2011$; comparable U.S. and European frameworks also
-place agreement and anticompetitive effect at the center of the
-case \citep{hovenkamp2005federal}. A pattern in award records
-does not contain those legal predicates.
+Lei~$12.529/2011$; comparable competition-law frameworks
+likewise require evidence beyond suspicious administrative
+patterns \citep{hovenkamp2005federal}. A pattern in award
+records does not contain those legal predicates.
 
 The institutional question is therefore earlier than proof. The
 Becker--Stigler tradition treats enforcement intensity,
 investigation, and sanctions as costly instruments
-\citep{becker1968crime,stigler1970optimum}. Cartel-detection
+\citep{becker1968crime,stigler1970optimum}. Cartel-screening
 work makes the same allocation logic operational: when
 investigation is costly and misconduct is only partially
 observable, agencies should use cheap screens to decide where
@@ -56,12 +56,12 @@ priority list for proof-producing work, not an accusation.
 The legal-economic object is \emph{forensic priority}. A useful
 triage statistic must be computable from records already
 available before case-specific bid recovery; it must rank firms
-or environments where richer cartel evidence is more likely to
-be worth recovering; and it must remain legally limited, so that
-administrative suspicion does not substitute for proof. The BEC
-setting supplies the two data layers and the external
-adjudication anchors needed to evaluate whether an award-layer
-statistic can play that role.
+or environments where richer evidence of cartel conduct is more
+likely to be worth recovering; and it must remain legally
+limited, so that administrative suspicion does not substitute
+for proof. The BEC setting supplies the two data layers and the
+external adjudication anchors needed to evaluate whether an
+award-layer statistic can play that role.
 
 \subsection{Award and Bid Layers in BEC}
 \label{sec:data_layers_bec}
@@ -106,9 +106,9 @@ Imhof--Wallimann-style features
 \citep{imhof2018screening,imhof2019detecting}. Machine-learning
 variants combine these bid moments at scale
 \citep{huber2019machine,wallimann2023machine}. But these
-features require the bid file to be recovered, processed, and
-linked. They are not available at the same cost as an
-award-record query.
+features require the bid file to be recovered, cleaned, linked,
+and inspected. They are not available at the same cost or timing
+as an award-record query.
 
 The empirical design treats that cost difference as substantive
 rather than incidental. If bid microdata were already available
@@ -126,17 +126,18 @@ layers in procurement-cartel enforcement. Bid-distribution
 forensics requires per-bidder bid amounts and within-tender bid
 moments; the award-layer screen uses participant identity,
 winner identity, item code, and negotiated price. The question is
-whether the cheap layer can rank where the costly layer should
+whether the cheap layer can rank where the costly bid layer should
 be opened first.}
 \label{fig:coarsening_submission}
 \end{figure}
 
 Figure~\ref{fig:coarsening_submission} summarizes the distinction. It
 is an information-cost diagram, not a detector horse race.
-Bid-distribution methods remain the natural forensic tools once
-bid microdata have been recovered. Award-layer triage asks
-whether the thinner record can rank where that recovery should
-start.
+The bid layer is not absent; it is forensic-recoverable through
+LANCES and therefore costly to open at scale. Bid-distribution
+methods remain the natural forensic tools once bid microdata
+have been recovered. Award-layer triage asks whether the thinner
+routine record can rank where that recovery should start.
 
 \subsection{CADE Anchors and Cartel-Adjacency Labels}
 \label{sec:cade_adjacency_labels}
@@ -194,6 +195,7 @@ validation.
 \label{tab:populations_submission}
 \footnotesize
 \begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
 \begin{tabular}{p{3.8cm}p{2.3cm}p{7.1cm}}
 \toprule
 Object & Size / layer & Role in the analysis \\
@@ -207,6 +209,13 @@ Direct CADE defendants in BEC & $\valDirectCADE$ firms & Legal anchors from adju
 Always-loser cobidders & $\valCobidders$ firms & Firms losing alongside direct defendants; cartel-adjacent validation target, not legal membership. \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Direct CADE defendants are legal anchors.
+Always-loser cobidders are adjudication-anchored exposure labels.
+Frequent losers are an operational screen, not a legal category.
+\end{tablenotes}
+\end{threeparttable}
 \end{adjustbox}
 \end{table}
 
