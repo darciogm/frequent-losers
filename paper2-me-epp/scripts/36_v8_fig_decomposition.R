@@ -62,24 +62,32 @@ ann_labs <- rbind(
   ann[, .(pharma_lbl, scenario = "S1: open, Pre pool",
           y = mean_S1 - 0.06,
           lbl = sprintf("%.2f", mean_S1),
-          col = "white")],
+          col = "white",
+          hj = 0.5)],
   ann[, .(pharma_lbl, scenario = "S2: SME-only, Pre pool",
           y = mean_S2 + 0.05,
           lbl = sprintf("+%.2f lost discipline", disc),
-          col = "black")],
+          col = "black",
+          hj = 0.5)],
+  # S3 label is the widest ("−X.XX protected-pool offset\n(=+X.XX total)") and
+  # sits at x = 3 of each facet, so a centered hjust=0.5 spills past the panel
+  # right edge and truncates "offset" → "offse". Right-anchor (hjust = 1) places
+  # the label's right edge at x = 3 and the text extends leftward inside the
+  # panel; no truncation.
   ann[, .(pharma_lbl, scenario = "S3: SME-only, Post pool",
           y = mean_S3 + 0.05,
           lbl = sprintf("%+.2f protected-pool offset\n(=%+.2f total)", offset, total),
-          col = "black")])
+          col = "black",
+          hj = 1.0)])
 ann_labs[, scenario := factor(scenario, levels = levels(dec_long$scenario))]
 
 fig <- ggplot(dec_long, aes(x = scenario, y = price, fill = scenario)) +
   geom_col(width = 0.62, colour = "black", linewidth = 0.2) +
   geom_hline(yintercept = 1.0, linetype = "dotted", colour = "grey40", linewidth = 0.3) +
   geom_text(data = ann_labs,
-            aes(x = scenario, y = y, label = lbl, colour = col),
+            aes(x = scenario, y = y, label = lbl, colour = col, hjust = hj),
             inherit.aes = FALSE, size = 2.7,
-            lineheight = 0.9, hjust = 0.5) +
+            lineheight = 0.9) +
   scale_colour_identity() +
   facet_wrap(~ pharma_lbl, nrow = 1) +
   scale_fill_manual(values = c(
@@ -87,16 +95,25 @@ fig <- ggplot(dec_long, aes(x = scenario, y = price, fill = scenario)) +
     "S2: SME-only, Pre pool" = "grey50",
     "S3: SME-only, Post pool" = "grey75"),
     guide = "none") +
+  # Add 10% padding on each x-axis side per facet so the right-anchored S3
+  # label has breathing room before the panel border.
+  scale_x_discrete(expand = expansion(mult = c(0.10, 0.10))) +
   scale_y_continuous(
     limits = c(0, 1.4),
     breaks = seq(0, 1.2, 0.2),
     expand = c(0, 0),
     labels = scales::number_format(accuracy = 0.01)) +
+  # Safety net: let labels spill outside the panel (would render in the gutter
+  # between facets) rather than clip, in case any future label change exceeds
+  # the padded panel width.
+  coord_cartesian(clip = "off") +
   labs(
     x = NULL,
     y = expression(paste("Simulated ", bar(c)[(2)], " / reference price"))) +
   theme_v3() +
-  theme(axis.text.x = element_text(size = 7.5, angle = 12, hjust = 1))
+  theme(axis.text.x = element_text(size = 7.5, angle = 12, hjust = 1),
+        plot.margin = margin(t = 5, r = 8, b = 5, l = 5),
+        panel.spacing.x = unit(12, "pt"))
 
 dir.create(dirname(OUT_FIG), recursive = TRUE, showWarnings = FALSE)
 ggsave(OUT_FIG, fig, width = W, height = H, device = cairo_pdf)
