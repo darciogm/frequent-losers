@@ -290,6 +290,163 @@ price magnitude or a reduced-form welfare calculation. The decomposition uses
 the auction model and treats the DiD as external validation for timing and
 sign.
 
+\subsection{Within-Group-65 falsification: medications versus other supplies}\label{oa:within_g65}
+
+A standing concern with the reduced-form coefficient is that it could be
+driven by pharmaceutical-specific price dynamics rather than by the loss of
+competitive discipline. The medications subclass (CADMAT 6531) is subject
+to the CMED pharmaceutical price-regulation regime, which periodically
+adjusts ceilings for regulated medicines. If the reduced-form reading were
+contaminated by a CMED ceiling shift or by differential pharma inflation,
+the price coefficient should appear primarily in the medications cell and
+attenuate sharply outside it.
+
+Table~\ref{tab:app_within_g65} reports the falsification. The price effect
+is present and statistically significant in \emph{both} sub-cells. In the
+medications subclass (Panel A, CADMAT 6531) the coefficient is
+\(-0.166\) without and \(-0.174\) with PBU fixed effects; in the non-medication
+subclass (Panel B, hospital equipment and dental/consumable supplies) the
+coefficient is \(-0.099\) without and \(-0.097\) with PBU fixed effects.
+All four estimates clear the one-percent significance threshold with
+item-clustered standard errors.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Within-Group-65 falsification: medications (CADMAT 6531) versus other medical supplies}
+\label{tab:app_within_g65}
+\footnotesize
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{Log prices} & \multicolumn{2}{c}{Log firms} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & Base & PBU FE & Base & PBU FE \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel A: Medications (CADMAT 6531)}} \\
+$g65_{med} \times \mathrm{Pre}$
+ & $-$0.1658\sym{***} & $-$0.1744\sym{***} & 0.1516\sym{***} & 0.1605\sym{***} \\
+ & (0.0174) & (0.0172) & (0.0100) & (0.0101) \\
+Observations
+ & 573,080 & 573,080 & 678,547 & 678,547 \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel B: Other medical supplies (non-6531)}} \\
+$g65_{other} \times \mathrm{Pre}$
+ & $-$0.0992\sym{***} & $-$0.0973\sym{***} & 0.0444\sym{***} & 0.0504\sym{***} \\
+ & (0.0092) & (0.0086) & (0.0057) & (0.0057) \\
+Observations
+ & 593,920 & 593,920 & 705,616 & 705,616 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item \structuralWindowM-month window; non-Group-65 items as the comparison
+in both panels. Item fixed effects in every column; PBU fixed effects added
+in the second column of each outcome block. Standard errors clustered at the
+item level in parentheses. \sym{*} $p<0.10$, \sym{**} $p<0.05$, \sym{***}
+$p<0.01$. Panel A restricts Group~65 to the CMED-regulated medications
+subclass; Panel B restricts Group~65 to non-medication medical supplies
+(hospital equipment, dental products, consumable supplies). The fact that
+the price coefficient is statistically significant and economically large
+in Panel B is the load-bearing falsification: a confounder operating only
+through CMED-regulated medicines would not move the non-medication cell.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The reading is that the medications subclass is larger in magnitude
+(\(-0.17\) versus \(-0.10\) for non-medications, a 75 percent gap) but not
+the sole locus of the effect. CMED regulation tends to \emph{cap}
+pharmaceutical prices rather than push them up, so any contamination from
+CMED-side dynamics would attenuate the medications coefficient relative
+to its competition-channel counterpart, not amplify it. The fact that
+medications still exhibits the larger magnitude is consistent with deeper
+non-SME bidder pools in pharmaceutical procurement and with the larger
+structural exclusion share documented for the pharmaceutical class in
+Section~\ref{sec:pharma_scope}. The auxiliary table in this subsection
+does not deliver a structural identification claim; it rules out the
+specific reduced-form alternative that pharmaceutical inflation, rather
+than the loss of competitive discipline, is responsible for the headline
+price movement.
+
+\subsection{RAIS validation and the firm-size composition channel}\label{oa:rais_validation}
+
+The Group~65 set-aside operates on the BEC self-reported SME flag
+(\textit{fornec\_enquad}). Two complementary questions discipline the
+reliance on that flag: whether the price effect survives restricting the
+sample to winners that are SMEs by an administratively-recorded firm-size
+measure orthogonal to BEC behavior, and whether the distance-widening
+channel is concentrated in non-SME winners as the geographic-catchment
+account predicts. Both questions are addressed by linking BEC winners to
+the RAIS 2017 establishment registry via CNPJ raiz (82.6 percent match
+rate among Group~65 winners).
+
+Table~\ref{tab:app_rais_validation} reports the DiD price and distance
+coefficients across five winner subsamples ordered by RAIS employment
+links: the full sample; winners matched to RAIS; winners with at most
+forty-nine employment links (the federal SME threshold by employment); the
+micro-firm restriction at at most nine employment links; and the not-large
+restriction below one hundred employment links. The price coefficient
+hovers between \(-0.09\) and \(-0.12\) across the five columns. The
+distance coefficient, by contrast, collapses from \(+14.25\) kilometers in
+the full sample to a null \(-0.28\) in the RAIS-SME column and remains
+statistically indistinguishable from zero in the micro-firm column.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{RAIS-validated winner subsamples (18-month window, item fixed effects)}
+\label{tab:app_rais_validation}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccccc}
+\toprule
+ & (1) & (2) & (3) & (4) & (5) \\
+ & Full & Winner in RAIS & SME ($\leq$49) & Micro ($\leq$9) & Not large ($<$100) \\
+\midrule
+\multicolumn{6}{l}{\textit{Panel A: Log price}} \\
+$g65 \times \mathrm{Pre}$
+ & $-$0.1087\sym{***} & $-$0.1020\sym{***} & $-$0.1209\sym{***} & $-$0.0890\sym{***} & $-$0.1175\sym{***} \\
+ & (0.0120) & (0.0122) & (0.0100) & (0.0131) & (0.0100) \\
+Observations
+ & 649,714 & 599,020 & 532,538 & 437,975 & 544,757 \\
+\midrule
+\multicolumn{6}{l}{\textit{Panel B: Distance (km)}} \\
+$g65 \times \mathrm{Pre}$
+ & $+$14.25\sym{***} & $+$17.10\sym{***} & $-$0.28 & $+$3.06 & $+$6.68\sym{***} \\
+ & (2.36) & (2.37) & (2.44) & (2.81) & (2.48) \\
+Observations
+ & 649,714 & 599,020 & 532,538 & 437,975 & 544,757 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item \structuralWindowM-month window; completed items. Item fixed effects
+in all columns; standard errors clustered at the item level. RAIS link via
+CNPJ raiz; employment cutoffs are 2017 RAIS establishment links. Column~(1)
+reproduces the full-sample reduced form; column~(2) restricts to winners
+matched to RAIS; columns~(3)--(5) further restrict to SME-, micro-, and
+not-large-firm winners. The collapse of the distance coefficient between
+column~(2) and column~(3) is the falsification reported in the text:
+the geographic-catchment widening is carried by non-SME winners whose
+operational footprint spans larger radii. \sym{*} $p<0.10$,
+\sym{**} $p<0.05$, \sym{***} $p<0.01$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Two readings emerge. First, the reduced-form price coefficient is not
+mechanically a composition effect on the SME-winner indicator: it remains
+present when the sample is restricted to winners with at most forty-nine
+RAIS employment links. Composition matters, but so does within-SME
+discipline. Second, the distance widening is decomposed cleanly. The
+\(+14.25\) kilometer full-sample effect vanishes when the sample is
+restricted to RAIS-validated SME winners, and remains null in the
+micro-firm restriction. Non-SME winners win at a wider geographic radius
+because their operational footprint absorbs longer-distance bids;
+RAIS-validated SMEs win locally regardless of regime. The geographic
+channel is consistent with transport-cost amortization on contract value
+and the firm-size composition shift it implies, not with a SME-only-driven
+shrinkage of the buyer's catchment.
+
 \section{Willingness-to-Supply Recovery and Structural Estimation}
 
 The recovery diagnostics do not prove IPV. They ask the narrower question
