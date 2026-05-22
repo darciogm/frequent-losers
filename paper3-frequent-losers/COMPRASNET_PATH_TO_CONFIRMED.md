@@ -4,12 +4,60 @@
 H1–H8 audit-completion exercise that brought 7 of 8 hypotheses to
 **Partial (strongly supported)** but found every one of them bounded
 below 🟢 (Confirmed) by the same constraint — *all evidence shares the
-BEC × CADE data lake*.
+BEC × CADE data lake*. **Updated 2026-05-22 (later)** with concrete
+acquisition estimates from a live smoke test of the
+`bulk_acquire_comprasnet.py` pipeline (in
+`/home/darciogm1/projetos/comprasnet/`).
 
 This memo lays out the natural cross-validation target (ComprasNet
 federal), the analyses that would replicate, the data-acquisition
 roadmap, and an honest probability assessment of moving 1–3 hypotheses
 to 🟢 within the JLEO R&R window.
+
+## 0. Acquisition pipeline status (added 2026-05-22)
+
+The Compras.gov.br open-data API was probed and characterized:
+
+- **Old domain `compras.dados.gov.br`**: deprecated (404 on all paths).
+- **New domain `dadosabertos.compras.gov.br`**: live, OpenAPI 3.1 spec
+  at `/v3/api-docs`, no authentication needed for the read-only legacy
+  endpoints.
+- **Three endpoints used for paper-3 replication**:
+  - `/modulo-legado/1_consultarLicitacao` — all procurement events by
+    `data_publicacao_inicial/final`.
+  - `/modulo-legado/3_consultarPregoes` — Pregão events by
+    `dt_data_edital_inicial/final`.
+  - `/modulo-legado/4_consultarItensPregoes` — Pregão items by
+    `dt_hom_inicial/final` (homologation date).
+- **Page-size constraint**: `[10, 500]`. Use 500 for bulk.
+
+**Smoke-test result (1 week of 2019 data):**
+
+| Endpoint | Rows | Pages (size 500) | Time |
+|---|---:|---:|---:|
+| Licitação | 273 | 1 | 0.5s |
+| Pregão | 375 | 1 | 0.4s |
+| Item_pregão | 5,704 | 12 | 8.2s |
+| **Total** | **6,352** | — | **~12s wall, 0.7 MiB parquet** |
+
+**Extrapolation for 2014–2019 (6 years, 312 weeks):**
+- Total acquisition time: **~60 minutes wall time** (not weeks).
+- Total parquet size: **~220 MiB** compressed.
+- Total rows: ~1 M licitações + pregões + ~2 M item_pregão.
+
+The pipeline (`bulk_acquire_comprasnet.py`) is production-ready: date-
+windowed paginated acquisition, checkpoint-based resumability, DuckDB
+consolidation to parquet, telemetry per CLAUDE.md, exponential-backoff
+retries on transient 429/5xx.
+
+**Federal modality composition (1 week of 2019 sample):** 272 PREGÃO +
+1 CONCORRÊNCIA, **zero CONVITE**. ComprasNet federal is essentially
+Pregão-only. Implication: the cross-modality test (AN-016 / D2 modal
+AUC) cannot be replicated on the federal panel — the loser-side
+framework can be tested on Pregão-only, which addresses the SAME-DGP
+concern but not the cross-modality scope discipline. For modality
+replication, an additional state-level panel (e.g., Bahia or Minas
+Gerais e-procurement) would be needed.
 
 ---
 
