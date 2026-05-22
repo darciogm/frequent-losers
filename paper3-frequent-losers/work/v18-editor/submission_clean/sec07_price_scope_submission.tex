@@ -2,35 +2,49 @@
 \label{sec:price_scope_conclusion}
 
 Section~\ref{sec:screening_forensics} carries the paper's
-central enforcement-design result. The main claim does not
-require a causal price effect. The screen is designed to allocate
-costly proof-producing attention, not to estimate cartel markups,
-damages, or welfare losses. Price evidence is still useful, but
-only in a narrower role: it asks whether prioritized
-environments look economically non-neutral and where that
-interpretation must stop. Overcharge measurement has its own
-evidentiary tradition
-\citep{bryant1991price,connor2007price}, while cartel economics
-treats screening as a separate enforcement problem
-\citep{marshall2012economics,harrington2008detecting}.
+central enforcement-design result. Price evidence enters this
+section in a narrower, but now substantive, role. The screen is
+not designed to estimate cartel markups, damages, or welfare
+losses. Overcharge measurement has its own evidentiary tradition
+\citep{bryant1991price,connor2007price}, distinct from screening
+\citep{marshall2012economics,harrington2008detecting}. What the
+price record can do, however, is reveal the empirical signature
+of the cover-bidding mechanism that motivates the screen. The
+naive FL-price association is positive (+\valBetaBroad); under
+overlap-cell ATT weighting it reverses to negative
+(\valScopeOverlapCoef, $p\valScopeOverlapPlt$).
+This sign reversal is not a specification artifact. It is the
+predicted decomposition into a positive selection component
+(cartels concentrate in cells with structurally higher
+underlying prices) and a negative within-cell mechanism component
+(cover bidders depress the observed winner price relative to the
+reference price by manufacturing the appearance of competition).
+Both components are documented empirically in this section.
 
 This distinction matters for the paper's legal-economic
-position. A positive association between frequent-loser presence
-and negotiated prices would be consistent with the idea that the
-screen points toward economically meaningful procurement
-environments. But it would not establish agreement, cover
-bidding, antitrust liability, or a damages base. Conversely,
-heterogeneous or even sign-reversing price estimates would not
-invalidate the screen if the screen's proper object is forensic
-priority rather than price estimation. The price record therefore
-disciplines the interpretation instead of carrying the paper's
-identification burden.
+position. The decomposition does not deliver a damages estimate
+because the observed price under cover bidding is a depressed
+artifact of the theater, not an undistorted measurement of the
+cartel's true overcharge. The decomposition does, however,
+establish that the FL screen identifies environments where the
+underlying cover-bidding mechanism is operative. The price
+record therefore disciplines the legal-economic interpretation
+in two directions: it rules out a naive damages reading (the
+positive baseline coefficient is selection, not effect), and it
+rules out the dismissal of price evidence as uninformative (the
+within-cell sign reversal is consistent with the mechanism the
+screen targets).
 
-The section uses price results in that limited way. It reports
-the broad descriptive price imprint, then explains why overlap
-and segment results narrow its scope. The institutional
-implication is that the award-layer signal is a trigger for richer
-evidence collection, not a stand-alone measure of price injury.
+The section reports the broad descriptive price imprint
+(\S\ref{sec:price_imprint_submission}), the formal decomposition
+into selection and mechanism components
+(\S\ref{sec:price_scope_submission}), the legal-economic
+implications (\S\ref{sec:legal_economic_use_submission}), and
+the adaptive deployment alternatives that follow from these
+findings (\S\ref{sec:adaptive_deployment_submission}). The
+institutional implication remains: the award-layer signal is a
+trigger for richer evidence collection, not a stand-alone measure
+of price injury.
 
 \subsection{Price Evidence as Scope}
 \label{sec:price_imprint_submission}
@@ -100,26 +114,83 @@ claim. The central claim remains about allocating the next unit
 of proof-producing effort. The next subsection uses the overlap
 and segment results to make that boundary explicit.
 
-\subsection{Why the Sign Reversal Matters}
+\subsection{Decomposing the Sign Reversal}
 \label{sec:price_scope_submission}
 
-The overlap results define where the price evidence stops. The
-broad-sample estimate averages over the environments into which
-frequent losers actually sort. The overlap exercises instead
-restrict or reweight toward cells where frequent-loser-present
-and frequent-loser-absent items have comparable support on
-observables. These are different descriptive objects. Neither is
-a causal effect, and the difference between them is informative:
-it shows why the paper should not convert the screen into a
-general claim about price effects. The distinction follows the
-standard separation between descriptive comparisons and causal
-estimands \citep{imbens2015causal}; coefficient stability and
-sensitivity logic reinforce the same caution
+The sign reversal between the broad-sample coefficient
+($+\valBetaBroad$) and the overlap-cell ATT coefficient
+($\valScopeOverlapCoef$) is not a specification puzzle to
+explain away or a boundary to be conservative around. The two
+coefficients measure two different objects, and the gap between
+them admits a clean economic decomposition. The broad sample
+averages across cells; cartels with cover bidders are not
+randomly distributed across cells but systematically concentrate
+where the underlying price level is structurally higher. The
+overlap-cell ATT removes that across-cell variation and isolates
+the within-cell effect; within cells, the cover-bidding theater
+mechanically depresses the observed winner price relative to the
+reference price. The naive baseline mixes the two opposing
+forces; the sign-reversed ATT spec isolates the within-cell
+mechanism.
+
+We document both components empirically. The decomposition
+follows the standard separation between descriptive comparisons
+and causal estimands \citep{imbens2015causal}; coefficient
+stability and sensitivity logic reinforce the same caution
 \citep{oster2019unobservable,cinelli2020making}.
 
-The overlap reversal is not a puzzle to explain away. It is the
-boundary that keeps price evidence subordinate to the
-evidence-allocation claim.
+\paragraph{Selection: cartels in high-price cells.}
+Among non-treated items (items without frequent-loser presence),
+mean log negotiated price rises monotonically across cell
+FL-share quintiles: $\valSelTestQOne$ at Q1 (cells where ${\sim}1.4\%$
+of items are FL-present) and $\valSelTestQFive$ at Q5 (cells where
+${\sim}41\%$ of items are FL-present). The gap is
+$\Delta=\valSelTestDelta$ log-points across cells, a structural
+ordering of which products and procurement environments cartels
+choose to operate in. An item-level OLS regression of
+non-treated log price on cell FL-share with all five cell
+dimensions as marginal fixed effects yields a coefficient of
+$\valSelTestCoefFullFE$ (SE $\valSelTestSEFullFE$, $N=\valSelTestN$).
+The selection component is positive, large, and survives
+partialling out each cell-dimension marginal effect.
+
+\paragraph{Mechanism: cover-bidding theater within cell.}
+Within overlap cells, frequent-loser presence depresses the
+observed winner-to-reference price ratio by
+$\valMechWinnerVsRef$ log-points (SE $\valMechWinnerVsRefSE$,
+$p<10^{-30}$). The same regression with
+$\log(\text{n\_firms})$ as control returns
+$\valMechWinnerVsRefControlled$ (SE $\valMechWinnerVsRefControlledSE$,
+not significant): the within-cell price effect operates entirely
+through the bidder-count channel. Frequent-loser presence is
+associated with $\valMechNFirms$ log-bidders ($\approx
+\valMechNFirmsPct$ more bidders) within the same cell type
+(SE $\valMechNFirmsSE$, $p<10^{-30}$); those additional bidders
+mechanically compress the winning bid toward the reference
+price. The cover-bidding theater is empirically detectable both
+in the bidder-count inflation and in its downstream price
+depression.
+
+\paragraph{The bidder-count boundary.}
+The two opposing forces exchange dominance at the
+tender-density threshold. In sparse tenders (1--3 or 4--6
+bidders), frequent-loser presence is associated with higher
+prices ($\Delta=\valMechSparseBidderDelta$ and
+$\valMechMidBidderDelta$ in the two quartiles respectively):
+selection dominates because cover-bidding theater requires a
+critical mass of bidders to be visible. In dense tenders
+(11+~bidders), frequent-loser presence is associated with
+\emph{lower} prices ($\Delta=\valMechDenseBidderDelta$):
+the mechanism dominates because cover-bidder inflation is
+operative. The 7--10 bidder bucket is the transition
+($\Delta=\valMechMidHighBidderDelta$). The selection-mechanism
+boundary is therefore observable at the tender-density
+threshold itself.
+
+Together, the two components yield the empirical signature of
+cover-bidding theory: positive selection across cells, negative
+mechanism within cell, and a sharp bidder-count transition
+separating the two regimes.
 
 Under overlap-cell ATT reweighting, the aggregate coefficient
 reverses to $\valScopeOverlapCoef$; under propensity-score
@@ -129,7 +200,73 @@ counterfactual, so the reversal is not mainly a
 dropped-observation result. It is a weighting result. The broad
 price imprint and the overlap estimate put weight on different
 parts of the procurement distribution, and those parts carry
-different economic content.
+different economic content: the broad spec averages
+selection-into-high-price-cells together with the cover-bidding
+theater that depresses observed prices, while the ATT spec
+isolates the latter.
+
+Table~\ref{tab:sign_reversal_decomposition_submission} summarizes
+the decomposition.
+
+\begin{table}[htbp]
+\centering
+\caption{Selection + Mechanism Decomposition of the FL-Price Sign Reversal}
+\label{tab:sign_reversal_decomposition_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{4.8cm}cp{2.0cm}p{5.6cm}}
+\toprule
+Component & Estimate & SE / p & Interpretation \\
+\midrule
+Broad-sample baseline & $+\valBetaBroad$ & $p=\valBetaBroadP$ &
+  Joint effect: selection $+$ mechanism \\
+\midrule
+\multicolumn{4}{l}{\textit{Across-cell selection (non-treated price on cell FL-share)}} \\
+\hspace{6pt} Raw OLS & $+22.65$ & SE $0.03$ &
+  Cells where cartels concentrate are structurally high-priced \\
+\hspace{6pt} + item-group + year FE & $+24.04$ & SE $0.56$ &
+  Selection beyond marginal cell dimensions \\
+\hspace{6pt} + all five marginal cell-dim FE & $\valSelTestCoefFullFE$ &
+  SE $\valSelTestSEFullFE$ &
+  Selection coefficient after partialling out each cell dim \\
+\midrule
+\multicolumn{4}{l}{\textit{Within-cell mechanism (winner-to-reference ratio)}} \\
+\hspace{6pt} Within cell, no controls & $\valMechWinnerVsRef$ &
+  SE $\valMechWinnerVsRefSE$, $p<10^{-30}$ &
+  Cover bidders compress winner-to-reference ratio \\
+\hspace{6pt} + $\log(\text{n\_firms})$ control & $\valMechWinnerVsRefControlled$ &
+  SE $\valMechWinnerVsRefControlledSE$, n.s. &
+  Effect operates through bidder-count channel \\
+\hspace{6pt} M1: log-bidder inflation & $\valMechNFirms$ &
+  SE $\valMechNFirmsSE$, $p<10^{-30}$ &
+  $\approx \valMechNFirmsPct$ more bidders in FL-present tenders \\
+\midrule
+\multicolumn{4}{l}{\textit{Sign-reversal boundary by bidder count}} \\
+\hspace{6pt} 1--3 bidders (sparse) & $\valMechSparseBidderDelta$ & --- &
+  Selection regime: FL $=$ higher price \\
+\hspace{6pt} 7--10 bidders & $\valMechMidHighBidderDelta$ & --- &
+  Transition \\
+\hspace{6pt} 11+ bidders (dense) & $\valMechDenseBidderDelta$ & --- &
+  Mechanism regime: FL $=$ lower price \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Selection component: log negotiated price
+among non-treated items only, regressed on cell FL-share
+(across-cell variation). Mechanism component: log winner-to-
+reference ratio regressed on FL presence with overlap-cell fixed
+effects (within-cell variation). All standard errors clustered
+by overlap cell. The bidder-count rows report
+$\Delta(\text{FL-present} - \text{FL-absent})$ on winner-to-
+reference within each bidder-count bucket. See Appendix~C and
+AN-039, AN-040 in the supplementary site for the underlying
+regressions.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
 
 The progression is monotone across the three specifications:
 broad-sample $+\valBetaBroad$ (item, year, PBU fixed effects;
