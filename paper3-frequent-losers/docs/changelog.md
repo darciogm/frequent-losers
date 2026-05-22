@@ -6,7 +6,44 @@ paper: frequent-losers
 
 ---
 
-## v5.1 --- April 2026 (Current)
+## v18 — May 2026 (Current, JLEO submission-clean)
+
+**Full hypothesis audit + manuscript integration:**
+
+- All 8 hypotheses graduated to **Partial (strongly supported)** except
+  H2 (Confirmed by structural design). Promotion to Confirmed for
+  H1/H3/H4/H6/H7/H8 requires non-BEC replication; see the
+  `COMPRASNET_PATH_TO_CONFIRMED.md` planning memo in the repo root.
+- 14 new AN pages added (AN-025 through AN-038) documenting the
+  formal sham permutation, cutoff sweep, subsample robustness,
+  universe-anchored stratum scope matrix, standardized differences
+  battery, three-classifier timing battery, firm/market persistence,
+  bid-level behavioral profile, matched-heterogeneity audit, formal
+  Imhof incremental DeLong, sequential gatekeeping envelope, full
+  architecture cost-of-evidence matrix, K-fold CV precision stability,
+  sign-reversal decomposition, and item-group cell audit.
+- 38 total AN pages now with figures (19 from existing R outputs,
+  4 from PDF→PNG conversion, 19 generated via new
+  `scripts/gen_an_figures.py`).
+- Manuscript integration: surgical inserts in §4.2, §4.3, §5.4, §7.2
+  bring the new audit-chain numbers into prose. Two new tables (Table 3
+  Three-Classifier Timing Battery and Table 4 Universe-Anchored
+  Stratum Scope Matrix) added to §4. tab:price_scope_submission
+  extended with broad-sample and overlap-cell-unweighted rows showing
+  the full three-spec progression. Paper now 39 pages.
+- `values.tex` extended with ~95 new macros for the new audits;
+  6 macro names corrected (LaTeX names cannot contain digits).
+- Site sections updated: `advanced.md` rewritten from stub to
+  substantive methodological reference; `results.md` extended with
+  formal sham permutation + three-classifier + scope matrix below-
+  random subsection; `robustness.md` extended with placebo / scope
+  matrix / CV stability / cutoff sweep / subsample / matched-het
+  audit subsections; `extensions.md` extended with architecture
+  cost-of-evidence matrix and three-classifier battery.
+
+---
+
+## v5.1 --- April 2026
 
 **Referee-report edits (mr-frequent review):**
 

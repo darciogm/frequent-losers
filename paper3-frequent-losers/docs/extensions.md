@@ -144,3 +144,40 @@ Two features make the screen administrable:
   <img src="../assets/figures/fig_network_hhi.png" alt="Network HHI">
   <figcaption><strong>Figure 16.</strong> Distribution of winner HHI across FL firms. Higher HHI indicates that the FL firm consistently loses to the same winners.</figcaption>
 </figure>
+
+---
+
+## Architecture × Cost-of-Evidence Matrix
+
+The headline 83% pool-reduction claim is a single point on a wider operational envelope. The full architecture × k × regime matrix maps the cost-of-evidence trade-off across four sequencing rules (Award-only, Bid-only, Joint, Sequential FL → Imhof at K ∈ {1,000, 2,000, 4,000}) × six k cutoffs × two evaluation regimes (in-sample, temporal holdout).
+
+### Headline operational result (temporal holdout, k = 1,000)
+
+| Architecture | TP recovered | Microdata footprint | TP per microdata-record |
+|---|---:|---:|---:|
+| Award-only | 66 | **0** | ∞ (no microdata) |
+| Bid-only (Imhof full) | 82 | 8,257 | 0.0099 |
+| **Joint** | **111** | 8,257 | 0.0134 |
+| **Sequential FL → Imhof, K = 2,000** | **114** | **2,000** | **0.0570** |
+
+Sequential K = 2,000 captures **103% of joint TP at 24% of joint microdata cost** under temporal holdout — the architecture beats joint in the operationally honest regime.
+
+### Three-classifier timing battery
+
+The strict ex ante variant trains the score on progressively earlier windows and evaluates against truly out-of-time targets:
+
+| Classifier | vs cobid_all (FL / continuous) | vs cobid_post2019 (FL / continuous) |
+|---|---|---|
+| clf_2015 (train 09–15) | 0.791 / 0.851 | **0.786 / 0.854** |
+| clf_2017 (train 09–17) | 0.856 / 0.897 | **0.844 / 0.894** |
+| clf_2019_full (in-sample ref) | 0.924 / 0.939 | — |
+
+cobid_post2019 is the strict out-of-time target: cobidders linked only to CADE adjudications closed after 2019, which cannot be in the clf_2015 or clf_2017 training data. The discrimination preserves AUC 0.79–0.89 even against this strictly disjoint target.
+
+### Firm persistence as structural OOS check
+
+Firm persistence between the 2009–2016 and 2017–2019 panel windows is **8.7%** (108 of 1,240 early-period always-loser firms remain in the late period). Market persistence (PBU × item-group) is 12.4%; PBU persistence is 83.5%. The institutional environment (procurers) is stable across the temporal split; the firm and market populations are essentially fresh. The temporal holdout therefore evaluates new firms, not the same firms in different years.
+
+### Item-group sign-reversal structure
+
+The price sign-reversal under overlap ATT (broad +0.064 → ATT −0.097) is not uniform across item groups. Most groups (12, 13, 14, 29) flip from positive baseline to negative ATT. Item group 37 stays strongly negative across all three specifications (−0.105 broad → −0.126 ATT, *p* < 10⁻⁶) — the cleanest structural negative. Item group 10 stays positive (+0.107 broad → +0.063 ATT) — the scope boundary at the item-group level. The heterogeneity is predictably structured, not random.
