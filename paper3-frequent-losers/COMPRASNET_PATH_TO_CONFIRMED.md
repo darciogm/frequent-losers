@@ -7,7 +7,7 @@ below 🟢 (Confirmed) by the same constraint — *all evidence shares the
 BEC × CADE data lake*. **Updated 2026-05-22 (later)** with concrete
 acquisition estimates from a live smoke test of the
 `bulk_acquire_comprasnet.py` pipeline (in
-`/home/darciogm1/projetos/comprasnet/`).
+[github.com/darciogm/comprasnet](https://github.com/darciogm/comprasnet)).
 
 This memo lays out the natural cross-validation target (ComprasNet
 federal), the analyses that would replicate, the data-acquisition
