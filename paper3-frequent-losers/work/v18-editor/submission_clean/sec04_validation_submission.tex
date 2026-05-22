@@ -172,6 +172,41 @@ continuous score. The ranking remains informative when the
 classifier is trained at one horizon, the cobidder label is
 defined by adjudications at a later horizon, and the bulk of
 test-period firms were not in the training set.
+Table~\ref{tab:three_classifier_submission} reports the full
+three-classifier battery.
+
+\begin{table}[htbp]
+\centering
+\caption{Three-Classifier Timing Battery}
+\label{tab:three_classifier_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{4.0cm}cccc}
+\toprule
+& \multicolumn{2}{c}{vs cobid\_all} & \multicolumn{2}{c}{vs cobid\_post2019} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Classifier & FL flag & Continuous & FL flag & Continuous \\
+\midrule
+clf\_2015 (train 09--15) & $\valClfFifteenFL$ & $\valClfFifteenTC$
+  & $\valClfFifteenPostFL$ & $\valClfFifteenPostTC$ \\
+clf\_2017 (train 09--17) & $\valClfSeventeenFL$ & $\valClfSeventeenTC$
+  & $\valClfSeventeenPostFL$ & $\valClfSeventeenPostTC$ \\
+clf\_2019\_full (in-sample) & $\valAUCFLfirm$ & $\valAUClogtc$
+  & --- & --- \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} AUC against two cobidder targets across three
+classifiers. cobid\_all uses cobidders linked to any CADE adjudication
+in the panel. cobid\_post2019 uses cobidders linked only to
+adjudications closed after $2019$, a strictly out-of-time target
+that cannot be in the clf\_2015 or clf\_2017 training data.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
 
 The leakage audit addresses a different concern: item-level
 validation can mechanically reuse the same firm histories that
@@ -224,6 +259,50 @@ identify winner-heavy defendants; the relevant direction is
 reversed, consistent with the role separation observed in D4
 (14.9\% of direct defendants are always-losers; median win rate
 $0.261$ versus $0.086$ for cobidders).
+Table~\ref{tab:scope_matrix_submission} reports the full eight-row
+scope matrix.
+
+\begin{table}[htbp]
+\centering
+\caption{Universe-Anchored Stratum Scope Matrix}
+\label{tab:scope_matrix_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{3.3cm}p{3.0cm}p{3.0cm}cp{4.0cm}}
+\toprule
+Score & Universe & Positive class & AUC & Reading \\
+\midrule
+Binary FL & Always-losers & Cobidders & $\valScopeRowOne$
+  & Within-stratum prioritization \\
+Continuous log\_tc & Always-losers & Cobidders & $\valScopeRowTwo$
+  & Best within-stratum ranking \\
+Binary FL & All BEC firms & Direct CADE & $\valScopeRowThree$
+  & At chance; no membership detection \\
+Participation count & All BEC firms & Direct CADE & $\valScopeRowFour$
+  & \textbf{Below chance: actively repels winner-heavy} \\
+Binary FL (frozen 09--16) & Always-losers as of 09--16 & Cobidders
+  & $\valScopeRowFive$ & Weaker than pooled within-stratum \\
+Continuous (train 09--16) & Items 17--19 & Cobidder items
+  & $\valScopeRowSix$ & Some prospective generalization \\
+Binary FL (frozen 09--16) & Items 17--19 & Cobidder items
+  & $\valScopeRowSeven$ & Weak binary item-level holdout \\
+Continuous (train 09--16) & Items 17--19 & Direct-defendant items
+  & $\valScopeRowEight$ & Direct-defendant null survives timing \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} AUC across an eight-row matrix that varies the
+score, the universe of firms or items being ranked, and the positive
+class. Row~4 is below chance because the loser-side score
+discriminates \emph{against} high-participation winner-heavy
+defendants. The matrix structurally rules out a generic-detector
+reading.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
 
 \subsection{Validation Summary}
 \label{sec:validation_summary}
