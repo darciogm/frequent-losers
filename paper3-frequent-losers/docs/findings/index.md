@@ -48,40 +48,42 @@ here rest on the project's own BEC 2009–2019 runs and start at 🟡.
 
 ## Findings overview
 
-No findings have been written yet. As the paper's headline claims
-stabilize, write each as a `<claim-slug>.md` under `docs/findings/` and
-list it here under a thematic block. Suggested initial blocks for this
-paper:
+All findings below are scaffolds at 🟡 (single-source own-project estimates)
+or 🟢 (load-bearing for the paper's framing) and link to the AN pages that
+carry the design + numbers. Promotion to 🟢 (when not already there) would
+require independent replication on a non-BEC procurement panel.
 
-**Award-layer triage performance** *(empirical)*
+**Award-layer triage scope** *(empirical + interpretive)*
 
-- *(to be added)* The frequent-loser flag reduces the bid-microdata pool
-  by 83% while retaining 131 of 193 adjudicated cobidders — headline
-  triage claim.
-- *(to be added)* The flag matches the Imhof–Wallimann seven-feature
-  bid-distribution pipeline on the same data while adding non-redundant
-  signal in combination.
+- [CADE-adjacent cobidders concentrate in the FL14 stratum](cobidders-concentrated-in-fl-stratum.md) — 🟡 131/193 cobidders recovered inside the FL stratum; rank construction = persistent zero-win participation.
+- [The FL ranking is null on direct CADE defendants — by design](direct-defendants-null-result.md) — 🟢 AUC ≈ 0.49–0.50; the predicted finding under the loser-side scope.
 
-**Out-of-sample validity** *(empirical)*
+**Audit discipline** *(empirical)*
 
-- *(to be added)* A 2009–2016-trained screen prospectively flags
-  adjudicated cobidders in 2017–2019 — discrimination is out-of-sample,
-  not in-sample fit.
+- [Cobidder concentration survives exposure, leakage, and timing audits](concentration-survives-audits.md) — 🟡 result holds under sham FL placebo, out-of-fold leakage audit, and strict timing.
 
-**Mechanism / interpretation** *(interpretive)*
+**Cobidder economic profile** *(empirical)*
 
-- *(to be added)* A simple separating-equilibrium argument motivates
-  endogenous loser-side participation as the ranking primitive.
+- [FL cobidders are operationally distinct from other frequent losers](cobidders-operationally-distinct.md) — 🟡 broader buyer deployment, more concentrated product portfolios, closer to legal cartel anchors, bid patterns consistent with credible losing roles.
+
+**Sequential architecture / cost of evidence** *(empirical + interpretive)*
+
+- [Award-layer gatekeeping cuts the bid-microdata pool by 83%](gatekeeping-cuts-pool-83pct.md) — 🟡 131/193 cobidders recovered after the cut; the paper's operational headline.
+- [Joint award + bid scoring is the full-observability upper bound](full-observability-upper-bound.md) — 🟡 the two layers are complementary, not substitutes.
+
+**Price scope** *(interpretive)*
+
+- [Price coefficient sign reverses — scope, not damages](price-sign-reversal-scope.md) — 🟡 the sign reversal defeats the damages reading and supports a scope interpretation.
 
 ---
 
 ## Open items for this page
 
-- **No findings exist yet.** The first concrete write-up to attempt is
-  the triage headline (83% pool reduction, two-thirds of cobidders
-  recovered), as that is the abstract's lead.
-- **The 🟢 promotion path is replication on a non-BEC dataset.** None of
-  the planned analyses provides that on its own; that is a separate
-  data-acquisition decision.
-- **Document the screen-vs-adjudicate scope distinction** in a finding,
-  so reviewers do not over-read the flag as a cartel-membership claim.
+- **🟢 promotion path is replication on a non-BEC dataset.** None of the
+  planned analyses provides that on its own; that is a separate
+  data-acquisition decision (ComprasNet federal, or another state's
+  e-procurement platform).
+- **All numeric headlines in the finding pages above are placeholders**
+  until the underlying AN pages graduate from `pending` to `done` and the
+  values are macro-bound via the `values.tex` pipeline (see
+  [feedback_macro_bound_numbers](../paper.md)).
