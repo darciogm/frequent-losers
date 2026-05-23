@@ -19,7 +19,7 @@ This is **Paper 3** in the `bitter-pills` monorepo. See also `../paper1-bitter-p
 | γ++ (winner/loser reframe) | — | — | **DISQUALIFIED by gate D2** |
 
 **Gate result (4 diagnostics, scripts 36-39, 2026-04-30):**
-- ✅ **D1 — horse race harmonized same-sample (script 36):** continuous AUC 0.939 dominates FL14 0.911, DeLong p=1.7e-5; price coefficients same sign.
+- ✅ **D1 — horse race harmonized same-sample (script 36):** continuous AUC 0.939 dominates FL14, DeLong p<0.05; price coefficients same sign. (Originally reported as FL14 = 0.911 with p=1.7e-5; the 0.911 was a `tenders_count > 14` ≡ FL15 computation, not the paper FL14 = `≥ 14` = 0.924. Bug fixed in script 36 lines 45 + 57 on 2026-05-22; D1 must be re-run on next refresh — direction of test is preserved, statistical separation tightens since gap 0.939−0.924 = 0.015 is smaller than the pre-fix 0.939−0.911 = 0.028.)
 - ❌ **D2 — modal-by-modal AUC institutional asymmetry (script 37):** AUC convite_primary 0.816 vs pregão_primary 0.952; bootstrap difference −0.136, p≈0. **Direction OPPOSITE to the institutional hypothesis.** The convite minimum-bidder rule does NOT produce stronger loser-side signal. Caveat: convite_primary has only 6 cobidders (small N+).
 - ✅ **D3 — continuous preserves loser-side thesis without FL14 (script 38):** all continuous specs +sig (p<0.001); modal asymmetry survives. AUC 0.983 item-level (raw, in-sample) — **subject to leakage audit, see below**.
 - ✅ **D4 — CADE winner-heavy (script 39):** 7/47 direct defendants are always-losers (14.9%); median win_rate 0.26 vs 0.09; Mann-Whitney p<0.05.
@@ -41,7 +41,7 @@ This is **Paper 3** in the `bitter-pills` monorepo. See also `../paper1-bitter-p
 **Rules of engagement (locked):**
 - Object semantics: **"loser-side concentration"** is the concept; **"frequent losers"** is the operational implementation. Never defend FL14 cutoff as ontologically special.
 - Language: `flags`, `screens`, `prioritizes`, `concentrates risk`. **Never** `detects cartelists`, `proves`, `outperforms decisively`.
-- Front-page the failures: AUC ≈ 0.49 against 47 direct CADE defendants; AUC ≈ 0.91 against 193 cobidders. The asymmetry is the design, demonstrated empirically by D4.
+- Front-page the failures: AUC ≈ 0.49 against 47 direct CADE defendants; AUC ≈ 0.92 against 193 cobidders (canonical FL14 firm-level = 0.924 from `\valAUCFLfirm`). The asymmetry is the design, demonstrated empirically by D4.
 - Continuous `log(tenders_count)` dominates FL14 binary (DeLong p<0.001). FL14 is a deployable rule; the true signal is loss intensity.
 - First-time-FL +0.10 unconditional (winsorized) → +0.06 (p=0.31) under PS matching. Demoted to appendix.
 - Mechanism heterogeneity: Low HHI × Low pairs +10% is the largest cell, not "cartel signature". Drop "assinatura de cartel" framing.

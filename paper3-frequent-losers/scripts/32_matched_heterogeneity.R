@@ -36,7 +36,9 @@ ftm[, item_group := substr(`códigoitem`, 1, 2)]
 ftm[, cell_id := paste0(pbu_code, "_", item_group, "_", year)]
 
 THRESH <- 14L
-fp[, is_fl := as.integer(always_loser == 1L & tenders_count > THRESH)]
+# Paper FL14 rule: tenders_count >= 14 (matches \valThreshold, \valFL,
+# \valAUCFLfirm = 0.924). Pre-2026-05-22 used `> THRESH` → FL15 numbers.
+fp[, is_fl := as.integer(always_loser == 1L & tenders_count >= THRESH)]
 fl_firms <- fp[is_fl == 1L, firm_code]
 
 # ---- Step 1: compute cell-level HHI + repeated FL-winner pairs ----------

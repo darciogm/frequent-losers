@@ -41,8 +41,13 @@ cobid_codes <- unique(cobid$firm_code)
 
 # ---- Build firm-level FL features ---------------------------------------
 THRESH <- 14L
+# Paper FL14 = tenders_count >= 14 (matches \valThreshold=14, \valFL=2735,
+# \valAUCFLfirm=0.924). Pre-2026-05-22 these lines used `> THRESH`, which
+# silently computed FL15 numbers (2,537 firms, AUC 0.911); the D1 gate
+# result reported pre-fix in CLAUDE.md (FL14=0.911) was therefore an FL15
+# AUC, and the DeLong gap was overstated. Re-run pending.
 al <- fp[always_loser == 1L, .(firm_code, tenders_count)]
-al[, fl14    := as.integer(tenders_count > THRESH)]
+al[, fl14    := as.integer(tenders_count >= THRESH)]
 al[, log_tc  := log1p(tenders_count)]
 al[, is_cade := as.integer(firm_code %in% cobid_codes)]
 
@@ -54,7 +59,7 @@ ftm_loser <- merge(ftm[won == 0L],
 ftm_loser[is.na(tenders_count), tenders_count := 0L]
 intensity <- ftm_loser[, .(
   max_tc   = max(tenders_count, na.rm = TRUE),
-  any_fl14 = max(as.integer(tenders_count > THRESH), na.rm = TRUE)
+  any_fl14 = max(as.integer(tenders_count >= THRESH), na.rm = TRUE)
 ), by = oc_item_key]
 intensity[!is.finite(max_tc),   max_tc   := 0L]
 intensity[!is.finite(any_fl14), any_fl14 := 0L]

@@ -107,7 +107,9 @@ cade_codes <- unique(cade$firm_code)
 
 THRESH <- 14L
 al <- fp[always_loser == 1L, .(firm_code, tenders_count)]
-al[, is_fl   := as.integer(tenders_count > THRESH)]
+# Paper FL14 rule: tenders_count >= 14 (matches \valThreshold, \valFL,
+# \valAUCFLfirm = 0.924). Pre-2026-05-22 used `> THRESH` → FL15 numbers.
+al[, is_fl   := as.integer(tenders_count >= THRESH)]
 al[, is_cade := as.integer(firm_code %in% cade_codes)]
 
 al <- merge(al, firm_features, by = "firm_code", all.x = TRUE)

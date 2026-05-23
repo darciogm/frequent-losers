@@ -108,7 +108,11 @@ cat("\n--- Analysis 2: AUC binary vs continuous on always-loser pool ---\n")
 
 al <- fp[always_loser == 1L, .(firm_code, tenders_count)]
 THRESH <- 14L
-al[, is_fl := as.integer(tenders_count > THRESH)]
+# Paper FL14 rule: firms with tenders_count >= 14 (matches \valThreshold=14
+# and \valFL=2,735). Pre-2026-05-22 this line used `> THRESH`, which
+# silently computed the FL15 stratum (2,537 firms, AUC 0.911); the
+# canonical macros come from script 54 with median+1.5*IQR=13.5.
+al[, is_fl := as.integer(tenders_count >= THRESH)]
 al[, is_cade := as.integer(firm_code %in% cade$firm_code)]
 
 roc_binary <- pROC::roc(al$is_cade, al$is_fl, quiet = TRUE)
