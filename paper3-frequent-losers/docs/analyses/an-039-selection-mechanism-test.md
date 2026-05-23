@@ -143,14 +143,17 @@ and *depress observed prices* within those cells via the cover-bidding
 theater (negative within cell). The overlap-ATT spec removes the
 selection and isolates the mechanism.
 
-This converts the price evidence in the manuscript from a defensive
-"scope, not damages" disclaimer into an **assertive substantive claim**:
-the sign-reversal is the predicted empirical signature of cover-
-bidding theory. The mechanism component is established in Test 2
+In the manuscript (§7) this is reported as **descriptive scope
+evidence, not mechanism identification**: the sign-reversal is
+consistent with the cover-bidding interpretation, but the paper
+explicitly states it does not identify a mechanism, a causal price
+effect, overcharges, or damages. The within-cell component is
+documented in Test 2
 ([AN-040](an-040-within-cell-mechanism-test.md)): within overlap cells
-FL presence operates through bidder-count inflation (+0.507 log-bidders)
-and moves the winner bid −0.048 closer to reference, confirming the
-cover-bidding channel.
+FL presence is associated with bidder-count inflation (+0.507 log-bidders)
+and a winner bid −0.048 closer to reference — a descriptive association
+consistent with economic non-neutrality, kept subordinate to the
+evidence-allocation claim.
 
 ## Follow-ups
 

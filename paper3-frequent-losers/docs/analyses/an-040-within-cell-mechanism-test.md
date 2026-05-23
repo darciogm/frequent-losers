@@ -147,11 +147,14 @@ present and reweighting toward the treatment-bearing cells.
 
 **Implications for the manuscript §7:**
 
-- The price evidence is no longer a defensive disclaimer. It is the
-  **predicted empirical signature** of cover-bidding theory: positive
-  selection across cells (where cartels operate), negative mechanism
-  within cell (how cover bidders depress the winner's price), and a
-  sharp bidder-count threshold separating the two regimes.
+- The price evidence is reported as a **descriptive decomposition**,
+  consistent with the cover-bidding interpretation but not identifying
+  a mechanism: positive selection across cells (frequent losers
+  concentrate in structurally high-price environments), a negative
+  within-cell association (within comparable cells the observed winner
+  price is lower), and a bidder-count threshold separating the two.
+  The manuscript keeps this as scope evidence, subordinate to the
+  evidence-allocation claim.
 - The "scope, not damages" framing is **strengthened**, not retracted.
   The price evidence still cannot pin down a damages estimate (the
   mechanism component is a depression of OBSERVED price, not an

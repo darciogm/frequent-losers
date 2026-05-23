@@ -110,35 +110,30 @@ well above the placebo mean, $\valCADEbase$. This audit
 disciplines activity volume; it does not by itself make firms'
 opportunities to meet CADE anchors comparable.
 
-A formal version of the same volume placebo permutes the
-frequent-loser label among always-losers while preserving the
-marginal participation distribution. Across $B=2{,}000$ draws,
-the sham AUC distribution has mean $\valShamMean$, standard
-deviation $\valShamSD$, and 99th percentile $\valShamQNinetyNine$. The
-observed FL14 AUC of $\valAUCFLfirm$ falls thirty-two standard
-deviations above the sham mean, with permutation
-$p$~$\valShamP$. Volume alone does not reproduce the observed
-concentration. The price coefficient under the same sham
-distribution does not reject the null---observed $+0.064$ against
-sham mean $+0.144$, $p=\valShamPriceP$---which is consistent with
-the scope-not-damages reading of the price evidence in
-\S\ref{sec:price_scope}.
+A formal version of the same placebo permutes the
+frequent-loser label across always-losers while preserving the
+marginal participation distribution. The observed FL14 AUC falls
+thirty-two standard deviations above the sham mean (permutation
+$p$~$\valShamP$): volume alone does not reproduce the observed
+concentration. \ref{app:market_opportunity_submission}
+reports the full sham distribution, and the price coefficient
+under the same sham draws, which is consistent with the
+scope-not-damages reading of the price evidence in
+\S\ref{sec:price_scope_conclusion}.
 
 The second source is market opportunity. Firms active in the
 same procurement niches as CADE defendants have more chances to
 appear near those anchors even when conduct is ordinary.
-Exposure adjustment is therefore a required audit, not optional
-robustness. The audit asks whether the ranking survives after
-comparing firms within more similar opportunity sets---defined
-by procurement environments in which a firm could have appeared
-with CADE anchors, using item, modality, year, and buyer
-information where support permits. Its purpose is to ask whether
-the award-layer rank continues to concentrate
-adjudication-anchored cobidders after the markets in which firms
-could meet CADE anchors are made more comparable. The audit is
-not a legal-membership test and does not eliminate all
-opportunity-set concerns. \ref{app:market_opportunity_submission}
-reports the exact construction and retained support.
+Exposure discipline is therefore treated as a family of audits
+rather than as a single dispositive adjustment. The documented
+audits ask whether the ranking can be reduced to four mechanical
+channels: participation volume, label reuse, timing, and generic
+proximity to CADE defendants. They do not claim to fully hold
+fixed every product, buyer, year, and modality opportunity set.
+\ref{app:market_opportunity_submission} reports the
+construction, data sources, and limits of this exposure-discipline
+battery, so the claim is auditable without being read as a
+legal-status test.
 
 Timing is disciplined in two layers. The temporal holdout above
 forms the participation score before the evaluation window and
@@ -157,56 +152,14 @@ useful under a stricter field-like information set. It remains a
 timing audit, not causal prediction.
 
 Two structural facts make the timing audit harder to dismiss as
-a same-firm artifact. First, firm persistence between the
-$\valYearStart$--$2016$ and $2017$--$\valYearEnd$ windows is
-$\valFirmPersist$: roughly nine in ten always-loser firms in the
-test window are firms not seen in the training window. The
-temporal holdout therefore evaluates a substantially fresh firm
-population rather than the same firms in different years. Second,
-when the training window is shortened further (scores frozen on
-$2009$--$2015$, evaluated against cobidders linked to CADE
-adjudications closed after $2019$---a strictly out-of-time
-target), the firm-level AUC is $\valClfFifteenFL$ for the
-frequent-loser flag and $\valClfFifteenPostTC$ for the
-continuous score. The ranking remains informative when the
-classifier is trained at one horizon, the cobidder label is
-defined by adjudications at a later horizon, and the bulk of
-test-period firms were not in the training set.
-Table~\ref{tab:three_classifier_submission} reports the full
-three-classifier battery.
-
-\begin{table}[htbp]
-\centering
-\caption{Three-Classifier Timing Battery}
-\label{tab:three_classifier_submission}
-\footnotesize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{p{4.0cm}cccc}
-\toprule
-& \multicolumn{2}{c}{vs cobid\_all} & \multicolumn{2}{c}{vs cobid\_post2019} \\
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}
-Classifier & FL flag & Continuous & FL flag & Continuous \\
-\midrule
-clf\_2015 (train 09--15) & $\valClfFifteenFL$ & $\valClfFifteenTC$
-  & $\valClfFifteenPostFL$ & $\valClfFifteenPostTC$ \\
-clf\_2017 (train 09--17) & $\valClfSeventeenFL$ & $\valClfSeventeenTC$
-  & $\valClfSeventeenPostFL$ & $\valClfSeventeenPostTC$ \\
-clf\_2019\_full (in-sample) & $\valAUCFLfirm$ & $\valAUClogtc$
-  & --- & --- \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\footnotesize
-\item \textit{Notes:} AUC against two cobidder targets across three
-classifiers. cobid\_all uses cobidders linked to any CADE adjudication
-in the panel. cobid\_post2019 uses cobidders linked only to
-adjudications closed after $2019$, a strictly out-of-time target
-that cannot be in the clf\_2015 or clf\_2017 training data.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+a same-firm artifact: roughly nine in ten always-loser firms in
+the test window are not seen in the training window
+($\valFirmPersist$ persistence), and the ranking remains
+informative even when scores are frozen on $2009$--$2015$ and
+evaluated against strictly out-of-time post-$2019$ adjudications
+($\valClfFifteenFL$ for the frequent-loser flag).
+\ref{app:timing_battery_submission} reports the full
+three-classifier timing battery.
 
 The leakage audit addresses a different concern: item-level
 validation can mechanically reuse the same firm histories that
@@ -250,64 +203,16 @@ cartel-affected environments; the award layer ranks the
 loser-side exposure around those anchors; the bid layer then
 supplies the conduct evidence for case-specific evaluation.
 
-A complementary universe-anchored scope matrix systematically
-varies the universe (always-loser firms vs full BEC firm
-registry) and the positive class (cobidders vs direct defendants)
-to map where the ranking targets succeed and where they fail. The
-matrix produces a stronger result than a stand-alone null: raw
-participation count on the full BEC universe against direct CADE
-defendants returns AUC $\valAUCParticDefendants$, which is
-\emph{below} random. A high-participation BEC firm is less
-likely, not more likely, to be a direct CADE defendant under the
-loser-side scoring logic. The score does not simply fail to
-identify winner-heavy defendants; the relevant direction is
-reversed, consistent with the role separation observed in D4
+A complementary universe-anchored scope matrix confirms that the
+asymmetry is structural, not a stand-alone null: raw participation
+count on the full BEC universe against direct defendants is
+\emph{below} random, so a high-participation firm is less likely,
+not more likely, to be a direct defendant under loser-side
+scoring---consistent with the role separation observed in D4
 (14.9\% of direct defendants are always-losers; median win rate
 $0.261$ versus $0.086$ for cobidders).
-Table~\ref{tab:scope_matrix_submission} reports the full eight-row
-scope matrix.
-
-\begin{table}[htbp]
-\centering
-\caption{Universe-Anchored Stratum Scope Matrix}
-\label{tab:scope_matrix_submission}
-\footnotesize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{p{3.3cm}p{3.0cm}p{3.0cm}cp{4.0cm}}
-\toprule
-Score & Universe & Positive class & AUC & Reading \\
-\midrule
-Binary FL & Always-losers & Cobidders & $\valScopeRowOne$
-  & Within-stratum prioritization \\
-Continuous log\_tc & Always-losers & Cobidders & $\valScopeRowTwo$
-  & Best within-stratum ranking \\
-Binary FL & All BEC firms & Direct CADE & $\valScopeRowThree$
-  & At chance; no membership detection \\
-Participation count & All BEC firms & Direct CADE & $\valScopeRowFour$
-  & \textbf{Below chance: actively repels winner-heavy} \\
-Binary FL (frozen 09--16) & Always-losers as of 09--16 & Cobidders
-  & $\valScopeRowFive$ & Weaker than pooled within-stratum \\
-Continuous (train 09--16) & Items 17--19 & Cobidder items
-  & $\valScopeRowSix$ & Some prospective generalization \\
-Binary FL (frozen 09--16) & Items 17--19 & Cobidder items
-  & $\valScopeRowSeven$ & Weak binary item-level holdout \\
-Continuous (train 09--16) & Items 17--19 & Direct-defendant items
-  & $\valScopeRowEight$ & Direct-defendant null survives timing \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\footnotesize
-\item \textit{Notes:} AUC across an eight-row matrix that varies the
-score, the universe of firms or items being ranked, and the positive
-class. Row~4 is below chance because the loser-side score
-discriminates \emph{against} high-participation winner-heavy
-defendants. The matrix structurally rules out a generic-detector
-reading.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+\ref{app:direct_scope_submission} reports the full
+eight-row scope matrix.
 
 \subsection{Validation Summary}
 \label{sec:validation_summary}
@@ -333,7 +238,7 @@ Benchmark & Question & Result \\
 \midrule
 Legal anchoring & Are frequent losers overrepresented among pre-$\valConservativeCutoff$ adjudication-anchored cobidders? & $\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ \\
 Participation-volume discipline & Does concentration survive volume-preserving placebo assignment? & Placebo mean $\valCADEbase$ versus observed $\valCADEenrich$ \\
-Exposure discipline & Does the ranking remain informative under more comparable opportunity sets for meeting CADE anchors? & Exposure-adjusted audit over comparable opportunity sets; see \ref{app:market_opportunity_submission} \\
+Exposure discipline & Can the ranking be reduced to volume, opportunity-set exposure, label reuse, timing, or generic proximity to CADE anchors? & Documented exposure-discipline battery; see \ref{app:market_opportunity_submission} \\
 Temporal holdout & Does pre-window participation rank later cobidder labels? & AUC $\valAUCFLfirmTemp$ \\
 Leakage audit & Does signal survive when cobidders are held out of score construction? & Out-of-fold AUC $\valLeakCVAUC$ \\
 Direct-defendant scope check & Does the ranking preserve the distinction between legal anchors and loser-side exposure? & Direct-defendant AUC $\valAUCdirectStd$ \\

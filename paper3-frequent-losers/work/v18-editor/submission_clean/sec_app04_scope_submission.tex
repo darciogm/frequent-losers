@@ -2,7 +2,7 @@
 \label{app:scope_adaptation_submission}
 
 The main text treats price evidence as corroboration rather
-than identification. This appendix records the price
+than causal identification. This appendix records the price
 decomposition that keeps that interpretation disciplined: the
 overlap sign reversal and the high-value-segment positive
 result. The strategic-adaptation simulation is reported
@@ -36,3 +36,108 @@ results show that flagged environments are economically
 non-neutral, especially in the high-value segment where cartel
 rents are most plausible. They do not supply a causal price
 effect, a markup, or a damages calculation.
+
+\subsection{Selection and Within-Cell Decomposition}
+\label{app:price_decomposition_submission}
+
+The broad positive imprint and the negative overlap-cell ATT
+coefficient decompose into a positive across-cell selection
+component and a negative within-cell pattern. Among non-treated
+items, mean log price rises monotonically across cell FL-share
+quintiles (gap $\Delta=\valSelTestDelta$ log-points across cells);
+a regression of non-treated log price on cell FL-share with all
+five cell dimensions as marginal fixed effects yields
+$\valSelTestCoefFullFE$ (SE $\valSelTestSEFullFE$,
+$N=\valSelTestN$). Within overlap cells, frequent-loser presence
+is associated with a winner-to-reference ratio lower by
+$\valMechWinnerVsRef$ log-points (SE $\valMechWinnerVsRefSE$),
+an association that becomes insignificant once
+$\log(\text{n\_firms})$ is included ($\valMechWinnerVsRefControlled$,
+SE $\valMechWinnerVsRefControlledSE$, n.s.); frequent-loser
+presence is associated with $\valMechNFirms$ log-bidders
+($\approx\valMechNFirmsPct$ more) within the same cell type. The
+two associations exchange dominance at the tender-density margin:
+positive in sparse tenders ($\Delta=\valMechSparseBidderDelta$ at
+1--3 bidders) and negative in dense tenders
+($\Delta=\valMechDenseBidderDelta$ at 11+ bidders), with the
+7--10 bucket as the transition ($\valMechMidHighBidderDelta$).
+These are descriptive associations consistent with economic
+non-neutrality; they do not identify a mechanism, a causal price
+effect, overcharges, or damages.
+
+\begin{table}[htbp]
+\centering
+\caption{Selection and Within-Cell Price Decomposition of the FL-Price Sign Reversal}
+\label{tab:sign_reversal_decomposition_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{4.8cm}cp{2.0cm}p{5.6cm}}
+\toprule
+Component & Estimate & SE / p & Interpretation \\
+\midrule
+Broad-sample baseline & $+\valBetaBroad$ & $p=\valBetaBroadP$ &
+  Joint association: selection $+$ within-cell pattern \\
+\midrule
+\multicolumn{4}{l}{\textit{Across-cell selection (non-treated price on cell FL-share)}} \\
+\hspace{6pt} Raw OLS & $+22.65$ & SE $0.03$ &
+  Cells where cartels concentrate are structurally high-priced \\
+\hspace{6pt} + item-group + year FE & $+24.04$ & SE $0.56$ &
+  Selection beyond marginal cell dimensions \\
+\hspace{6pt} + all five marginal cell-dim FE & $\valSelTestCoefFullFE$ &
+  SE $\valSelTestSEFullFE$ &
+  Selection coefficient after partialling out each cell dim \\
+\midrule
+\multicolumn{4}{l}{\textit{Within-cell price pattern (winner-to-reference ratio)}} \\
+\hspace{6pt} Within cell, no controls & $\valMechWinnerVsRef$ &
+  SE $\valMechWinnerVsRefSE$, $p<10^{-30}$ &
+  FL presence is associated with lower winner-to-reference ratio \\
+\hspace{6pt} + $\log(\text{n\_firms})$ control & $\valMechWinnerVsRefControlled$ &
+  SE $\valMechWinnerVsRefControlledSE$, n.s. &
+  Association is accounted for by the bidder-count channel \\
+\hspace{6pt} Log-bidder inflation & $\valMechNFirms$ &
+  SE $\valMechNFirmsSE$, $p<10^{-30}$ &
+  $\approx \valMechNFirmsPct$ more bidders in FL-present tenders \\
+\midrule
+\multicolumn{4}{l}{\textit{Sign-reversal boundary by bidder count}} \\
+\hspace{6pt} 1--3 bidders (sparse) & $\valMechSparseBidderDelta$ & --- &
+  Selection regime: FL $=$ higher price \\
+\hspace{6pt} 7--10 bidders & $\valMechMidHighBidderDelta$ & --- &
+  Transition \\
+\hspace{6pt} 11+ bidders (dense) & $\valMechDenseBidderDelta$ & --- &
+  Within-cell regime: FL $=$ lower price \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Selection component: log negotiated price
+among non-treated items only, regressed on cell FL-share
+(across-cell variation). Within-cell component: log winner-to-
+reference ratio regressed on FL presence with overlap-cell fixed
+effects (within-cell variation). All standard errors clustered
+by overlap cell. The bidder-count rows report
+$\Delta(\text{FL-present} - \text{FL-absent})$ on winner-to-
+reference within each bidder-count bucket. Estimates are
+descriptive associations, not causal effects, overcharges,
+markups, or damages.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Implied Monetary Scope}
+\label{app:monetary_scope_submission}
+
+We report an implied monetary-scope calculation only to indicate
+institutional scale, not as a damages calculation. Combining the
+price-side coefficients with the share of items in the loser-side
+stratum and BEC sample-period procurement volume of
+\valWelfareDenom, the descriptive scope range is
+\valWelfareCrossfit{} per year (cross-fitted lower bound) to
+\valWelfareIV{} (instrumented upper bound), equivalent to about
+\valWelfareLowPct{}--\valWelfareHighPct{}\% of state procurement
+spending in scope; the OLS midpoint is \valWelfareOLS. These
+figures bound the institutional stakes the screen is reading from.
+They are not damages, overcharges, or welfare losses, and they do
+not commit to a recovery figure that a successful prosecution
+would deliver.

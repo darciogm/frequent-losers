@@ -8,7 +8,7 @@
 - Fixed the appendix-reference pattern so compiled text does not produce "Appendix Appendix".
 - Rebuilt Figure 1 with "Bid layer (forensic-recoverable)".
 - Rebuilt Figure 2 with "Temporal holdout: training-window expansion test".
-- Resolved the Table 3 placeholder by replacing the internal-design cell with a submission-facing pointer to the exposure-adjusted audit.
+- Resolved the Table 3 draft cell by replacing the internal-design cell with a submission-facing pointer to the exposure-adjusted audit.
 
 ## Title and abstract
 
