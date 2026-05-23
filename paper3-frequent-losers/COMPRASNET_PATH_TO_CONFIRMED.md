@@ -235,12 +235,199 @@ without delaying the submission timeline.
 
 ## 7. Open questions
 
-- Does the existing `scripts/00_build_bidlevel.py` parametrize over
-  data source, or is BEC-specific? Audit needed.
+- ~~Does the existing `scripts/00_build_bidlevel.py` parametrize over
+  data source, or is BEC-specific? Audit needed.~~ **Audited
+  2026-05-22 (mr-frequent, modo revisor): NO. BEC-specific in 7
+  dimensions** — hardcoded absolute path to `bec-procurement/`
+  (L40), single-file `.dta` reader (L43, L64-92), Portuguese BEC
+  column schema in `COLS_NEEDED` (L45-53), BEC-specific "OC"
+  collapse semantics (L122-125), no CLI / no env-var / no config
+  injection point (entire `main()`), no `panel` column tagged on
+  outputs, `winner` recoded in two places (L98 + L119) so any
+  schema rename would need to be touched in both. The script also
+  violates the CLAUDE.md `DuckDB-default-for-parquet` rule: it
+  materializes the full 40M-row LANCES into a single pandas
+  DataFrame via `pd.concat`, then does pandas `groupby` — RSS
+  bomb risk on any growing panel. **Recommendation: do NOT
+  parametrize the existing script. Write a sibling
+  `00_build_eventlevel_comprasnet.py` that reads the three parquets
+  from `bulk_acquire_comprasnet.py`, renames to a canonical
+  vocabulary (`firm_id`, `tender_id`, `item_id`, `won`,
+  `closing_date`, `modality`), adds `panel='comprasnet'`, and emits
+  five outputs matching the BEC schema in
+  `data/processed_comprasnet/`. Estimate: 1 engineering-day,
+  DuckDB-native, executable in parallel with download completion.**
+  Important constraint inherited from the API surface itself:
+  the script can only produce a *participation-level*
+  `bid_level_full` (one row per firm × item participation), NOT
+  a literal bid-level table with one row per lance — the open API
+  does not expose bid microdata. This bounds which hypotheses
+  replicate (see below).
 - Does CADE publish federal-procurement-specific cobidder mappings,
-  or do we need to construct them from scratch?
+  or do we need to construct them from scratch? **Likely the latter:
+  CADE adjudication records are case-by-case PDFs (acórdãos +
+  pareceres); we need to extract defendant CNPJs case-by-case from
+  the existing `cade_carteis_licitacoes_2009_2019.csv`, filter to
+  cases targeting federal procurement (UASG-coded), and join to the
+  ComprasNet participant set to construct the cobidder mapping. The
+  current 47-direct-defendant / 193-cobidder split is BEC-state.
+  Federal counterparts may be smaller; CADE prosecutes more state
+  than federal cartels in our sample.**
 - Bid microdata coverage post-2019 on ComprasNet: improving or
-  declining?
+  declining? **Out-of-scope for this acquisition window.** The
+  current bulk_acquire range matches BEC 2009-2019, ending in 2019.
+  Post-2019 coverage matters only if we extend the panel — which
+  the paper3 design does not require. Flag for paper-A spinoff or
+  a longer-horizon follow-up.
+
+## 8. Hypothesis-replication ceiling under the bounded acquisition
+   (revised 2026-05-22 second pass, mr-frequent audit)
+
+**Two consecutive audits in the same session. The first one
+underestimated viability because it only looked at the open-data API
+(`dadosabertos.compras.gov.br`); the second one found a better
+source.**
+
+### 8.1 First pass (API endpoints — superseded but instructive)
+
+The `bulk_acquire_comprasnet.py` script consumes three open-data
+endpoints (`licitacao`, `pregao`, `item_pregao`). Schema inspection
+showed:
+
+- `item_pregao` exposes one row per item with `fornecedorVencedor`
+  (winner) — **NULL in 100% of the jan/2019 sample (0/5704 rows)**
+  and no list of participants.
+- 77 endpoints across `/v3/api-docs` searched for `lance`, `proposta`,
+  `participante`, `fornecedor` — **none** return per-item participant
+  lists.
+
+The API is unsuitable for FL construction. Keep the bulk acquisition
+running for auxiliary metadata (tender descriptions, dates, UASG
+names), not for participation data.
+
+### 8.2 Second pass (Portal da Transparência CGU bulk dumps — viable)
+
+After the API gap was identified, web search located the right
+source: **Portal da Transparência publishes monthly bulk ZIPs at**
+
+```
+https://dadosabertos-download.cgu.gov.br/PortalDaTransparencia/saida/licitacoes/{YYYYMM}_Licitacoes.zip
+```
+
+Each ZIP contains four CSVs. The decisive one is
+`{YYYYMM}_ParticipantesLicitação.csv`, which holds **one row per
+(firm × item × tender) participation** with these columns:
+
+| Column | BEC equivalent | Role |
+|---|---|---|
+| Número Licitação | numerodaoc | tender ID |
+| Código UG | códigounidadecompradora | procurement unit (UASG) |
+| Código Modalidade Compra | (po_phase_code analog) | modality code |
+| Modalidade Compra | (po_phase_code label) | modality label |
+| Código Item Compra | códigoitem | item ID |
+| **Código Participante** | **códigofornecedor** | **CNPJ 14-digit** |
+| Nome Participante | (firm name) | string |
+| **Flag Vencedor** | **flagvencedor** | **"SIM" / "NÃO"** |
+
+Validated on jan/2019 (downloaded 6.27 MB ZIP, extracted 85 MB CSV):
+- **336,521 participation rows** in one month
+- 15,207 distinct firms
+- 736 distinct tenders
+- 57,755 winners (17.2%), 278,766 losers (82.8%) — clean SIM/NÃO split
+- Sibling files `Licitação.csv` (event-level, with `Valor Licitação`),
+  `ItemLicitação.csv` (item-level, with `Valor Item` and
+  `Código Vencedor`), `EmpenhosRelacionados.csv` (post-award spending)
+
+### 8.3 Modality scope discipline
+
+Validated on jan/2019:
+
+| Modality (code) | Participations | Winner rate |
+|---|---:|---:|
+| Pregão SRP (9999) | 291,841 | 14.7% |
+| Pregão (5) | 26,178 | 12.8% |
+| Dispensa (6) | 12,549 | 45.0% |
+| Inexigibilidade (7) | 5,886 | 100% |
+| Tomada de Preços (2) | 46 | 100% |
+| Concorrência (3) | 10 | 100% |
+| Concurso (20) | 6 | 100% |
+| **Convite (1)** | **5** | **100%** |
+
+Two findings:
+
+1. **Federal Convite is effectively extinct.** Five participations in
+   one month nationwide. The Convite minimum-bidder rule cannot be
+   tested in federal data. **AN-016 / D2 modal-AUC reframe must be
+   presented as a BEC-only test in the manuscript.** Cross-modality
+   replication is structurally unavailable on the federal panel
+   regardless of source.
+2. **Useful FL scope = Pregão (5) + Pregão SRP (9999) only.**
+   Inexigibilidade/TP/Concorrência/Convite are coded as 100%
+   winners in the participants table (no real competition tracking
+   for those modalities) — they cannot construct loser sets.
+   SRP introduces a new sub-question (multi-winner per item;
+   different price-formation dynamics) that doesn't exist in BEC.
+
+### 8.4 Coverage
+
+CGU bulk dumps start **2013-01-01**. The paper3 BEC panel is
+2009-2019. **Federal cross-validation is restricted to the 7-year
+overlap 2013-2019.** Pre-2013 federal data would require institutional
+FOIA to MGI/SLTI — out of scope.
+
+### 8.5 Revised hypothesis-replication matrix
+
+| H | Within-BEC finding | Replicable on Portal Transp. (Pregão + SRP, 2013-2019)? |
+|---|---|---|
+| H1 | FL14 AUC 0.924 vs cobidders | **✅ Yes** — needs (firm, item, won), all present |
+| H2 | Structural null on direct defendants | Already 🟢 |
+| H3 | Sham permutation rejects at 32σ | **✅ Yes** — permutation works on participation patterns, no lance values needed |
+| H4 | Strict ex ante AUC 0.79–0.85 | **✅ Yes** — timing discipline works |
+| H5 | Cobidder profile distinct (volume-confounded) | Not promotable (within-data limit) |
+| H6 | Imhof + FL Δ +0.096, p=10⁻²⁶ | **❌ No** — Imhof seven features need lance value distributions; participants CSV has no bid values |
+| H7 | Sequential beats joint in temporal holdout | **✅ Yes** — architecture trade-off testable |
+| H8 | Sign reversal +0.064 → −0.097 | **🟡 Partial** — `Valor Item` is in ItemLicitação.csv (price-side OK); bid-distribution channel still missing |
+| AN-016 / D2 cross-modality | Convite vs Pregão AUC −0.136 (loser-side asymmetry) | **❌ No** — federal Convite extinct (5/month) |
+
+**Realistic graduation under Portal-da-Transparência-only acquisition:
+5 hypotheses promote to 🟢 (H1, H2, H3, H4, H7) + 1 partial (H8).
+H5/H6 stay BEC-only. AN-016 / D2 explicitly marked BEC-only-by-design
+in manuscript.**
+
+### 8.6 Stage 2 (bid microdata scrape) — still relevant only for H6
+
+Even with Portal da Transparência bulk, H6 (Imhof) is blocked because
+lance values are not in the public files. The only way to lift H6 is
+Stage 2: scrape per-UASG bid microdata from Portal SISG. Cost
+estimate stands at 4-8 weeks of engineering with non-trivial
+coverage risk pre-2014. **Recommendation (mr-frequent): submit JLEO
+R&R with five 🟢 + one 🟡 from Portal da Transparência; mark H6
+explicitly as BEC-only-by-bid-microdata-gap; do NOT promise Stage 2 in
+the cover letter unless an editor specifically asks for Imhof
+cross-validation.**
+
+### 8.7 Engineering pivot
+
+The original Stage 1 plan called for the open-data API. The
+acquisition is now better structured as:
+
+- **Stage 1a (API, in progress, lower priority):** keep
+  `bulk_acquire_comprasnet.py` running; produces auxiliary metadata
+  (tender descriptions, dates, UASG cross-walk, post-2021 marker).
+  Output is complementary, not load-bearing.
+- **Stage 1b (Portal da Transparência bulk, NEW, load-bearing):** new
+  script `scripts/00_build_eventlevel_comprasnet.py` downloads 84
+  monthly ZIPs (~525 MiB compressed, ~3-5 GiB raw CSV), validates
+  schema, builds the 5 canonical paper3 outputs with `panel='comprasnet'`
+  tag. DuckDB-native end-to-end. Drafted 2026-05-22.
+- **Stage 1c (CADE federal cobidder linkage):** as previously planned
+  (case-by-case PDF extraction from CADE × UASG join).
+- **Stage 4 (replication runs):** existing v18 R scripts run with
+  `--source=comprasnet` flag (to be wired in the scripts themselves).
+
+Total revised effort: Stage 1b ~3 days, Stage 1c ~1 week, Stage 4 ~2
+weeks. R&R window of 6-12 weeks comfortably absorbs this if started
+in week 1 of revision.
 
 This memo is a **planning artifact**, not a commitment. Decision to
 pursue ComprasNet replication depends on (i) JLEO R&R reception, (ii)

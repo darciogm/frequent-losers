@@ -7,7 +7,11 @@ exploratory, strategic, or coordinated. The screen therefore
 uses what the award layer can measure at the triage stage: which
 firms appeared, which firms won, and which firms kept appearing
 without ever winning. The object is a ranking for forensic
-priority, not a classification of cartel membership.
+priority, not proof of conduct or a classification of cartel
+membership. This is the law-enforcement-economics decomposition
+of investigative attention into ranking and proof
+\citep{becker1968crime,stigler1970optimum}: when proof is costly,
+the question is where to begin, not what to assume.
 
 This section defines that ranking and the empirical implications
 that discipline it. Subsection~\ref{sec:award_primitive}
@@ -39,13 +43,15 @@ The maintained condition is monotonic rather than classificatory.
 If cartel-deployed losing participants are present, they should
 appear more persistently in the zero-win stratum than ordinary
 losing firms, because such a role is useful only through repeated
-deployment in cartel-targeted tenders. The appendix formalizes
-this condition as a monotone-likelihood-ratio ranking result. The
+deployment in cartel-targeted tenders. The condition is
+maintained, not derived. \ref{app:framework_submission}
+formalizes it as a monotone-likelihood-ratio ranking result in
+the tradition of \citet{karlin1956mlr}. The
 main text uses it more modestly: persistent zero-win participation
 is a cheap statistic that can rank loser-side exposure under a
 transparent behavioral assumption and direct attention to the bid
-layer where conduct can be evaluated. It does not assign cartel
-membership.
+layer where conduct can be evaluated. It does not assign a firm
+type or cartel membership.
 
 The zero-win restriction is therefore a scope restriction. Many
 firms never win for ordinary competitive reasons: poor fit, high costs,
@@ -54,8 +60,8 @@ positioning, or simple bad luck. The screen's content comes from
 persistence inside that heterogeneous loser-side set. If the
 ranking has enforcement value, it should concentrate
 adjudication-anchored loser-side adjacency beyond what generic
-participation volume and market exposure would mechanically
-produce.
+participation volume, product-market overlap, and opportunity to
+meet CADE anchors would mechanically produce.
 
 \subsection{From Ranking to an Operational Queue}
 \label{sec:award_rule}
@@ -81,28 +87,37 @@ stratum. The cutoff is fixed from the participation distribution
 alone, before any CADE label enters the analysis.
 
 The cutoff is an auditable administrative implementation of the
-rank, not a structural or legal threshold. Two analysts applying
-the same rule to the same award records obtain the same
-first-stage list. Above the cutoff does not mean cartel member;
-below it does not mean clean. Because a static threshold can be
-gamed, the enforcement architecture treats the binary flag as one
-implementation among several: agencies can also use continuous
-ranks, top-$k$ queues, refreshed thresholds, or budget-calibrated
-survivor pools. The strategic-adaptation analysis later returns
-to this point.
+rank, not a structural or legal threshold. The paper does not
+rest on the number $14$; it rests on the continuous loser-side
+participation ranking. Two analysts applying the same rule to
+the same award records obtain the same first-stage list. Above
+the cutoff does not mean cartel member; below it does not mean
+clean. Because a static threshold can be gamed, the enforcement
+architecture treats the binary flag as one implementation among
+several: agencies can also use continuous ranks, top-$k$ queues,
+refreshed thresholds, or budget-calibrated survivor pools, in
+line with the operational-screening design framework articulated
+in \citet{sanchezgraells2019screening} and the robust-screen
+principles of \citet{chassang2022robust}. The
+strategic-adaptation analysis later returns to this point.
 
 \subsection{Testable Implications}
 \label{sec:testable_implications}
 
 The screen is useful if it survives the threats implied by its
-limited information. Table~\ref{tab:testable_implications_submission}
-organizes the validation map. The first implication is the
-core validation claim: persistent zero-win participation should
-rank adjudication-anchored loser-side cobidders within the
-always-loser stratum. The main threat is mechanical exposure:
-frequent participants and firms in the same product markets as
-CADE defendants have more chances to appear near them even under
-ordinary competition.
+limited information. We follow the threat-driven screen-design
+tradition of \citet{harrington2008detecting} and the
+bid-distribution screen evaluation in
+\citet{imhof2018screening}: a screen is informative only to the
+extent that it survives the alternative explanations a thoughtful
+referee would offer. Table~\ref{tab:testable_implications_submission}
+organizes the validation map. The first implication is the core
+validation claim: persistent zero-win participation should rank
+adjudication-anchored loser-side cobidders within the always-loser
+stratum. The main threat is mechanical exposure: frequent
+participants, and firms operating in the same procurement
+environments as CADE defendants, have more opportunities to
+appear near them even under ordinary competition.
 
 The second implication is a scope check. A loser-side statistic
 should perform worse against direct CADE defendants than against
@@ -113,7 +128,7 @@ cobidders should differ from other frequent losers in directions
 consistent with loser-side exposure, proximity to defendants,
 market concentration, and bid-level losing behavior. These
 profiles give the validation target economic content; they do
-not prove conduct.
+not prove conduct or assign legal status.
 
 The final implications evaluate the enforcement architecture.
 If award records and bid records carry different information,
@@ -137,11 +152,11 @@ fixed rule immune to gaming.
 \toprule
 Implication & Prediction & Test & Main threat \\
 \midrule
-Loser-side ranking & Persistent zero-win participation ranks always-loser cobidders. & Conservative benchmark, timing audit, exposure-adjusted validation. & Participation volume and market overlap. \\
-Scope asymmetry & Performance is weaker for direct defendants than for cobidders. & Direct-defendant AUC and temporal direct-defendant check. & Misreading the screen as generic cartel detection. \\
-Economic profile & Cobidders differ from other frequent losers in loser-side exposure and bid patterns. & Firm-level and bid-level profile comparisons. & Product-market composition. \\
+Loser-side ranking & Persistent zero-win participation ranks always-loser cobidders. & Conservative benchmark, timing audit, exposure-adjusted validation. & Participation volume, market overlap, and opportunity to meet CADE anchors. \\
+Scope asymmetry & Performance is weaker for direct defendants than for cobidders. & Direct-defendant AUC and temporal direct-defendant check. & Misreading the screen as generic cartel-membership detection. \\
+Economic profile & Cobidders differ from other frequent losers in loser-side exposure and bid patterns. & Firm-level and bid-level profile comparisons. & Product-market composition and ordinary high-volume losing. \\
 Complementarity & Award-layer signal adds information to bid-layer forensics. & Same-target award, bid, and combined AUCs. & Full-observability benchmark confused with operational sequencing. \\
-Gatekeeping & Award-first sequencing reduces bid-microdata recovery with limited recall loss. & Sequential survivor-pool exercise and cost-recall frontier. & Arbitrary budget choice. \\
+Gatekeeping & Award-first sequencing reduces bid-microdata recovery with limited recall loss. & Sequential survivor-pool exercise and cost-recall frontier. & Survivor-pool choice and arbitrary budget choice. \\
 Strategic response & Static cutoffs are more fragile than ranks or refreshed queues. & Adaptation diagnostics. & Simulation is not an equilibrium model. \\
 \bottomrule
 \end{tabular}
