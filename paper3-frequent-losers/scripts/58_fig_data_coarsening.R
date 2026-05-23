@@ -129,7 +129,7 @@ p <- ggplot() +
            fontface = "italic") +
   annotate("text",
            x = 7, y = -(total_height + 2.6),
-           label = "AUC = 0.903  [0.884, 0.923]",
+           label = "AUC = 0.921  [0.914, 0.928]",
            size = 3.0, family = "sans", color = "black",
            fontface = "bold") +
   scale_x_continuous(limits = c(-0.3, 8.3), expand = c(0, 0)) +
