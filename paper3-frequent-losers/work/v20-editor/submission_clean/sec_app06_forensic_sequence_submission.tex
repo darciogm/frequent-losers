@@ -1,0 +1,95 @@
+\section{Forensic Sequencing Details}
+\label{app:forensic_sequence_submission}
+
+The sequential architecture in the main text separates two tasks
+that are often conflated. The award-layer stage ranks firms using
+fields that are available before bid recovery. The bid-layer
+stage then uses richer forensic features only for the firms that
+survive the first stage. This appendix states the sequence
+explicitly so that the empirical comparison is read as an
+evidence-allocation design rather than as a claim that thin
+records substitute for full bid files.
+
+\subsection{Stage 1: Award-Layer Ranking}
+\label{app:stage1_submission}
+
+Stage 1 uses the always-loser stratum and ranks firms by
+$\log(1+T_i)$. An enforcement agency can translate the rank into
+a fixed threshold, a top-$k$ list, or a budget-constrained request
+for further evidence. No bid values are needed at this stage.
+The output is a survivor pool, not a liability finding.
+
+\subsection{Stage 2: Bid-Layer Forensics}
+\label{app:stage2_submission}
+
+Stage 2 is run only inside the survivor pool. The bid-layer
+benchmark uses within-tender bid-distribution features:
+dispersion, skewness, kurtosis, spread, distance from the winning
+bid, and related moments. These features are closer to forensic
+evaluation because they describe how bids are placed inside tenders.
+They are also more costly because they require per-bid offer
+values and sufficient tender-level bid histories.
+
+The comparison in the main text uses the bid-layer benchmark in
+two roles. First, it is an external benchmark for the award-layer
+screen: the cheap screen is informative because it reaches
+similar discrimination on a thinner data envelope. Second, it is
+the Stage 2 input in the sequential rule: the screen does not
+replace bid-distribution analysis; it decides where that analysis
+should begin.
+
+\subsection{Why Joint Scoring Is Not the Operational Baseline}
+\label{app:joint_scoring_submission}
+
+A single joint model that uses both award-layer and bid-layer
+features for every firm is a useful upper-bound comparison, but
+it is not the relevant operational baseline for many agencies.
+Running the joint model requires bid microdata for the full
+evaluation pool before any triage has occurred. The sequential
+rule asks a different question: how much of the joint model's
+target capture can be preserved while recovering bid microdata
+for only a smaller first-stage pool?
+
+That distinction is the enforcement contribution. Joint scoring
+is a prediction exercise under full observability. Sequencing is
+an evidence-allocation rule under partial observability. The
+second problem is the one agencies face when award records are
+routine but bid files require costly recovery.
+
+\subsection{Algorithm}
+\label{app:gatekeeping_algorithm_submission}
+
+The full gatekeeping procedure can be stated compactly.
+
+\begin{quote}
+\textbf{Algorithm G.1: Award-Layer Gatekeeping}
+\begin{enumerate}
+\item Define the firm universe from award records (participant
+identity, winner identity, item code, negotiated price,
+procuring unit, year, modality).
+\item For each firm $i$, compute the win count $W_i$ and the
+participation count $T_i$ over the calibration window.
+\item Restrict to the zero-win stratum $\{i : W_i = 0\}$.
+\item Compute the award-layer score $s_i = \log(1+T_i)$.
+\item Select the survivor pool $\mathcal{S}$ using one of: a
+median-plus-$1.5\times$IQR threshold, a top-$K_1$ rule, or a
+capacity-constrained budget rule.
+\item Recover bid microdata only for firms in $\mathcal{S}$.
+\item Compute the bid-layer forensic features inside
+$\mathcal{S}$.
+\item Rank survivor firms using the bid-layer benchmark alone
+or a combined award-plus-bid rule, depending on the
+investigative protocol.
+\item Deliver the top-$k$ queue from that ranking for
+investigative review.
+\item Treat the output as forensic priority, not as a liability
+finding.
+\end{enumerate}
+\end{quote}
+
+Joint scoring requires bid microdata for the full pool before
+triage; sequential gatekeeping requires bid microdata only
+after the award-layer survivor pool is formed. The size of the
+survivor pool, the choice of threshold or top-$K_1$, and the
+recalibration cadence are all institutional choices that the
+algorithm leaves to the agency.

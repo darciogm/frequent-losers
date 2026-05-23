@@ -1,0 +1,245 @@
+\section{Validation Audits}
+\label{app:validation_audits_submission}
+
+The validation design has to address distinct mechanical
+channels. First, frequent participants have more chances to
+appear near any defendant, so raw co-bidding rates are not
+enough. Second, firms may operate in the same procurement
+environments as CADE anchors, giving them more opportunities to
+meet those anchors even under ordinary competition. Third,
+item-level labels can mechanically reuse the same participation
+history that constructs the score. The main text reports the
+headline results; this appendix records the audit logic and the
+interpretation each audit licenses.
+
+\subsection{Participation-Stratified Permutation}
+\label{app:permutation_submission}
+
+The conservative CADE benchmark fixes the direct-defendant list
+using cases adjudicated before the end of
+$\valConservativeCutoff$. Within the always-loser stratum, we
+then compare the observed frequent-loser share among cobidders
+with a permutation distribution that preserves participation
+volume. Specifically, firms are grouped by participation-volume
+quartile defined within the always-loser stratum, cobidder
+status is randomly permuted within those quartiles, and the
+frequent-loser share among placebo cobidders is recomputed
+$\valPermPilot$ times. The number of cobidders per quartile is
+preserved across permutations by construction; the within-
+quartile shuffle reassigns the cobidder marker over the same
+set of firms, leaving the per-quartile marginal unchanged. The
+$p$-value reports the share of permutations whose placebo
+frequent-loser share is at least as extreme as the observed
+share.
+
+The observed share is $\valCADEenrich$, compared with a
+permutation mean of $\valCADEbase$. The ratio is
+$\valMultThreeTwo\!\times$, with $p<0.001$, and the conservative
+ROC AUC is $\valAUCprePost$ (95\% CI $\valAUCprePostCI$,
+computed via the DeLong method). The permutation answers the
+participation-volume concern: the frequent-loser concentration
+near CADE defendants is larger than activity volume alone
+predicts. It does not by itself address opportunity-set
+exposure, which is the purpose of the next audit.
+
+\subsection{Exposure-Adjusted Audit}
+\label{app:market_opportunity_submission}
+
+The participation permutation does not by itself address market
+opportunity. Firms can appear near CADE anchors because they buy
+or sell in the same procurement environments, not because their
+loser-side behavior is informative for triage. The
+exposure-adjusted audit addresses that threat at the firm level:
+it asks whether the frequent-loser ranking remains informative
+after comparing firms within more similar opportunity sets for
+meeting direct CADE defendants.
+
+The opportunity set is defined from the award layer, using the
+procurement environments in which a firm could have appeared
+with a CADE anchor. The construction uses item, modality, year,
+and buyer/procuring-unit information where the data provide
+common support. Observations without the information needed to
+place a firm in a comparable opportunity set are not used for
+that comparison. The retained support is therefore the subset in
+which firms can be compared to others facing similar chances to
+encounter direct CADE defendants in routine procurement records.
+The audit is reported as a diagnostic construction rather than
+as a single new headline statistic.
+
+The result is reported as an exposure-discipline check rather
+than as a new liability measure. Its interpretation is limited:
+it reduces the concern that the cobidder concentration is only a
+mechanical byproduct of participation in defendant markets. It
+does not prove agreement, identify cartel members, estimate
+damages, or establish that all market-opportunity confounding
+has been removed.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation Audits and Threats Addressed}
+\label{tab:validation_audit_map_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{L{3.2cm}L{3.7cm}L{2.4cm}L{3.8cm}L{3.2cm}L{3.7cm}}
+\toprule
+Audit & Threat addressed & Unit & What is held fixed or withheld & Main result or location & Interpretation \\
+\midrule
+Participation-stratified permutation &
+Participation volume alone creates cobidder concentration &
+Firm &
+Participation-volume quartile within always-losers &
+$\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ &
+Concentration exceeds volume-preserving placebo assignment \\
+Exposure-adjusted audit &
+Market opportunity to meet CADE anchors drives adjacency &
+Firm &
+Comparable opportunity sets using item, modality, year, and buyer/procuring-unit support &
+Reported in text; see Appendix D.2 &
+Disciplines, but does not eliminate, opportunity-set exposure \\
+Leakage audit &
+Score construction reuses firms that define item-level labels &
+Item/firm &
+Cobidder firms withheld from score construction within folds &
+Out-of-fold AUC $\valLeakCVAUC$ &
+Signal survives the most direct label-reuse channel \\
+Temporal holdout &
+Retrospective score uses later information &
+Firm/year &
+Score formed before the test year &
+AUC $\valAUCFLfirmTemp$; Table~\ref{tab:temporal_holdout_year_submission} &
+Ranking remains separated from random classification out of time \\
+Direct-defendant scope check &
+Loser-side ranking is misread as generic cartel-membership detection &
+Firm/item &
+Target changed from cobidders to direct CADE defendants &
+Direct-defendant AUC $\valAUCdirectStd$ &
+Near-random direct-defendant classification is expected under loser-side scope \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} The audits validate forensic priority, not
+cartel membership, liability, damages, or proof. ``Held fixed''
+and ``withheld'' describe the audit discipline each exercise
+adds relative to the baseline adjudication benchmark.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Leakage Decomposition}
+\label{app:leakage_submission}
+
+The in-sample item-level AUC is intentionally not treated as the
+main validation number. It is $\valLeakRefAUC$, and part of that
+performance is mechanical: the same firms can help define both
+the participation score and the item-level cobidder label. The
+audit decomposes that headline into a structural component and a
+leakage component.
+
+\begin{table}[htbp]
+\centering
+\caption{Leakage Audit}
+\label{tab:leakage_audit_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{L{4.4cm}L{5.4cm}cc}
+\toprule
+Audit & What changes & AUC & 95\% CI \\
+\midrule
+In-sample reference & Full-sample score predicts any-cobidder item label
+& $\valLeakRefAUC$ & $\valLeakRefAUCCI$ \\
+Direct-defendant scope check & Same score predicts direct-CADE item label
+& $\valLeakDirectAUC$ & $\valLeakDirectAUCCI$ \\
+Cobidder-firm holdout & Held-out cobidders are removed from score construction within folds
+& $\valLeakCVAUC$ & $\valLeakCVAUCCI$ \\
+Temporal holdout & $2009$--$2016$ score predicts $2017$--$2019$ cobidder labels
+& $\valAUCFLfirmTemp$ & $\valAUCFLfirmTempCI$ \\
+Temporal direct-defendant check & Same temporal score predicts direct-CADE labels
+& $\valLeakDirectTempAUC$ & $\valLeakDirectTempAUCCI$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} The reference AUC is partly tautological.
+The firm-holdout and temporal rows isolate the component that
+survives when labels are withheld from score construction or
+placed out of time. Direct-defendant rows check whether the
+loser-side statistic accidentally behaves like a general
+membership detector.
+Direct-defendant AUCs differ slightly across firm-level,
+item-level, and temporal audit definitions, but remain near
+random in each specification.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The surviving component is large: AUC remains in the
+$\valLeakStructLow$--$\valLeakStructHigh$ range under the
+holdout audits. The lost component, roughly
+$\valLeakTautLow$--$\valLeakTautHigh$ AUC, is disclosed as
+mechanical. That disclosure is important because the main claim
+is an evidence-allocation claim. A cheap record-layer statistic
+retains meaningful ranking power after the most obvious
+mechanical channels are removed.
+
+\subsection{Direct-Defendant Scope Check}
+\label{app:direct_scope_submission}
+
+The direct-defendant result is a falsification of overreach. If
+the statistic were a generic cartel-membership detector, it
+should classify direct CADE defendants as well as cobidders. It
+does not. The direct-defendant AUC is $\valAUCdirectStd$, close
+to random classification. The item-level direct-defendant rows
+in Table~\ref{tab:leakage_audit_submission} use different
+samples and labels, but they are likewise near random. That
+pattern is informative: the
+statistic behaves like a loser-side ranking, while direct
+defendants are legal anchors that often appear on the winner side
+of the arrangement.
+
+\subsection{Year-by-Year Holdout}
+\label{app:year_holdout_submission}
+
+The rolling-origin exercise trains the score on years preceding
+each test year and evaluates cobidder discrimination in the test
+year. Table~\ref{tab:temporal_holdout_year_submission} reports the
+year-by-year decomposition behind the temporal-holdout figure in
+the main text.
+
+\begin{table}[htbp]
+\centering
+\caption{Temporal-Holdout AUC by Test Year}
+\label{tab:temporal_holdout_year_submission}
+\footnotesize
+\begin{threeparttable}
+\begin{tabular}{ccccc}
+\toprule
+Test year & AUC & 95\% CI & $N$ firms & $N$ CADE \\
+\midrule
+$2014$ & $0.819$ & $[0.779,\ 0.860]$ & $8{,}631$ & $88$ \\
+$2015$ & $0.817$ & $[0.776,\ 0.858]$ & $10{,}122$ & $102$ \\
+$2016$ & $0.851$ & $[0.821,\ 0.881]$ & $11{,}699$ & $127$ \\
+$2017$ & $0.862$ & $[0.832,\ 0.891]$ & $13{,}057$ & $148$ \\
+$2018$ & $0.897$ & $[0.877,\ 0.918]$ & $14{,}391$ & $161$ \\
+$2019$ & $0.922$ & $[0.912,\ 0.933]$ & $15{,}597$ & $181$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Each row computes the screening score using
+participation observed before the test year and evaluates AUC
+against the cobidder label in that test year. The exercise is
+out-of-time discrimination, not a field deployment.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The year-by-year pattern is not a claim that the environment
+becomes progressively easier to police. The samples and
+adjudication links change across years. The relevant point is
+that the score remains separated from random classification in
+each rolling-origin test year.
