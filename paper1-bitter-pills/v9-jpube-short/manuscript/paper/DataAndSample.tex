@@ -1,0 +1,30 @@
+\section{Data, Classification, and Samples}
+\label{sec:data}
+
+\subsection{Procurement and litigation data}
+\label{subsec:data_sources}
+
+The procurement data cover \BPnPOIfull{} pharmaceutical purchase-offer-item observations in BEC for \BPsampleStartYear--\BPsampleEndYear. The raw BEC file contains \BPnOrdersFull{} purchase orders, \BPnItemsFull{} item identifiers, and \BPnPBUsObserved{} observed purchasing units. We link these records to SES/SP litigation and administrative-process information to classify purchases into ordinary, administrative urgent, and litigated urgent regimes.
+
+Price regressions use winning bids because transaction prices are observed for accepted offers. The main winners-only price sample contains \BPnegNobs{} observations. Other outcomes, such as tender success, use the relevant purchase-offer-item or tender-level sample described in each table. Table~\ref{tab:sample_variation_v9} reconciles the samples used in the paper.
+
+\subsection{Classification of purchase regimes}
+\label{subsec:classification}
+
+Purchase regimes are classified using structured links and tender-notice text. The classifier combines machine-learning predictions, JSON fields, regex markers, and position-based checks. It uses \BPclfNPatternsJud{} judicial patterns, \BPclfNPatternsAdm{} administrative patterns, and \BPclfNPatternsBoiler{} boilerplate filters. The voting threshold is \BPclfVoteThreshold{}.
+
+Classifier validation is complete. Against \BPregexNGroundTruth{} ground-truth purchase orders, the classifier reaches \BPregexExactMatchPct{} exact agreement. Per-class F1 is \BPregexFoneJud{} for judicial purchases and \BPregexFoneAdm{} for administrative purchases; the macro-F1 over those two urgent classes is \BPregexFone{}. The held-out machine-learning component yields F1 scores of \BPregexFoneJudHO{} and \BPregexFoneAdmHO{}. Online Appendix A reports the validation table and confusion counts.
+
+Residual classification error should attenuate the central urgent-regime contrasts if it moves purchases across administrative and litigated categories without being correlated with unobserved prices conditional on the controls. The main threat is systematic misclassification of one regime into the other among high-cost items. The ground-truth validation reduces that concern, but the interpretation remains tied to the classified regimes rather than to an unobserved legal concept.
+
+\subsection{Samples and identifying variation}
+\label{subsec:samples}
+
+The analysis uses several nested and partially overlapping samples. The full BEC pharmaceutical sample establishes coverage. The analysis sample applies the core item and variable restrictions. The winners-only sample is used for negotiated-price regressions. The urgent panel restricts to administrative and litigated urgent purchases. The both-regime urgent sample contains cells or pairs observed under both administrative and litigated urgent procurement. The firm-buyer-item triple sample is the most restrictive pricing sample: it requires the same firm to sell the same item to the same buyer under both urgent regimes.
+
+\input{../../output/tables/tab_sample_variation_v9}
+
+\subsection{Descriptive facts}
+\label{subsec:descriptives}
+
+The descriptive means already show why sample labels matter. Winner observations include \BPnObsOrd{} ordinary, \BPnObsAdm{} administrative, and \BPnObsLit{} litigated purchases. Average quantities are much larger in the administrative urgent channel than in the litigated channel, while litigated urgent purchases have higher average log negotiated prices. These differences motivate the explicit decomposition of scale and sourcing rather than a simple administrative-versus-litigated comparison.

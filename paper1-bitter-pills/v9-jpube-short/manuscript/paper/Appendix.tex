@@ -1,0 +1,81 @@
+\section{Data Construction and Classifier Validation}
+\label{app:classifier}
+
+The procurement data come from BEC pharmaceutical purchases in group \BPbecGroup{} during \BPsampleStartYear--\BPsampleEndYear. The construction starts from \BPregexNClassified{} classified purchase orders and links procurement fields to litigation and administrative-process markers. Ordinary purchases are those without urgent judicial or administrative markers. Administrative urgent purchases are requests processed through the health agency's administrative channel. Litigated urgent purchases are purchases tied to court-mandated delivery.
+
+The classifier combines four signals: machine-learning predictions, structured JSON flags, regex patterns, and position-based checks in the tender notice. The production rule uses weights \BPclfWeightML{}, \BPclfWeightJSON{}, \BPclfWeightRegex{}, and \BPclfWeightPosition{} for these signals and classifies a regime when the vote reaches \BPclfVoteThreshold{}. Boilerplate language is filtered using \BPclfNPatternsBoiler{} exclusion patterns.
+
+\input{../../output/tables/tab_classifier_validation_v9}
+
+Validation against \BPregexNGroundTruth{} ground-truth observations gives \BPregexExactMatchPct{} exact agreement. The urgent-class F1 scores are \BPregexFoneJud{} for judicial purchases and \BPregexFoneAdm{} for administrative purchases; the macro-F1 over these urgent classes is \BPregexFone{}. The held-out machine-learning test set contains \BPregexNHO{} observations and produces F1 scores of \BPregexFoneJudHO{} and \BPregexFoneAdmHO{}. Because the empirical comparisons use classified regimes, remaining false positives and false negatives would attenuate regime contrasts if they are not systematically correlated with residual prices within controls.
+
+\section{Sample Construction and Balance}
+\label{app:samples}
+
+The main-paper sample table reconciles the core samples. The full BEC file contains \BPnPOIfull{} purchase-offer-item observations. The analysis sample contains \BPnAnalysisSample{} observations, and the main winners-only price sample contains \BPnegNobs{} observations. The urgent panel contains \BPnUTG{} winner observations used for the under-the-gun contrast. The firm-buyer-item triple sample contains \BPutgTripleNUTG{} observations in \BPutgTripleCountUTG{} triples.
+
+\input{../../output/tables/tab_descriptive_balance}
+
+\input{../../output/tables/tab_balance_within}
+
+\input{../../output/tables/tab_both_types_cells}
+
+Administrative and litigated urgent purchases are not balanced by design. Administrative purchases are larger and differ in reference prices and formulary status. This imbalance is why the main design combines selection bounds, within-firm pricing tests, and direct sourcing evidence rather than treating the administrative channel as randomly assigned.
+
+\section{Selection Bounds}
+\label{app:selection_bounds}
+
+The administrative channel screens requests before purchase. Let $A=1$ denote administrative urgent procurement and $A=0$ denote litigated urgent procurement. The main under-the-gun coefficient is the administrative-minus-litigated log price coefficient. A negative coefficient means litigated purchases are more expensive.
+
+The Manski-Lee procedure trims the overrepresented administrative group within item-by-year-by-buyer strata. If administrative cases are selected among requests that would otherwise appear under litigation, monotone selection implies that trimming one tail of the administrative price distribution bounds the counterfactual litigated comparison. Trimming the top tail produces one bound; trimming the bottom tail produces the other. The preferred bounds imply a litigated-over-administrative price gap of $[\BPutgBoundLow,\BPutgBoundHigh]$.
+
+\input{../../output/tables/tab_utg_lee_bounds}
+
+The mean trimming rate is \BPutgLeeTrimMean{}, with a maximum of \BPutgLeeTrimMax{}. Administrative-excess trimming occurs in \BPutgLeeStrataExcess{} of \BPutgLeeStrataTotal{} strata. The sign convention in all tables is administrative minus litigated for coefficients and litigated over administrative for percentage gaps.
+
+\input{../../output/tables/tab_utg_heckman}
+
+The Heckman-style correction is reported only as a diagnostic. The first-stage exclusions are weak for this institutional comparison, and the second-stage estimate is not informative. The main text therefore relies on trimming bounds and mechanism tests.
+
+\section{Additional Robustness}
+\label{app:robustness}
+
+This appendix section collects robustness checks that support the main mechanism without extending the short paper. Alternative fixed effects, firm fixed effects, placebo checks, and heterogeneity by market depth all point to the same interpretation: the cost margin is not a broad same-firm markup in deep urgent markets.
+
+\input{../../output/tables/tab_supplier_fe}
+
+\input{../../output/tables/tab_placebo}
+
+\input{../../output/tables/tab_utg_boottest}
+
+\input{../../output/tables/tab_within_firm_robustness}
+
+The within-firm heterogeneity is central. The baseline coefficient is \BPutgTripleCoefUTG{} with standard error \BPutgTripleSEUTG{}. The above-median quantity coefficient is \BPwfRobAboveQtyCoef{}; the below-median quantity coefficient is \BPwfRobBelowQtyCoef{}. The SUS-formulary coefficient is \BPwfRobSUSCoef{}; the non-formulary coefficient is \BPwfRobNonSUSCoef{}. The earlier-period coefficient is \BPwfRobEarlyCoef{}, while the later-period coefficient is \BPwfRobLaterCoef{}.
+
+\section{Dynamic Evidence}
+\label{app:dynamic}
+
+Dynamic estimates diagnose timing but do not carry the main identification strategy. The BJS event-study estimate at exposure is \BPbjsETzero{} with standard error \BPbjsETzeroSE{}; the later estimate is \BPbjsETfive{} with standard error \BPbjsETfiveSE{}. Honest-DiD sensitivity does not survive deviations at the observed maximum pre-period scale, recorded as \BPrrSurvivesAtPreMax{}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.82\linewidth]{\BPofig{fig_event_study_item.pdf}}
+\caption{BJS event-study diagnostic for item-level exposure. The figure is used to assess timing patterns; it is not the primary identification design.}
+\label{fig:app_event_study}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.82\linewidth]{\BPofig{fig_event_study_honest_rr.pdf}}
+\caption{Honest-DiD sensitivity diagnostic. The dynamic evidence is supportive, but the short paper's main claims rely on selection bounds, within-firm pricing tests, and sourcing evidence.}
+\label{fig:app_honest}
+\end{figure}
+
+\section{Procurement-Cost Calculation}
+\label{app:cost}
+
+The procurement-cost calculation applies the Lee midpoint \BPwelfareBoundUTGmidPct{} to an admissibility share of \BPwelfareBoundAdmissibility{} and annual litigated spending of \BPwelfareBoundAnnualSpend{}. This yields \BPwelfareBound{} per year, with a Lee-bound range from \BPwelfareBoundCIlow{} to \BPwelfareBoundCIhigh{}. This is a fiscal procurement-cost calculation, not a welfare estimate.
+
+\input{../../output/tables/tab_utg_reconciliation}
+
+\input{../../output/tables/tab_welfare_bound}
