@@ -81,9 +81,11 @@ Full sweep of main + appendix for: detect/detector, identify/identification, pro
 - **Validation searches (both PDFs):** `V19|TODO|VERIFY|Appendix Appendix|Bid layer (lost)|Prospective AUC|cartel proof|identifies cover|proves cover|damages estimate|price-side scope attributable|mechanism is operative|identifies the mechanism|??|§??` → **0 hits in main, 0 hits in appendix.** Appendix cross-refs resolve to D.2/D.4/D.6/E.2/E.3.
 - **Final PDF paths:**
   - `paper_submission_JLEO_final.pdf` — **39 pages**
-  - `online_appendix_submission_JLEO_final.pdf` — **20 pages**
+  - `online_appendix_submission_JLEO_final.pdf` — **21 pages**
   - Build artifacts kept: `paper_submission_clean.pdf`, `online_appendix_submission_clean.pdf`. Stale `*_clean_final.pdf` (May 19) removed to avoid ambiguous versions.
-- **Page counts:** main paper **39 pp** (body ≈ 36 pp, references pp 37–39); appendix 20 pp. Starting point was 42 pp; the table moves removed ~2 pp and a §1–§3 prose-compression pass removed ~1 pp more (42 → 40 → 39), while ~3 pp of technical content moved into the appendix (17 → 20 pp).
+- **Page counts:** main paper **39 pp** (body ≈ 36 pp, references pp 37–39); appendix **21 pp**. Starting point was 42 pp; the table moves removed ~2 pp and a §1–§3 prose-compression pass removed ~1 pp more (42 → 40 → 39), while technical content moved into the appendix (17 → 21 pp, incl. the volume-matched audit table).
+
+**Post-submission addition (AN-041/AN-042 incorporated).** §5 now carries the volume-matched cobidder result (structural distinctness survives matching on `tenders_count`, SMD 0.49→0.00: HHI d +0.47, winner-spread −0.56, gap −0.25) with an honest single-channel bid-conduct statement (dispersion and bid-timing are documented nulls). Appendix D.3 ("Volume-Matched Within-FL Profile") carries the full matched-difference table. New macros `\valVM*` in `values.tex`. This makes the manuscript consistent with the H5 promotion to **Partial (strongly supported)** (structural scope) on the paper site.
 
 **§1–§3 prose-compression pass (done).** Tightened the leanest sections without cutting claims, numbers, or citations: §2 (forensic-priority triad merged; layer distinction and role-separation de-duplicated), §3.3 (the six implications enumerated once via the table, not also in prose), §1 (contributions and boundary paragraphs tightened). Body 37 → 36 pp. The remaining 39th page is a single overflow reference line; eliminating it would require cutting references (the brief says not to) or compressing §4–§7 (out of scope, and protected: §6, abstract result, exposure/opportunity-set discussion, legal-boundary language). Body now sits one page above the 35-pp ceiling at the current `\baselinestretch` 1.48 (≈ 1.5 spacing) and 28–30 mm margins.
 

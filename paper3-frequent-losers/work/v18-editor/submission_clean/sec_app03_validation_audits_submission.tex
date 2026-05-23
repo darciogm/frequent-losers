@@ -162,6 +162,71 @@ adds relative to the baseline adjudication benchmark.
 \end{adjustbox}
 \end{table}
 
+\subsection{Volume-Matched Within-FL Profile}
+\label{app:volume_matched_submission}
+
+The within-FL profile comparison raises an obvious confound:
+cobidders participate in roughly $1.8\times$ as many tenders as
+non-cobidder frequent losers (mean $136.7$ vs $76.8$), and several
+profile dimensions grow mechanically with participation. This audit
+holds participation fixed by matching cobidders to non-cobidder
+frequent losers on \texttt{tenders\_count} --- nearest-neighbour on
+the propensity score (caliper $0.2$ SD, $\valVMnMatched$ matched
+pairs) and coarsened exact matching on deciles --- and re-computes
+the standardized differences inside the matched sample. Matching
+reduces the participation imbalance from a standardized difference of
+$\valVMBalRaw$ to $\valVMBalMatched$.
+
+\begin{table}[htbp]
+\centering
+\caption{Cobidder Distinctness Before and After Matching on Participation}
+\label{tab:volume_matched_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+Dimension & $d$ raw & $d$ matched (PS) & $d$ matched (CEM) & Reading \\
+\midrule
+\multicolumn{5}{l}{\textit{Structural profile}} \\
+\hspace{6pt} Product-portfolio HHI & $+0.40$ & $\valVMHHId$ & $+0.41$ & Survives, strengthens \\
+\hspace{6pt} Winner-pair spread & $-0.39$ & $\valVMRepeatd$ & $-0.49$ & Survives, strengthens \\
+\hspace{6pt} Bid gap to winner (median) & $-0.26$ & $\valVMGapd$ & $-0.20$ & Survives \\
+\midrule
+\multicolumn{5}{l}{\textit{Bid-conduct (documented nulls under matching)}} \\
+\hspace{6pt} Bid-gap dispersion & $+0.16$ & $\valVMSdGapd$ & $+0.12$ & Null ($p=\valVMSdGapP$): volume artifact \\
+\hspace{6pt} Revision intensity & $-0.00$ & $\valVMTimeRevis$ & $-0.18$ & Null ($p\geq\valVMTimeMinP$) \\
+\hspace{6pt} Engagement span & $-0.20$ & $\valVMTimeEngaged$ & $-0.29$ & Null ($p\geq\valVMTimeMinP$) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Cohen's $d$ for cobidders vs non-cobidder
+frequent losers (pooled SD). ``PS'' is 1:1 nearest-neighbour on the
+\texttt{tenders\_count} propensity score, caliper $0.2$ SD; ``CEM''
+is coarsened exact matching on \texttt{tenders\_count} deciles.
+Structural dimensions hold or strengthen after matching --- the
+distinctness is not a participation-volume artifact. The bid-conduct
+dimensions other than the median gap are documented nulls under
+matching (Wilcoxon $p$ as noted): the cobidder bid-conduct
+distinctness is a single channel (proximity to the winning bid).
+Timing moments (inter-bid interval, last-bid position) are likewise
+null and omitted for space. Source: \texttt{scripts/74\_volume\_matched\_cobidder\_audit.R}
+and \texttt{scripts/75\_volume\_matched\_timing\_audit.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The result disciplines the §5 interpretation: the
+\emph{structural} distinctness of cobidders --- product
+specialization, winner-pair spread, proximity to the winning bid ---
+is robust to participation volume, while the broader
+\emph{behavioral} reading (dispersion, timing) and the across-cell
+quadrant heterogeneity are volume effects. The profile is a distinct
+firm type; it is not a multi-channel behavioral signature, and it is
+not a causal-mechanism estimate.
+
 \subsection{Leakage Decomposition}
 \label{app:leakage_submission}
 
