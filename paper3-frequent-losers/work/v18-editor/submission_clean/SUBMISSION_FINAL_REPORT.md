@@ -80,12 +80,12 @@ Full sweep of main + appendix for: detect/detector, identify/identification, pro
 - **Warnings:** no undefined references, no undefined citations, no multiply-defined labels in either log. (Cosmetic font/overfull warnings are silenced by the existing `\WarningFilter` setup.)
 - **Validation searches (both PDFs):** `V19|TODO|VERIFY|Appendix Appendix|Bid layer (lost)|Prospective AUC|cartel proof|identifies cover|proves cover|damages estimate|price-side scope attributable|mechanism is operative|identifies the mechanism|??|§??` → **0 hits in main, 0 hits in appendix.** Appendix cross-refs resolve to D.2/D.4/D.6/E.2/E.3.
 - **Final PDF paths:**
-  - `paper_submission_JLEO_final.pdf` — **40 pages**
+  - `paper_submission_JLEO_final.pdf` — **39 pages**
   - `online_appendix_submission_JLEO_final.pdf` — **20 pages**
   - Build artifacts kept: `paper_submission_clean.pdf`, `online_appendix_submission_clean.pdf`. Stale `*_clean_final.pdf` (May 19) removed to avoid ambiguous versions.
-- **Page counts:** main paper 40 pp (body ≈ 37 pp, references pp 38–40); appendix 20 pp. Starting point was 42 pp; the prescribed moves removed 2 pp from the body and moved ~3 pp of technical content into the appendix (17 → 20 pp).
+- **Page counts:** main paper **39 pp** (body ≈ 36 pp, references pp 37–39); appendix 20 pp. Starting point was 42 pp; the table moves removed ~2 pp and a §1–§3 prose-compression pass removed ~1 pp more (42 → 40 → 39), while ~3 pp of technical content moved into the appendix (17 → 20 pp).
 
-**Page-target note.** The 30–35 pp body target is not reached at the current formatting (`\baselinestretch` 1.48 ≈ 1.5 spacing; 28–30 mm margins). The two preferred moves (P2 §4 tables, P3 §7 monetary detail) are done; reaching ~35 body pp would require either a prose-compression pass or cutting content the brief explicitly protects (§6, abstract result, exposure/opportunity-set discussion, legal-boundary language). No mechanical cutting was performed. A prose-compression pass on §1–§3 can be done on request.
+**§1–§3 prose-compression pass (done).** Tightened the leanest sections without cutting claims, numbers, or citations: §2 (forensic-priority triad merged; layer distinction and role-separation de-duplicated), §3.3 (the six implications enumerated once via the table, not also in prose), §1 (contributions and boundary paragraphs tightened). Body 37 → 36 pp. The remaining 39th page is a single overflow reference line; eliminating it would require cutting references (the brief says not to) or compressing §4–§7 (out of scope, and protected: §6, abstract result, exposure/opportunity-set discussion, legal-boundary language). Body now sits one page above the 35-pp ceiling at the current `\baselinestretch` 1.48 (≈ 1.5 spacing) and 28–30 mm margins.
 
 ---
 
@@ -95,9 +95,9 @@ Full sweep of main + appendix for: detect/detector, identify/identification, pro
 
 All nine priorities executed; both PDFs compile clean with zero broken references and zero internal artifacts; lexical discipline verified; cover letter aligned to the paper's honest exposure-battery limit. The paper-site AN pages and hypotheses were reconciled to the sharpened "descriptive scope evidence, not mechanism identification" framing (see the site-reconciliation note below).
 
-**Author decisions still open (not blockers):**
-1. Whether to run a prose-compression pass on §1–§3 to approach the 30–35 pp body target, or accept 40 pp at current spacing.
-2. Whether the ComprasNet contingency appendix (present in the v20 line, absent here) should be folded into this submission or held for the revision, as the cover letter states.
+**Author decisions resolved this round:**
+1. **Page count** — §1–§3 prose-compression pass run; main paper 42 → 39 pp (body ≈ 36 pp). One page above the 35-pp ceiling; no further cuts without touching protected content or references.
+2. **ComprasNet** — held for the revision. Its mention has been **removed from the cover letter** (the external-validity paragraph now states only that promotion beyond a single-source reading needs a non-BEC replication). The contingency appendix remains absent from the v18 line.
 
 ---
 
