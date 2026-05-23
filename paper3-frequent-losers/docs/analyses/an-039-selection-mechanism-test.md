@@ -146,17 +146,19 @@ selection and isolates the mechanism.
 This converts the price evidence in the manuscript from a defensive
 "scope, not damages" disclaimer into an **assertive substantive claim**:
 the sign-reversal is the predicted empirical signature of cover-
-bidding theory. The mechanism component needs Test 2 (within-cell
-winner-bid depression by cover-bidder presence) to be completed; see
-[AN-040](an-040-within-cell-winner-depression.md) when that test is
-run.
+bidding theory. The mechanism component is established in Test 2
+([AN-040](an-040-within-cell-mechanism-test.md)): within overlap cells
+FL presence operates through bidder-count inflation (+0.507 log-bidders)
+and moves the winner bid −0.048 closer to reference, confirming the
+cover-bidding channel.
 
 ## Follow-ups
 
-- **Test 2 (mechanism component)**: within-cell comparison of winner
-  log_bid in FL-present vs FL-absent tenders. If cover bidders depress
-  the observed winning price within cell, that completes the
-  rationalization. (Pending.)
+- **Test 2 (mechanism component)**: completed in
+  [AN-040](an-040-within-cell-mechanism-test.md) — within overlap cells
+  FL presence moves the winner bid −0.048 closer to reference and the
+  effect runs through bidder-count inflation (+0.507 log-bidders),
+  completing the rationalization. (Done, 2026-05-22.)
 - Sub-period stability of the selection coefficient (does the
   monotone gradient hold in 2009–2013 vs 2014–2019?).
 - Cross-modality decomposition (does the Pregão vs Convite asymmetry

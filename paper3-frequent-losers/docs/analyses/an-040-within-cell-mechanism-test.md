@@ -176,9 +176,9 @@ present and reweighting toward the treatment-bearing cells.
   auctions where cover-bidding theater is easier to stage)? AN-016 and
   AN-022 already document Pregão > Convite in price-coef magnitude;
   this Test 2 result complements that.
-- Add macros `\valTestTwoWinnerVsRef` (= −0.048),
-  `\valTestTwoNFirms` (= +0.507),
-  `\valTestTwoWinnerVsRefControlled` (= +0.008, ns),
-  `\valTestTwoBidder1to3Delta` (= +0.092),
-  `\valTestTwoBidder11plusDelta` (= −0.015)
-  to the `scripts/99_make_paper_values.R` pipeline.
+- Macros (done): added to `values.tex` and used in §7 as
+  `\valMechWinnerVsRef` (= −0.048), `\valMechNFirms` (= +0.507),
+  `\valMechWinnerVsRefControlled` (= +0.008, ns),
+  `\valMechSparseBidderDelta` (= +0.092),
+  `\valMechDenseBidderDelta` (= −0.015). Source:
+  `scripts/62_within_cell_mechanism_test.R`.
