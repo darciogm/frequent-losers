@@ -100,6 +100,8 @@ All nine priorities executed; both PDFs compile clean with zero broken reference
 **Author decisions resolved this round:**
 1. **Page count** — §1–§3 prose-compression pass run; main paper 42 → 39 pp (body ≈ 36 pp). One page above the 35-pp ceiling; no further cuts without touching protected content or references.
 2. **ComprasNet** — held for the revision. Its mention has been **removed from the cover letter** (the external-validity paragraph now states only that promotion beyond a single-source reading needs a non-BEC replication). The contingency appendix remains absent from the v18 line.
+3. **H5 promotion** — moved Mixed → *Partial (strongly supported)* (structural scope); a candidate second bid-conduct channel was tested (AN-042) and returned a null; incorporated into §5 + Appendix D.3. Full detail in section I.
+4. **Deployment** — source pushed to `origin/v20`; both `darciogm.github.io` sites (research + standalone) rebuilt and verified live. Section I.
 
 ---
 
@@ -108,4 +110,37 @@ All nine priorities executed; both PDFs compile clean with zero broken reference
 To keep the site consistent with the sharpened paper (per the standing instruction):
 - `docs/analyses/an-039-…` and `an-040-…`: the "predicted empirical signature of cover-bidding theory" / "assertive substantive claim" / "establishes the mechanism" language was softened to "descriptive decomposition, consistent with the cover-bidding interpretation but not identifying a mechanism", mirroring §7.
 - `docs/hypotheses/price-scope-sign-reversal.md` (H8): callout items (vii)/(viii) relabeled "Selection component" / "Within-cell component"; "establish the mechanism behind it" → "describe the within-cell decomposition behind it (descriptive scope evidence, not mechanism identification)"; Evidence-table rows and the master-scorecard H8 headline aligned.
-- A broader full-site refresh against this paper version is in progress as a follow-up task (per the user's latest request).
+- The full-site refresh against this paper version is **done** and deployed (see section I).
+
+---
+
+## I. H5 promotion, AN-041/042, and deployment (2026-05-23, later pass)
+
+**Question addressed.** Can H5 (cobidder profile distinctness) move to *Partial (strongly supported)* or *Confirmed*? Answer: **Confirmed — no** (blocked by the locked rule that promotion to Confirmed requires non-BEC replication, the same ceiling as every other hypothesis). *Partial (strongly supported)* — yes, defensible, with structural scoping.
+
+**(b) New analysis — AN-042 (timing audit), a documented null.** `scripts/75_volume_matched_timing_audit.R` tested a candidate *second* bid-conduct channel: pregão bid timing (revision intensity, inter-bid interval, last-bid position, engagement span), under the same volume matching as AN-041 (SMD 0.40→0.00, 183 matched pairs). **No dimension survives** (all Wilcoxon p ≥ 0.23). The two largest matched effects (cobidders revise less, disengage earlier) are directionally cover-bidding-consistent but tail-driven, not significant. Reported straight as a null: the bid-conduct distinctness is **single-channel** (proximity to the winning bid); dispersion (AN-041) and timing (AN-042) are both documented nulls.
+
+**(a) H5 promoted Mixed → Partial (strongly supported), structural scope.**
+- The promotion rests on the **structural** distinctness surviving volume matching (AN-041: HHI d +0.47, winner-spread −0.56, gap −0.25). It is *not* a participation-volume artifact.
+- AN-021 (first-time-FL) and AN-032 (quadrant heterogeneity) bearings re-labelled **Against → Scope (mechanism)**: they bound a causal-mechanism reading the hypothesis does not assert, not the structural profile claim.
+- Bid-conduct honestly demoted to one channel + two nulls (dispersion, timing).
+- Updated `docs/hypotheses/cobidder-profile-distinct.md` (frontmatter status, lede, evidence callout, evidence table, why-not-Confirmed), the master scorecard, the generated index, and the `cobidders-operationally-distinct` finding; indexes regenerated; AN-042 page created.
+
+**Manuscript incorporation (this directory).** Per author decision (option: §5 body + appendix + macros):
+- **§5** "boundary is honest" paragraph now leads with the volume-matched result, corrects the now-false "more dispersed" claim (AN-041: dispersion is a volume artifact), and states the single-channel bid-conduct limit with the timing null.
+- **Appendix D.3** (new, "Volume-Matched Within-FL Profile"): full matched-difference table (structural dims survive; bid-conduct dims are documented nulls).
+- **`values.tex`**: `\valVM*` macros (scripts 74 + 75).
+- Recompiled clean: paper **39 pp**, appendix **21 pp**; 0 broken references, 0 internal artifacts; the §5→appendix cross-reference resolves to Appendix D.3.
+
+**Git (branch `v20`, repo `bitter-pills`).** Commits this pass: `964e77c` (editorial pass + AN-041), `051391e` (§1–§3 compression + cover-letter ComprasNet removal), `a8fa9d8` (named deliverable PDFs), `a76e91c` (H5 promotion + AN-042 docs), `544358c` (manuscript §5 + App D.3 + macros), `57268f4` (changelog). All pushed to `origin/v20`.
+
+**Deployment (three sites, all verified live):**
+| Target | URL | Mechanism |
+|---|---|---|
+| User-site (research) | `darciogm.github.io/research/frequent-losers/` + `…/working-papers/` | push `darciogm.github.io` `main` → Pages Action (success) |
+| Standalone | `darciogm.github.io/frequent-losers/` | `mkdocs gh-deploy --remote-name frequent-losers` → pages-build (success) |
+| Source | `origin/v20` (bitter-pills monorepo) | git push |
+
+Live checks returned HTTP 200 for the new AN-042 pages and the string "Partial (strongly supported)" on the H5 page across both `darciogm.github.io` sites.
+
+**Remaining ceiling.** Confirmed for H1/H3/H4/H5/H6/H7/H8 requires non-BEC replication (e.g., ComprasNet). That is the only outstanding promotion path; no within-BEC analysis changes it.
