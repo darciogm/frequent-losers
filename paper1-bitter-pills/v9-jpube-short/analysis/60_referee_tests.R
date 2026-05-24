@@ -301,6 +301,22 @@ macros <- c(macros, list(
 ))
 
 # ---------------------------------------------------------------------------
+# Paper-grade macros (valid names, no digits): the H3 equivalence test and the
+# H4 multiple-testing corrections are cited in the Online Appendix. These DO go
+# into the paper's values.tex (default target). Values are reused from `macros`.
+bp_macros_emit("60_paper_diagnostics", list(
+  wfTostMarginPct  = macros$h3TostMarginPct,
+  wfTostPten       = macros$h3TostP10,
+  wfTostPfive      = macros$h3TostP05,
+  wfNullRuleOutPct = macros$h3RuleOutPct,
+  wfNullMdePct     = macros$h3MdePct,
+  wfNullPowerTen   = macros$h3Power10,
+  wfBelowQtyHolm   = macros$h4BelowQtyPHolm,
+  wfBelowQtyRW     = macros$h4BelowQtyPrw,
+  wfEarlyHolm      = macros$h4EarlyPHolm,
+  wfEarlyRW        = macros$h4EarlyPrw
+))
+
 # Site-only diagnostics: emit to a separate file NOT \input by the paper.
 # (Keys carry hypothesis IDs like h3/h4, which are illegal in LaTeX control
 # sequences; keeping them out of values.tex avoids breaking the paper build.)
