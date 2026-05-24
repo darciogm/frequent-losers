@@ -107,4 +107,12 @@ mac <- list(
 # Site-only diagnostics: emit to a separate file NOT \input by the paper
 # (keys carry hypothesis IDs like h4, illegal in LaTeX control sequences).
 bp_macros_emit("61_h4_quantity_quartiles", mac, file = file.path(.this_dir, "referee_macros.tex"))
+
+# Paper-grade macros (valid names): the within-triple bulk-discount coefficient
+# is cited in Results 5.3 to show the quantity gradient is scale, not same-firm
+# pricing. These DO go into the paper's values.tex (default target).
+bp_macros_emit("61_within_fbi_bulk_discount", list(
+  wfWithinQtyCoef = sprintf("%+.3f", lqty_b),
+  wfWithinQtySE   = sprintf("%.3f",  lqty_se)
+))
 cat("\n[61_h4_quantity_quartiles] done.\n"); print(mac)
