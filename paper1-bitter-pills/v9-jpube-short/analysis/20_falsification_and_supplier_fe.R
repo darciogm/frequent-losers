@@ -36,6 +36,106 @@ cat("Loaded:", nrow(dt), "obs\n")
 OUT <- file.path(.this_dir, "..", "output", "tables")
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
+tex_escape <- function(x) {
+  x <- gsub("\\\\", "\\\\textbackslash{}", x)
+  x <- gsub("&", "\\\\&", x, fixed = TRUE)
+  x <- gsub("%", "\\\\%", x, fixed = TRUE)
+  x <- gsub("_", "\\\\_", x, fixed = TRUE)
+  x
+}
+
+coef_row <- function(model, term = "urgent") {
+  b <- coef(model)[term]
+  se <- sqrt(vcov(model)[term, term])
+  p <- pvalue(model)[term]
+  star <- ifelse(is.na(p), "", ifelse(p < .01, "$^{***}$",
+                               ifelse(p < .05, "$^{**}$",
+                               ifelse(p < .10, "$^{*}$", ""))))
+  list(
+    coef = paste0(bp_fmt(b, 3), star),
+    se = paste0("(", bp_fmt(se, 3), ")"),
+    n = bp_fmt_int(model$nobs),
+    r2 = bp_fmt(fitstat(model, "r2")[[1]], 3)
+  )
+}
+
+term_cell <- function(model, term) {
+  if (!(term %in% names(coef(model)))) return(list(coef = "--", se = ""))
+  coef_row(model, term)
+}
+
+write_supplier_table <- function(path, models) {
+  urgent <- lapply(models, term_cell, term = "urgent")
+  qty <- lapply(models, term_cell, term = "bid_qty_log")
+  lines <- c(
+    "\\begin{table}[ht]",
+    "\\centering",
+    "\\caption{Supplier Fixed Effects and Quantity Controls}",
+    "\\label{tab:supplier_fe}",
+    "\\begin{threeparttable}",
+    "\\small",
+    "\\setlength{\\tabcolsep}{5pt}",
+    "\\begin{tabular}{lccc}",
+    "\\toprule",
+    " & Baseline & Supplier FE & Supplier FE + quantity \\\\",
+    "\\midrule",
+    paste0("Urgent purchase & ", urgent[[1]]$coef, " & ", urgent[[2]]$coef, " & ", urgent[[3]]$coef, " \\\\"),
+    paste0(" & ", urgent[[1]]$se, " & ", urgent[[2]]$se, " & ", urgent[[3]]$se, " \\\\"),
+    paste0("Log accepted quantity & ", qty[[1]]$coef, " & ", qty[[2]]$coef, " & ", qty[[3]]$coef, " \\\\"),
+    paste0(" & ", qty[[1]]$se, " & ", qty[[2]]$se, " & ", qty[[3]]$se, " \\\\"),
+    "\\addlinespace",
+    paste0("Observations & ", urgent[[1]]$n, " & ", urgent[[2]]$n, " & ", urgent[[3]]$n, " \\\\"),
+    paste0("$R^2$ & ", urgent[[1]]$r2, " & ", urgent[[2]]$r2, " & ", urgent[[3]]$r2, " \\\\"),
+    "Item FE & Yes & Yes & Yes \\\\",
+    "Year FE & Yes & Yes & Yes \\\\",
+    "PBU FE & Yes & Yes & Yes \\\\",
+    "Supplier FE & No & Yes & Yes \\\\",
+    "\\bottomrule",
+    "\\end{tabular}",
+    "\\begin{tablenotes}[flushleft]\\footnotesize",
+    "\\item \\textit{Notes:} The dependent variable is log negotiated price. The sample is accepted winning bids for items observed in both ordinary and litigated procurement. Column 1 includes item, year, and PBU fixed effects. Column 2 adds supplier fixed effects. Column 3 adds log accepted quantity. Standard errors, in parentheses, are clustered by PBU. $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.",
+    "\\end{tablenotes}",
+    "\\end{threeparttable}",
+    "\\end{table}"
+  )
+  writeLines(lines, path)
+}
+
+write_placebo_table <- function(path, models) {
+  urgent <- lapply(models, term_cell, term = "urgent")
+  lines <- c(
+    "\\begin{table}[ht]",
+    "\\centering",
+    "\\caption{Placebo Test on Never-Litigated Items}",
+    "\\label{tab:placebo}",
+    "\\begin{threeparttable}",
+    "\\small",
+    "\\setlength{\\tabcolsep}{5pt}",
+    "\\begin{tabular}{lcccc}",
+    "\\toprule",
+    " & \\multicolumn{2}{c}{Negotiated price} & \\multicolumn{2}{c}{Reference price} \\\\",
+    "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
+    " & Never-litigated & Main sample & Never-litigated & Main sample \\\\",
+    "\\midrule",
+    paste0("Urgent purchase & ", urgent[[1]]$coef, " & ", urgent[[2]]$coef, " & ", urgent[[3]]$coef, " & ", urgent[[4]]$coef, " \\\\"),
+    paste0(" & ", urgent[[1]]$se, " & ", urgent[[2]]$se, " & ", urgent[[3]]$se, " & ", urgent[[4]]$se, " \\\\"),
+    "\\addlinespace",
+    paste0("Observations & ", urgent[[1]]$n, " & ", urgent[[2]]$n, " & ", urgent[[3]]$n, " & ", urgent[[4]]$n, " \\\\"),
+    paste0("$R^2$ & ", urgent[[1]]$r2, " & ", urgent[[2]]$r2, " & ", urgent[[3]]$r2, " & ", urgent[[4]]$r2, " \\\\"),
+    "Item FE & Yes & Yes & Yes & Yes \\\\",
+    "Year FE & Yes & Yes & Yes & Yes \\\\",
+    "PBU FE & Yes & Yes & Yes & Yes \\\\",
+    "\\bottomrule",
+    "\\end{tabular}",
+    "\\begin{tablenotes}[flushleft]\\footnotesize",
+    "\\item \\textit{Notes:} The never-litigated sample contains items with zero litigated purchases during the sample period and variation between ordinary and administrative urgent purchases. The main sample contains items observed in both ordinary and litigated procurement. All specifications include item, year, and PBU fixed effects. Standard errors, in parentheses, are clustered by PBU. $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.",
+    "\\end{tablenotes}",
+    "\\end{threeparttable}",
+    "\\end{table}"
+  )
+  writeLines(lines, path)
+}
+
 
 # EXERCISE 1: PLACEBO — Items never litigated
 # If our identification is correct, the "urgent" coefficient should be
@@ -108,38 +208,14 @@ if (nrow(placebo_dt) > 100) {
 
   # Save LaTeX table
   if (!is.null(placebo_neg)) {
-    models_placebo <- list(
-      "Placebo: Neg. Price" = placebo_neg,
-      "Main: Neg. Price" = main_neg
-    )
+    models_placebo <- list(placebo_neg, main_neg, placebo_ref, main_ref)
     if (!is.null(placebo_ref)) {
-      models_placebo <- c(models_placebo, list(
-        "Placebo: Ref. Price" = placebo_ref,
-        "Main: Ref. Price" = main_ref
-      ))
+      placebo_tex <- file.path(OUT, "tab_placebo.tex")
+      write_placebo_table(placebo_tex, models_placebo)
+      cat("  Saved:", placebo_tex, "\n")
+    } else {
+      cat("  WARNING: Reference-price placebo unavailable. Skipping table.\n")
     }
-    placebo_tex <- file.path(OUT, "tab_placebo.tex")
-    etable(models_placebo,
-           file = placebo_tex,
-           replace = TRUE,
-           title = "Placebo Test: Items Never Subject to Litigation",
-           dict = c(urgent = "Urgent Purchase"),
-           style.tex = style.tex("aer"),
-           notes = "Placebo sample: items with zero litigated purchases across 2009-2019. Main sample: items with at least one litigated and one ordinary purchase. DV: log price. Item + Year + PBU FE. SE clustered at PBU level.")
-    # etable's "aer" style emits a \begingroup wrapper without \begin{table}/\caption/\label.
-    # Wrap it ourselves so cross-refs (\ref{tab:placebo}) resolve in the manuscript.
-    raw <- readLines(placebo_tex)
-    wrapped <- c(
-      "\\begin{table}[ht]",
-      "  \\centering",
-      "  \\caption{Placebo Test: Items Never Subject to Litigation}",
-      "  \\label{tab:placebo}",
-      "  \\small",
-      raw,
-      "\\end{table}"
-    )
-    writeLines(wrapped, placebo_tex)
-    cat("  Saved (wrapped with caption/label):", placebo_tex, "\n")
   }
 } else {
   cat("  WARNING: Placebo sample too small (", nrow(placebo_dt), "obs). Skipping.\n")
@@ -148,9 +224,8 @@ if (nrow(placebo_dt) > 100) {
 
 # EXERCISE 2: SUPPLIER FIXED EFFECTS
 # When the SAME firm sells the SAME item, does it charge more in urgent
-# tenders? Adding firm FE separates demand-side pressure (official accepts
-# higher price) from supply-side exploitation (firm charges more because
-# it knows the government is desperate).
+# tenders? Adding firm FE and quantity controls checks how much of the
+# urgent coefficient is explained by supplier composition and scale.
 
 cat("\n--- Exercise 2: Supplier Fixed Effects ---\n")
 
@@ -161,8 +236,6 @@ cat("  Winner observations:", nrow(win_dt), "\n")
 cat("  Unique firms:", uniqueN(win_dt$firm_f), "\n")
 
 if (!all(is.na(win_dt$firm_f))) {
-  cat("  Unique firms:", uniqueN(win_dt$firm_f), "\n")
-
   # Baseline: item + year + PBU FE (preferred spec)
   m_baseline <- feols(bid_price_log ~ urgent | item_id + year_n + pbu_id,
                       data = win_dt, cluster = ~pbu_id)
@@ -181,14 +254,7 @@ if (!all(is.na(win_dt$firm_f))) {
 
   attenuation <- 1 - coef(m_firm_fe)["urgent"] / coef(m_baseline)["urgent"]
   cat("  Attenuation:", round(100 * attenuation, 1), "%\n")
-
-  if (attenuation > 0.5) {
-    cat("  INTERPRETATION: >50% attenuation — substantial supply-side component.\n")
-    cat("  Firms charge more in urgent tenders, not just officials accepting more.\n")
-  } else {
-    cat("  INTERPRETATION: <50% attenuation — primarily demand-side.\n")
-    cat("  Officials accept worse terms; firms don't systematically exploit urgency.\n")
-  }
+  cat("  Diagnostic: attenuation after supplier FE is interpreted with the quantity-controlled column.\n")
 
   # Also with direct effect (controlling for quantity)
   m_firm_fe_qty <- feols(bid_price_log ~ urgent + bid_qty_log | item_id + year_n + pbu_id + firm_f,
@@ -198,32 +264,10 @@ if (!all(is.na(win_dt$firm_f))) {
       " SE =", round(sqrt(vcov(m_firm_fe_qty)["urgent","urgent"]), 4), "\n")
 
   # Save LaTeX table
-  models_supplier <- list(
-    "(1) Baseline" = m_baseline,
-    "(2) + Firm FE" = m_firm_fe,
-    "(3) + Firm FE + Qty" = m_firm_fe_qty
-  )
+  models_supplier <- list(m_baseline, m_firm_fe, m_firm_fe_qty)
   supplier_tex <- file.path(OUT, "tab_supplier_fe.tex")
-  etable(models_supplier,
-         file = supplier_tex,
-         replace = TRUE,
-         title = "Supplier Fixed Effects: Demand vs Supply Side",
-         dict = c(urgent = "Urgent Purchase", bid_qty_log = "Log Quantity"),
-         style.tex = style.tex("aer"),
-         notes = "DV: log negotiated price. Sample: winning bids for items with both ordinary and litigated purchases. Column (1): item + year + PBU FE. Column (2) adds firm FE. Column (3) adds log quantity. SE clustered at PBU level.")
-  # Wrap with caption + label so \ref{tab:supplier_fe} resolves.
-  raw <- readLines(supplier_tex)
-  wrapped <- c(
-    "\\begin{table}[ht]",
-    "  \\centering",
-    "  \\caption{Supplier Fixed Effects: Demand vs Supply Side}",
-    "  \\label{tab:supplier_fe}",
-    "  \\small",
-    raw,
-    "\\end{table}"
-  )
-  writeLines(wrapped, supplier_tex)
-  cat("  Saved (wrapped with caption/label):", supplier_tex, "\n")
+  write_supplier_table(supplier_tex, models_supplier)
+  cat("  Saved:", supplier_tex, "\n")
 }
 
 

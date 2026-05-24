@@ -77,11 +77,10 @@
 
 % --------------------------------------------------------------------------
 % v8 SOURCING REFRAME SCHEMA --- bounded UTG + within-firm reconciliation +
-% diagnostic robustness + single welfare bound.
+% diagnostic robustness + single procurement-cost bound.
 %
 % Drops vs v7-r2round1:
 %   - three-channel cascade macros (BPchan*, BPcascade*) RETIRED
-%   - welfare range macros (BPwelfareBoundLow/High/Range) RETIRED
 %   - v7 policy-counterfactual point macros softened (kept as deprecated)
 % Adds:
 %   - BPutgBound* / BPutgHeckman*  : selection-bound UTG (Layer 1: B+C)
@@ -90,7 +89,6 @@
 %   - BPutgBoottest*               : wild cluster bootstrap (Layer 1: F)
 %   - BPutgMechanicalCone, BPutgWithinFirmOffset, BPutgCompositionResidual
 %       : reconciliation table (Layer 1: G)
-%   - BPwelfareBound + CI          : single welfare bound (Layer 2: H)
 % --------------------------------------------------------------------------
 
 % --- Selection-bounded UTG (Layer 1: B Manski-Lee + C Heckman) ---
@@ -163,12 +161,9 @@
 \providecommand{\BPutgCompPctSign}{11\%}                                % admin supplier mix more expensive than lit, conditional on Q
 \providecommand{\BPutgObsPctLitOverAdmin}{23\%}                         % 1 - exp(-0.259), level-terms lit-over-admin
 
-% --- Single welfare bound (Layer 2: H) ---
+% --- Single procurement-cost bound (Layer 2: H) ---
 % Replaces v7's stacked $16-88M range. One number: bounded UTG x
 % sanction-exposed share x annual spend, with explicit 95\% CI.
-\providecommand{\BPwelfareBound}{\BPtbd{welfareBound}}              % e.g. "\$32~M"
-\providecommand{\BPwelfareBoundCIlow}{\BPtbd{welfareBoundCIlow}}
-\providecommand{\BPwelfareBoundCIhigh}{\BPtbd{welfareBoundCIhigh}}
 \providecommand{\BPsanctionExposedSharePref}{\BPtbd{sanctionExposedSharePref}}
 
 % --- Calibration anchors (manual; literature comparison in Sec 5) ---
@@ -203,7 +198,6 @@
 % \BPchanQtyUTGPP / \BPchanResidualUTGPP
 % \BPcascadeUOtotalPct / qtyPP / firmPP / residPP
 % \BPcascadeUTGtotalPct / qtyPP / firmPP / residPP
-% \BPwelfareBoundLow / \BPwelfareBoundHigh / \BPwelfareBoundRange
 % \BPpolicyAdminRecoveryHigh / \BPpolicyFrameworkRecovery
 % \BPpolicyAdminEligibleShare / \BPpolicyFrameworkFeasibleShare
 % These macros remain populated by 35_figure_decomposition (auto-generated
@@ -788,12 +782,6 @@
 \renewcommand{\BPchanQtyUTGPP}{42.32}
 \providecommand{\BPchanResidualUTGPP}{}
 \renewcommand{\BPchanResidualUTGPP}{-12.88}
-\providecommand{\BPwelfareBoundLow}{}
-\renewcommand{\BPwelfareBoundLow}{\$16~M}
-\providecommand{\BPwelfareBoundHigh}{}
-\renewcommand{\BPwelfareBoundHigh}{\$74--88~M}
-\providecommand{\BPwelfareBoundRange}{}
-\renewcommand{\BPwelfareBoundRange}{\$16--88~M}
 \providecommand{\BPpolicyAdminEligibleShare}{}
 \renewcommand{\BPpolicyAdminEligibleShare}{50\%}
 \providecommand{\BPpolicyFrameworkFeasibleShare}{}
@@ -969,12 +957,28 @@
 % ===== AUTO BEGIN: 40_utg_lee_bounds =====
 \providecommand{\BPutgPointNaive}{}
 \renewcommand{\BPutgPointNaive}{29.5\%}
+\providecommand{\BPutgPointNaiveCoef}{}
+\renewcommand{\BPutgPointNaiveCoef}{-0.259}
 \providecommand{\BPutgPointNaiveSE}{}
 \renewcommand{\BPutgPointNaiveSE}{0.092}
+\providecommand{\BPutgPointNaiveN}{}
+\renewcommand{\BPutgPointNaiveN}{61{,}620}
 \providecommand{\BPutgBoundLow}{}
 \renewcommand{\BPutgBoundLow}{15.9\%}
+\providecommand{\BPutgBoundLowCoef}{}
+\renewcommand{\BPutgBoundLowCoef}{-0.192}
+\providecommand{\BPutgBoundLowSE}{}
+\renewcommand{\BPutgBoundLowSE}{0.095}
+\providecommand{\BPutgBoundLowN}{}
+\renewcommand{\BPutgBoundLowN}{45{,}624}
 \providecommand{\BPutgBoundHigh}{}
 \renewcommand{\BPutgBoundHigh}{21.1\%}
+\providecommand{\BPutgBoundHighCoef}{}
+\renewcommand{\BPutgBoundHighCoef}{-0.148}
+\providecommand{\BPutgBoundHighSE}{}
+\renewcommand{\BPutgBoundHighSE}{0.097}
+\providecommand{\BPutgBoundHighN}{}
+\renewcommand{\BPutgBoundHighN}{45{,}624}
 \providecommand{\BPutgLeeTrimMean}{}
 \renewcommand{\BPutgLeeTrimMean}{26.9\%}
 \providecommand{\BPutgLeeTrimMax}{}
@@ -986,6 +990,16 @@
 % ===== AUTO END: 40_utg_lee_bounds =====
 
 % ===== AUTO BEGIN: 45_reconciliation =====
+\providecommand{\BPutgObsLogGap}{}
+\renewcommand{\BPutgObsLogGap}{-0.259}
+\providecommand{\BPutgObsPct}{}
+\renewcommand{\BPutgObsPct}{-22.8\%}
+\providecommand{\BPutgMechLogGap}{}
+\renewcommand{\BPutgMechLogGap}{-0.397}
+\providecommand{\BPutgWithinLogGap}{}
+\renewcommand{\BPutgWithinLogGap}{0.035}
+\providecommand{\BPutgCompLogGap}{}
+\renewcommand{\BPutgCompLogGap}{0.104}
 \providecommand{\BPutgMechanicalCone}{}
 \renewcommand{\BPutgMechanicalCone}{-32.8\%}
 \providecommand{\BPutgWithinFirmOffset}{}
@@ -1060,6 +1074,12 @@
 \renewcommand{\BPrrSensitivityMbar}{0.437}
 \providecommand{\BPrrBreakdownM}{}
 \renewcommand{\BPrrBreakdownM}{0.018}
+\providecommand{\BPrrFirstPostCoef}{}
+\renewcommand{\BPrrFirstPostCoef}{0.052}
+\providecommand{\BPrrFirstPostSE}{}
+\renewcommand{\BPrrFirstPostSE}{0.018}
+\providecommand{\BPrrPreMaxAbs}{}
+\renewcommand{\BPrrPreMaxAbs}{0.041}
 \providecommand{\BPrrSurvivesAtPreMax}{}
 \renewcommand{\BPrrSurvivesAtPreMax}{no}
 % ===== AUTO END: 43_rambachan_roth =====
@@ -1104,22 +1124,6 @@
 \renewcommand{\BPutgBoottestCIhighIYM}{-0.001}
 % ===== AUTO END: 44_wild_bootstrap =====
 
-% ===== AUTO BEGIN: 46_welfare_bound =====
-\providecommand{\BPwelfareBound}{}
-\renewcommand{\BPwelfareBound}{\$27.8~M}
-\providecommand{\BPwelfareBoundCIlow}{}
-\renewcommand{\BPwelfareBoundCIlow}{\$23.9~M}
-\providecommand{\BPwelfareBoundCIhigh}{}
-\renewcommand{\BPwelfareBoundCIhigh}{\$31.7~M}
-\providecommand{\BPwelfareBoundUTGmidPct}{}
-\renewcommand{\BPwelfareBoundUTGmidPct}{18.5\%}
-\providecommand{\BPwelfareBoundAdmissibility}{}
-\renewcommand{\BPwelfareBoundAdmissibility}{50.0\%}
-\providecommand{\BPwelfareBoundAnnualSpend}{}
-\renewcommand{\BPwelfareBoundAnnualSpend}{\$300~M}
-\providecommand{\BPsanctionExposedSharePref}{}
-\renewcommand{\BPsanctionExposedSharePref}{50.0\%}
-% ===== AUTO END: 46_welfare_bound =====
 
 % ===== AUTO BEGIN: 46_balance_descriptive =====
 \providecommand{\BPnObsOrd}{}
@@ -1181,6 +1185,28 @@
 \renewcommand{\BPwinnerSwitchDiffModalPct}{70.2\%}
 \providecommand{\BPwithinFirmRobustnessNrows}{}
 \renewcommand{\BPwithinFirmRobustnessNrows}{7}
+\providecommand{\BPwithinFirmAltClusterNrows}{}
+\renewcommand{\BPwithinFirmAltClusterNrows}{4}
+\providecommand{\BPaggCellN}{}
+\renewcommand{\BPaggCellN}{112}
+\providecommand{\BPaggAdminPOIMean}{}
+\renewcommand{\BPaggAdminPOIMean}{1.01}
+\providecommand{\BPaggLitPOIMean}{}
+\renewcommand{\BPaggLitPOIMean}{1.11}
+\providecommand{\BPaggDiffPOIMean}{}
+\renewcommand{\BPaggDiffPOIMean}{-0.10}
+\providecommand{\BPaggAdminMultiPct}{}
+\renewcommand{\BPaggAdminMultiPct}{0.9\%}
+\providecommand{\BPaggLitMultiPct}{}
+\renewcommand{\BPaggLitMultiPct}{8.9\%}
+\providecommand{\BPaggDiffMultiPP}{}
+\renewcommand{\BPaggDiffMultiPP}{-8.0~pp}
+\providecommand{\BPaggAdminLogQtyMean}{}
+\renewcommand{\BPaggAdminLogQtyMean}{5.760}
+\providecommand{\BPaggLitLogQtyMean}{}
+\renewcommand{\BPaggLitLogQtyMean}{4.955}
+\providecommand{\BPaggDiffLogQtyMean}{}
+\renewcommand{\BPaggDiffLogQtyMean}{0.805}
 \providecommand{\BPwfRobAllCoef}{}
 \renewcommand{\BPwfRobAllCoef}{+0.035}
 \providecommand{\BPwfRobAllSE}{}
@@ -1286,14 +1312,62 @@
 \renewcommand{\BPregexExactMatchPct}{98.6\%}
 \providecommand{\BPregexExactMatchN}{}
 \renewcommand{\BPregexExactMatchN}{176{,}713}
+\providecommand{\BPregexPrecJud}{}
+\renewcommand{\BPregexPrecJud}{0.87}
+\providecommand{\BPregexRecallJud}{}
+\renewcommand{\BPregexRecallJud}{1.00}
 \providecommand{\BPregexFoneJud}{}
 \renewcommand{\BPregexFoneJud}{0.93}
+\providecommand{\BPregexJudTP}{}
+\renewcommand{\BPregexJudTP}{11{,}362}
+\providecommand{\BPregexJudFP}{}
+\renewcommand{\BPregexJudFP}{1{,}746}
+\providecommand{\BPregexJudFN}{}
+\renewcommand{\BPregexJudFN}{46}
+\providecommand{\BPregexJudTN}{}
+\renewcommand{\BPregexJudTN}{165{,}994}
+\providecommand{\BPregexFprJudPct}{}
+\renewcommand{\BPregexFprJudPct}{1.04\%}
+\providecommand{\BPregexFnrJudPct}{}
+\renewcommand{\BPregexFnrJudPct}{0.40\%}
+\providecommand{\BPregexContamJudPct}{}
+\renewcommand{\BPregexContamJudPct}{13.3\%}
+\providecommand{\BPregexAttenJud}{}
+\renewcommand{\BPregexAttenJud}{0.986}
+\providecommand{\BPregexPrecAdm}{}
+\renewcommand{\BPregexPrecAdm}{0.92}
+\providecommand{\BPregexRecallAdm}{}
+\renewcommand{\BPregexRecallAdm}{0.99}
 \providecommand{\BPregexFoneAdm}{}
 \renewcommand{\BPregexFoneAdm}{0.96}
+\providecommand{\BPregexAdmTP}{}
+\renewcommand{\BPregexAdmTP}{8{,}492}
+\providecommand{\BPregexAdmFP}{}
+\renewcommand{\BPregexAdmFP}{698}
+\providecommand{\BPregexAdmFN}{}
+\renewcommand{\BPregexAdmFN}{49}
+\providecommand{\BPregexAdmTN}{}
+\renewcommand{\BPregexAdmTN}{169{,}909}
+\providecommand{\BPregexFprAdmPct}{}
+\renewcommand{\BPregexFprAdmPct}{0.41\%}
+\providecommand{\BPregexFnrAdmPct}{}
+\renewcommand{\BPregexFnrAdmPct}{0.57\%}
+\providecommand{\BPregexContamAdmPct}{}
+\renewcommand{\BPregexContamAdmPct}{7.6\%}
+\providecommand{\BPregexAttenAdm}{}
+\renewcommand{\BPregexAttenAdm}{0.990}
 \providecommand{\BPregexFoneJudHO}{}
 \renewcommand{\BPregexFoneJudHO}{0.93}
+\providecommand{\BPregexPrecJudHO}{}
+\renewcommand{\BPregexPrecJudHO}{0.88}
+\providecommand{\BPregexRecallJudHO}{}
+\renewcommand{\BPregexRecallJudHO}{0.99}
 \providecommand{\BPregexFoneAdmHO}{}
 \renewcommand{\BPregexFoneAdmHO}{0.94}
+\providecommand{\BPregexPrecAdmHO}{}
+\renewcommand{\BPregexPrecAdmHO}{0.91}
+\providecommand{\BPregexRecallAdmHO}{}
+\renewcommand{\BPregexRecallAdmHO}{0.98}
 \providecommand{\BPregexFone}{}
 \renewcommand{\BPregexFone}{0.94}
 \providecommand{\BPregexDualEnsemble}{}
@@ -1319,3 +1393,39 @@
 \providecommand{\BPclfVoteThreshold}{}
 \renewcommand{\BPclfVoteThreshold}{2}
 % ===== AUTO END: 49_classifier_macros =====
+
+% ===== AUTO BEGIN: 46_procurement_cost_bound =====
+\providecommand{\BPprocCostBound}{}
+\renewcommand{\BPprocCostBound}{\$27.8~M}
+\providecommand{\BPprocCostBoundCIlow}{}
+\renewcommand{\BPprocCostBoundCIlow}{\$23.9~M}
+\providecommand{\BPprocCostBoundCIhigh}{}
+\renewcommand{\BPprocCostBoundCIhigh}{\$31.7~M}
+\providecommand{\BPprocCostBoundUTGmidPct}{}
+\renewcommand{\BPprocCostBoundUTGmidPct}{18.5\%}
+\providecommand{\BPprocCostBoundAdmissibility}{}
+\renewcommand{\BPprocCostBoundAdmissibility}{50.0\%}
+\providecommand{\BPprocCostBoundAnnualSpend}{}
+\renewcommand{\BPprocCostBoundAnnualSpend}{\$300~M}
+\providecommand{\BPsanctionExposedSharePref}{}
+\renewcommand{\BPsanctionExposedSharePref}{50.0\%}
+\providecommand{\BPprocCostSensitivityNrows}{}
+\renewcommand{\BPprocCostSensitivityNrows}{3}
+\providecommand{\BPprocCostSpendSensitivityNrows}{}
+\renewcommand{\BPprocCostSpendSensitivityNrows}{3}
+% ===== AUTO END: 46_procurement_cost_bound =====
+
+% ===== AUTO BEGIN: 51_sample_restriction_robustness =====
+\providecommand{\BPsrRobustnessNrows}{}
+\renewcommand{\BPsrRobustnessNrows}{4}
+% ===== AUTO END: 51_sample_restriction_robustness =====
+
+% ===== AUTO BEGIN: 52_market_depth_heterogeneity =====
+\providecommand{\BPmdHetNrows}{}
+\renewcommand{\BPmdHetNrows}{4}
+% ===== AUTO END: 52_market_depth_heterogeneity =====
+
+% ===== AUTO BEGIN: 53_quantity_definition_robustness =====
+\providecommand{\BPqtyRobustnessNrows}{}
+\renewcommand{\BPqtyRobustnessNrows}{4}
+% ===== AUTO END: 53_quantity_definition_robustness =====

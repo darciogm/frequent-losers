@@ -34,7 +34,10 @@ suppressPackageStartupMessages({
   getwd()
 })()
 source(file.path(.this_dir, "_macros.R"))
-bp_set_threads(12L)
+# The cluster bootstrap repeatedly re-estimates high-dimensional fixed-effect
+# models. Single-threaded fixest is slower but avoids intermittent OpenMP
+# segfaults observed during full v9 rebuilds.
+bp_set_threads(1L)
 
 OUT  <- file.path(.this_dir, "..", "output")
 LOGS <- file.path(.this_dir, "..", "logs")
@@ -161,7 +164,7 @@ cis <- list(
 )
 
 # ============================================================================
-# Reconciliation table (point estimates only --- table format unchanged)
+# Reconciliation table
 # ============================================================================
 res <- data.table(
   component = c("Observed UTG (admin minus lit, log price)",
@@ -174,27 +177,33 @@ res <- data.table(
 )
 print(res)
 
-ktab <- kbl(res, format = "latex", booktabs = TRUE, digits = 3,
-            col.names = c("Component", "Log-points (admin minus lit)",
-                          "Implied \\% (admin vs lit)"),
-            label = "utg_reconciliation",
-            caption = paste0("UTG reconciliation: observed log-price gap decomposed into mechanical bulk-discount prediction, within firm-buyer-item offset, and supplier composition residual. ",
-                             format(length(fbi_both), big.mark = ","), " triples observed in both regimes."),
-            escape = FALSE) |>
-  footnote(general = paste(
-    "Identity: observed UTG = mechanical C1 + within-firm offset + composition residual.",
-    "Within-firm offset estimated on firm-buyer-item triples observed under both",
-    "litigated and administrative urgent procurement (no mechanical C1 contribution).",
-    "Composition residual is the part of the observed UTG that operates through",
-    "equilibrium changes in which firm wins the contract.",
-    sprintf("95\\%% cluster-bootstrap CIs (PBU, B=%d): observed [%.1f, %.1f]; mech C1 [%.1f, %.1f]; within-firm [%.1f, %.1f]; composition [%.1f, %.1f].",
-            nrow(boot_mat),
-            cis$obs[1], cis$obs[2],
-            cis$mech[1], cis$mech[2],
-            cis$within[1], cis$within[2],
-            cis$comp[1], cis$comp[2])),
-    general_title = "", footnote_as_chunk = TRUE, escape = FALSE)
-writeLines(ktab, file.path(OUT, "tables", "tab_utg_reconciliation.tex"))
+recon_tex <- paste0(
+  "\\begin{table}[ht]\n",
+  "\\centering\n",
+  "\\caption{Pricing-versus-sourcing reconciliation.}\n",
+  "\\label{tab:utg_reconciliation}\n",
+  "\\begin{threeparttable}\n",
+  "\\small\n",
+  "\\setlength{\\tabcolsep}{4pt}\n",
+  "\\begin{adjustbox}{max width=\\textwidth}\n",
+  "\\begin{tabular}{p{.34\\linewidth}rrp{.22\\linewidth}}\n",
+  "\\toprule\n",
+  "Component & Log-points & Admin-vs-litigated (\\%) & 95\\% CI \\\\\n",
+  "\\midrule\n",
+  "Observed UTG gap & \\BPutgObsLogGap{} & \\BPutgObsPct{} & [\\BPutgObsCIlow{}, \\BPutgObsCIhigh{}] \\\\\n",
+  "Mechanical quantity component & \\BPutgMechLogGap{} & \\BPutgMechanicalCone{} & [\\BPutgMechCIlow{}, \\BPutgMechCIhigh{}] \\\\\n",
+  "Within firm-buyer-item component & \\BPutgWithinLogGap{} & \\BPutgWithinFirmOffset{} & [\\BPutgWithinCIlow{}, \\BPutgWithinCIhigh{}] \\\\\n",
+  "Residual supplier-composition component & \\BPutgCompLogGap{} & \\BPutgCompositionResidual{} & [\\BPutgCompCIlow{}, \\BPutgCompCIhigh{}] \\\\\n",
+  "\\bottomrule\n",
+  "\\end{tabular}\n",
+  "\\end{adjustbox}\n",
+  "\\begin{tablenotes}[flushleft]\\footnotesize\n",
+  "\\item \\textit{Notes:} Components are expressed in administrative-minus-litigated units. The decomposition uses \\BPutgReconBootB{} PBU-cluster bootstrap draws for confidence intervals. The residual composition component is a reconciliation residual and should be read together with the direct winner-switching evidence in the main paper.\n",
+  "\\end{tablenotes}\n",
+  "\\end{threeparttable}\n",
+  "\\end{table}\n"
+)
+writeLines(recon_tex, file.path(OUT, "tables", "tab_utg_reconciliation.tex"))
 
 # ============================================================================
 # Headline figure --- redesign for v8 (NULL in visual headline)
@@ -258,6 +267,11 @@ ggsave(file.path(OUT, "figures", "fig_sourcing_vs_pricing.pdf"),
 # Emit macros
 # ============================================================================
 bp_macros_emit("45_reconciliation", list(
+  utgObsLogGap             = bp_fmt(pt$b_naive),
+  utgObsPct                = bp_fmt_pct(to_pct(pt$b_naive)),
+  utgMechLogGap            = bp_fmt(pt$mech_c1),
+  utgWithinLogGap          = bp_fmt(pt$b_triple),
+  utgCompLogGap            = bp_fmt(pt$comp_res),
   utgMechanicalCone        = bp_fmt_pct(to_pct(pt$mech_c1)),
   utgWithinFirmOffset      = bp_fmt_pct(to_pct(pt$b_triple)),
   utgCompositionResidual   = bp_fmt_pct(to_pct(pt$comp_res)),

@@ -3,20 +3,24 @@
 \caption{Purchase-regime classifier validation.}
 \label{tab:classifier_validation_v9}
 \begin{threeparttable}
-\begin{tabular}{lccc}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{p{.22\linewidth}p{.08\linewidth}p{.09\linewidth}p{.08\linewidth}p{.08\linewidth}p{.06\linewidth}p{.18\linewidth}}
 \toprule
-Validation object & Precision / agreement & Recall & F1 \\
+Validation object & $N$ & Agree. & Prec. & Recall & F1 & Source \\
 \midrule
-Exact three-class agreement & \BPregexExactMatchPct{} & -- & -- \\
-Judicial class, ground truth & 0.87 & 1.00 & \BPregexFoneJud{} \\
-Administrative class, ground truth & 0.92 & 0.99 & \BPregexFoneAdm{} \\
-Urgent-class macro-F1 & -- & -- & \BPregexFone{} \\
-Judicial class, ML hold-out & -- & -- & \BPregexFoneJudHO{} \\
-Administrative class, ML hold-out & -- & -- & \BPregexFoneAdmHO{} \\
+Exact agreement & \BPregexNGroundTruth{} & \BPregexExactMatchPct{} & -- & -- & -- & Ground truth \\
+Judicial class & -- & -- & \BPregexPrecJud{} & \BPregexRecallJud{} & \BPregexFoneJud{} & Ground truth \\
+Administrative class & -- & -- & \BPregexPrecAdm{} & \BPregexRecallAdm{} & \BPregexFoneAdm{} & Ground truth \\
+Urgent-class macro-F1 & -- & -- & -- & -- & \BPregexFone{} & Urgent classes \\
+Judicial class & \BPregexNHO{} & -- & \BPregexPrecJudHO{} & \BPregexRecallJudHO{} & \BPregexFoneJudHO{} & ML hold-out \\
+Administrative class & \BPregexNHO{} & -- & \BPregexPrecAdmHO{} & \BPregexRecallAdmHO{} & \BPregexFoneAdmHO{} & ML hold-out \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \begin{tablenotes}[flushleft]\footnotesize
-\item \textit{Notes:} Ground-truth validation uses \BPregexNGroundTruth{} labeled purchase orders; exact agreement covers \BPregexExactMatchN{} matches. The ML hold-out test set contains \BPregexNHO{} observations. Precision and recall entries are rounded by the generator from the production classification report where reported.
+\item \textit{Notes:} The classifier operates at the purchase-order/tender-notice level. The table is generated from the production classification report and classifier code. Exact agreement counts \BPregexExactMatchN{} matched ground-truth labels. The empirical POI-level data link these classified regimes to item-level procurement records.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}

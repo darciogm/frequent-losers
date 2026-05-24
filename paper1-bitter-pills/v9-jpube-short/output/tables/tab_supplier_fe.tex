@@ -1,35 +1,29 @@
 \begin{table}[ht]
-  \centering
-  \caption{Supplier Fixed Effects: Demand vs Supply Side}
-  \label{tab:supplier_fe}
-  \small
-
-\begingroup
 \centering
+\caption{Supplier Fixed Effects and Quantity Controls}
+\label{tab:supplier_fe}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{5pt}
 \begin{tabular}{lccc}
-   \toprule
-    & \multicolumn{3}{c}{bid\_price\_log}\\
-                           & (1)            & (2)                   & (3)\\  
-   \midrule 
-   Urgent Purchase         & 0.0513$^{***}$ & 0.0245                & 0.0109\\   
-                           & (0.0153)       & (0.0159)              & (0.0179)\\   
-   Log Quantity            &                &                       & -0.3931$^{***}$\\   
-                           &                &                       & (0.0325)\\   
-    \\
-   Observations            & 196,883        & 196,642               & 196,642\\  
-   R$^2$                   & 0.86796        & 0.88083               & 0.92157\\  
-   Within R$^2$            & 0.00022        & $5.41\times 10^{-5}$  & 0.34189\\  
-    \\
-   item\_id fixed effects  & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   year\_n fixed effects   & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   pbu\_id fixed effects   & $\checkmark$   & $\checkmark$          & $\checkmark$\\   
-   firm\_f fixed effects   &                & $\checkmark$          & $\checkmark$\\   
-   \bottomrule
+\toprule
+ & Baseline & Supplier FE & Supplier FE + quantity \\
+\midrule
+Urgent purchase & 0.051$^{***}$ & 0.024 & 0.011 \\
+ & (0.015) & (0.016) & (0.018) \\
+Log accepted quantity & -- & -- & -0.393$^{***}$ \\
+ &  &  & (0.033) \\
+\addlinespace
+Observations & 196{,}883 & 196{,}642 & 196{,}642 \\
+$R^2$ & 0.868 & 0.881 & 0.922 \\
+Item FE & Yes & Yes & Yes \\
+Year FE & Yes & Yes & Yes \\
+PBU FE & Yes & Yes & Yes \\
+Supplier FE & No & Yes & Yes \\
+\bottomrule
 \end{tabular}
- 
-\par \raggedright 
-DV: log negotiated price. Sample: winning bids for items with both ordinary and litigated purchases. Column (1): item + year + PBU FE. Column (2) adds firm FE. Column (3) adds log quantity. SE clustered at PBU level.
-\par\endgroup
-
-
+\begin{tablenotes}[flushleft]\footnotesize
+\item \textit{Notes:} The dependent variable is log negotiated price. The sample is accepted winning bids for items observed in both ordinary and litigated procurement. Column 1 includes item, year, and PBU fixed effects. Column 2 adds supplier fixed effects. Column 3 adds log accepted quantity. Standard errors, in parentheses, are clustered by PBU. $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}

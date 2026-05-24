@@ -60,6 +60,24 @@ if ("bid_qty_log" %in% names(d) && qty_col == "bid_qty") {
   d[, lqty := log(pmax(get(qty_col), 1))]
 }
 
+ym_col <- intersect(c("ym_id", "year_month", "yyyymm", "ym_f", "ym_int"), names(d))[1]
+if (is.na(ym_col)) {
+  if ("po_date" %in% names(d)) {
+    d[, ym := format(as.Date(po_date), "%Y-%m")]
+  } else {
+    d[, ym := as.character(year_n)]
+  }
+} else {
+  d[, ym := as.character(get(ym_col))]
+}
+
+poi_col <- intersect(c("po_item", "po_item_id", "po_item_seq", "po"), names(d))[1]
+if (is.na(poi_col)) {
+  d[, poi_unit := .I]
+} else {
+  d[, poi_unit := as.character(get(poi_col))]
+}
+
 # ============================================================================
 # Test 1: Winner-switch across regimes (item-buyer pairs)
 # ============================================================================
@@ -155,6 +173,107 @@ writeLines(ws_tex, file.path(OUT, "tables", "tab_winner_switch.tex"))
 bp_log_step("winner-switch", t0, LOG)
 
 # ============================================================================
+# Test 1b: Aggregation of repeated demands within buyer-item-month cells
+# ============================================================================
+# This is a direct diagnostic for the scale channel. It asks whether, within
+# the same buyer x item x month cells observed under both urgent regimes,
+# administrative purchases combine more winning POI demands than litigated
+# purchases.
+cell_regime <- d[, .(
+  n_poi = uniqueN(poi_unit),
+  total_qty = sum(get(qty_col), na.rm = TRUE),
+  mean_lqty = mean(lqty, na.rm = TRUE)
+), by = .(pbu_id, item_id, ym, admin)]
+
+cell_regime[, cell_id := paste(pbu_id, item_id, ym, sep = "_")]
+both_cell_ids <- cell_regime[, .(has_admin = any(admin == 1L),
+                                 has_lit = any(admin == 0L)),
+                             by = cell_id][has_admin & has_lit, cell_id]
+cell_regime_both <- cell_regime[cell_id %in% both_cell_ids]
+cell_regime_both[, multi_poi := as.integer(n_poi > 1L)]
+cell_regime_both[, log_total_qty := log(pmax(total_qty, 1))]
+
+paired <- dcast(cell_regime_both,
+                cell_id + pbu_id + item_id + ym ~ admin,
+                value.var = c("n_poi", "multi_poi", "total_qty", "log_total_qty"))
+setnames(paired,
+         old = c("n_poi_0", "n_poi_1", "multi_poi_0", "multi_poi_1",
+                 "total_qty_0", "total_qty_1", "log_total_qty_0", "log_total_qty_1"),
+         new = c("n_poi_lit", "n_poi_admin", "multi_lit", "multi_admin",
+                 "qty_lit", "qty_admin", "log_qty_lit", "log_qty_admin"),
+         skip_absent = TRUE)
+
+pval_paired <- function(x_admin, x_lit) {
+  if (length(x_admin) < 3L || sd(x_admin - x_lit, na.rm = TRUE) == 0) return(NA_real_)
+  tryCatch(t.test(x_admin, x_lit, paired = TRUE)$p.value, error = function(e) NA_real_)
+}
+fmt_p <- function(p) {
+  if (is.na(p)) return("--")
+  if (p < 0.001) return("$<0.001$")
+  sprintf("%.3f", p)
+}
+
+agg_rows <- data.table(
+  metric = c("Purchase-offer-items per cell",
+             "Cells with repeated POIs (\\%)",
+             "Log total quantity per cell"),
+  admin = c(mean(paired$n_poi_admin, na.rm = TRUE),
+            mean(paired$multi_admin, na.rm = TRUE) * 100,
+            mean(paired$log_qty_admin, na.rm = TRUE)),
+  litigated = c(mean(paired$n_poi_lit, na.rm = TRUE),
+                mean(paired$multi_lit, na.rm = TRUE) * 100,
+                mean(paired$log_qty_lit, na.rm = TRUE)),
+  diff = c(mean(paired$n_poi_admin - paired$n_poi_lit, na.rm = TRUE),
+           mean(paired$multi_admin - paired$multi_lit, na.rm = TRUE) * 100,
+           mean(paired$log_qty_admin - paired$log_qty_lit, na.rm = TRUE)),
+  p_value = c(pval_paired(paired$n_poi_admin, paired$n_poi_lit),
+              pval_paired(paired$multi_admin, paired$multi_lit),
+              pval_paired(paired$log_qty_admin, paired$log_qty_lit))
+)
+
+fmt_num <- function(x, digits = 2) {
+  formatC(round(x, digits), format = "f", digits = digits, big.mark = ",")
+}
+agg_tex <- paste0(
+  "\\begin{table}[ht]\n",
+  "\\centering\n",
+  "\\caption{Aggregation of repeated urgent demands within buyer-item-month cells.}\n",
+  "\\label{tab:aggregation_cells}\n",
+  "\\begin{threeparttable}\n",
+  "\\small\n",
+  "\\begin{tabular}{lrrrr}\n",
+  "\\toprule\n",
+  "Metric & Administrative & Litigated & Admin $-$ litigated & $p$-value \\\\\n",
+  "\\midrule\n",
+  paste(sprintf("%s & %s & %s & %s & %s \\\\",
+                agg_rows$metric,
+                fmt_num(agg_rows$admin),
+                fmt_num(agg_rows$litigated),
+                fmt_num(agg_rows$diff),
+                vapply(agg_rows$p_value, fmt_p, character(1))),
+        collapse = "\n"),
+  "\n",
+  "\\midrule\n",
+  "Buyer-item-month cells & \\multicolumn{4}{c}{", bp_fmt_int(nrow(paired)), "} \\\\\n",
+  "\\bottomrule\n",
+  "\\end{tabular}\n",
+  "\\begin{tablenotes}[flushleft]\\footnotesize\n",
+  "\\item \\textit{Notes:} The unit is a buyer$\\times$item$\\times$year-month ",
+  "cell observed with at least one administrative and one litigated urgent ",
+  "winning purchase. Each regime-cell is first collapsed to the number of ",
+  "distinct purchase-offer-items and total accepted quantity. The log-quantity ",
+  "row uses the log of total accepted quantity within the regime-cell. The table ",
+  "then reports paired means across common cells. $p$-values are from paired ",
+  "$t$-tests across cells. This diagnostic speaks to demand aggregation and ",
+  "does not use the firm-buyer-item triple sample.\n",
+  "\\end{tablenotes}\n",
+  "\\end{threeparttable}\n",
+  "\\end{table}\n"
+)
+writeLines(agg_tex, file.path(OUT, "tables", "tab_aggregation_cells.tex"))
+bp_log_step("aggregation-cells", t0, LOG)
+
+# ============================================================================
 # Test 2: Within-firm null robustness across subsamples
 # ============================================================================
 n_per_fbi <- d[, .N, by = .(fbi, admin)]
@@ -216,11 +335,50 @@ if (have_year) {
 robustness <- rbindlist(Filter(Negate(is.null), robustness))
 print(robustness)
 
+# Alternative clustering for the baseline within-FBI estimate. The coefficient
+# is identical across rows; only the variance estimator changes.
+fit_fbi_alt_cluster <- function(sub_data) {
+  m <- feols(bid_price_log ~ admin | fbi + year_n,
+             data = sub_data,
+             notes = FALSE,
+             warn = FALSE)
+  cluster_specs <- list(
+    list(label = "Buyer/PBU (baseline)", formula = ~pbu_id,
+         count_label = function(x) format(uniqueN(x$pbu_id), big.mark = ",")),
+    list(label = "Item", formula = ~item_id,
+         count_label = function(x) format(uniqueN(x$item_id), big.mark = ",")),
+    list(label = "Item-buyer", formula = ~ib,
+         count_label = function(x) format(uniqueN(x$ib), big.mark = ",")),
+    list(label = "Item + buyer/PBU", formula = ~item_id + pbu_id,
+         count_label = function(x) sprintf("%s; %s",
+                                           format(uniqueN(x$item_id), big.mark = ","),
+                                           format(uniqueN(x$pbu_id), big.mark = ",")))
+  )
+  rbindlist(lapply(cluster_specs, function(sp) {
+    vc <- vcov(m, cluster = sp$formula)
+    se <- unname(sqrt(diag(vc))["admin"])
+    coef_admin <- unname(coef(m)["admin"])
+    t_val <- coef_admin / se
+    data.table(
+      label = sp$label,
+      coef = coef_admin,
+      se = se,
+      p_val = 2 * (1 - pnorm(abs(t_val))),
+      clusters = sp$count_label(sub_data),
+      n = nobs(m)
+    )
+  }))
+}
+
+alt_cluster <- fit_fbi_alt_cluster(d_triple)
+print(alt_cluster)
+
 # Build robustness table
 sig <- function(p) if (p < 0.01) "***" else if (p < 0.05) "**" else if (p < 0.10) "*" else ""
 robustness[, t_val := coef / se]
 robustness[, p_val := 2 * (1 - pnorm(abs(t_val)))]
 robustness[, stars := sapply(p_val, sig)]
+alt_cluster[, stars := sapply(p_val, sig)]
 
 rb_tex <- paste0(
   "\\begin{table}[ht]\n",
@@ -254,6 +412,40 @@ rb_tex <- paste0(
 )
 writeLines(rb_tex, file.path(OUT, "tables", "tab_within_firm_robustness.tex"))
 bp_log_step("robustness", t0, LOG)
+
+ac_tex <- paste0(
+  "\\begin{table}[ht]\n",
+  "\\centering\n",
+  "\\caption{Within firm-buyer-item estimate: alternative clustering.}\n",
+  "\\label{tab:within_firm_alt_cluster}\n",
+  "\\begin{threeparttable}\n",
+  "\\begin{tabular}{lrrrrr}\n",
+  "\\toprule\n",
+  "Clustering level & $\\hat\\beta_{\\text{Admin}}$ & SE & $p$-value & Clusters & $N$ \\\\\n",
+  "\\midrule\n",
+  paste(sprintf("%s & %.3f%s & %.3f & %.3f & %s & %s \\\\",
+                alt_cluster$label,
+                alt_cluster$coef,
+                alt_cluster$stars,
+                alt_cluster$se,
+                alt_cluster$p_val,
+                alt_cluster$clusters,
+                format(alt_cluster$n, big.mark = ",")),
+        collapse = "\n"),
+  "\n",
+  "\\bottomrule\n",
+  "\\end{tabular}\n",
+  "\\begin{tablenotes}[flushleft]\\footnotesize\n",
+  "\\item \\textit{Notes:} Each row reports the same baseline within ",
+  "firm-buyer-item specification with FBI and year fixed effects. Rows vary ",
+  "only the clustering level used to compute standard errors. The coefficient ",
+  "is administrative minus litigated log negotiated price. Significance: ",
+  "$^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.\n",
+  "\\end{tablenotes}\n",
+  "\\end{threeparttable}\n",
+  "\\end{table}\n"
+)
+writeLines(ac_tex, file.path(OUT, "tables", "tab_within_firm_alt_cluster.tex"))
 
 # Per-subsample macros so the prose reads coef/SE/significance straight from
 # the same fit that builds the table (no hand-transcription, no prose/table drift).
@@ -294,7 +486,18 @@ ws_macros <- list(
   winnerSwitchNoOverlapPct   = bp_fmt_pct(mean(winners_per_ib$no_overlap) * 100),
   winnerSwitchSameModalPct   = bp_fmt_pct(mean(modal_per_ib$modal_same, na.rm = TRUE) * 100),
   winnerSwitchDiffModalPct   = bp_fmt_pct((1 - mean(modal_per_ib$modal_same, na.rm = TRUE)) * 100),
-  withinFirmRobustnessNrows  = bp_fmt_int(nrow(robustness))
+  withinFirmRobustnessNrows  = bp_fmt_int(nrow(robustness)),
+  withinFirmAltClusterNrows  = bp_fmt_int(nrow(alt_cluster)),
+  aggCellN                   = bp_fmt_int(nrow(paired)),
+  aggAdminPOIMean            = bp_fmt(mean(paired$n_poi_admin, na.rm = TRUE), digits = 2),
+  aggLitPOIMean              = bp_fmt(mean(paired$n_poi_lit, na.rm = TRUE), digits = 2),
+  aggDiffPOIMean             = bp_fmt(mean(paired$n_poi_admin - paired$n_poi_lit, na.rm = TRUE), digits = 2),
+  aggAdminMultiPct           = bp_fmt_pct(mean(paired$multi_admin, na.rm = TRUE) * 100),
+  aggLitMultiPct             = bp_fmt_pct(mean(paired$multi_lit, na.rm = TRUE) * 100),
+  aggDiffMultiPP             = bp_fmt_pp(mean(paired$multi_admin - paired$multi_lit, na.rm = TRUE) * 100),
+  aggAdminLogQtyMean         = bp_fmt(mean(paired$log_qty_admin, na.rm = TRUE)),
+  aggLitLogQtyMean           = bp_fmt(mean(paired$log_qty_lit, na.rm = TRUE)),
+  aggDiffLogQtyMean          = bp_fmt(mean(paired$log_qty_admin - paired$log_qty_lit, na.rm = TRUE))
 )
 bp_macros_emit("48_mechanism_evidence", c(ws_macros, rob_macros))
 

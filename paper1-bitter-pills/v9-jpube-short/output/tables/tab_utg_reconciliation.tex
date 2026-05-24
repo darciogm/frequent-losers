@@ -1,18 +1,25 @@
-\begin{table}
-
-\caption{\label{tab:utg_reconciliation}UTG reconciliation: observed log-price gap decomposed into mechanical bulk-discount prediction, within firm-buyer-item offset, and supplier composition residual. 1,206 triples observed in both regimes.}
+\begin{table}[ht]
 \centering
+\caption{Pricing-versus-sourcing reconciliation.}
+\label{tab:utg_reconciliation}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{4pt}
 \begin{adjustbox}{max width=\textwidth}
-\begin{tabular}[t]{lrr}
+\begin{tabular}{p{.34\linewidth}rrp{.22\linewidth}}
 \toprule
-Component & Log-points (admin minus lit) & Implied \% (admin vs lit)\\
+Component & Log-points & Admin-vs-litigated (\%) & 95\% CI \\
 \midrule
-Observed UTG (admin minus lit, log price) & -0.259 & -22.798\\
-Mechanical C1: bulk-discount x qty gap & -0.397 & -32.752\\
-Within firm-buyer-item offset & 0.035 & 3.513\\
-Supplier composition residual & 0.104 & 10.906\\
+Observed UTG gap & \BPutgObsLogGap{} & \BPutgObsPct{} & [\BPutgObsCIlow{}, \BPutgObsCIhigh{}] \\
+Mechanical quantity component & \BPutgMechLogGap{} & \BPutgMechanicalCone{} & [\BPutgMechCIlow{}, \BPutgMechCIhigh{}] \\
+Within firm-buyer-item component & \BPutgWithinLogGap{} & \BPutgWithinFirmOffset{} & [\BPutgWithinCIlow{}, \BPutgWithinCIhigh{}] \\
+Residual supplier-composition component & \BPutgCompLogGap{} & \BPutgCompositionResidual{} & [\BPutgCompCIlow{}, \BPutgCompCIhigh{}] \\
 \bottomrule
-\multicolumn{3}{l}{\rule{0pt}{1em}Identity: observed UTG = mechanical C1 + within-firm offset + composition residual. Within-firm offset estimated on firm-buyer-item triples observed under both litigated and administrative urgent procurement (no mechanical C1 contribution). Composition residual is the part of the observed UTG that operates through equilibrium changes in which firm wins the contract. 95\% cluster-bootstrap CIs (PBU, B=499): observed [-35.2, -9.1]; mech C1 [-51.2, -5.2]; within-firm [-6.6, 11.0]; composition [-16.0, 39.6].}\\
 \end{tabular}
 \end{adjustbox}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \textit{Notes:} Components are expressed in administrative-minus-litigated units. The decomposition uses \BPutgReconBootB{} PBU-cluster bootstrap draws for confidence intervals. The residual composition component is a reconciliation residual and should be read together with the direct winner-switching evidence in the main paper.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
+

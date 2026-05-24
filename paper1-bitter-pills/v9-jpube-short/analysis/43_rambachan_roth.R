@@ -12,6 +12,7 @@
 #     times the maximum pre-period violation)
 #
 # Output:
+#   - fig_event_study_item.pdf
 #   - fig_event_study_honest_rr.pdf
 #   - tab_rr_sensitivity.csv (raw bounds)
 #   - macros: BPrrSensitivityM, BPrrSensitivityMbar, BPrrBreakdownM,
@@ -125,28 +126,78 @@ cat(sprintf("t=0 coef:                  %.4f (SE %.4f)\n", b0, se0))
 cat(sprintf("Breakdown M (lin ext):     %.4f\n", breakdown_M))
 cat(sprintf("Survives at observed pre-max:  %s\n", survives_at_pre_max))
 
-# ---- figure: BJS event study with HonestDiD sensitivity bounds ----
+# ---- compact appendix table ----
+dyn_table <- paste0(
+  "\\begin{table}[ht]\n",
+  "\\centering\n",
+  "\\caption{Dynamic-design sensitivity summary.}\n",
+  "\\label{tab:dynamic_sensitivity_summary}\n",
+  "\\begin{threeparttable}\n",
+  "\\small\n",
+  "\\setlength{\\tabcolsep}{5pt}\n",
+  "\\begin{tabular}{p{.42\\linewidth}rp{.34\\linewidth}}\n",
+  "\\toprule\n",
+  "Diagnostic quantity & Value & Interpretation \\\\\n",
+  "\\midrule\n",
+  "BJS coefficient at first post period & ", bp_fmt(b0), " & First post-exposure timing estimate \\\\\n",
+  "Standard error & ", bp_fmt(se0), " & BJS period-specific standard error \\\\\n",
+  "Maximum absolute pre-period coefficient & ", bp_fmt(pre_max_obs), " & Observed pre-period deviation scale \\\\\n",
+  "Breakdown linear-extrapolation $M$ & ", bp_fmt(breakdown_M), " & Smallest linear-extrapolation allowance that reaches zero \\\\\n",
+  "Survives observed pre-period maximum & ", if (survives_at_pre_max) "yes" else "no", " & Diagnostic robustness indicator \\\\\n",
+  "\\bottomrule\n",
+  "\\end{tabular}\n",
+  "\\begin{tablenotes}[flushleft]\\footnotesize\n",
+  "\\item \\textit{Notes:} The BJS event study is used to assess timing patterns, not as the primary identifying design. The final row records whether the first post-period estimate remains different from zero when the allowed post-period violation equals the observed maximum absolute pre-period coefficient. The sensitivity calculation uses the saved BJS period-specific standard errors; the off-diagonal covariance is unavailable in the source BJS event-study output.\n",
+  "\\end{tablenotes}\n",
+  "\\end{threeparttable}\n",
+  "\\end{table}\n"
+)
+writeLines(dyn_table, file.path(OUT, "tables", "tab_dynamic_sensitivity_summary.tex"))
+
+# ---- figures: BJS event study and HonestDiD diagnostic ----
 df <- data.table(et = ev_o, b = beta_o, se = sqrt(diag(sigma_o)))
 df[, lo := b - 1.96 * se]; df[, hi := b + 1.96 * se]
-p <- ggplot(df, aes(et, b)) +
+
+p_item <- ggplot(df, aes(et, b)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_vline(xintercept = -0.5, linetype = "dashed", color = "grey60") +
   geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, fill = "steelblue") +
-  geom_point(size = 2.2) +
-  geom_line(color = "steelblue") +
+  geom_line(color = "steelblue", linewidth = 0.6) +
+  geom_point(size = 2.1, color = "steelblue") +
   scale_x_continuous(breaks = -5:5) +
   labs(x = "Years relative to first court order",
-       y = "Log negotiated price (relative to t = -1)",
-       caption = sprintf("Pre-max |coef| = %.3f. Breakdown linear extrapolation M = %.3f. Survives at pre-max: %s.",
-                         pre_max_obs, breakdown_M, survives_at_pre_max)) +
-  theme_minimal(base_size = 11)
+       y = "Log negotiated price relative to baseline") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        plot.margin = margin(6, 8, 6, 6))
+ggsave(file.path(OUT, "figures", "fig_event_study_item.pdf"),
+       p_item, width = 6.5, height = 4, device = cairo_pdf)
+
+df[, adj_lo := b - pre_max_obs - 1.96 * se]
+df[, adj_hi := b + pre_max_obs + 1.96 * se]
+p_honest <- ggplot(df, aes(et, b)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_vline(xintercept = -0.5, linetype = "dashed", color = "grey60") +
+  geom_ribbon(aes(ymin = adj_lo, ymax = adj_hi), alpha = 0.12, fill = "firebrick") +
+  geom_errorbar(aes(ymin = lo, ymax = hi), width = 0.12, color = "steelblue") +
+  geom_line(color = "steelblue", linewidth = 0.6) +
+  geom_point(size = 2.1, color = "steelblue") +
+  scale_x_continuous(breaks = -5:5) +
+  labs(x = "Years relative to first court order",
+       y = "Log negotiated price relative to baseline") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        plot.margin = margin(6, 8, 6, 6))
 ggsave(file.path(OUT, "figures", "fig_event_study_honest_rr.pdf"),
-       p, width = 6.5, height = 4, device = cairo_pdf)
+       p_honest, width = 6.5, height = 4, device = cairo_pdf)
 
 bp_macros_emit("43_rambachan_roth", list(
   rrSensitivityM       = bp_fmt(breakdown_M),
   rrSensitivityMbar    = bp_fmt(breakdown_M / pmax(pre_max_obs, 1e-6)),
   rrBreakdownM         = bp_fmt(breakdown_M),
+  rrFirstPostCoef      = bp_fmt(b0),
+  rrFirstPostSE        = bp_fmt(se0),
+  rrPreMaxAbs          = bp_fmt(pre_max_obs),
   rrSurvivesAtPreMax   = if (survives_at_pre_max) "yes" else "no"
 ))
 bp_log_step("done", t0, LOG)

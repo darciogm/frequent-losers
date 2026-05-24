@@ -9,11 +9,30 @@ required = [
     "output/tables/tab_sample_variation_v9.tex",
     "output/tables/tab_urgent_outcomes_v9.tex",
     "output/tables/tab_classifier_validation_v9.tex",
+    "output/tables/tab_classifier_confusion_v9.tex",
+    "output/tables/tab_classifier_error_sensitivity.tex",
+    "output/tables/tab_sample_construction_v9.tex",
+    "output/tables/tab_sample_flow_diagnostics.tex",
+    "output/tables/tab_balance_within.tex",
+    "output/tables/tab_both_types_cells.tex",
     "output/tables/tab_utg_lee_bounds.tex",
+    "output/tables/tab_utg_lee_alt_strata.tex",
+    "output/tables/tab_utg_heckman.tex",
+    "output/tables/tab_utg_reconciliation.tex",
+    "output/tables/tab_procurement_cost_bound.tex",
+    "output/tables/tab_procurement_cost_sensitivity.tex",
+    "output/tables/tab_procurement_cost_spending_sensitivity.tex",
     "output/tables/tab_within_firm_robustness.tex",
+    "output/tables/tab_within_firm_alt_cluster.tex",
+    "output/tables/tab_aggregation_cells.tex",
     "output/tables/tab_winner_switch.tex",
     "output/tables/tab_utg_boottest.tex",
+    "output/tables/tab_sample_restriction_robustness.tex",
+    "output/tables/tab_market_depth_heterogeneity.tex",
+    "output/tables/tab_quantity_definition_robustness.tex",
+    "output/tables/tab_dynamic_sensitivity_summary.tex",
     "output/tables/tab_placebo.tex",
+    "output/tables/tab_procurement_cost_bound.tex",
     "output/figures/fig_sourcing_vs_pricing.pdf",
     "output/figures/fig_event_study_item.pdf",
     "output/figures/fig_event_study_honest_rr.pdf",
@@ -42,6 +61,9 @@ bad_terms = [
     "to be " + "added",
     "will be " + "reported",
     "place" + "holder",
+    "item" + "times",
+    "welfare " + "bound",
+    "welfare " + "cost",
     "Chat" + "GPT",
     "Clau" + "de",
     "Co" + "dex",
@@ -54,6 +76,19 @@ for path in tex_files:
     for term in bad_terms:
         if term.lower() in low:
             hits.append((path.relative_to(ROOT), term))
+    if "Na" + "N" in text:
+        hits.append((path.relative_to(ROOT), "Na" + "N"))
+
+for rel in required:
+    path = ROOT / rel
+    if path.suffix == ".tex":
+        text = path.read_text(encoding="utf-8", errors="replace")
+        low = text.lower()
+        for term in bad_terms:
+            if term.lower() in low:
+                hits.append((path.relative_to(ROOT), term))
+        if "Na" + "N" in text:
+            hits.append((path.relative_to(ROOT), "Na" + "N"))
 
 if hits:
     print("[v9-check] blocked terms found:")

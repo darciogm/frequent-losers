@@ -1,18 +1,28 @@
 \section{Data Construction and Classifier Validation}
 \label{app:classifier}
 
-The procurement data come from BEC pharmaceutical purchases in group \BPbecGroup{} during \BPsampleStartYear--\BPsampleEndYear. The construction starts from \BPregexNClassified{} classified purchase orders and links procurement fields to litigation and administrative-process markers. Ordinary purchases are those without urgent judicial or administrative markers. Administrative urgent purchases are requests processed through the health agency's administrative channel. Litigated urgent purchases are purchases tied to court-mandated delivery.
+The procurement data come from BEC pharmaceutical purchases in group \BPbecGroup{} during \BPsampleStartYear--\BPsampleEndYear{} and are linked to litigation and administrative-process markers. The classifier operates at the purchase-order/tender-notice level. The empirical analysis is conducted at the purchase-offer-item level after classified regimes are linked to BEC item-level records and the relevant sample restrictions are applied. Price regressions use accepted winning bids.
 
-The classifier combines four signals: machine-learning predictions, structured JSON flags, regex patterns, and position-based checks in the tender notice. The production rule uses weights \BPclfWeightML{}, \BPclfWeightJSON{}, \BPclfWeightRegex{}, and \BPclfWeightPosition{} for these signals and classifies a regime when the vote reaches \BPclfVoteThreshold{}. Boilerplate language is filtered using \BPclfNPatternsBoiler{} exclusion patterns.
+The classification procedure combines machine-learning predictions, structured JSON flags, regex patterns, and position-based checks in tender notices. The production rule uses weights \BPclfWeightML{}, \BPclfWeightJSON{}, \BPclfWeightRegex{}, and \BPclfWeightPosition{} for these signals and classifies a purchase regime when the vote reaches \BPclfVoteThreshold{}. Boilerplate language is filtered using \BPclfNPatternsBoiler{} exclusion patterns.
 
 \input{../../output/tables/tab_classifier_validation_v9}
 
-Validation against \BPregexNGroundTruth{} ground-truth observations gives \BPregexExactMatchPct{} exact agreement. The urgent-class F1 scores are \BPregexFoneJud{} for judicial purchases and \BPregexFoneAdm{} for administrative purchases; the macro-F1 over these urgent classes is \BPregexFone{}. The held-out machine-learning test set contains \BPregexNHO{} observations and produces F1 scores of \BPregexFoneJudHO{} and \BPregexFoneAdmHO{}. Because the empirical comparisons use classified regimes, remaining false positives and false negatives would attenuate regime contrasts if they are not systematically correlated with residual prices within controls.
+\input{../../output/tables/tab_classifier_confusion_v9}
+
+The classifier universe contains \BPregexNClassified{} classified purchase orders/tender notices. The full BEC pharmaceutical analysis file contains \BPnPOIfull{} purchase-offer-item observations. This unit distinction explains why the classifier universe is larger than the POI-level empirical sample. Validation against \BPregexNGroundTruth{} ground-truth purchase orders gives \BPregexExactMatchPct{} exact agreement. The urgent-class F1 scores are \BPregexFoneJud{} for judicial purchases and \BPregexFoneAdm{} for administrative purchases; the urgent-class macro-F1 is \BPregexFone{}. Remaining false positives and false negatives would attenuate regime contrasts if they are not systematically correlated with residual prices within controls.
+
+\input{../../output/tables/tab_classifier_error_sensitivity}
+
+Table~\ref{tab:classifier_error_sensitivity} reports a classifier-error sensitivity diagnostic at the purchase-order validation level. The diagnostic rates are small relative to the regime differences studied in the paper and mainly support an attenuation interpretation. The table is not a substitute for the mechanism evidence because validation labels do not carry POI-level prices.
 
 \section{Sample Construction and Balance}
 \label{app:samples}
 
-The main-paper sample table reconciles the core samples. The full BEC file contains \BPnPOIfull{} purchase-offer-item observations. The analysis sample contains \BPnAnalysisSample{} observations, and the main winners-only price sample contains \BPnegNobs{} observations. The urgent panel contains \BPnUTG{} winner observations used for the under-the-gun contrast. The firm-buyer-item triple sample contains \BPutgTripleNUTG{} observations in \BPutgTripleCountUTG{} triples.
+The empirical samples differ by unit and restriction. The classifier universe is the purchase-order/tender-notice file. The full BEC pharmaceutical sample contains \BPnPOIfull{} purchase-offer-item observations. The analysis sample contains \BPnAnalysisSample{} POI observations after the core item and variable restrictions. The winners-only price sample contains \BPnegNobs{} accepted winning bids. The urgent panel contains \BPnUTG{} winner observations used for the administrative-versus-litigated comparison. The firm-buyer-item triple sample contains \BPutgTripleNUTG{} observations in \BPutgTripleCountUTG{} triples and is used only to isolate same-firm pricing.
+
+\input{../../output/tables/tab_sample_construction_v9}
+
+\input{../../output/tables/tab_sample_flow_diagnostics}
 
 \input{../../output/tables/tab_descriptive_balance}
 
@@ -20,62 +30,120 @@ The main-paper sample table reconciles the core samples. The full BEC file conta
 
 \input{../../output/tables/tab_both_types_cells}
 
-Administrative and litigated urgent purchases are not balanced by design. Administrative purchases are larger and differ in reference prices and formulary status. This imbalance is why the main design combines selection bounds, within-firm pricing tests, and direct sourcing evidence rather than treating the administrative channel as randomly assigned.
+Administrative and litigated urgent purchases are not balanced by design. Administrative purchases are selected, larger, and differ in item composition. The design therefore combines selection bounds, within-firm pricing tests, and direct sourcing evidence rather than treating the administrative channel as randomly assigned.
 
 \section{Selection Bounds}
 \label{app:selection_bounds}
 
-The administrative channel screens requests before purchase. Let $A=1$ denote administrative urgent procurement and $A=0$ denote litigated urgent procurement. The main under-the-gun coefficient is the administrative-minus-litigated log price coefficient. A negative coefficient means litigated purchases are more expensive.
+Administrative requests are selected before purchase. Selection likely makes administrative cases easier or cheaper to fulfill than litigated cases, so naive administrative-versus-litigated comparisons can overstate the sanction-related price gap. The preferred partial-identification exercise trims the overrepresented administrative group within item $\times$ year $\times$ PBU strata.
 
-The Manski-Lee procedure trims the overrepresented administrative group within item-by-year-by-buyer strata. If administrative cases are selected among requests that would otherwise appear under litigation, monotone selection implies that trimming one tail of the administrative price distribution bounds the counterfactual litigated comparison. Trimming the top tail produces one bound; trimming the bottom tail produces the other. The preferred bounds imply a litigated-over-administrative price gap of $[\BPutgBoundLow,\BPutgBoundHigh]$.
+All coefficients in this section are administrative minus litigated log negotiated prices. A negative coefficient means litigated purchases are more expensive. Percentage gaps are reported in the opposite, reader-facing direction: litigated-over-administrative prices. Top-tail and bottom-tail trimming of administrative observations provide the lower and upper Lee bounds reported in Table~\ref{tab:utg_lee_bounds}.
 
 \input{../../output/tables/tab_utg_lee_bounds}
 
-The mean trimming rate is \BPutgLeeTrimMean{}, with a maximum of \BPutgLeeTrimMax{}. Administrative-excess trimming occurs in \BPutgLeeStrataExcess{} of \BPutgLeeStrataTotal{} strata. The sign convention in all tables is administrative minus litigated for coefficients and litigated over administrative for percentage gaps.
+The trimming procedure affects \BPutgLeeStrataExcess{} of \BPutgLeeStrataTotal{} strata. The mean trimming rate is \BPutgLeeTrimMean{}, with maximum trimming rate \BPutgLeeTrimMax{}. The bounds are preferred to a parametric correction because the administrative channel is selected and the available exclusion does not provide credible stand-alone identification.
 
 \input{../../output/tables/tab_utg_heckman}
 
-The Heckman-style correction is reported only as a diagnostic. The first-stage exclusions are weak for this institutional comparison, and the second-stage estimate is not informative. The main text therefore relies on trimming bounds and mechanism tests.
+Table~\ref{tab:utg_heckman} is included only to document why a parametric selection correction is not used as the main estimate. The second-stage correction is non-informative in this design; the paper relies on bounded selection plus mechanism evidence.
+
+Table~\ref{tab:utg_lee_alt_strata} varies the trimming strata while holding the outcome model fixed. The exercise checks whether the Manski-Lee interval is driven by the preferred item-year-PBU trimming cells.
+
+\input{../../output/tables/tab_utg_lee_alt_strata}
 
 \section{Additional Robustness}
 \label{app:robustness}
 
-This appendix section collects robustness checks that support the main mechanism without extending the short paper. Alternative fixed effects, firm fixed effects, placebo checks, and heterogeneity by market depth all point to the same interpretation: the cost margin is not a broad same-firm markup in deep urgent markets.
+\subsection{Supplier Fixed Effects and Quantity Controls}
+
+Table~\ref{tab:supplier_fe} compares the urgent procurement price coefficient across specifications that add supplier fixed effects and log quantity. Attenuation after supplier fixed effects and quantity controls supports the interpretation that sourcing and scale, rather than a broad same-firm markup, account for much of the observed price margin.
 
 \input{../../output/tables/tab_supplier_fe}
 
+\subsection{Placebo on Never-Litigated Items}
+
+The placebo uses items never observed in litigation. It checks whether the urgent-procurement pattern appears for items outside the litigation margin.
+
 \input{../../output/tables/tab_placebo}
+
+\subsection{Wild Cluster Bootstrap}
+
+Wild cluster inference addresses the finite number and uneven size of PBU clusters. Negative coefficients have the same sign convention as in Appendix~\ref{app:selection_bounds}: administrative minus litigated log prices.
 
 \input{../../output/tables/tab_utg_boottest}
 
+\subsection{Sample Restrictions}
+
+Table~\ref{tab:sample_restriction_robustness} checks whether the under-the-gun price gap is driven by extreme quantities or items that appear rarely in urgent procurement. The estimates use the same sign convention as Appendix~\ref{app:selection_bounds}.
+
+\input{../../output/tables/tab_sample_restriction_robustness}
+
+\subsection{Formulary Status and Market Depth}
+
+Table~\ref{tab:market_depth_heterogeneity} reports the under-the-gun price gap separately by formulary status and market depth. The table is a heterogeneity diagnostic for the deep-market interpretation, not a separate identification strategy.
+
+\input{../../output/tables/tab_market_depth_heterogeneity}
+
+\subsection{Alternative Quantity Controls}
+
+Table~\ref{tab:quantity_definition_robustness} checks whether the under-the-gun price gap is sensitive to the way accepted quantity enters the urgent price specification. The exercise is a scale-channel diagnostic, not a preferred total-effect specification: conditioning tightly on log quantity removes part of the fragmentation channel studied in the paper. The BEC fields used here do not provide a common dose-standardized quantity measure.
+
+\input{../../output/tables/tab_quantity_definition_robustness}
+
+\subsection{Within Firm-Buyer-Item Heterogeneity}
+
+Table~\ref{tab:within_firm_robustness} reports the same-firm, same-buyer, same-item test across subsamples. The administrative coefficient is administrative minus litigated. A positive coefficient means administrative purchases are more expensive within the triple; a negative coefficient means litigated purchases are more expensive within the triple. The deep-market null and the reappearance of positive coefficients in thinner or earlier subsamples are both part of the mechanism evidence.
+
 \input{../../output/tables/tab_within_firm_robustness}
 
-The within-firm heterogeneity is central. The baseline coefficient is \BPutgTripleCoefUTG{} with standard error \BPutgTripleSEUTG{}. The above-median quantity coefficient is \BPwfRobAboveQtyCoef{}; the below-median quantity coefficient is \BPwfRobBelowQtyCoef{}. The SUS-formulary coefficient is \BPwfRobSUSCoef{}; the non-formulary coefficient is \BPwfRobNonSUSCoef{}. The earlier-period coefficient is \BPwfRobEarlyCoef{}, while the later-period coefficient is \BPwfRobLaterCoef{}.
+Table~\ref{tab:within_firm_alt_cluster} keeps the baseline triple specification fixed and varies only the clustering level. This addresses whether the same-firm pricing result is an artifact of the baseline PBU-clustered variance estimator.
+
+\input{../../output/tables/tab_within_firm_alt_cluster}
+
+\subsection{Aggregation Within Buyer-Item-Month Cells}
+
+Table~\ref{tab:aggregation_cells} tests the direct aggregation margin. It compares administrative and litigated urgent purchases within common buyer-item-month cells, after collapsing each regime-cell to repeated purchase-offer-item demands and accepted quantity. The table is diagnostic evidence for the scale channel; it is separate from the within-firm triple design because aggregation can change the supplier set.
+
+\input{../../output/tables/tab_aggregation_cells}
+
+\FloatBarrier
 
 \section{Dynamic Evidence}
 \label{app:dynamic}
 
-Dynamic estimates diagnose timing but do not carry the main identification strategy. The BJS event-study estimate at exposure is \BPbjsETzero{} with standard error \BPbjsETzeroSE{}; the later estimate is \BPbjsETfive{} with standard error \BPbjsETfiveSE{}. Honest-DiD sensitivity does not survive deviations at the observed maximum pre-period scale, recorded as \BPrrSurvivesAtPreMax{}.
+The dynamic design is diagnostic and supportive; it is not the main identification strategy. The BJS event study assesses timing patterns around item-level exposure. Table~\ref{tab:dynamic_sensitivity_summary} reports the Honest-DiD sensitivity diagnostic. Because the first post-period estimate does not survive deviations at the observed pre-period maximum, the main claims rely on selection bounds, within-firm pricing tests, and sourcing evidence.
+
+\input{../../output/tables/tab_dynamic_sensitivity_summary}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=.82\linewidth]{\BPofig{fig_event_study_item.pdf}}
-\caption{BJS event-study diagnostic for item-level exposure. The figure is used to assess timing patterns; it is not the primary identification design.}
+\includegraphics[width=.78\linewidth]{\BPofig{fig_event_study_item.pdf}}
+\caption{BJS event-study diagnostic for item-level exposure.}
 \label{fig:app_event_study}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=.82\linewidth]{\BPofig{fig_event_study_honest_rr.pdf}}
-\caption{Honest-DiD sensitivity diagnostic. The dynamic evidence is supportive, but the short paper's main claims rely on selection bounds, within-firm pricing tests, and sourcing evidence.}
+\includegraphics[width=.78\linewidth]{\BPofig{fig_event_study_honest_rr.pdf}}
+\caption{Honest-DiD sensitivity diagnostic.}
 \label{fig:app_honest}
 \end{figure}
+
+\FloatBarrier
 
 \section{Procurement-Cost Calculation}
 \label{app:cost}
 
-The procurement-cost calculation applies the Lee midpoint \BPwelfareBoundUTGmidPct{} to an admissibility share of \BPwelfareBoundAdmissibility{} and annual litigated spending of \BPwelfareBoundAnnualSpend{}. This yields \BPwelfareBound{} per year, with a Lee-bound range from \BPwelfareBoundCIlow{} to \BPwelfareBoundCIhigh{}. This is a fiscal procurement-cost calculation, not a welfare estimate.
+The procurement-cost calculation applies the Lee midpoint \BPprocCostBoundUTGmidPct{} to an admissibility calibration of \BPprocCostBoundAdmissibility{} and annual litigated spending of \BPprocCostBoundAnnualSpend{}. This yields \BPprocCostBound{} per year, with a Lee-bound range from \BPprocCostBoundCIlow{} to \BPprocCostBoundCIhigh{}. This is a fiscal procurement-cost calculation, not a full welfare estimate.
 
 \input{../../output/tables/tab_utg_reconciliation}
 
-\input{../../output/tables/tab_welfare_bound}
+\input{../../output/tables/tab_procurement_cost_bound}
+
+Table~\ref{tab:procurement_cost_sensitivity} reports how the fiscal procurement-cost implication changes under alternative admissibility calibrations. This sensitivity is mechanical: it varies only the admissible share of litigated spending and leaves the bounded under-the-gun gap unchanged.
+
+\input{../../output/tables/tab_procurement_cost_sensitivity}
+
+Table~\ref{tab:procurement_cost_spending_sensitivity} instead varies the annual litigated-spending anchor while keeping the central admissibility calibration fixed.
+
+\input{../../output/tables/tab_procurement_cost_spending_sensitivity}

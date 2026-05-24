@@ -1,24 +1,21 @@
-\begin{table}
-
-\caption{\label{tab:utg_heckman}Heckman selection-corrected UTG estimate.}
+\begin{table}[ht]
 \centering
-\begin{adjustbox}{max width=\textwidth}
-\begin{tabular}[t]{lrr}
+\caption{Parametric selection correction diagnostic.}
+\label{tab:utg_heckman}
+\begin{threeparttable}
+\begin{tabular}{lrr}
 \toprule
-Term & Estimate & SE\\
+Diagnostic quantity & Estimate & SE \\
 \midrule
-First stage: pre-period log ref price & -0.051 & 0.007\\
-First stage: pre-period mean qty & 0.000 & 0.000\\
-First stage: pre-period mean firms & 0.065 & 0.020\\
-First stage: pre-period n orders (excl) & 0.000 & 0.000\\
-First stage: SUS formulary & -0.265 & 0.042\\
-\addlinespace
-Second stage: Admin coef & 0.817 & 4.278\\
-Second stage: inverse Mills ratio & -0.653 & 2.637\\
-Second stage: implied lit-over-admin (\%) & -55.841 & NA\\
-Heckit ML: $\rho$ & 1.000 & NA\\
+Second-stage admin coefficient & \BPutgHeckmanCoef{} & \BPutgHeckmanSE{} \\
+Inverse Mills ratio coefficient & \BPutgHeckmanLambda{} & \BPutgHeckmanLambdaSE{} \\
+Heckit ML $\rho$ cross-check & \BPutgHeckmanRho{} & -- \\
+First-stage pseudo-$R^2$ & \BPutgFirstStagePseudoR{} & -- \\
+First-stage observations & \BPutgFirstStageN{} & -- \\
 \bottomrule
-\multicolumn{3}{l}{\rule{0pt}{1em}First stage: probit of admin on pre-period item characteristics. pre\_n\_orders is excluded from the outcome equation as the exclusion restriction. Second stage: feols with item, year, and PBU FE; Mills ratio constructed from the first-stage prediction. Standard errors clustered at the PBU level. Heckit ML rho reported as a sanity cross-check; identification of rho without FE is fragile.}\\
 \end{tabular}
-\end{adjustbox}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \textit{Notes:} This table is a diagnostic, not a preferred estimator. The exclusion variable is weak in this design, fixed effects absorb much of the useful identifying variation, and the resulting correction is not informative. The preferred appendix evidence is the Manski-Lee bounds, within-firm pricing tests, and sourcing measures.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}

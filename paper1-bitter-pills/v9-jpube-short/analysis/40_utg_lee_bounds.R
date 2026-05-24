@@ -54,9 +54,13 @@ bp_log_step("cache loaded", t0, LOG)
 d <- dt[purchase_type %in% c(1, 2) & po_firm_winner == 1 &
         !is.na(bid_price_log) & !is.na(item_id) & !is.na(year_n) & !is.na(pbu_id)]
 d[, admin := as.integer(purchase_type == 1)]
-d[, ym := paste0(year_n, "-", sprintf("%02d", as.integer(format(as.Date(paste0(year_n, "-01-01")), "%m"))))]
-# If a finer year-month variable exists in the cache, prefer it
-if ("ym_id" %in% names(d)) d[, ym := as.character(ym_id)]
+if ("ym_int" %in% names(d)) {
+  d[, ym := as.character(ym_int)]
+} else if ("ym_f" %in% names(d)) {
+  d[, ym := as.character(ym_f)]
+} else {
+  d[, ym := NA_character_]
+}
 
 cat("UTG sample N:", nrow(d), " (admin =", sum(d$admin), ", lit =", sum(1L - d$admin), ")\n")
 
@@ -155,12 +159,120 @@ ktab <- kbl(res, format = "latex", booktabs = TRUE, digits = 3,
 writeLines(ktab, file.path(OUT, "tables", "tab_utg_lee_bounds.tex"))
 cat("[ok] wrote tab_utg_lee_bounds.tex\n")
 
+bp_lee_for_strata <- function(dt_in, strata_cols) {
+  d0 <- copy(dt_in)
+  if ("p_trim" %in% names(d0)) d0[, p_trim := NULL]
+  sn <- d0[, .(n_admin = sum(admin == 1L), n_lit = sum(admin == 0L)),
+           by = strata_cols]
+  sn[, p_trim := pmax(0, (n_admin - n_lit) / pmax(n_admin, 1))]
+  sn[, p_trim := pmin(p_trim, 1)]
+  d0 <- merge(d0, sn[, c(strata_cols, "p_trim"), with = FALSE],
+              by = strata_cols, all.x = TRUE)
+  d0[is.na(p_trim), p_trim := 0]
+
+  bound_one <- function(side = c("lower", "upper")) {
+    side <- match.arg(side)
+    d_lit <- d0[admin == 0L]
+    d_adm <- d0[admin == 1L]
+    d_adm[, rank_w := frank(if (side == "lower") -bid_price_log else bid_price_log,
+                            ties.method = "first") / .N,
+          by = strata_cols]
+    d_adm <- d_adm[rank_w > p_trim]
+    d_adm[, rank_w := NULL]
+    d_use <- rbindlist(list(d_lit, d_adm), use.names = TRUE, fill = TRUE)
+    m <- feols(bid_price_log ~ admin | item_id + year_n + pbu_id,
+               data = d_use, cluster = ~pbu_id)
+    list(coef = unname(coef(m)["admin"]),
+         se = unname(sqrt(diag(vcov(m)))["admin"]),
+         n = nobs(m))
+  }
+  lower <- bound_one("lower")
+  upper <- bound_one("upper")
+  summ <- sn[, .(
+    cells_total = .N,
+    cells_admin_excess = sum(p_trim > 0),
+    mean_trim = mean(p_trim),
+    max_trim = max(p_trim)
+  )]
+  list(lower = lower, upper = upper, trim = summ)
+}
+
+alt_rows <- list()
+alt_rows[[1]] <- list(label = "item $\\times$ year",
+                      cols = c("item_id", "year_n"),
+                      obj = bp_lee_for_strata(d, c("item_id", "year_n")))
+alt_rows[[2]] <- list(label = "item $\\times$ year $\\times$ PBU",
+                      cols = c("item_id", "year_n", "pbu_id"),
+                      obj = list(lower = lb, upper = ub, trim = trim_summary))
+if ("ym" %in% names(d) && any(!is.na(d$ym))) {
+  alt_rows[[3]] <- list(label = "item $\\times$ year-month $\\times$ PBU",
+                        cols = c("item_id", "ym", "pbu_id"),
+                        obj = bp_lee_for_strata(d[!is.na(ym)], c("item_id", "ym", "pbu_id")))
+}
+
+alt_dt <- rbindlist(lapply(alt_rows, function(x) {
+  o <- x$obj
+  data.table(
+    strata = x$label,
+    lower_coef = o$lower$coef,
+    upper_coef = o$upper$coef,
+    lower_gap = (exp(-o$upper$coef) - 1) * 100,
+    upper_gap = (exp(-o$lower$coef) - 1) * 100,
+    trim_mean = o$trim$mean_trim * 100,
+    admin_excess_cells = o$trim$cells_admin_excess
+  )
+}))
+
+alt_tex <- paste0(
+  "\\begin{table}[ht]\n",
+  "\\centering\n",
+  "\\caption{Manski-Lee bounds under alternative trimming strata.}\n",
+  "\\label{tab:utg_lee_alt_strata}\n",
+  "\\begin{threeparttable}\n",
+  "\\small\n",
+  "\\begin{tabular}{p{0.34\\linewidth}ccc}\n",
+  "\\toprule\n",
+  "Strata & Admin coef. & Gap (\\%) & Trim (\\%) \\\\\n",
+  "\\midrule\n",
+  paste(sprintf("%s & [%.3f, %.3f] & [%.1f, %.1f] & %.1f \\\\",
+                alt_dt$strata,
+                alt_dt$lower_coef,
+                alt_dt$upper_coef,
+                alt_dt$lower_gap,
+                alt_dt$upper_gap,
+                alt_dt$trim_mean),
+        collapse = "\n"),
+  "\n",
+  "\\bottomrule\n",
+  "\\end{tabular}\n",
+  "\\begin{tablenotes}[flushleft]\\footnotesize\n",
+  "\\item \\textit{Notes:} The outcome and second-stage fixed effects are held ",
+  "fixed across rows: log negotiated price with item, year, and PBU fixed effects. ",
+  "Rows vary only the strata used to compute the administrative trimming share. ",
+  "The item $\\times$ year $\\times$ PBU row is the preferred specification in the main analysis. ",
+  "Coefficients are administrative minus litigated log prices; percentage gaps ",
+  "are reported as litigated-over-administrative prices.\n",
+  "\\end{tablenotes}\n",
+  "\\end{threeparttable}\n",
+  "\\end{table}\n"
+)
+writeLines(alt_tex, file.path(OUT, "tables", "tab_utg_lee_alt_strata.tex"))
+cat("[ok] wrote tab_utg_lee_alt_strata.tex\n")
+
 # 4. Emit macros for the manuscript.
 bp_macros_emit("40_utg_lee_bounds", list(
   utgPointNaive       = bp_pct_from_log(-b_naive),
+  utgPointNaiveCoef   = bp_fmt(b_naive),
   utgPointNaiveSE     = bp_fmt(se_naive),
+  utgPointNaiveN      = bp_fmt_int(nobs(m_naive)),
   utgBoundLow         = bp_pct_from_log(-ub$coef),
+  utgBoundLowCoef     = bp_fmt(lb$coef),
+  utgBoundLowSE       = bp_fmt(lb$se),
+  utgBoundLowN        = bp_fmt_int(lb$n),
   utgBoundHigh        = bp_pct_from_log(-lb$coef),
+  utgBoundHighCoef    = bp_fmt(ub$coef),
+  utgBoundHighSE      = bp_fmt(ub$se),
+  utgBoundHighN       = bp_fmt_int(ub$n),
   utgLeeTrimMean      = bp_fmt_pct(trim_summary$mean_trim * 100),
   utgLeeTrimMax       = bp_fmt_pct(trim_summary$max_trim * 100),
   utgLeeStrataExcess  = bp_fmt_int(trim_summary$cells_admin_excess),
