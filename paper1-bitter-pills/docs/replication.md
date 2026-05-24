@@ -1,6 +1,8 @@
 # Replication
 
-This page describes how to replicate the v8 sourcing-reframe results. The active version of the paper is **v8-sourcing-reframe** (JPubE Short paper, May 2026).
+This page describes how to replicate the current results. The active version of
+the paper is **v9-jpube-short** (JPubE short paper, May 2026): *Sourcing under
+Sanctions: Judicial Urgency and Pharmaceutical Procurement Costs.*
 
 ---
 
@@ -8,46 +10,50 @@ This page describes how to replicate the v8 sourcing-reframe results. The active
 
 ```
 paper1-bitter-pills/
-├── v8-sourcing-reframe/        # ACTIVE (JPubE Short)
-│   ├── analysis/               # R scripts 40_… 48_… + _macros.R
-│   ├── manuscript/paper/       # main.tex, submission.tex, *.tex sections
-│   ├── output/figures/         # 7 v8 PDFs (event study, sourcing-vs-pricing, …)
-│   └── output/tables/          # 16 v8 .tex / .csv tables
-├── v7-r2round1/                # frozen — referee R2 round 1 audit baseline
-├── v6-jpub-short/              # frozen — first JPubE Short attempt
-├── v4/                         # legacy R pipeline (still referenced for input data)
+├── v9-jpube-short/             # ACTIVE (JPubE short paper)
+│   ├── analysis/               # R + Python scripts (40_… 54_…) + _macros.R
+│   ├── manuscript/paper/       # main.tex, OnlineAppendix.tex, *.tex sections, values.tex
+│   ├── output/figures/         # vector PDFs (sourcing-vs-pricing, event study, …)
+│   ├── output/tables/          # generated .tex / .csv tables
+│   ├── build_v9.sh             # regenerate outputs + compile main + appendix
+│   └── V9_CHANGELOG.md         # detailed build and revision log
+├── v8-sourcing-reframe/        # frozen — earlier sourcing reframe
+├── v7-r2round1/                # frozen — referee R2 round 1 baseline
+├── v4/                         # legacy R pipeline (prepares the input data cache)
 ├── docs/                       # MkDocs site source (this site)
-└── deploy.sh                   # build + push to darciogm.github.io
+└── deploy.sh                   # build site + push to darciogm.github.io
 ```
 
-The **v4 pipeline** prepares the input data cache (`/tmp/v4_prepared.rds`) used by all v8 scripts; v8 builds analysis on top of that prepared dataset rather than re-deriving it from raw BEC.
+The **v4 pipeline** prepares the input data cache (`/tmp/v4_prepared.rds`) used
+by the v9 analysis scripts; v9 builds analysis on top of that prepared dataset
+rather than re-deriving it from raw BEC.
 
 ---
 
 ## Software Requirements
 
-### Primary Analysis (v8 — R)
+### Primary Analysis (R + Python)
 
 | Package | Purpose |
 |---------|---------|
 | `R` 4.5+ | Statistical computing |
-| `fixest` | High-dimensional fixed-effects estimation (preferred FE specs, `lean=TRUE` default) |
-| `did` / `csdid` | Borusyak-Jaravel-Spiess event study |
+| `fixest` | High-dimensional fixed-effects estimation (`lean=TRUE` default) |
 | `data.table` | Fast data manipulation |
+| `ggplot2` | Publication figures (grayscale, serif) |
 | `arrow` / `duckdb` | Parquet I/O (DuckDB is the default engine for parquet) |
-| `modelsummary` / `kableExtra` / `gt` | Regression and balance tables |
-| `ggplot2` | Publication figures |
-| `binsreg` | Binscatters for diagnostic plots |
-| `sf` / `tmap` | SIRGAS 2000 maps for São Paulo state |
+| `Python` 3 + `duckdb` / `pyarrow` | Classifier macros and presentation tables |
 
-Manski-Lee bounds and the Rademacher wild cluster bootstrap (B = 999) are implemented manually in the v8 scripts. The `fwildclusterboot` package is archived for R 4.5 and `HonestDiD` requires `CVXR`/`clarabel` system deps; both are bypassed in v8 with hand-rolled equivalents that produce JPubE-grade inference.
+Lee trimming bounds and the Rademacher wild-cluster bootstrap are implemented
+manually in the v9 scripts. `HonestDiD` requires `CVXR`/`clarabel` system deps;
+where unavailable, the Honest-DiD sensitivity is computed as a manual
+linear-extrapolation fallback that produces the same diagnostic verdict.
 
 ### Manuscript
 
 | Tool | Purpose |
 |------|---------|
 | TeX Live 2024+ | LaTeX typesetting |
-| `elsarticle` | Journal class (review format for `main.tex`, single-column for `submission.tex`) |
+| `elsarticle` | Journal class (review format) |
 | `natbib` + `bibtex` | Bibliography (NOT biblatex/biber in this project) |
 | `booktabs` + `threeparttable` | Tables |
 
@@ -55,62 +61,63 @@ Manski-Lee bounds and the Rademacher wild cluster bootstrap (B = 999) are implem
 
 ## Data Sources
 
-### Primary Dataset
-
-**BEC-G65** — bid-level pharmaceutical procurement on the São Paulo state electronic procurement platform.
+**BEC-G65** — bid-level pharmaceutical procurement on the São Paulo state
+electronic procurement platform.
 
 | Feature | Description |
 |---------|-------------|
 | Source | Bolsa Eletrônica de Compras (BEC), São Paulo state |
-| Coverage | All bids for BEC Group 65 (medical, dental, hospital supplies) |
+| Coverage | Pharmaceutical purchases (BEC Group 65) |
 | Period | January 2009 – December 2019 |
-| Observations | 479,330 purchase-offer-item observations (bid level) |
-| Treatment classes | Ordinary; Administrative urgent; Litigated |
+| Observations | 479,330 purchase-offer-item observations |
+| Regimes | Ordinary; Administrative urgent; Litigated urgent |
 
-The processed dataset (parquet) is included in the replication package; raw BEC data is publicly available through the São Paulo state transparency portal.
+The classifier operates at the purchase-order/tender-notice level; the empirical
+analysis is at the purchase-offer-item level after classified regimes are linked
+to BEC item records. Price regressions use accepted winning bids. The processed
+dataset is included in the replication package; raw BEC data is publicly
+available through the São Paulo state transparency portal.
 
-### Selection Probit (admin-channel selection)
+### Selection and the Lee bounds
 
-The Manski-Lee bounds rely on a pre-period probit on admin-channel admissibility, predicting `admin = 1` on `litigated = 1` items using:
-
-- Pre-period log reference price (coef ≈ −0.05, p < 0.001)
-- SUS-formulary status (coef ≈ −0.27, p < 0.001)
-- Item-class dummies, year-of-onset
-
-This probit identifies the wedge that the Lee bound corrects.
+The administrative urgent channel is selected and larger — the closest feasible
+urgent-procurement comparison, not a randomized one. The Lee trimming bounds
+discipline that selection: within item × year × PBU strata the overrepresented
+administrative group is trimmed from the high and low tails of its price
+distribution, producing lower and upper bounds for the litigated-over-
+administrative gap under a monotonicity restriction. A parametric (Heckman-type)
+selection correction is non-informative in this design and is reported only as a
+diagnostic.
 
 ---
 
-## Pipeline (v8)
+## Pipeline
 
-The v8 analysis runs on top of the v4 prepared cache. The numbered scripts emit macros into `manuscript/paper/values.tex`, which the LaTeX manuscript reads.
+The v9 analysis runs on top of the v4 prepared cache. The numbered scripts emit
+macros into `manuscript/paper/values.tex`, which the LaTeX manuscript reads.
 
 ```bash
 # 1. Prepare input data (one-off; ~1 minute)
 Rscript v4/analysis/00_prepare_data.R
 
-# 2. Run v8 analysis scripts in order
-cd v8-sourcing-reframe/analysis
-Rscript 40_utg_lee_bounds.R       # Manski-Lee bounds → tab_utg_lee_bounds
-Rscript 41_utg_heckman.R          # Heckman parametric (degenerate; sensitivity)
-Rscript 42_both_types_cells.R     # Both-types-cell representativeness
-Rscript 43_rambachan_roth.R       # Honest sensitivity on BJS event study
-Rscript 44_wild_bootstrap.R       # Manual Rademacher bootstrap
-Rscript 45_reconciliation.R       # UTG decomposition + headline figure
-Rscript 46_balance_descriptive.R  # Within-cell balance + descriptives
-Rscript 46_welfare_bound.R        # Single welfare bound
-Rscript 47_regen_fig1.R           # Regenerate Figure 1 in serif font
-Rscript 48_mechanism_evidence.R   # Modal-winner switch, Jaccard, supplier FE
-
-# 3. Compile manuscript (clean 4-pass)
-cd ../manuscript/paper
-pdflatex -interaction=nonstopmode main.tex
-bibtex main
-pdflatex main.tex
-pdflatex main.tex
+# 2. Regenerate outputs and compile (one command)
+./v9-jpube-short/build_v9.sh
 ```
 
-Each numbered script emits a block into `values.tex` (auto-generated section delimited by markers). The manuscript reads those macros — every numerical claim, table input, and figure path is regenerated by the script that owns it. **No hardcoded numerals in the manuscript.**
+`build_v9.sh` runs the analysis scripts — among them
+`40_utg_lee_bounds.R` (Lee bounds), `43_rambachan_roth.R` (BJS event study +
+Honest-DiD), `44_wild_bootstrap.R` (Rademacher wild-cluster bootstrap),
+`45_reconciliation.R` (pricing-vs-sourcing decomposition),
+`46_procurement_cost_bound.R` (fiscal procurement-cost calculation),
+`48_mechanism_evidence.R` (within firm-buyer-item pricing, winner switching,
+aggregation), and the Python classifier/table layer
+(`49_classifier_macros.py`, `50_v9_outputs.py`, `54_sample_flow_diagnostics.py`)
+— checks required outputs, and compiles `main.pdf` and `OnlineAppendix.pdf`.
+
+Each numbered script emits a block into `values.tex` (delimited by auto-markers).
+The manuscript reads those macros — every numerical claim, table input, and
+figure path is regenerated by the script that owns it. **No hardcoded numerals
+in the manuscript.**
 
 ---
 
@@ -118,20 +125,21 @@ Each numbered script emits a block into `values.tex` (auto-generated section del
 
 | Path | Content |
 |------|---------|
-| `v8-sourcing-reframe/output/figures/` | 7 PDFs: event-study (BJS, honest-sensitivity, item, qty), sourcing-vs-pricing decomposition, qty-ratio density, three-channel cascade |
-| `v8-sourcing-reframe/output/tables/` | 16 tables: Lee bounds, Heckman sensitivity, both-types-cell, placebo, RR sensitivity, supplier FE, three-channel cascade, UTG bootstrap, UTG reconciliation, welfare bound, winner switch, within-firm robustness, descriptive balance |
-| `v8-sourcing-reframe/manuscript/paper/main.pdf` | Compiled manuscript (35pp, JPubE Short review format, double-spaced) |
-| `v8-sourcing-reframe/manuscript/paper/submission.pdf` | Single-column compiled version (17pp) |
+| `v9-jpube-short/output/figures/` | Vector PDFs: pricing-vs-sourcing decomposition, BJS event study, Honest-DiD sensitivity, quantity-ratio density |
+| `v9-jpube-short/output/tables/` | Generated `.tex` tables: combined urgent-margins-and-Lee-bounds, within firm-buyer-item robustness, winner switching, placebo, dynamic sensitivity, procurement cost, classifier validation, sample construction, and more |
+| `v9-jpube-short/manuscript/paper/main.pdf` | Compiled main paper (17 pp, JPubE short-paper review format) |
+| `v9-jpube-short/manuscript/paper/OnlineAppendix.pdf` | Compiled Online Appendix (5 pp) |
 
 ---
 
 ## Computational Environment
 
-The analysis was developed and tested on **DarcioWork** (a dual-CPU WSL2 development workstation):
+The analysis was developed and tested on **DarcioWork** (a WSL2 development
+workstation):
 
 | Component | Specification |
 |-----------|---------------|
-| OS | Ubuntu 24.04 (WSL2 on Windows) |
+| OS | Ubuntu (WSL2 on Windows) |
 | CPU | Intel i7-1260P (12 cores / 14 threads visible to WSL2) |
 | RAM | 21 GB |
 | GPU | None (CPU-only) |
@@ -139,8 +147,7 @@ The analysis was developed and tested on **DarcioWork** (a dual-CPU WSL2 develop
 | `fixest` threads | `setFixest_nthreads(12)` |
 | DuckDB threads | `PRAGMA threads=12; PRAGMA memory_limit='14GB'` |
 
-!!! note "Runtime"
-    The full v8 analysis pipeline (scripts 40 through 48) runs in approximately **3 minutes** on the reference system, after the v4 prepared cache is in place. The slowest step is the Rademacher wild bootstrap (`44_wild_bootstrap.R` — ~30 s for B = 999).
-
-!!! warning "Reproducibility seeds"
-    All scripts that draw random numbers (bootstrap, simulation, train/test splits) set `set.seed(20260504)` at the top. Re-running the pipeline produces byte-identical `values.tex` blocks.
+!!! note "Reproducibility"
+    Scripts that draw random numbers (bootstrap) set explicit seeds. Re-running
+    the pipeline produces identical `values.tex` macro blocks, and a
+    LaTeX-only rebuild reproduces both PDFs without changing any estimate.

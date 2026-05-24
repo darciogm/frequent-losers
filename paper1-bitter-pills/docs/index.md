@@ -70,6 +70,6 @@ Court mandates secure delivery, but they may change how governments procure the 
 
 [**Replication** <br> Code, data, and software requirements](replication.md)
 
-[**Authors** <br> About the research team](authors.md)
+[**Autores** <br> About the research team](autores.md)
 
 </div>
