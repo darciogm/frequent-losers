@@ -104,5 +104,7 @@ mac <- list(
   h4QuadCurv  = if (is.na(qua)) "n/a" else sprintf("%+.4f", qua),
   h4QuadCurvP = if (is.na(qua_p)) "n/a" else sprintf("%.3f", qua_p)
 )
-bp_macros_emit("61_h4_quantity_quartiles", mac)
+# Site-only diagnostics: emit to a separate file NOT \input by the paper
+# (keys carry hypothesis IDs like h4, illegal in LaTeX control sequences).
+bp_macros_emit("61_h4_quantity_quartiles", mac, file = file.path(.this_dir, "referee_macros.tex"))
 cat("\n[61_h4_quantity_quartiles] done.\n"); print(mac)

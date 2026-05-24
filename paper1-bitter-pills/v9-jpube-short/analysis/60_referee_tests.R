@@ -301,5 +301,8 @@ macros <- c(macros, list(
 ))
 
 # ---------------------------------------------------------------------------
-bp_macros_emit("60_referee_tests", macros)
+# Site-only diagnostics: emit to a separate file NOT \input by the paper.
+# (Keys carry hypothesis IDs like h3/h4, which are illegal in LaTeX control
+# sequences; keeping them out of values.tex avoids breaking the paper build.)
+bp_macros_emit("60_referee_tests", macros, file = file.path(.this_dir, "referee_macros.tex"))
 cat("\n[60_referee_tests] done. Macros emitted:\n"); print(names(macros))

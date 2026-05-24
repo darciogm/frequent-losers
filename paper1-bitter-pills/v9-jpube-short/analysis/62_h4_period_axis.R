@@ -95,5 +95,7 @@ mac <- list(
   h4AdminYearNoCtl = sprintf("%+.4f", yint_no),
   h4AdminYearQtyCtl = sprintf("%+.4f", yint_ct)
 )
-bp_macros_emit("62_h4_period_axis", mac)
+# Site-only diagnostics: emit to a separate file NOT \input by the paper
+# (keys carry hypothesis IDs like h4, illegal in LaTeX control sequences).
+bp_macros_emit("62_h4_period_axis", mac, file = file.path(.this_dir, "referee_macros.tex"))
 cat("\n[62_h4_period_axis] done.\n"); print(mac)
