@@ -31,6 +31,7 @@ suppressPackageStartupMessages({
 })()
 source(file.path(.this_dir, "_macros.R"))
 bp_set_threads(12L)
+set.seed(20260524)   # deterministic Rademacher draws (reproducible wild bootstrap)
 
 OUT  <- file.path(.this_dir, "..", "output")
 LOGS <- file.path(.this_dir, "..", "logs")
