@@ -310,7 +310,7 @@ Reverse-auction share & {macro("bothCellModalityShareBoth")} & {macro("bothCellM
         rf"""
 \begin{{table}}[ht]
 \centering
-\caption{{Manski-Lee bounds on the under-the-gun price gap.}}
+\caption{{Lee bounds on the under-the-gun price gap.}}
 \label{{tab:utg_lee_bounds}}
 \begin{{threeparttable}}
 \small
@@ -354,7 +354,7 @@ First-stage observations & {macro("utgFirstStageN")} & -- \\
 \bottomrule
 \end{{tabular}}
 \begin{{tablenotes}}[flushleft]\footnotesize
-\item \textit{{Notes:}} This table is a diagnostic, not a preferred estimator. The exclusion variable is weak in this design, fixed effects absorb much of the useful identifying variation, and the resulting correction is not informative. The preferred appendix evidence is the Manski-Lee bounds, within-firm pricing tests, and sourcing measures.
+\item \textit{{Notes:}} This table is a diagnostic, not a preferred estimator. The exclusion variable is weak in this design, fixed effects absorb much of the useful identifying variation, and the resulting correction is not informative. The preferred appendix evidence is the Lee bounds, within-firm pricing tests, and sourcing measures.
 \end{{tablenotes}}
 \end{{threeparttable}}
 \end{{table}}

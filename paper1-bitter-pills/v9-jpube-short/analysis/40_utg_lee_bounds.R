@@ -147,7 +147,7 @@ ktab <- kbl(res, format = "latex", booktabs = TRUE, digits = 3,
             col.names = c("Specification", "Coef.\\ on Admin", "SE",
                           "Lit-vs-Admin (\\%)", "$N$"),
             label = "tab:utg_lee_bounds",
-            caption = "Manski-Lee bounds on the under-the-gun coefficient.",
+            caption = "Lee bounds on the under-the-gun coefficient.",
             escape = FALSE) |>
   add_header_above(c(" " = 1, "log negotiated price" = 2, "implied" = 1, " " = 1)) |>
   footnote(general = paste(
@@ -226,7 +226,7 @@ alt_dt <- rbindlist(lapply(alt_rows, function(x) {
 alt_tex <- paste0(
   "\\begin{table}[ht]\n",
   "\\centering\n",
-  "\\caption{Manski-Lee bounds under alternative trimming strata.}\n",
+  "\\caption{Lee bounds under alternative trimming strata.}\n",
   "\\label{tab:utg_lee_alt_strata}\n",
   "\\begin{threeparttable}\n",
   "\\small\n",
@@ -251,7 +251,12 @@ alt_tex <- paste0(
   "Rows vary only the strata used to compute the administrative trimming share. ",
   "The item $\\times$ year $\\times$ PBU row is the preferred specification in the main analysis. ",
   "Coefficients are administrative minus litigated log prices; percentage gaps ",
-  "are reported as litigated-over-administrative prices.\n",
+  "are reported as litigated-over-administrative prices. ",
+  "In the finest item $\\times$ year-month $\\times$ PBU strata, cells contain too ",
+  "few administrative observations for top-tail and bottom-tail trimming to remove ",
+  "different observations, so the lower and upper bounds coincide; this row is ",
+  "reported for completeness, and the preferred bounds use the coarser ",
+  "item $\\times$ year $\\times$ PBU strata.\n",
   "\\end{tablenotes}\n",
   "\\end{threeparttable}\n",
   "\\end{table}\n"
