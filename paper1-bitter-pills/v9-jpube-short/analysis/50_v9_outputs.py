@@ -87,13 +87,13 @@ def main() -> None:
 \setlength{{\tabcolsep}}{{5pt}}
 \begin{{tabular}}{{@{{}}l l l l@{{}}}}
 \toprule
-Sample & Size & Unit & Empirical role \\
+Sample & Size & Unit & Role \\
 \midrule
 Full BEC pharmaceutical file & {macro("nPOIfull")} & POI & Linked POI analysis file \\
 Analysis sample & {macro("nAnalysisSample")} & POI & Ordinary-vs-urgent comparisons \\
 Winners-only price sample & {macro("negNobs")} & Winning bids & Negotiated-price regressions \\
 Urgent panel & {macro("nUTG")} & Winning bids & Admin-vs-litigated comparison \\
-Both-regime urgent cells & {macro("bothCellN")} & Item-month cells & Within-cell representativeness \\
+Both-regime urgent cells & {macro("bothCellN")} & Item-month cells & Within-cell variation \\
 Singleton urgent cells & {macro("bothCellNSingleton")} & Item-month cells & Singleton-cell comparison \\
 Firm-buyer-item triples & {macro("utgTripleNUTG")} ({macro("utgTripleCountUTG")} triples) & Winning bids & Within-supplier pricing test \\
 \bottomrule
@@ -126,6 +126,49 @@ Tender success & {macro("successCoef")} & {macro("successSE")} & {macro("success
 \end{{tabular}}
 \begin{{tablenotes}}[flushleft]\footnotesize
 \item \textit{{Notes:}} Compact presentation of existing urgent-versus-ordinary estimates under the preferred item, year, and PBU fixed-effects specification. Negotiated-price estimates use accepted winning bids; tender-success specifications use the broader tender/POI sample for which success is observed. Standard errors are clustered by PBU. The table motivates the mechanism analysis and is not the core sanction-exposure design.
+\end{{tablenotes}}
+\end{{threeparttable}}
+\end{{table}}
+""",
+    )
+
+    # Combined main-paper exhibit: urgent-vs-ordinary margin (Panel A) plus the
+    # selection-bounded under-the-gun gap (Panel B), so the two share one float.
+    write(
+        "tab_urgent_and_bounds.tex",
+        rf"""
+\begin{{table}}[ht]
+\centering
+\caption{{Urgent procurement margins and under-the-gun bounds.}}
+\label{{tab:urgent_and_bounds}}
+\begin{{threeparttable}}
+\small
+\setlength{{\tabcolsep}}{{5pt}}
+
+{{\itshape Panel A. Urgent versus ordinary procurement}}\par\smallskip
+\begin{{tabular}}{{lccc}}
+\toprule
+Outcome & Effect & SE & Interpretation \\
+\midrule
+Log negotiated price & {macro("negCoef")} & {macro("negSE")} & {macro("negPctHeadline")} higher prices \\
+Log reference price & {macro("refCoef")} & {macro("refSE")} & {macro("refPctPreferred")} higher reference prices \\
+Log number of bidding firms & {macro("firmsCoef")} & {macro("firmsSE")} & {macro("firmsPctHeadlineAbs")} fewer bidders \\
+Tender success & {macro("successCoef")} & {macro("successSE")} & {macro("successPP")} higher success \\
+\bottomrule
+\end{{tabular}}\par\medskip
+
+{{\itshape Panel B. Under-the-gun: administrative vs.\ litigated urgent gap}}\par\smallskip
+\begin{{tabular}}{{p{{.40\linewidth}}rrrr}}
+\toprule
+Specification & Admin coef. & SE & Gap (\%) & $N$ \\
+\midrule
+Naive UTG: item + year + PBU FE & {macro("utgPointNaiveCoef")} & {macro("utgPointNaiveSE")} & {macro("utgPointNaive")} & {macro("utgPointNaiveN")} \\
+Lee lower bound: admin top-tail trim & {macro("utgBoundLowCoef")} & {macro("utgBoundLowSE")} & {macro("utgBoundLow")} & {macro("utgBoundLowN")} \\
+Lee upper bound: admin bottom-tail trim & {macro("utgBoundHighCoef")} & {macro("utgBoundHighSE")} & {macro("utgBoundHigh")} & {macro("utgBoundHighN")} \\
+\bottomrule
+\end{{tabular}}
+\begin{{tablenotes}}[flushleft]\footnotesize
+\item \textit{{Notes:}} POI denotes purchase-offer-item. \emph{{Panel A}} reports urgent-versus-ordinary estimates under item, year, and PBU fixed effects; negotiated-price and reference-price estimates use accepted winning bids, tender success uses the broader tender/POI sample, and standard errors are clustered by PBU. Panel A establishes the urgent-procurement margin and is not the sanction-exposure design. \emph{{Panel B}} reports the administrative-versus-litigated urgent gap; coefficients are administrative minus litigated log negotiated price, so negative coefficients mean litigated purchases are more expensive, while the percentage column is the reader-facing litigated-over-administrative gap. Lee trimming is applied within item$\times$year$\times$PBU strata where administrative observations exceed litigated observations; the mean trimming rate is {macro("utgLeeTrimMean")} and the maximum is {macro("utgLeeTrimMax")}.
 \end{{tablenotes}}
 \end{{threeparttable}}
 \end{{table}}

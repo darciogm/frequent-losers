@@ -758,3 +758,131 @@ latexmk -pdf OnlineAppendix.tex  # 15 pages
 12. Do main and appendix compile cleanly? **Yes** — exit 0, no errors/undefined/overfull.
 13. Does the paper read like a JPubE short paper, not a technical report? **Yes** — 17 pages, cumulative argument, disciplined policy.
 14. Would a skeptical referee understand the contribution without charitable interpretation? **Yes** on the framing. The contribution is now stated plainly in the abstract, the Introduction contribution paragraph, and the Conclusion. The residual referee risk remains substantive, not presentational: the Lee-bound monotonicity assumption and the firm-buyer-item triple-sample selection are the load-bearing assumptions a referee may still contest.
+
+## Final surgical fix: remaining vulnerabilities 1--4
+
+Targeted production/credibility pass on the four narrow vulnerabilities. No architecture, title, contribution, or estimate changed; `values.tex` verified byte-identical before and after.
+
+### 1. Figure 1 (`analysis/47_regen_fig1.R`, regenerated)
+
+- Enlarged fonts for headline-figure readability: y-axis component labels to 11.5pt, x tick labels to 11pt, x-axis title to 12pt.
+- Simplified the top label "Observed gap (total)" to "Observed gap"; component order unchanged (Observed gap, Quantity / scale, Within-firm pricing, Supplier composition).
+- Made the "near zero" annotation smaller (2.8pt) and kept it integrated immediately beside the within-firm interval; dark filled points vs hollow within-firm point retained for contrast; zero line visible but not dominant; dotted separator between the observed total and the three components; tight x-range; grayscale, no grid clutter. Height 2.7in (compact). Caption unchanged (residual is a reconciliation residual; winner-switching evidence in Table 5). A referee now sees at a glance that within-firm pricing is near zero while quantity/scale and supplier composition drive the gap.
+
+### 2. Table 1 (`analysis/50_v9_outputs.py`, regenerated)
+
+- Column header "Empirical role" shortened to "Role"; "Within-cell representativeness" shortened to "Within-cell variation". Roles remain compact one-line phrases (Linked POI analysis file; Ordinary-vs-urgent comparisons; Negotiated-price regressions; Admin-vs-litigated comparison; Within-cell variation; Singleton-cell comparison; Within-supplier pricing test).
+- booktabs, no vertical lines, `\small`, single-line rows, fits within margins (0 overfull). Sample definitions, sizes, units, and macro-driven values unchanged. Notes unchanged (POI definition, accepted winning bids, classifier-validation level/Appendix A, within-supplier-pricing scope).
+
+### 3. Appendix D referee-proofing
+
+- **D.6 (alternative quantity controls):** strengthened the prose to pre-empt the "quantity control kills the effect" misreading. It now states explicitly that the table is a channel diagnostic, not a robustness test of the total effect; that quantity is itself a margin of judicial urgency so conditioning on it changes the estimand; that the preferred total object is the no-quantity-control bounded estimate; and that the sign change under log quantity should not be read as falsifying the total effect because it reflects conditioning on the scale margin the paper studies. Consistent with Section 4's quantity-control framing. Table unchanged.
+- **D.9 (aggregation within buyer-item-month cells):** strengthened the prose to be explicitly diagnostic and suggestive, not decisive. It now states that common cells are a selected subsample; that the pattern is mixed (administrative cells larger total quantity; litigated cells more repeated POIs, consistent with fragmented repeated demand rather than uniform administrative superiority); and that the table supports the scale-and-sourcing interpretation only in combination with the main-paper decomposition figure and the winner-switching evidence. The mixed pattern is preserved, not hidden. (Cross-references are descriptive, not `\ref`, because the Online Appendix is a standalone document.)
+- General D pass: scanned for "confirms", "robust across", "proves", "exogenous", bare "no markup" — none present. Subsection purpose sentences and sign-convention notes are in place. No table overflow or float drift.
+
+### 4. Section 2 institutional bite
+
+- Added concrete, hedged sanction detail to Section 2.1: court orders "may attach daily fines or other compliance measures, exposing the public administration or responsible officials to consequences for noncompliance."
+- **Basis and verification.** A repository search for verified sanction sources (astreintes, daily fines, fund-blocking, deadlines, fund seizure) returned no citable in-repo source, so no new legal citation was introduced. Daily fines (multas diárias / astreintes) are the standard coercive measure for Brazilian mandatory-delivery injunctions (general civil-procedure practice), and the statement is hedged with "may attach" — it does not claim frequency, universality, or personal liability in every order. The observability half (notices reference the judicial process) was already supported by the paper's own classifier (Section 2.1/2.3) and was not duplicated. No unverified legal citation was added.
+
+### Global consistency
+
+- "Lee bounds" throughout; 0 occurrences of "Manski" in either compiled PDF.
+- "no broad same-firm markup in deep repeated urgent markets" preserved; never shortened to "no markup".
+- "fiscal procurement-cost" terminology; no "welfare cost"/"welfare bound".
+- Forbidden-phrase scan of all main + appendix `.tex` ("differ only", "clean counterfactual", "exogenous", bare "no markup", "welfare cost/bound", "proves", "confirms causality", "courts are inefficient", "judicialization is bad"): none present.
+- Administrative channel consistently described as selected, larger, closest feasible urgent comparison, not random. Quantity controls and dynamic evidence consistently framed as diagnostics.
+
+### Build
+
+```bash
+python3 analysis/50_v9_outputs.py        # Table 1
+Rscript analysis/47_regen_fig1.R         # Figure 1
+cd manuscript/paper
+latexmk -pdf main.tex            # 17 pages
+latexmk -pdf OnlineAppendix.tex  # 15 pages
+```
+
+- Main: 17 pages, exit 0, 0 undefined references/citations, 0 overfull boxes. Online Appendix: 15 pages, exit 0, 0 undefined, 0 overfull.
+- `values.tex` byte-identical; no empirical number hardcoded or changed; no `\BPtbd` leakage. No AI/tool marks in edited `.tex` or scripts.
+
+### Final self-assessment
+
+- Is Figure 1 now journal-quality? **Yes** — larger labels, integrated annotation, high-contrast points, tight grayscale layout.
+- Is Table 1 compact and elegant? **Yes** — "Role" column, one-line phrases, fits margins, reads in seconds.
+- Is Appendix D.6 protected against the "quantity control kills the effect" misreading? **Yes** — explicitly framed as a channel diagnostic; the sign change is stated as expected, not falsifying.
+- Is Appendix D.9 protected against overinterpretation? **Yes** — selected subsample, mixed pattern, decisive only with Figure 1 and Table 5.
+- Is Section 2 more institutionally concrete without overclaiming? **Yes** — hedged daily-fines language; no new unverified citation.
+- Are all empirical values still macro/script-generated? **Yes** — `values.tex` unchanged.
+- Do main and appendix compile cleanly? **Yes** — exit 0, no errors/undefined/overfull.
+- Are there no new artifacts? **Yes** — none introduced; PDFs scanned.
+- Did the pass avoid changing the scientific argument? **Yes** — only presentation, framing safety, and one hedged institutional phrase.
+
+Remaining issues: none. The institutional-bite addition is the one judgment call (daily fines stated as general practice, hedged, no new citation); documented above so a co-author or editor can swap in a specific legal citation if desired.
+
+## JPubE short-paper compliance pass
+
+Brought the package into compliance with the JPubE Short Paper track (≤6,000 words, ≤5 exhibits, Online Appendix ≤7 pages) without changing the title, contribution, estimates, or identification.
+
+### Final counts
+
+- Main paper word count (body through Conclusion, before References, including table cells and captions = conservative): **5,004 words** (≤6,000; comfortably below the 5,700--5,850 buffer).
+- Main paper compiled length: **17 pages**.
+- Main paper exhibits: **4** (≤5).
+- Online Appendix compiled length: **5 pages** (≤7), down from 15.
+- Online Appendix: **6 tables, 0 figures**.
+
+### Exhibits (main): 6 → 4
+
+- **Combined** the former Table 2 (urgent-vs-ordinary outcomes) and Table 3 (Lee bounds) into a single two-panel exhibit, **Table 1 "Urgent procurement margins and under-the-gun bounds"** (Panel A urgent margins; Panel B naive/Lee-lower/Lee-upper). Generated by `analysis/50_v9_outputs.py` as `tab_urgent_and_bounds.tex`; fully macro-driven; counts as one exhibit.
+- **Moved** the former Table 1 (samples and identifying variation) out of the main paper; Section 3 prose carries the sample sizes (macros) and points to the appendix sample-construction table. The polished `tab_sample_variation_v9` remains generated and archived in `output/tables/` (not deleted), simply not `\input` in the main.
+- Final main exhibits: **Table 1** (urgent margins + Lee bounds), **Table 2** (within firm-buyer-item pricing), **Table 3** (winner switching), **Figure 1** (pricing-vs-sourcing decomposition). All central evidence (bounded UTG gap, within-firm null, sourcing, winner switching) remains in the main paper.
+- Cross-references updated: Section 5.1 cites "Panel A of Table 1", Section 5.2 cites "Panel B of Table 1"; within-firm and winner-switching tables auto-renumbered; no orphan `\ref`; 0 undefined references, 0 "??".
+
+### Main paper stands alone
+
+Data source, sample sizes, classifier credibility (F1 macros), the urgent margin, the Lee-bounded under-the-gun gap, the within-firm pricing test, the sourcing/winner-switching mechanism, limitations, and the policy implication are all in the main text and its four exhibits. The appendix is referenced for detail, not for the central evidence. Word count was already within budget after the restructuring, so no further forced text cuts were needed.
+
+### Online Appendix: 15 → 5 pages
+
+Rewrote `manuscript/paper/Appendix.tex` into four lean sections:
+
+- **A. Data Construction and Classifier Validation** — `tab_classifier_validation_v9` + `tab_sample_construction_v9`; confusion-count and classifier-error-sensitivity tables, sample-flow, descriptive-balance, balance-within, and both-types-cells tables removed and summarized in prose.
+- **B. Selection Bounds** — `tab_utg_lee_alt_strata` (alternative-strata robustness); the main bounds now live in Table 1 Panel B; the Heckman diagnostic table is replaced by one sentence; trimming rates reported via macros.
+- **C. Robustness and Diagnostics** — `tab_placebo` + `tab_dynamic_sensitivity_summary`; wild-cluster inference, supplier-FE/quantity channel diagnostics, the quantity-control sign-change framing, the mixed aggregation pattern, and the within-firm heterogeneity pointer are all in prose (referee-proof framing preserved); both event-study figures (E.1/E.2) removed.
+- **D. Procurement-Cost Calculation** — `tab_procurement_cost_bound`; the reconciliation table and the two procurement-cost sensitivity tables are replaced by one sentence; explicit "not a full welfare estimate" note retained.
+
+Appendix tables removed from the submitted appendix (kept generated in `output/tables/`, scripts intact, nothing permanently deleted): `tab_classifier_confusion_v9`, `tab_classifier_error_sensitivity`, `tab_sample_flow_diagnostics`, `tab_descriptive_balance`, `tab_balance_within`, `tab_both_types_cells`, `tab_utg_lee_bounds` (now in main Panel B), `tab_utg_heckman`, `tab_supplier_fe`, `tab_utg_boottest`, `tab_sample_restriction_robustness`, `tab_market_depth_heterogeneity`, `tab_quantity_definition_robustness`, `tab_within_firm_robustness` (now main Table 2), `tab_within_firm_alt_cluster`, `tab_aggregation_cells`, `tab_utg_reconciliation`, `tab_procurement_cost_sensitivity`, `tab_procurement_cost_spending_sensitivity`, and figures `fig_event_study_item`, `fig_event_study_honest_rr`. Rationale: each was either duplicated in the main paper, a non-preferred diagnostic, or a sensitivity panel whose conclusion is stated in one sentence; none is required to understand or defend the main argument.
+
+Main-paper appendix-letter references realigned to the new A/B/C/D structure (selection-bounds C→B; placebo and wild-cluster D→C; classifier-error wording softened since the table moved to prose).
+
+### Macro/reproducibility and manual patching
+
+- All empirical values remain macro/script-generated; `values.tex` verified byte-identical before and after this pass (no number hardcoded or changed).
+- New combined table generated by `50_v9_outputs.py` from existing macros.
+- One unavoidable manual table patch: `tab_procurement_cost_bound.tex` referenced the now-removed reconciliation table via `\ref`; the note was reworded to a descriptive main-paper pointer, and the same change was applied to the generator `analysis/46_procurement_cost_bound.R` so script and output do not drift (the script cannot be re-run here because it needs absent raw data).
+
+### Consistency, references, build
+
+- Banned-phrase scan of all main + appendix `.tex`: none of "differ only", "clean counterfactual", "no markup" (unqualified), "welfare cost/bound", "proves", "confirms causality", "courts are inefficient", "judicialization is bad", "sanctions do not create markups". 0 "Manski" in either PDF. Lee/administrative-channel/deep-market/policy terminology consistent.
+- Bibliography: "Biehl, J.a." artifact absent; 0 undefined citations in main and appendix; no "??".
+- Build: `python3 analysis/50_v9_outputs.py`; `latexmk -pdf main.tex` (17 pp, exit 0, 0 undefined, 0 overfull); `latexmk -pdf OnlineAppendix.tex` (5 pp, exit 0, 0 undefined, 0 overfull). No AI/tool marks.
+
+### Short-paper compliance self-check
+
+1. Is the main paper below 6,000 words? **Yes** — 5,004 (conservative).
+2. Does the main paper have at most five exhibits? **Yes** — four.
+3. Is the Online Appendix no longer than 7 pages? **Yes** — five.
+4. Does the appendix contain only essential support? **Yes** — classifier/sample, bounds robustness, core robustness/diagnostics, procurement cost.
+5. Were redundant appendix tables/figures cut or summarized? **Yes** — 24 tables + 2 figures → 6 tables, 0 figures; remainder in prose or archived.
+6. Does the main paper remain fully stand-alone after appendix compression? **Yes** — all central evidence and sample/classifier credibility are in the main text and four exhibits.
+7. Does the appendix support the paper without becoming a shadow full-length article? **Yes** — five lean pages of validation, bounds, robustness, and cost.
+8. Is the core contribution clear by page 2? **Yes** — pricing-vs-sourcing in the abstract and Introduction paragraph 2.
+9. Are the central evidence pieces in the main paper? **Yes** — bounded gap (Table 1 Panel B), within-firm null (Table 2), decomposition (Figure 1), winner switching (Table 3).
+10. Is the appendix supportive rather than necessary? **Yes**.
+11. Are all empirical values macro-generated? **Yes** — `values.tex` byte-identical.
+12. Do main and appendix compile cleanly? **Yes** — exit 0, no undefined/overfull.
+13. Does the paper read like a JPubE short paper, not a compressed full-length paper? **Yes** — four exhibits, five-page appendix, cumulative argument.
+14. Would an editor see it as close to conditionally acceptable rather than needing major development? **Yes on compliance and framing.** The remaining risk is substantive, not formatting: the Lee-bound monotonicity assumption and the firm-buyer-item triple-sample selection are the load-bearing assumptions a referee may still contest.
+
+Remaining issues: none for compliance. Section/exhibit quality held at the prior 9.6--9.7 level; the combined Table 1 and the five-page appendix are the only structural changes, both verified to compile and render cleanly.

@@ -146,7 +146,7 @@ bound_tex <- paste0(
   "\\bottomrule\n",
   "\\end{tabular}\n",
   "\\begin{tablenotes}[flushleft]\\footnotesize\n",
-  "\\item \\textit{Notes:} This calculation is not a full welfare estimate. It applies the bounded price gap to a calibrated admissible share of litigated spending and excludes patient health benefits, search costs, and other welfare components. It should be read together with the sourcing decomposition in Table~\\ref{tab:utg_reconciliation}.\n",
+  "\\item \\textit{Notes:} This calculation is not a full welfare estimate. It applies the bounded price gap to a calibrated admissible share of litigated spending and excludes patient health benefits, search costs, and other welfare components. It should be read together with the main-paper sourcing decomposition.\n",
   "\\end{tablenotes}\n",
   "\\end{threeparttable}\n",
   "\\end{table}\n"

@@ -70,7 +70,7 @@ obs_log    <- read_macro_num("utgObsLogGap")
 obs_pct    <- (exp(obs_log) - 1) * 100
 
 plot_df <- data.table(
-  comp_short = c("Observed gap (total)", "Quantity / scale",
+  comp_short = c("Observed gap", "Quantity / scale",
                  "Within-firm pricing", "Supplier composition"),
   pct        = c(obs_pct, mech_pct, within_pct, comp_pct),
   ci_lo      = c(obs_lo, mech_lo, within_lo, comp_lo),
@@ -105,8 +105,8 @@ p <- ggplot(plot_df, aes(pct, comp_short)) +
   annotate("text",
            x = near_x, y = "Within-firm pricing",
            label = "near zero", hjust = 0, vjust = 0.5,
-           size = 3.0, fontface = "italic", family = "serif",
-           color = "grey20") +
+           size = 2.8, fontface = "italic", family = "serif",
+           color = "grey25") +
   scale_x_continuous(breaks = pretty_breaks(n = 6),
                      labels = function(x) sprintf("%+.0f", x),
                      expand = expansion(mult = 0),
@@ -120,10 +120,10 @@ p <- ggplot(plot_df, aes(pct, comp_short)) +
         axis.line.y  = element_blank(),
         axis.ticks.y = element_blank(),
         axis.ticks.x = element_line(color = "grey30", linewidth = 0.3),
-        axis.text    = element_text(color = "black", size = 10),
-        axis.text.y  = element_text(hjust = 0),
-        axis.title.x = element_text(size = 10.5, margin = margin(t = 7)),
-        plot.margin  = margin(6, 10, 5, 6))
+        axis.text.x  = element_text(color = "black", size = 11),
+        axis.text.y  = element_text(color = "black", size = 11.5, hjust = 0),
+        axis.title.x = element_text(size = 12, margin = margin(t = 7)),
+        plot.margin  = margin(6, 12, 5, 6))
 
-ggsave(OUT_FIG, p, width = 6.5, height = 2.5, device = cairo_pdf)
+ggsave(OUT_FIG, p, width = 6.5, height = 2.7, device = cairo_pdf)
 cat("wrote:", OUT_FIG, "\n")
