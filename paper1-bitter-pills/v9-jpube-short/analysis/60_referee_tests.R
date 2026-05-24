@@ -314,7 +314,14 @@ bp_macros_emit("60_paper_diagnostics", list(
   wfBelowQtyHolm   = macros$h4BelowQtyPHolm,
   wfBelowQtyRW     = macros$h4BelowQtyPrw,
   wfEarlyHolm      = macros$h4EarlyPHolm,
-  wfEarlyRW        = macros$h4EarlyPrw
+  wfEarlyRW        = macros$h4EarlyPrw,
+  # H2: Lee-bound robustness to monotonicity slack (extra-trim sensitivity).
+  wfLeeBreakdownDelta = macros$h2BreakdownDelta,
+  wfLeeGapTrimLow     = macros$h2GapDelta10Low,
+  wfLeeGapTrimHigh    = macros$h2GapDelta10High,
+  # H6: cross-regime winner reallocation vs within-regime baseline churn.
+  wfChurnBaselineJaccard = macros$h6BaselineJaccard,
+  wfChurnGap             = macros$h6JaccardGap
 ))
 
 # Site-only diagnostics: emit to a separate file NOT \input by the paper.
