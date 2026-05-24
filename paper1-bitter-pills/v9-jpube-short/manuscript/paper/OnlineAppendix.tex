@@ -28,6 +28,13 @@
 \numberwithin{table}{section}
 \numberwithin{figure}{section}
 
+% Flush pending floats at each section/subsection boundary so appendix tables
+% stay within the section that introduces them (mirrors main.tex).
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
 \begin{document}
 
 \begin{frontmatter}

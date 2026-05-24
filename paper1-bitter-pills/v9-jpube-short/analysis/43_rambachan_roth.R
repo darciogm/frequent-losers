@@ -158,38 +158,44 @@ writeLines(dyn_table, file.path(OUT, "tables", "tab_dynamic_sensitivity_summary.
 df <- data.table(et = ev_o, b = beta_o, se = sqrt(diag(sigma_o)))
 df[, lo := b - 1.96 * se]; df[, hi := b + 1.96 * se]
 
+# Grayscale, serif styling consistent with the main-paper figure.
+es_theme <- theme_classic(base_size = 10, base_family = "serif") +
+  theme(panel.grid.major.y = element_line(color = "grey93", linewidth = 0.3),
+        panel.grid.minor = element_blank(),
+        axis.line  = element_line(color = "grey30", linewidth = 0.4),
+        axis.ticks = element_line(color = "grey30", linewidth = 0.3),
+        axis.text  = element_text(color = "black"),
+        axis.title = element_text(size = 10.5),
+        plot.margin = margin(5, 8, 4, 5))
+
 p_item <- ggplot(df, aes(et, b)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  geom_vline(xintercept = -0.5, linetype = "dashed", color = "grey60") +
-  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, fill = "steelblue") +
-  geom_line(color = "steelblue", linewidth = 0.6) +
-  geom_point(size = 2.1, color = "steelblue") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey55", linewidth = 0.4) +
+  geom_vline(xintercept = -0.5, linetype = "dotted", color = "grey60", linewidth = 0.4) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.18, fill = "grey60") +
+  geom_line(color = "grey20", linewidth = 0.6) +
+  geom_point(size = 2.2, shape = 21, fill = "grey20", color = "grey10", stroke = 0.5) +
   scale_x_continuous(breaks = -5:5) +
   labs(x = "Years relative to first court order",
        y = "Log negotiated price relative to baseline") +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.minor = element_blank(),
-        plot.margin = margin(6, 8, 6, 6))
+  es_theme
 ggsave(file.path(OUT, "figures", "fig_event_study_item.pdf"),
-       p_item, width = 6.5, height = 4, device = cairo_pdf)
+       p_item, width = 6.4, height = 3.2, device = cairo_pdf)
 
 df[, adj_lo := b - pre_max_obs - 1.96 * se]
 df[, adj_hi := b + pre_max_obs + 1.96 * se]
 p_honest <- ggplot(df, aes(et, b)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  geom_vline(xintercept = -0.5, linetype = "dashed", color = "grey60") +
-  geom_ribbon(aes(ymin = adj_lo, ymax = adj_hi), alpha = 0.12, fill = "firebrick") +
-  geom_errorbar(aes(ymin = lo, ymax = hi), width = 0.12, color = "steelblue") +
-  geom_line(color = "steelblue", linewidth = 0.6) +
-  geom_point(size = 2.1, color = "steelblue") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey55", linewidth = 0.4) +
+  geom_vline(xintercept = -0.5, linetype = "dotted", color = "grey60", linewidth = 0.4) +
+  geom_ribbon(aes(ymin = adj_lo, ymax = adj_hi), alpha = 0.25, fill = "grey75") +
+  geom_errorbar(aes(ymin = lo, ymax = hi), width = 0.12, color = "grey35", linewidth = 0.5) +
+  geom_line(color = "grey20", linewidth = 0.6) +
+  geom_point(size = 2.2, shape = 21, fill = "grey20", color = "grey10", stroke = 0.5) +
   scale_x_continuous(breaks = -5:5) +
   labs(x = "Years relative to first court order",
        y = "Log negotiated price relative to baseline") +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.minor = element_blank(),
-        plot.margin = margin(6, 8, 6, 6))
+  es_theme
 ggsave(file.path(OUT, "figures", "fig_event_study_honest_rr.pdf"),
-       p_honest, width = 6.5, height = 4, device = cairo_pdf)
+       p_honest, width = 6.4, height = 3.2, device = cairo_pdf)
 
 bp_macros_emit("43_rambachan_roth", list(
   rrSensitivityM       = bp_fmt(breakdown_M),

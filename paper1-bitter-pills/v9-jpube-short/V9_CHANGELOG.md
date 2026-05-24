@@ -631,3 +631,130 @@ None blocking. The full data-driven rebuild (`build_v9.sh`) could not be exercis
 - Are all empirical numbers macro-generated? **Yes** — no placeholder leakage; tables/figures generated.
 - Do main and appendix compile cleanly? **Yes** — 0 LaTeX errors, 0 undefined references/citations, no `??`, no missing figures, no large overfull boxes.
 - Would a skeptical Referee 2 still have an easy presentation/overclaiming objection? **No easy one.** The Manski-vs-Lee labeling inconsistency is resolved; the within-firm result is framed as a deep-market null with a stated power-relevant caveat; the residual composition component is explicitly not read alone; the aggregation diagnostic is framed as mixed; welfare and patient-benefit limits are explicit. Residual referee risk is substantive, not presentational: the monotonicity assumption behind the Lee bounds and the selection of the firm-buyer-item triple sample remain the load-bearing identification assumptions, and a referee may still press on them.
+
+## Final production cleanup: Figure 1, Table 1, appendix floats, Appendix E figures, bibliography
+
+Production-only pass. No argument, title, estimate, contribution, or new analysis changed. `values.tex` verified byte-identical before and after (no empirical value altered). All affected outputs regenerated from scripts; PDFs recompiled.
+
+### Figure 1 (`analysis/47_regen_fig1.R`, regenerated)
+
+- Increased point contrast: filled points darkened to `grey15` against medium-grey (`grey50`) confidence intervals; the near-zero within-firm point stays hollow white.
+- Zero line lightened to `grey60`, linewidth 0.4 — clear but no longer visually dominant.
+- "near zero" annotation kept integrated immediately beside the within-firm interval (not floating); dotted separator between the observed total and the three components retained; labels concise (Observed gap (total), Quantity / scale, Within-firm pricing, Supplier composition).
+- Vector PDF (cairo), serif font consistent with the manuscript; honest caption (residual is a reconciliation residual, read with Table~5) unchanged. Estimates unchanged.
+
+### Table 1 (`analysis/50_v9_outputs.py`, regenerated)
+
+- Recast as four clean columns: Sample, Size, Unit, **Empirical role**. Replaced long prose in the role column with compact phrases (Linked POI analysis file; Ordinary-vs-urgent comparisons; Negotiated-price regressions; Admin-vs-litigated comparison; Within-cell representativeness; Singleton-cell comparison; Within-supplier pricing test).
+- Compact units (POI; Winning bids; Item-month cells). Every row now fits on a single line; previous multi-line wrapping removed.
+- All sample sizes preserved and macro-driven, including the firm-buyer-item triple count shown inline as "`\BPutgTripleNUTG` (`\BPutgTripleCountUTG` triples)".
+- Fit fix: the natural four-`l`-column table was 35.6pt wider than `\textwidth` (`threeparttable` sized the notes to that width, so `adjustbox` alone did not resolve the overfull). Set the table to `\small` with `tabcolsep` 5pt, consistent with the paper's other tables; the table now fits within margins with **zero overfull boxes**. booktabs, no vertical lines. Notes kept concise (POI definition, accepted winning bids, classifier validation level/Appendix~A, within-supplier-pricing scope).
+
+### Appendix float placement (`manuscript/paper/OnlineAppendix.tex`)
+
+- Root cause: `main.tex` redefines `\section`/`\subsection` to call `\FloatBarrier`, but `OnlineAppendix.tex` did not, so B tables drifted into C and C into D.
+- Fix: added the same `\FloatBarrier`-at-section/subsection redefinition (uses `placeins`, already loaded) to the appendix preamble.
+- Result: A (p.1), B (pp.2–5), C (p.6), D (pp.7–11), E (pp.12–13), F (pp.13–15). Appendix B tables no longer drift into C; C tables no longer drift into D; Appendix D tables sit with their subsections. No near-empty pages (every page carries text and/or floats; lowest text density is the E-figures page). No appendix overfull boxes. Appendix grew 14 → 15 pages from the intentional float flushing.
+
+### Appendix Figures E.1 and E.2 (`analysis/43_rambachan_roth.R` styling; regenerated via new `analysis/47b_regen_appendix_e_figs.R`)
+
+- Converted from the `steelblue`/`firebrick` `theme_minimal` look to the main paper's grayscale serif `theme_classic` style: dark points/line (`grey20`), light-grey CI ribbon (E.1) and a light sensitivity band plus darker BJS error bars (E.2), dashed grey zero line, dotted grey event line at $-0.5$, reduced grid clutter, axis title size matched.
+- Reduced figure size from 6.5$\times$4 to 6.4$\times$3.2 to cut wasted vertical space; vector PDF (cairo). Captions unchanged (E.1: BJS event-study diagnostic for item-level exposure; E.2: Honest-DiD sensitivity diagnostic). Estimates unchanged; dynamic evidence remains diagnostic.
+- Reproducibility note: `43_rambachan_roth.R` calls `bp_load_cache()` (needs `/tmp/v4_prepared.rds`, absent here) before the figure block, so it cannot be re-run end-to-end on this machine. The figure data (BJS coefficients/SEs) come entirely from the cached `v7-r2round1/output/tables/tab_es_honest.csv`, not from raw data, so `47b_regen_appendix_e_figs.R` regenerates exactly the two E figures from that CSV without loading the cache or touching macros/`values.tex`. The identical styling was also written into `43_rambachan_roth.R` so a future full rebuild reproduces it.
+
+### Biehl reference fix (Item 5)
+
+- Citation key: `biehl2009will`.
+- Original problem: the author field `Biehl, Jo\~ao` (unbraced accent) made BibTeX mis-abbreviate the first name, rendering "Biehl, J.a." in the compiled bibliography.
+- Correction: author field changed to `Biehl, Jo{\~a}o` (accent braced). The compiled `.bbl` now renders "Biehl, J.", and the reference reads "Biehl, J., Petryna, A., Gertner, A., Amon, J.J., Picon, P.D., 2009. Judicialisation of the right to health in Brazil. The Lancet 373, 2182--2184."
+- Verification source: The Lancet 373(9682):2182--2184 (2009), DOI 10.1016/S0140-6736(09)61172-7 — authors, order, year, title, journal, volume, pages confirmed against the existing entry; no field changed except the accent encoding. No key renamed, no reference added, style unchanged (natbib/elsarticle-harv).
+- Narrow audit of the compiled bibliography: scanned all `\bibinfo{author}` lines for malformed initials, broken accents, duplicate entries, institution-as-author, and missing years. None found. `{CNJ/INSPER}` is correctly handled as a braced institutional author. No other accented author field is unbraced (Sz{\"u}cs, de Souza Noronha Val{\'e}ria are braced and uncited).
+
+### Build
+
+```bash
+python3 analysis/50_v9_outputs.py            # Table 1 (+ idempotent presentation tables)
+Rscript analysis/47_regen_fig1.R             # Figure 1
+Rscript analysis/47b_regen_appendix_e_figs.R # Appendix E.1/E.2
+cd manuscript/paper
+latexmk -pdf main.tex            # 17 pages
+latexmk -pdf OnlineAppendix.tex  # 15 pages
+```
+
+`build_v9.sh` not run (regenerates all analysis from absent raw BEC data and would reintroduce results). Only data-free regenerations and presentation edits were performed; `values.tex` unchanged.
+
+### Compilation status
+
+- Main: 17 pages, exit 0, **0 undefined references/citations, 0 overfull boxes**.
+- Online Appendix: 15 pages, exit 0, **0 undefined references/citations, no large overfull boxes**.
+
+### Final checklist
+
+- Is Figure 1 journal-quality and readable? **Yes** — high-contrast points, integrated annotation, non-dominant zero line, vector PDF, no draft look.
+- Is Table 1 compact and self-contained? **Yes** — four columns, single-line rows, fits within margins, concise notes.
+- Do appendix floats appear near relevant sections? **Yes** — B/C/D tables stay within their sections; D tables sit with their subsections.
+- Are Appendix Figures E.1/E.2 clean and readable? **Yes** — grayscale serif, consistent with the main paper, compact.
+- Is "Biehl, J.a." fully fixed? **Yes** — renders "Biehl, J.".
+- Do all citations resolve? **Yes** — 0 undefined in both PDFs; no "?" markers.
+- Do main and appendix compile cleanly? **Yes** — exit 0, no errors, no missing files.
+- Are there no new formatting artifacts? **Yes** — none introduced; bibliography and tables scanned.
+- Were all affected figures/tables regenerated from scripts? **Yes** — Figure 1, Table 1, and Appendix E figures regenerated from their scripts; Lee/alt-strata captions already script-synced.
+- Are all empirical values still macro/script-linked? **Yes** — `values.tex` byte-identical; no number hardcoded; no placeholder leakage.
+
+Remaining issue: none. The only reproducibility caveat is that the two scripts requiring `/tmp/v4_prepared.rds` (`43`, full `build_v9.sh`) cannot be exercised on this machine; the figure regeneration was therefore done from cached CSV/macros, which does not change any estimate.
+
+## Contribution clarity and cross-section consistency pass to 9.7+
+
+High-level editorial pass on the current v9 only. No estimate, title, structure, or analysis changed; `values.tex` verified byte-identical before and after. The goal was to make the contribution hierarchy unmistakable and consistent across sections, not to rewrite.
+
+### Contribution-framing changes
+
+- **Abstract** (`main.tex`): reduced numerical clutter in the sourcing sentence from three statistics to two (kept administrative orders \BPutgQtyAdminFoldPref{} times larger and modal winners differing in \BPwinnerSwitchDiffModalPct{} of pairs; dropped the winner-set Jaccard figure, which remains in Section~5 and the Introduction). Kept the essential numbers (POI count, Lee bounds, within firm-buyer-item coefficient and SE). Sharpened the close so it carries the paper's spine: "One-sided sanctions secure delivery, but they change how the state buys: the policy margin is preserving aggregation and supplier matching under legal urgency." Still one paragraph, ~173 words, all numbers macro-driven.
+- **Introduction contribution paragraph** (`Introduction.tex`): made it less enumerative and more memorable. It now (i) names the confound directly ("standard procurement comparisons confound incumbent pricing with supplier-set reallocation"), (ii) states the deep-market finding inside the contribution statement ("court-mandated delivery raises costs through fragmented sourcing rather than a broad same-firm markup"), (iii) reframes right-to-health litigation as public-sector production under legal constraint ("how court orders change the way the state buys, not only how much it spends"), (iv) states the judicial-enforcement form of passive waste, and (v) closes on policy as building capacity that preserves aggregation and supplier matching. The punchy "how the state is forced to buy" spine is reserved, in distinct wording, for the Conclusion to avoid mechanical repetition.
+- **Section 2** (`InstitutionalBackground.tex`): reworded "not a clean counterfactual" to "does not recover what a litigated purchase would have cost without sanctions" — same honest meaning, removes the loaded phrase, slightly shorter.
+
+### Sections verified consistent (not rewritten)
+
+Sections 3, 4, 5, 6, 7, and the Conclusion were audited against the contribution hierarchy and left as-is: they already carry the cumulative pricing-vs-sourcing argument, the selection-bounded framing, the deep-market definition with thin-market nuance, the mechanism-derived policy levers, and the closing spine. Rewriting strong, already-consistent prose would have added risk without benefit; the consistency pass confirmed alignment rather than manufacturing change.
+
+### Terminology / message discipline (transversal)
+
+- Banned-phrase scan of all main and appendix `.tex`: none of "sanctions do not create markups", "no markup", "differ only", "clean counterfactual", "welfare cost", "welfare bound", "we prove", "robust across all", "confirms causality", or "first paper" is present.
+- "broad same-firm markup" appears 10 times across sources and is never shortened to "no markup"; the deep-market qualifier and thin-market caveat travel with it.
+- "judicial-enforcement form of passive waste" appears in the Introduction, Results, and Conclusion — consistent and memorable.
+- "Lee bounds" used throughout; 0 occurrences of "Manski" in either compiled PDF.
+- The administrative channel is consistently described as the closest feasible urgent comparison, selected, larger, and not random.
+- Judgment call retained: "weaker than exogenous assignment but still substantive" (Section~4) is kept. It is a precise partial-identification statement that *denies* exogeneity rather than claiming it; rewording would lose econometric precision a JPubE referee expects. Documented here because "exogenous" is on the scan list.
+
+### Abstract–Introduction–Conclusion alignment
+
+All three now communicate the same identity in distinct wording: legal urgency changes procurement; the paper separates pricing from sourcing; no broad same-firm markup in deep repeated urgent markets; sourcing (scale and supplier-set reallocation) is the margin; policy preserves access while rebuilding aggregation and supplier matching. The "how the state is forced to buy" spine appears in the abstract close and the Conclusion's final sentence with different phrasings.
+
+### Build and discipline
+
+- `values.tex` byte-identical; no empirical number hardcoded or changed; no new macros required.
+- Main: 17 pages (unchanged), exit 0, 0 undefined references/citations, 0 overfull boxes. Online Appendix: 15 pages, exit 0. No AI/tool marks in any `.tex`.
+- Page discipline held: the slightly longer contribution paragraph was offset by the abstract and Section~2 trims; the paper remains 17 pages.
+
+```bash
+cd manuscript/paper
+latexmk -pdf main.tex            # 17 pages
+latexmk -pdf OnlineAppendix.tex  # 15 pages
+```
+
+### Final self-assessment
+
+1. Is the main contribution clear by the abstract and page 2? **Yes** — the pricing-vs-sourcing setup is in the abstract and Introduction paragraph 2; the formal contribution paragraph synthesizes it.
+2. Does the paper unmistakably separate pricing from sourcing? **Yes** — abstract, Section 4 architecture, Section 5.3–5.4, Figure 1, Table 5.
+3. Does every section reinforce the same contribution hierarchy? **Yes** — one main contribution (pricing vs sourcing), two supporting contributions (selected-but-informative administrative channel; judicial-enforcement passive waste), one policy implication.
+4. Is judicial-enforcement passive waste stated clearly and memorably? **Yes** — same phrase in Introduction, Results, Conclusion.
+5. Is the health-litigation contribution framed as opening the procurement black box? **Yes** — "how court orders change the way the state buys, not only how much it spends."
+6. Is the administrative channel always described as useful but selected? **Yes**.
+7. Is the deep-market result never overstated as universal no-markup? **Yes** — always "no broad same-firm markup in deep repeated urgent markets," with the thin-market caveat.
+8. Is thin-market supplier leverage acknowledged wherever needed? **Yes** — abstract, Introduction, Results 5.3, Section 7.1, Conclusion.
+9. Is policy framed as preserve access, restore aggregation? **Yes** — no access-reducing or anti-court language.
+10. Are abstract, introduction, results, policy, and conclusion mutually consistent? **Yes**.
+11. Are all empirical numbers macro-generated? **Yes** — `values.tex` byte-identical; no placeholder leakage.
+12. Do main and appendix compile cleanly? **Yes** — exit 0, no errors/undefined/overfull.
+13. Does the paper read like a JPubE short paper, not a technical report? **Yes** — 17 pages, cumulative argument, disciplined policy.
+14. Would a skeptical referee understand the contribution without charitable interpretation? **Yes** on the framing. The contribution is now stated plainly in the abstract, the Introduction contribution paragraph, and the Conclusion. The residual referee risk remains substantive, not presentational: the Lee-bound monotonicity assumption and the firm-buyer-item triple-sample selection are the load-bearing assumptions a referee may still contest.

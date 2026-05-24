@@ -94,13 +94,13 @@ p <- ggplot(plot_df, aes(pct, comp_short)) +
   # separate the observed total (top row) from its three components
   geom_hline(yintercept = 3.5, linetype = "dotted",
              color = "grey75", linewidth = 0.3) +
-  geom_vline(xintercept = 0, color = "grey30", linewidth = 0.45) +
+  geom_vline(xintercept = 0, color = "grey60", linewidth = 0.4) +
   geom_errorbar(aes(xmin = ci_lo, xmax = ci_hi),
                 orientation = "y", width = 0.0,
-                color = "grey35", linewidth = 0.55) +
+                color = "grey50", linewidth = 0.6) +
   geom_point(aes(fill = near_zero),
-             shape = 21, size = 3.3, color = "grey10", stroke = 0.6) +
-  scale_fill_manual(values = c(`TRUE` = "white", `FALSE` = "grey45"),
+             shape = 21, size = 3.5, color = "grey10", stroke = 0.7) +
+  scale_fill_manual(values = c(`TRUE` = "white", `FALSE` = "grey15"),
                     guide = "none") +
   annotate("text",
            x = near_x, y = "Within-firm pricing",
