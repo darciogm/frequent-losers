@@ -4,33 +4,46 @@
 \subsection{Separating pricing and sourcing margins}
 \label{subsec:pricing_sourcing}
 
-Let a purchase price reflect both the price charged by the winning firm and the process that determines which firm wins. A court order can raise costs through a same-firm markup, through reduced scale, through lower participation, or through a different supplier match. The empirical framework separates these channels with three objects: urgent-versus-ordinary estimates, administrative-versus-litigated urgent estimates, and within firm-buyer-item comparisons.
+Observed procurement prices combine the price charged by the winning supplier with the process that determines which supplier wins. Judicial urgency can therefore affect costs through at least three margins. First, the same supplier may charge a different price to the same buyer for the same item when the purchase is court-mandated. Second, urgent litigated purchases may be smaller and lose bulk discounts. Third, compressed timelines and fragmented demand may change participation and the winning supplier set.
 
-The within-firm test is the pricing test. It estimates whether the same supplier charges a different price to the same buyer for the same item when the purchase is administrative rather than litigated. Because this comparison conditions on the winning firm, it cannot measure supplier reallocation. That is the point: if the overall gap remains while the within-firm gap disappears, the cost margin is not a broad same-firm markup.
+Standard price regressions conflate these channels. The framework treats the observed urgent price gap as an accounting object with a scale component, a within-firm pricing component, and a supplier-composition component. This is not a structural model: the residual composition component is interpreted only together with direct winner-switching evidence. The within firm-buyer-item comparison is the same-firm pricing test. Because that test conditions on the winning supplier, it cannot measure supplier-set reallocation. Quantity controls are also channel diagnostics. Since quantity is itself a mechanism through which judicial urgency may affect prices, specifications that condition on quantity are not the preferred estimates of the total effect.
 
 \subsection{Urgent-vs-ordinary procurement}
 \label{subsec:uo}
 
-The first specification compares urgent and ordinary purchases:
+The first comparison estimates the broad urgent-procurement margin:
 \begin{equation}
-y_{igbt}=\beta U_{igbt}+\alpha_i+\gamma_t+\delta_b+\varepsilon_{igbt},
+y_{oibt}=\beta\,\text{Urgent}_{oibt}+\alpha_i+\gamma_t+\delta_b+\varepsilon_{oibt},
 \label{eq:urgent_ordinary}
 \end{equation}
-where $y_{igbt}$ is a procurement outcome for item $i$, supplier or purchase observation $g$, buyer $b$, and year $t$; $U_{igbt}$ indicates urgent procurement; and the fixed effects absorb item, year, and buyer differences. This estimate is descriptive of the urgent cost margin, not the core sanction estimate.
+where $o$ indexes the purchase-offer-item observation, $i$ the item, $b$ the buyer or purchasing unit, and $t$ the year. The dependent variable is log negotiated price, log reference price, log number of bidders, or tender success. The fixed effects absorb item, time, and buyer differences.
+
+Negotiated-price regressions use accepted winning bids; tender-success specifications use the broader outcome sample. Standard errors are clustered by purchasing unit unless otherwise stated. The coefficient $\beta$ establishes the cost and competition margin associated with urgent procurement within items, years, and buyers. It does not isolate judicial sanction exposure.
 
 \subsection{Administrative-vs-litigated urgent procurement}
 \label{subsec:utg}
 
-Within urgent procurement, we estimate
+The central contrast is within urgent procurement:
 \begin{equation}
-y_{igbt}=\theta A_{igbt}+\alpha_i+\gamma_t+\delta_b+\varepsilon_{igbt},
+y_{oibt}=\theta\,\text{Admin}_{oibt}+\alpha_i+\gamma_t+\delta_b+\varepsilon_{oibt},
 \label{eq:utg}
 \end{equation}
-where $A_{igbt}$ equals one for administrative urgent purchases and zero for litigated urgent purchases. Negative estimates in price regressions mean administrative purchases are cheaper, or equivalently that litigated purchases are more expensive. Because administrative purchases are selected and larger, $\theta$ is not interpreted alone. The paper reports selection bounds and decomposes the scale channel.
+where $\text{Admin}_{oibt}$ equals one for administrative urgent purchases and zero for litigated urgent purchases. Throughout the under-the-gun analysis, coefficients are administrative minus litigated. In price regressions, a negative $\theta$ means litigated purchases are more expensive. Percentage gaps are reported in the reader-facing litigated-over-administrative direction.
+
+The administrative channel is selected and larger, so $\theta$ alone is not a stand-alone sanction effect. We use the comparison as one part of the design: selection bounds discipline the urgent contrast, within firm-buyer-item tests isolate same-firm pricing, and sourcing measures document supplier-set reallocation.
+
+For the same-firm pricing test, the estimating comparison can be written as
+\begin{equation}
+y_{ofibt}=\kappa\,\text{Admin}_{ofibt}+\mu_{fib}+\gamma_t+\varepsilon_{ofibt},
+\label{eq:triple}
+\end{equation}
+where $f$ indexes the supplier and $\mu_{fib}$ is a firm-by-item-by-buyer fixed effect. This specification uses observations where the same firm sells the same item to the same buyer under both urgent regimes. It tests whether the same supplier prices differently across regimes. By construction, it cannot estimate the effect of changing which supplier wins.
 
 \subsection{Selection bounds}
 \label{subsec:bounds}
 
-Administrative requests are screened by the health agency. If screened cases are more feasible or less costly, naive comparisons overstate the sanction-related gap. We therefore use Manski-Lee trimming bounds. In strata where administrative observations exceed litigated observations, we trim the administrative price distribution by the differential selection proportion. Trimming the high tail and low tail gives bounds on the litigated-over-administrative gap. The preferred bounds are reported as percentage price gaps to avoid sign ambiguity.
+Administrative requests are screened before purchase. Screening likely admits cases that are administratively feasible, easier to source, or less costly. That selection can make administrative purchases cheaper even without judicial sanctions, so naive administrative-versus-litigated comparisons may overstate the sanction-related price gap.
 
-The bounds require monotone selection into the administrative channel within trimming strata. This is weaker than random assignment but still substantive: it assumes that the screened administrative cases form an ordered subset relative to the potential litigated cases within the stratum. Online Appendix C gives the formal trimming logic and reports the trimming proportions.
+We therefore use Manski-Lee trimming bounds, implemented as Lee-style trimming within strata \citep{lee2009training}. The procedure trims the overrepresented administrative group within item $\times$ year $\times$ PBU strata. Trimming the high and low tails of the administrative price distribution gives lower and upper bounds for the litigated-over-administrative gap. Selection is bounded under a monotonicity restriction; it is not eliminated. Within a trimming stratum, screened administrative observations are assumed to form an ordered selected subset relative to the potential litigated comparison. This is weaker than exogenous assignment but still substantive, and the paper does not claim point identification of a counterfactual with sanctions removed.
+
+The preferred object is therefore a bounded litigated-over-administrative price gap, combined with mechanism evidence. Online Appendix C reports trimming rates, alternative trimming strata, and the non-informative parametric selection diagnostic.

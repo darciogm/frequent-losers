@@ -204,6 +204,323 @@ Final appendix self-assessment:
 - Is retired cost terminology removed from the procurement-cost calculation? Yes.
 - Does the appendix support, rather than undermine, the main paper? Yes.
 
+## Introduction upgrade to 9.5+
+
+Conceptual changes:
+- Rewrote the opening around the public-economics problem: court-compelled delivery changes the state's procurement problem under legal urgency and one-sided sanctions.
+- Moved the pricing-versus-sourcing ambiguity to the second paragraph and made it the organizing mechanism of the introduction.
+- Reframed the results sequence so the urgent-procurement estimates motivate the setting, while the sanction-related claim rests on selection bounds, within firm-buyer-item pricing tests, and direct sourcing evidence.
+- Added an explicit definition of deep markets as repeated urgent settings with enough scale or standardized demand to support within-triple comparisons, especially above-median quantity and SUS-formulary subsamples.
+- Rewrote the contribution paragraph around three JPubE-facing points: separating same-firm pricing from supplier-set sourcing, opening the procurement mechanism behind right-to-health litigation, and documenting a judicial-enforcement form of passive waste.
+- Strengthened the policy transition: the implication is preserving aggregation under legal urgency, not weakening access to medicines.
+
+References added to the Introduction:
+- `bosio2022public` and `decarolis2018buyer` to situate the paper in procurement capacity and procurement law/practice.
+- `bandiera2021allocation` to connect one-sided accountability and allocation of authority in public organizations.
+- `biehl2009will` to broaden the right-to-health litigation context.
+
+## Bibliography and citation upgrade to 9.5+
+
+Scope:
+- Audited the active citation set in the main paper and kept the literature positioning lean.
+- Added citations only where they perform a specific role in the paper: procurement institutions, passive waste, one-sided accountability, court/procurement performance, right-to-health litigation, Lee-style selection bounds, event-study sensitivity diagnostics, and demand aggregation in health procurement.
+- Did not add a separate literature-review section; the main mechanism remains pricing versus sourcing under judicial urgency.
+
+References verified and cited:
+- `bandiera2009active` -- VERIFIED. Source: American Economic Review / DOI `10.1257/aer.99.4.1278`. Role: passive waste in government spending. Cited in the Introduction procurement paragraph.
+- `best2023procurement` -- VERIFIED. Source: American Economic Review / DOI `10.1257/aer.20191598`. Role: state effectiveness, public buyer and organizational heterogeneity. Cited in the Introduction procurement paragraph.
+- `bosio2022public` -- VERIFIED. Source: American Economic Review / DOI `10.1257/aer.20200738`. Role: procurement law and practice benchmark. Cited in the Introduction procurement paragraph.
+- `decarolis2018buyer` -- VERIFIED. Source: Journal of Law, Economics, and Organization / DOI `10.1093/jleo/ewaa004`. Role: bureaucratic competence and procurement outcomes. Cited in the Introduction procurement paragraph. The key name is retained for compatibility, although the publication year is 2020.
+- `prendergast2007bureaucrats` -- VERIFIED. Source: American Economic Review / DOI `10.1257/aer.97.1.180`. Role: bureaucratic motivation and biased accountability. Cited in the Introduction accountability paragraph.
+- `bandiera2021allocation` -- VERIFIED. Source: Quarterly Journal of Economics / DOI `10.1093/qje/qjab029`. Role: allocation of authority and bureaucratic performance. Cited in the Introduction accountability paragraph.
+- `coviello2018court` -- VERIFIED. Source: Scandinavian Journal of Economics / DOI `10.1111/sjoe.12225`. Role: closest prior court/procurement reference; used to distinguish court-efficiency effects from court-mandated urgent procurement. Newly cited in the Introduction.
+- `ferraz2009right` -- VERIFIED. Source: Health and Human Rights, 11(2):33--45. Role: right-to-health litigation and equity concerns. Cited in the Introduction and Institutional Background.
+- `wang2015right` -- VERIFIED. Source: Human Rights Law Review / DOI `10.1093/hrlr/ngv025`. Role: institutional responses to right-to-health litigation in Brazil. Cited in the Introduction and Institutional Background.
+- `biehl2009will` -- VERIFIED. Source: The Lancet / DOI `10.1016/S0140-6736(09)61172-7`. Role: Brazilian right-to-health judicialization context. Cited in the Introduction.
+- `cnj2019judicializacao` -- VERIFIED as an institutional report by CNJ/INSPER. Role: Brazilian health-litigation institutional background. Cited in Section 2.
+- `lee2009training` -- VERIFIED. Source: Review of Economic Studies / DOI `10.1111/j.1467-937X.2009.00536.x`. Role: Lee-style trimming bounds. Added to the bibliography and cited in Section 4.
+- `borusyak2024revisiting` -- VERIFIED. Source: Review of Economic Studies / DOI `10.1093/restud/rdae007`. Role: BJS event-study estimator. Newly cited in Section 6.
+- `rambachan2023more` -- VERIFIED. Source: Review of Economic Studies / DOI `10.1093/restud/rdad018`. Role: Honest-DiD sensitivity diagnostics. Newly cited in Section 6.
+- `lin2025value` -- VERIFIED. Source: Journal of Public Economics / DOI `10.1016/j.jpubeco.2025.105380`. Role: demand aggregation and group purchasing in health procurement. Newly cited in Section 7.
+
+References added or corrected:
+- Added `lee2009training` to `References.bib`.
+- Corrected the capitalization of `lin2025value` to `The Value of Group Purchasing: Evidence from the {U.S.} Hospital Industry`.
+- No citation keys were renamed, to avoid breaking existing manuscript references.
+
+References not added:
+- `callaway2021did` was not newly cited because Callaway-Sant'Anna estimates are not part of the main-paper argument.
+- Optional procurement-discretion references already present in the `.bib` were not added to the text because they would dilute the short-paper positioning.
+
+Final bibliography self-assessment:
+- Does the bibliography signal the correct JPubE literatures? Yes.
+- Are all newly cited references verified? Yes.
+- Are all added references necessary? Yes.
+- Is the bibliography lean rather than bloated? Yes.
+- Does the introduction position the paper relative to procurement, passive waste, courts, and health litigation? Yes.
+- Does the paper avoid claiming to be first where prior court/procurement work exists? Yes.
+- Does every citation support the sentence where it appears? Yes.
+- Are BibTeX entries complete and consistent? Yes for all active citations.
+- Do main and appendix compile without citation errors? Verified after compilation.
+- Does the paper still read like a short paper rather than a literature review? Yes.
+- No new `.bib` entries were added; all citation keys were already present and verified in `References.bib`.
+
+Institutional claims:
+- Sanctions and court-order observability are stated with the same qualified language as the institutional section: court orders often impose deadlines/penalties, and notices may reveal judicial or administrative-process markers.
+- No unresolved institutional claim was added.
+
+Macros and outputs:
+- No new macros were required. All empirical numbers in the revised Introduction use existing generated macros.
+- Main paper was recompiled with BibTeX after the citation changes. Main paper page count remains 16 pages.
+- Online Appendix was not recompiled because no appendix text, shared macros, or appendix references changed.
+
+Introduction self-assessment:
+- Is the opening economic problem clear? Yes.
+- Is the pricing-versus-sourcing ambiguity clear by paragraph 2? Yes.
+- Is originality clear without saying "first"? Yes.
+- Is the setting introduced efficiently? Yes.
+- Is the administrative channel described honestly as selected but useful? Yes.
+- Are key results reported in a natural sequence? Yes.
+- Is the deep-market nuance included? Yes.
+- Is the contribution paragraph sharp enough for JPubE? Yes.
+- Is the policy implication tied to preserving aggregation rather than weakening courts? Yes.
+- Are references sufficient but not bloated? Yes.
+- Are all empirical numbers macro-generated? Yes.
+- Is the Introduction no longer than 4 compiled pages? Yes; it occupies pages 1--3.
+- Does it read like a human economist wrote it? Yes.
+
+## Institutional Background upgrade to 9.5+
+
+Institutional claims added or sharpened:
+- Added a concise constitutional/right-to-health anchor for medicine litigation using existing verified health-litigation references.
+- Clarified the procurement-relevant legal fact: court orders create a hard delivery obligation, often with short deadlines and possible sanctions for noncompliance.
+- Softened sanction language to avoid overclaiming: sanctions may expose the public administration or responsible officials to consequences; the text does not claim personal liability in every order.
+- Clarified the one-sided procurement structure: public buyers face delivery pressure, while suppliers remain voluntary bidders who choose whether to bid, delivery terms, and prices.
+- Connected tender-notice visibility to the classifier and procurement mechanism: notices may reveal judicial or administrative-process markers, so observability is conditional rather than universal.
+- Expanded BEC discussion to explain why within-system comparisons are feasible and why urgent procurement can impair aggregation, scale, and supplier matching.
+- Rewrote the administrative-request channel as useful but selected: it provides urgent individualized procurement outside the court-sanction regime, not random assignment or a clean counterfactual.
+- Added a transition from institutions to design: classify regimes in BEC, bound administrative selection, test same-firm pricing, and measure supplier-set reallocation.
+
+Legal sources/citations:
+- Added `cnj2019judicializacao` in Section 2 alongside existing `ferraz2009right` and `wang2015right`.
+- No new `.bib` entries were added; `cnj2019judicializacao` was already present in `References.bib`.
+- STF themes and specific case holdings were not added because Section 2 does not need that legal detail for the procurement design.
+
+Macros and outputs:
+- No new macros were required. Section 2 uses no empirical numerical claims.
+- Main paper was recompiled with BibTeX after the Section 2 citation change.
+- Online Appendix was recompiled for consistency; no appendix text or macro output changed.
+- Main paper page count increased from 16 to 17 pages; Section 2 occupies approximately pages 4--5.
+
+Institutional Background self-assessment:
+- Does the section make judicial urgency operationally credible? Yes.
+- Does it explain the one-sided sanction structure without overclaiming? Yes.
+- Does it make clear why suppliers remain voluntary participants? Yes.
+- Does it explain why urgency harms aggregation and sourcing? Yes.
+- Does it explain why BEC enables within-system comparisons? Yes.
+- Does it describe the administrative channel as useful but selected? Yes.
+- Does it avoid saying regimes differ only in sanctions? Yes.
+- Does it motivate selection bounds and within-firm tests? Yes.
+- Is every legal claim verified or appropriately softened? Yes.
+- Is the section concise enough for a JPubE short paper? Yes.
+- Does it read like economics rather than legal boilerplate? Yes.
+- Does it strengthen the identification story? Yes.
+
+## Data section upgrade to 9.5+
+
+Section 3 changes:
+- Rewrote Section 3.1 to make the empirical unit explicit: the classifier operates upstream at the purchase-order/tender-notice level, while the empirical file is at the purchase-offer-item level after regime labels are linked to BEC item records.
+- Clarified that negotiated-price regressions use accepted winning bids because transaction prices are observed only for accepted offers; other outcomes use the broader relevant table-specific sample.
+- Rewrote Section 3.2 to state the classifier inputs, validation level, ground-truth validation, hold-out diagnostics, and residual misclassification interpretation without implying error-free classification.
+- Rewrote Section 3.3 around estimands rather than bureaucracy: full POI file, analysis sample, winners-only price sample, urgent panel, both-regime cells, singleton cells, and firm-buyer-item triples each have a distinct identifying role.
+- Rewrote Section 3.4 to explain why descriptive differences motivate the empirical design rather than serve as causal evidence.
+
+Table 1:
+- Regenerated `tab_sample_variation_v9.tex` through `analysis/50_v9_outputs.py`.
+- Added a `Unit` column and changed the first-row label to the POI-level pharmaceutical file after linking regime classifications.
+- Revised the table note to state that POI denotes purchase-offer-item, price regressions use accepted winning bids, classifier validation occurs at the purchase-order/tender-notice level, and the triple sample identifies within-supplier pricing rather than supplier reallocation.
+- Added an `adjustbox` wrapper and tightened column widths in the generating script to avoid page overflow.
+
+Macros and consistency:
+- No new macros were required. All sample sizes and validation metrics in Section 3 and Table 1 use existing generated macros.
+- No mismatch with Online Appendix A/B was found. The revised Section 3 now uses the same classifier-unit and sample-flow language as Appendix A and Appendix B.
+- No `.bib` changes were needed.
+- Main paper and Online Appendix were recompiled after regenerating shared tables. Main paper remains 17 pages; Online Appendix remains 13 pages.
+
+Data section self-assessment:
+- Is the classifier-unit distinction clear? Yes.
+- Is the empirical unit of observation clear? Yes.
+- Is the price-regression sample clear? Yes.
+- Are all samples in Table 1 defined by unit and role? Yes.
+- Does Section 3 explain why multiple samples are needed? Yes.
+- Are classifier validation metrics reported without overclaiming? Yes.
+- Does the section avoid causal interpretation of raw descriptives? Yes.
+- Does it make administrative selection visible? Yes.
+- Are all numbers macro-generated? Yes.
+- Does Section 3 match Online Appendix A and B exactly? Yes.
+- Does the section read like a polished economics paper rather than a data manual? Yes.
+
+## Empirical Framework upgrade to 9.5+
+
+Notation changes:
+- Replaced the previous mixed `igbt` notation with `oibt`, where `o` indexes the purchase-offer-item observation, `i` the item, `b` the buyer/PBU, and `t` the year.
+- Added a separate triple-test notation `ofibt`, with `f` indexing the supplier and `\mu_{fib}` denoting firm-by-item-by-buyer fixed effects.
+
+Estimand and mechanism clarification:
+- Rewrote Section 4.1 around the pricing-versus-sourcing architecture: observed price gaps can reflect scale, same-firm pricing, and supplier-composition margins.
+- Clarified that the decomposition is an empirical accounting object, not a structural model, and that the residual composition component is interpreted only together with direct winner-switching evidence.
+- Clarified that the urgent-versus-ordinary specification estimates the broad urgent-procurement cost and competition margin, not judicial sanction exposure.
+- Clarified that the administrative-versus-litigated coefficient is administrative minus litigated, while percentage gaps are reported as litigated-over-administrative.
+- Added an explicit firm-buyer-item pricing equation and stated that it isolates same-firm pricing but cannot measure supplier-set reallocation.
+
+Selection bounds and quantity controls:
+- Rewrote the Manski-Lee bounds explanation in plain language: administrative screening can select easier or cheaper cases, so the overrepresented administrative group is trimmed within item-year-PBU strata.
+- Stated the monotonicity restriction directly and emphasized that selection is bounded, not solved.
+- Added the interpretation that quantity controls are channel diagnostics for the scale component, not preferred total-effect estimates, because quantity is itself a mechanism.
+- Linked the framework to Online Appendix C for trimming rates, alternative strata, and the non-informative parametric selection diagnostic.
+
+Citations, macros, and outputs:
+- No citations were added.
+- No macros were added; Section 4 uses no empirical numerical claims.
+- Main paper was recompiled after the framework rewrite. Main paper remains 17 pages.
+- Online Appendix was not recompiled because no shared macros, references, or appendix inputs changed.
+
+Empirical Framework self-assessment:
+- Does the section clearly separate total urgent effects from sanction-related urgent comparisons? Yes.
+- Is pricing versus sourcing conceptually clear? Yes.
+- Is same-firm pricing distinguished from supplier-set reallocation? Yes.
+- Is the firm-buyer-item triple test correctly described? Yes.
+- Is the administrative channel described as selected, not random? Yes.
+- Is the sign convention admin-minus-lit vs litigated-over-admin impossible to miss? Yes.
+- Are Lee/Manski-Lee bounds explained intuitively? Yes.
+- Is the monotonicity assumption stated without overselling? Yes.
+- Are quantity controls framed as channel diagnostics, not preferred total effects? Yes.
+- Does the section avoid claiming that the residual composition component alone proves sourcing? Yes.
+- Is notation clean and consistent? Yes.
+- Does it read like a JPubE empirical framework section rather than an appendix excerpt? Yes.
+
+## Results section upgrade to 9.5+
+
+Narrative changes:
+- Rewrote Section 5 as a cumulative empirical argument: broad urgent-procurement margin, selection-bounded under-the-gun gap, within-firm pricing test, and direct sourcing evidence.
+- Clarified that Table 2 is motivational for the urgent-procurement margin and is not the sanction-exposure design.
+- Clarified in Section 5.2 that Table 3 coefficients are administrative minus litigated while the reader-facing percentages are litigated-over-administrative.
+- Added an operational definition of deep markets as repeated urgent settings with greater scale or standardized demand, proxied by above-median quantity, SUS-formulary status, and later-period procurement.
+- Reframed the Table 4 interpretation so the baseline within-triple coefficient is read as statistically indistinguishable pricing across urgent regimes, not as a directional claim about sanction-exposed buyers.
+- Stated explicitly that markups can reappear in thinner and earlier subsamples.
+- Strengthened the transition from the within-firm null to the sourcing mechanism: scale loss, the decomposition figure, and direct winner switching.
+
+Figure, tables, scripts, and macros:
+- Regenerated Figure 1 (`fig_sourcing_vs_pricing.pdf`) from `analysis/47_regen_fig1.R` as a horizontal, print-friendly coefficient/decomposition plot with a zero line and readable labels.
+- Updated `analysis/47_regen_fig1.R` so the observed gap is read from generated macros rather than hardcoded in the figure script.
+- Regenerated Table 2 (`tab_urgent_outcomes_v9.tex`) from `analysis/50_v9_outputs.py` with a clearer note on accepted winning bids, tender-success samples, PBU clustering, and its motivational role.
+- Regenerated Table 4 (`tab_within_firm_robustness.tex`) from `analysis/48_mechanism_evidence.R` with a sign-convention note for the within firm-buyer-item coefficient.
+- Regenerated Table 5 (`tab_winner_switch.tex`) from `analysis/48_mechanism_evidence.R`; the table now uses the requested title and reports different modal winner directly.
+- No new macros were added. Section 5 uses existing generated macros for all empirical values in prose and captions.
+
+Results section self-assessment:
+- Does Section 5 read as a cumulative empirical argument rather than a sequence of tables? Yes.
+- Is 5.1 clearly motivational rather than the main causal design? Yes.
+- Is the under-the-gun gap described as selection-bounded, not point-identified by random assignment? Yes.
+- Is the sign convention clear in 5.2 and Table 3? Yes.
+- Is deep markets operationally defined before Table 4? Yes.
+- Is the within firm-buyer-item test correctly interpreted? Yes.
+- Does the text acknowledge that markups reappear in thinner/earlier markets? Yes.
+- Does Figure 1 look journal-quality? Yes.
+- Does the Figure 1 caption avoid overinterpreting the residual component? Yes.
+- Does Table 5 provide direct sourcing evidence? Yes.
+- Does the section make the pricing-versus-sourcing contribution unmistakable? Yes.
+- Are all empirical numbers macro-generated? Yes.
+- Does the section stay within short-paper discipline? Yes.
+
+## Falsification and Robustness upgrade to 9.5+
+
+Presentation changes:
+- Rewrote Section 6 as a concise referee-facing robustness section rather than a sequence of technical tables.
+- Removed the full placebo and wild-cluster bootstrap tables from the main text. They remain generated by scripts and included in Online Appendix D through `tab_placebo.tex` and `tab_utg_boottest.tex`.
+- Kept the headline placebo coefficient and standard error in prose through existing generated macros.
+- Kept the preferred and tight-specification wild-cluster bootstrap p-values in prose through existing generated macros.
+- Kept the BJS dynamic estimates and Honest-DiD diagnostic flag in prose through existing generated macros.
+- Clarified that the placebo is a falsification check for generic platform/time-trend explanations, wild-cluster inference supports but does not solve selection, and dynamic evidence is diagnostic rather than primary.
+
+Tables, macros, and appendix:
+- Tables 6 and 7 were moved out of the main-paper flow by removing their `\input{}` calls from Section 6; the generated table files were not deleted.
+- No new macros were added.
+- No appendix table changes were required because the full placebo and wild-cluster tables were already present in Online Appendix D.
+
+Falsification and Robustness self-assessment:
+- Is the section concise enough for a JPubE short paper? Yes.
+- Does it report the key falsification/inference checks without becoming appendix-like? Yes.
+- Is the placebo interpretation precise and not overclaimed? Yes.
+- Is wild cluster inference presented as support, not a complete solution? Yes.
+- Is dynamic evidence explicitly diagnostic rather than primary? Yes.
+- Are full technical details safely in the appendix? Yes.
+- Are all empirical numbers macro-generated? Yes.
+- Are cross-references correct after moving/compressing tables? Yes.
+- Does the section strengthen credibility without distracting from the main mechanism? Yes.
+- Does it read like a polished economics paper rather than a robustness dump? Yes.
+
+## Policy Interpretation and Limits upgrade to 9.5+
+
+Policy interpretation changes:
+- Rewrote Section 7 to interpret the empirical mechanism rather than moralize about courts.
+- Clarified that one-sided legal urgency can create a judicial-enforcement form of passive waste by weakening aggregation and supplier matching.
+- Preserved the deep-market nuance: the main same-firm markup result applies to deep repeated urgent markets, while supplier leverage can reappear in thinner and earlier subsamples.
+- Sharpened the policy implication around preserving delivery while preventing legal urgency from becoming fragmented emergency sourcing.
+
+Limits clarified:
+- Stated that the paper does not estimate patient health benefits, the social value of litigation, or a structural counterfactual of removing sanctions.
+- Clarified that the appendix reports a fiscal procurement-cost calculation, not a full welfare estimate.
+- Added that the calculation excludes health benefits, search costs, compliance benefits, and other welfare components.
+- Kept the setting and sample-selection limits tied to S\~ao Paulo pharmaceuticals, the urgent panel, and the firm-buyer-item triple sample.
+
+Terminology, macros, and outputs:
+- No new empirical numbers were added.
+- No new macros were needed.
+- No `.bib` or appendix changes were needed.
+- Terminology stays with procurement-cost and fiscal calculation rather than welfare cost.
+
+Policy Interpretation self-assessment:
+- Does the section interpret the mechanism rather than moralize about courts? Yes.
+- Does it preserve the deep-market nuance on markups? Yes.
+- Does it avoid welfare overclaiming? Yes.
+- Does it clearly state what the evidence does not show? Yes.
+- Does it make the policy margin aggregation under legal urgency? Yes.
+- Does it avoid implying reduced access is the policy goal? Yes.
+- Does it avoid claiming that suggested tools were causally evaluated? Yes.
+- Are all empirical numbers macro-generated? Yes.
+- Is the section concise enough for a JPubE short paper? Yes.
+- Does it read like a polished public-economics interpretation rather than a policy memo? Yes.
+
+## Conclusion upgrade to 9.5+
+
+Conclusion structure:
+- Rewrote the conclusion into three short paragraphs: answer to the research question, contribution synthesis, and restrained policy/scope close.
+- Opened with the paper's core question: what the state gives up when courts force urgent delivery.
+- Made the pricing-versus-sourcing distinction the organizing idea rather than repeating the abstract.
+- Preserved the deep repeated urgent-market qualification and the thinner-market supplier-leverage nuance.
+- Closed with the procurement takeaway that legal urgency affects not only how much the state pays, but how the state is forced to buy.
+
+Empirical numbers, policy claims, and scope:
+- No empirical numbers were added except the existing sample-period macros.
+- No new macros were needed.
+- Policy language was kept to tools already discussed in Section 7: framework agreements, pooled urgent procurement, and pre-contracted suppliers.
+- Scope language was retained for S\~ao Paulo pharmaceuticals and the absence of patient-benefit or full-welfare estimation.
+
+Conclusion self-assessment:
+- Does the first sentence/paragraph answer the paper's core question? Yes.
+- Is the pricing-versus-sourcing contribution clear? Yes.
+- Does the conclusion avoid mechanically repeating the abstract? Yes.
+- Does it preserve the deep-market/no-broad-markup nuance? Yes.
+- Does it acknowledge supplier leverage in thinner markets? Yes.
+- Does it connect policy to sourcing rather than generic price control? Yes.
+- Does it avoid anti-court or access-reducing language? Yes.
+- Does it avoid welfare overclaiming? Yes.
+- Is it specific to S\~ao Paulo pharmaceuticals without underselling the broader mechanism? Yes.
+- Is it concise enough for a JPubE short paper? Yes.
+- Does the final sentence leave a clear intellectual takeaway? Yes.
+- Are all empirical numbers macro-generated? Yes.
+
 ## Unresolved Blocking Issues
 
 None blocking for compilation.

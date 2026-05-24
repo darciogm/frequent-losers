@@ -83,21 +83,23 @@ def main() -> None:
 \caption{{Samples and identifying variation.}}
 \label{{tab:sample_variation_v9}}
 \begin{{threeparttable}}
-\begin{{tabular}}{{p{{.30\linewidth}}p{{.23\linewidth}}p{{.37\linewidth}}}}
+\begin{{adjustbox}}{{max width=\textwidth}}
+\begin{{tabular}}{{p{{.22\linewidth}}p{{.14\linewidth}}p{{.17\linewidth}}p{{.27\linewidth}}}}
 \toprule
-Sample & Size & Role in the paper \\
+Sample & Size & Unit & Purpose / identifying role \\
 \midrule
-Full BEC pharmaceutical sample & {macro("nPOIfull")} POI observations & Universe of classified pharmaceutical procurement records. \\
-Analysis sample & {macro("nAnalysisSample")} observations & Core item and variable restrictions for ordinary-versus-urgent comparisons. \\
-Winners-only price sample & {macro("negNobs")} winning bids & Negotiated-price regressions use accepted winning bids. \\
-Urgent panel & {macro("nUTG")} winning bids & Administrative-versus-litigated urgent comparison. \\
-Both-regime urgent cells & {macro("bothCellN")} cells & Cells with both administrative and litigated urgent purchases. \\
-Both-types singleton cells & {macro("bothCellNSingleton")} cells & Urgent cells with only one observed regime; used for representativeness checks. \\
-Firm-buyer-item triple sample & {macro("utgTripleNUTG")} observations; {macro("utgTripleCountUTG")} triples & Same firm, same buyer, same item pricing test. \\
+Full BEC pharmaceutical file & {macro("nPOIfull")} & POI observations & POI-level pharmaceutical analysis file after linking regime classifications. \\
+Analysis sample & {macro("nAnalysisSample")} & POI observations & Core item and variable restrictions for ordinary-versus-urgent comparisons. \\
+Winners-only price sample & {macro("negNobs")} & Accepted winning bids & Negotiated-price regressions with observed transaction prices. \\
+Urgent panel & {macro("nUTG")} & Accepted winning bids & Administrative-versus-litigated urgent comparison. \\
+Both-regime urgent cells & {macro("bothCellN")} & Item-by-year-month cells & Cells observed with both administrative and litigated urgent purchases. \\
+Singleton urgent cells & {macro("bothCellNSingleton")} & Item-by-year-month cells & Representativeness check for cells observed under only one urgent regime. \\
+Firm-buyer-item triple sample & {macro("utgTripleCountUTG")} triples; {macro("utgTripleNUTG")} observations & Accepted winning bids & Same firm, same buyer, same item pricing test. \\
 \bottomrule
 \end{{tabular}}
+\end{{adjustbox}}
 \begin{{tablenotes}}[flushleft]\footnotesize
-\item \textit{{Notes:}} POI denotes purchase-offer-item. ``Cells'' follow the cell definition used by the corresponding generated representativeness and bounds scripts. The triple sample is a strict subset of urgent winning bids and identifies within-supplier pricing, not supplier reallocation.
+\item \textit{{Notes:}} POI denotes purchase-offer-item. Price regressions use accepted winning bids. Classifier validation is conducted upstream at the purchase-order/tender-notice level and is reported in Online Appendix A. The triple sample is a strict subset of urgent winning bids and identifies within-supplier pricing, not supplier reallocation.
 \end{{tablenotes}}
 \end{{threeparttable}}
 \end{{table}}
@@ -123,7 +125,7 @@ Tender success & {macro("successCoef")} & {macro("successSE")} & {macro("success
 \bottomrule
 \end{{tabular}}
 \begin{{tablenotes}}[flushleft]\footnotesize
-\item \textit{{Notes:}} Compact presentation of existing urgent-versus-ordinary estimates under the preferred item, year, and PBU fixed-effects specification. Price estimates use winning bids. The table motivates the mechanism analysis and is not the core sanction-exposure design.
+\item \textit{{Notes:}} Compact presentation of existing urgent-versus-ordinary estimates under the preferred item, year, and PBU fixed-effects specification. Negotiated-price estimates use accepted winning bids; tender-success specifications use the broader tender/POI sample for which success is observed. Standard errors are clustered by PBU. The table motivates the mechanism analysis and is not the core sanction-exposure design.
 \end{{tablenotes}}
 \end{{threeparttable}}
 \end{{table}}

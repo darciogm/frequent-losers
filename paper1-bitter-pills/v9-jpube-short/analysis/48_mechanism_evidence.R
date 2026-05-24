@@ -133,21 +133,23 @@ ws_tab <- data.table(
              "Mean Jaccard similarity, winner sets",
              "Pairs with any winner overlap (\\%)",
              "Pairs with NO winner overlap (\\%)",
-             "Pairs with same modal winner (\\%)"),
+             "Pairs with same modal winner (\\%)",
+             "Pairs with different modal winner (\\%)"),
   value  = c(format(nrow(winners_per_ib), big.mark = ","),
              sprintf("%.2f", mean(winners_per_ib$n_admin_winners)),
              sprintf("%.2f", mean(winners_per_ib$n_lit_winners)),
              sprintf("%.3f", mean(winners_per_ib$jaccard)),
              sprintf("%.1f", mean(winners_per_ib$any_overlap) * 100),
              sprintf("%.1f", mean(winners_per_ib$no_overlap) * 100),
-             sprintf("%.1f", mean(modal_per_ib$modal_same, na.rm = TRUE) * 100))
+             sprintf("%.1f", mean(modal_per_ib$modal_same, na.rm = TRUE) * 100),
+             sprintf("%.1f", mean(!modal_per_ib$modal_same, na.rm = TRUE) * 100))
 )
 print(ws_tab)
 
 ws_tex <- paste0(
   "\\begin{table}[ht]\n",
   "\\centering\n",
-  "\\caption{Winner switching across regimes for the same item-buyer pair.}\n",
+  "\\caption{Winner switching across urgent regimes within item-buyer pairs.}\n",
   "\\label{tab:winner_switch}\n",
   "\\begin{threeparttable}\n",
   "\\begin{tabular}{lr}\n",
@@ -159,7 +161,7 @@ ws_tex <- paste0(
   "\\bottomrule\n",
   "\\end{tabular}\n",
   "\\begin{tablenotes}[flushleft]\\footnotesize\n",
-  "\\item \\textit{Notes:} Sample of buyer$\\times$item pairs with at least one ",
+  "\\item \\textit{Notes:} Unit is a buyer$\\times$item pair with at least one ",
   "administrative and one litigated urgent purchase. Jaccard similarity is the ",
   "ratio of the cardinality of the intersection to the cardinality of the union ",
   "of the two regimes' winning-firm sets. ``Modal winner'' is the most frequent ",
@@ -403,7 +405,10 @@ rb_tex <- paste0(
   "\\begin{tablenotes}[flushleft]\\footnotesize\n",
   "\\item \\textit{Notes:} Each row reports the within firm-buyer-item triple ",
   "Admin coefficient on log negotiated price, with FBI and year fixed effects, ",
-  "PBU-clustered SEs. Subsamples are constructed from the triple sample ",
+  "PBU-clustered SEs. Coefficients are administrative minus litigated; negative ",
+  "values mean litigated purchases are more expensive within the same firm, buyer, ",
+  "and item, while values near zero indicate no detectable within-triple price difference. ",
+  "Subsamples are constructed from the triple sample ",
   "(\\BPutgTripleCountUTG{} triples). Significance: $^{*}p<0.10$, ",
   "$^{**}p<0.05$, $^{***}p<0.01$.\n",
   "\\end{tablenotes}\n",
