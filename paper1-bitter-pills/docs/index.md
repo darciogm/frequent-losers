@@ -7,20 +7,23 @@ hide:
 
 # Bitter Pills
 
-<p class="subtitle">Sanctions without Markups: Sourcing as the Margin of Bureaucratic Inefficiency</p>
+<p class="subtitle">Sourcing under Sanctions: Judicial Urgency and Pharmaceutical Procurement Costs</p>
 <p class="authors">Darcio Genicolo-Martins &nbsp;&middot;&nbsp; Paulo Furquim de Azevedo</p>
 <p class="affiliation">Insper Institute of Education and Research, Sao Paulo, Brazil</p>
+
+[Download the paper (PDF)](assets/pdf/sourcing-under-sanctions-v9.pdf){ .md-button .md-button--primary }
+[Online Appendix (PDF)](assets/pdf/sourcing-under-sanctions-v9-online-appendix.pdf){ .md-button }
 
 </div>
 
 <div class="key-result" markdown>
 <span class="number">[15.9%, 21.1%]</span>
-<span class="label">Selection-corrected Manski-Lee bounds on the "under-the-gun" gap. Within firm-buyer-item, the markup is zero — the cost surfaces as sourcing, not pricing.</span>
+<span class="label">Selection-bounded Lee interval on the litigated-over-administrative price gap. In deep repeated urgent markets the cost surfaces as fragmented sourcing, not a broad same-firm markup.</span>
 </div>
 
 ## Abstract
 
-When mandates secure compliance, what efficiency does the state forgo? Standard accountability models (Prendergast, 2007) predict suppliers extract delivery-risk premia; passive-waste accounts (Bandiera et al., 2009) predict the buyer's sourcing pattern shifts. The two are observationally equivalent in cross-buyer data, which conflate within-firm pricing with equilibrium supplier composition. Using bid-level data on **479,330 pharmaceutical purchases** by the São Paulo State Department of Health (2009--2019), we exploit a parallel administrative channel sharing all planning constraints of court-mandated procurement, without sanction exposure. Selection-corrected Manski-Lee bounds place the under-the-gun gap at **[15.9%, 21.1%]**. **There is no within-firm markup in deep markets** (β̂ = 0.035, SE = 0.041 within firm-buyer-item triples), with a sanction premium reappearing on thin-supplier subsamples. In deep markets, the price margin reflects **demand fragmentation** (admin orders 3.3× larger) and a **sourcing shift** (modal winner differs across regimes in 70.2% of item-buyer pairs); a placebo on never-litigated items returns zero. Bounded welfare cost: **\$27.8M per year on \$300M of annual litigated spending in São Paulo**. The policy lever is demand aggregation, not contract design: delivery is guaranteed; sourcing efficiency is the bill.
+Court mandates secure delivery, but they may change how governments procure the mandated goods. We study São Paulo pharmaceutical procurement on BEC, covering **479,330 purchase-offer-item observations** during 2009--2019. Higher prices under judicial urgency can reflect incumbent suppliers charging same-firm markups or fragmented sourcing that changes scale and supplier matching. We use an administrative urgent channel as the closest feasible comparison: it lacks judicial sanctions but is selected and larger, so we combine **Lee selection bounds**, within firm-buyer-item comparisons, and sourcing tests. The bounds place the litigated-over-administrative price gap between **15.9% and 21.1%**. Within the same firm, buyer, and item, the administrative coefficient is **0.035 (SE 0.041)**, providing little evidence of a broad same-firm markup in deep repeated urgent markets; that markup channel reappears in thinner and earlier subsamples. The sourcing margin is substantial: administrative orders are **3.3× larger**, and modal winners differ in **70.2%** of item-buyer pairs. One-sided sanctions secure delivery, but they change how the state buys: the policy margin is preserving aggregation and supplier matching under legal urgency.
 
 **JEL Classification:**
 <span class="badge">D44</span>
@@ -40,20 +43,20 @@ When mandates secure compliance, what efficiency does the state forgo? Standard 
 
 ## Key Findings
 
-!!! success "There is no within-firm markup in deep markets"
-    Within firm-buyer-item triples observed under both regimes (1,206 triples, 4,573 observations), the Admin coefficient is **β̂ = 0.035 (SE 0.041)** — statistically indistinguishable from zero. Same firm, same item, same buyer, no sanction premium.
+!!! success "No broad same-firm markup in deep repeated urgent markets"
+    Within firm-buyer-item triples observed under both urgent regimes (1,206 triples, 4,573 observations), the administrative coefficient is **β̂ = 0.035 (SE 0.041)** — statistically indistinguishable from zero. Conditional on the same firm, buyer, and item, prices are indistinguishable across urgent regimes in deep markets. This is a deep-market null, not a universal claim: supplier leverage can reappear in thinner or earlier subsamples.
 
-!!! info "The under-the-gun gap is modest, not large"
-    Under Manski-Lee monotone restrictions on committee selection, the gap lies in **[15.9%, 21.1%]** — at the lower end of within-buyer procurement-cost dispersion documented in comparable settings (Best et al., 2023; Bosio et al., 2022). Replaces the naïve cross-sectional 23–30% headline.
+!!! info "The under-the-gun gap is selection-bounded, not large"
+    After Lee trimming for selection into the administrative channel, the litigated-over-administrative gap lies in **[15.9%, 21.1%]** — at the lower end of within-buyer procurement-cost dispersion documented in comparable settings (Best et al., 2023; Bosio et al., 2022). The bounded interval, not the naïve cross-sectional gap, is the disciplined object.
 
-!!! warning "The cost surfaces as sourcing, not pricing"
-    Among item-buyer pairs observed under both regimes, the **modal winning firm differs across regimes in 70.2% of pairs**. Sanctions reorganize the supplier set far more than they reorganize the incumbent's price.
+!!! warning "The cost surfaces as sourcing, not broad pricing"
+    Among item-buyer pairs observed under both urgent regimes, the **modal winning firm differs across regimes in 70.2% of pairs**. Conditional on the same firm, prices are statistically indistinguishable in deep markets; unconditionally, the winning supplier often changes — the empirical signature of fragmented sourcing.
 
-!!! danger "Demand fragmentation does the heavy lifting"
-    Administrative orders are roughly **3.3× larger** than litigated orders; the bulk-discount channel mechanically delivers most of the admin-minus-litigated price gap. Court mandates dismantle the demand aggregation that procurement efficiency depends on.
+!!! danger "Lost scale does the heavy lifting"
+    Administrative orders are roughly **3.3× larger** than litigated orders, so fragmented court-mandated buying gives up scale. Legal urgency makes the routines that aggregate demand harder to use.
 
-!!! info "Welfare bound and policy lever"
-    Applied to **\$300M of annual litigated spending** in São Paulo, the bounded UTG implies a per-unit-price welfare cost of **\$27.8M per year** (Lee range \$23.9M–\$31.7M). The policy lever is demand aggregation, not contract design.
+!!! note "Fiscal procurement-cost implication"
+    Applied to **$300M of annual litigated spending** in São Paulo, the bounded gap implies a **fiscal procurement-cost implication of $27.8M per year** (Lee range $23.9M–$31.7M). This is a fiscal procurement-cost calculation, not a full welfare estimate. The policy response is to preserve delivery while rebuilding aggregation and supplier matching under legal urgency.
 
 ---
 
@@ -61,7 +64,7 @@ When mandates secure compliance, what efficiency does the state forgo? Standard 
 
 <div class="quick-links" markdown>
 
-[**Paper** <br> Question, contributions, identification asset, findings](paper.md)
+[**Paper** <br> Question, contributions, identification, findings](paper.md)
 
 [**Results** <br> Main tables, figures, and coefficient plots](results.md)
 

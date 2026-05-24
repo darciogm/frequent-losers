@@ -4,6 +4,11 @@ set -e
 DESTINO="../../darciogm.github.io/papers/bitter-pills"
 REPO_PESSOAL="../../darciogm.github.io"
 
+echo "Syncing v9 PDFs into docs..."
+mkdir -p docs/assets/pdf
+cp v9-jpube-short/manuscript/paper/main.pdf docs/assets/pdf/sourcing-under-sanctions-v9.pdf
+cp v9-jpube-short/manuscript/paper/OnlineAppendix.pdf docs/assets/pdf/sourcing-under-sanctions-v9-online-appendix.pdf
+
 echo "Building MkDocs..."
 rm -rf site/
 mkdocs build --strict
