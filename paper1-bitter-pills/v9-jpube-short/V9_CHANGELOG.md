@@ -945,3 +945,14 @@ None for this cleanup. The load-bearing substantive assumptions remain the Lee-b
 - Avoided unnecessary main-text bloat? **Yes** --- one 22-word pointer sentence; abstract net shorter.
 - Do main and appendix compile cleanly? **Yes.**
 - Ready for JPubE short-paper submission? **Yes.**
+
+## Full pipeline reproducibility run
+
+Re-ran the entire numbered analysis pipeline from the prepared cache to confirm end-to-end reproducibility.
+
+- **Driver:** `analysis/run_pipeline.sh` runs every numbered script in order (20 $\to$ 64), isolated, with per-script status/timing and a `values.tex` md5 before/after. Cache: `/tmp/v4_prepared.rds` (~1.2 GB); the v4 prepare step (raw BEC data) is upstream and absent in this environment, so cache construction itself is the only non-reproducible-here step.
+- **Result:** **all 23 scripts exit 0.** `values.tex` md5 **identical** before and after (`056f0732…`); `git diff` on `values.tex` + the 31 `output/tables/*.tex` is **empty** --- every tracked numeric output regenerates byte-identically.
+- **Figures:** the three regenerated figure PDFs (`fig_sourcing_vs_pricing`, `fig_event_study_item`, `fig_event_study_honest_rr`) differ from the committed versions by one byte (embedded PDF creation timestamp); the rendered raster md5 is identical (`b642de31…` for Figure 1), so figure content is reproducible. Reverted to avoid timestamp churn.
+- **Determinism:** `60_referee_tests.R` (seed 20260524; TOST deterministic, Romano-Wolf B = 999 and the 200-split churn seeded) reproduces identically. `44_wild_bootstrap.R` carries no explicit seed, yet its wild-cluster p-values round to the same committed macros (stable at the reported precision).
+- **Telemetry (within DarcioWork budgets):** sequential execution, peak RSS ~2.7 GB (≤16 GB budget), ~20 GB free throughout; slowest step `60_referee_tests.R` 281 s, then `44_wild_bootstrap.R` 100 s and `45_reconciliation.R` 80 s; total ~12 min.
+- **Verdict:** the v9 results are **fully reproducible from the cache forward**.
