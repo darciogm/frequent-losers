@@ -100,6 +100,24 @@ macro-bound discipline and traceability:
   signs ("+0.096 - - +0.098") in Section 6.2. Redefined with `\text{ to }` so
   it renders "+0.096 to +0.098".
 
+### D1 horse-race re-run (gate diagnostic)
+
+- Re-ran gate diagnostic D1 (script 36, Part A) with the corrected
+  frequent-loser cut `tenders_count >= 14` (the pre-fix code used `> 14`, which
+  silently computed FL15 numbers). Result confirms the gate **PASS**: continuous
+  log-participation AUC 0.939 [0.932, 0.946] dominates the binary FL14 AUC 0.924
+  [0.921, 0.926]; DeLong Z = -4.38, p = 1.2e-05; price-coefficient sign
+  preserved. Sample sanity: 16,843 always-losers, 2,735 FL14 firms, 193
+  cobidders.
+- Corrected the residual FL15-bug macros in the registry: `\valHorseAUCBin` and
+  `\valAUCFLBinSameSample` 0.911 -> 0.924 (CI -> [0.921, 0.926]); `\valDeLongZ`
+  -4.30 -> -4.38; `\valDeLongP` 2e-05 -> 1.2e-05. All five were unused in the
+  prose of both the paper and the appendix, so no compiled output changed; the
+  fix is registry hygiene. `output/gate_d1/d1_auc.csv` refreshed.
+- Note: the DeLong p moved 1.7e-05 -> 1.2e-05 (slightly tighter) even though the
+  AUC gap shrank from 0.028 to 0.015, because DeLong is a covariance-paired test
+  on the same firms; the gap alone does not determine significance.
+
 ### Build and pipeline notes (for maintainers)
 
 - Build order matters: compile `online_appendix_submission_clean` (with bibtex)
