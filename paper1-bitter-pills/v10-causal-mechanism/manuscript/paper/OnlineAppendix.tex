@@ -1,0 +1,53 @@
+\documentclass[11pt,authoryear]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\doublespacing
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage{placeins}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+
+\newcommand\cites[1]{\citeauthor{#1}'s (\citeyear{#1})}
+\graphicspath{{figures/}{../../output/figures/}{../../../v4/pub/figures/}}
+\input{values}
+
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\numberwithin{table}{section}
+\numberwithin{figure}{section}
+
+% Flush pending floats at each section/subsection boundary so appendix tables
+% stay within the section that introduces them (mirrors main.tex).
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
+\begin{document}
+
+\begin{frontmatter}
+\title{Online Appendix\\[5pt]
+\large Sourcing under Sanctions: Judicial Urgency and Pharmaceutical Procurement Costs}
+\author[INSPER]{Darcio Genicolo-Martins}
+\author[INSPER]{Paulo Furquim de Azevedo}
+\address[INSPER]{Insper Institute of Education and Research, S\~ao Paulo, Brazil}
+\end{frontmatter}
+
+\singlespacing
+\noindent\textit{Supplementary material for the short paper. The appendix reports only the classifier and sample checks, selection bounds, diagnostic evidence, mechanism diagnostics, and fiscal procurement-cost calculation needed to support the main text. All empirical values are imported through \texttt{values.tex} or generated tables.}
+
+\input{Appendix}
+
+\end{document}

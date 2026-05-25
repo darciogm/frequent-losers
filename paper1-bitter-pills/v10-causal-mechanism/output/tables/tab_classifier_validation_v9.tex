@@ -1,0 +1,26 @@
+\begin{table}[ht]
+\centering
+\caption{Purchase-regime classifier validation.}
+\label{tab:classifier_validation_v9}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{p{.22\linewidth}p{.08\linewidth}p{.09\linewidth}p{.08\linewidth}p{.08\linewidth}p{.06\linewidth}p{.18\linewidth}}
+\toprule
+Validation object & $N$ & Agree. & Prec. & Recall & F1 & Source \\
+\midrule
+Exact agreement & \BPregexNGroundTruth{} & \BPregexExactMatchPct{} & -- & -- & -- & Ground truth \\
+Judicial class & -- & -- & \BPregexPrecJud{} & \BPregexRecallJud{} & \BPregexFoneJud{} & Ground truth \\
+Administrative class & -- & -- & \BPregexPrecAdm{} & \BPregexRecallAdm{} & \BPregexFoneAdm{} & Ground truth \\
+Urgent-class macro-F1 & -- & -- & -- & -- & \BPregexFone{} & Urgent classes \\
+Judicial class & \BPregexNHO{} & -- & \BPregexPrecJudHO{} & \BPregexRecallJudHO{} & \BPregexFoneJudHO{} & ML hold-out \\
+Administrative class & \BPregexNHO{} & -- & \BPregexPrecAdmHO{} & \BPregexRecallAdmHO{} & \BPregexFoneAdmHO{} & ML hold-out \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \textit{Notes:} The classifier operates at the purchase-order/tender-notice level. The table is generated from the production classification report and classifier code. Exact agreement counts \BPregexExactMatchN{} matched ground-truth labels. The empirical POI-level data link these classified regimes to item-level procurement records.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

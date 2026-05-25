@@ -4,6 +4,26 @@ paper: bitter-pills
 
 # Changelog
 
+## v10 — JPubE short paper publication package (2026-05-25)
+
+The public site now points to the v10 publication package in
+`v10-causal-mechanism/`. Main PDF, Online Appendix, analysis-page script paths,
+results pages, and site figures were refreshed from the v10 outputs.
+
+- **Current manuscript.** `v10-causal-mechanism/manuscript/paper/main.pdf`.
+- **Current Online Appendix.**
+  `v10-causal-mechanism/manuscript/paper/OnlineAppendix.pdf`.
+- **Site figures.** Rebuilt from v10 macros/outputs:
+  urgent-vs-ordinary, Lee bounds, within firm-buyer-item forest,
+  pricing-versus-sourcing decomposition, winner churn, and event-study
+  diagnostics.
+- **Core result.** The paper separates same-firm pricing from supplier-set
+  sourcing under judicial urgency. In deep repeated urgent pharmaceutical
+  markets, the procurement-cost margin is not mainly a broad same-firm markup;
+  it operates through fragmented sourcing, lost scale, and supplier-set
+  reallocation, with supplier leverage able to reappear in thinner or earlier
+  markets.
+
 ## Refinement pass — 2026-05-24 (disambiguation, referee-proofing, figures)
 
 A skeptical-referee pass that disambiguated the heterogeneity, ported the
@@ -70,7 +90,7 @@ JPubE 6,000-word cap, with four exhibits and a six-page appendix.
 (`analysis/run_pipeline.sh`, 23 scripts) from the prepared cache: all exit 0,
 and `values.tex` plus the 31 output tables regenerate **byte-identically**
 (figure PDFs differ only by an embedded timestamp; rendered content is
-identical). The v9 results are fully reproducible from the cache forward.
+identical). The v10 results are fully reproducible from the cache forward.
 
 ## v9 — JPubE short paper (2026-05-24)
 
@@ -105,6 +125,6 @@ Pharmaceutical Procurement Costs.**
 
 - **v8 (sourcing-reframe).** Earlier reframing around pricing versus sourcing,
   with the under-the-gun gap and the within firm-buyer-item pricing test; the
-  v9 short paper supersedes it with selection-bounded language, combined
+  v10 short paper supersedes it with selection-bounded language, combined
   exhibits, and a compact appendix.
 - **v7 and earlier.** Reduced-form and three-channel framings; superseded.

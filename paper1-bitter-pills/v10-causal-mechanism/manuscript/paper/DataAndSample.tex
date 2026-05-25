@@ -1,0 +1,73 @@
+\section{Data, Classification, and Samples}
+\label{sec:data}
+
+\subsection{Procurement and litigation data}
+\label{subsec:data_sources}
+
+The data cover S\~ao Paulo pharmaceutical procurement through BEC during \BPsampleStartYear--\BPsampleEndYear. The empirical file contains \BPnPOIfull{} purchase-offer-item observations. BEC records item identifiers, buyers, suppliers, reference prices, negotiated prices, quantities, participating firms, winners, procurement modality, and tender outcomes. We link these procurement records to SES/SP litigation and administrative-process markers to classify purchases into ordinary, administrative urgent, and litigated urgent regimes.
+
+The classifier operates upstream at the purchase-order/tender-notice
+level, where legal status is observed. After regime labels are linked
+to BEC item records, outcomes are measured at the
+purchase-offer-item level. Price regressions use accepted winning
+bids; other outcomes use the broader purchase-offer-item or
+tender-level sample specified in each table. This preserves the level
+of the legal mandate while using the transaction level at which
+prices, quantities, and winners are realized.
+
+\subsection{Classification of purchase regimes}
+\label{subsec:classification}
+
+Purchase regimes are classified using structured links and
+tender-notice text. The classifier combines machine-learning
+predictions, JSON fields, regex markers, and position-based checks to
+separate ordinary, administrative urgent, and litigated urgent
+purchases.
+
+Validation is conducted at the purchase-order/tender-notice level.
+Against \BPregexNGroundTruth{} ground-truth purchase orders, the
+classifier reaches \BPregexExactMatchPct{} exact agreement. Per-class
+F1 is \BPregexFoneJud{} for judicial purchases and \BPregexFoneAdm{}
+for administrative purchases; the macro-F1 over those two urgent
+classes is \BPregexFone{}. Online Appendix A reports the validation
+and sample-construction tables.
+
+Remaining misclassification would attenuate regime contrasts unless it
+is systematically correlated with residual prices within controls. The
+main concern is differential error between urgent regimes among
+high-cost items; the validation evidence reduces, but cannot eliminate,
+that concern.
+
+\subsection{Samples and identifying variation}
+\label{subsec:samples}
+
+The paper uses several samples because each empirical comparison asks
+a different question. The analysis sample supports
+ordinary-versus-urgent comparisons. The winners-only price sample
+contains \BPnegNobs{} accepted winning bids and is used when negotiated
+price is the outcome.
+
+Within urgent procurement, the urgent panel contains administrative
+and litigated winning bids and supports the under-the-gun comparison.
+The firm-buyer-item triple sample is narrower by design. It requires
+the same supplier to sell the same item to the same buyer under both
+urgent regimes, so it identifies within-supplier pricing. It does not
+measure supplier-set reallocation, which requires the winner-switching
+evidence in Section~\ref{sec:results}.
+
+The samples narrow as the question narrows. The
+ordinary-versus-urgent comparison supports the broad urgent-demand
+claim. The urgent panel focuses on sanction exposure among purchases
+already under urgent execution. The triple sample conditions on the
+same supplier; that narrowness is the source of the pricing test, not
+an estimate of total costs.
+
+\subsection{Descriptive facts}
+\label{subsec:descriptives}
+
+The descriptive facts show why raw administrative-versus-litigated means are not a design. Administrative urgent purchases are larger than litigated urgent purchases, while litigated purchases have higher average log negotiated prices. These differences combine selection, scale, and sanction exposure, so we do not interpret raw means causally. The design instead bounds selection, decomposes scale, and tests same-firm pricing and supplier-set reallocation directly.
+
+The descriptive patterns nevertheless motivate the mechanism analysis:
+larger administrative orders suggest more aggregation within the
+urgent tier, while higher raw litigated prices show the direction of
+the problem but not its cause.

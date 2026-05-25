@@ -1,0 +1,122 @@
+\section{Classifier and Sample Construction}
+\label{app:classifier}
+
+The regime classifier operates at the purchase-order/tender-notice
+level, before classified orders are linked to purchase-offer-item
+(POI) records on BEC. This is the institutional level at which legal
+status is observed; prices, quantities, winners, and bidder
+participation are then measured at the POI level.
+
+\input{../../output/tables/tab_classifier_validation_v9}
+
+Validation against \BPregexNGroundTruth{} hand-coded purchase orders
+gives \BPregexExactMatchPct{} exact agreement. The urgent-class F1
+scores are \BPregexFoneJud{} for judicial purchases and
+\BPregexFoneAdm{} for administrative purchases. The main remaining
+concern is differential error across urgent regimes among high-cost
+items; the validation table reduces, but cannot eliminate, that
+concern.
+
+\input{../../output/tables/tab_sample_construction_v9}
+
+Table~\ref{tab:sample_construction_v9} reconciles the upstream
+classification universe with the downstream empirical samples. The
+ordinary-versus-urgent sample supports the procurement effect of
+externally imposed legal urgency. The urgent panel supports the
+selection-bounded sanction margin. The firm-buyer-item sample is
+narrower by design because it tests same-firm pricing, not total
+procurement costs.
+
+\section{Selection Bounds and Inference}
+\label{app:selection_inference}
+
+Administrative requests are screened before purchase, so the
+administrative-versus-litigated coefficient is bounded rather than
+point-identified. The main paper uses Lee trimming within item
+$\times$ year $\times$ PBU strata. Trimming affects
+\BPutgLeeStrataExcess{} of \BPutgLeeStrataTotal{} strata, with mean
+rate \BPutgLeeTrimMean{} and maximum \BPutgLeeTrimMax{}. Coefficients
+are estimated as administrative minus litigated; tables report the
+reader-facing litigated-over-administrative gap.
+
+\input{../../output/tables/tab_utg_lee_alt_strata}
+
+Table~\ref{tab:utg_lee_alt_strata} varies the trimming partition. The
+positive bounded gap is not a point-identified sanction effect, but it
+is stable enough to support the selection-bounded sanction-margin
+interpretation used in the main text.
+
+\input{../../output/tables/tab_utg_boottest}
+
+PBU clusters are few and uneven. Table~\ref{tab:utg_boottest} reports
+Rademacher wild-cluster inference for the preferred and tightest
+under-the-gun specifications. The preferred specification has
+$p=\BPutgBoottestPval{}$; the item-by-year-month specification has
+$p=\BPutgBoottestPvalIYM{}$.
+
+\section{Identification Diagnostics}
+\label{app:diagnostics}
+
+The first diagnostic uses items never observed in litigation. If the
+urgent-price pattern were a generic feature of BEC dynamics or
+administrative urgency, the same pattern should appear in that sample.
+It does not: the negotiated-price placebo coefficient is
+\BPplaceboNegCoef{} with standard error \BPplaceboNegSE{}.
+
+\input{../../output/tables/tab_placebo}
+
+The second diagnostic summarizes the dynamic design around first
+item-level exposure to litigation. The BJS estimates rise after
+exposure, but the Honest-DiD sensitivity calculation does not survive
+deviations at the observed maximum pre-period scale. The event-study
+evidence is therefore used as timing evidence, not as the primary
+causal design.
+
+\input{../../output/tables/tab_dynamic_sensitivity_summary}
+
+\section{Mechanism Diagnostics}
+\label{app:mechanisms}
+
+The main mechanism claim combines three pieces of evidence. First, the
+same-firm pricing test conditions on firm-by-item-by-buyer triples.
+The one-sided upper 95\% bound rules out broad same-firm markups above
+about \BPwfNullRuleOutPct{} in this repeated urgent-market sample. At
+a \BPwfTostMarginPct{} equivalence margin, the TOST $p$-value is
+\BPwfTostPten{}; at a 5\% margin, it is \BPwfTostPfive{}. The minimum
+detectable effect at 80\% power is \BPwfNullMdePct{}, and power
+against a 10\% markup is \BPwfNullPowerTen{}. These diagnostics justify
+the limited wording that the data do not show a broad same-firm markup
+in deep repeated urgent markets.
+
+Second, quantity is a mechanism, not a control for a preferred direct
+effect. Administrative urgent orders are larger, and the main figure
+uses the bulk-discount elasticity to show how scale loss contributes
+to the administrative-minus-litigated price gap. Third, winner-set
+evidence shows supplier-set reallocation. Randomly splitting purchases
+within the same regime gives a baseline Jaccard similarity of
+\BPwfChurnBaselineJaccard{}, while the cross-regime Jaccard is
+\BPwinnerSwitchJaccardMean{}, a gap of \BPwfChurnGap{}. The
+cross-regime difference is therefore larger than ordinary turnover
+within a regime.
+
+The heterogeneity evidence in the main table is interpreted as
+mechanism evidence. The same-firm margin is weak in deeper repeated
+urgent markets, while supplier leverage can reappear in thinner or
+earlier markets. The mechanism claim is therefore conditional: the
+core cost margin is fragmented sourcing, with same-firm pricing more
+plausible where demand is small, irregular, or institutionally less
+routinized.
+
+\section{Fiscal Procurement-Cost Implication}
+\label{app:cost}
+
+The fiscal calculation translates the Lee-bounded sanction margin into
+a procurement-cost magnitude. It applies the Lee midpoint
+\BPprocCostBoundUTGmidPct{} to an admissibility calibration of
+\BPprocCostBoundAdmissibility{} and annual litigated spending of
+\BPprocCostBoundAnnualSpend{}, yielding \BPprocCostBound{} per year
+(Lee-bound range \BPprocCostBoundCIlow{}--\BPprocCostBoundCIhigh{}).
+This is not a full social valuation: it excludes health benefits,
+search costs, compliance costs, and other relevant components.
+
+\input{../../output/tables/tab_procurement_cost_bound}

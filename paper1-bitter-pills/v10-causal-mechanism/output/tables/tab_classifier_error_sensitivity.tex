@@ -1,0 +1,19 @@
+\begin{table}[ht]
+\centering
+\caption{Classifier-error sensitivity diagnostics.}
+\label{tab:classifier_error_sensitivity}
+\begin{threeparttable}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Class & FPR & FNR & Contamination & Attenuation \\
+\midrule
+Judicial & \BPregexFprJudPct{} & \BPregexFnrJudPct{} & \BPregexContamJudPct{} & \BPregexAttenJud{} \\
+Administrative & \BPregexFprAdmPct{} & \BPregexFnrAdmPct{} & \BPregexContamAdmPct{} & \BPregexAttenAdm{} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \textit{Notes:} The false-positive rate is false positives divided by false positives plus true negatives in the purchase-order validation file. The false-negative rate is false negatives divided by true positives plus false negatives. Predicted-label contamination is one minus precision. The attenuation factor is the one-versus-rest diagnostic $1-\mathrm{FPR}-\mathrm{FNR}$; it is not used as a structural correction to price estimates because the validation file is at the purchase-order/tender-notice level, while the price regressions are POI-level.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
