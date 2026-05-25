@@ -1070,7 +1070,8 @@ add("CSseverr",         "0.039")
 add("FtPrecision",      "0.062")
 add("BidIVraw",         "0.001")
 # AUC additional values
-add("AUCConvFL",  "0.824")
+# convite_primary FL14 AUC, from scripts/37_gate_d2_modal_auc.R :: output/gate_d2/d2_modal_auc.csv
+add("AUCConvFL",  "0.865")
 
 # ---------------------------------------------------------------------------
 # 14. Final 100% literal pass --all remaining residuals
