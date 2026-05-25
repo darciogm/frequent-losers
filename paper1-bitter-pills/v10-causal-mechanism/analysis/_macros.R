@@ -1,5 +1,6 @@
-# v9-pointed copy of the macro-emit helper. BP_VALUES resolves to
-# v9-jpube-short/manuscript/paper/values.tex when scripts run from this tree.
+# Macro-emit helper. BP_VALUES resolves to
+# v10-causal-mechanism/manuscript/paper/values.tex when scripts run from this tree
+# (path is relative to the script's own location, not hardcoded to a version).
 
 .bp_this_dir <- function() {
   for (i in seq_len(sys.nframe())) {

@@ -1,4 +1,4 @@
-% values.tex --- canonical macro layer for Bitter Pills (v6-jpub-short).
+% values.tex --- canonical macro layer for Bitter Pills (v10-causal-mechanism).
 %
 % Rules:
 %   * Every number/estimate/sample-size in the manuscript prose must come
@@ -15,7 +15,7 @@
 
 % --------------------------------------------------------------------------
 % Path shortcuts: \BPvtab/\BPvfig route to v4 outputs;
-%                 \BPotab/\BPofig route to v6 (output/) outputs.
+%                 \BPotab/\BPofig route to v10 (output/) outputs.
 % Use these in section files instead of writing relative paths inline.
 % --------------------------------------------------------------------------
 \providecommand{\BPvtab}[1]{\input{../../../v4/pub/tables/#1}}
@@ -172,10 +172,22 @@
 \providecommand{\BPbosioBaseline}{15--25\%}                         % Bosio-Djankov-Glaeser-Shleifer 2022 cross-country
 \providecommand{\BPcgsBaseline}{5--12\%}                            % Coviello-Guglielmo-Spagnolo 2018 ManSci
 
+% Same-firm pricing diagnostic thresholds (analyst-chosen design constants;
+% mirror D05=log(1.05), D10=log(1.10) and the 95%/80% conventions in
+% analysis/60_referee_tests.R). \BPwfTostMarginPct (=10%) is script-emitted below.
+\providecommand{\BPwfTostMarginPctAlt}{5\%}                         % alternative TOST equivalence margin
+\providecommand{\BPwfCILevelPct}{95\%}                              % one-sided upper-bound confidence level
+\providecommand{\BPwfPowerLevelPct}{80\%}                           % power level for the MDE
+
 % Positive-magnitude variant of \BPfirmsPctHeadline (signed coef would
 % render as "-5.4% fewer bidders" --- a sign double-count). Used in
 % abstract, intro, conclusion prose where the absolute value reads cleaner.
-\providecommand{\BPfirmsPctHeadlineAbs}{5.4\%}
+% DERIVED from the script-emitted \BPfirmsPctHeadline: it strips a leading
+% minus and expands lazily (after the auto-generated block sets the signed
+% value), so it can never desync. Do not hardcode a literal here.
+\def\BPdropleadingminus#1#2\BPminusend{\if-#1#2\else#1#2\fi}
+\providecommand{\BPfirmsPctHeadlineAbs}{%
+  \expandafter\BPdropleadingminus\BPfirmsPctHeadline\BPminusend}
 
 % --- Quantity / bulk-discount inputs (already produced in v7; reused in G) ---
 \providecommand{\BPrefPanelBcoef}{\BPtbd{refPanelBcoef}}
