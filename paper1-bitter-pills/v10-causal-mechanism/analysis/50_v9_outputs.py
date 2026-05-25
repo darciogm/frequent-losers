@@ -163,8 +163,8 @@ Tender success & {macro("successCoef")} & {macro("successSE")} & {macro("success
 Specification & Admin coef. & SE & Gap (\%) & $N$ \\
 \midrule
 Naive UTG: item + year + PBU FE & {macro("utgPointNaiveCoef")} & {macro("utgPointNaiveSE")} & {macro("utgPointNaive")} & {macro("utgPointNaiveN")} \\
-Lee lower bound: admin top-tail trim & {macro("utgBoundLowCoef")} & {macro("utgBoundLowSE")} & {macro("utgBoundLow")} & {macro("utgBoundLowN")} \\
-Lee upper bound: admin bottom-tail trim & {macro("utgBoundHighCoef")} & {macro("utgBoundHighSE")} & {macro("utgBoundHigh")} & {macro("utgBoundHighN")} \\
+Lee lower bound: admin bottom-tail trim & {macro("utgBoundLowCoef")} & {macro("utgBoundLowSE")} & {macro("utgBoundLow")} & {macro("utgBoundLowN")} \\
+Lee upper bound: admin top-tail trim & {macro("utgBoundHighCoef")} & {macro("utgBoundHighSE")} & {macro("utgBoundHigh")} & {macro("utgBoundHighN")} \\
 \bottomrule
 \end{{tabular}}
 \begin{{tablenotes}}[flushleft]\footnotesize
@@ -364,8 +364,8 @@ Reverse-auction share & {macro("bothCellModalityShareBoth")} & {macro("bothCellM
 Specification & Admin coef. & SE & Gap (\%) & $N$ \\
 \midrule
 Naive UTG: item + year + PBU FE & {macro("utgPointNaiveCoef")} & {macro("utgPointNaiveSE")} & {macro("utgPointNaive")} & {macro("utgPointNaiveN")} \\
-Lee lower bound: admin top-tail trim & {macro("utgBoundLowCoef")} & {macro("utgBoundLowSE")} & {macro("utgBoundLow")} & {macro("utgBoundLowN")} \\
-Lee upper bound: admin bottom-tail trim & {macro("utgBoundHighCoef")} & {macro("utgBoundHighSE")} & {macro("utgBoundHigh")} & {macro("utgBoundHighN")} \\
+Lee lower bound: admin bottom-tail trim & {macro("utgBoundLowCoef")} & {macro("utgBoundLowSE")} & {macro("utgBoundLow")} & {macro("utgBoundLowN")} \\
+Lee upper bound: admin top-tail trim & {macro("utgBoundHighCoef")} & {macro("utgBoundHighSE")} & {macro("utgBoundHigh")} & {macro("utgBoundHighN")} \\
 \bottomrule
 \end{{tabular}}
 \end{{adjustbox}}
