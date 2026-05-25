@@ -4,6 +4,14 @@
     The tables and figures on this page are the original reduced-form DiD estimates from the early reduced-form layer. The canonical **v8 paper** (`paper.pdf`) reframes the policy account around **the price-forming order statistic**: the set-aside price effect is decomposed into a lost-discipline component (non-SMEs removed) and a protected-pool offset (post-policy SME pool), with exclusion accounting for ~72% of the absolute price decomposition in standardized non-pharmaceutical procurement. See `paper.pdf` for the canonical estimates, the threat-assessment table (Table 5), and the empirical bidder-count robustness (Online Appendix OA-D.2).
 
 
+!!! abstract "Intuition (plain-language)"
+    The reduced-form picture is simple. When medical supplies were forced
+    back into SME-only bidding in March 2018, negotiated prices rose about
+    13% and 10–22% fewer firms competed — the mirror image of what you see
+    while the door is open. Everything downstream on this page (the
+    value-margin heterogeneity, the fiscal arithmetic) and the structural
+    welfare story in the paper is built on this one clean regime switch.
+
 ## Event Study: Log Prices
 
 The event study plots semester-by-semester differences between group 65 (switched) and other groups (always treated). The parallel trends assumption requires that the difference is stable in the post-period (after March 2018).
@@ -90,6 +98,14 @@ Open tenders attract **~22% more firms** in the short term, attenuating to **~10
 
 ## Heterogeneous Effects by Item Value
 
+!!! abstract "Intuition (plain-language)"
+    The price effect is about 40% larger on big-ticket items, and the
+    entry of distant suppliers shows up only there. Both point to the
+    same logic: a large contract is worth the freight and fixed costs of
+    bidding from far away, so opening the tender draws in geographically
+    distant, lower-cost suppliers precisely where the prize justifies the
+    trip. Small items do not clear that bar.
+
 |  | Log prices | Log firms | Log bids | Distance |
 |---|:---:|:---:|:---:|:---:|
 | **Panel A: High-value items (above median)** | | | | |
@@ -108,6 +124,14 @@ The price effect is **40% larger for high-value items** (-0.137 vs. -0.098). The
 ---
 
 ## Fiscal Cost Quantification
+
+!!! abstract "Intuition (plain-language)"
+    A coefficient is abstract; a budget line is not. Apply the estimated
+    price effect — about 12% — to what group 65 actually spent before the
+    switch and the reduced-form arithmetic implies roughly R$85 million
+    over 18 months. This is the back-of-envelope ancestor of the paper's
+    structural welfare number (R$55–128 million a year): same direction, a
+    different and more defensible object.
 
 Translating the estimated price effects into monetary terms provides a concrete measure of the policy's fiscal burden. The calculation applies the implied percentage price effect ($e^{\hat{\beta}} - 1$) to the total procurement value of group 65 completed items in the pre-period (Sep 2016--Feb 2018).
 

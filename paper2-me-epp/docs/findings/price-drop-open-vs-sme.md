@@ -1,5 +1,14 @@
 # Open auctions cut procurement prices by ~13% in switched group 65
 
+!!! abstract "Intuition (plain-language)"
+    In a competitive tender the price is set by whoever is willing to go
+    lowest, and many of the keenest price-cutters are non-SMEs. When
+    São Paulo briefly let them bid for medical supplies and then shut the
+    door again in March 2018, prices tracked the door: about 13% lower
+    while open, higher once SME-only returned. The estimate barely moves
+    whether you look 6, 12, or 18 months around the switch — the
+    signature of a real policy effect rather than a passing trend.
+
 !!! info "Reduced-form motivation layer"
     The headline number on this page comes from the v1–v4 reduced-form
     DiDiR pipeline. The v8 manuscript carries this as **motivation**

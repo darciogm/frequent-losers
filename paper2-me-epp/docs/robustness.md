@@ -1,5 +1,15 @@
 # Robustness Checks
 
+!!! abstract "Intuition (plain-language)"
+    Every check here asks the question a skeptic would: could the main
+    price effect be an artifact rather than the policy? If it were a
+    pre-existing trend, planting fake treatment dates in the pre-period
+    would light up significant — for prices, it does not. If it were a
+    handful of weird contracts, winsorizing the tails would move the
+    estimate — it does not. And the result does not hinge on how the
+    standard errors are clustered. The headline survives the obvious ways
+    it could have been spurious.
+
 ## Placebo Tests
 
 Placebo tests using fake treatment dates applied exclusively to pre-treatment data. If the main results were driven by a spurious trend, these regressions should yield significant price coefficients.

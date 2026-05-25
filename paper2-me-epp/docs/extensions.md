@@ -1,5 +1,14 @@
 # Extensions
 
+!!! abstract "Intuition (plain-language)"
+    These extensions poke at the same mechanism from different sides. Is
+    the price effect real or just inflation? (Deflated prices look
+    identical.) Does opening tenders change who wins? (Fewer SMEs win —
+    exactly what a competition story predicts.) Does the government get
+    better deals against its own reference price? (Yes.) None is the
+    headline; together they triangulate that open competition, not an
+    accounting quirk, drives the result.
+
 ## IPCA-Deflated Real Prices
 
 Using IPCA-deflated (real) prices yields patterns virtually identical to the nominal results, confirming that the price effects reflect real differences in procurement costs rather than differential inflation across product groups.
@@ -31,6 +40,14 @@ Interacting the treatment indicator with a direct administration dummy reveals b
 ---
 
 ## Welfare Cost (v6)
+
+!!! abstract "Intuition (plain-language)"
+    Here the page graduates from "prices changed" to "how much was lost."
+    The welfare cost adds real allocative waste (a higher-cost firm wins)
+    to the deadweight of financing the bigger bill through taxes, at the
+    standard λ = 0.30. That is about 29% of the open price for ordinary
+    goods, more for pharma — translating to R$55–128 million a year on
+    group 65 alone, one slice of a R$13 billion procurement platform.
 
 The v6 manuscript replaces the v4 back-of-the-envelope fiscal calculation with a structural welfare arithmetic. The per-auction welfare loss combines the allocative wedge $\text{DWL}_{\text{alloc}} = c_{(1)}^{S_3} - c_{(1)}^{S_1}$ with an MCPF distortion $\lambda \cdot (p_{S_3} - p_{S_1})$ at $\lambda = 0.30$ (Ballard--Shoven--Whalley benchmark).
 

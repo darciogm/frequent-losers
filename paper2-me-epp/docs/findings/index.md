@@ -1,5 +1,16 @@
 # Findings — The Price of Exclusion
 
+!!! abstract "Intuition (plain-language)"
+    One idea holds the project together: in public procurement the price
+    is set by the fiercest bidders, and SME set-asides work by removing
+    them. Opening São Paulo's medical-supply tenders to all comers cut
+    prices about 13% and drew in more — and more distant — firms; closing
+    them again reversed it. The structural decomposition shows that this
+    exclusion, not any failure of SMEs to enter, does most of the damage,
+    costing R$55–128 million a year on one product group. The implied fix
+    is not abandoning SME support but delivering it through a price
+    preference that keeps the competitive pool intact.
+
 This page is the curated index of *what we have learned* from the project's
 own analyses. Each finding is a **claim about the world** — the kind of
 statement that would go in the paper — and it may rest on several

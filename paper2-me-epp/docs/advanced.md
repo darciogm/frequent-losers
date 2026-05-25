@@ -6,6 +6,14 @@ This page documents five advanced econometric methods that complement the main D
 
 ## 1. Parallel Trends Sensitivity (HonestDiD)
 
+!!! abstract "Intuition (plain-language)"
+    Parallel trends is an assumption you cannot fully test — so instead of
+    asserting it, HonestDiD asks how badly it would have to fail to
+    overturn the result. The answer: the price effect stays significant
+    even when the post-period trend is allowed to drift substantially
+    from the pre-period path. The finding does not rest on a knife-edge
+    belief that trends were exactly parallel.
+
 The HonestDiD method (Rambachan and Roth, 2023) constructs robust confidence intervals for the treatment effect under controlled violations of the parallel trends assumption. The parameter $\bar{M}$ governs the maximum amount by which the post-treatment trend may deviate from the pre-treatment path.
 
 <figure>
@@ -19,6 +27,14 @@ The HonestDiD method (Rambachan and Roth, 2023) constructs robust confidence int
 ---
 
 ## 2. Sample Selection Correction (Lee Bounds)
+
+!!! abstract "Intuition (plain-language)"
+    Prices are only observed for items that were actually awarded, and if
+    the policy changes which items complete, that selection could bias
+    the estimate. Lee bounds handle the worst case by trimming the
+    over-selected group from the relevant tail. The bounds for the price
+    effect are tight (−0.131 to −0.123) — so selection on completion is,
+    at most, a rounding-error concern here.
 
 The price and distance regressions condition on item completion. If the treatment affects completion rates, this creates sample selection bias. Lee (2009) bounds correct for this by trimming the outcome distribution in the excess-selected cell.
 
@@ -34,6 +50,13 @@ The price and distance regressions condition on item completion. If the treatmen
 ---
 
 ## 3. Heterogeneous Treatment Effects (Causal Forest)
+
+!!! abstract "Intuition (plain-language)"
+    Rather than guessing which contracts react most, let a
+    machine-learning forest hunt for heterogeneity on its own. It finds
+    that item quantity matters most, but the spread of effects across
+    contracts is modest and imprecisely estimated. Translation: the price
+    effect is reasonably broad-based, not driven by one exotic subgroup.
 
 A causal forest (Athey, Tibshirani, and Wager, 2019) estimates individualized treatment effects using an honest, doubly-robust random forest on FWL-residualized outcomes.
 
@@ -64,6 +87,14 @@ A causal forest (Athey, Tibshirani, and Wager, 2019) estimates individualized tr
 
 ## 4. Distributional Effects (Quantile DiD)
 
+!!! abstract "Intuition (plain-language)"
+    The average hides a sharp pattern. Competition bites hardest at the
+    bottom of the price distribution — cheap, standardized items where
+    many bidders bunch — and even reverses sign at the very top, where
+    supplier markets are thin and items specialized. The set-aside's
+    price penalty is concentrated in the bulk of ordinary contracts, not
+    spread evenly across them.
+
 Quantile difference-in-differences (Canay, 2011) estimates how the treatment effect varies across the price distribution, going beyond the mean effect captured by OLS.
 
 <figure>
@@ -83,6 +114,16 @@ Quantile difference-in-differences (Canay, 2011) estimates how the treatment eff
 ---
 
 ## 5. Mechanism Decomposition (Gelbach)
+
+!!! abstract "Intuition (plain-language)"
+    Why exactly do open tenders lower prices? Gelbach's decomposition
+    splits the effect into observable channels, and two pull against each
+    other: more competition pushes prices down, while the resulting shift
+    toward non-SME winners pushes them back up through conditional
+    pricing. They largely cancel, and most of the price effect runs
+    through channels these two mediators do not capture — a useful
+    warning that the simple "more firms, lower prices" story is
+    incomplete.
 
 The Gelbach (2016) decomposition partitions the total price effect into contributions from observable channels by comparing a "short" regression (treatment + controls) with a "full" regression that adds mediators.
 
