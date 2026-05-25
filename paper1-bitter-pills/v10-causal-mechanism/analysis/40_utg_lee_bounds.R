@@ -270,14 +270,19 @@ bp_macros_emit("40_utg_lee_bounds", list(
   utgPointNaiveCoef   = bp_fmt(b_naive),
   utgPointNaiveSE     = bp_fmt(se_naive),
   utgPointNaiveN      = bp_fmt_int(nobs(m_naive)),
+  # Low/High here name the litigated-over-admin GAP magnitude, not the
+  # coefficient bound. The smaller gap (Low) comes from the less-negative
+  # coef (ub, admin bottom-trim); the larger gap (High) from the more-negative
+  # coef (lb, admin top-trim). Keep coef/SE/N paired with their own gap so
+  # \BPutgBoundLowCoef matches \BPutgBoundLow.
   utgBoundLow         = bp_pct_from_log(-ub$coef),
-  utgBoundLowCoef     = bp_fmt(lb$coef),
-  utgBoundLowSE       = bp_fmt(lb$se),
-  utgBoundLowN        = bp_fmt_int(lb$n),
+  utgBoundLowCoef     = bp_fmt(ub$coef),
+  utgBoundLowSE       = bp_fmt(ub$se),
+  utgBoundLowN        = bp_fmt_int(ub$n),
   utgBoundHigh        = bp_pct_from_log(-lb$coef),
-  utgBoundHighCoef    = bp_fmt(ub$coef),
-  utgBoundHighSE      = bp_fmt(ub$se),
-  utgBoundHighN       = bp_fmt_int(ub$n),
+  utgBoundHighCoef    = bp_fmt(lb$coef),
+  utgBoundHighSE      = bp_fmt(lb$se),
+  utgBoundHighN       = bp_fmt_int(lb$n),
   utgLeeTrimMean      = bp_fmt_pct(trim_summary$mean_trim * 100),
   utgLeeTrimMax       = bp_fmt_pct(trim_summary$max_trim * 100),
   utgLeeStrataExcess  = bp_fmt_int(trim_summary$cells_admin_excess),

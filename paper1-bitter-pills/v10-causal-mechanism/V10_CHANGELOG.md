@@ -17,7 +17,7 @@ mechanism-disciplined:
 
 ## Main Changes from V9
 
-- Retitled the paper to `Judicial Urgency and the Cost of Public Procurement`.
+- Titled the paper `Sourcing under Sanctions: Judicial Urgency and Pharmaceutical Procurement Costs`.
 - Rewrote the abstract to lead with the causal urgent-procurement shock.
 - Rewrote the introduction around three layers:
   1. externally imposed urgent procurement;
@@ -39,13 +39,12 @@ mechanism-disciplined:
 The JPubE short-paper guidance says submissions may be no longer than 6,000
 words and include up to five exhibits; the main text and exhibits must stand on
 their own rather than advertise a longer appendix. V10 keeps the main paper to
-five exhibits:
+four exhibits (three tables, one figure):
 
-1. institutional purchase-type table;
-2. urgent margins plus under-the-gun bounds;
-3. within firm-buyer-item robustness;
-4. pricing-versus-sourcing figure;
-5. winner-switching table.
+1. urgent margins plus under-the-gun bounds (Table, two panels);
+2. within firm-buyer-item robustness (Table);
+3. pricing-versus-sourcing decomposition (Figure);
+4. winner-switching (Table).
 
 The online appendix is compact but no longer artificially capped. It includes
 only material that directly supports the main claims: classifier validation and
