@@ -1284,3 +1284,117 @@ supersedes the prior note about the missing prepared cache.
   manuscript: the identifying assumption for externally imposed legal urgency,
   Lee-bound monotonicity, and the interpretation limits of the firm-buyer-item
   pricing test.
+
+## Final submission polish
+
+Performed the final pre-submission production pass for the current v10 JPubE
+Short Paper package.
+
+### Counts and compliance
+
+- Word-count command: `python3 v10-causal-mechanism/analysis/64_wordcount.py`.
+- Main text + abstract, excluding references, generated tables, math, and
+  appendix: **4,402 words**.
+- Main text + abstract + figure caption: **4,445 words**.
+- Conservative manuscript count including the three generated main-table
+  bodies/notes, computed as a production check: approximately **4,827 words**.
+- JPubE 6,000-word buffer under the main count: **1,598 words**.
+- Main exhibits: **4** total -- Table 1, Table 2, Figure 1, Table 3.
+- Main PDF page count: **17 pages**.
+- Online Appendix page count: **5 pages**.
+- Appendix remains below the seven-page target and contains only the classifier,
+  sample, Lee-bound, inference, placebo/dynamic, mechanism, and procurement-cost
+  support tables.
+
+### Sections edited
+
+- `Introduction.tex`: added a compact courts/procurement anchor using the
+  existing verified Coviello et al. (2018) reference.
+- `EmpiricalStrategy.tex`: linked Lee trimming to the existing Lee (2009)
+  reference.
+- `Results.tex`: linked the timing diagnostic to existing Borusyak, Jaravel, and
+  Spiess (2024) and Rambachan and Roth (2023) references, and linked the
+  aggregation policy margin to the existing Lin and Wang (2025) group-purchasing
+  reference.
+- No abstract wording was changed in this pass.
+- No empirical estimates, tables, figures, or analyses were changed.
+
+### Visual and exhibit checks
+
+- Source-level centering audit: every generated table in `output/tables` begins
+  with a table environment and `\centering`; Figure 1 uses a figure environment
+  with `\centering`.
+- Main exhibits visually inspected from rendered PDF pages:
+  - Table 1 on page 11: centered, readable, no clipping;
+  - Table 2 on page 12: centered, readable, no clipping;
+  - Figure 1 on page 13: centered, vector-rendered, readable at normal zoom,
+    zero line and near-zero annotation visible;
+  - Table 3 on page 14: centered, readable, no clipping.
+- Appendix rendered pages 1--5 were inspected; appendix tables are centered and
+  within margins. Some underfull hbox warnings remain in narrow table cells, but
+  they do not create visible overflow or clipping.
+
+### Bibliography and citations
+
+- No new `.bib` entries were added. The pass activated existing verified
+  references already present in `References.bib`.
+- Final compiled bibliography contains **15 cited references**.
+- Added/activated citations and rationale:
+  - Coviello, Moretti, Spagnolo, and Valbonesi (2018): closest
+    courts/procurement positioning anchor;
+  - Lee (2009): selection-bounds method;
+  - Borusyak, Jaravel, and Spiess (2024): BJS event-study diagnostic;
+  - Rambachan and Roth (2023): Honest-DiD sensitivity diagnostic;
+  - Lin and Wang (2025): aggregation/group-purchasing policy margin.
+- Log and `.bbl` checks show no missing citations, no unresolved references, and
+  no duplicate rendered bibliography items.
+- Institutional author `CNJ/INSPER` renders correctly as an institutional author.
+
+### Macro and reproducibility fixes
+
+- Re-ran `Rscript v10-causal-mechanism/analysis/65_h7_specificity_placebos.R`.
+- Fixed the H7 placebo macro names emitted by that script to use LaTeX-valid
+  command names (`\BPHseven...` rather than names containing a digit after
+  `\BPh`). This is a reproducibility/syntax fix only; it does not change any
+  empirical value.
+- The script regenerated `values.tex` and
+  `output/tables/tab_h7_placebo_battery.tex`.
+
+### Build commands run
+
+- `Rscript v10-causal-mechanism/analysis/65_h7_specificity_placebos.R`
+- `pdflatex -interaction=nonstopmode main.tex`
+- `bibtex main`
+- `pdflatex -interaction=nonstopmode main.tex`
+- `pdflatex -interaction=nonstopmode main.tex`
+- `pdflatex -interaction=nonstopmode OnlineAppendix.tex`
+- `pdflatex -interaction=nonstopmode OnlineAppendix.tex`
+- PDF page checks with `pdfinfo`.
+- Visual page renders with `pdftoppm` for main exhibit pages and all appendix
+  pages.
+
+### Remaining warnings
+
+- Main log: only benign hyperref PDF-string warnings from the Elsevier front
+  matter and one underfull hbox in Table 1 text wrapping.
+- Appendix log: underfull hbox warnings in narrow table cells.
+- No LaTeX errors, no citation warnings, no undefined references, no missing
+  figures, and no overfull boxes were found in the final log scan.
+
+### Final self-check
+
+1. Main paper below 6,000 words: **yes**.
+2. Main paper has no more than 5 exhibits: **yes** -- four.
+3. Appendix no more than 7 pages: **yes** -- five.
+4. Main paper stand-alone: **yes**.
+5. Contribution clear by page 2: **yes**.
+6. Paper remembered as pricing-versus-sourcing, not generic judicialization
+   costs: **yes**.
+7. Causal language strong but qualified: **yes**.
+8. Administrative channel described as selected, not clean: **yes**.
+9. "No broad same-firm markup in deep markets" preserved: **yes**.
+10. Fragmented sourcing clearly the main mechanism: **yes**.
+11. Policy framed as preserve access and rebuild aggregation: **yes**.
+12. Empirical numbers generated: **yes**.
+13. Main and appendix compile cleanly: **yes**.
+14. Package ready for JPubE Short Paper submission: **yes**.
