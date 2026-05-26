@@ -145,7 +145,8 @@ Tender success & {macro("successCoef")} & {macro("successSE")} & {macro("success
 \small
 \setlength{{\tabcolsep}}{{5pt}}
 
-{{\itshape Panel A. Urgent versus ordinary procurement}}\par\smallskip
+\centerline{{\itshape Panel A. Urgent versus ordinary procurement}}\smallskip
+\centerline{{%
 \begin{{tabular}}{{lccc}}
 \toprule
 Outcome & Effect & SE & Interpretation \\
@@ -155,9 +156,10 @@ Log reference price & {macro("refCoef")} & {macro("refSE")} & {macro("refPctPref
 Log number of bidding firms & {macro("firmsCoef")} & {macro("firmsSE")} & {macro("firmsPctHeadlineAbs")} fewer bidders \\
 Tender success & {macro("successCoef")} & {macro("successSE")} & {macro("successPP")} higher success \\
 \bottomrule
-\end{{tabular}}\par\medskip
+\end{{tabular}}}}\medskip
 
-{{\itshape Panel B. Under-the-gun: administrative vs.\ litigated urgent gap}}\par\smallskip
+\centerline{{\itshape Panel B. Under-the-gun: administrative vs.\ litigated urgent gap}}\smallskip
+\centerline{{%
 \begin{{tabular}}{{p{{.40\linewidth}}rrrr}}
 \toprule
 Specification & Admin coef. & SE & Gap (\%) & $N$ \\
@@ -166,7 +168,7 @@ Naive UTG: item + year + PBU FE & {macro("utgPointNaiveCoef")} & {macro("utgPoin
 Lee lower bound: admin bottom-tail trim & {macro("utgBoundLowCoef")} & {macro("utgBoundLowSE")} & {macro("utgBoundLow")} & {macro("utgBoundLowN")} \\
 Lee upper bound: admin top-tail trim & {macro("utgBoundHighCoef")} & {macro("utgBoundHighSE")} & {macro("utgBoundHigh")} & {macro("utgBoundHighN")} \\
 \bottomrule
-\end{{tabular}}
+\end{{tabular}}}}
 \begin{{tablenotes}}[flushleft]\footnotesize
 \item \textit{{Notes:}} POI denotes purchase-offer-item. \emph{{Panel A}} reports urgent-versus-ordinary estimates under item, year, and PBU fixed effects; negotiated-price and reference-price estimates use accepted winning bids, tender success uses the broader tender/POI sample, and standard errors are clustered by PBU. Panel A establishes the urgent-procurement margin and is not the sanction-exposure design. \emph{{Panel B}} reports the administrative-versus-litigated urgent gap; coefficients are administrative minus litigated log negotiated price, so negative coefficients mean litigated purchases are more expensive, while the percentage column is the reader-facing litigated-over-administrative gap. Lee trimming is applied within item$\times$year$\times$PBU strata where administrative observations exceed litigated observations; the mean trimming rate is {macro("utgLeeTrimMean")} and the maximum is {macro("utgLeeTrimMax")}.
 \end{{tablenotes}}
