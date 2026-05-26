@@ -1,15 +1,19 @@
+---
+paper: sme-public
+---
+
 # Findings — The Price of Exclusion
 
 !!! abstract "Intuition (plain-language)"
-    One idea holds the project together: in public procurement the price
-    is set by the fiercest bidders, and SME set-asides work by removing
-    them. Opening São Paulo's medical-supply tenders to all comers cut
-    prices about 13% and drew in more — and more distant — firms; closing
-    them again reversed it. The structural decomposition shows that this
-    exclusion, not any failure of SMEs to enter, does most of the damage,
-    costing R$55–128 million a year on one product group. The implied fix
-    is not abandoning SME support but delivering it through a price
-    preference that keeps the competitive pool intact.
+    One idea ties the project together: in public procurement the price is set by
+    the fiercest bidders, and SME set-asides work by removing them. Opening São
+    Paulo's medical-supply tenders to all comers cut prices about 10–11% and drew
+    in more — and more distant — firms; closing them again reversed it. The
+    structural decomposition shows this exclusion, not any failure of SMEs to
+    enter, does most of the damage (≈72% of the price effect), costing roughly
+    R$38–89 million a year on one product group. The implied fix is not
+    abandoning SME support but delivering it through a price preference that keeps
+    the competitive pool intact.
 
 This page is the curated index of *what we have learned* from the project's
 own analyses. Each finding is a **claim about the world** — the kind of
@@ -63,7 +67,7 @@ see [H:ipv-clock-admissible](../hypotheses/ipv-clock-admissible.md)).
 
 **Reduced-form policy effects** *(empirical)*
 
-- [Open auctions cut procurement prices by ~13% in switched group 65](price-drop-open-vs-sme.md) — DiDiR &beta;=&minus;0.131 to &minus;0.133 across 18-month specifications, p<0.01, item-clustered SEs.
+- [Open auctions cut procurement prices by ~10–11% in switched group 65](price-drop-open-vs-sme.md) — v8 reduced-form benchmark &beta;=&minus;0.113 (18-month, PBU controls), p<0.01, item-clustered SEs; the earlier v1–v4 pipeline gave &minus;0.131 to &minus;0.133.
 - [Open auctions increase bidder participation by ~10–22%](entry-rises-with-competition.md) — short-window effect ~22%, attenuating to ~10% at 18 months; consistent across firms and valid-bids margins.
 - [Open auctions pull in geographically distant non-SME suppliers](distant-suppliers-enter.md) — average buyer-winner distance widens by ~12 km on high-value items; null on low-value items.
 
