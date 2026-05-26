@@ -15,7 +15,9 @@
 # sample size in cells where both occur.
 #
 # Output:
-#   - tab_utg_lee_bounds.tex   : Manski-Lee bound table
+#   - tab_utg_lee_bounds_raw.tex : numbers-baked diagnostic table. The canonical
+#       macro-bound tables (tab_urgent_and_bounds.tex, tab_utg_lee_bounds.tex)
+#       are written by 50_v9_outputs.py; do not point the manuscript here.
 #   - macros: BPutgPointNaive, BPutgBoundLow, BPutgBoundHigh,
 #             BPutgPointBounded (will be filled in by 41_utg_heckman.R)
 
@@ -135,9 +137,11 @@ res <- data.table(
            "Lee upper bound (admin bottom-trim)"),
   coef = c(b_naive, lb$coef, ub$coef),
   se   = c(se_naive, lb$se, ub$se),
+  # gap on each row uses that row's own coef (lb=top-trim, ub=bottom-trim);
+  # the macro table in 50_v9_outputs.py applies the bound-vs-gap flip separately.
   pct_lit_over_admin = c((exp(-b_naive) - 1) * 100,
-                         (exp(-ub$coef) - 1) * 100,
-                         (exp(-lb$coef) - 1) * 100),
+                         (exp(-lb$coef) - 1) * 100,
+                         (exp(-ub$coef) - 1) * 100),
   n    = c(nobs(m_naive), lb$n, ub$n)
 )
 print(res)
@@ -146,8 +150,8 @@ print(res)
 ktab <- kbl(res, format = "latex", booktabs = TRUE, digits = 3,
             col.names = c("Specification", "Coef.\\ on Admin", "SE",
                           "Lit-vs-Admin (\\%)", "$N$"),
-            label = "tab:utg_lee_bounds",
-            caption = "Lee bounds on the under-the-gun coefficient.",
+            label = "tab:utg_lee_bounds_raw",
+            caption = "Lee bounds on the under-the-gun coefficient (diagnostic).",
             escape = FALSE) |>
   add_header_above(c(" " = 1, "log negotiated price" = 2, "implied" = 1, " " = 1)) |>
   footnote(general = paste(
@@ -156,8 +160,11 @@ ktab <- kbl(res, format = "latex", booktabs = TRUE, digits = 3,
     "trims the top of the admin price distribution; upper bound trims the bottom.",
     "Standard errors clustered at PBU level."),
     general_title = "", footnote_as_chunk = TRUE, escape = FALSE)
-writeLines(ktab, file.path(OUT, "tables", "tab_utg_lee_bounds.tex"))
-cat("[ok] wrote tab_utg_lee_bounds.tex\n")
+# Diagnostic only. The canonical macro-bound tables (tab_urgent_and_bounds.tex
+# and tab_utg_lee_bounds.tex) are produced by 50_v9_outputs.py; writing a
+# numbers-baked copy to that path used to clobber the template, so emit _raw.
+writeLines(ktab, file.path(OUT, "tables", "tab_utg_lee_bounds_raw.tex"))
+cat("[ok] wrote tab_utg_lee_bounds_raw.tex (diagnostic)\n")
 
 bp_lee_for_strata <- function(dt_in, strata_cols) {
   d0 <- copy(dt_in)

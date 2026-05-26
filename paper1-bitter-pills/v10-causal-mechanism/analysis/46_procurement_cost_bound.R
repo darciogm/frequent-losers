@@ -49,14 +49,9 @@ writeLines(sprintf("# 46_procurement_cost_bound | start=%s", Sys.time()), LOG)
 
 t0 <- Sys.time()
 
-# read the bounded UTG numbers off the Lee bound CSV/TeX rather than parsing
-# values.tex. Keep this file authoritative (Lee).
-LEE_TEX <- file.path(OUT, "tables", "tab_utg_lee_bounds.tex")
-if (!file.exists(LEE_TEX)) stop("Run 40_utg_lee_bounds.R first.")
-lee_lines <- readLines(LEE_TEX)
-# parse cleanly: pct_lit_over_admin column is the 4th numeric in each data row.
-# we did not export the raw numbers, so re-read from the script's CSV if any.
-# Fall back to recomputing here from values.tex via macros parse:
+# Bounded UTG numbers come from the values.tex macros written by
+# 40_utg_lee_bounds.R (utgBoundLow/High, utgPointNaive). read_macro() below
+# errors if a macro is missing, which also enforces that 40 ran first.
 read_macro <- function(name, file = file.path(.this_dir, "..", "manuscript",
                                               "paper", "values.tex")) {
   lines <- readLines(file)
