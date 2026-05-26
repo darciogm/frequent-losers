@@ -4,7 +4,7 @@ id: h2
 slug: utg-gap-selection-bounded
 title: "Court-mandated urgent purchases cost more than the closest administrative urgent comparison, and the gap survives selection bounding"
 cluster: B
-paper_section: "§3 + §5"
+paper_section: "§4 + §5"
 status: partial
 last_updated: 2026-05-24
 ---
@@ -22,7 +22,7 @@ honest question is whether the gap survives once selection into that channel is
 bounded. The answer is that Lee bounds shrink the gap but keep it well above
 zero and statistically significant.
 
-!!! abstract "Intuition (plain-language)"
+!!! econ "Economic intuition"
     Two urgent purchases, same kind of medicine, same compressed deadline — one forced by a court order, the other authorized through the state's administrative urgent route. The court-ordered ones look about 29.5% more expensive at face value. But the administrative route is screened: it tends to admit cases that were easier and cheaper to source in the first place, which makes the raw gap flattering. Lee bounds discipline that screening under a monotonicity restriction — they bound the selection rather than wiping it out — and even at the conservative end the court-order premium stays in the 15.9%–21.1% range and remains statistically distinguishable from zero.
 
 > **Evidence strength: Partial (strongly supported).**
@@ -103,7 +103,7 @@ institutional account.
   administrative channel (mean trimming rate 26.9%).
 - *Inference*: Rademacher wild-cluster bootstrap on the preferred-FE Admin
   coefficient.
-- *Sample*: the urgent panel (56,803 observations).
+- *Sample*: the urgent winner panel (naive regression N=61,620; Lee-trimmed 45,624).
 
 ## Data requirements and limitations
 

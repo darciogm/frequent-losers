@@ -13,14 +13,14 @@ script: v10-causal-mechanism/analysis/44_wild_bootstrap.R
 target: v10-causal-mechanism/output/tables/tab_utg_boottest.tex
 tags: ["H:utg-gap-selection-bounded", wild-cluster-bootstrap, inference, robustness, utg-contrast]
 design:
-  sample: "Urgent panel of 56,803 purchase-offer-item observations, BEC group 65 São Paulo pharmaceutical procurement, 2009–2019"
+  sample: "Urgent winner panel of 61,620 purchase-offer-item observations, BEC group 65 São Paulo pharmaceutical procurement, 2009–2019"
   specification: "Rademacher wild-cluster bootstrap on the administrative-minus-litigated urgent-price contrast; preferred item+year+PBU fixed effects and a tighter item-by-year-month variant, clustering on PBU"
   notes: "Wild-cluster bootstrap addresses the small, uneven cluster count; it disciplines inference on the conditional gap and does not address selection into the litigated regime, which the Lee bounds handle"
 ---
 
 # AN-007: Wild-cluster bootstrap inference on the UTG contrast
 
-!!! abstract "Intuition (plain-language)"
+!!! econ "Economic intuition"
     The urgent-price gap is estimated across a modest number of purchasing units, and those units differ a lot in size. With few, uneven clusters, ordinary standard errors can overstate precision. The Rademacher wild-cluster bootstrap re-draws the data thousands of times to stress-test the gap. It still rejects a zero administrative-minus-litigated gap, so the contrast is not an artifact of how the standard errors are computed.
 
 ## Question
@@ -33,8 +33,9 @@ is valid with a small, unbalanced number of clusters?
 
 ## Design
 
-- **Sample**: urgent panel of 56,803 purchase-offer-item observations
-  (BEC group 65, São Paulo pharmaceutical procurement, 2009–2019).
+- **Sample**: urgent winner panel of 61,620 purchase-offer-item observations
+  (BEC group 65, São Paulo pharmaceutical procurement, 2009–2019); both
+  fixed-effects variants are bootstrapped on this base panel.
 - **Variation**: the administrative-minus-litigated urgent-price
   contrast, sign convention admin-minus-litigated.
 - **Specification**: Rademacher wild-cluster bootstrap, clustering on
