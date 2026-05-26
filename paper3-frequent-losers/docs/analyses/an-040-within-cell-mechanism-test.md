@@ -2,7 +2,7 @@
 paper: frequent-losers
 id: an-040
 hypothesis: price-scope-sign-reversal
-type: causal
+type: descriptive
 question: Within overlap cells, does FL presence depress the observed winner bid relative to the reference price? Does the effect operate through the channel of more bidders (cover-bidding theater)? Does the mechanism strengthen in dense-bidding tenders?
 status: done
 status_date: 2026-05-22
@@ -21,7 +21,7 @@ design:
 # AN-040: Within-Cell Mechanism Test (Test 2 of the Sign-Reversal Rationalization)
 
 !!! abstract "Intuition (plain-language)"
-    Test 2 of the rationalization for the FL-price sign-reversal. The selection mechanism (AN-039) explains the positive across-cell coefficient: cartels concentrate in cells where products are structurally expensive. This page tests the **second half**: within cells, does the cover-bidding theater (more bidders, tighter competition) actually depress the observed winner price? Yes. FL presence brings ~67% more bidders into the tender within the same cell, and pulls the winner ~5% closer to the reference price. The mechanism operates through bidder inflation: controlling for log(n_firms) makes the FL effect on winner-vs-reference vanish. The two effects compete: in sparse tenders, selection dominates (FL items have higher prices); in dense tenders, the mechanism dominates (FL items have lower prices).
+    Second half: the *mechanism*. Within a comparable cell, FL presence brings ~67% more bidders into the tender and pulls the winning bid ~5% closer to the reference price — and that price effect vanishes once you control for the number of bidders. So the channel is bidder inflation: cover bidding manufactures apparent competition, which mechanically tightens the winning bid. The two forces compete — selection dominates in sparse tenders (FL items look pricier), the mechanism dominates in dense ones (FL items look cheaper) — and together they explain why the raw sign and the within-cell sign disagree.
 
 ## Question
 
@@ -161,10 +161,7 @@ present and reweighting toward the treatment-bearing cells.
   estimate of OVERCHARGE). But the decomposition explains WHY the
   damages reading fails: the observed price is the result of two
   competing forces, and a single coefficient cannot capture both.
-- Adaptive deployment ([§7.4](../paper.md#sec:adaptive_deployment_submission))
-  becomes more concrete: detection works best where the mechanism
-  dominates (dense-bidding cells), and the screen design should
-  reflect this.
+- Deployment guidance becomes more concrete: detection is most informative where the within-cell scope pattern dominates (dense-bidding cells), and the screen design should reflect this.
 
 ## Follow-ups
 

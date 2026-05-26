@@ -2,12 +2,12 @@
 paper: frequent-losers
 id: an-015
 hypothesis: award-bid-complementarity
-type: causal
+type: descriptive
 question: D1 gate diagnostic — does the continuous score dominate FL14 on a harmonized same-sample horse race, and do the price coefficients align?
 status: done
-status_date: 2026-05-22
+status_date: 2026-05-25
 confidence: green
-headline: "D1 passes. Continuous AUC 0.939 dominates FL14 0.911 (DeLong p = 2 × 10⁻⁵). Price coefficients align in sign across binary and continuous in the single-score specifications."
+headline: "D1 passes. Continuous AUC 0.939 dominates the binary FL14 flag (0.924); the gap is 0.015 under the corrected FL14 ≥ 14 definition (DeLong Z = −4.38, p = 1.2 × 10⁻⁵). Price coefficients align in sign across binary and continuous in the single-score specifications."
 created: 2026-05-22
 script: scripts/36_gate_d1_harmonized.R
 target: output/gate_d1/gate_d1_harmonized.csv
@@ -21,7 +21,7 @@ design:
 # AN-015: Gate D1 — harmonized same-sample horse race
 
 !!! abstract "Intuition (plain-language)"
-    D1 is the first of four "gate" diagnostics that decided the paper's strategic framing in 2026. It harmonizes the same-sample comparison between continuous and binary versions of the screen on a single, consistent firm set. The continuous version dominates decisively, confirming the locked rule: continuous is the empirical primitive, binary is the deployable simplification.
+    D1 is the first of four 2026 "gate" diagnostics that decided the paper's framing. On a single harmonized firm set it pits the continuous score against the binary FL14 head to head. The continuous version dominates (0.939 vs 0.924; DeLong p ≈ 10⁻⁵) and the price coefficients agree in sign. The economic payoff: it confirms that loss intensity — not a particular cutoff — is the primitive, locking the rule that the binary is a deployable simplification of a continuous signal.
 
 ## Question
 
@@ -45,11 +45,10 @@ the JLEO submission strategy.
 
 | Score | AUC | 95% CI |
 |---|---:|---|
-| FL14 binary | 0.911 | [0.898, 0.925] |
+| FL14 binary | 0.924 | [0.921, 0.926] |
 | Continuous log_tc | **0.939** | [0.932, 0.946] |
 
-DeLong Z = −4.30, p = 2 × 10⁻⁵. **D1 passes**: continuous dominates
-binary at high significance.
+**D1 passes**: continuous dominates the binary flag (DeLong Z = −4.38, p = 1.2 × 10⁻⁵); the gap is 0.015 under the corrected FL14 (≥ 14) definition. The D1 re-run (2026-05-25) confirmed the direction; the earlier Z = −4.30 / p = 2 × 10⁻⁵ were computed under the superseded > 14 (FL15) cut.
 
 **Price coefficients (item × year × PBU FE):**
 

@@ -7,7 +7,7 @@ question: D2 gate diagnostic — does the FL screen discriminate cobidders bette
 status: done
 status_date: 2026-05-22
 confidence: yellow
-headline: "AUC convite_primary 0.824 (FL14) / 0.816 (continuous) vs pregão_primary 0.924 (FL14) / 0.952 (continuous). Pregão dominates; direction is OPPOSITE to the institutional minimum-bidder-rule hypothesis. γ++ reframing disqualified."
+headline: "AUC convite_primary 0.865 (FL14) / 0.816 (continuous) vs pregão_primary 0.924 (FL14) / 0.952 (continuous). Pregão dominates; direction is OPPOSITE to the institutional minimum-bidder-rule hypothesis. γ++ reframing disqualified."
 created: 2026-05-22
 script: scripts/37_gate_d2_modal_auc.R
 target: output/gate_d2/d2_modal_auc.csv
@@ -21,7 +21,7 @@ design:
 # AN-016: Gate D2 — modal-by-modal AUC
 
 !!! abstract "Intuition (plain-language)"
-    D2 asks: does the screen perform better in Convite (sealed-bid, with a minimum-bidder rule) or Pregão (electronic auction, no such rule)? An institutional theory predicted Convite > Pregão. The data show the OPPOSITE (Pregão 0.95, Convite 0.82). D2 disqualified an alternative framing of the paper; the current framing treats this as scope information, not as institutional identification.
+    D2 asks where the screen bites harder: Convite (sealed-bid, with a minimum-bidder rule) or Pregão (open electronic auction). A tempting institutional theory predicted Convite — the minimum-bidder rule should force cartels to field *more* cover bidders. The data say the opposite (continuous AUC Pregão 0.95 vs Convite 0.82), which killed an alternative framing of the paper. The disciplined reading: this is *scope* information about where the footprint is strongest, not evidence that an institutional rule identifies the mechanism.
 
 ## Question
 
@@ -47,7 +47,7 @@ footprint should be larger and the FL signal stronger in Convite.
 
 | Modality | FL14 AUC | FL14 CI | log_tc AUC | log_tc CI |
 |---|---:|---|---:|---|
-| convite_primary | 0.824 | [0.857, 0.873] | 0.816 | [0.758, 0.874] |
+| convite_primary | 0.865 | [0.857, 0.873] | 0.816 | [0.758, 0.874] |
 | pregão_primary | **0.924** | [0.910, 0.938] | **0.952** | [0.946, 0.958] |
 
 Bootstrap difference (continuous, pregão − convite): −0.136, p ≈ 0.
@@ -62,7 +62,7 @@ Macros: `\valAUCConvFL`, `\valAUCConvlogtc`, `\valAUCPregFL`,
 
 *Figure: AUC against cobidders by modality. Pregão (no minimum-bidder
 rule) dominates: FL14 0.924, continuous 0.952. Convite
-(minimum-bidder rule) lower: FL14 0.824, continuous 0.816. Direction
+(minimum-bidder rule) lower: FL14 0.865, continuous 0.816. Direction
 is OPPOSITE to the institutional theory — interpreted as scope
 information, not institutional positive test.*
 

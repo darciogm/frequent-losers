@@ -2,7 +2,7 @@
 paper: frequent-losers
 id: an-010
 hypothesis: award-bid-complementarity
-type: causal
+type: descriptive
 question: How does the seven-feature Imhof–Wallimann bid-distribution pipeline perform on the cobidder target, and what is the increment from adding the award-layer score?
 status: done
 status_date: 2026-05-22
@@ -21,7 +21,7 @@ design:
 # AN-010: Imhof full pipeline benchmark
 
 !!! abstract "Intuition (plain-language)"
-    The standard cartel-screening tool in the literature is the Imhof–Wallimann pipeline, which uses seven features from each tender's full bid history (requires expensive bid microdata). We compare it head-to-head with our cheap award-layer screen: each alone gives AUC ~0.89–0.90. Combined, they reach 0.96. The two layers carry complementary, non-redundant information — not the same signal twice.
+    The literature's workhorse screen (Imhof–Wallimann) reads seven moments off the full bid distribution — powerful, but it needs expensive bid microdata. The cheap award-layer FL screen uses only who participated and lost. Each alone lands near AUC 0.89–0.90; stacked, they reach 0.955. The economically important word is *complementarity*, not dominance: the two layers observe collusion at different evidentiary stages, so combining them adds genuine information rather than counting the same signal twice.
 
 ## Question
 

@@ -2,12 +2,12 @@
 paper: frequent-losers
 id: an-039
 hypothesis: price-scope-sign-reversal
-type: causal
+type: descriptive
 question: Do cartels with cover bidders endogenously select into cells where the underlying (non-treated) price level is structurally higher? If yes, the naive positive FL-price coefficient reflects selection, not the cartel's within-cell price effect.
 status: done
 status_date: 2026-05-22
 confidence: green
-headline: "Test 1 (selection mechanism) PASSES decisively. Mean log_price among NON-treated items rises monotonically from 1.35 (Q1, lowest FL-share cells) to 6.93 (Q5, highest FL-share cells); Δ = 5.58 log-points (~265× nominal price difference). After full marginal-FE controls on all 5 cell dimensions, fl_share coefficient on non-treated log_price = +3.55 (SE 0.23; N = 1,439,255). Cartels select into high-price cells beyond what cell dimensions explain marginally."
+headline: "Test 1 (selection pattern) strongly supports the scope interpretation. Mean log_price among NON-treated items rises monotonically from 1.35 (Q1, lowest FL-share cells) to 6.93 (Q5, highest FL-share cells); Δ = 5.58 log-points (~265× nominal price difference). After full marginal-FE controls on all 5 cell dimensions, fl_share coefficient on non-treated log_price = +3.55 (SE 0.23; N = 1,439,255). Frequent-loser activity is concentrated in high-price cells beyond what cell dimensions explain marginally."
 created: 2026-05-22
 script: scripts/61_selection_mechanism_test.R
 target: output/selection_mechanism/selection_test_results.csv + non_treated_price_by_fl_share.csv
@@ -21,7 +21,7 @@ design:
 # AN-039: Selection Mechanism Test (Test 1 of the Sign-Reversal Rationalization)
 
 !!! abstract "Intuition (plain-language)"
-    The price coefficient on FL presence flips sign between specifications (+0.064 baseline → −0.097 overlap-cell ATT). One economic story for this is **selection**: cartels with cover bidders choose to operate in product-buyer cells where the underlying price level is structurally higher (better rents). This page tests that story directly by comparing prices of NON-TREATED items (items without FL presence) across cells that have high vs low FL-share. If cartels select into high-price cells, non-treated prices in those cells should also be higher. They are — dramatically so.
+    First half of the explanation for the sign flip: *selection*. If cartels with cover bidders deliberately operate where the underlying product is structurally expensive (richer rents to capture), the naive positive coefficient is just sorting, not a price effect. The test looks only at NON-treated items: their prices climb monotonically with a cell's FL-share, and after full controls FL-share still predicts higher non-treated prices (+3.55). Cartels fish where the fish are expensive — that alone produces a positive raw correlation with no overcharge.
 
 ## Question
 

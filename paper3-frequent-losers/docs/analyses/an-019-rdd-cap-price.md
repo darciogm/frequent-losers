@@ -2,7 +2,7 @@
 paper: frequent-losers
 id: an-019
 hypothesis: price-scope-sign-reversal
-type: causal
+type: descriptive
 question: Does the negotiated-price coefficient at the procurement-cap threshold reverse sign when FL14 presence is introduced, and is the RDD coefficient stable across bandwidths?
 status: done
 status_date: 2026-05-22
@@ -24,7 +24,7 @@ design:
 # AN-019: RDD price at procurement cap × FL presence
 
 !!! abstract "Intuition (plain-language)"
-    Brazilian procurement has cap thresholds that determine which tendering modality applies. We use the cap as a regression discontinuity to ask how prices and frequent-loser presence change at the threshold. The simple RDD coefficient is +4–6% (a damages-like reading); under overlap discipline it flips to −10%. The sign reversal is the load-bearing piece for the scope-not-damages interpretation of the price evidence.
+    Brazil's procurement caps decide which tendering modality applies, so a cap is a natural discontinuity for prices. Naively, prices jump +4–6% where frequent losers appear — which a careless reader takes as the cartel overcharge. But once comparisons are restricted to genuinely comparable cells (overlap ATT), the sign flips to −10%. A true damages parameter would not flip under reweighting; this reversal is the load-bearing reason the paper reads price evidence as *scope*, not damages.
 
 ## Question
 

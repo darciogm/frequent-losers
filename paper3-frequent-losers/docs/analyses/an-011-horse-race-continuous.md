@@ -2,12 +2,12 @@
 paper: frequent-losers
 id: an-011
 hypothesis: award-bid-complementarity
-type: causal
+type: descriptive
 question: Does the continuous log(1+tenders_count) dominate the binary FL14 on the cobidder target?
 status: done
-status_date: 2026-05-22
+status_date: 2026-05-25
 confidence: green
-headline: "Continuous AUC 0.939 [0.932, 0.946] dominates FL14 binary AUC 0.911 [0.898, 0.925]; DeLong Z = −4.30, p = 2 × 10⁻⁵. The continuous score is the true signal; FL14 is the deployable auditable rule."
+headline: "Continuous AUC 0.939 [0.932, 0.946] dominates the binary FL14 flag (0.924 [0.921, 0.926]); the binary–continuous gap is 0.015 under the corrected FL14 ≥ 14 definition (DeLong Z = −4.38, p = 1.2 × 10⁻⁵). The continuous score is the true signal; FL14 is the deployable auditable rule."
 created: 2026-05-22
 script: scripts/34_horse_race_fl_continuous.R
 target: output/horse_race/horse_race_summary.csv
@@ -21,7 +21,7 @@ design:
 # AN-011: Horse race — continuous vs binary FL
 
 !!! abstract "Intuition (plain-language)"
-    The screen has a binary version (a firm is flagged if its bid count exceeds the cutoff) and a continuous version (log of bid count). The continuous version statistically dominates. The paper's interpretation: the continuous score is the empirical primitive; the binary cutoff is the simpler, deployable rule a regulator would actually use in the field.
+    The screen comes in two forms — a binary flag (bid count above the cutoff) and the continuous log of bid count. The continuous score carries strictly more information and statistically dominates the binary (0.939 vs 0.924; DeLong p ≈ 10⁻⁵). The reading: the empirical primitive is loss *intensity*, a continuous quantity; FL14 is just the auditable on/off rule a regulator can defend in the field. The binary is for deployment, the continuous is for the underlying truth.
 
 ## Question
 
@@ -44,10 +44,10 @@ score carries the full information.
 
 | Score | AUC | 95% CI |
 |---|---:|---|
-| FL14 (binary) | 0.911 | [0.898, 0.925] |
+| FL14 (binary) | 0.924 | [0.921, 0.926] |
 | Continuous log(1+tenders_count) | **0.939** | [0.932, 0.946] |
 
-DeLong test: Z = −4.30, p = 2 × 10⁻⁵.
+DeLong test: continuous dominates the binary flag (Z = −4.38, p = 1.2 × 10⁻⁵); the gap is 0.015 under the corrected FL14 (≥ 14) definition. The D1 re-run (2026-05-25) confirmed the direction; the earlier Z = −4.30 / p = 2 × 10⁻⁵ were computed under the superseded (> 14, i.e. FL15) cut.
 
 Auxiliary price coefficients (item × year × PBU FE):
 
@@ -63,10 +63,10 @@ Macros: `\valAUCFLfirm`, `\valAUClogtc`, `\valDeLongZ`, `\valDeLongP`,
 
 ![Horse race coefficient summary: FL14 binary vs continuous log_tc](../assets/figures/fig_03_coef_summary.png)
 
-*Figure: AUC point estimates with 95% CIs for FL14 binary (0.911,
-[0.898, 0.925]) and continuous log(1+tenders_count) (0.939,
-[0.932, 0.946]). DeLong test rejects equality at p = 2 × 10⁻⁵.
-Continuous dominates; FL14 is the deployable simplification.*
+*Figure: AUC point estimates with 95% CIs for the FL14 binary flag and
+continuous log(1+tenders_count). Continuous dominates; FL14 is the
+deployable simplification. Point estimates from the D1 re-run
+(2026-05-25); see the table above.*
 
 ## Interpretation
 
