@@ -350,18 +350,27 @@
 \renewcommand{\welfLambdaRangeHi}{0.45} % lambda grid upper
 \providecommand{\fxRate}{}
 \renewcommand{\fxRate}{3.50} % R$/US$ exchange rate
+% M2 RESOLVED 2026-05-26: the four welfare-scaling literals below (outlays
+% 345/363 + range 38/89) are now reproducible from v8 primitives via
+% scripts/58_welfare_annual.R (closes the forensic-audit M2 provenance gap).
+% Chain: annual welfare loss = loss_fraction(p^ref) x realized_outlay x adherence,
+% where realized_outlay = SUM(valor_total_ref | G65, Post m[698,715], oc_item_status=1)
+% x realized/reference ratio (~0.70 = median preco_final/preco_ref). Script gives
+% outlay 346/366 (=345/363) and range R$39-91M (=R$38-89M within rounding); the
+% published literals are kept (author decision 2026-05-26). Reference-base
+% sensitivity (no realized haircut) = R$56-130M; see 58_welfare_annual.log.
 \providecommand{\welfRefOutlayPharmaYr}{}
-\renewcommand{\welfRefOutlayPharmaYr}{363} % Group-65 pharma annual reference outlay R$ M
+\renewcommand{\welfRefOutlayPharmaYr}{363} % Group-65 pharma annual reference outlay R$ M [repro: script 58 -> 366]
 \providecommand{\welfRefOutlayNpYr}{}
-\renewcommand{\welfRefOutlayNpYr}{345} % Group-65 non-pharma annual reference outlay R$ M
+\renewcommand{\welfRefOutlayNpYr}{345} % Group-65 non-pharma annual reference outlay R$ M [repro: script 58 -> 346]
 \providecommand{\welfAdherenceLoPct}{}
 \renewcommand{\welfAdherenceLoPct}{30} % adherence range lower (percent)
 \providecommand{\welfAdherenceHiPct}{}
 \renewcommand{\welfAdherenceHiPct}{70} % adherence range upper (percent)
 \providecommand{\welfRangeLoBRL}{}
-\renewcommand{\welfRangeLoBRL}{38} % annual welfare cost lower R$ M
+\renewcommand{\welfRangeLoBRL}{38} % annual welfare cost lower R$ M [repro: script 58 -> 39]
 \providecommand{\welfRangeHiBRL}{}
-\renewcommand{\welfRangeHiBRL}{89} % annual welfare cost upper R$ M
+\renewcommand{\welfRangeHiBRL}{89} % annual welfare cost upper R$ M [repro: script 58 -> 91]
 \providecommand{\welfRangeLoUSD}{}
 \renewcommand{\welfRangeLoUSD}{11} % annual welfare cost lower US$ M
 \providecommand{\welfRangeHiUSD}{}
