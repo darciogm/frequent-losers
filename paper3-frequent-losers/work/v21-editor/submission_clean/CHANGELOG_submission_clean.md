@@ -1,5 +1,33 @@
 # Submission-clean change log
 
+## v21 — conceptual framing (decision-theoretic triage model), 2026-05-30
+
+New §3 subsection "A Decision-Theoretic Frame for Award-Layer Triage" + proof sketches in
+Appendix A. Drafted by a panel (2 candidates), adversarially verified (2 math/scope checkers),
+hand-integrated with corrected empirical anchors, then re-verified (2 read-only agents: SAFE).
+
+- **Prop 1 (cheap-signal index rule):** budgeted yield maximized by greedy top-k on the posterior;
+  MLRP ⇒ per-stratum cutoff on the award rank. Rationalizes the operational queue / gatekeeper.
+- **Prop 2 (incremental value over exposure) — the centerpiece:** the cheap signal beats an
+  exposure-only policy iff θ⊥̸s|e, i.e. within-opportunity AUC > ½ — UNDER the maintained MLRP
+  (the naive distribution-free "iff" is false; MLRP closes it), with a binding-budget /
+  θ-uninformative-tie-break caveat stated. Anchored to the REAL Major-1 numbers: within-opportunity
+  AUC 0.77, +0.042 over exposure-only (DeLong p≈2e-6), exposure-alone 0.946 > unconditional 0.924
+  (so the unconditional figure overstates conduct).
+- **Remark (out-of-sample gate vs joint):** demoted from proposition (honestly) — a toy-Gaussian
+  shows the bias-variance crossing exists only if b's in-sample gain < the joint score's max noise
+  penalty; consistent with the temporal holdout (seq 87/114 vs joint 85/111), not a proof.
+- **Corollary (separation of attention from liability):** the JLEO hook — under s⊥1[D] the index is
+  informative for escalation but near-random for liability (AUC 0.491), so it cannot be weaponized
+  as proof; s⊥1[D] stated as an assumption, the null as consistent-with.
+- A model↔empirics mapping table binds each object to a committed number.
+
+Adversarial verification caught + I fixed: the workflow synthesizer mis-bound the within-opportunity
+AUC to \valAUCStrictItemTC (a different item-level 0.770); corrected to \valExpoWithinStratumAUC
+(0.77). Added remark/corollary theorem envs. Compiles clean (0 undefined, 0 broken xr refs):
+paper 47pp + appendix 20pp = 67pp combined.
+
+
 ## v21 — two deferred minors closed, 2026-05-30
 
 - **sec05 cobidder-profile demotion under matching (JLE minor 8).** Corrected an overclaim:

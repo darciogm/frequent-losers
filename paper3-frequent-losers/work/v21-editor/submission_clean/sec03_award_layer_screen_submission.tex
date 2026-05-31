@@ -20,6 +20,184 @@ binary frequent-loser flag. Subsection
 of the paper uses to evaluate whether the ranking is informative
 for enforcement.
 
+% CO-AUTHOR EDIT [v21 conceptual framing]: decision-theoretic frame.
+% Drafted+adversarially verified via workflow; anchors bound to the real
+% exposure macros (\valExpoWithinStratumAUC etc.) and temporal TP macros.
+\subsection{A Decision-Theoretic Frame for Award-Layer Triage}
+\label{sec:triage-model}
+
+We model the enforcement agency, not the conduct it screens. The
+question is how an agency that already observes a cheap,
+award-layer signal at negligible cost should decide \emph{whom to
+escalate} to a costly evidentiary stage under a fixed recovery
+budget. Nothing here turns on a theory of how rings bid; the
+bid-layer price patterns enter the empirics as \emph{scope}, not
+as a damages or mechanism claim. We take the informativeness of
+the cheap signal as a maintained primitive---the monotone
+likelihood ratio property (MLRP) stated, not derived, in
+\S\ref{app:framework_participation}.
+
+\paragraph{Primitives.}
+Index zero-win firms by $i$, each with a latent enforcement target
+$\theta_i\in\{0,1\}$ ($\theta_i=1$ = cartel-adjacent co-bidding
+position; small base rate $\pi=\Pr(\theta_i=1)$). The agency
+observes at $\approx 0$ cost a \emph{cheap} award-layer signal
+$s_i=\log(1+\text{tenders\_count}_i)$ (loss intensity); a
+\emph{costly} bid-layer signal $b_i$ (bid-distribution moments) is
+recoverable only at cost $c>0$ per firm. Both are confounded by
+\emph{exposure} $e_i$, an award-observable opportunity measure: by
+a coupon-collector logic, larger $e_i$ raises both the chance of
+having co-bid with a sanctioned firm ($\theta$) and the loss count
+($s$). Write $\rho(s,e)=\Pr(\theta=1\mid s,e)$ and
+$\rho_e(e)=\Pr(\theta=1\mid e)$.
+
+\paragraph{The agency's problem.}
+With recovery budget $K$, the agency escalates a set $A$ of at
+most $K$ firms to the costly stage using only pre-recovery
+information $(s,e)$, maximizing expected target yield
+\begin{equation}
+\label{eq:agency-yield}
+V(A)=\sum_{i\in A}\rho(s_i,e_i),\qquad |A|\le K .
+\end{equation}
+A cheap gate orders the queue; the costly stage adjudicates its
+head.
+
+\begin{proposition}[Cheap-signal index rule]
+\label{prop:index}
+The yield \eqref{eq:agency-yield} is maximized over $|A|\le K$ by
+escalating the $K$ firms with the highest posterior
+$\rho(s_i,e_i)$. Under MLRP of $s\mid(\theta,e)$, $\rho(s,e)$ is
+nondecreasing in $s$ for each fixed $e$, so within any exposure
+stratum the optimal rule is a cutoff on the award rank of $s$,
+deployable as a per-stratum top-$k$ queue.
+\end{proposition}
+
+\noindent\emph{Intuition.} A deployability floor: a budgeted
+modular yield is maximized by a greedy index, and MLRP turns that
+index into a threshold on an observable rank
+(\ref{app:triage-proofs}). It underwrites the operational queue of
+\S\ref{sec:award_rule} and the sequential gatekeeper, which traces
+a cost--recall frontier and shrinks the costly-recovery footprint
+by $\valArchFootprintReduction$ at bounded recall cost.
+
+\begin{proposition}[Incremental value of the cheap signal over exposure]
+\label{prop:incremental}
+Fix the budget so that in at least one exposure stratum the agency
+escalates some but not all firms (a binding budget within an
+informative stratum), and let the exposure-only rule break
+within-stratum ties uninformatively about $\theta$. Then, under
+the maintained MLRP,
+\[
+V\!\big(\text{top-}K\text{ by }\rho(s,e)\big)>
+V\!\big(\text{top-}K\text{ by }\rho_e(e)\big)
+\]
+if and only if $\theta$ is not conditionally independent of $s$
+given $e$---equivalently, the within-exposure-stratum rank
+discrimination of $s$ for $\theta$ exceeds chance,
+$\mathrm{AUC}(s,\theta\mid e)>\tfrac12$. If $\theta\perp s\mid e$
+the two policies coincide.
+\end{proposition}
+
+\noindent\emph{Intuition and caveat.} The ``if'' is immediate:
+under $\theta\perp s\mid e$, $\rho(s,e)=\rho_e(e)$ and the policies
+are identical. The equivalence ``conditional dependence
+$\Leftrightarrow\mathrm{AUC}>\tfrac12$'' is \emph{not}
+distribution-free---two conditional laws can differ yet rank-tie
+at one half. It is the maintained MLRP that closes the
+biconditional, forcing first-order stochastic dominance whenever
+the laws differ; strictness in $V$ further requires the
+exposure-only tie-break to be $\theta$-uninformative
+(\ref{app:triage-proofs}). We state the equivalence \emph{within}
+the informative, budget-binding stratum, not globally.
+
+This is the result the data must test. The empirical content is
+the within-opportunity rank discrimination
+$\valExpoWithinStratumAUC$, which clears the one-half threshold of
+Proposition~\ref{prop:incremental}, and the positive increment of
+$+\valExpoIncr$ AUC it adds over an exposure-only model (DeLong
+$p\approx\valExpoIncrP$). Exposure alone already reaches
+$\valExpoExposureOnlyAUC$---\emph{above} the unconditional
+$\valAUCFLfirm$---so most of the raw discrimination is
+opportunity, not conduct, and the unconditional figure overstates
+the conduct-relevant signal. The signal that survives is the
+within-stratum $\valExpoWithinStratumAUC$ and the $+\valExpoIncr$
+it adds over exposure alone. The condition of
+Proposition~\ref{prop:incremental} holds in the data precisely
+because this within-stratum increment is positive.
+
+\begin{remark}[Out-of-sample value of the parsimonious gate]
+\label{rem:oos}
+In sample, a joint score $\rho_J(s,b)$ using both signals weakly
+dominates any sequential gate that conditions first on $s$: the
+gate is a garbling of $(s,b)$, so by the data-processing
+inequality it cannot raise the population yield. Out of sample,
+scores are estimated with error. The bid score aggregates many
+estimated moments and inherits their variance; the cheap signal is
+a single, low-variance count. When the estimation noise loaded
+onto $\rho_J$ is large relative to the in-sample informational
+gain $b$ buys, the sequential gate's expected out-of-sample yield
+can exceed the joint score's, reversing the in-sample order. A toy
+Gaussian (\ref{app:triage-proofs}) makes the bias--variance
+crossing precise---and its limit honest: the reversal exists only
+when $b$'s in-sample gain is smaller than the joint score's
+maximal net noise penalty. We therefore state this as a Remark,
+not a Proposition. The empirical pattern is consistent with the
+high-relative-noise regime: under a temporal holdout, in the
+budget range where the gate is designed to bind, the sequential
+gate recovers at least as many targets as the joint score
+($\valArchTHTPFiveHundSeqK$ versus $\valArchTHTPFiveHundJoint$ at
+top-$500$; $\valArchTHTPThouSeqK$ versus $\valArchTHTPThouJoint$ at
+top-$1{,}000$), while recovering microdata only for the gated
+firms. We read this as consistent with the crossing, not as a
+verification of the toy model, and note the advantage is confined
+to the gating budget range.
+\end{remark}
+
+\begin{corollary}[Separation of attention from liability]
+\label{cor:separation}
+Let $D$ denote the direct defendants (the legal principals). If
+role allocation makes the cheap signal approximately independent
+of principal status, $s\perp\mathbf{1}[i\in D]$, then the triage
+index is informative for \emph{escalation} ($\theta$) while
+remaining near-random for \emph{liability}:
+$\mathrm{AUC}(s,\mathbf{1}[i\in D])\approx\tfrac12$.
+\end{corollary}
+
+\noindent\emph{Intuition (the institutional hook).} This is the
+property a well-designed enforcement institution wants: a triage
+index that directs scarce evidentiary attention to the loser-side
+target without being re-usable as a liability instrument, so it
+cannot be weaponized as proof of guilt. Empirically the index is
+near-random against direct defendants,
+$\mathrm{AUC}=\valAUCdirectStd$---by construction, not by failure.
+The premise $s\perp\mathbf{1}[i\in D]$ is an assumption about role
+allocation; the observed near-random value is evidence consistent
+with it.
+
+\begin{table}[htbp]
+\centering
+\caption{From model primitives to empirical anchors.}
+\label{tab:model-empirics}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{3.3cm}p{5.3cm}p{3.6cm}}
+\toprule
+Model object & Empirical counterpart & Result / anchor \\
+\midrule
+Cheap signal $s_i$ & Loss intensity $\log(1+\text{tenders\_count})$, observed at $\approx 0$ cost & Prop.~\ref{prop:index} \\
+Costly signal $b_i$, cost $c$ & Bid-distribution moments, recovered only on escalation & Rem.~\ref{rem:oos} \\
+Exposure $e_i$ & Award-observable opportunity stratum & Prop.~\ref{prop:incremental} \\
+Budget $K$, yield $V$ & Greedy top-$k$ queue; cost--recall frontier & Footprint $-\valArchFootprintReduction$ \\
+$\mathrm{AUC}(s,\theta\mid e)>\tfrac12$ & Within-opportunity $\valExpoWithinStratumAUC$; $+\valExpoIncr$ over exposure-only ($p\approx\valExpoIncrP$); exposure alone $\valExpoExposureOnlyAUC$, residual to $\valAUCFLfirm$ & Prop.~\ref{prop:incremental} \\
+Gate vs.\ joint, out of sample & Temporal holdout, gating range: $\valArchTHTPFiveHundSeqK$/$\valArchTHTPFiveHundJoint$ (top-500), $\valArchTHTPThouSeqK$/$\valArchTHTPThouJoint$ (top-1000) & Rem.~\ref{rem:oos} \\
+$s\perp\mathbf{1}[i\in D]$ & Direct-defendant ranking, near-random & $\mathrm{AUC}=\valAUCdirectStd$ (Cor.~\ref{cor:separation}) \\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
 \subsection{Persistent Zero-Win Participation}
 \label{sec:award_primitive}
 

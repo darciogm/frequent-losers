@@ -185,3 +185,115 @@ predicates need, so the same object can be useful for allocating
 forensic attention and insufficient for legal adjudication. This
 is a definitional boundary on what the ranking claims, not a
 separate theorem.
+
+% CO-AUTHOR EDIT [v21 conceptual framing]: proof sketches for the body's
+% decision-theoretic frame (Section ref{sec:triage-model}). Reuses the
+% maintained MLRP above; does not re-derive it.
+\subsection{Triage Model: Proof Sketches}
+\label{app:triage-proofs}
+
+These sketches support the decision-theoretic frame of
+\S\ref{sec:triage-model}. They use the maintained within-stratum
+MLRP of \S\ref{app:framework_participation}
+($\lambda(s\mid e)=f(s\mid\theta=1,e)/f(s\mid\theta=0,e)$
+nondecreasing in $s$); no claim about how $\theta=1$ firms bid is
+invoked.
+
+\paragraph{Proposition~\ref{prop:index} (index rule).}
+By Bayes' rule with within-stratum prior $\pi(e)$,
+$\rho(s,e)=[1+\tfrac{1-\pi(e)}{\pi(e)}\lambda(s\mid e)^{-1}]^{-1}$,
+a strictly increasing transform of $\lambda(s\mid e)$. The yield
+\eqref{eq:agency-yield} is additively separable across firms under
+the cardinality constraint $|A|\le K$ (a linear objective over a
+uniform matroid), so the greedy rule selecting the $K$ largest
+$\rho(s_i,e_i)$ is optimal; equivalently, any set omitting a
+higher-$\rho$ firm for a lower-$\rho$ one is weakly improved by the
+swap. Under MLRP, $\rho(s,e)$ is nondecreasing in $s$ within each
+stratum, so ordering by $\rho$ coincides with ordering by $s$ and
+the optimum is a per-stratum cutoff on the award rank.
+\hfill$\square$
+
+\paragraph{Proposition~\ref{prop:incremental} (incremental value over exposure).}
+\emph{Only if.} If $\theta\perp s\mid e$ then
+$\rho(s,e)=\rho_e(e)$ pointwise, the two scores agree as
+functions, and both policies escalate the same $K$ firms (up to
+ties): the yields coincide. \emph{If.} Suppose
+$\theta\not\perp s\mid e$. Conditional dependence \emph{together
+with} MLRP yields a stratum $e^\star$ in which
+$\lambda(s\mid e^\star)$ is strictly increasing over a
+positive-measure set, forcing first-order stochastic dominance of
+$s\mid(\theta=1,e^\star)$ over $s\mid(\theta=0,e^\star)$, hence
+$\mathrm{AUC}(s,\theta\mid e^\star)>\tfrac12$ strictly. (This MLRP
+step closes the equivalence: absent MLRP, distinct conditional
+laws can give $\mathrm{AUC}=\tfrac12$---e.g.\ a symmetric
+spread-only difference---so dependence alone does not imply rank
+discrimination above one half.) The exposure-only score is
+constant on the stratum and breaks ties
+$\theta$-uninformatively, so its per-slot expected target content
+equals the stratum mean $\pi(e^\star)$; with the budget escalating
+some but not all of the stratum, the $s$-policy escalates the
+highest-$s$ firms, whose per-slot content strictly exceeds
+$\pi(e^\star)$ by the rank inequality, so $V$ is strictly larger.
+Equivalently, the $\rho$-optimal set of
+Proposition~\ref{prop:index} weakly dominates the $\rho_e$-set,
+strictly whenever the latter is not $\rho$-optimal---which the
+binding-budget-within-an-informative-stratum condition guarantees.
+\hfill$\square$
+
+\noindent\emph{Caveat (stated, not buried).} The strict inequality
+needs the budget to bind \emph{within} an informative stratum and
+the exposure-only tie-break to be $\theta$-uninformative. Under a
+slack budget, or a tie-break that uses $\theta$-correlated
+information, the selections can coincide even under conditional
+dependence, leaving only a weak ($\ge$) relation; the ``iff''
+holds under the stated binding-budget restriction, not globally.
+
+\paragraph{Remark~\ref{rem:oos} (out-of-sample crossing): toy Gaussian.}
+We make the bias--variance reversal precise in a stylized model and
+fence its scope; it is not distribution-free. Each firm carries a
+true score $\mu_i$ (its policy posterior); the agency acts on an
+estimated score $\widehat m_i=\mu_i+\varepsilon_i$,
+$\varepsilon_i\sim\mathcal N(0,\sigma^2)$, and escalates the
+top-$K$ by $\widehat m$. The sequential gate on $s$ has
+estimation-noise variance $\sigma_s^2$ (one low-variance count);
+the joint score on $(s,b)$ has $\sigma_J^2>\sigma_s^2$ (many
+estimated moments). In sample the joint score is weakly more
+informative, with informational gain $G_b\ge0$ (data processing).
+Expected top-$K$ yield is governed by the standardized separation
+$d(\sigma)=\Delta\mu/\sqrt{\nu+\sigma^2}$ (with $\Delta\mu$ the
+true mean-score gap and $\nu$ the noise-free dispersion): it is
+strictly increasing in $d$ and $d$ is strictly decreasing in
+$\sigma^2$, so expected yield $Y(\sigma^2)$ is nonincreasing in
+scoring noise, from $Y(0)$ (in-sample optimum) to $Y(\infty)=K\pi$
+(base-rate floor). Writing $Y_J=Y_J(0)-L_J(\sigma_J^2)$ and
+$Y_s=Y_s(0)-L_s(\sigma_s^2)$ with increasing noise losses
+$L_\cdot$, the gate wins out of sample,
+$Y_s(\sigma_s^2)>Y_J(\sigma_J^2)$, exactly when
+$L_J(\sigma_J^2)-L_s(\sigma_s^2)>G_b$. \emph{Existence is not
+automatic}: since $L_J\le Y_J(0)-K\pi$, a finite crossing requires
+$G_b<\sup_\sigma L_J-L_s(\sigma_s^2)$---if $b$'s in-sample gain is
+large, no finite noise reverses the order. The most fragile
+idealization is independence of $\varepsilon_i$ across firms:
+scores fit on a shared training sample have correlated coefficient
+error, which is precisely the out-of-sample degradation a temporal
+holdout proxies. Hence we keep this a Remark; the temporal-holdout pattern
+reported in \S\ref{sec:triage-model} (Remark~\ref{rem:oos})---the
+sequential gate matching or edging the joint score within the
+gating budget range---is consistent with the high-relative-noise
+regime, not a verification of the toy model, and the advantage is
+confined to that range.
+\hfill$\square$
+
+\paragraph{Corollary~\ref{cor:separation} (attention vs.\ liability).}
+The triage index is a transform of $s$. If
+$s\perp\mathbf{1}[i\in D]$, the conditional law of $s$ is identical
+for principals and non-principals, so the likelihood ratio of $s$
+for membership in $D$ is identically one and
+$\mathrm{AUC}(s,\mathbf{1}[i\in D])=\tfrac12$ (independence
+delivers this directly; no MLRP needed for the liability label).
+The same $s$ satisfies $\mathrm{AUC}(s,\theta\mid e)>\tfrac12$ by
+Proposition~\ref{prop:incremental}, so the index can be
+informative for the escalation target while remaining near-random
+for principal status. The empirical near-random value is evidence
+consistent with the role-allocation premise, not an estimation
+failure. \hfill$\square$
