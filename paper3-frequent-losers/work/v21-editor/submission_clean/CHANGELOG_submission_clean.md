@@ -1,5 +1,21 @@
 # Submission-clean change log
 
+## v21 — Major 5 "cover-bidding theater" downgrade, 2026-05-30
+
+- **Major 5 (price mechanism under-identification) — "cover-bidding theater" removed.**
+  New `scripts/78_bidder_count_decomposition.R` splits the within-cell bidder count (which
+  the −0.048→+0.008 collapse runs through) into FL vs genuine (non-FL) participants. **Real
+  result:** the winner-to-reference compression loads entirely on the GENUINE bidder count
+  (−0.137 per log genuine bidder, p<0.001) and NOT on the FL count (+0.026, p=0.19, n.s.);
+  FL-present cells also attract +0.240 more genuine log-bidders. Mechanically sensible: the
+  winner is by construction never FL, so cover bidders' losing offers don't set the price.
+  Verdict: the compression is observationally pro-competitive entry, not an identified
+  cover-bidding mechanism. **All "theater" language removed (0 occurrences in the rendered
+  PDF)**; sec07 reframed: within-cell channel = genuine competition, price stays SCOPE
+  evidence (not damages, not mechanism). Table 2 gains genuine-vs-FL decomposition rows;
+  caption/panel/boundary labels de-mechanized. `\valDec*` macros added. Compiles clean,
+  43pp + 17pp = 60pp.
+
 ## v21 — Major 4 reverse-causality timing test, 2026-05-30
 
 - **Major 4 (reverse causality / deployment) — within-firm timing test added.**
