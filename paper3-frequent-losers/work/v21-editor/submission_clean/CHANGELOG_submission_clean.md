@@ -1,5 +1,23 @@
 # Submission-clean change log
 
+## v21 — remaining referee minors, 2026-05-30
+
+- **Minor (strict-audit binary>continuous reversal) — disclosed.** In the strict 2009–2016
+  threshold-7 audit the firm-level binary FL AUC (0.767) edges past the continuous (0.750),
+  reversing the in-sample dominance. Added a paired DeLong on the strict pool
+  (scripts/53, output strict_pool_delong.csv): **Z=1.72, p=0.085 — not significant**. sec04 now
+  discloses the reversal honestly (tie under field-like info, not binary dominance), notes the
+  item-level continuous still dominates (0.770 vs 0.565), and flags that the threshold-7 pool
+  (21,819 firms) is a different operating point from the headline threshold-14 / AUC 0.924.
+- **Minor (orphaned ComprasNet appendix) — cut from the submission.** sec_app07_comprasnet was
+  \input by neither compiled document and its ~91 \valFed*/\valBEC* macros were undefined; its
+  own honest interpretation conceded federal AUC ~0.60, non-transporting threshold, and a
+  sign-flipped mechanism (+0.81). Rather than ship undefined macros / a pitch-weakening, partly
+  v1-stale appendix whose federal inputs are gitignored, the file is removed from the submission
+  tree (preserved in work/v20-comprasnet and git history for a future companion/R&R). No
+  delivered document gestures at federal validation. Decision: deliver what is solid; the paper's
+  scope stays São Paulo BEC, consistent with the conclusion's portability hedge.
+
 ## v21 — Major 5 "cover-bidding theater" downgrade, 2026-05-30
 
 - **Major 5 (price mechanism under-identification) — "cover-bidding theater" removed.**

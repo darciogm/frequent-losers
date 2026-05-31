@@ -123,6 +123,22 @@ cat("  Computing firm-level strict holdout metrics ...\n")
 firm_panel <- firm_stats[always_loser_train == 1L]
 firm_auc_bin  <- calc_auc(firm_panel$is_cobid, firm_panel$fl_train)
 firm_auc_cont <- calc_auc(firm_panel$is_cobid, firm_panel$log_tc_train)
+
+# v21 (referee minor): paired DeLong FL14 vs continuous ON THE STRICT POOL.
+# Headline (full sample) has continuous dominating binary (Z=-4.38, p=1.2e-05);
+# here the firm-level ordering flips, so report whether the flip is significant.
+.rfl <- pROC::roc(firm_panel$is_cobid, firm_panel$fl_train,     quiet = TRUE, direction = "<")
+.rtc <- pROC::roc(firm_panel$is_cobid, firm_panel$log_tc_train, quiet = TRUE, direction = "<")
+.dl  <- pROC::roc.test(.rfl, .rtc, method = "delong", paired = TRUE)
+cat(sprintf("  STRICT-POOL DeLong FL vs continuous (firm): Z=%.3f p=%.3f  (FL=%.3f cont=%.3f n_pos=%d n=%d)\n",
+            as.numeric(.dl$statistic), .dl$p.value, as.numeric(.rfl$auc), as.numeric(.rtc$auc),
+            sum(firm_panel$is_cobid), nrow(firm_panel)))
+fwrite(data.table(test = "strict_pool_FL_vs_continuous_firm",
+                  delong_z = as.numeric(.dl$statistic), delong_p = .dl$p.value,
+                  auc_fl = as.numeric(.rfl$auc), auc_cont = as.numeric(.rtc$auc),
+                  n_pos = sum(firm_panel$is_cobid), n = nrow(firm_panel)),
+       file.path(OUT, "strict_pool_delong.csv"))
+
 firm_bin_sum  <- calc_binary_summary(firm_panel$is_cobid, firm_panel$fl_train)
 firm_top500   <- calc_topk(firm_panel$log_tc_train, firm_panel$is_cobid, 500L)
 
