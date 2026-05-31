@@ -182,3 +182,21 @@ corroboration. Keeping them outside the screen is essential. It
 ensures that the first-stage statistic can be computed in
 award-only environments and that the bid layer remains available
 as an independent forensic stage.
+
+% CO-AUTHOR EDIT [v21 minor]: state reproducibility plumbing the referees asked for.
+\subsection{Computational Reproducibility}
+\label{app:reproducibility_submission}
+
+Random seeds are fixed in every estimation script. AUC confidence
+intervals are DeLong intervals computed with \texttt{pROC}, and
+AUC comparisons (the award-versus-bid and binary-versus-continuous
+contrasts) use the paired DeLong test on identical firms. The
+leakage cross-validation assigns folds at the firm level, so a
+cobidder firm and its own histories never appear in both the
+score-construction and evaluation folds. Permutation tests use
+$\valPermPilot$ draws for the participation-stratified pilot and
+$2{,}000$ draws for the formal random-label null; clustering in
+the within-cell price regressions is at the overlap-cell level.
+Item-level discrimination figures are reported only after the
+firm-level cross-validation and temporal-holdout audits, never as
+the headline estimate.

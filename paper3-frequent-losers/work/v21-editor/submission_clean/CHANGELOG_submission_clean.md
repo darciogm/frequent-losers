@@ -1,5 +1,32 @@
 # Submission-clean change log
 
+## v21 — co-author minor pass (9 non-blocking referee minors), 2026-05-30
+
+Constructive co-author cleanup of grounded, non-blocking minors from both reports:
+- **Direct-defendant AUC** unified to 0.491 (was 0.49 in prose vs 0.491 in table).
+- **Random-label null relabeled.** The B=2,000 AUC sham (mean exactly 0.500) is an
+  *unconditional* label shuffle (script 25 draws labels at random), not a participation-
+  stratified one; §4 now labels it a random-label null that shows the ranking is not a label
+  artifact, and assigns the volume/exposure discipline to the stratified permutation + the
+  exposure audit.
+- **Price sham interpreted.** Observed price coef +0.064 lies *below* the sham mean +0.144
+  (p=0.989) → FL presence associates with *lower* winner prices than random reassignment,
+  corroborating the within-cell genuine-competition reading (M5).
+- **Price range fixed.** The "+3.6–7.7%" headline-envelope macro was misapplied as the range of
+  the four descriptive specs; §7 and App. D now state the grounded range from the displayed
+  coefficients (+3.9% to +9.8%, exp of 0.0382–0.0933).
+- **Selection attenuation disclosed.** Raw cross-cell coef +22.65 attenuates ~85% to +3.55 under
+  full cell FE; most apparent selection is cell composition.
+- **"Full-observability upper bound" qualified** as in-sample; out of time the cheaper sequential
+  rule matches/exceeds joint (87>85, 114>111) — conclusion + Table notes.
+- **Award-only temporal precision reported** (0.070@500, 0.066@1000 vs in-sample 0.132/0.097);
+  footprint headline anchored to the temporal column.
+- **Framework "Proposition 2" demoted** to a scope remark (it was a definitional restatement).
+- **Computational-reproducibility note added** (App. C): fixed seeds, firm-level CV folds, DeLong
+  CIs, permutation counts, overlap-cell clustering.
+Compiles clean; paper 44pp + appendix 18pp = 62pp. Deferred (more substantive): sec05
+cobidder-profile demotion under matching; prospective-only temporal AUC.
+
 ## v21 — remaining referee minors, 2026-05-30
 
 - **Minor (strict-audit binary>continuous reversal) — disclosed.** In the strict 2009–2016
