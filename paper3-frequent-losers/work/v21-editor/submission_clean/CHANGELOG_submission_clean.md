@@ -1,5 +1,20 @@
 # Submission-clean change log
 
+## v21 — two deferred minors closed, 2026-05-30
+
+- **sec05 cobidder-profile demotion under matching (JLE minor 8).** Corrected an overclaim:
+  the bid-gap *dispersion* signal does NOT survive nonparametric volume matching (matched
+  d=0.05, p=0.87, from script 74), so it is demoted to suggestive; only product concentration
+  (item-group HHI, matched d=0.47) and median bid-gap proximity (matched d=−0.25, p<0.001)
+  survive. Deployment breadth / unique-winner counts flagged as volume-mechanical (d 1.01 raw →
+  0.37 matched). Interpretation + §5.2 + summary list updated; the "more dispersed" claim removed.
+- **Prospective-only temporal AUC + estimator clarity (JLEO minors 3–4).** §4 now reports the
+  rolling-origin prospective floor (AUC 0.819 in 2014, before investigations matured) and the
+  monotone rise to 0.922 by 2019 → screen read as half prospective, half retrospective; and
+  clarifies that the pooled 0.864 is the frozen 09-16/17-19 holdout, a different estimator from
+  the growing-window rolling-origin series (hence the 2019 rolling value exceeds it).
+  New \valMatch*, \valTHyearEarly/Late macros. Compiles clean; 44pp + 18pp = 62pp.
+
 ## v21 — co-author minor pass (9 non-blocking referee minors), 2026-05-30
 
 Constructive co-author cleanup of grounded, non-blocking minors from both reports:
