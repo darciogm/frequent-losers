@@ -1,5 +1,21 @@
 # Submission-clean change log
 
+## v21 — Major 4 reverse-causality timing test, 2026-05-30
+
+- **Major 4 (reverse causality / deployment) — within-firm timing test added.**
+  New `scripts/77_reverse_causality_timing.R` separates "cover bidders deployed during a
+  cartel" from "sincere low-cost persistent losers", using each cobidder's cartel-contact
+  years as a window-free anchor (no conduct window is recorded in CADE data). Pre-committed
+  verdict. **Real result (deployment-LEANING but not conclusive):** within-firm, 57% of a
+  cobidder's participation falls in its contact years vs 43% of active years (mean tilt
+  +0.14, p≈1e-9; 70% of cobidders positive); event-time participation jumps ~7→25→29 around
+  first contact. BUT cross-firm, cobidders are more spread (3.6 vs 2.4 active years; span 4.4
+  vs 2.9) than volume-matched FL non-cobidders — consistent with multi-year deployment OR
+  sincere persistence, so non-separating. Verdict: sincere persistence NOT excluded.
+  New Appendix D.3 reports it; framework appendix now discloses the observational equivalence;
+  §4 validation summary and the audit-map table carry a row. Screen stays predictive triage,
+  not a causal cartel-role test. Paper 43pp + appendix 17pp = 60pp combined; compiles clean.
+
 ## v21 — referee-report fixes (Major 1–3), 2026-05-30
 
 Round of edits answering the two demanding referee reports (JLEO major-revision,

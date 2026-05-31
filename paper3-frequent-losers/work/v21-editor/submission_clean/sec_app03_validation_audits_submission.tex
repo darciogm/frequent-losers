@@ -113,6 +113,52 @@ not prove agreement, identify cartel members, estimate damages,
 or establish that all market-opportunity confounding has been
 removed.
 
+% CO-AUTHOR EDIT [v21 Major 4]: within-firm deployment-timing test.
+% src: scripts/77_reverse_causality_timing.R.
+\subsection{Reverse-Causality (Deployment) Timing}
+\label{app:deployment_timing_submission}
+
+The frequent-loser signal is observationally ambiguous between
+two behavioral stories: cover bidders deployed during a cartel's
+operation, and sincere low-cost firms that bid persistently and
+rarely win. They differ in timing, so we use a within-firm anchor
+that needs no exogenous conduct window---none is recorded in the
+CADE data---namely each cobidder's \emph{contact years}, the years
+in which it co-bid in the same tender-item as a direct defendant.
+
+The within-firm test asks whether participation is over-weighted
+toward contact years relative to the share of active years that
+are contact years; that difference is mechanically zero under
+uniform (sincere) participation. It is positive. Across
+$\valRevCNDelta$ cobidders, $\valRevCShareContact$ of
+participation falls in contact years while only
+$\valRevCShareYears$ of active years are contact years (mean
+difference $\valRevCDelta$, $p<\valRevCDeltaP$; $\valRevCFracPos$
+of cobidders positive). In event time, mean participation rises
+from about $\valRevCPreContact$ tender-items per year before first
+contact to $\valRevCAtContact$ at first contact and
+$\valRevCPostContact$ the following year. Both patterns lean
+toward deployment.
+
+The cross-firm profile is less discriminating. Relative to
+$\valRevCNFLctrl$ frequent-loser non-cobidders matched on
+participation volume, cobidders are active in more years
+($\valRevCActiveCob$ versus $\valRevCActiveCtrl$) and over a
+longer span ($\valRevCSpanCob$ versus $\valRevCSpanCtrl$ years).
+Because the BEC-active cartels here operate over several years,
+this longer, more-spread footprint is consistent with both
+multi-year deployment and sincere persistence, so it does not
+separate the two.
+
+We read the timing evidence as deployment-leaning but not
+conclusive. The within-firm tilt toward contact years is the
+clean discriminator and is positive; the cross-firm spread is
+not. Sincere persistence is therefore not excluded, and we do not
+claim the screen identifies a causal cartel role. This is the
+intended scope: the award-layer rank is a predictive triage
+statistic, and the timing audit disciplines---without
+overturning---that reading.
+
 \begin{table}[htbp]
 \centering
 \caption{Validation Audits and Threats Addressed}
@@ -154,6 +200,12 @@ Firm/item &
 Target changed from cobidders to direct CADE defendants &
 Direct-defendant AUC $\valAUCdirectStd$ &
 Near-random direct-defendant classification is expected under loser-side scope \\
+Deployment-timing audit &
+FL signal is sincere persistence, not a cartel-linked role (reverse causality) &
+Firm/year &
+Within-firm participation share in cartel-contact years vs share of years &
+$\valRevCDelta$ tilt to contact years ($p<\valRevCDeltaP$); cross-firm spread not separating &
+Deployment-leaning but does not exclude sincere persistence \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
