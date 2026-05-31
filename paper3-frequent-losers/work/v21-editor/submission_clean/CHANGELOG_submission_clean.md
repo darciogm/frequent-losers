@@ -1,5 +1,22 @@
 # Submission-clean change log
 
+## v21 — Tier A: foreground the conceptual contribution, 2026-05-31
+
+Re-center the headline on the decision-architecture contribution (per the R&R panel: the
+"conceptual vs descriptive" framing verdict is the pivotal factor; the AUC is the weak headline,
+the cost-of-evidence/triage architecture + separation-of-attention-from-liability is the strong,
+JLEO-shaped one). No new analysis — framing re-weight only.
+- Abstract: the direct-defendant null reframed as a design property that "separates investigative
+  attention from liability"; closes on "framing triage as evidence allocation under costly
+  observability."
+- Intro contributions: contribution 1 now names the decision-theoretic triage model (§3.1) and its
+  central institutional property — the separation of attention from liability.
+- Cover letter (cover_letter_JLEO_submission.md): foregrounds the decision-theoretic model and the
+  separation property as the conceptual contribution (was reading as a purely empirical paper).
+Compiles clean (0 undefined, 0 broken refs); paper 48pp. Deferred big movers (Tier B): second
+jurisdiction (ComprasNet) and endogenizing the separation property.
+
+
 ## v21 — conceptual framing (decision-theoretic triage model), 2026-05-30
 
 New §3 subsection "A Decision-Theoretic Frame for Award-Layer Triage" + proof sketches in
