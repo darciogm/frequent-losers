@@ -1,5 +1,26 @@
 # Submission-clean change log
 
+## v21 — B2 (endogenize separation): demoted theorem -> motivating remark, 2026-05-31
+
+Attempted to upgrade the separation Corollary from assumption to a derived theorem via a cartel
+role-allocation model. Adversarial verification (2 agents) KILLED the clean theorem:
+- Role-specialization "Prop A" is flawed (degenerates / needs >=5 assumptions; rotation to evade
+  screening breaks it and is internally inconsistent with the paper's premise).
+- Separation "Prop B" is tautological (the index conditions on win_rate=0, so winners are excluded
+  by construction); its only non-tautological content is rejected by D4 (14.9% of defendants are
+  always-losers; clean model predicts AUC=0.5 vs observed 0.491).
+- The natural quorum (kappa) comparative static CONTRADICTS D2 (screen stronger in pregao, not
+  convite) and would resurrect the gate-disqualified gamma++ institutional-identification claim.
+So we did NOT ship the theorem. Instead, per both verifiers, the separation Corollary KEEPS
+s _|_ 1[D] as an identifying assumption and we add a role-allocation argument as MOTIVATION
+(strictly win/lose space; no price content; no quorum/modal comparative static; acknowledges
+rotation as why separation is only approximate; anchored to AUC 0.491 and the 14.9% always-loser
+defendants). This is the honest residue of B2 and strengthens the JLEO framing (turns the 0.491
+"failure" into a theorized scope boundary) without the D2 landmine. Compiles clean; paper 48pp.
+RECALIBRATION: B2's big value was the theorem, which does not hold; the remaining real mover is
+B1 (second jurisdiction / ComprasNet).
+
+
 ## v21 — Tier A: foreground the conceptual contribution, 2026-05-31
 
 Re-center the headline on the decision-architecture contribution (per the R&R panel: the
