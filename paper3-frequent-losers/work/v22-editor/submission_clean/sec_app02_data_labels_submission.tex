@@ -1,0 +1,184 @@
+\section{Data Construction and Validation Labels}
+\label{app:data_labels_submission}
+
+This appendix records the construction choices behind the
+award-layer screen and the adjudication-based labels. The aim is
+to make the empirical object reproducible and to keep each
+source in its proper evidentiary role. The screen is built from
+procurement records. The validation labels come from CADE
+adjudications and their BEC co-bidding environments. The design
+therefore tests whether a cheap award-layer statistic ranks
+firms near legally anchored cartel cases, while leaving legal
+membership to the case record.
+
+\subsection{Award-Record Universe}
+\label{app:award_universe_submission}
+
+The BEC procurement universe covers $\valYearStart$--$\valYearEnd$
+and contains $\valSampleNfull$ tender-item records before the
+final price-regression restriction. The main price sample contains
+$\valSampleN$ observations. For the screening exercise, the unit
+is the firm. A firm enters the outer screening universe if it
+appears as a participant in at least one BEC tender during the
+sample window. This gives $\valBECfirms$ participating firms.
+
+For each firm $i$, we construct two award-layer variables:
+\[
+  T_i=\text{number of BEC tender-items in which firm } i
+  \text{ participates},
+\]
+and
+\[
+  W_i=\text{number of BEC tender-items won by firm } i.
+\]
+The always-loser stratum is the set $\{i:W_i=0\}$ and contains
+$\valAlwaysLosers$ firms. The continuous screening score is
+$s_i=\log(1+T_i)$ within that stratum. The discrete frequent-loser
+flag is
+\[
+  FL_i=\mathbf{1}\{W_i=0,\ T_i\geq\valThreshold\}.
+\]
+The threshold comes from the always-loser participation
+distribution: median plus $1.5$ times the interquartile range,
+with statistical cutoff $\valThresholdStat$ and integer rule
+$T_i\geq\valThreshold$. This flags $\valFL$ firms, or
+$\valFLrateAL$ of the always-loser stratum.
+
+\begin{table}[htbp]
+\centering
+\caption{Screen Construction}
+\label{tab:screen_construction_app_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{p{4.0cm}p{3.0cm}p{6.5cm}}
+\toprule
+Object & Value & Construction role \\
+\midrule
+BEC participants & $\valBECfirms$ & Outer firm universe for award-record construction \\
+Always-losers & $\valAlwaysLosers$ & Zero-win stratum in which the screen ranks firms \\
+Participation threshold & $\valThreshold$ & Integer rule from median $+1.5\times$IQR \\
+Frequent losers & $\valFL$ & Discrete first-stage flag within always-losers \\
+Continuous score & $\log(1+T_i)$ & Rank used when a threshold is not required \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+The threshold is not estimated from CADE labels. It is fixed from
+the participation distribution alone. That matters because the
+validation exercise then asks a genuine question: whether a
+pre-specified award-layer rule concentrates firms later observed
+near adjudicated cartel defendants.
+
+\subsection{Matching CADE Defendants to BEC Firms}
+\label{app:cade_matching_submission}
+
+CADE adjudications identify firms by legal name and tax
+identifier (CNPJ). The starting CADE portfolio contains $65$
+firm-defendants across $12$ adjudicated procurement-cartel
+cases linked to BEC subject matter. We match CADE defendants
+to BEC participant records on the full $14$-digit CNPJ string,
+zero-padded to preserve leading zeros that would otherwise be
+truncated by numeric parsing. The match is implemented as exact
+string equality on the firm-identifier field
+(\emph{c\'odigofornecedor}) common to the CADE and BEC extracts;
+no fuzzy or name-based matching is used, and no manual
+overrides enter the direct-defendant set. Of the $65$
+firm-defendants, $\valDirectCADE$ have at least one BEC
+tender-item record during the sample window and define the
+direct-defendant set used in validation. The remaining
+defendants either operate outside BEC or do not appear under
+matchable identifiers in the BEC participation extract; they are
+omitted from the direct-defendant label.
+
+\subsection{CADE Anchors and Cobidder Labels}
+\label{app:cade_labels_submission}
+
+CADE adjudications provide the legal anchors. A direct CADE
+defendant is a firm named in an adjudicated procurement-cartel
+case and matched to BEC participation records as described in
+Appendix C.2. The linked BEC portfolio
+contains $\valDirectCADE$ direct defendants. Direct
+defendants are not the main target of the frequent-loser screen.
+They are used to locate cartel-affected bidding environments.
+
+The validation target is the always-loser cobidder. A firm is a
+cobidder if it belongs to the always-loser stratum and appears in
+at least one BEC tender-item with a direct CADE defendant. This
+definition yields $\valCobidders$ cobidders. The label is
+cartel-adjacency, not legal membership. It says the firm appears
+on the loser side of tenders that include legally adjudicated
+cartel anchors. It does not say the firm was a defendant, signed
+an agreement, or submitted a cover bid in a particular tender.
+
+For the conservative validation benchmark, we restrict CADE cases
+to adjudications available before the end of
+$\valConservativeCutoff$. This leaves $\valConservativeCases$
+cases, $\valConservativeFD$ BEC-active direct defendants, and
+$\valConservativeCobidders$ always-loser cobidders. Among those
+cobidders, $\valConservativeFL$ are frequent losers. This
+benchmark sacrifices sample size to avoid using later case
+resolution to define the validation target.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation Labels}
+\label{tab:validation_labels_app_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{tabular}{L{4.0cm}L{2.6cm}L{7.0cm}}
+\toprule
+Label & Count & Interpretation \\
+\midrule
+Direct CADE defendants in BEC & $\valDirectCADE$ & Legal anchors from adjudicated procurement-cartel cases \\
+Always-loser cobidders & $\valCobidders$ & Zero-win firms appearing with direct defendants; main cartel-adjacency target \\
+Conservative cases & $\valConservativeCases$ & Pre-$\valConservativeCutoff$ adjudication benchmark \\
+Conservative direct defendants & $\valConservativeFD$ & BEC-active defendants in the conservative benchmark \\
+Conservative cobidders & $\valConservativeCobidders$ & Always-loser cobidders in the conservative benchmark \\
+Conservative frequent-loser cobidders & $\valConservativeFL$ & Frequent losers inside the conservative cobidder target \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+The direct-defendant label is deliberately kept separate from the
+cobidder label. The former is a legal membership anchor. The
+latter is an exposure label tailored to the loser-side ranking.
+That separation is central to the paper's interpretation: direct
+defendants identify legally anchored environments, while
+cobidders provide the validation target for a statistic designed
+to find persistent losing participation.
+
+\subsection{Timing}
+\label{app:timing_submission}
+
+The temporal-holdout exercise computes participation scores from
+$2009$--$2016$ and evaluates discrimination against labels
+realized in $2017$--$2019$. This split follows the enforcement
+logic rather than a purely statistical convention. At the moment
+an agency uses the award layer, it does not know the completed
+case file. The relevant question is whether earlier participation
+helps rank firms whose cartel adjacency is later revealed through
+adjudicated anchors.
+
+The timing split is conservative in one respect and imperfect in
+another. It is conservative because the score is computed before
+the target period. It is imperfect because CADE adjudications
+often occur after the conduct and can cover conduct spanning
+multiple years. For that reason, the temporal design is an
+out-of-time discrimination exercise, not causal prediction or a
+field deployment. It asks whether the screen ranks
+later-adjudicated cartel-adjacent losers before the later labels
+are used to construct the score.
+
+\subsection{What Is Excluded From the Screen}
+\label{app:excluded_screen_submission}
+
+The award-layer screen does not use bid amounts, bid ranks,
+within-tender dispersion, reference prices, LANCES timestamps,
+CADE outcomes, or price-regression residuals. Those objects enter
+later as validation, forensic benchmarks, or descriptive economic
+corroboration. Keeping them outside the screen is essential. It
+ensures that the first-stage statistic can be computed in
+award-only environments and that the bid layer remains available
+as an independent forensic stage.

@@ -1,0 +1,166 @@
+\section{Award-Layer Triage}
+\label{sec:award_screen}
+
+The award layer observes outcomes before it observes conduct. A
+losing bid may be sincere, poorly priced, capacity constrained,
+exploratory, strategic, or coordinated. The screen therefore
+uses what the award layer can measure at the triage stage: which
+firms appeared, which firms won, and which firms kept appearing
+without ever winning. The object is a ranking for forensic
+priority, not proof of conduct or a classification of cartel
+membership.
+
+This section defines that ranking and the empirical implications
+that discipline it. Subsection~\ref{sec:award_primitive}
+introduces persistent zero-win participation as the award-layer
+primitive. Subsection~\ref{sec:award_rule} explains why the
+continuous ranking can be converted into an operational queue or
+binary frequent-loser flag. Subsection
+\ref{sec:testable_implications} states the tests that the rest
+of the paper uses to evaluate whether the ranking is informative
+for enforcement.
+
+\subsection{Persistent Zero-Win Participation}
+\label{sec:award_primitive}
+
+Let $T_i$ denote the number of BEC tender-items in which firm
+$i$ participates, and let $W_i$ denote the number it wins. The
+award-layer screen operates inside the zero-win stratum,
+$\{i:W_i=0\}$, which contains $\valAlwaysLosers$ firms. Within
+that stratum, the continuous score is
+\[
+  s_i=\log(1+T_i).
+\]
+The log transformation stabilizes the scale but does not change
+the ordering. The economic object is the rank: among firms the
+award layer observes only as losers, which ones appear
+persistently enough to warrant bid-layer follow-up?
+
+The maintained condition is monotonic rather than classificatory.
+If cartel-deployed losing participants are present, they should
+appear more persistently in the zero-win stratum than ordinary
+losing firms, because such a role is useful only through repeated
+deployment in cartel-targeted tenders. The condition is
+maintained, not derived. \ref{app:framework_submission}
+formalizes it as a monotone-likelihood-ratio ranking result. The
+main text uses it more modestly: persistent zero-win participation
+is a cheap statistic that can rank loser-side exposure under a
+transparent behavioral assumption and direct attention to the bid
+layer where conduct can be evaluated. It does not assign a firm
+type or cartel membership.
+
+The zero-win restriction is therefore a scope restriction. Many
+firms never win for ordinary competitive reasons: poor fit, high costs,
+capacity constraints, market exploration, subcontracting
+positioning, or simple bad luck. The screen's content comes from
+persistence inside that heterogeneous loser-side set. If the
+ranking has enforcement value, it should concentrate
+adjudication-anchored loser-side adjacency beyond what generic
+participation volume, product-market overlap, and opportunity to
+meet CADE anchors would mechanically produce.
+
+\subsection{From Ranking to an Operational Queue}
+\label{sec:award_rule}
+
+The continuous score is the central object because agencies can
+translate a rank into different investigative protocols. A team
+with fixed capacity could inspect the top $k$ firms. A
+monitoring unit could refresh the rank each quarter and examine
+bunching below old cutoffs. A case team could use the score to
+request LANCES bid files for a survivor pool before applying
+bid-distribution forensics. These implementations differ, but
+all preserve the same sequencing logic: award records first,
+costly bid recovery second.
+
+For an auditable binary implementation, we also report a
+frequent-loser flag. The rule marks zero-win firms whose
+participation count exceeds the median plus $1.5$ times the
+interquartile range of the always-loser participation
+distribution. In BEC, the statistical cutoff is
+$\valThresholdStat$, implemented as $T_i\geq\valThreshold$, which
+flags $\valFL$ firms, or $\valFLrateAL$ of the always-loser
+stratum. The cutoff is fixed from the participation distribution
+alone, before any CADE label enters the analysis.
+
+The cutoff is an auditable administrative implementation of the
+rank, not a structural or legal threshold. The paper does not
+rest on the number $14$; it rests on the continuous loser-side
+participation ranking. Two analysts applying the same rule to
+the same award records obtain the same first-stage list. Above
+the cutoff does not mean cartel member; below it does not mean
+clean. Because a static threshold can be gamed, the enforcement
+architecture treats the binary flag as one implementation among
+several: agencies can also use continuous ranks, top-$k$ queues,
+refreshed thresholds, or budget-calibrated survivor pools. The
+strategic-adaptation analysis later returns to this point.
+
+\subsection{Testable Implications}
+\label{sec:testable_implications}
+
+The screen is useful if it survives the threats implied by its
+limited information. Table~\ref{tab:testable_implications_submission}
+organizes the validation map. The first implication is the core
+validation claim: persistent zero-win participation should rank
+adjudication-anchored loser-side cobidders within the always-loser
+stratum. The main threat is mechanical exposure: frequent
+participants, and firms operating in the same procurement
+environments as CADE defendants, have more opportunities to
+appear near them even under ordinary competition.
+
+The second implication is a scope check. A loser-side statistic
+should perform worse against direct CADE defendants than against
+always-loser cobidders, because it ranks a different role in the
+procurement environment. The third implication asks whether the
+cobidder target has economic content: among frequent losers,
+cobidders should differ from other frequent losers in directions
+consistent with loser-side exposure, proximity to defendants,
+market concentration, and bid-level losing behavior. These
+profiles give the validation target economic content; they do
+not prove conduct or assign legal status.
+
+The final implications evaluate the enforcement architecture.
+If award records and bid records carry different information,
+the award-layer score should add non-redundant signal to
+bid-distribution forensics. If the screen has institutional
+value, using it before bid recovery should reduce the
+bid-microdata footprint while preserving much of the
+adjudication-anchored recall. And because firms can respond to
+published administrative rules, the binary threshold should be
+treated as vulnerable to strategic adaptation rather than as a
+fixed rule immune to gaming.
+
+\begin{table}[htbp]
+\centering
+\caption{Testable implications and validation threats}
+\label{tab:testable_implications_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{3.2cm}p{4.4cm}p{4.3cm}p{3.2cm}}
+\toprule
+Implication & Prediction & Test & Main threat \\
+\midrule
+Loser-side ranking & Persistent zero-win participation ranks always-loser cobidders. & Conservative benchmark, timing audit, exposure-adjusted validation. & Participation volume, market overlap, and opportunity to meet CADE anchors. \\
+Scope asymmetry & Performance is weaker for direct defendants than for cobidders. & Direct-defendant AUC and temporal direct-defendant check. & Misreading the screen as generic cartel-membership detection. \\
+Economic profile & Cobidders differ from other frequent losers in loser-side exposure and bid patterns. & Firm-level and bid-level profile comparisons. & Product-market composition and ordinary high-volume losing. \\
+Complementarity & Award-layer signal adds information to bid-layer forensics. & Same-target award, bid, and combined AUCs. & Full-observability benchmark confused with operational sequencing. \\
+Gatekeeping & Award-first sequencing reduces bid-microdata recovery with limited recall loss. & Sequential survivor-pool exercise and cost-recall frontier. & Survivor-pool choice and arbitrary budget choice. \\
+Strategic response & Static cutoffs are more fragile than ranks or refreshed queues. & Adaptation diagnostics. & Simulation is not an equilibrium model. \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Predictions evaluate whether the award-layer
+ranking is useful for evidence allocation. They do not define
+legal membership or proof.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+Together, these tests evaluate the screen at the stage for which
+it is designed: the allocation of costly forensic attention
+before liability evidence is assembled. The BEC cutoff is an
+implementation detail; the portable object is the staged
+architecture that uses cheap administrative records to discipline
+where costly cartel forensics should begin.
