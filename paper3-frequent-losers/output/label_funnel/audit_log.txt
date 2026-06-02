@@ -1,0 +1,47 @@
+================ 79_label_funnel.R  (JLEO R&R v22, CP-1) ================ 
+host=DarcioWork  start=2026-06-02 18:10:33 
+BASE=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
+
+[file] cade_fl_cobidders.csv rows (static target) = 193 
+[file] crossmatch valid direct-defendant rows      = 49  (distinct CNPJ=48, distinct processo=8) 
+[file] cade_carteis distinct processo              = 12 
+
+[S1] BEC-active direct defendants (in firm_tender_map) = 41 
+[S2] direct-defendant tender-item x case rows = 52058  (distinct tender-items=52013) 
+[S3] cobidders of direct defendants (all, !=-1, !=defendant) = 4369 
+[S4] always-loser cobidders (win_rate==0)            = 651 
+[S5] FL cobidders (AL & tenders_count>=14)        = 341   [manuscript \valCobidders = 193] 
+    reconstruction vs static file: both=149  recon-only=192  file-only=44 
+
+[S6] CONSERVATIVE cutoff <= 2020-12-31 
+    cases with judgment date           = 9 / 12 total 
+    conservative cases (judged <=2020) = 4   [manuscript \valConservativeCases = 4]   procs: 08700.004617/2013-41, 08012.001273/2010-24, 08012.009732/2008-01, 08012.011853/2008-13 
+    conservative BEC-active defendants = 19   [manuscript \valConservativeFD = 30] 
+    conservative cobidders (all)       = 949 
+    conservative AL cobidders          = 208   [manuscript \valConservativeCobidders = 210] 
+    conservative FL cobidders          = 107   [manuscript conservative-FL = 108] 
+
+[write] funnel.csv / case_timing.csv / case_cobidder_map.csv (5121 cobidder-case rows) -> /home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/output/label_funnel 
+
+========== RECONCILIATION VERDICT ========== 
+  Reference co-bid definition used here: ANY shared tender-item with a BEC-active 
+  direct defendant (transparent, fully scripted). FL14 = tenders_count>=14. 
+  --- full portfolio --- 
+  (a) FL cobidders vs \valCobidders=193 : 341  -> DISCREPANT (broad def over-counts; original used a narrow cartel-tender restriction not on disk) 
+      overlap with static file: 149/193 ; file-only=44 ; recon-only=192 
+  --- conservative subset (judged <= 2020) --- 
+  (b) cases vs \valConservativeCases=4  : 4  -> EXACT 
+  (c) defendants vs \valConservativeFD=30: 19  -> DISCREPANT (19 BEC-active; 30 likely counts non-active/loose-match rows) 
+  (d) AL cobidders vs 210               : 208  -> APPROX (data-grounded) 
+  (e) FL cobidders vs 108               : 107  -> APPROX (data-grounded) 
+
+  INTERPRETATION: 
+   * 210/108 are NOT fabricated -- they reproduce to 208/107 under the broad co-bid definition. 
+   * BUT the main 193 target does NOT match the broad definition (=341); it used a narrower, undocumented cartel-tender restriction. 
+   * => the main (193) and conservative (210/108) benchmarks were built with 
+        DIFFERENT cobidder definitions. This inconsistency must be resolved before §4. 
+   * The ORIGINAL builder of cade_fl_cobidders.csv is absent from the repo (all scripts 
+        only consume it) -> JLEO replication BLOCKER B3 confirmed. 
+  DECISION REQUIRED (U2): adopt one transparent scripted definition repo-wide and 
+  re-validate (changes every AUC), OR reverse-engineer the original narrow restriction. 
+  elapsed=0.6s 

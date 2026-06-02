@@ -26,15 +26,26 @@ Resolved from the 2026-06-02 4-agent audit + run-artifact reads.
 | 19 | Scripts deterministic & seeded? | ✅ | house seeds: 76/77=20260530, 25/37/40/43/45=20260430, 49/55/56=20260501, 63=20260502, 64=20260503. 53/78 deterministic (no resampling). Python ETL deterministic | seed any NEW script (79/80/81) with `2026xxxx` |
 | 20 | Can manuscript tables be regenerated from scripts? | 🟡 | most write CSV/tex (regenerable) but to **`work/v13/output/tables/`** (stale path); submission uses **inline** tables; 2 hard-typed bodies (sec06 gatekeeper, app03 year-holdout) + sec07:145 "~1.4%" | macro-bind/`\input` the inline tables from script output during section passes |
 
-## BLOCKERS — ranked (must resolve before the dependent empirical claim)
-1. ⛔ **B1 — Conservative funnel (210/108/30) irreproducible** (Q7/Q14). Unsourced literals; ~19-20≠30. Blocks Table A / Referee #4. **Fix:** CP-1 rebuild; retire if irreproducible.
-2. ⛔ **B2 — No cobidder→case linkage** (Q6/Q14/Q16). Blocks leave-one-case-out (Table C, Referee #6). **Fix:** rebuild from `firm_tender_map ⋈ crossmatch` in `79`, feed `80`.
-3. ⛔ **B3 — Cobidder & crossmatch labels not reproducible** (Q5/Q6). Blocks JLEO replication package. **Fix:** regenerating script + ReadMe.
+## ★ CP-1 UPDATE (2026-06-02, `scripts/79_label_funnel.R` run) — corrects the earlier "fabricated literals" read
+Transparent funnel (cobidder = shares ≥1 tender-item with a BEC-active direct defendant; FL14=tc≥14):
+- CADE cases **12** (=12 ✓); BEC-active defendants **41** (vs `\valDirectCADE`=47 — zero-pad/match gap); cobidders-all 4,369; AL cobidders 651; **FL cobidders 341 vs `\valCobidders`=193 → DISCREPANT** (overlap 149/193, file-only 44, recon-only 192).
+- Conservative (judged ≤2020): cases **4** (=4 ✓); defendants **19** (vs 30 ✗); **AL cobidders 208 ≈ 210 ✓**; **FL cobidders 107 ≈ 108 ✓**.
+- **Verdict:** 210/108 are **NOT fabricated** — they reproduce (208/107) under the *broad* co-bid definition. The main **193 used a *narrower*, undocumented cartel-tender restriction** → the main and conservative benchmarks were built with **inconsistent cobidder definitions**. The original builder of `cade_fl_cobidders.csv` is **absent from the entire repo** (every script only consumes it) → **B3 confirmed**.
+- **B2 partly resolved:** `output/label_funnel/case_cobidder_map.csv` (5,121 cobidder×case rows) now materializes the cobidder→case linkage → LOCO can proceed at cobidder level (NEW `80`).
+
+## BLOCKERS — ranked (updated 2026-06-02)
+1. 🟡 **B1 — Funnel inconsistency, NOT fabrication** (Q7). Conservative 210/108 reproduce (208/107); main 193 does not (341) under the transparent def. The real issue is two inconsistent definitions + the lost builder. **Fix:** U2 decision — adopt one scripted definition repo-wide (re-validate all AUC) or reverse-engineer the narrow restriction. Defendant 30 (vs 19) is a genuine over-count to drop.
+2. 🟡 **B2 — cobidder→case linkage** (Q14/Q16) — **now materialized** in `case_cobidder_map.csv`. Remaining: feed `80_leave_one_case_out.R`.
+3. ⛔ **B3 — Cobidder & crossmatch labels have NO builder anywhere on disk** (Q5/Q6). Confirmed by exhaustive grep — all scripts consume, none produce. Blocks JLEO replication. **Fix:** `79` now regenerates a *transparent* funnel; either bless it as canonical (U2) or recover the original.
 4. 🟡 **B4 — Conduct-onset dates absent** (Q15/Q17/Q18). Limits rolling-origin to award-year timeline; survival is censored. **Fix:** disclose; use judgment date where defensible.
 5. 🟡 **B5 — `>` vs `≥` FL cut** (Q4). Could shift the 193 set. **Fix:** verify before re-deriving any count.
 6. 🟡 **B6 — Script 56 not run / regulatory_frontier empty** (Q13/CP-4). **Fix:** run 56.
 
 ## Open questions for the USER (decisions I can't make from data/code)
 - **U1 — ComprasNet appendix (app07):** wire in as cross-jurisdiction robustness, or delete? Currently orphaned. (Memory says federal extension is a reserved spinoff — recommend DELETE from this submission.)
-- **U2 — If 210/108/30 are irreproducible,** do we (a) retire the conservative benchmark entirely, or (b) replace with the data-derived ~19-20 defendants + recomputed cobidder counts? Recommend (b) with full funnel disclosure.
+- **U2 — [UPDATED 2026-06-02, DECISION NEEDED]** The 193-cobidder ground truth has **no builder on disk** and the main (193) vs conservative (210/108) targets use **inconsistent cobidder definitions**. Three options:
+  - **(a) Bless the transparent `79_label_funnel.R` definition as canonical** (cobidder = shares a tender-item with a BEC-active direct defendant; FL14=tc≥14 → 341 FL cobidders). Cleanest for JLEO replication, but **re-validates every AUC in the paper against a new, larger target** (193→341) — i.e. re-run scripts 17/26/33/34/36/40/42/53/63/64/74/75/76/77 with the new label. Big but defensible.
+  - **(b) Reverse-engineer the original narrow restriction** to reproduce 193 exactly (e.g. restrict co-bids to cartel-relevant tenders by sector/case-year), document it, keep existing AUCs. Lower blast radius, but the restriction may not be recoverable and risks looking like target-gerrymandering.
+  - **(c) Keep 193 as the headline but ADD the transparent funnel as a robustness target** and disclose both. Pragmatic; discloses the inconsistency honestly.
+  - **mr-frequent recommendation:** (c) for this R&R round (disclose + robustness), with (a) as the stated path if a referee pushes on reproducibility. Drop the unsupported 30-defendant figure regardless (use 19). **Needs your call before §4 (Prompts 3–5).**
 - **U3 — Branch hygiene:** v22 branched off v21 to preserve scripts 76/77/78. If you want v21's *commits* out of v22 history, say so and I'll rebase onto v20 + cherry-pick the four scripts.
