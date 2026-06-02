@@ -7,6 +7,7 @@ All work in `work/v22-editor/`, branch `v22`. Bind every new number into `values
 ---
 
 ### Prompt 1 — Transversal 2: reproducibility infrastructure & output-registry implementation
+> **STATUS: ✅ COMPLETED 2026-06-02 (Subprompt 1 = label funnel script 79; Subprompt 2 = metrics/cost/exposure/label utilities + 4 scanners + registries + Makefile + 22-assertion metrics test passing). Infra is GO.**
 - **Objective:** make the pipeline reproducible enough for a JLEO replication package skeleton; create `scripts/79_label_funnel.R` regenerating cobidder/crossmatch links; write `output/` manifest; de-hard-code the worst paths.
 - **Expected files:** NEW `scripts/79_label_funnel.R`, `work/v22-editor/README_replication.md`, manifest under `docs/jleo_rr_revision/`.
 - **Expected outputs:** `output/label_funnel/funnel.csv`, `case_timing.csv`.
@@ -96,3 +97,13 @@ All work in `work/v22-editor/`, branch `v22`. Bind every new number into `values
 - **Parallelizable (independent):** Prompt 7 (bid-layer audit) and Prompt 9 (price downgrade) and Prompt 10 (theory) can be done in any order once CP-1 is clear.
 - **Hard dependencies:** 3,5 ← Prompt 1 (funnel/linkage). 8 ← run script 56. 10 ← new script 81.
 - **Each prompt ends with:** re-run forbidden-term scan; bind new macros with `% src:`; update `02_REFEREE_RESPONSE_MATRIX_INTERNAL.md` status.
+
+---
+
+## Subprompt 2 close-out (2026-06-02)
+- ✅ Reproducibility infrastructure COMPLETE: `scripts/utils/{metrics_triage,cost_frontier,exposure_validation,label_funnel}.R`, `scripts/diagnostics/{scan_claims,scan_numbers,scan_refs,scan_alt_text,test_metrics_triage}.R`, `scripts/build/make_registries.R`, `Makefile`, `outputs/{output_registry,dataset_registry}.csv`, `outputs/diagnostics/*`.
+- ✅ `make diagnostics`, `make audit`, `make jleo_rr_status` all run end-to-end. Metrics toy test: 22/22 PASS.
+- **NEXT PROMPT confirmed: "Sections 1–3 — abstract, introduction, institution, award/bid layers, ranking."** No infrastructure failure requires repair first.
+- ⚠ Gating reminder: the abstract (Prompt 2 / Sections 1–3) leans on §4 counts. U2 is RESOLVED (disclose 193 primary + 341 robustness; drop 30→19), so Sections 1–3 may proceed, but the cobidder sentence must use the U2-disclosed framing and must NOT assert "results materially unchanged" until a core AUC is re-run under the 341 label.
+
+---

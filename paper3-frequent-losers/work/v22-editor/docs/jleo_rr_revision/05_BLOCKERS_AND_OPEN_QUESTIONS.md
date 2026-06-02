@@ -50,3 +50,21 @@ Transparent funnel (cobidder = shares ≥1 tender-item with a BEC-active direct 
   - **mr-frequent recommendation:** (c) for this R&R round (disclose + robustness), with (a) as the stated path if a referee pushes on reproducibility. Drop the unsupported 30-defendant figure regardless (use 19). **Needs your call before §4 (Prompts 3–5).**
   - **✅ RESOLVED 2026-06-02 — user chose (c) DISCLOSE + ROBUSTNESS.** Keep **193** as the headline/primary target; ADD the transparent script-79 funnel (**341**) as a fully-reproducible robustness target; disclose the inconsistency + absent builder honestly; **drop 30 → use 19** conservative defendants; option (a) is the stated fallback if a referee presses reproducibility. **ACTION for Prompt 3/4:** Table A reports both the 193 primary and the 341 transparent funnel. ⚠ **CLAIMS-DISCIPLINE FLAG:** the phrase "results are materially unchanged" is **UNVERIFIED** — before it enters prose, re-run at least one core AUC (e.g. script 76 within-opportunity, or 34 horse-race) under the 341 label and confirm the discrimination is materially the same. Do NOT assert invariance without that check (see [[feedback_paper3_tone_honest_not_confessional]]).
 - **U3 — Branch hygiene:** v22 branched off v21 to preserve scripts 76/77/78. If you want v21's *commits* out of v22 history, say so and I'll rebase onto v20 + cherry-pick the four scripts.
+
+---
+
+## Subprompt 2 infrastructure pass (2026-06-02) — new/updated items
+
+Reproducibility infra built; no NEW hard blockers. Findings:
+
+- **B3 reconfirmed (replication):** `cade_fl_cobidders.csv` and `cade_bec_crossmatch.csv` have NO builder anywhere on disk (exhaustive grep + script-79 reconstruction). For JLEO replication policy, either bless the transparent `79_label_funnel.R` definition (U2 option a) or recover the originals. Tracked in `dataset_registry.csv` (status STATIC).
+- **B6 still open:** `output/regulatory_frontier/` EMPTY → `make jleo_rr_status` flags it; cost-recall frontier (Table D / FIG_COST_RECALL_FRONTIER) blocked until `scripts/56_regulatory_cost_frontier.R` is RUN.
+- **NEW scripts still to author:** `80_leave_one_case_out.R` (linkage now READY via `case_cobidder_map.csv`) and `81_survival_hazard.R` (exit right-censored at 2019 — bounding argument, not clean hazard).
+- **Compliance items surfaced by scanners:** both manuscript figures MISSING "Alt text:" (JLEO requires it); 1 bib entry defined-but-uncited; 8 hard-typed numbers (incl. sec07:161 "30" conservative defendants → drop to 19 per U2).
+- **Infra-fix log (non-blocking):** `scan_refs.R` `#1` macro-param false positive fixed; `make_registries.R` arg-count guard added after two short rows.
+
+### Tooling now available for the empirical prompts (reduces future blocker risk)
+- `scripts/utils/metrics_triage.R` — ROC-AUC, PR-AUC/AP, precision/recall/FP/FN/lift@k, cost-per-TP, seeded bootstrap CI, grouped-CV / leave-one-case-out / rolling-origin split generators (22-assertion toy test PASSES).
+- `scripts/utils/cost_frontier.R` — cost-recall frontier over K1 × cost denominators (skeleton; needs script 56 panel).
+- `scripts/utils/exposure_validation.R` — opportunity-cell construction, leave-one-out contact rates, exposure-adjusted/stratified frames, cell-preserving permutation (mirrors script 76).
+- `scripts/utils/label_funnel.R` — Table-A schema + reconciliation helpers around script 79.

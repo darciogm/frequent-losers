@@ -69,3 +69,32 @@ Search terms + current candidate files (all current hits are negated/disclaimer;
 2. Audit every "cover bid/theater" instance against script 78 — convert to unproven-hypothesis or delete.
 3. After each section edit, re-run the term scan to confirm no affirmative flip was introduced.
 4. Abstract currently says "ranks loser-side cartel-adjacency risk" — soften to "ranks loser-side adjudication-anchored exposure" in the technical sense; keep the legal-boundary sentence.
+
+---
+
+## Section C — Automated claims-scanner results (Subprompt 2, 2026-06-02)
+
+Scanner: `work/v22-editor/scripts/diagnostics/scan_claims.R` → `work/v22-editor/outputs/diagnostics/claims_scan.csv` (regenerate via `make diagnostics`). Negation-aware: phrases inside disclaimers ("not proof", "does not detect") are auto-downgraded.
+
+**Totals across 22 .tex files: 83 hits — 0 critical, 27 high, 32 medium, 24 low/negated.** No affirmative forbidden claims; consistent with the locked discipline. The 24 negated hits are deliberate disclaimers.
+
+**HIGH-risk (non-negated) phrase counts — these are the review targets for the section passes:**
+- `damages` ×11 — sec07 / app04 price scope. → Prompt 9 (price downgrade): ensure every instance is "scope, not damages."
+- `cover-bidding theater` ×4 — sec05 / sec07. → **Prompt 9: script 78 shows theater NOT identified (l_gen=−0.137, l_fl≈ns); convert to unproven-hypothesis or delete.**
+- `cartel members` ×4 — sec01 / sec03 / sec04. → verify all remain negated ("not membership").
+- `overcharge` ×4 — sec07. → Prompt 9: "not an overcharge base."
+- `cover-bidding mechanism` ×2 — → Prompt 9, same as theater.
+- `causal effect` ×1, `proves` ×1 — verify negated/theorem-env only.
+
+**Hardcoded-number scanner** (`scan_numbers.R` → `number_scan.csv`): 68 hits, **8 hard-typed (check), 60 macro-bound**. The 8 to reconcile: "65" (CADE rows, in sec02/app02/app07), **"30" conservative defendants (sec07:161 — DROP→19 per U2)**, "193" + literals in orphaned app07, "2000" permutation B in master preamble.
+
+**Alt-text scanner** (`scan_alt_text.R`): 2 figures, **BOTH missing "Alt text:"** → JLEO compliance to-do (Prompt 11/12); also relabel Fig 1 "lost/survives" → "routine/costly-recovered" (Referee #15).
+
+**Reference scanner** (`scan_refs.R`): 38 cite keys used, 39 bib entries, **0 used-but-missing**, 1 defined-but-uncited (minor cleanup), 0 duplicates, 0 placeholders.
+
+### Critical lines flagged for later prompts
+- sec07 price section: 11 `damages` + 4 `overcharge` + theater language → Prompt 9 rewrite to scope-only.
+- sec07:161 hard-typed "30" conservative defendants → Prompt 3/9: replace with 19 (U2).
+- Both figures: add alt text + relabel Fig 1 → Prompt 11/12.
+
+---

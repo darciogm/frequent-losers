@@ -59,3 +59,20 @@ Existing main-text tables to KEEP/revise (already inline, see manuscript map): `
 
 ## Macro-binding discipline (for `values.tex`, hand-edit with `% src:`)
 New macros to bind: `\valExpWithinAUC`(0.7715), `\valExpExpOnlyAUC`(0.946), `\valExpIncrement`(0.0415), `\valExpDeLongP`(2.08e-06), `\valExpExposedFLAUC`(0.842), `\valTimingYearHHIcob`(0.553), `\valTimingYearHHIctrl`(0.727), `\valTimingD`(−0.66), `\valStrictBinAUC`(0.767), `\valStrictContAUC`(0.750), `\valStrictThreshTrain`(7), `\valBidderDecompGen`(−0.137), `\valBidderDecompFL`(0.026). Retire/replace: `\valConservativeCobidders`(210), `\valConservativeFD`(30), conservative-FL(108) pending CP-1.
+
+---
+
+## Machine-readable registries (Subprompt 2, 2026-06-02)
+
+The narrative tables above are now mirrored by **script-generated CSV registries** (no manual spreadsheet):
+
+- **`work/v22-editor/outputs/output_registry.csv`** — 24 rows, all required `output_id`s (MAIN_*, APP_*, FIG_*). Columns: `output_id, output_name, output_type, manuscript_destination, current_path, revised_path, generating_script, data_inputs, data_level, primary_metrics, status, last_generated, notes`. Status ∈ {existing_current, planned, blocked→noted, implemented, deprecated}. Current split: **13 existing_current / 11 planned**.
+- **`work/v22-editor/outputs/dataset_registry.csv`** — 13 datasets (firm/firm-year/tender-item/firm-item/bid/case levels). Large parquets marked `not_checked_large_file`.
+- **Generator:** `work/v22-editor/scripts/build/make_registries.R` (run via `make audit`). Deterministic; regenerate any time.
+
+### Directory mapping (preferred structure → existing convention)
+The subprompt's preferred `outputs/tables/{main,appendix}`, `outputs/figures/{main,appendix}`, `outputs/{logs,diagnostics,cache,manuscript}` were created under **`work/v22-editor/`**. Existing **canonical analysis outputs were NOT moved** — they remain at `paper3-frequent-losers/output/<module>/` and are referenced by the `current_path` column of `output_registry.csv`. The v22 `outputs/tables/` and `outputs/figures/` hold the revision LaTeX/PDF deliverables assembled from those analysis CSVs.
+
+### Existing vs planned vs blocked (from output_registry.csv)
+- **existing_current (run, artifacts present):** MAIN_LABEL_FUNNEL, MAIN_OPPORTUNITY_ADJUSTED_VALIDATION, MAIN_TIMING_CASE_HOLDOUT (53/77 parts), MAIN_CADE_CASE_TIMING, APP_EXPOSURE_CELL_CONSTRUCTION, APP_EXPOSURE_PERMUTATION, APP_STRICT_TIMING_ROBUSTNESS, APP_PRICE_SCOPE (78 part), APP_GATEKEEPING_PARAMETERS, FIG_ROLLING_ORIGIN_VALIDATION, FIG_PRICE_SCOPE_SEGMENTS, FIG_COBIDDER_PREVALENCE_BINS, FIG_PR_LIFT_CURVES.
+- **planned/blocked:** MAIN_COST_RECALL_FRONTIER (run script 56 — `output/regulatory_frontier/` EMPTY), MAIN_BID_BENCHMARK_AUDIT (document features), MAIN_UNIT_OF_ANALYSIS (build), APP_LEAVE_LARGEST_CASE_OUT + FIG_CASE_HOLDOUT_DISTRIBUTION (NEW script 80 — linkage ready via case_cobidder_map.csv), APP_SURVIVAL_HAZARD + FIG_SURVIVAL_KM (NEW script 81 — exit censored at 2019), APP_BID_FEATURE_MISSINGNESS (build), FIG_OBSERVED_EXPECTED_CONTACT (build from script 76 firm_panel), FIG_COST_RECALL_FRONTIER (run 56).
