@@ -1,0 +1,18 @@
+% table_G_cost_denominator_definitions.tex (auto: 10_cost_recall_frontier.R)
+\begin{tabular}{llp{8cm}l}
+\toprule
+ID & Denominator & Definition & Source \\
+\midrule
+D1 & firms\_opened & Number of firms whose record is opened (=|S|). & firm\_tender\_map \\
+D2 & survivor\_firm\_tender\_items & Sum over survivors of each firm's tender-item count (with multiplicity). & firm\_tender\_map \\
+D3 & opened\_tender\_items & Unique tender-items in the union over survivors (de-duplicated). & firm\_tender\_map x imhof\_tender\_features \\
+D4 & opened\_bid\_rows\_full\_tender & Sum of per-tender-item TOTAL bid count over the unique opened tender-items; within-tender Imhof moments require the FULL tender record. THE realistic processing footprint. & imhof\_tender\_features.n\_bids (missing item -> 1) \\
+D5 & survivor\_bid\_rows\_only & Bid rows by survivor firms only (their own bids). LOWER BOUND on bid-row burden. & firm\_tender\_map.n\_bids (firm-own) \\
+D6 & buyer\_x\_item\_group\_x\_year\_cells & Unique buyer x item\_group x year cells touched by survivors. & firm\_tender\_map (oc/item substr) \\
+D7 & buyers & Unique buyers (PBU codes) touched by survivors. & firm\_tender\_map \\
+D8 & item\_groups & Unique 2-digit item groups touched by survivors. & firm\_tender\_map \\
+D9 & lances\_exports & LANCES exports: ASSUMPTION 1 tender-item = 1 export = opened\_tender\_items. & derived (=D3) \\
+D10 & legal\_requests & Legal/forensic requests: NOT\_OBSERVED (no data). & none \\
+D11 & analyst\_hours\_proxy & ILLUSTRATIVE-NOT-MEASURED proxy = alpha*opened\_tender\_items + beta*opened\_bid\_rows/1000; appendix only. & derived (illustrative) \\
+\bottomrule
+\end{tabular}

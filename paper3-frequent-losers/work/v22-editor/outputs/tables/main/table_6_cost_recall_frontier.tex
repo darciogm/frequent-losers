@@ -1,0 +1,31 @@
+% table_6_cost_recall_frontier.tex (auto: 10_cost_recall_frontier.R)
+% TABLENOTE: target = adjudication-anchored exposure (NOT membership). Bid/joint
+% rules require full observability; sequential recovers bid only for survivors.
+% Reductions are vs full observability over Pool A. Firm count is NOT the only
+% denominator: opened tender-items / bid-rows better approximate forensic burden,
+% and the bid-row reduction is SMALLER than the firm reduction. FPs are non-labeled
+% firms, NOT exonerated. ROC is not the decision metric.
+\begin{tabular}{llrrrrrrrccccccr}
+\toprule
+Rule & $K_1$ & $k$ & Firms & Items & BidRows & TP & FP & Miss & Prec & Rec & Lift & $\Delta$Firms & $\Delta$Bid & RecLoss & \$/TP \\
+\midrule
+\multicolumn{16}{l}{\textit{Panel A: final $k=500$}} \\
+Award-only (continuous) & -- & 500 & 500 & 41,704 & 1,356,346 & 65 & 435 & 125 & 0.130 & 0.342 & 11.5 & 0.970 & 0.600 & 0.179 & 20867 \\
+Bid-only (full obs) & -- & 500 & 16,772 & 116,112 & 3,393,915 & 66 & 434 & 124 & 0.132 & 0.347 & 11.7 & 0.000 & 0.000 & 0.174 & 51423 \\
+Joint (full obs, upper bound) & -- & 500 & 16,772 & 116,112 & 3,393,915 & 99 & 401 & 91 & 0.198 & 0.521 & 17.5 & 0.000 & 0.000 & 0.000 & 34282 \\
+Sequential award$\to$bid (K1=500) & 500 & 500 & 500 & 41,704 & 1,356,346 & 65 & 435 & 125 & 0.130 & 0.342 & 11.5 & 0.970 & 0.600 & 0.179 & 20867 \\
+Sequential award$\to$bid (K1=1000) & 1,000 & 500 & 1,000 & 58,408 & 1,783,750 & 83 & 417 & 107 & 0.166 & 0.437 & 14.7 & 0.940 & 0.474 & 0.084 & 21491 \\
+Sequential award$\to$bid (K1=2000) & 2,000 & 500 & 2,000 & 77,097 & 2,283,924 & 91 & 409 & 99 & 0.182 & 0.479 & 16.1 & 0.881 & 0.327 & 0.042 & 25098 \\
+Sequential award$\to$bid (K1=3000) & 3,000 & 500 & 3,000 & 87,714 & 2,575,274 & 99 & 401 & 91 & 0.198 & 0.521 & 17.5 & 0.821 & 0.241 & 0.000 & 26013 \\
+Sequential award$\to$bid (K1=5000) & 5,000 & 500 & 5,000 & 99,977 & 2,921,977 & 79 & 421 & 111 & 0.158 & 0.416 & 13.9 & 0.702 & 0.139 & 0.105 & 36987 \\
+\midrule
+\multicolumn{16}{l}{\textit{Panel B: final $k=1000$}} \\
+Award-only (continuous) & -- & 1000 & 1,000 & 58,408 & 1,783,750 & 95 & 905 & 95 & 0.095 & 0.500 & 8.4 & 0.940 & 0.474 & 0.284 & 18776 \\
+Bid-only (full obs) & -- & 1000 & 16,772 & 116,112 & 3,393,915 & 99 & 901 & 91 & 0.099 & 0.521 & 8.7 & 0.000 & 0.000 & 0.263 & 34282 \\
+Joint (full obs, upper bound) & -- & 1000 & 16,772 & 116,112 & 3,393,915 & 149 & 851 & 41 & 0.149 & 0.784 & 13.2 & 0.000 & 0.000 & 0.000 & 22778 \\
+Sequential award$\to$bid (K1=1000) & 1,000 & 1000 & 1,000 & 58,408 & 1,783,750 & 95 & 905 & 95 & 0.095 & 0.500 & 8.4 & 0.940 & 0.474 & 0.284 & 18776 \\
+Sequential award$\to$bid (K1=2000) & 2,000 & 1000 & 2,000 & 77,097 & 2,283,924 & 127 & 873 & 63 & 0.127 & 0.668 & 11.2 & 0.881 & 0.327 & 0.116 & 17984 \\
+Sequential award$\to$bid (K1=3000) & 3,000 & 1000 & 3,000 & 87,714 & 2,575,274 & 140 & 860 & 50 & 0.140 & 0.737 & 12.4 & 0.821 & 0.241 & 0.047 & 18395 \\
+Sequential award$\to$bid (K1=5000) & 5,000 & 1000 & 5,000 & 99,977 & 2,921,977 & 113 & 887 & 77 & 0.113 & 0.595 & 10.0 & 0.702 & 0.139 & 0.189 & 25858 \\
+\bottomrule
+\end{tabular}

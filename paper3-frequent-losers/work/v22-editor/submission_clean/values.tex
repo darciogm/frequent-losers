@@ -1474,3 +1474,25 @@
 \newcommand{\valBidComplBidNetNew}{36}         % src: table_R_award_bid_complementarity.csv (top-500 positives bid catches that award misses)
 \newcommand{\valBidLOCOimhofPRAUCdrop}{63\%}   % src: derived; pr_auc 0.1239 -> 0.0451 case-grouped (-63.6%)
 \newcommand{\valBidAwardResidAUC}{0.94}        % src: table_R_award_bid_complementarity.csv (award_auc_over_bid_residual_pool 0.9376)
+
+% === Subprompt 10: cost-recall frontier ===
+% CO-AUTHOR EDIT: cost-recall frontier replacing single-point gatekeeper. Pool = 16,772 always-loser
+% complete-Imhof firms, 190 positives. Full observability = open all (16,772 firms / 116,112 tender-items
+% / 3,393,915 bid rows). Honest core: firm reduction overstates burden saving (88% firms but only 33% bid rows).
+\newcommand{\valCostPoolN}{16{,}772}              % src: table_6_cost_recall_frontier.csv (evaluation pool, full-obs firms_opened bid-only row)
+\newcommand{\valCostNpos}{190}                     % src: table_6_cost_recall_frontier.csv (TP+positives_missed = 190 positives)
+\newcommand{\valCostFirmRedTwoK}{88\%}            % src: table_6_cost_recall_frontier.csv (K1=2000 cost_reduction_firms 0.8808)
+\newcommand{\valCostTenderRedTwoK}{34\%}          % src: derived; K1=2000 opened_tender_items 77,097 vs full 116,112 (1-0.664=0.336)
+\newcommand{\valCostBidRowRedTwoK}{33\%}          % src: table_6_cost_recall_frontier.csv (K1=2000 cost_reduction_bid_rows 0.3271)
+\newcommand{\valCostRecallSeqTwoKkFiveH}{0.48}      % src: table_6_cost_recall_frontier.csv (panel A, K1=2000, recall 0.4789)
+\newcommand{\valCostRecallSeqThreeKkFiveH}{0.52}      % src: table_6_cost_recall_frontier.csv (panel A, K1=3000, recall 0.5211)
+\newcommand{\valCostRecallJointkFiveH}{0.52}        % src: table_6_cost_recall_frontier.csv (panel A, joint full-obs, recall 0.5211)
+\newcommand{\valCostRecallAwardkFiveH}{0.34}        % src: table_6_cost_recall_frontier.csv (panel A, award-only, recall 0.3421)
+\newcommand{\valCostRecallSeqTwoKkOneK}{0.67}     % src: table_6_cost_recall_frontier.csv (panel B, K1=2000, recall 0.6684)
+\newcommand{\valCostRecallJointkOneK}{0.78}       % src: table_6_cost_recall_frontier.csv (panel B, joint full-obs, recall 0.7842)
+\newcommand{\valCostSurvRecallTwoK}{0.78}         % src: ../outputs (award-survivor pool K1=2000 already contains 0.78 of positives; bid layer only reorders within)
+\newcommand{\valCostFPrecoveryTwoK}{1{,}852}      % src: ../outputs (K1=2000, k=500: non-cobidder firms opened for bid recovery)
+\newcommand{\valCostMissedTwoKkFiveH}{99}           % src: table_6_cost_recall_frontier.csv (panel A, K1=2000, positives_missed 99)
+\newcommand{\valCostPosLostGateTwoK}{42}          % src: ../outputs (K1=2000: positives not in award survivor pool, lost at the gate)
+\newcommand{\valCostRandomRecallTwoK}{0.10}       % src: ../outputs (random survivor pool of size K1=2000, k=500 recall ~0.10; 3-12x worse)
+\newcommand{\valCostLOCOdrop}{0.34}               % src: ../outputs (leave-largest-case-out: sequential recall 0.48 -> 0.34; one case = 55% of positives)

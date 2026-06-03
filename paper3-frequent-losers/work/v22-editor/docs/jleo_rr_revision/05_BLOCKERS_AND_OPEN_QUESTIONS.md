@@ -113,3 +113,12 @@ Front-end (sec 1–3) is written with forward-looking language; it does NOT asse
 - **Bid strict-timing BLOCKED:** within-tender moments can't be cleanly time-limited without per-period re-derivation; documented (Table S, Appendix I.7).
 - **Carried:** conservative-AUC re-estimation; B3 absent 193 builder; App D/H/I length (online appendix now 55pp).
 - Verdict E locked: bid benchmark is a forensic full-observability diagnostic + case-holdout robustness check, NOT a real-time bid-layer triage tool; combined = upper bound.
+
+---
+
+## Subprompt 10 — cost-frontier notes (2026-06-03)
+- **Sequential strict-timing BLOCKED:** bid features built over the full window, can't be cleanly time-limited; award-only timing frontier reported instead (AUC 0.73). Documented (App G.6).
+- **NOT_OBSERVED cost denominators:** LANCES export units (assumed 1 tender-item=1 export), legal/subpoena requests, monetary cost. Analyst-hours = illustrative proxy only (App G), never measured.
+- **Honest limit:** the headline firm-footprint reduction overstates the saving; bid-row/tender-item reduction is ~⅓ at K1=2000. The contribution is the frontier + denominator transparency, not a deployable optimum. Case-fragile (largest-case-out).
+- **LaTeX gotcha fixed:** macro names cannot contain digits — renamed \valCost*2000/3000/k500/k1000 → letter-only (TwoK/ThreeK/kFiveH/kOneK).
+- Carried: B3 absent 193 builder; conservative-AUC re-estimation; appendix now 49pp (App G expansion).

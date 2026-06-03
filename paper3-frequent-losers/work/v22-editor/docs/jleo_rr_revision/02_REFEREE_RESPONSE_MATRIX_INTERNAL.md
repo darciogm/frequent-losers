@@ -107,3 +107,15 @@ The toughest test landed hard. Honest downgrade implemented (§4.4).
 - **★ KEY CAVEAT (Verdict E):** pooled metrics use random CV folds (optimistic; positives cluster by case). Case-grouped: bid ROC 0.891→0.810, PR-AUC 0.124→0.045 (−63%); combined holds (0.936) only because label-independent award holds. Excl-label-defining-tenders: bid 0.891→0.874 (−0.017, minor contamination). Bid strict-timing BLOCKED. Table S leakage audit.
 - Fig 1 AUC annotations (0.888/0.903) REMOVED → pure info-cost diagram (benchmark AUCs live in §6.1/Table Q with caveats).
 - "outperforms"/"state of the art" absent; claims critical=0.
+
+---
+
+## Subprompt 10 status update (Cost-recall frontier, 2026-06-03) — VERDICT B
+The single-point "83%" gatekeeper became a frontier. Referee objection defeated by conceding it.
+- **#8 (cost-recall frontier missing / K1=2000 cherry-picked):** ✅ — `scripts/analysis/10_cost_recall_frontier.R`. K1 grid {250…full}, k {100,250,500,1000}, rules {award-only, bid-only, joint, seq award→bid, award→combined, FL→bid, random}. Main Table 6 + Fig 3; full grid + operating points + baselines + case-holdout → Appendix G.
+- **★ THE referee-killer (conceded openly):** firm reduction 88% but **bid-row reduction only 33%** at K1=2000 (survivors are high-participation; opening 12% of firms opens 67% of bid rows). Multi-denominator transparency (firms/tender-items/bid-rows) IS the contribution.
+- **Bid rerank adds little operationally:** award-survivor recall 0.78 @K1=2000 — positives already in the award pool; bid reorders, doesn't find new targets.
+- Sequential never beats joint full-obs (0.52/0.78); random far below (3–12×); peaks ~K1=3000 (=joint recall at ~24% bid-row reduction).
+- **Case-fragile:** leave-largest-case-out recall 0.48→0.34. FP@K1=2000,k=500: 1,852 opened, 42 lost at gate, 409 final FP, 99/190 missed, precision ~0.18.
+- Timing: award-only strict 0.73; **sequential strict-timing BLOCKED** (disclosed).
+- §6B rewritten "Sequential Gatekeeping and the Cost-Recall Frontier"; old single-point `tab:gatekeeper_submission` deleted → Table 6. Intro reframed (83%→frontier). +17 \valCost* macros. K1=2000 = one operating point, not an optimum.

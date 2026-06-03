@@ -156,3 +156,10 @@ User chose (a). Title changed; abstract (142w), intro 3-contributions, §4.5 sum
 - ✅ COMPLETED: §6.1 "Bid-Layer Forensics as a Full-Observability Benchmark" + Tables O/P/Q/R/S + 2 figs; NEW Appendix I (I.1–I.10) + tables + 2 figs; +18 macros; Fig 1 AUCs removed. Compiles (paper 64pp / appendix 55pp, 0 errors/undefined). Claims critical=0.
 - Logs: `19_SUBPROMPT_8_SECTION6A_BID_BENCHMARK_LOG.md`, `20_SUBPROMPT_8_COMPLETION_REPORT.md`, bid_pipeline_inventory/unit_definitions/model_audit.md.
 - **NEXT: Subprompt 9 — Section 6B: Cost-Recall Frontier and Sequential Gatekeeping.** RUN script 56 (output/regulatory_frontier/ EMPTY); extend 63/64 to K1×cost grid; replace "83%" with a frontier; PR/precision/recall/FP/cost-per-TP. Then §7 price downgrade (script 78), App B survival, JLEO compliance.
+
+---
+
+## Subprompt 10 close-out (Cost-recall frontier, 2026-06-03) — VERDICT B
+- ✅ COMPLETED: §6B "Sequential Gatekeeping and the Cost-Recall Frontier" + Table 6 + Fig 3 (the reserved 3rd main figure); Appendix G G.1–G.11 + 5 tables + 3 figs; +17 \valCost* macros; intro reframed 83%→frontier. Compiles (paper 38pp / appendix 49pp, 0 errors/undefined). Claims critical=0. Main floats now 6 tables / 3 figures (at budget).
+- Logs: `28_SUBPROMPT_10_COST_RECALL_LOG.md`, `29_SUBPROMPT_10_COMPLETION_REPORT.md`, `cost_wedge_memo.md`.
+- **NEXT: Subprompt 11 — Section 7: Price, Legal Scope, and Strategic Adaptation.** Price = scope only (already compressed in Sub9; verify theater-not-identified + no damages/overcharge/causal). Then App B exit/survival (script 81 not built), final JLEO compliance audit.

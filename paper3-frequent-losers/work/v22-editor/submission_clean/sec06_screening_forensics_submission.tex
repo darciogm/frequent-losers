@@ -15,8 +15,9 @@ that richer cartel evidence requires.
 
 % COMPRESS EDIT (length): collapsed the three framing paragraphs and the
 % bid-layer benchmark subsection (5 floats, feature-by-feature/fold-by-fold
-% narration) into two compact paragraphs + Tables tab:bid_layer_performance and
-% tab:gatekeeper_submission; full bid-benchmark detail lives in Appendix~I.
+% narration) into two compact paragraphs + Table tab:bid_layer_performance and
+% (Subprompt 10) the cost-recall frontier Table tab:cost_recall_frontier;
+% full bid-benchmark detail lives in Appendix~I.
 This section turns from validation to sequencing. The screen is
 useful because it sits before costly proof-producing work: it
 uses records the agency observes broadly---who participated, who
@@ -174,139 +175,249 @@ Appendix~\ref{app:bid_benchmark_submission}.
 \end{adjustbox}
 \end{table}
 
-\subsection{Gatekeeping the Forensic Stage}
+% CO-AUTHOR EDIT (Subprompt 10): replaced the single-point gatekeeper subsection
+% (former tab:gatekeeper_submission, \valArch* macros) with a cost-recall frontier
+% subsection built on Table~\ref{tab:cost_recall_frontier} and Fig~\ref{fig:cost_recall_frontier}.
+% The contribution is the frontier, not a calibrated K1; the firm-vs-bid-row divergence
+% is reported as the honest core. The old "Timing the Gatekeeper" subsection is folded
+% into one compressed paragraph below.
+\subsection{Sequential Gatekeeping and the Cost-Recall Frontier}
 \label{sec:sequential_gatekeeper}
 
 Similar discrimination at lower cost does not by itself establish
-a useful two-stage architecture. The operational question is
-whether the cheap layer can reduce the forensic workload while
-preserving much of the adjudication-anchored signal. This is a
-different estimand from stand-alone classification performance: a
-rule that requires bid-level features for every firm may score
-well, but it has already paid the full cost of forensic
-observability. A gatekeeper is useful only if it changes the size
-of the set for which that cost must be paid.
-Table~\ref{tab:gatekeeper_submission} is therefore a
-cost-of-evidence table, not only a classification table.
+a useful two-stage architecture. The two layers sit at different
+points in the evidentiary pipeline, and that ordering is the
+operational lever. The award layer is routine and cheap: it uses
+records the agency already holds. The bid layer is richer and more
+probative but costlier: in this setting the submitted offers are
+not in the award file and must be recovered from the underlying
+\texttt{LANCES} histories, harmonized, and reduced to within-tender
+moments before any firm can be scored. A model that gives the
+classifier both layers for every firm---the \emph{joint} model---is
+an upper bound on what the two layers can do under full
+observability, but it has already paid the full cost of opening the
+bid file. The implementable object is therefore sequential: rank
+where the costly layer should be opened first.
 
-The sequential rule imposes that institutional constraint
-directly. Firms are ranked using only the award layer, and the
-top $K_1=\valArchSeqKone$ firms form the survivor pool; bid
-microdata are recovered only for those survivors, and the
-bid-distribution benchmark then selects the final top-$k$
-priorities within that smaller pool. The joint model, by contrast,
-gives the classifier both award- and bid-layer features for every
-firm before triage---an upper-bound benchmark under full
-observability, not an implementable first-stage policy when bid
-recovery is costly.
+The sequential rule imposes that constraint directly. Firms are
+ranked using only the award layer; the top $K_1$ firms form a
+survivor pool $S_{K_1}$; bid microdata are recovered \emph{only}
+for the survivors in $S_{K_1}$; and the bid-distribution benchmark
+then reranks firms within that smaller pool by the combined
+award-plus-bid score, producing the final top-$k$ forensic queue.
+Full observability is the upper-bound benchmark, not the deployed
+policy; award-only is the zero-bid-cost baseline that opens no bid
+records at all; the sequential rule is the operating architecture
+in between.
 
-Table~\ref{tab:gatekeeper_submission} reports the resulting
-cost-recall frontier. The evaluation pool contains
-$\valArchPoolSize$ always-loser firms with computable
-bid-distribution features and $\valArchNPos$ CADE-cobidder
-positives. At the top $500$ flags, award-layer screening alone
-finds $66$ positives with precision $\valArchPrecAtFiveHundFL$;
-the bid-layer benchmark alone finds $73$ with precision
-$\valArchPrecAtFiveHundImhof$, but requires bid microdata for the
-entire pool; joint scoring finds $112$ with precision
-$\valArchPrecAtFiveHundJoint$, again under full observability; the
-sequential rule finds $96$ with precision
-$\valArchPrecAtFiveHundSeqK$ while opening bid microdata for only
-$\valArchSeqKone$ firms. The same trade-off appears at the top
-$1{,}000$ cutoff: joint scoring recovers $\valArchTPThouJoint$
-positives (recall $\valArchRecallThouJoint$) after observing
-bid-layer features for all $\valArchPoolSize$ firms, while the
-sequential rule recovers $\valArchTPThouSeqK$ (recall
-$\valArchRecallThouSeqK$) while requiring bid microdata for only
-$\valArchSeqKone$ firms. Relative to joint scoring, the sequential
-architecture reduces the bid-microdata footprint by
-$\valArchFootprintReduction$ at a recall cost of
-$\valArchRecallCost$. This is the cost-of-evidence result: much of
-the signal is retained after the forensic bid layer is opened for
-a much smaller survivor pool.
+\paragraph{Cost is not only firms.}
+The first-order honest point is that the firm count is the wrong
+denominator for forensic burden. Recovering the within-tender bid
+moments requires the full tender-item \texttt{LANCES} record for
+every tender a survivor contested, so the relevant cost is measured
+in opened tender-items and opened bid rows, not in firms.
+Table~\ref{tab:cost_recall_frontier} reports all three. At the
+$K_1=2{,}000$ operating point the rule opens only $12\%$ of firms
+(a firm reduction of $\valCostFirmRedTwoK$ relative to full
+observability), but it
+recovers $\valCostTenderRedTwoK$ fewer tender-items and only
+$\valCostBidRowRedTwoK$ fewer bid rows. Survivors are the
+highest-participation always-losers, so opening $12\%$ of firms
+still opens roughly $67\%$ of the bid rows. The frontier reports
+firms, tender-items, and bid rows precisely so this divergence is
+visible: the honest processing-burden cut is about a third at the
+bid-row level, not the firm-level figure. We report the
+firm-vs-bid-row divergence ($\valCostFirmRedTwoK$ versus
+$\valCostBidRowRedTwoK$) as the core caveat, not a footnote.
+
+\paragraph{The frontier, not a cutoff.}
+Varying $K_1$ traces a cost-recall frontier rather than identifying
+a single best rule. At $k=500$, sequential award$\rightarrow$bid
+recall is non-monotone in $K_1$:
+$0.34$ at $K_1=500$, $0.44$ at $1{,}000$,
+$\valCostRecallSeqTwoKkFiveH$ at $2{,}000$,
+$\valCostRecallSeqThreeKkFiveH$ at $3{,}000$, and $0.42$ at $5{,}000$,
+peaking near $K_1=3{,}000$ (Fig.~\ref{fig:cost_recall_frontier}).
+At $K_1=3{,}000$ the sequential rule \emph{matches} joint
+full-observability recall ($\valCostRecallSeqThreeKkFiveH$ versus
+$\valCostRecallJointkFiveH$ at $k=500$) at roughly a $24\%$ bid-row
+reduction, but it never exceeds the joint upper bound
+($\valCostRecallJointkFiveH$ at $k=500$,
+$\valCostRecallJointkOneK$ at $k=1{,}000$). $K_1=2{,}000$ is
+\emph{one operating point, not a calibrated optimum}: agencies with
+larger forensic capacity sit higher on the frontier and agencies
+with less capacity sit lower. The contribution is the frontier
+itself---the menu of recall-versus-scope trade-offs---not a
+universal cutoff.
+
+\paragraph{What the bid rerank does, and does not, add.}
+The bid layer adds little operationally at a fixed survivor pool.
+At $K_1=2{,}000$ the award-defined survivor pool \emph{already}
+contains $\valCostSurvRecallTwoK$ of the positives the final queue
+recovers; the subsequent bid rerank only reorders firms inside that
+pool and does not surface new positives. The architecture's value
+is therefore in cost---preserving much of the target capture while
+reducing the scope of proof-producing forensics---rather than in
+the bid layer locating targets the award layer missed. This is the
+opposite of a claim that the bid stage drives recovery: it is the
+award gate that determines which positives are reachable, and the
+rerank that orders them.
+
+\paragraph{False positives and missed positives.}
+The frontier is explicit about both error margins. At
+$K_1=2{,}000$, $k=500$, the rule opens $\valCostFPrecoveryTwoK$
+non-cobidder firms for bid recovery, loses
+$\valCostPosLostGateTwoK$ positives at the award gate (they never
+enter the survivor pool), and ends with $409$ non-labeled firms in
+the final top-$500$ queue; $\valCostMissedTwoKkFiveH$ of the
+$\valCostNpos$ positives are missed overall, and precision is
+modest at about $0.18$. We do not read modest precision as failure:
+in forensic triage, high recall that routes a manageable queue to
+the next, costlier evidentiary stage is the operative property, and
+the $409$ non-labeled firms in the queue are unverified, not
+exonerated.
+
+\paragraph{Baselines.}
+The frontier is bracketed by three reference points. Award-only is
+the \emph{zero-bid-cost} baseline (recall
+$\valCostRecallAwardkFiveH$ at $k=500$), achievable with no bid
+recovery whatever. Bid-only and joint scoring are full-observability
+benchmarks that require opening the entire pool's bid records; joint
+is the upper bound the sequential rule approaches but never
+exceeds. A random survivor pool of the same size is far below the
+award-ranked one (recall $\valCostRandomRecallTwoK$ at
+$K_1=2{,}000$, three to twelve times worse across operating points),
+confirming that it is the award ranking, not the mere act of opening
+$K_1$ firms, that carries the signal.
+
+The institutional reading follows directly. The rule is not
+designed to beat full information; it preserves much of the target
+capture while reducing the proof-producing forensic scope---and
+even that reduction is honest only at the firm level and modest at
+the bid-row level. The bid rerank's marginal contribution at a
+fixed survivor pool is reordering, not new recall. A screen of this
+kind does not decide liability; it decides, under a stated capacity
+constraint, which files deserve the next and more expensive form of
+evidentiary attention.
+
+The frontier is also case-fragile. Leaving out the single largest
+CADE case---which supplies $55\%$ of the positives---drops
+sequential recall at $K_1=2{,}000$ from $\valCostRecallSeqTwoKkFiveH$
+to $\valCostLOCOdrop$ at $k=500$. The signal is real but
+concentrated; a different case mix would move the frontier, and the
+operating points should be read as setting-specific rather than
+portable magnitudes.
 
 \begin{table}[htbp]
 \centering
-\caption{Gatekeeping the Bid-Layer Forensic Stage}
-\label{tab:gatekeeper_submission}
-\footnotesize
+\caption{Cost-Recall Frontier for Sequential Award$\rightarrow$Bid Gatekeeping}
+\label{tab:cost_recall_frontier}
 \begin{adjustbox}{max width=\textwidth,center}
 \begin{threeparttable}
-\begin{tabular}{p{5.2cm}rrrrr}
+\scriptsize
+\begin{tabular}{lrrrrrrrrrrr}
 \toprule
-Rule & $k$ & TP & Precision & Recall & Bid-microdata firms \\
+Rule & $K_1$ & Firms & Tender & Bid & TP & FP & Recall & Prec. & $\Delta$Firm & $\Delta$Bid & RLoss \\
+ & & open & items & rows & & & & & red. & red. & vs joint \\
 \midrule
-Award-layer only & $500$ & $66$ & $\valArchPrecAtFiveHundFL$ & $0.342$ & $0$ \\
-Bid-layer only & $500$ & $73$ & $\valArchPrecAtFiveHundImhof$ & $0.378$ & $\valArchPoolSize$ \\
-Joint scoring, award $+$ bid & $500$ & $112$ & $\valArchPrecAtFiveHundJoint$ & $0.580$ & $\valArchPoolSize$ \\
-Sequential: award $\rightarrow$ bid, $K_1=\valArchSeqKone$
-& $500$ & $96$ & $\valArchPrecAtFiveHundSeqK$ & $0.497$ & $\valArchSeqKone$ \\
+\multicolumn{12}{l}{\textit{Panel A: forensic queue $k=500$}} \\
+Award-only (no bid) & --- & $500$ & $41{,}704$ & $1{,}356{,}346$ & $65$ & $435$ & $\valCostRecallAwardkFiveH$ & $0.13$ & $0.97$ & $0.60$ & $0.18$ \\
+Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $66$ & $434$ & $0.35$ & $0.13$ & --- & --- & $0.17$ \\
+Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $99$ & $401$ & $\valCostRecallJointkFiveH$ & $0.20$ & --- & --- & $0.00$ \\
+Sequential & $500$ & $500$ & $41{,}704$ & $1{,}356{,}346$ & $65$ & $435$ & $0.34$ & $0.13$ & $0.97$ & $0.60$ & $0.18$ \\
+Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $83$ & $417$ & $0.44$ & $0.17$ & $0.94$ & $0.47$ & $0.08$ \\
+Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $91$ & $409$ & $\valCostRecallSeqTwoKkFiveH$ & $0.18$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.04$ \\
+Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $99$ & $401$ & $\valCostRecallSeqThreeKkFiveH$ & $0.20$ & $0.82$ & $0.24$ & $0.00$ \\
+Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $79$ & $421$ & $0.42$ & $0.16$ & $0.70$ & $0.14$ & $0.11$ \\
 \midrule
-Joint scoring, award $+$ bid & $1{,}000$ & $\valArchTPThouJoint$
-& $0.142$ & $\valArchRecallThouJoint$ & $\valArchPoolSize$ \\
-Sequential: award $\rightarrow$ bid, $K_1=\valArchSeqKone$
-& $1{,}000$ & $\valArchTPThouSeqK$
-& $0.131$ & $\valArchRecallThouSeqK$ & $\valArchSeqKone$ \\
+\multicolumn{12}{l}{\textit{Panel B: forensic queue $k=1{,}000$}} \\
+Award-only (no bid) & --- & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $95$ & $905$ & $0.50$ & $0.10$ & $0.94$ & $0.47$ & $0.28$ \\
+Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $99$ & $901$ & $0.52$ & $0.10$ & --- & --- & $0.26$ \\
+Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $149$ & $851$ & $\valCostRecallJointkOneK$ & $0.15$ & --- & --- & $0.00$ \\
+Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $95$ & $905$ & $0.50$ & $0.10$ & $0.94$ & $0.47$ & $0.28$ \\
+Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $127$ & $873$ & $\valCostRecallSeqTwoKkOneK$ & $0.13$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.12$ \\
+Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $140$ & $860$ & $0.74$ & $0.14$ & $0.82$ & $0.24$ & $0.05$ \\
+Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $113$ & $887$ & $0.59$ & $0.11$ & $0.70$ & $0.14$ & $0.19$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
-\footnotesize
-\item \textit{Notes:} Evaluation pool:
-$\valArchPoolSize$ always-loser firms with computable
-bid-distribution features; positives are $\valArchNPos$
-CADE-cobidders. The bid-microdata column reports how many firms
-require per-bid offer values before the rule can be applied.
-Joint scoring is a full-observability upper bound; the sequential
-rule is the operational gatekeeper under costly bid recovery.
+\scriptsize
+\item \textit{Notes:} Evaluation pool: $\valCostPoolN$ always-loser
+firms with computable complete-Imhof bid-distribution features;
+positives are $\valCostNpos$ CADE-cobidders. The target is
+\emph{adjudication-anchored exposure}, not cartel membership.
+``Firms open,'' ``Tender items,'' and ``Bid rows'' report the
+forensic footprint that must be recovered before the rule's final
+queue can be scored; full observability opens all $\valCostPoolN$
+firms / $116{,}112$ tender-items / $3{,}393{,}915$ bid rows.
+\textbf{The firm count is not the only denominator}: opened
+tender-items and bid rows better approximate processing burden, and
+the firm reduction ($\Delta$Firm red.) substantially overstates the
+bid-row reduction ($\Delta$Bid red.) because survivors are the
+highest-participation firms. \textbf{Award-only opens no bid records}
+as a pure award screen; the bid-footprint columns for the award-only
+rows are the \emph{hypothetical} scope if it were verified at the
+bid layer. Bid-only and joint require full bid observability for the
+entire pool; the sequential rule recovers bid microdata only for the
+$K_1$ survivors. Cost reductions are computed relative to full
+observability. ``RLoss vs joint'' is recall lost relative to the
+joint upper bound at the same $k$. False positives (FP) are
+non-labeled firms, \emph{not} exonerated. ROC is not the decision
+metric here; recall against the adjudication-anchored target at a
+fixed forensic queue size is.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
 \end{table}
 
-The sequential rule is not designed to dominate the
-full-information joint model. Its value is that it approaches much
-of the full-information signal without requiring full-information
-forensic scope. That is the enforcement margin on which the
-paper's contribution rests. In an agency setting, scarce analyst
-time, data cleaning, subpoena capacity, and case-development
-attention cannot be applied with equal intensity to every
-participant. A useful screen does not decide liability; it decides
-which files deserve the next, more expensive form of evidentiary
-attention.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{./output/figures/fig_3_cost_recall_frontier}
+\caption{Cost-recall frontier for sequential award$\rightarrow$bid
+gatekeeping. Points trace operational trade-offs in forensic
+attention, \emph{not} legal proof. The horizontal axis is the
+recovered bid-record footprint (bid-row reduction relative to full
+observability) and the vertical axis is recall against
+adjudication-anchored cobidder exposure at a fixed forensic queue
+size. Full-observability benchmarks (bid-only, joint) require
+whole-pool bid recovery and are plotted as horizontal reference
+lines; the sequential points vary $K_1\in\{500,1{,}000,2{,}000,
+3{,}000,5{,}000\}$ and never exceed the joint upper bound;
+award-only is the zero-bid-cost baseline.}
+\label{fig:cost_recall_frontier}
+\par\noindent\textit{Alt text:} A scatter-and-line plot. The
+horizontal axis is the reduction in recovered bid records relative
+to opening every firm's bid history; the vertical axis is recall of
+adjudication-anchored cobidder positives at a fixed forensic queue
+size. A curve of sequential operating points rises and then falls as
+$K_1$ grows from 500 to 5{,}000, peaking near $K_1=3{,}000$ where it
+touches a horizontal dashed line marking the joint full-observability
+upper bound; it never rises above that line. A second horizontal line
+marks the lower bid-only full-observability benchmark, and a marker at
+the far right shows the zero-bid-cost award-only baseline at lower
+recall. The visual message is that opening fewer bid records costs
+recall along a frontier, the sequential rule at best matches but never
+exceeds full information, and the firm-level cost saving overstates the
+bid-row cost saving.
+\end{figure}
 
-\subsection{Timing the Gatekeeper}
-\label{sec:temporal_gatekeeper}
-
-The gatekeeper exercise also needs a timing discipline. A ranking
-that uses the full sample may perform well because the feature
-history is long and close to the adjudication target. The stricter
-audit constructs award-layer and bid-layer features using the
-2009--2016 window and evaluates against later
-adjudication-anchored cobidder exposure. This is not a real-time
-field deployment; the labels remain adjudication-based, and the
-restriction is on the information used to rank firms before
-bid-layer forensics is allocated. The holdout pool contains
-$\valArchTHPoolSize$ always-loser firms with complete train-window
-bid features and $\valArchTHNPos$ positives.
-
-The staged architecture survives. At the top $500$ cutoff, the
-award-only rule loses $\valArchTHFLDrop$ of its in-sample true
-positives, joint scoring loses $\valArchTHJointDrop$, and the
-sequential rule loses only $\valArchTHSeqDrop$. In levels, the
-sequential rule recovers $\valArchTHTPFiveHundSeqK$ positives at
-top $500$ (versus $\valArchTHTPFiveHundJoint$ under joint scoring)
-and $\valArchTHTPThouSeqK$ at top $1{,}000$ (versus
-$\valArchTHTPThouJoint$), with precisions
-$\valArchTHPrecFiveHundSeqK$ and $\valArchTHPrecThouSeqK$. The
-result reinforces the sequencing interpretation rather than
-expanding it: it should not be read as proof that sequential
-gatekeeping is superior to joint scoring, that a fixed cutoff is
-right in every setting, or that an agency can infer agreement from
-the award layer alone. It shows that conditioning bid-layer
-forensics on an earlier award-layer screen remains competitive
-under timing discipline while preserving the smaller forensic
-footprint. The conclusion of
-Section~\ref{sec:screening_forensics} is therefore operational:
-cheap administrative records can structure the order in which
-expensive proof-producing evidence is assembled, while the richer
-bid layer remains the place where conduct is evaluated.
+\paragraph{Timing discipline.}
+The frontier above uses the full feature window, which is close to
+the adjudication target. A stricter timing audit restricts the
+award-layer score to a 2009--2016 window and evaluates against later
+adjudication-anchored exposure; this is not a real-time field
+deployment, since the labels remain adjudication-based, but it
+disciplines the information used to rank firms before bid forensics
+are allocated. Under that restriction the \emph{award-only} score
+remains usable, with ROC falling to $0.73$ from the full-window
+$0.94$. The \emph{sequential} rule, by contrast, cannot be cleanly
+time-limited: the within-tender bid moments that drive the rerank
+cannot be restricted to a pre-target window without contaminating
+them with post-window tenders, so a strict-timing sequential frontier
+is \emph{blocked}. We state this rather than fabricate a number. The
+conclusion of Section~\ref{sec:screening_forensics} is therefore
+operational and bounded: cheap administrative records can structure
+the order in which expensive proof-producing evidence is assembled
+and, on the award layer, survive a timing holdout; the richer bid
+layer remains the place where conduct is evaluated, and its strict
+timing properties cannot be certified here.

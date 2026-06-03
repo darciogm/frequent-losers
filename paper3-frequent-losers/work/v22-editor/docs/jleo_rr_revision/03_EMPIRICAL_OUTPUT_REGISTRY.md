@@ -127,3 +127,13 @@ Scripts: `scripts/analysis/{07_bid_feature_audit, 08_bid_benchmark_reproduction,
 - Cache: bid_benchmark_predictions, imhof_firm_features(.parquet/_excl_label), imhof_tender_features. Diagnostics: bid_benchmark_{number_reproduction, fold_audit, loco_per_case, error_analysis}, bid_feature_support_diagnostics; claims_scan_after_section6a_bid_benchmark.csv.
 - Docs: bid_pipeline_inventory.md, bid_layer_unit_definitions.md, bid_benchmark_model_audit.md.
 - Manuscript: sec06 §6.1 revised; NEW Appendix I (sec_app09_bid_benchmark, I.1–I.10) + \input in master; values.tex +18 \valBid* macros (reuse \valImhof* for pooled). Fig 1 (make_submission_figures.R) AUCs removed.
+
+---
+
+## Subprompt 10 outputs (Cost-recall frontier, 2026-06-03)
+Script: `scripts/analysis/10_cost_recall_frontier.R` (seed 20260603; reuses bid RF + imhof caches; reproduces bid 0.886/combined 0.957). Pool A=16,772/190.
+- Main: `outputs/tables/main/table_6_cost_recall_frontier.{csv,tex}`; `outputs/figures/main/fig_3_cost_recall_frontier.pdf`.
+- Appendix tables: `outputs/tables/appendix/{table_G_cost_denominator_definitions, table_G_full_cost_recall_frontier, table_G_random_and_award_only_baselines, table_G_operating_points, table_G_case_holdout_cost_recall, table_G_timing_award_only, table_G_analyst_hours_illustrative}.*`.
+- Appendix figs: `outputs/figures/appendix/fig_G_{cost_recall_tender_items, cost_precision, cost_per_TP, marginal_cost_per_TP, false_positive_frontier}.pdf`.
+- Diagnostics: full_observability_costs, cost_frontier_grid_feasibility, timing_sequential_blocked, analyst_hours_illustrative_params; claims_scan_after_cost_recall. Cache: cost_recall_frontier_full, cost_frontier_poolA_scores, cost_frontier_firm_item_edges.parquet.
+- Docs: cost_wedge_memo.md. Manuscript: sec06 §6B rewritten; Appendix G (sec_app06) → G.1–G.11; values.tex +17 \valCost* (digit-free names). Fig 3 = main figure #3.
