@@ -114,3 +114,10 @@ All work in `work/v22-editor/`, branch `v22`. Bind every new number into `values
 - ✅ COMPLETED: abstract (137w), §1, §2 (+Table 1 4-col, Fig 1 caption/alt/relabel+regen, T_i footnote), §3 (+Table 2 threat map). Compiles 43pp, 0 errors, 0 overfull, claims critical=0.
 - Logs: `09_SUBPROMPT_3_SECTIONS_1_3_LOG.md`, `10_SUBPROMPT_3_COMPLETION_REPORT.md`, `abstract_alternatives.md`.
 - **NEXT PROMPT confirmed: "Section 4A — Label funnel and 193 vs 210 reconciliation"** (CP-1 / Prompt 3). Linkage ready (`case_cobidder_map.csv`); U2 resolved (193 primary + 341 robustness; 30→19).
+
+---
+
+## Subprompt 4 close-out (Label funnel, 2026-06-03)
+- ✅ COMPLETED: §4.1 "Label Construction and Sample Reconciliation" + Table A (Table 3); App C restructured C.1–C.7 + Table B; Table 1 cross-link; values.tex macros bound/rebound. Compiles (paper 44pp / appendix 18pp, 0 errors/undefined/overfull).
+- Logs: `11_SUBPROMPT_4_LABEL_FUNNEL_LOG.md`, `12_SUBPROMPT_4_COMPLETION_REPORT.md`, `unit_definitions_label_funnel.md`, `label_reconciliation_memo.md`.
+- **NEXT PROMPT confirmed: "Section 4B — Opportunity-Adjusted Validation as the Main Result"** (CP-2; promote script 76 within-opportunity AUC 0.7715, +0.0415 DeLong p=2.08e-06; state exposure-only=0.946). Re-estimate conservative AUC under harmonized label here.

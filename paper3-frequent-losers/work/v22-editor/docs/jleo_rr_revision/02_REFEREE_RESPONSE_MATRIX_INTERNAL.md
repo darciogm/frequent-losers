@@ -44,3 +44,14 @@ Front-end revision implemented + compiled (43pp, 0 errors). Referee items moved:
 - **T_i tender-item vs Pregão offers:** ✅ footnote in §2.2 + clause in §3.1.
 - **"not proof" repetition:** ✅ thinned; architecture carries it.
 - **Table 2:** ✅ converted to a 6-col validation-threat map (pre-analysis, no results).
+
+---
+
+## Subprompt 4 status update (Label funnel & 193-vs-210, 2026-06-03)
+Credibility repair IMPLEMENTED + compiled (paper 44pp, appendix 18pp, 0 errors). Referee items:
+- **#4 (label funnel + 193 vs 210):** ✅ RECONCILED — definition difference, not a bug. 193=static narrow FL target (builder archived, B3); 341/651=transparent broad funnel; conservative reproduces to 19/208/107. Two-axis explanation (stratum AL-vs-FL + cobidder narrow-vs-broad) in new §4.1 + Table A (Table 3). `alConservativeFD` 30→19, `alConservativeCobidders` 210→208, `alConservativeFL` 108→107 (rebound to reproducible values). Drop-30 mandate honored.
+- **#18 (unit of analysis unclear):** ✅ `unit_definitions_label_funnel.md` — unique-firm vs firm-case (5,121) vs firm-defendant vs defendant-tender-item (52,013) separated.
+- **#19 (CADE case timing table):** ✅ Table B (`tab:case_timing_submission`, App C, anonymized Case A–L; 9/12 dated, conduct-onset disclosed missing).
+- **Direct-defendant / cobidder distinction:** preserved (App C.3/C.4; defendants excluded from cobidders).
+- **Downstream validation-table regeneration:** conservative COUNTS reproducible now (208/107); conservative-benchmark AUC/enrichment re-estimation under the harmonized label DEFERRED to Subprompt 4B — invariance NOT asserted.
+- Verdict: RECONCILED. Paper may proceed to opportunity-adjusted validation.

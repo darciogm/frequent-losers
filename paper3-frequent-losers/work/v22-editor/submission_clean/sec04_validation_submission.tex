@@ -29,6 +29,9 @@ A third threat is legal overreach: a loser-side screen should
 not be read as a generic cartel-membership detector.
 
 This section evaluates the ranking against those threats.
+% CO-AUTHOR EDIT: add label-construction subsection to the roadmap (CP-1)
+Subsection~\ref{sec:label_funnel} first fixes the label-construction
+funnel and reconciles the validation samples.
 Subsection~\ref{sec:validation_baseline} reports the baseline
 adjudication benchmarks. Subsection
 \ref{sec:validation_exposure_timing} disciplines the result with
@@ -37,6 +40,93 @@ participation, exposure, leakage, and timing checks. Subsection
 scope check. Subsection~\ref{sec:validation_summary} summarizes
 what the validation establishes for the staged enforcement
 architecture.
+
+% CO-AUTHOR EDIT: new label-construction subsection reconciling 193 vs 210 (CP-1)
+\subsection{Label Construction and Sample Reconciliation}
+\label{sec:label_funnel}
+
+The validation labels pass through a short construction funnel,
+and it is worth fixing the funnel before reading any benchmark.
+The full CADE legal portfolio comprises $12$ adjudicated
+procurement-cartel cases with $65$ legal firm-defendants. We
+match these defendants to BEC participant records by exact
+$14$-digit CNPJ equality, with no fuzzy or manual step; of the
+matched defendants, $\valDirectCADE$ are active in BEC and define
+the direct-defendant set. Their defendant tender-items
+($\valFunnelDefItems$ distinct items) locate the cartel-affected
+bidding environments. Within those environments we identify the
+always-loser stratum and, inside it, the cobidder label: a
+zero-win firm sharing at least one tender-item with a direct
+defendant.
+
+The main validation target is the $\valCobidders$ always-loser
+frequent-loser cobidders defined under a narrow cartel-tender
+restriction, and we keep it as the primary benchmark for
+comparability with prior drafts. A fully transparent, scripted
+alternative---counting any always-loser sharing a tender-item
+with a BEC-active direct defendant over the full portfolio
+(FL14$\,=\,$tenders\_count$\,\geq\,$14)---yields
+$\valFunnelFLcobBroad$ frequent-loser and $\valFunnelALcobBroad$
+always-loser cobidders, overlapping the main target in
+$\valFunnelStaticOverlap$ firms. We disclose one replication
+caveat cleanly: the original builder of the narrow target is
+archived and is not reproduced by the current scripts. We
+therefore report the transparent funnel as a reproducible
+robustness target and retain the narrow target as the primary
+benchmark.
+
+The conservative pre-$\valConservativeCutoff$ benchmark is not a
+mechanical subset of the main validation target. It restricts the
+portfolio to the $\valConservativeCases$ cases adjudicated by
+end-$\valConservativeCutoff$ but applies the broad
+shared-tender-item cobidder definition to the wider always-loser
+stratum, yielding $\valConservativeCobidders$ always-loser
+cobidders ($\valConservativeFL$ of them frequent losers) from
+$\valConservativeFD$ BEC-active defendants. That a smaller case
+set yields more cobidders than the $\valCobidders$ main target
+reflects two definitional differences, not a coding error: the
+conservative count is taken over the always-loser stratum rather
+than the narrower frequent-loser subset, and under the broad
+rather than the narrow cobidder definition. Under a common
+definition the subset relation is restored: the conservative
+always-loser (frequent-loser) cobidder set is a strict subset of
+the full-portfolio $\valFunnelALcobBroad$
+($\valFunnelFLcobBroad$). Table~\ref{tab:label_funnel_submission}
+reports every benchmark side by side.
+
+\begin{table}[htbp]
+\centering
+\caption{Label-Construction Funnel and Benchmark Reconciliation}
+\label{tab:label_funnel_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{3.0cm}cccccp{1.7cm}p{2.4cm}}
+\toprule
+Sample / benchmark & Cases & Legal def. & BEC-active def. & AL cobid. & FL cobid. & Cobidder def. & Reason vs main target \\
+\midrule
+Full CADE portfolio & 12 & 65 & $\valDirectCADE$ & $\valFunnelALcobBroad$ & $\valFunnelFLcobBroad$ & broad & reference \\
+Main target --- static narrow & 12 & 65 & -- & -- & $\valCobidders$ & narrow & primary \\
+Transparent broad funnel & 12 & 65 & $\valFunnelDirectActiveFTM$ & $\valFunnelALcobBroad$ & $\valFunnelFLcobBroad$ & broad & robustness \\
+Conservative pre-$\valConservativeCutoff$ & 4 & -- & $\valConservativeFD$ & $\valConservativeCobidders$ & $\valConservativeFL$ & broad & early-cases subset \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} A cobidder is an adjudication-anchored
+exposure label, not membership. The main target ($\valCobidders$,
+narrow cartel-tender definition) has an archived builder; the
+broad shared-tender-item funnel yields $\valFunnelFLcobBroad$
+frequent-loser and $\valFunnelALcobBroad$ always-loser cobidders.
+The conservative benchmark reproduces to
+$\valConservativeCobidders$/$\valConservativeFL$. The
+$\valDirectCADE$ cited active defendants correspond to $48$
+distinct crossmatch CNPJ, of which $\valFunnelDirectActiveFTM$ are
+firm\_tender\_map-active. Counts are unique firms.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
 
 \subsection{Baseline Adjudication Benchmarks}
 \label{sec:validation_baseline}

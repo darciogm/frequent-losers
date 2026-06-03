@@ -79,3 +79,12 @@ Front-end (sec 1–3) is written with forward-looking language; it does NOT asse
 - **Bid benchmark audit** — NOT documented (Table E). → Prompt 7.
 - **Case-timing table (Table G) + LOCO** — NOT built. → Prompts 3/5.
 - **Cosmetic flag:** Fig 1 shows two AUCs (0.888/0.903) under a "not a horse race" caption — reconsider at Prompt 7/8.
+
+---
+
+## Subprompt 4 close-out — B1/B3 resolved-for-manuscript (2026-06-03)
+- **B1 (193-vs-210 inconsistency):** ✅ RESOLVED in manuscript — disclosed as a two-axis definition difference (stratum + cobidder def), not a bug; Table A reconciles all benchmarks; conservative rebound to reproducible 19/208/107; 30 over-count dropped. `explanation_code = DIFFERENT_COBIDDER_DEFINITION (+ AL-vs-FL stratum)`. Memo: `label_reconciliation_memo.md`.
+- **B3 (absent cobidder builder):** ⚠ STILL OPEN for the JLEO *replication package* — the static `cade_fl_cobidders.csv` (193) builder remains absent. MITIGATED for the manuscript: §4.1 discloses the archived builder; the transparent `01_label_funnel_reconciliation.R` funnel (341/651/208/107) is the reproducible alternative. For final submission, either bless the transparent funnel as canonical (U2 option a, re-validates all AUC) or recover the original builder.
+- **B2 (cobidder→case linkage):** ✅ materialized (`case_cobidder_map.csv`) — LOCO (Subprompt 5) unblocked.
+- **NEW open item for 4B:** conservative-benchmark AUC/enrichment (`\valAUCprePost`, `\valCADEenrich`, `\valCADEbase`) were estimated on the adjudication-anchored labels; re-estimate under the harmonized definition during opportunity-adjusted validation; do NOT claim invariance until then.
+- Assertions: 9 pass / 1 warning (A8 = 210-vs-193 is a definition difference, classified not silently passed) / 0 fail.
