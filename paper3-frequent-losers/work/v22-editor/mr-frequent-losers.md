@@ -523,6 +523,24 @@ Preferred table style:
 - Clear sample restrictions
 - No ornamental robustness table that does not answer a threat
 
+## JLEO Submission Compression Discipline
+
+Iterative referee-proofing bloats a manuscript with one table/figure per diagnostic. Before submission, compress the draft into a JLEO **article**, not an audit dossier. Validated on Paper 3 v22 (64pp→36pp, 23→6 tables, 8→2 figures, 0 errors).
+
+**Budgets.** Main text **30–38 pages** (excl. references); **≤6 main tables**; **≤3 main figures**; appendix 20–30pp ideal. Scanner logs, registries, completion reports, code-audit memos live in `docs/`+`outputs/` and are **never `\input`** into the submitted appendix. If the appendix is still long, split the heaviest technical appendices into a separate online-supplement / replication tier rather than deleting referee-proofing detail.
+
+**KEEP rule.** A float stays in the main text only if it: defines the sample, attacks the fatal identification threat, shows the operational cost-recall result, or establishes the legal-economic boundary. Everything else is demoted.
+
+**The 6 canonical main tables** (for this paper family): (1) data objects & legal-economic roles; (2) label funnel & sample reconciliation; (3) opportunity-adjusted validation; (4) timing & case-holdout; (5) bid-layer benchmark & complementarity; (6) cost-recall frontier. **The 3 canonical main figures:** (1) information layers; (2) opportunity-adjusted observed-vs-expected / PR-lift; (3) cost-recall frontier.
+
+**Safe float relocation.** Moving a `\begin{table/figure}…\label{X}…\end` float to an appendix file **auto-renumbers and never breaks `\ref{X}`**. When the detailed twin already lives in the appendix (built by the referee-proofing prompts), **delete the redundant main float, repoint the in-text `\ref` to the appendix section label, and keep the headline numbers in compressed prose.** Precondition for safe parallel deletion: verify each demoted float is `\ref`'d only within its own section (grep) — it almost always is.
+
+**Per-section prose targets.** §1 4–5pp · §2+§3 7–9pp · §4 (core) 9–11pp · §5 2–3pp · §6 6–8pp · §7 1.5–2pp. Cut repeated "not proof/membership" disclaimers (keep one), long lit review (keep `\cite` keys, compress prose), the robustness roadmap (one sentence), and duplicate award-vs-bid exposition.
+
+**Fan-out.** One agent per main-section file (disjoint → zero conflict): each compresses prose + deletes its demoted floats + repoints in-file refs to the appendix. Lead runs the length audit + classification doc, `sed '/TODO_JLEO_RR/d'` on main+appendix, the claims scan, the compile, and the completion report.
+
+**Verify.** `grep -c` confirms ≤6 tables / ≤3 figures across `sec0*.tex`; compile → **0 errors and 0 undefined references** (proves no dangling demoted-ref); claims scanner **critical=0**; no affirmative "outperforms / state-of-the-art / dominates / proves / detects cartels". Unresolved items go to a `REMAINING_BLOCKERS.md` doc — **never** a TODO marker in the paper.
+
 ## Data and Sample Checklist
 
 Always verify:
