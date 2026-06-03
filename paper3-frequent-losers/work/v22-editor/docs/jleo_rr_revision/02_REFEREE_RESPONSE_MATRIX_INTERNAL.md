@@ -69,3 +69,16 @@ The make-or-break test is IN as the central result (§4.3). **VERDICT B.**
 - **Permutation (both directions, honest):** Approach B (pure-exposure binomial) PR-AUC p=1.00 (exposure out-predicts raw score); Approach C (matched-stratum label perm) p=0.023; FL14-enrichment p<0.001.
 - **HONESTY ENFORCED:** combined exposure+score logit ROC-AUC ~0.98 EXPLICITLY omitted/caveated (E_i mechanically encodes the label; not score evidence) — in both §4.3 prose and Table C note.
 - Claim DOWNGRADED honestly (no "survives exposure" unqualified; intro hedged). Proceed to timing/case-holdout.
+---
+
+## Subprompt 6 status update (Timing & case-holdout, 2026-06-03) — VERDICT C+D
+The toughest test landed hard. Honest downgrade implemented (§4.4).
+- **#5 (strict ex-ante timing):** ✅ implemented — strict 2009-16→2017-19 + rolling-origin 2014-19. Result: survives ONLY inside the always-loser incumbent pool (AUC ~0.75); on the realistic full universe ROC 0.55, **precision@500 = recall@500 = 0 every rolling year**; 23% of positives are unrankable entrants; worst year 2015 below chance. → NOT prospectively deployable.
+- **#6 (leave-one-case-out):** ✅ implemented (case_cobidder_map). **Leave-largest-case-out COLLAPSES operational metrics: PR-AUC 0.126→0.036 (−71%), precision@500 −69%.** One case (trens_metros) = 55% of positives / 72% of TP@500. Case-balanced precision 0.029 vs pooled 0.130.
+- **Case dominance / environment dominance:** ✅ — item-group HHI 0.188 (drop largest halves PR-AUC); 96.8% Pregão; top-2 years drive much of it.
+- **Clustered RI:** ✅ — significant but THIN (PR-AUC p=0.015); case-coverage breadth NOT significant (p=0.32).
+- **#7 (ROC overemphasis):** ✅ — ROC reframed as a red herring (robust ~0.93 precisely because insensitive to the case concentration the operational metrics expose); PR/precision/recall primary.
+- **#12 (direct-defendant scope):** ✅ — ROC 0.49 full & strict; "not a generic direct-defendant classifier," not an escape hatch.
+- **Fig 2:** ROC-only replaced by PR-led rolling-origin.
+- **CLAIM DOWNGRADED:** retrospective, incumbent-pool, case-sensitive triage diagnostic — NOT prospective platform-wide screening.
+- **STRATEGIC FLAG for Darcio:** the "deployable screen" framing is no longer supportable; the honest paper is now about the LIMITS/boundary conditions of award-layer screening. Decision needed before §5+.

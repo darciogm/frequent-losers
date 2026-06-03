@@ -1,0 +1,26 @@
+% JLEO-R&R v22: leakage audit
+\begin{table}[htbp]\centering
+\caption{Leakage Audit of Timing Designs}
+\label{tab:leakage_audit}
+\scriptsize
+\begin{tabular}{lcccccl}
+\toprule
+Design & Score & Zero-win & Thresh. & Label & Sample & Allowed claim \\
+ & fut.? & fut.? & fut.? & fut.? & fut.? & \\
+\midrule
+A\_full\_sample\_retrospective & yes & yes & yes & yes & yes & Retrospective diagnostic upper bound \\
+B\_relaxed\_temporal\_holdout & no & yes & no & yes & no & Score-timing sensitivity (label-of-loser held ex post) \\
+C\_strict & no & no & no & yes & no & Prospective score validated against later adjudication labels \\
+D\_rankable\_strict & no & no & no & yes & no & Prospective score among rankable (has prior losing) firms \\
+E\_entrant\_newfirm & no & no & no & yes & no & Documents entrant coverage hole (cannot rank new firms) \\
+F\_adjudication\_observable & no & no & no & no & no & Infeasible here (judgments 2015-2025 post-date score) \\
+G\_prospective\_score\_retro\_label & no & no & no & yes & no & Prospective score, retrospective label (realistic design) \\
+strict\_holdout\_2009\_16\_to\_17\_19 & no & no & no & yes & no & Honest strict prospective-score discrimination \\
+rolling\_origin & no & no & no & yes & no & Out-of-time stability of the frozen score \\
+LOCO\_leave\_one\_case\_out & no & no & no & yes & no & Case-structured generalization (separate agent) \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\linewidth}\vspace{2pt}\scriptsize
+\textit{Notes:} ``fut.?'' = uses future information. Label-uses-future is intrinsic to validating any screen against later-adjudicated ground truth (design G); it is not a deployment defect provided no \emph{real-time} legal knowledge is claimed. Bid features are unused in all designs.
+\end{minipage}
+\end{table}

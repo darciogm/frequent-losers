@@ -96,3 +96,13 @@ Script: `work/v22-editor/scripts/analysis/02_opportunity_adjusted_validation.R` 
 - Diagnostics: `outputs/diagnostics/{observed_defendant_contact_summary, opportunity_cell_sparsity, opportunity_common_support, opportunity_case_buyer_contribution}.csv`; `claims_scan_after_opportunity_validation.csv`.
 - values.tex: +20 `\valExp*` macros (each src-tagged). App D uses CSV-matched literals (minor follow-up: swap to macros).
 - Data note: 1 firm (NEW HOPE) miscoded in BOTH crossmatch (defendant) and 193 cobidders — excluded from defendant set (a firm cannot be its own contact); direct defendants used = 46; npos stays 191.
+
+---
+
+## Subprompt 6 outputs (Timing & case-holdout, 2026-06-03)
+Scripts: `scripts/analysis/03_timing_case_holdout_validation.R` (timing/rolling/leakage/direct-defendant; reproduces 53's 0.767/0.750 + 33's 0.491) and `04_case_holdout_dominance.R` (LOCO/leave-largest/dominance/clustered-RI; seed 20260603).
+- Main tables: `outputs/tables/main/{table_D_strict_2009_2016_to_2017_2019, table_E_rolling_origin_validation, table_F_leakage_audit, table_G_leave_one_case_out_validation, table_H_case_dominance_validation, table_I_timing_case_holdout_validation}.{csv,tex}`.
+- Appendix tables: `outputs/tables/appendix/{table_D_environment_dominance, table_D_clustered_randomization_inference, table_D_leave_one_defendant_group_out, table_D_direct_defendant_timing_scope_check}.csv`.
+- Figures: main fig_rolling_origin_pr_auc (NEW Fig 2), fig_rolling_origin_precision_recall, fig_leave_one_case_out_distribution; appendix fig_rolling_origin_auc, fig_case_positive_concentration, fig_clustered_randomization_inference.
+- Diagnostics: strict_holdout_composition, case_dominance_summary, environment_dominance_summary, case_topk_coverage; claims_scan_after_timing_case_holdout.csv. Caches: clustered_ri_metrics.csv.
+- Docs: timing_information_sets.md. values.tex +19 `\valStrict*/\valLOCO*/...` macros.

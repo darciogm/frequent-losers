@@ -699,3 +699,578 @@ adds relative to the baseline adjudication benchmark.
 \end{threeparttable}
 \end{adjustbox}
 \end{table}
+
+% CO-AUTHOR EDIT: appended grouped block "Timing and Case-Composition
+% Audits". These subsections document the strict train/test, rolling-origin,
+% leakage, leave-one-case-out, environment-dominance, clustered-RI,
+% defendant-group, and direct-defendant timing audits. All numbers are
+% CSV-matched literals (sources tagged inline). Throughout, CADE-defendant
+% contact is an adjudication-anchored exposure label, never membership;
+% nothing here is a detector, proof, or causal claim. All timing is
+% year-level (DAY_LEVEL_TIMING_UNAVAILABLE); seeds are 20260603.
+
+\subsection{Timing and Case-Composition Audits: Overview}
+\label{app:timing_overview_submission}
+
+The audits above hold \emph{opportunity} fixed. This block holds
+\emph{time} and \emph{case composition} fixed. The question is
+whether a regulator who froze the loser-side score \emph{before}
+the evaluation window could have ranked the firms later
+adjudicated as cobidders, without peeking at future
+participation, future wins, a future-tuned threshold, or future
+CADE adjudications --- and whether any surviving signal is
+carried by a handful of cases rather than the construct. The
+results are sobering and are reported as such. The honest summary
+is that, on the full candidate universe, strict-timing
+operational performance collapses to chance
+(precision@$500=\valStrictFullPrec$); a within-pool, case-pooled
+ranking signal survives but is thin and case-concentrated; and a
+single CADE case carries most of the operational precision. We
+state every window, candidate set, threshold, metric definition,
+exclusion rule, and random seed, and we mark each quantity as
+prospective or retrospective.
+
+\subsection{Timing Information Sets}
+\label{app:timing_sets_submission}
+
+The CADE files carry only judgment dates
+(\texttt{data\_julgamento}, mostly 2015--2025) and \emph{no
+conduct dates}. We therefore cannot align the screen to the
+calendar moment a cartel was operating: all timing is
+\emph{year-level} (BEC participation year $=
+\texttt{SUBSTR}(\textnormal{numerodaoc},12,4)$), never day-level.
+We denote this hard constraint
+\texttt{DAY\_LEVEL\_TIMING\_UNAVAILABLE}. Ground truth is $193$
+adjudicated cobidders (keyed on \texttt{c\'odigofornecedor}); the
+$46$ direct defendants (keyed on \texttt{firm\_cnpj}) are disjoint
+from the cobidders after excluding one miscoded firm appearing in
+both files. Table~\ref{tab:timing_sets_submission} enumerates the
+candidate information sets A--G and states exactly what each can
+and cannot claim.
+
+\begin{table}[htbp]
+\centering
+\caption{Timing Information Sets: What Each Can and Cannot Claim}
+\label{tab:timing_sets_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lL{2.2cm}L{2.6cm}L{3.0cm}L{3.0cm}}
+\toprule
+Set & Score / zero-win / threshold input & Leaks future? & Allowed claim & Forbidden claim \\
+\midrule
+A --- Full-sample retrospective & 2009--2019 / 2009--2019 / full ($\approx 13.5$) & Yes (everything ex post) & Upper-bound diagnostic discrimination of the construct & Any prospective / deployment claim \\
+B --- Relaxed temporal holdout & 2009--2016 / \textbf{full-period} wins / train-window & Yes (zero-win uses future wins) & Score-timing sensitivity, holding loser-label fixed & That zero-win status was knowable at the score date \\
+C --- Strict & 2009--2016 / 2009--2016 / train-window ($=7$) & No (label adjudicated later) & Honest prospective-score discrimination of later-adjudicated cobidders & Real-time legal observability \\
+D --- Rankable strict & C, restricted to $T_i^{\text{train}}>0$ & No (same as C) & Discrimination among firms a regulator can actually rank & Anything about entrants \\
+E --- Entrant / new-firm & $T_i^{\text{train}}=0$ \& $T_i^{\text{test}}>0$ & n/a & Documents the entrant coverage hole & That the screen catches new firms \\
+F --- Adjudication-observable-at-time & C, labels with judgment $\le$ score date & Infeasible & (In principle) real-time legal knowledge & Infeasible: judgments 2015--2025 post-date the freeze \\
+G --- Prospective-score / retrospective-label & 2009--2016 / 2009--2016 / train-window; labels back-assigned & No (in the screening sense) & The deployable design: ex-ante score, later-revealed labels & That the agency knew CADE labels at the screening date \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Mirrors the timing register in the
+replication materials. We lead the timing section on C/D/G (strict
+prospective score, rankable pool, retrospective label) --- the
+honest deployable design --- report A only as a labeled upper
+bound, report B only as a leak-flagged decomposition, report E to
+disclose the entrant coverage hole, and document F as infeasible.
+Set F is infeasible because all judgment dates post-date a
+2009--2016 score freeze and
+\texttt{DAY\_LEVEL\_TIMING\_UNAVAILABLE} prevents within-year
+alignment. We never claim real-time detection or ex-ante cartel
+identification. Source: \texttt{table\_F\_leakage\_audit.csv};
+\texttt{timing\_information\_sets.md}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Strict Train/Test: Score-Zero Ties and Entrants}
+\label{app:strict_holdout_submission}
+
+The strict holdout freezes the ranking on $2009$--$2016$ and
+evaluates against $2017$--$2019$ cobidder labels. The score,
+always-loser (zero-win) status, and the
+median$+1.5\times$IQR threshold are all computed on the training
+window: the train-window threshold is $\valStrictThreshTrain$,
+against a full-window threshold of $13.5$. Of the $193$ cobidders,
+$148$ are \emph{rankable} (have positive training participation,
+$T_i^{\text{train}}>0$) and $45$ ($23\%$) are \emph{entrants}
+($T_i^{\text{train}}=0$ \& $T_i^{\text{test}}>0$) who carry score
+$\log(1{+}0)=0$ and cannot be ranked by prior losing. We report
+five nested samples, from the full candidate universe down to the
+training always-loser pool. Table~\ref{tab:strict_holdout_submission}
+gives the full grid.
+
+\begin{table}[htbp]
+\centering
+\caption{Strict Holdout $2009$--$2016 \to 2017$--$2019$ (Year-Level Timing)}
+\label{tab:strict_holdout_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Sample & $N$ & Pos. & ROC AUC & PR-AUC & Prec@500 & Recall@500 & Lift@500 & Tie-at-0 \\
+\midrule
+1. Full test candidate & $41{,}444$ & $193$ & $0.546$ & $0.005$ & $0.000$ & $0.000$ & $0.00$ & $0.246$ \\
+2. Rankable ($T^{\text{train}}{>}0$) & $32{,}682$ & $148$ & $0.588$ & $0.005$ & $0.000$ & $0.000$ & $0.00$ & $0.043$ \\
+3. Training always-loser & $21{,}819$ & $193$ & $0.750$ & $0.045$ & $0.062$ & $0.161$ & $7.01$ & $0.402$ \\
+4. Training AL \& test-active & $11{,}351$ & $135$ & $0.763$ & $0.072$ & $0.112$ & $0.415$ & $9.42$ & $0.772$ \\
+5. Zero-win both (\textsc{leaks}) & $16{,}843$ & $193$ & $0.725$ & $0.050$ & $0.070$ & $0.181$ & $6.11$ & $0.280$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Continuous loser-side score
+($\log T^{\text{train}}$). Sample 3 is the honest strict pool;
+within it, the FL-binary AUC is $\valStrictFLAUC$ and the
+continuous AUC is $\valStrictContAUC$ (threshold
+$=\valStrictThreshTrain$, vs.\ full-window $13.5$). Sample 5 leaks
+future wins via full-period always-loser status and is reported as
+a leak-flagged sensitivity only. \textbf{On the full candidate
+universe (sample 1) the strict screen collapses to chance:} ROC
+$\valStrictFullAUC$, PR-AUC $0.005$, and
+precision@$500=$recall@$500=\valStrictFullPrec$, with $25\%$ of
+firms tied at score zero. Of the $148$ rankable positives and
+$45$ entrant positives ($23\%$ of $193$), entrants form a
+structural blind spot the prospective score cannot reach. ``Tie-at-0''
+is the share of the candidate set carrying score zero. Source:
+\texttt{table\_D\_strict\_2009\_2016\_to\_2017\_2019.csv};
+\texttt{strict\_holdout\_composition.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The reading is deliberately deflationary. A within-pool ranking
+signal survives (sample 3, AUC $\valStrictContAUC$--$\valStrictFLAUC$),
+but on the deployable full universe the strict screen has no
+operational traction: it cannot fill a top-$500$ queue with a
+single true positive. The entrant coverage hole and the mass of
+score-zero ties are the proximate causes.
+
+\subsection{Rolling-Origin Validation}
+\label{app:rolling_origin_submission}
+
+The rolling-origin exercise expands the training window
+year-by-year for $t=2014,\dots,2019$, freezes the score on all
+years strictly before $t$, and evaluates cobidder discrimination
+in year $t$ using \emph{training-window-only} scores.
+Table~\ref{tab:rolling_origin_submission} reports the full
+universe and the within-pool (training always-loser) sample per
+origin year; the appendix figure plots the ROC trajectory.
+
+\begin{table}[htbp]
+\centering
+\caption{Rolling-Origin Validation, $t=2014,\dots,2019$ (Training-Only Scores)}
+\label{tab:rolling_origin_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{crrrrrr rrrr}
+\toprule
+& \multicolumn{6}{c}{Full candidate universe} & \multicolumn{4}{c}{Training always-loser} \\
+\cmidrule(lr){2-7}\cmidrule(lr){8-11}
+Year & $N$ & Pos. & ROC & PR-AUC & Prec@500 & Rec@500 & $N$ & ROC & PR-AUC & Prec@500 \\
+\midrule
+$2014$ & $26{,}478$ & $102$ & $0.535$ & $0.0039$ & $0.000$ & $0.000$ & $11{,}985$ & $0.770$ & $0.037$ & $0.040$ \\
+$2015$ & $29{,}804$ & $127$ & $0.497$ & $0.0040$ & $0.000$ & $0.000$ & $13{,}448$ & $0.717$ & $0.034$ & $0.046$ \\
+$2016$ & $32{,}682$ & $148$ & $0.534$ & $0.0046$ & $0.000$ & $0.000$ & $14{,}577$ & $0.770$ & $0.041$ & $0.048$ \\
+$2017$ & $35{,}766$ & $161$ & $0.578$ & $0.0051$ & $0.000$ & $0.000$ & $16{,}141$ & $0.824$ & $0.052$ & $0.062$ \\
+$2018$ & $38{,}648$ & $181$ & $0.582$ & $0.0054$ & $0.000$ & $0.000$ & $17{,}273$ & $0.823$ & $0.062$ & $0.076$ \\
+$2019$ & $41{,}444$ & $193$ & $0.628$ & $0.0059$ & $0.000$ & $0.000$ & $18{,}393$ & $0.881$ & $0.077$ & $0.086$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Each origin year freezes the score on prior
+years only. \textbf{On the full universe, every origin year posts
+PR-AUC $\approx 0.004$--$0.006$ and
+precision@$500=$recall@$500=0$}; the worst ROC is $0.497$ (2015),
+at chance. The within-pool numbers improve monotonically across
+origins, but this improvement is \emph{retrospective accumulation},
+not learning: later origins train on more years and evaluate
+against a label set that increasingly overlaps with the
+construction window, so rising AUC reflects a thicker training
+history, not a screen that detects in real time. Source:
+\texttt{table\_E\_rolling\_origin\_validation.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{./output/figures/fig_rolling_origin_auc}
+\caption{Rolling-origin ROC AUC by origin year.}
+\label{fig:rolling_origin_submission}
+\begin{minipage}{0.86\textwidth}
+\footnotesize
+\textit{Notes:} ROC AUC by origin year $t=2014,\dots,2019$, with
+the score frozen on years strictly before $t$. The full-universe
+trajectory hovers near chance; the within-pool trajectory rises
+across origins as the training history thickens (retrospective
+accumulation, not real-time learning).
+
+\textit{Alt text:} A line chart with origin year on the horizontal
+axis and ROC AUC on the vertical axis, showing two trajectories.
+The lower line, for the full candidate universe, stays close to
+0.5 across all years. The upper line, for the within-pool
+training always-loser sample, climbs from roughly 0.72--0.77 in
+the early years to about 0.88 by 2019.
+\end{minipage}
+\end{figure}
+
+\subsection{Leakage Audit}
+\label{app:timing_leakage_submission}
+
+Each candidate design either uses or withholds specific future
+information. Table~\ref{tab:timing_leakage_submission} crosses the
+designs against the future-information channels and records the
+single allowed claim and the matching forbidden claim. Design F
+(adjudication-observable-at-time) is infeasible here because the
+judgments post-date the freeze and
+\texttt{DAY\_LEVEL\_TIMING\_UNAVAILABLE} blocks within-year
+alignment.
+
+\begin{table}[htbp]
+\centering
+\caption{Leakage Audit: Designs $\times$ Future-Information Channels}
+\label{tab:timing_leakage_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lccccL{3.4cm}L{3.0cm}}
+\toprule
+Design & Score & Zero-win & Thresh. & Label & Allowed claim & Forbidden claim \\
+\midrule
+A. Full retrospective & fut. & fut. & fut. & fut. & Retrospective diagnostic upper bound & Any prospective / deployment claim \\
+B. Relaxed holdout & --- & fut. & --- & fut. & Score-timing sensitivity (loser-label ex post) & That zero-win was knowable at score date \\
+C. Strict & --- & --- & --- & fut. & Prospective score vs.\ later adjudication & Real-time legal observability \\
+D. Rankable strict & --- & --- & --- & fut. & Prospective score among rankable firms & Anything about entrants \\
+E. Entrant / new-firm & --- & --- & --- & fut. & Documents entrant coverage hole & That the screen catches new firms \\
+F. Adjudication-observable & --- & --- & --- & --- & \textsc{Infeasible} (judgments post-date freeze) & Real-time detection \\
+G. Prospective / retro-label & --- & --- & --- & fut. & Deployable design (ex-ante score) & Agency knew CADE labels at score date \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} ``fut.'' marks a channel that uses future
+information; ``---'' marks a channel held to the pre-window
+information set. No design uses bid-level features. The
+label-availability channel is intrinsic to any screen validated
+against eventually-revealed ground truth (design G): freezing the
+\emph{score} ex ante is what makes the design prospective, not
+pretending the labels were knowable. F is documented, not
+estimated. Source: \texttt{table\_F\_leakage\_audit.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Leave-One-Case-Out and Leave-Largest-Case-Out}
+\label{app:loco_submission}
+
+The CADE positives are organized into adjudicated cases, and a
+generalization concern is whether the pooled signal is carried by
+one or two cases. We link six cases with enough cobidders to
+score (a seventh, \texttt{sacos\_de\_lixo}, is too sparse at three
+positives and is flagged). Table~\ref{tab:loco_submission} reports
+per-case discrimination, and Table~\ref{tab:case_dominance_submission}
+reports the leave-largest-case-out collapse. The appendix figure
+shows how concentrated the true positives are across cases.
+
+\begin{table}[htbp]
+\centering
+\caption{Leave-One-Case-Out Discrimination (Linkable Cases)}
+\label{tab:loco_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lrrrrrr}
+\toprule
+Case (sector) & Pos. & ROC AUC & PR-AUC & Prec@500 & Rec@500 & Lgst.\ item-grp share \\
+\midrule
+trens\_metros & $104$ & $0.946$ & $0.121$ & $0.094$ & $0.452$ & $0.70$ \\
+cafeteria\_aeroporto & $32$ & $0.962$ & $0.064$ & $0.040$ & $0.625$ & $0.88$ \\
+medicamentos & $19$ & $0.948$ & $0.013$ & $0.018$ & $0.474$ & $0.74$ \\
+merenda\_escolar & $14$ & $0.942$ & $0.011$ & $0.010$ & $0.357$ & $0.86$ \\
+transporte\_escolar & $9$ & $0.932$ & $0.007$ & $0.004$ & $0.222$ & $1.00$ \\
+sacos\_de\_lixo (\textsc{sparse}) & $3$ & $0.994$ & $0.020$ & $0.006$ & $1.000$ & $1.00$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Per-case ROC is uniformly $\approx 0.95$ and
+is \textbf{uninformative} here: with $3$--$104$ positives against
+$\approx 16{,}700$ candidates, prevalence is below $0.7\%$, so even
+a weak ranker pushes the few positives above the vast negative
+mass and ROC saturates. PR-AUC is the discriminating metric and it
+is low (mean $0.039$, max $0.121$ for \texttt{trens\_metros}). The
+\texttt{sacos\_de\_lixo} case is too sparse to interpret and is
+flagged. Source:
+\texttt{table\_G\_leave\_one\_case\_out\_validation.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Case Dominance: Leave-Largest-Case-Out}
+\label{tab:case_dominance_submission}
+\scriptsize
+\begin{threeparttable}
+\begin{tabular}{lrrrrr}
+\toprule
+Scenario & Pos. & ROC AUC & PR-AUC & Prec@500 & Rec@500 \\
+\midrule
+Full (pooled) & $190$ & $0.939$ & $\valLOCOfullPRAUC$ & $0.130$ & $0.342$ \\
+Drop largest case & $86$ & $0.929$ & $\valLOCOdropLargestPRAUC$ & $\valLOCOdropLargestPrec$ & $0.233$ \\
+Drop top-two cases & $75$ & $0.925$ & $0.029$ & $0.030$ & $0.200$ \\
+Case-balanced (mean over cases) & --- & --- & --- & $0.029$ & $0.522$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Dropping the single largest case
+(\texttt{trens\_metros}) collapses PR-AUC from
+$\valLOCOfullPRAUC$ to $\valLOCOdropLargestPRAUC$ ($-71\%$) and
+precision@$500$ from $0.130$ to $\valLOCOdropLargestPrec$; dropping
+the top two cases takes PR-AUC to $0.029$. \textbf{Case-balanced
+precision@$500$ (weighting each case equally rather than each
+firm) is $0.029$, against the firm-weighted pooled $0.130$:} the
+pooled operational number is carried by one case. ROC barely moves
+(it is uninformative at this prevalence). Source:
+\texttt{table\_H\_case\_dominance\_validation.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{./output/figures/fig_case_positive_concentration}
+\caption{Concentration of true positives across CADE cases.}
+\label{fig:case_concentration_submission}
+\begin{minipage}{0.86\textwidth}
+\footnotesize
+\textit{Notes:} Share of adjudicated cobidder positives
+contributed by each linkable CADE case. The distribution is
+dominated by a single case (\texttt{trens\_metros}), with the
+remaining cases contributing a long thin tail.
+
+\textit{Alt text:} A bar chart with CADE cases on the horizontal
+axis and the number (or share) of cobidder true positives on the
+vertical axis. One bar, for the trens\_metros case, is far taller
+than the rest, and the other five bars descend sharply, showing
+that a single case accounts for the bulk of the positives.
+\end{minipage}
+\end{figure}
+
+\subsection{Buyer, Item-Group, and Modality Dominance}
+\label{app:environment_dominance_submission}
+
+Concentration is also structural across the procurement
+environment, not only across cases. The positives' opportunity
+mass is dominated by item group: item-group HHI is $0.188$ (the
+largest group accounts for $30.5\%$ and the top five for $82\%$ of
+contacts), the panel is $96.8\%$ Preg\~ao, and the buyer
+distribution is diffuse (buyer HHI $0.019$).
+Table~\ref{tab:environment_dominance_submission} reports
+robustness exclusions.
+
+\begin{table}[htbp]
+\centering
+\caption{Environment-Dominance Exclusions}
+\label{tab:environment_dominance_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lrrrrr}
+\toprule
+Scenario & Pos. & ROC AUC & PR-AUC & Prec@500 & Rec@500 \\
+\midrule
+Full & $190$ & $0.939$ & $0.126$ & $0.130$ & $0.342$ \\
+Drop largest buyer & $178$ & $0.938$ & $0.120$ & $0.116$ & $0.326$ \\
+Drop largest item group ($=16$) & $132$ & $0.932$ & $0.062$ & $0.074$ & $0.280$ \\
+Drop largest buyer $\times$ item group & $181$ & $0.938$ & $0.123$ & $0.126$ & $0.348$ \\
+Preg\~ao only & $184$ & $0.940$ & $0.127$ & $0.130$ & $0.353$ \\
+Convite only & $6$ & $0.906$ & $0.002$ & $0.000$ & $0.000$ \\
+Drop top-2 positive years ($2019,2017$) & $121$ & $0.925$ & $0.048$ & $0.052$ & $0.215$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Item-group HHI $0.188$ (largest group
+$30.5\%$, top five $82\%$); modality $96.8\%$ Preg\~ao; buyer HHI
+$0.019$. \textbf{Dropping the largest item group ($=16$) roughly
+halves PR-AUC ($0.126\to0.062$); dropping the top-2 positive years
+takes it to $0.048$; dropping the largest buyer barely moves it}
+($0.126\to0.120$). The signal is concentrated in item-group and
+year, diffuse across buyers, and almost entirely a Preg\~ao
+phenomenon (Convite has only six positives and is uninformative).
+Source: \texttt{table\_D\_environment\_dominance.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Clustered Randomization Inference and Defendant-Group Holdout}
+\label{app:clustered_ri_submission}
+
+To test whether the pooled ranking exceeds what environment
+structure alone would produce, we permute the cobidder labels
+\emph{within} buyer $\times$ item-group $\times$ year clusters
+($B=1{,}000$, seed $20260603$), preserving the joint
+environment distribution while breaking the label--score link.
+Table~\ref{tab:clustered_ri_submission} reports the observed
+statistic against this clustered null.
+
+\begin{table}[htbp]
+\centering
+\caption{Clustered Randomization Inference (Within Buyer $\times$ Item-Group $\times$ Year)}
+\label{tab:clustered_ri_submission}
+\scriptsize
+\begin{threeparttable}
+\begin{tabular}{lrrrr}
+\toprule
+Metric & Observed & Null mean & Null 95th & Emp.\ $p$ \\
+\midrule
+ROC AUC & $0.939$ & $0.832$ & $0.851$ & $0.001$ \\
+PR-AUC & $0.126$ & $0.101$ & $0.119$ & $0.015$ \\
+Precision@500 & $0.130$ & $0.111$ & $0.124$ & $0.013$ \\
+Recall@500 & $0.342$ & $0.299$ & $0.333$ & $0.016$ \\
+Top-$500$ case coverage & $6$ & $5.02$ & $6$ & $0.317$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} $B=1{,}000$ within-cluster label
+permutations, stratified by buyer $\times$ item-group $\times$
+year, seed $20260603$. \textbf{The ranking metrics clear the
+clustered null, but the margins are thin:} ROC $p=0.001$, PR-AUC
+$p=0.015$, precision@$500$ $p=0.013$, recall@$500$ $p=0.016$.
+\textbf{Case coverage --- the number of distinct CADE cases
+represented in the top $500$ --- is \emph{not} significant}
+($6$ observed vs.\ $5.0$ null, $p=0.317$): the screen does not
+spread its top-queue hits across more cases than chance, consistent
+with the case-dominance result above. We disclose that $73.2\%$ of
+positives sit in shufflable cells of at least two firms (the
+remainder are in singleton cells that the within-cluster
+permutation cannot move). Source:
+\texttt{table\_D\_clustered\_randomization\_inference.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{./output/figures/fig_clustered_randomization_inference}
+\caption{Clustered randomization inference: observed vs.\ null.}
+\label{fig:clustered_ri_submission}
+\begin{minipage}{0.86\textwidth}
+\footnotesize
+\textit{Notes:} Null distributions of the ranking metrics under
+within-cluster (buyer $\times$ item-group $\times$ year) label
+permutation, with the observed statistic marked. The observed
+ranking metrics sit in the right tail; the case-coverage statistic
+sits inside the bulk of its null.
+
+\textit{Alt text:} A panel of histograms, one per metric, of
+placebo statistics from within-cluster label permutations, each
+with a vertical line marking the observed value. For ROC, PR-AUC,
+precision and recall the observed line sits in the right tail
+beyond most of the null mass; for case coverage the observed line
+falls inside the central bulk of the null.
+\end{minipage}
+\end{figure}
+
+As a complementary case-structure check, we leave out one direct
+defendant group at a time. Of the $28$ defendants, $13$ carry at
+least five positives; across those the mean ROC is $0.944$, but
+the exercise is dominated by a single defendant
+(\texttt{61288437000167}, $95$ positives, the \texttt{trens\_metros}
+lead), whose removal drives most of the movement ---
+reinforcing that one case anchors the operational signal. Source:
+\texttt{table\_D\_leave\_one\_defendant\_group\_out.csv}.
+
+\subsection{Direct-Defendant Temporal Scope Check}
+\label{app:direct_defendant_timing_submission}
+
+Finally, we confirm that the strict-timing score is not a generic
+direct-defendant classifier. If the loser-side score detected
+cartel \emph{membership}, it should rank direct CADE defendants;
+it does not, under either the full-sample or the strict-training
+score. Table~\ref{tab:direct_defendant_timing_submission} reports
+the scope check.
+
+\begin{table}[htbp]
+\centering
+\caption{Direct-Defendant Temporal Scope Check}
+\label{tab:direct_defendant_timing_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lL{2.4cm}rrrr}
+\toprule
+Design & Universe & $N$ & Defs. & ROC AUC & Prec@500 \\
+\midrule
+FL-binary (repro) & all BEC firms & $41{,}444$ & $47$ & $0.491$ & $0.000$ \\
+Full-sample continuous & all BEC firms & $41{,}444$ & $46$ & $0.658$ & $0.004$ \\
+Strict-training continuous & all BEC firms & $41{,}444$ & $46$ & $0.695$ & $0.004$ \\
+Strict-training FL-binary & all BEC firms & $41{,}444$ & $46$ & $0.492$ & $0.000$ \\
+Full-sample continuous & always-loser pool & $16{,}843$ & $6$ & $0.646$ & $0.000$ \\
+Strict-training continuous & always-loser pool & $13{,}057$ & $5$ & $0.695$ & $0.002$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} The deployable FL-binary score ranks direct
+defendants at ROC $\approx \valDirectStrictAUC$ under both full and
+strict timing ($0.491$ and $0.492$), i.e.\ at chance, with
+precision@$500=0$. The continuous score reaches ROC $0.66$--$0.70$
+against defendants but with precision@$500\le0.004$, so it does
+not operationally retrieve them either. This is a \textbf{scope
+boundary, not an escape hatch}: the screen is a loser-side ranker,
+and direct defendants typically sit on the winner side of the
+arrangement. It is \textbf{not a generic direct-defendant
+classifier}. Source:
+\texttt{table\_D\_direct\_defendant\_timing\_scope\_check.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Limitations of the Timing and Case-Composition Audits}
+\label{app:timing_limitations_submission}
+
+Five limitations bound this block. First, \textbf{all timing is
+year-level} (\texttt{DAY\_LEVEL\_TIMING\_UNAVAILABLE}): the CADE
+files carry only judgment dates (2015--2025), no conduct dates, so
+we cannot align the screen to the calendar moment a cartel
+operated, and the adjudication-observable design (set F) is
+infeasible rather than estimated. Second, there is an
+\textbf{entrant coverage hole}: $45/193$ ($23\%$) of positives are
+firms with no training participation and carry score zero, a
+structural blind spot the prospective screen cannot reach. Third,
+the signal is \textbf{concentrated} --- by case (dropping the
+largest case cuts PR-AUC by $71\%$; case-balanced precision is
+$0.029$ vs.\ pooled $0.130$), by item group (dropping the largest
+halves PR-AUC), and by year --- so the pooled operational number
+overstates breadth. Fourth, \textbf{high ROC is a red herring}: at
+sub-$1\%$ prevalence ROC saturates near $0.95$ while the
+operational metrics (PR-AUC, precision@$k$) are low; the
+operational metrics are the honest ones, and on the full
+strict-timing universe they collapse to chance. Fifth, even the
+strict-timing within-pool result is \textbf{triage-queue
+validation, not proof}: it says a score an agency could have
+computed in $2016$ ranks later-adjudicated cobidders above chance
+within the always-loser pool --- it does not identify cartel
+members, establish liability, or estimate damages. Throughout,
+the CADE-defendant labels are \emph{adjudication-anchored exposure}
+labels: a tagged firm shared a tender-item with an adjudicated
+defendant; it is not thereby a member of, or party to, any
+agreement.

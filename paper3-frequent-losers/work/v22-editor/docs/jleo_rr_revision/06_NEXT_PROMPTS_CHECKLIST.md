@@ -128,3 +128,17 @@ All work in `work/v22-editor/`, branch `v22`. Bind every new number into `values
 - ✅ COMPLETED: §4.3 "Opportunity-Adjusted Validation" as the central result (Table C + Table D-perm + 2 figures); App D restructured D.1–D.12; intro hedged; 20 macros bound. Compiles (paper 47pp / appendix 26pp, 0 errors/undefined). Claims critical=0. **VERDICT B.**
 - Logs: `13_SUBPROMPT_5_OPPORTUNITY_VALIDATION_LOG.md`, `14_SUBPROMPT_5_COMPLETION_REPORT.md`.
 - **NEXT PROMPT confirmed: "Section 4C — Timing, Leakage, Rolling Origin, Leave-One-Case-Out, and Case Dominance"** (CP-3). Inputs ready: script 53 (frozen-train, binary 0.767>cont 0.750), script 77 (timing FAIL/observational equivalence — disclose), `case_cobidder_map.csv` (LOCO), and the ≈47% top-case TP@500 flag from this subprompt.
+
+---
+
+## Subprompt 6 close-out (Timing & case-holdout, 2026-06-03) — VERDICT C+D
+- ✅ COMPLETED: §4.4 "Timing, Leakage, and Case Composition" (honest downgrade) + Table I + Fig 2 PR-led + LOCO fig; App D timing block D.13–D.21; 19 macros. Compiles (paper 53pp / appendix 34pp, 0 errors/undefined). Claims critical=0.
+- Logs: `15_SUBPROMPT_6_TIMING_CASE_HOLDOUT_LOG.md`, `16_SUBPROMPT_6_COMPLETION_REPORT.md`, `timing_information_sets.md`.
+- ⚠ **STRATEGIC DECISION REQUIRED before Subprompt 7** (see 05_BLOCKERS): reframe to "limits of award-layer screening" vs salvage. The next subprompt's framing depends on this.
+- Tentative next: "Section 5 — Economic Profile, Monotonicity, Binary vs Continuous Score, and Ordinary-Loser Alternatives" — but §5 must be written UNDER the downgraded claim (cobidders largely high-volume losers concentrated in one case).
+
+---
+
+## REFRAME executed (option (a), 2026-06-03) — "The Reach and Limits of Award-Layer Screening"
+User chose (a). Title changed; abstract (142w), intro 3-contributions, §4.5 summary, §8 conclusion reframed to the boundary-conditions contribution (honest, rigorous, NOT confessional, strengths-forward). False "survives timing" claim removed from conclusion. Contribution recast as: (1) evidence-allocation framework, (2) transferable decomposition METHOD (separate genuine signal from exposure arithmetic + case concentration), (3) reach-and-limits MAP. Paper 53pp/appendix 34pp compile clean, claims critical=0.
+**Subprompt 7 (§5) must be written UNDER this reframe**: cobidders are largely high-volume losers concentrated in one case — §5 should profile honestly (limited distinct economic content), not claim a distinct cartel firm type.

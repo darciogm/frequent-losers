@@ -38,6 +38,11 @@ adjudication benchmarks.
 Subsection~\ref{sec:validation_exposure} is the central exercise:
 it disciplines the ranking against procurement opportunity and
 isolates the score's residual contribution net of exposure.
+% CO-AUTHOR EDIT: add timing/case-composition subsection to the roadmap (Subprompt 6)
+Subsection~\ref{sec:validation_timing} then imposes strict timing
+discipline and case-composition robustness, and reports the
+sobering result that the operational ranking is a retrospective,
+incumbent-pool, largely single-case diagnostic.
 Subsection \ref{sec:validation_direct} uses direct CADE
 defendants as a scope check. Subsection~\ref{sec:validation_summary} summarizes
 what the validation establishes for the staged enforcement
@@ -165,8 +170,12 @@ rank firms whose cartel adjacency is later observed in the
 adjudication-anchored record. The firm-level AUC is
 $\valAUCFLfirmTemp$ (95\% CI $\valAUCFLfirmTempCI$), below the
 full-sample AUC $\valAUCFLfirm$ but well separated from random
-ranking. Figure~\ref{fig:temporal_holdout_roc_submission} reports the
-rolling-origin version of the same exercise.
+ranking. % CO-AUTHOR EDIT: redirect to PR-led rolling-origin figure; ROC-only fig dropped from main text (Subprompt 6)
+Figure~\ref{fig:rolling_origin_pr_auc} reports the rolling-origin
+version of the same exercise, led by the rare-target PR-AUC rather
+than ROC, and Subsection~\ref{sec:validation_timing} shows that
+the operational metrics behind that curve are far more sobering
+than the holdout AUC alone suggests.
 
 The baseline results are deliberately read as ranking evidence.
 They show that the award-layer statistic is informative about
@@ -180,16 +189,9 @@ exercise of the paper. It asks how much of the ranking survives
 once procurement opportunity is held comparable, and isolates the
 score's contribution net of exposure.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.82\textwidth]{./output/figures/fig_temporal_holdout_roc}
-\caption[Temporal-holdout discrimination]{Temporal-holdout ROC
-curves. Scores are computed using participation observed before
-the test year; the test year supplies the out-of-time cobidder
-label. The exercise measures out-of-time discrimination against
-later-adjudicated cobidder labels, not field deployment.}
-\label{fig:temporal_holdout_roc_submission}
-\end{figure}
+% CO-AUTHOR EDIT: ROC-only temporal-holdout figure dropped from main text; replaced by the
+% PR-led rolling-origin figure in §4.4 (\ref{fig:rolling_origin_pr_auc}). ROC is not headlined
+% because it is insensitive to the case concentration the operational metrics expose (Subprompt 6).
 
 % CO-AUTHOR EDIT: Subprompt 5 — promote opportunity adjustment to the central result
 \subsection{Opportunity-Adjusted Validation}
@@ -464,6 +466,245 @@ null.}
 \label{fig:opportunity_permutation}
 \end{figure}
 
+% CO-AUTHOR EDIT: new §4.4 — timing, leakage, and case composition (Subprompt 6). Honest downgrade: verdict C+D.
+\subsection{Timing, Leakage, and Case Composition}
+\label{sec:validation_timing}
+
+The previous subsection isolated a small, exposure-adjusted
+residual ordering. This subsection asks the harder operational
+question---can that ordering be deployed?---and the honest answer
+is a downgrade. The ranking is informative as a retrospective,
+incumbent-pool triage diagnostic, but it is concentrated in one
+adjudicated case and one procurement environment, and it does not
+support prospective, platform-wide deployment without first
+handling new entrants, score-zero ties, and cross-case breadth.
+We state the limits first and then document each one.
+
+\paragraph{The timing problem.}
+A retrospective rank measures; it does not deploy. An enforcement
+agency must score candidates \emph{before} the forensic decision
+is made, yet every benchmark in this paper anchors its labels to
+CADE adjudications that close years after the bidding it
+describes. Those adjudications are ex-post anchors, not real-time
+knowledge. A high in-sample AUC therefore certifies construct
+validity, not field performance, and we never read it as the
+latter. The exercises below progressively remove the information
+that an agency would not actually possess at the screening date,
+and the operational metrics fall as that information is withdrawn.
+
+\paragraph{Information sets.}
+We distinguish six information sets, from most to least
+permissive: (i) \emph{full retrospective}, which uses the entire
+panel and all labels (a diagnostic upper bound, never a timing
+claim); (ii) \emph{relaxed temporal holdout}, which freezes the
+score date but still uses future wins to define zero-win status;
+(iii) \emph{strict timing}, which freezes the score, the
+always-loser status, and the frequent-loser threshold to the
+$\valYearStart$--$2016$ window and evaluates against
+$2017$--$2019$ labels; (iv) \emph{rolling-origin}, which repeats
+the strict design with each year $2014$--$2019$ as the test
+origin; (v) the \emph{rankable} subset, restricted to firms with
+prior losing history that the frozen score can actually order; and
+(vi) \emph{entrants}, firms with no pre-window history that the
+score cannot rank at all. The construction is detailed in
+\ref{app:market_opportunity_submission}; here we report the
+results.
+
+\paragraph{Strict timing collapses outside the incumbent pool.}
+Under strict timing the signal survives \emph{only} inside the
+always-loser training pool. There the frequent-loser flag attains
+ROC-AUC $\valStrictFLAUC$ and the continuous score
+$\valStrictContAUC$, with a window-specific threshold of
+$\valStrictThreshTrain$ tenders (against $13.5$ on the full
+window). On the realistic full candidate universe---every firm
+that could be scored at the screening date, with entrants carried
+at score zero---discrimination collapses to ROC-AUC
+$\valStrictFullAUC$, PR-AUC $0.005$, and
+\textbf{precision@500 $=\valStrictFullPrec$ and recall@500
+$=\valStrictFullPrec$}. We lead on the rare-target operational
+metrics, not on ROC. The strict full-universe ROC of
+$\valStrictFullAUC$ already signals failure; the precision and
+recall at the top of the queue make the failure unambiguous. A
+deployable screen that returns zero true positives in its top
+$500$ candidates is not deployable.
+
+\paragraph{Entrants and score-zero ties.}
+The collapse has a concrete mechanical cause that any prospective
+screen must confront. Of the $193$ positives, $45$
+($\valEntrantPosShare$) are entrants with no pre-window
+participation history; the frozen score cannot rank them, so they
+enter the queue at score zero and are effectively unrankable. Only
+$\valStrictRankablePos$ positives are rankable at all. Worse,
+roughly a quarter of the full universe is tied at score zero, so
+even the rankable comparison is contaminated by a large
+indifferent mass at the bottom. A nontrivial share of the targets
+the screen is meant to catch are precisely the firms it cannot
+see. This is a structural blind spot, not a tuning issue: a
+loser-side score built from past losing cannot order firms that
+have not yet lost.
+
+\paragraph{Rolling-origin: accumulation, not prediction.}
+The rolling-origin design makes the point sharper. On the full
+candidate universe, every test year from $2014$ to $2019$ returns
+PR-AUC near $0.004$--$0.006$ and \textbf{precision@500 $=0$ and
+recall@500 $=0$ in every single year}; the worst year, $2015$,
+records ROC-AUC $\valRollWorstAUC$---below chance. The apparent
+year-on-year improvement in the within-pool AUC is retrospective
+accumulation of adjudicated labels as the panel lengthens, not
+forward predictive gain. Figure~\ref{fig:rolling_origin_pr_auc}
+plots the PR-led rolling-origin result.
+
+\paragraph{One case carries the operational signal.}
+The decisive test is case composition. A single adjudicated
+case---trens/metros, CADE process $08700.004617/2013\text{-}41$---supplies
+$\valTopCasePosShare$ of all positives and $\valTopCaseTP$ of the
+true positives at the top $500$ of the ranking. When we drop that
+one case, the operational metrics collapse: PR-AUC falls from
+$\valLOCOfullPRAUC$ to $\valLOCOdropLargestPRAUC$ ($-71\%$),
+precision@500 from $\valFullPrec$ to $\valLOCOdropLargestPrec$
+($-69\%$), and recall@500 from $0.342$ to $0.233$. Dropping the
+top two cases leaves PR-AUC $0.029$. Tellingly, ROC barely moves
+($0.939\to0.929$): \textbf{ROC is the wrong metric here precisely
+because it is insensitive to the case concentration that the
+operational metrics expose.} A case-balanced precision@500
+(averaging over cases rather than pooling firms) is
+$\valCaseBalancedPrec$, against the firm-weighted pooled
+$\valFullPrec$---the pooled number is almost entirely the one big
+case. Of the linkable cases, only six contribute any true
+positives at the top $500$, and the largest accounts for
+$64$--$87\%$ of them: one dominant cluster and a thin tail.
+Figure~\ref{fig:leave_one_case_out} shows the leave-one-case-out
+distribution.
+
+\paragraph{Environment dominance.}
+The same concentration appears across procurement environments.
+Dropping the single largest item-group ($\valTopItemGroupShare$ of
+the positives) roughly halves PR-AUC ($0.126\to0.062$), and
+$96.8\%$ of the positives sit in the Pregão modality. The ranking
+does survive dropping the single largest buyer, but it does not
+survive dropping the largest item-group or the dominant years.
+The operational signal is not case-general or
+environment-general; it is concentrated in one cluster of one
+modality.
+
+\paragraph{Inference and direct-defendant scope.}
+A clustered randomization-inference test, shuffling labels within
+buyer$\times$item-group$\times$year cells ($B=1000$), confirms the
+ordering is statistically real but thin: the observed PR-AUC
+$\valLOCOfullPRAUC$ beats the null mean $0.101$ at
+$p=\valClusterRIp$, and the ROC test at $p=0.001$, but the
+case-coverage breadth is \emph{not} significant
+($p=\valClusterRIcovP$). The score ranks within a cluster better
+than chance while failing to spread across clusters---exactly the
+case-dominance pattern. Finally, against direct CADE defendants
+the strict-timing ROC is $\valDirectStrictAUC$, essentially
+random, under both full and strict scores. This is a scope
+boundary, not an escape hatch: the ranking is not a generic
+direct-defendant classifier, and we do not read the null as proof
+that it identifies cover bidders.
+
+\paragraph{Legal boundary.}
+Even under strict timing, the most the design can support is a
+triage queue, not proof. A retrospective, incumbent-pool,
+single-case ordering can tell an agency where to look first among
+firms it already observes; it cannot identify cartels ex ante, it
+cannot rank firms it has never seen, and it cannot be deployed
+platform-wide on the strength of one adjudicated cluster. The
+composite verdict is therefore C (the operational signal is mainly
+retrospective and incumbent-pool) and D (it is case-dominant and
+cluster-sensitive). The next subsection turns to the
+direct-defendant scope check that frames this boundary, and
+Section~\ref{sec:economic_profile} then asks what economic profile
+distinguishes the loser-side firms the ranking does order.
+
+% CO-AUTHOR EDIT: Table I — compact timing & case-holdout synthesis (Subprompt 6)
+\begin{table}[htbp]
+\centering
+\caption{Timing and Case-Composition Synthesis}
+\label{tab:timing_case_holdout}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{2.7cm}p{2.6cm}ccccccp{1.9cm}p{2.6cm}}
+\toprule
+Design & Information set & $N$ & Pos. & ROC-AUC & PR-AUC & Prec@500 & Rec@500 & Leakage status & Interpretation \\
+\midrule
+Full-sample retrospective diagnostic & Full retrospective & $16{,}843$ & $\valExpNpos$ & $\valExpRawScoreAUC$ & $\valLOCOfullPRAUC$ & $\valFullPrec$ & $0.342$ & Upper bound; all leaks & Construct validity, not timing \\
+Relaxed temporal holdout & Score frozen; future wins used & $16{,}843$ & $193$ & $\valAUCFLfirmTemp$ & --- & --- & --- & Leaks future wins & Score-timing sensitivity only \\
+Strict full test universe & Strict; entrants at score 0 & $41{,}444$ & $193$ & $\valStrictFullAUC$ & $0.005$ & $\valStrictFullPrec$ & $\valStrictFullPrec$ & No leak & Collapse: not deployable \\
+Strict rankable (incumbent) sample & Strict; prior-loss firms & $21{,}819$ & $\valExpNpos$ & $\valStrictFLAUC$ & $0.045$ & $0.062$ & $0.161$ & No leak & Survives only inside pool \\
+Rolling-origin mean & Strict; full universe & --- & --- & $0.56$ & $0.005$ & $\valStrictFullPrec$ & $\valStrictFullPrec$ & No leak & Accumulation, not prediction \\
+Rolling-origin worst year (2015) & Strict; full universe & $29{,}804$ & $127$ & $\valRollWorstAUC$ & $0.004$ & $\valStrictFullPrec$ & $\valStrictFullPrec$ & No leak & Below chance \\
+Leave-one-case-out mean & Full retrospective & $16{,}750$ & --- & $0.95$ & --- & $\valCaseBalancedPrec$ & $0.522$ & Case-structured & Case-balanced precision tiny \\
+Leave-largest-case-out & Full retrospective & $16{,}750$ & $86$ & $0.929$ & $\valLOCOdropLargestPRAUC$ & $\valLOCOdropLargestPrec$ & $0.233$ & Case-structured & $-71\%$ PR-AUC collapse \\
+Leave-top-two-cases-out & Full retrospective & $16{,}649$ & $75$ & $0.925$ & $0.029$ & $0.030$ & $0.200$ & Case-structured & Thin residual tail \\
+Clustered randomization inference & Label shuffle in cells & $16{,}843$ & $\valExpNpos$ & $0.939$ & $\valLOCOfullPRAUC$ & --- & --- & Permutation null & $p=\valClusterRIp$; coverage $p=\valClusterRIcovP$ \\
+Direct-defendant scope & Strict and full scores & --- & --- & $\valDirectStrictAUC$ & --- & --- & --- & No leak & Scope boundary, not a detector \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} PR-AUC, precision@500, and recall@500 are
+the primary metrics because the target is rare; ROC-AUC is
+reported alongside but is not the lead, and it is deliberately
+robust precisely because it is insensitive to the case
+concentration that the operational metrics expose. The
+full-sample retrospective row is a diagnostic \emph{upper bound},
+not a timing claim. In the strict and rolling-origin designs the
+score is frozen before the test window; later CADE adjudications
+are still used as labels but were not legally observable at the
+screening date, so these designs distinguish prospective scoring
+from retrospective adjudication. Cobidders are
+adjudication-anchored exposure labels, not cartel members. The
+strict full universe carries entrants at score zero; a quarter of
+that universe is tied at zero. ``$\valStrictFullPrec$'' denotes an
+exact zero true positives in the top $500$.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+% CO-AUTHOR EDIT: Fig 2 revision — PR-led rolling-origin replaces the ROC-only main figure (Subprompt 6)
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{./output/figures/fig_rolling_origin_pr_auc}
+\caption[Rolling-origin PR-AUC under strict timing]{Rolling-origin
+validation, led by PR-AUC. For each origin year the score uses
+\emph{only} award records observed before the test year; the test
+year supplies the out-of-time cobidder label. Labels are
+adjudication-anchored and may be assigned from legal records that
+close after the test year. The exercise evaluates the stability of
+the ranking, not real-time proof: precision@500 and recall@500 are
+zero in every test year on the full candidate universe, and the
+within-pool curve rises by accumulation of adjudicated labels
+rather than by forward prediction.
+\textit{Alt text:} A line plot with test origin years
+$2014$--$2019$ on the horizontal axis and PR-AUC on the vertical
+axis. The full-universe series stays near zero across all years
+while the within-pool series is higher but flat to mildly rising;
+annotations mark that top-$500$ precision and recall are zero in
+every year.}
+\label{fig:rolling_origin_pr_auc}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{./output/figures/fig_leave_one_case_out_distribution}
+\caption[Leave-one-case-out PR-AUC distribution]{Case-composition
+robustness: leave-one-case-out distribution of operational
+performance. Each marker drops one adjudicated case and re-scores
+the remainder. Removing the single largest case (trens/metros)
+collapses PR-AUC from $\valLOCOfullPRAUC$ to
+$\valLOCOdropLargestPRAUC$; the bulk of the operational signal is
+concentrated in one case rather than spread across the portfolio.
+\textit{Alt text:} A distribution plot of PR-AUC across
+leave-one-case-out resamples. Most resamples cluster at low
+PR-AUC, with the full-sample value held up almost entirely by a
+single case whose removal moves the operational metric sharply
+toward the low-PR-AUC bulk.}
+\label{fig:leave_one_case_out}
+\end{figure}
+
 \subsection{Direct-Defendant Scope Check}
 \label{sec:validation_direct}
 
@@ -589,11 +830,20 @@ liability, or proof.
 \end{adjustbox}
 \end{table}
 
-Taken together, the benchmarks support the screen at the stage
-for which it is designed. Persistent zero-win participation
-orders adjudication-anchored loser-side exposure well enough to
-allocate forensic attention, not to validate the legal status of
-ranked firms. The next step is economic interpretation: among
-firms already selected by the frequent-loser rule, do cobidders
-display a distinct loser-side profile rather than a mechanical
-collection of high-volume losers?
+% CO-AUTHOR EDIT: summary reframed to the reach-and-limits boundary the tests actually establish (Subprompt 6)
+Taken together, the benchmarks draw a boundary rather than
+certify a screen. Persistent zero-win participation orders
+adjudication-anchored loser-side exposure, and the ordering
+survives participation-volume and opportunity-set discipline as a
+significant residual. But that residual is modest, largely
+retrospective, concentrated among incumbents and in one
+adjudicated case, and silent on direct defendants. The defensible
+reading is therefore bounded: the award layer ranks where
+loser-side exposure is most likely worth bid-layer follow-up,
+within a reach the tests make explicit; it does not validate the
+legal status of ranked firms, nor support prospective,
+platform-wide deployment on its own. The next step is economic
+interpretation: among firms already selected by the
+frequent-loser rule, how far do cobidders display a distinct
+loser-side profile rather than a mechanical collection of
+high-volume losers concentrated in a few environments?

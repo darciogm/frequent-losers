@@ -98,3 +98,10 @@ Front-end (sec 1–3) is written with forward-looking language; it does NOT asse
 - **Permutation honesty (carry):** Approach B p=1.00 (exposure out-predicts on PR-AUC) is the headline caveat; never frame the result as "beats exposure on PR-AUC." Within-matched-exposure (C, +nested DeLong) is the residual-signal evidence.
 - **B3 (absent 193 builder):** still open for the replication package (Sub4).
 - Verdict B locked: limited but significant residual triage value; NOT a standalone screen.
+---
+
+## Subprompt 6 — open items / strategic decision (2026-06-03)
+- **STRATEGIC (Darcio's call):** Verdicts C+D mean the paper cannot claim a deployable prospective screen. Options: (a) REFRAME as "limits of award-layer screening / boundary conditions of administrative cartel triage" (honest, JLEO-viable as a measurement/L&E-design paper, more modest); (b) attempt salvage with cross-case breadth evidence (no obvious data path — only 6 linkable cases, one dominant); (c) descope to a methods note. **mr-frequent recommendation: (a).** The honest finding (cheap administrative records carry concentrated, retrospective, case-specific exposure signal but do NOT support prospective platform-wide triage) is a legitimate, defensible contribution — but it is a DIFFERENT paper than the current framing.
+- **Entrant coverage hole:** 23% of positives unrankable (no pre-window history) — structural limit of any participation-history screen.
+- **Year-level timing only** (no conduct dates) — adjudication-observable-at-time variant infeasible.
+- Carried: conservative-AUC re-estimation (Sub4); B3 absent 193 builder; App D literals not macro-bound; App D now very long (D.1–D.21).
