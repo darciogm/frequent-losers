@@ -88,3 +88,13 @@ Front-end (sec 1–3) is written with forward-looking language; it does NOT asse
 - **B2 (cobidder→case linkage):** ✅ materialized (`case_cobidder_map.csv`) — LOCO (Subprompt 5) unblocked.
 - **NEW open item for 4B:** conservative-benchmark AUC/enrichment (`\valAUCprePost`, `\valCADEenrich`, `\valCADEbase`) were estimated on the adjudication-anchored labels; re-estimate under the harmonized definition during opportunity-adjusted validation; do NOT claim invariance until then.
 - Assertions: 9 pass / 1 warning (A8 = 210-vs-193 is a definition difference, classified not silently passed) / 0 fail.
+
+---
+
+## Subprompt 5 — open items after the make-or-break test (2026-06-03)
+- **Conservative-benchmark AUC re-estimation (carried from Sub4):** still pending under the harmonized label — the §4.2 baseline AUC macros (\valAUCprePost etc.) untouched; opportunity-adjusted §4.3 uses the script-76/02 numbers. Reconcile in a robustness pass if a referee presses.
+- **Case dominance (NEW, flagged):** largest CADE case ≈47% of TP@500; top item-group ≈32% of positives. Formal **leave-one-case-out + leave-largest-case-out is Subprompt 6** (linkage ready: `case_cobidder_map.csv`).
+- **App D literals vs macros:** App D (D.1–D.12) uses CSV-matched literals for opportunity numbers; main §4.3 uses `\valExp*` macros. Values agree; swap App D to macros in a cleanup pass (non-blocking).
+- **Permutation honesty (carry):** Approach B p=1.00 (exposure out-predicts on PR-AUC) is the headline caveat; never frame the result as "beats exposure on PR-AUC." Within-matched-exposure (C, +nested DeLong) is the residual-signal evidence.
+- **B3 (absent 193 builder):** still open for the replication package (Sub4).
+- Verdict B locked: limited but significant residual triage value; NOT a standalone screen.

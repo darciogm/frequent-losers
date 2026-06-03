@@ -84,3 +84,15 @@ The subprompt's preferred `outputs/tables/{main,appendix}`, `outputs/figures/{ma
 - **MAIN_CADE_CASE_TIMING (Table G/B) → IMPLEMENTED** (Table B in App C).
 - New reproducible macros bound in values.tex: `\valFunnelFLcobBroad`(341), `\valFunnelALcobBroad`(651), `\valFunnelConsALcob`(208), `\valFunnelConsFLcob`(107), `\valFunnelConsFD`(19), `\valFunnelDirectActiveFTM`(41), `\valFunnelDefItems`(52013), `\valFunnelStaticOverlap`(149), `\valFunnelStaticTarget`(193). Rebound: ConservativeFD 30→19, ConservativeCobidders 210→208, ConservativeFL 108→107.
 - Not reproducible from label-funnel objects (flagged, not fabricated): 65 legal roster (empty CNPJ col in rulings CSV), 16,779 Imhof common-support (scripts 31/49), 11,676 gatekeeping pool (scripts 63/64).
+
+---
+
+## Subprompt 5 outputs (Opportunity-adjusted validation, 2026-06-03)
+Script: `work/v22-editor/scripts/analysis/02_opportunity_adjusted_validation.R` (extends 76; utils exposure_validation.R + metrics_triage.R; seed 20260603). Reproduces ALL of script 76 exactly (exposure-only 0.946; within-stratum 0.771; +0.042 DeLong p=2.08e-6).
+- Main tables: `outputs/tables/main/table_C_opportunity_adjusted_validation.{csv,tex}` (→ inline Table in §4.3), `table_D_opportunity_permutation_validation.{csv,tex}` (→ inline §4.3).
+- Appendix tables: `outputs/tables/appendix/{table_D_opportunity_cell_construction, table_D_observed_expected_by_score_bins, table_D_matched_opportunity_validation, table_D_control_function_validation_full}.*`.
+- Figures: `outputs/figures/main/{fig_observed_vs_expected_contact_bins, fig_opportunity_permutation_pr_auc}.pdf`; `outputs/figures/appendix/{fig_excess_contact_by_score_bins, fig_opportunity_permutation_precision_at_k}.pdf` (all copied into submission_clean/output/figures/).
+- Cache: `outputs/cache/{firm_opportunity_adjusted_frame, opportunity_permutation_metrics}.csv` (anon firm_id, NO raw CNPJ).
+- Diagnostics: `outputs/diagnostics/{observed_defendant_contact_summary, opportunity_cell_sparsity, opportunity_common_support, opportunity_case_buyer_contribution}.csv`; `claims_scan_after_opportunity_validation.csv`.
+- values.tex: +20 `\valExp*` macros (each src-tagged). App D uses CSV-matched literals (minor follow-up: swap to macros).
+- Data note: 1 firm (NEW HOPE) miscoded in BOTH crossmatch (defendant) and 193 cobidders — excluded from defendant set (a firm cannot be its own contact); direct defendants used = 46; npos stays 191.

@@ -121,3 +121,10 @@ All work in `work/v22-editor/`, branch `v22`. Bind every new number into `values
 - ✅ COMPLETED: §4.1 "Label Construction and Sample Reconciliation" + Table A (Table 3); App C restructured C.1–C.7 + Table B; Table 1 cross-link; values.tex macros bound/rebound. Compiles (paper 44pp / appendix 18pp, 0 errors/undefined/overfull).
 - Logs: `11_SUBPROMPT_4_LABEL_FUNNEL_LOG.md`, `12_SUBPROMPT_4_COMPLETION_REPORT.md`, `unit_definitions_label_funnel.md`, `label_reconciliation_memo.md`.
 - **NEXT PROMPT confirmed: "Section 4B — Opportunity-Adjusted Validation as the Main Result"** (CP-2; promote script 76 within-opportunity AUC 0.7715, +0.0415 DeLong p=2.08e-06; state exposure-only=0.946). Re-estimate conservative AUC under harmonized label here.
+
+---
+
+## Subprompt 5 close-out (Opportunity-adjusted validation, 2026-06-03)
+- ✅ COMPLETED: §4.3 "Opportunity-Adjusted Validation" as the central result (Table C + Table D-perm + 2 figures); App D restructured D.1–D.12; intro hedged; 20 macros bound. Compiles (paper 47pp / appendix 26pp, 0 errors/undefined). Claims critical=0. **VERDICT B.**
+- Logs: `13_SUBPROMPT_5_OPPORTUNITY_VALIDATION_LOG.md`, `14_SUBPROMPT_5_COMPLETION_REPORT.md`.
+- **NEXT PROMPT confirmed: "Section 4C — Timing, Leakage, Rolling Origin, Leave-One-Case-Out, and Case Dominance"** (CP-3). Inputs ready: script 53 (frozen-train, binary 0.767>cont 0.750), script 77 (timing FAIL/observational equivalence — disclose), `case_cobidder_map.csv` (LOCO), and the ≈47% top-case TP@500 flag from this subprompt.

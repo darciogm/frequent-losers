@@ -33,11 +33,13 @@ This section evaluates the ranking against those threats.
 Subsection~\ref{sec:label_funnel} first fixes the label-construction
 funnel and reconciles the validation samples.
 Subsection~\ref{sec:validation_baseline} reports the baseline
-adjudication benchmarks. Subsection
-\ref{sec:validation_exposure_timing} disciplines the result with
-participation, exposure, leakage, and timing checks. Subsection
-\ref{sec:validation_direct} uses direct CADE defendants as a
-scope check. Subsection~\ref{sec:validation_summary} summarizes
+adjudication benchmarks.
+% CO-AUTHOR EDIT: promote opportunity-adjusted validation to the central result (Subprompt 5)
+Subsection~\ref{sec:validation_exposure} is the central exercise:
+it disciplines the ranking against procurement opportunity and
+isolates the score's residual contribution net of exposure.
+Subsection \ref{sec:validation_direct} uses direct CADE
+defendants as a scope check. Subsection~\ref{sec:validation_summary} summarizes
 what the validation establishes for the staged enforcement
 architecture.
 
@@ -168,10 +170,15 @@ rolling-origin version of the same exercise.
 
 The baseline results are deliberately read as ranking evidence.
 They show that the award-layer statistic is informative about
-where cartel-adjacent loser-side exposure later appears. The
-next subsection tightens that reading by asking how much of the
-signal remains after disciplining participation volume, market
-exposure, leakage, and strict timing.
+where cartel-adjacent loser-side exposure later appears. But a
+high AUC on this benchmark is not yet enough: firms that
+participate often, or that operate in the same procurement
+environments as CADE defendants, mechanically have more
+opportunities to appear near those anchors even under ordinary
+competition. The next subsection is therefore the central
+exercise of the paper. It asks how much of the ranking survives
+once procurement opportunity is held comparable, and isolates the
+score's contribution net of exposure.
 
 \begin{figure}[htbp]
 \centering
@@ -184,87 +191,133 @@ later-adjudicated cobidder labels, not field deployment.}
 \label{fig:temporal_holdout_roc_submission}
 \end{figure}
 
-\subsection{Exposure and Timing Discipline}
+% CO-AUTHOR EDIT: Subprompt 5 — promote opportunity adjustment to the central result
+\subsection{Opportunity-Adjusted Validation}
+\label{sec:validation_exposure}
 \label{sec:validation_exposure_timing}
 
-The baseline result becomes useful for enforcement when the main
-sources of mechanical exposure are made explicit. The first is
-participation volume. In the conservative benchmark, firms are
-grouped by participation quartiles within the always-loser
-stratum, cobidder status is permuted within quartiles
-$\valPermPilot$ times, and the frequent-loser share among
-placebo cobidders is recomputed. This keeps the participation
-distribution fixed while breaking the particular adjacency to
-CADE defendants. The observed share, $\valCADEenrich$, remains
-well above the placebo mean, $\valCADEbase$. This audit
-disciplines activity volume; it does not by itself make firms'
-opportunities to meet CADE anchors comparable.
+This is the central validation exercise. A high raw AUC is not
+sufficient evidence that the award-layer score captures anything
+beyond procurement opportunity. The threat is mechanical. A firm
+with high participation volume $T_i$ co-appears with CADE
+defendants more often by construction, and a firm operating in
+the same item, buyer, year, and modality cells as those
+defendants is mechanically more exposed to them even under
+ordinary competition. Because the raw score is increasing in
+participation, part of its apparent discrimination is opportunity,
+not conduct. The exercise below holds opportunity comparable and
+asks what the score adds on top of it.
 
-A formal version of the same volume placebo permutes the
-frequent-loser label among always-losers while preserving the
-marginal participation distribution. Across $B=2{,}000$ draws,
-the sham AUC distribution has mean $\valShamMean$, standard
-deviation $\valShamSD$, and 99th percentile $\valShamQNinetyNine$. The
-observed FL14 AUC of $\valAUCFLfirm$ falls thirty-two standard
-deviations above the sham mean, with permutation
-$p$~$\valShamP$. Volume alone does not reproduce the observed
-concentration. The price coefficient under the same sham
-distribution does not reject the null---observed $\valShamPriceObs$ against
-sham mean $\valShamPriceMean$, $p=\valShamPriceP$---which is consistent with
-the scope-not-damages reading of the price evidence in
-\S\ref{sec:price_scope_submission}.
+We measure opportunity directly. For each always-loser firm we
+count its observed contact with direct defendants, $O_i$, defined
+as the number of procurement cells it shares with a defendant. We
+then construct expected contact under random matching,
+$E_i=\sum_g n_{ig}\,p_g$, where $n_{ig}$ is the firm's
+participation in opportunity cell $g$ and $p_g$ is the
+defendant-density of that cell. We build $E_i$ at three cell
+granularities (coarse to fine, defined by item, buyer, year, and
+modality combinations) and restrict to the common support on
+which expected contact is identified; the exposed subsample
+retains $n=\valExpExposedN$ always-loser firms containing all
+$\valExpNpos$ positives. The construction and the retained
+support are detailed in \ref{app:market_opportunity_submission}.
+Excess contact $O_i-E_i>0$ flags firms that meet defendants more
+often than their opportunity set predicts. We hold $E_i$ fixed
+and ask three questions: does the score reproduce the label
+better than exposure alone; does it add anything net of exposure;
+and does it rank firms within equal-opportunity strata.
 
-The second source is market opportunity. Firms active in the
-same procurement niches as CADE defendants have more chances to
-appear near those anchors even when conduct is ordinary.
-Exposure adjustment is therefore a required audit, not optional
-robustness. The audit asks whether the ranking survives after
-comparing firms within more similar opportunity sets---defined
-by procurement environments in which a firm could have appeared
-with CADE anchors, using item, modality, year, and buyer
-information where support permits. Its purpose is to ask whether
-the award-layer rank continues to concentrate
-adjudication-anchored cobidders after the markets in which firms
-could meet CADE anchors are made more comparable. The audit is
-not a legal-membership test and does not eliminate all
-opportunity-set concerns. \ref{app:market_opportunity_submission}
-reports the exact construction and retained support.
+The honest answer has two parts. First, exposure is a strong
+baseline. An exposure-only model---no score---reproduces the
+adjudication-anchored label at ROC-AUC $\valExpOnlyAUC$ in the
+exposed subsample, \emph{above} the raw score's
+$\valExpRawScoreAUC$, and on the rare-target metric that matters
+its PR-AUC ($\valExpExpOnlyPRAUC$) also exceeds the raw score's
+($\valExpRawScorePRAUC$). A meaningful share of the raw ranking
+performance is opportunity exposure, and pure exposure reproduces
+the label at least as well as the raw score. We state this
+plainly because the combined exposure-plus-score logits reach
+ROC-AUC near $0.98$ (Table~\ref{tab:opportunity_adjusted_validation});
+those numbers are mechanically inflated because $E_i$ is built
+from the cells where defendants live and therefore encodes the
+label directly. We do not read them as evidence that the score
+works, and we report them only to make the inflation visible.
 
-Timing is disciplined in two layers. The temporal holdout above
-forms the participation score before the evaluation window and
-tests later labels. A stricter version applies the same ex ante
-logic to the screen definition itself: zero-win status, the
-participation threshold, the frequent-loser flag, and the
-continuous score are all formed using only pre-window records.
-In that strict train-period audit, the threshold becomes
-$\valThresholdTrain$ and the firm-level frequent-loser AUC is
-$\valAUCStrictFirmFL$ (95\% CI $\valAUCStrictFirmFLCI$). The
-continuous score gives AUC $\valAUCStrictFirmTC$ (95\% CI
-$\valAUCStrictFirmTCCI$). The decline relative to the relaxed
-holdout is informative: real-time screening has less information
-than a full-window reconstruction, but the ranking remains
-useful under a stricter field-like information set. It remains a
-timing audit, not causal prediction.
+Second, conditional on opportunity the score retains limited but
+statistically significant residual value. The clean tests are
+two. A nested model that adds the score to an exposure-only model
+raises AUC by $\valExpIncrement$ (DeLong
+$p=\valExpDeLongP$)---a small but precisely estimated increment
+that is the score's isolated contribution, not the inflated
+combined fit. And \emph{within} opportunity strata, where firms
+are compared only against others with comparable expected
+contact, the continuous score still ranks the label at AUC
+$\valExpWithinAUC$ (FL14 $\valExpWithinFLAUC$): well above chance,
+and far below the raw $\valExpRawScoreAUC$. The score also ranks
+positive excess contact, $O_i-E_i>0$, at AUC
+$\valExpScoreExcessAUC$. Within-stratum matching tells the same
+story: the frequent-loser flag carries a within-exposure-stratum
+gap in cobidder probability of $\valExpMatchedDelta$ relative to
+non-flagged always-losers, and a coarsened-exact opportunity match
+yields AUC $\valExpCEMmatchedAUC$.
+Figure~\ref{fig:observed_vs_expected_contact} shows observed
+versus expected defendant contact across score bins: the gap
+$O_i-E_i$ is positive in the top score bins, which is the
+within-opportunity signal made visible.
 
-Two structural facts make the timing audit harder to dismiss as
-a same-firm artifact. First, firm persistence between the
-$\valYearStart$--$2016$ and $2017$--$\valYearEnd$ windows is
-$\valFirmPersist$: roughly nine in ten always-loser firms in the
-test window are firms not seen in the training window. The
-temporal holdout therefore evaluates a substantially fresh firm
-population rather than the same firms in different years. Second,
-when the training window is shortened further (scores frozen on
-$2009$--$2015$, evaluated against cobidders linked to CADE
-adjudications closed after $2019$---a strictly out-of-time
-target), the firm-level AUC is $\valClfFifteenFL$ for the
-frequent-loser flag and $\valClfFifteenPostTC$ for the
-continuous score. The ranking remains informative when the
-classifier is trained at one horizon, the cobidder label is
-defined by adjudications at a later horizon, and the bulk of
-test-period firms were not in the training set.
-Table~\ref{tab:three_classifier_submission} reports the full
-three-classifier battery.
+A permutation test disciplines the mechanical-exposure channel,
+and we report both directions honestly because they are not the
+same.
+Table~\ref{tab:opportunity_permutation} reports both.
+Under Approach~B, which simulates contact from a pure-exposure
+binomial null, the observed PR-AUC $\valExpRawScorePRAUC$ does
+\emph{not} beat the null (null mean $0.264$; empirical
+$p=\valExpPermBp$): a pure-exposure model out-predicts the raw
+score on the rare-target metric. Under Approach~C, which permutes
+cobidder labels only \emph{within} matched exposure-by-participation
+strata, the observed PR-AUC \emph{exceeds} the null
+($p=\valExpPermCp$): once opportunity is matched, the labels are
+non-randomly score-ranked. The frequent-loser enrichment beats
+both nulls ($p<\valExpFLenrichP$). The synthesis is Verdict~B: a
+pure-exposure model can match or beat the raw score on PR-AUC, yet
+within matched exposure strata the score still ranks, the nested
+increment is significant, and the FL enrichment survives.
+Figure~\ref{fig:opportunity_permutation} shows the
+exposure-preserving null distribution against the observed value.
 
+The conservative reading is the one we carry forward. The
+award-layer score does not reproduce the adjudication-anchored
+label any better than firms' procurement opportunity does. What it
+adds, net of opportunity, is a small and statistically reliable
+residual ordering. That residual is a legal-economic object of a
+specific kind: it is triage value, a reason to look first at one
+loser-side firm rather than another at the bid-layer stage. It is
+not proof of collusion, not a cartel-membership test, and not a
+causal claim. Cobidders are not members; the score prioritizes
+follow-up, it does not adjudicate.
+
+The remaining threats are timing, leakage, and case composition,
+and they are taken up next. The same ex ante logic applied to the
+score holds under temporal discipline: scoring on
+$\valYearStart$--$2016$ participation and testing later cobidder
+labels gives firm-level AUC $\valAUCFLfirmTemp$, with firm
+persistence of only $\valFirmPersist$ across windows (the test
+population is largely fresh firms); refreezing the screen
+definition itself before the window leaves frequent-loser AUC
+$\valAUCStrictFirmFL$ and continuous AUC $\valAUCStrictFirmTC$;
+and a leakage audit that holds cobidder firms out of score
+construction leaves out-of-fold AUC $\valLeakCVAUC$ against an
+in-sample reference of $\valLeakRefAUC$.
+Tables~\ref{tab:three_classifier_submission} and the scope matrix
+in Section~\ref{sec:validation_direct} report the full battery.
+One composition fact motivates a dedicated case-robustness check:
+the single largest CADE case contributes roughly
+$\valExpTopCaseTPshare$ of true positives at the top
+$500$ of the ranking, approaching dominance, so a
+leave-one-case-out test is required before the residual signal can
+be read as case-general rather than case-specific.
+
+% CO-AUTHOR EDIT: timing battery table retained here (moved with the timing prose)
 \begin{table}[htbp]
 \centering
 \caption{Three-Classifier Timing Battery}
@@ -298,17 +351,118 @@ that cannot be in the clf\_2015 or clf\_2017 training data.
 \end{adjustbox}
 \end{table}
 
-The leakage audit addresses a different concern: item-level
-validation can mechanically reuse the same firm histories that
-construct the score. We therefore treat the in-sample item-level
-AUC, $\valLeakRefAUC$, as a mechanical reference point rather
-than as the main validation estimate. Holding cobidder firms out
-of score construction within cross-validation folds leaves AUC
-$\valLeakCVAUC$ (95\% CI $\valLeakCVAUCCI$). The surviving
-component is the signal relevant for triage: the award-layer
-rank continues to order cartel-adjacent loser-side exposure when
-the most direct reuse of firm labels in score construction is
-weakened.
+\begin{table}[htbp]
+\centering
+\caption{Opportunity-Adjusted Validation of the Award-Layer Ranking}
+\label{tab:opportunity_adjusted_validation}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{3.6cm}lccccccccl}
+\toprule
+Design & Score & $N$ & Pos. & ROC-AUC & PR-AUC & Prec@500 & Rec@500 & Lift@500 & 95\% CI / $p$ \\
+\midrule
+Raw score & log\_tc & $16{,}843$ & $\valExpNpos$ & $\valExpRawScoreAUC$ & $\valExpRawScorePRAUC$ & $0.130$ & $0.340$ & $11.46$ & $[0.931,0.946]$ \\
+Raw FL14 & fl14 & $16{,}843$ & $\valExpNpos$ & $0.924$ & $\valExpRawFLPRAUC$ & $0.088$ & $0.230$ & $7.76$ & $[0.921,0.926]$ \\
+Exposure-only benchmark & $\log E_i$ & $\valExpExposedN$ & $\valExpNpos$ & $\valExpOnlyAUC$ & $\valExpExpOnlyPRAUC$ & $0.182$ & $0.476$ & $4.05$ & $[0.818,0.875]$ \\
+Within-opportunity stratum & log\_tc$\,|\,$opp & $\valExpExposedN$ & $\valExpNpos$ & $\valExpWithinAUC$ & --- & --- & --- & --- & pooled $C$ \\
+Nested increment over exposure & $+$log\_tc & $\valExpExposedN$ & $\valExpNpos$ & $+\valExpIncrement$ & --- & --- & --- & --- & DeLong $p=\valExpDeLongP$ \\
+Score ranks excess contact & log\_tc & $16{,}843$ & $475$ & $\valExpScoreExcessAUC$ & $0.095$ & $0.150$ & $0.158$ & $5.32$ & $1[O_i{-}E_i{>}0]$ \\
+Permutation (exposure-preserving) & log\_tc & $16{,}843$ & $\valExpNpos$ & --- & $\valExpRawScorePRAUC$ & --- & --- & --- & $p=\valExpPermBp$ (B) \\
+Matched / stratified (CEM-opp) & log\_tc & $\valExpExposedN$ & $\valExpNpos$ & $\valExpCEMmatchedAUC$ & --- & --- & --- & --- & $\Delta=\valExpMatchedDelta$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} The validation target is
+adjudication-anchored exposure (cobidder status) among
+always-loser firms, not cartel membership. Expected contact
+$E_i=\sum_g n_{ig}p_g$ is built from procurement opportunity
+cells (item, buyer, year, modality); cell definitions and
+retained support are in \ref{app:market_opportunity_submission}.
+PR-AUC is the primary metric because the target is rare
+($\valExpNpos/16{,}843$); ROC-AUC is reported alongside but is
+not the lead. The exposure-only benchmark reproduces the label at
+least as well as the raw score on both ROC-AUC and PR-AUC. The
+score's isolated contribution is the nested DeLong increment
+($+\valExpIncrement$) and the within-opportunity-stratum AUC
+($\valExpWithinAUC$). Combined exposure-plus-score logits (ROC-AUC
+near $0.98$) are deliberately omitted from this table because
+$E_i$ mechanically encodes the label and their fit is not score
+evidence.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Opportunity-Preserving Permutation Tests}
+\label{tab:opportunity_permutation}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{5.2cm}ccccc}
+\toprule
+Approach & Obs.\ PR-AUC & Null PR-AUC mean & $p$ (PR-AUC) & Obs.\ / null ROC & FL14-enrich.\ $p$ \\
+\midrule
+B: pure-exposure binomial null & $\valExpRawScorePRAUC$ & $0.264$ & $\valExpPermBp$ & $0.939\,/\,0.779$ & $<\valExpFLenrichP$ \\
+C: label perm.\ within matched strata & $\valExpRawScorePRAUC$ & $0.106$ & $\valExpPermCp$ & $0.939\,/\,0.935$ & $<\valExpFLenrichP$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} The permutation disciplines mechanical
+exposure; it does not prove collusion. Approach~B simulates
+defendant contact from a pure-exposure binomial null and shows
+that a pure-exposure model is a strong null on PR-AUC---the
+observed score does not beat it ($p=\valExpPermBp$). Approach~C
+permutes cobidder labels only within matched
+exposure-by-participation strata and shows that, conditional on
+matched opportunity, the labels are non-randomly score-ranked
+($p=\valExpPermCp$). The frequent-loser enrichment exceeds both
+nulls. PR-AUC is primary because the target is rare.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{./output/figures/fig_observed_vs_expected_contact_bins}
+\caption[Observed versus expected defendant contact by score bin]{Opportunity-adjusted
+diagnostic: observed defendant contact $O_i$ versus expected
+contact $E_i$ under random matching, by award-layer score bin.
+The positive gap $O_i-E_i$ in the top score bins is the
+within-opportunity signal; expected contact is built from
+procurement opportunity cells (item, buyer, year, modality).
+\textit{Alt text:} A binned plot with award-layer score bins on
+the horizontal axis and defendant-contact counts on the vertical
+axis. Two series are shown per bin, observed contact and expected
+contact under random matching; observed contact exceeds expected
+contact in the highest score bins, indicating excess contact
+concentrated where the score is high.}
+\label{fig:observed_vs_expected_contact}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{./output/figures/fig_opportunity_permutation_pr_auc}
+\caption[Opportunity-preserving permutation null for PR-AUC]{Exposure-preserving
+permutation null for PR-AUC. The histogram is the null
+distribution of PR-AUC under the opportunity-preserving
+resampling; the vertical line is the observed PR-AUC. The figure
+makes the Verdict-B nuance visible: a pure-exposure null is a
+strong benchmark on the rare-target metric, while the
+matched-stratum permutation (Approach~C) places the observed
+value in the upper tail of its own null.
+\textit{Alt text:} A histogram of permutation null PR-AUC values
+with a vertical reference line marking the observed PR-AUC of the
+award-layer score; the observed value sits inside the bulk of the
+pure-exposure null but in the upper tail of the matched-stratum
+null.}
+\label{fig:opportunity_permutation}
+\end{figure}
 
 \subsection{Direct-Defendant Scope Check}
 \label{sec:validation_direct}

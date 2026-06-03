@@ -55,3 +55,17 @@ Credibility repair IMPLEMENTED + compiled (paper 44pp, appendix 18pp, 0 errors).
 - **Direct-defendant / cobidder distinction:** preserved (App C.3/C.4; defendants excluded from cobidders).
 - **Downstream validation-table regeneration:** conservative COUNTS reproducible now (208/107); conservative-benchmark AUC/enrichment re-estimation under the harmonized label DEFERRED to Subprompt 4B — invariance NOT asserted.
 - Verdict: RECONCILED. Paper may proceed to opportunity-adjusted validation.
+
+---
+
+## Subprompt 5 status update (Opportunity-adjusted validation, 2026-06-03)
+The make-or-break test is IN as the central result (§4.3). **VERDICT B.**
+- **#1 (mechanical T_i↔cobidder correlation):** ✅ ADDRESSED — exposure-only AUC 0.946 stated as the central caveat; within-opportunity-stratum AUC 0.771; nested score increment +0.042 over exposure (DeLong p=2.1e-6). The score retains *limited but significant* residual signal.
+- **#2 (opportunity exposure not central):** ✅ promoted from App D to §4.3 "Opportunity-Adjusted Validation" (the central exercise); App D restructured D.1–D.12.
+- **#7 (PR metrics missing):** ✅ PR-AUC/precision@k/recall@k/lift@k/FP/FN throughout (rare target 191/16,843); Table C + D.
+- **Exposure-cell construction:** ✅ 3 granularities (coarse/medium/strict) + LOO p_{g,-i}; App D.2/D.3.
+- **Common-support uncertainty:** ✅ 3 rules; retention ~46% MEDIUM / ~9% STRICT reported (no cherry-pick).
+- **Case/buyer dominance (preliminary):** 🟧 flagged — largest CADE case ≈47% of TP@500 → formal leave-one-case-out is Subprompt 6.
+- **Permutation (both directions, honest):** Approach B (pure-exposure binomial) PR-AUC p=1.00 (exposure out-predicts raw score); Approach C (matched-stratum label perm) p=0.023; FL14-enrichment p<0.001.
+- **HONESTY ENFORCED:** combined exposure+score logit ROC-AUC ~0.98 EXPLICITLY omitted/caveated (E_i mechanically encodes the label; not score evidence) — in both §4.3 prose and Table C note.
+- Claim DOWNGRADED honestly (no "survives exposure" unqualified; intro hedged). Proceed to timing/case-holdout.

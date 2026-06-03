@@ -12,7 +12,21 @@ history that constructs the score. The main text reports the
 headline results; this appendix records the audit logic and the
 interpretation each audit licenses.
 
-\subsection{Participation-Stratified Permutation}
+% CO-AUTHOR EDIT: restructured Appendix D into D.1--D.9 for the
+% opportunity-adjusted validation, then retained the leakage,
+% scope, and temporal-holdout audits as D.10--D.12. Throughout,
+% the CADE-defendant labels are treated as adjudication-anchored
+% exposure labels, never as cartel membership. None of these
+% audits is legal proof.
+
+Throughout this appendix, ``CADE-defendant contact'' denotes an
+\emph{adjudication-anchored exposure} label: a firm shares a
+tender-item with a directly adjudicated CADE defendant. It does
+not assert that the firm is a cartel member, party to any
+agreement, or liable for anything. The audits validate forensic
+priority, not membership, damages, or proof.
+
+\subsection{Participation-Volume Placebo}
 \label{app:permutation_submission}
 
 The conservative CADE benchmark fixes the direct-defendant list
@@ -20,113 +34,501 @@ using cases adjudicated before the end of
 $\valConservativeCutoff$. Within the always-loser stratum, we
 then compare the observed frequent-loser share among cobidders
 with a permutation distribution that preserves participation
-volume. Specifically, firms are grouped by participation-volume
-quartile defined within the always-loser stratum, cobidder
-status is randomly permuted within those quartiles, and the
-frequent-loser share among placebo cobidders is recomputed
-$\valPermPilot$ times. The number of cobidders per quartile is
-preserved across permutations by construction; the within-
-quartile shuffle reassigns the cobidder marker over the same
-set of firms, leaving the per-quartile marginal unchanged. The
-$p$-value reports the share of permutations whose placebo
-frequent-loser share is at least as extreme as the observed
-share.
+volume. Firms are grouped by participation-volume quartile
+defined within the always-loser stratum, cobidder status is
+randomly permuted within those quartiles, and the frequent-loser
+share among placebo cobidders is recomputed $\valPermPilot$
+times. The number of cobidders per quartile is preserved across
+permutations by construction; the within-quartile shuffle
+reassigns the cobidder marker over the same set of firms,
+leaving the per-quartile marginal unchanged. The $p$-value
+reports the share of permutations whose placebo frequent-loser
+share is at least as extreme as the observed share.
 
 The observed share is $\valCADEenrich$, compared with a
 permutation mean of $\valCADEbase$. The ratio is
 $\valMultThreeTwo\!\times$, with $p<0.001$, and the conservative
 ROC AUC is $\valAUCprePost$ (95\% CI $\valAUCprePostCI$,
-computed via the DeLong method). The permutation answers the
+computed via the DeLong method). The placebo answers the
 participation-volume concern: the frequent-loser concentration
 near CADE defendants is larger than activity volume alone
 predicts. It does not by itself address opportunity-set
-exposure, which is the purpose of the next audit.
+exposure, which is the purpose of the opportunity-cell audits
+below.
 
-\subsection{Exposure-Adjusted Audit}
-\label{app:market_opportunity_submission}
+\subsection{Opportunity-Cell Construction}
+\label{app:opp_cells_submission}
 
-The participation permutation does not by itself address market
-opportunity. Firms can appear near CADE anchors because they buy
-or sell in the same procurement environments, not because their
-loser-side behavior is informative for triage. The
-exposure-adjusted audit addresses that threat at the firm level:
-it asks whether the frequent-loser ranking remains informative
-after comparing firms within more similar opportunity sets for
-meeting direct CADE defendants.
+A firm can appear near a CADE anchor simply because it operates
+in procurement environments where defendants are active. To
+discipline this opportunity-set exposure, we partition the
+award layer into procurement-opportunity cells $g$ and benchmark
+each firm against others facing the same cells. We use three
+nested cell definitions of increasing granularity:
+\begin{itemize}
+\item \textbf{COARSE} $=$ item group $\times$ year, where item
+group is the two-digit prefix
+($\texttt{SUBSTR}(\textnormal{c\'odigoitem},1,2)$) of the item
+code.
+\item \textbf{MEDIUM} $=$ item group $\times$ year $\times$
+buyer/procuring-unit, where the buyer is the procuring-unit code
+embedded in the OC key
+($\texttt{SUBSTR}(\textnormal{numerodaoc},1,11)$). MEDIUM is the
+reference definition used for the headline within-stratum
+results.
+\item \textbf{STRICT} $=$ item code $\times$ year $\times$
+buyer/procuring-unit.
+\end{itemize}
 
-The opportunity set is defined from the award layer, using the
-procurement environments in which a firm could have appeared
-with a CADE anchor. The construction uses item, modality, year,
-and buyer/procuring-unit information where the data provide
-common support. Observations without the information needed to
-place a firm in a comparable opportunity set are not used for
-that comparison. The retained support is therefore the subset in
-which firms can be compared to others facing similar chances to
-encounter direct CADE defendants in routine procurement records.
-The audit is reported as a diagnostic construction rather than
-as a single new headline statistic.
-
-The result is reported as an exposure-discipline check rather
-than as a new liability measure. Its interpretation is limited:
-it reduces the concern that the cobidder concentration is only a
-mechanical byproduct of participation in defendant markets. It
-does not prove agreement, identify cartel members, estimate
-damages, or establish that all market-opportunity confounding
-has been removed.
+Procurement modality (Convite vs.\ Preg\~ao) is intentionally
+\emph{dropped} from the cell keys. The firm--tender participation
+layer used to build the cells carries item, year, and
+procuring-unit identifiers but not modality; modality is
+recoverable only through a join into a layer not present in the
+award records used here. Because conditioning on modality would
+further fragment already-sparse cells, modality is dropped from
+the baseline cells and revisited as a sensitivity
+(Appendix~\ref{app:opp_sensitivity_submission}). Cell granularity
+trades bias against support: finer cells hold opportunity more
+nearly fixed but leave most firms in singleton cells.
 
 \begin{table}[htbp]
 \centering
-\caption{Validation Audits and Threats Addressed}
-\label{tab:validation_audit_map_submission}
-\footnotesize
+\caption{Opportunity-Cell Construction}
+\label{tab:opp_cell_construction_submission}
+\scriptsize
 \begin{adjustbox}{max width=\textwidth,center}
 \begin{threeparttable}
-\begin{tabular}{L{3.2cm}L{3.7cm}L{2.4cm}L{3.8cm}L{3.2cm}L{3.7cm}}
+\begin{tabular}{lL{2.6cm}rrrrrrr}
 \toprule
-Audit & Threat addressed & Unit & What is held fixed or withheld & Main result or location & Interpretation \\
+Cell def. & Keys & Cells & Tender-items & Participation & Median items/cell & \% cells $<5$ items & \% singleton cells & Cells w/ defendant \\
 \midrule
-Participation-stratified permutation &
-Participation volume alone creates cobidder concentration &
-Firm &
-Participation-volume quartile within always-losers &
-$\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ &
-Concentration exceeds volume-preserving placebo assignment \\
-Exposure-adjusted audit &
-Market opportunity to meet CADE anchors drives adjacency &
-Firm &
-Comparable opportunity sets using item, modality, year, and buyer/procuring-unit support &
-Reported in text; see Appendix D.2 &
-Disciplines, but does not eliminate, opportunity-set exposure \\
-Leakage audit &
-Score construction reuses firms that define item-level labels &
-Item/firm &
-Cobidder firms withheld from score construction within folds &
-Out-of-fold AUC $\valLeakCVAUC$ &
-Signal survives the most direct label-reuse channel \\
-Temporal holdout &
-Retrospective score uses later information &
-Firm/year &
-Score formed before the test year &
-AUC $\valAUCFLfirmTemp$; Table~\ref{tab:temporal_holdout_year_submission} &
-Ranking remains separated from random classification out of time \\
-Direct-defendant scope check &
-Loser-side ranking is misread as generic cartel-membership detection &
-Firm/item &
-Target changed from cobidders to direct CADE defendants &
-Direct-defendant AUC $\valAUCdirectStd$ &
-Near-random direct-defendant classification is expected under loser-side scope \\
+COARSE & ig $\times$ year & $980$ & $116{,}296$ & $163{,}515$ & $19$ & $9.0$ & $1.0$ & $381$ \\
+MEDIUM & ig $\times$ year $\times$ pbu & $59{,}000$ & $116{,}296$ & $163{,}515$ & $1$ & $93.4$ & $53.2$ & $1{,}435$ \\
+STRICT & item $\times$ year $\times$ pbu & $102{,}589$ & $116{,}296$ & $163{,}515$ & $1$ & $99.5$ & $75.7$ & $2{,}005$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
-\footnotesize
-\item \textit{Notes:} The audits validate forensic priority, not
-cartel membership, liability, damages, or proof. ``Held fixed''
-and ``withheld'' describe the audit discipline each exercise
-adds relative to the baseline adjudication benchmark.
+\scriptsize
+\item \textit{Notes:} ``ig'' is the two-digit item group; ``pbu''
+is the buyer/procuring-unit code. ``Cells w/ defendant'' counts
+opportunity cells containing at least one adjudicated CADE
+defendant. The mean cell defendant-contact rate $\bar p_g$ is
+$0.018$ (COARSE), $0.017$ (MEDIUM), $0.019$ (STRICT). Finer cells
+gain resolution at the cost of support: under STRICT, $99.5\%$ of
+cells hold fewer than five tender-items and $75.7\%$ are
+singletons.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
 \end{table}
+
+\subsection{Expected Defendant Contact and Excess}
+\label{app:expected_contact_submission}
+
+For firm $i$, let $n_{ig}$ be the number of tender-items the firm
+holds in opportunity cell $g$ and let $p_g$ be the cell
+defendant-contact rate (the share of tender-items in $g$ that
+involve an adjudicated CADE defendant). The firm's
+\emph{expected} defendant contact under ordinary cell-level
+opportunity is
+\[
+E_i \;=\; \sum_g n_{ig}\, p_g ,
+\]
+and the \emph{observed} contact $O_i$ is the firm's actual count
+of defendant-sharing tender-items. To prevent a firm from being
+benchmarked against itself, the cell rate is computed
+leave-one-out,
+\[
+p_{g,-i} \;=\; \frac{(\text{cell defendant-contacts}) - (\text{firm }i\text{'s contacts in }g)}{(\text{cell tender-items}) - n_{ig}},
+\]
+so the leave-one-out expectation is $E_{i}^{\text{loo}}=\sum_g
+n_{ig}\,p_{g,-i}$ (a firm that is the entire cell receives zero
+external opportunity). The firm \emph{excess} contact is
+$X_i = O_i - E_i$, and its standardized form is
+\[
+Z_i \;=\; \frac{O_i - E_i}{\sqrt{\sum_g n_{ig}\, p_g\,(1-p_g)}},
+\]
+treating contacts within a cell as a sum of independent
+opportunity-weighted Bernoulli draws.
+
+Table~\ref{tab:obs_exp_bins_submission} groups always-losers by
+participation tier and reports observed vs.\ expected contact and
+mean excess. The frequent-loser cut and especially the
+very-high-participation tier ($T\ge 50$) carry positive mean
+excess; lower-participation tiers sit at or slightly below their
+opportunity benchmark. The pattern is that excess contact
+concentrates where the score is high, but most of the level of
+$O_i$ is explained by $E_i$ --- exposure does the heavy lifting,
+and excess is the residual the score must still rank.
+
+\begin{table}[htbp]
+\centering
+\caption{Observed vs.\ Expected Defendant Contact, by Participation Tier}
+\label{tab:obs_exp_bins_submission}
+\scriptsize
+\begin{threeparttable}
+\begin{tabular}{lrrrrrr}
+\toprule
+Tier & $N$ & $N$ cobidder & Obs.\ prev. & Mean $O_i$ & Mean $E_i$ & Mean excess $X_i$ \\
+\midrule
+$T\le 5$        & $11{,}086$ & $0$   & $0.000$ & $0.031$ & $0.037$ & $-0.006$ \\
+$6$--$13$       & $3{,}022$  & $0$   & $0.000$ & $0.151$ & $0.158$ & $-0.007$ \\
+FL14 ($14$--$49$) & $2{,}178$ & $122$ & $0.056$ & $0.595$ & $0.595$ & $-0.000$ \\
+$T\ge 50$       & $557$      & $69$  & $0.124$ & $2.835$ & $2.766$ & $+0.068$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Tiers are always-loser participation counts
+$T$. ``Obs.\ prev.'' is the realized cobidder rate in the tier.
+$E_i$ uses the MEDIUM cell definition. Mean excess $X_i=O_i-E_i$
+is small and negative for low-participation tiers and turns
+positive in the highest-participation tier, where the score is
+concentrated. A finer decile decomposition is reported in the
+underlying validation tables.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{./output/figures/fig_excess_contact_by_score_bins}
+\caption{Excess defendant contact by screening-score decile.}
+\label{fig:excess_contact_bins_submission}
+\begin{minipage}{0.86\textwidth}
+\footnotesize
+\textit{Notes:} Mean excess contact $X_i=O_i-E_i$ (observed minus
+opportunity-expected defendant contact) across screening-score
+deciles, with $E_i$ from the MEDIUM opportunity cells. Excess is
+near zero or slightly negative in lower deciles and rises in the
+top deciles.
+
+\textit{Alt text:} A bar chart with screening-score deciles on the
+horizontal axis and mean excess defendant contact on the
+vertical axis. Bars in the lower deciles are at or just below
+zero; bars in the top two deciles are clearly positive, showing
+that excess contact above the opportunity benchmark concentrates
+among the highest-scoring firms.
+\end{minipage}
+\end{figure}
+
+\subsection{Control-Function Validation}
+\label{app:control_function_submission}
+
+The control-function audit asks whether the screening score still
+ranks defendant contact once opportunity exposure $E_i$ is in the
+model. We estimate a ladder of logits and rank-tests
+(specifications S0--S6) on the always-loser firms, reported in
+Table~\ref{tab:control_function_submission}:
+\begin{itemize}
+\item \textbf{S0} --- raw baselines: continuous score, the FL14
+binary, and the exposure-only model
+($\log$-opportunity over all always-losers, AUC $0.946$).
+\item \textbf{S1} --- flexible participation, $\textnormal{ns}(T_i,4)$.
+\item \textbf{S2} --- score (or FL14) plus $\log(1+E)$, run at
+each cell granularity (COARSE/MEDIUM/STRICT), plus an
+exposure-only logit on the exposed subsample.
+\item \textbf{S3} --- score $+\,E\,+$ breadth controls.
+\item \textbf{S4} --- score $+$ opportunity-decile and
+participation-bin fixed effects (exposed subsample).
+\item \textbf{S5} --- score vs.\ FL14 ranking the binary excess
+target $\mathbf{1}[X_i>0]$ (MEDIUM).
+\item \textbf{S6} --- raw score and score$+E$ on the
+strict-support subsample.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\caption{Control-Function Validation (Selected Specifications)}
+\label{tab:control_function_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lL{4.0cm}rrrr}
+\toprule
+Spec & Model & $N$ & Pos. & ROC AUC & PR-AUC \\
+\midrule
+S0 & raw score (log\,$T$) & $16{,}843$ & $191$ & $0.939$ & $0.126$ \\
+S0 & raw FL14 & $16{,}843$ & $191$ & $0.924$ & $0.085$ \\
+S0 & exposure-only (all AL) & $16{,}843$ & $191$ & $0.946$ & $0.194$ \\
+S1 & flexible participation ns($T$,4) & $16{,}843$ & $191$ & $0.938$ & $0.118$ \\
+S2 & score $+\log(1{+}E)$ [COARSE] & $16{,}843$ & $191$ & $0.958$ & $0.205$ \\
+S2 & score $+\log(1{+}E)$ [MEDIUM] & $16{,}843$ & $191$ & $0.982$ & $0.383$ \\
+S2 & score $+\log(1{+}E)$ [STRICT] & $16{,}843$ & $191$ & $0.988$ & $0.434$ \\
+S2 & exposure-only logit (exposed) & $6{,}040$ & $191$ & $0.847$ & $0.194$ \\
+S3 & score $+\,E\,+$ breadth & $16{,}843$ & $191$ & $0.980$ & $0.461$ \\
+S4 & score $+$ opp-FE $+$ part-FE (exposed) & $6{,}040$ & $191$ & $0.896$ & $0.182$ \\
+S5 & score ranks $\mathbf{1}[X_i{>}0]$ (MEDIUM) & $16{,}843$ & $475$ & $0.764$ & $0.095$ \\
+S5 & FL14 ranks $\mathbf{1}[X_i{>}0]$ (MEDIUM) & $16{,}843$ & $475$ & $0.687$ & $0.073$ \\
+S6 & raw score, strict support & $7{,}683$ & $163$ & $0.866$ & $0.110$ \\
+S6 & score $+E$, strict support & $7{,}683$ & $163$ & $0.965$ & $0.376$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Outcome is adjudication-anchored cobidder
+contact (S5 uses the binary excess target $\mathbf{1}[X_i>0]$).
+\textbf{The combined exposure-plus-score logits in S2--S3 reach
+AUC $\approx 0.98$, but this is mechanically inflated and is NOT
+evidence of score signal:} the exposure term $E_i$ is built from
+the same defendant-contact rates that define the label, so a
+model containing $E_i$ partly predicts the label by construction.
+The score's \emph{isolated} contribution is not read off these
+combined AUCs. It is the nested DeLong increment of $+0.042$ over
+the exposure-only model ($p=2.1\times10^{-6}$) and the
+within-opportunity-stratum AUC of $0.771$ (S5 / matched audit),
+both of which hold exposure fixed before crediting the score.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The honest reading of Table~\ref{tab:control_function_submission}
+is therefore conservative. Exposure alone already classifies
+cobidder contact at AUC $0.946$; the combined exposure-plus-score
+AUCs near $0.98$ overstate the marginal value of the score
+because $E_i$ encodes the label. What survives once exposure is
+held fixed is modest but real: the score adds $+0.042$ AUC over
+exposure (nested DeLong $p=2.1\times10^{-6}$), it ranks the
+binary excess-contact target at AUC $0.764$ within MEDIUM cells
+(S5), and within opportunity strata it discriminates cobidders at
+AUC $0.771$. The score earns its place as a residual ranker, not
+as the bulk of the predictive power.
+
+\subsection{Opportunity-Preserving Permutation}
+\label{app:opp_permutation_submission}
+
+The permutation audit asks whether the raw score out-predicts a
+null that already exploits opportunity exposure. Two
+opportunity-preserving nulls are used, each with $B=2{,}000$ and
+seed $20260603$:
+\begin{itemize}
+\item \textbf{Approach B (firm-exposure binomial simulation).}
+For each firm we simulate contacts
+$O_i^{\text{sim}}=\sum_g \textnormal{Binomial}(n_{ig},p_g)$,
+preserving each firm's cell-level opportunity exactly and
+re-deriving the precision/recall and PR-AUC of the simulated
+contact pattern. This null embodies the hypothesis ``contact is
+pure opportunity.''
+\item \textbf{Approach C (matched-stratum label permutation).}
+Cobidder labels are permuted within
+exposure-decile $\times$ participation-bin strata, preserving the
+joint exposure/volume distribution while breaking the
+label--score link.
+\end{itemize}
+Approach A (within-cell relabeling) is feasible but is
+statistically equivalent to Approach B and is substituted for it
+to save computation.
+
+\begin{table}[htbp]
+\centering
+\caption{Opportunity-Preserving Permutation}
+\label{tab:opp_permutation_submission}
+\scriptsize
+\begin{threeparttable}
+\begin{tabular}{lrrrr}
+\toprule
+Approach & Obs.\ PR-AUC & Null mean & Null 95th & Emp.\ $p$ \\
+\midrule
+B: firm-exposure sim & $0.126$ & $0.264$ & $0.275$ & $1.000$ \\
+C: matched-stratum perm & $0.126$ & $0.106$ & $0.121$ & $0.023$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} $B=2{,}000$ draws, seed $20260603$.
+\textbf{The two nulls point in opposite directions and we report
+both.} Under Approach B the pure-exposure simulation
+\emph{out-predicts} the raw score on PR-AUC (empirical
+$p=1.000$): a model that knows only firm-level opportunity beats
+the raw loser-side score, consistent with exposure-only AUC
+$0.946$. Under Approach C, which breaks the label--score link
+while holding the exposure/volume distribution fixed, the
+observed PR-AUC sits at the $97.8$th percentile of the null
+($p=0.023$). The FL14-enrichment statistic exceeds its
+opportunity-preserving null under both approaches ($p<0.001$).
+The reconciliation is that the raw score is a weak \emph{level}
+predictor relative to raw opportunity (B), but still carries
+incremental opportunity-orthogonal signal once exposure and
+volume are matched (C).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{./output/figures/fig_opportunity_permutation_precision_at_k}
+\caption{Opportunity-preserving permutation: precision at $k=500$.}
+\label{fig:opp_permutation_submission}
+\begin{minipage}{0.86\textwidth}
+\footnotesize
+\textit{Notes:} Distribution of precision-at-500 under the
+opportunity-preserving nulls, with the observed precision marked.
+Approach B (firm-exposure simulation) and Approach C
+(matched-stratum permutation) yield different reference
+distributions, as discussed in the text.
+
+\textit{Alt text:} A histogram of placebo precision-at-500 values
+from the permutation nulls, with a vertical line marking the
+observed precision. The observed line sits below the bulk of the
+firm-exposure-simulation null (which is shifted high because
+opportunity alone predicts contact) and to the right of the
+matched-stratum-permutation null.
+\end{minipage}
+\end{figure}
+
+\subsection{Matched and Stratified Validation}
+\label{app:matched_opp_submission}
+
+The matched audit holds opportunity fixed by coarsened exact
+matching (CEM) on opportunity deciles and then compares
+frequent-losers to non-frequent-losers within each stratum.
+Table~\ref{tab:matched_opp_submission} reports, by exposure
+stratum, the FL-vs-non difference in cobidder rate ($\Delta P$),
+observed contact ($\Delta O$), and excess ($\Delta X$). The
+cobidder-rate gap is positive in every stratum and grows with
+exposure; the excess gap turns positive only in the
+highest-exposure stratum. Within strata the score discriminates
+cobidder contact at AUC $0.725$, and the CEM-opportunity-matched
+AUC is $0.863$.
+
+\begin{table}[htbp]
+\centering
+\caption{Opportunity-Matched (CEM) Validation, by Exposure Stratum}
+\label{tab:matched_opp_submission}
+\scriptsize
+\begin{threeparttable}
+\begin{tabular}{lrrrrr}
+\toprule
+Exposure stratum & $N$ & $n$ FL & $n$ non-FL & $\Delta P_{\text{cob}}$ & $\Delta X$ \\
+\midrule
+1 & $2{,}734$ & $367$ & $2{,}367$ & $+0.033$ & $+0.005$ \\
+2 & $1{,}076$ & $298$ & $778$   & $+0.034$ & $-0.009$ \\
+3 & $590$     & $202$ & $388$   & $+0.069$ & $-0.027$ \\
+4 & $633$     & $336$ & $297$   & $+0.080$ & $-0.108$ \\
+5 & $450$     & $314$ & $136$   & $+0.089$ & $-0.425$ \\
+6 & $557$     & $526$ & $31$    & $+0.190$ & $+0.293$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Strata are opportunity deciles collapsed to
+sextiles for support. $\Delta P_{\text{cob}}$ is the
+frequent-loser minus non-frequent-loser difference in cobidder
+rate; $\Delta X$ the difference in excess contact. Within-stratum
+score AUC $=0.725$; CEM-opportunity-matched AUC $=0.863$ on
+$6{,}039$ matched firms. Support is fully retained for the CEM
+exercise because matching is on collapsed deciles; the cost of
+support appears under the finer common-support rules
+(Appendix~\ref{app:common_support_submission}). The cobidder-rate
+gap is uniformly positive, but the excess gap is positive only in
+the extreme-exposure stratum, underscoring that most of the level
+is opportunity.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Common-Support and Sparsity Diagnostics}
+\label{app:common_support_submission}
+
+How much of the always-loser population can actually be benchmarked
+depends on the cell definition and on how strictly we require
+common support. We apply three rules --- minimal (a firm needs
+any cell), moderate (cells must clear a sparsity floor), and
+strict (cells must additionally contain a comparable non-firm
+mass) --- and report retention honestly in
+Table~\ref{tab:common_support_submission}. The headline numbers:
+under COARSE cells essentially all firms are retained; under
+MEDIUM cells the moderate and strict rules retain only about
+$46\%$ of firms; under STRICT cells retention collapses to about
+$9\%$. We do not cherry-pick the retained subset --- the
+within-stratum and matched results above use MEDIUM cells, where
+roughly half the population survives.
+
+\begin{table}[htbp]
+\centering
+\caption{Common-Support Retention by Cell Definition and Rule}
+\label{tab:common_support_submission}
+\scriptsize
+\begin{threeparttable}
+\begin{tabular}{llrrr}
+\toprule
+Cell def. & Rule & $N$ always-losers & $N$ retained & Share retained \\
+\midrule
+COARSE & minimal  & $16{,}843$ & $16{,}843$ & $1.000$ \\
+COARSE & moderate & $16{,}843$ & $16{,}806$ & $0.998$ \\
+COARSE & strict   & $16{,}843$ & $16{,}486$ & $0.979$ \\
+MEDIUM & minimal  & $16{,}843$ & $16{,}843$ & $1.000$ \\
+MEDIUM & moderate & $16{,}843$ & $7{,}735$  & $0.459$ \\
+MEDIUM & strict   & $16{,}843$ & $7{,}683$  & $0.456$ \\
+STRICT & minimal  & $16{,}843$ & $16{,}843$ & $1.000$ \\
+STRICT & moderate & $16{,}843$ & $1{,}477$  & $0.088$ \\
+STRICT & strict   & $16{,}843$ & $1{,}458$  & $0.087$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Sparsity is the binding constraint. Under
+MEDIUM cells, $65.4\%$ of participation sits in cells with fewer
+than five tender-items; under STRICT, $94.6\%$. The moderate and
+strict rules drop singleton-heavy mass, which is why MEDIUM
+retention falls to $\approx 46\%$ and STRICT to $\approx 9\%$.
+Retention is reported in full so that the within-stratum
+estimates are read against the population they actually cover.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Sensitivity to Cell Definitions}
+\label{app:opp_sensitivity_submission}
+
+The result moves predictably across the COARSE/MEDIUM/STRICT
+ladder. As cells get finer, the combined exposure-plus-score
+logits rise mechanically (S2 score$+\log(1{+}E)$ AUC $0.958 \to
+0.982 \to 0.988$ across COARSE/MEDIUM/STRICT), but this is the
+inflation channel of Appendix~\ref{app:control_function_submission}:
+finer cells let $E_i$ encode the label more tightly. The
+opportunity-orthogonal quantities are far more stable. On the
+strict-support subsample the \emph{raw} score (S6) still
+discriminates cobidder contact at AUC $0.866$, and the
+within-stratum / matched AUCs ($0.725$ within strata, $0.863$
+CEM-matched) are computed at MEDIUM granularity. Dropping
+modality from the cells (Appendix~\ref{app:opp_cells_submission})
+is a coarsening in the same direction as moving from STRICT
+toward COARSE: it widens cells and improves support at the cost
+of within-cell homogeneity. The substantive conclusion --- a
+small but significant opportunity-orthogonal increment, swamped
+in level terms by exposure --- is invariant to where on the
+granularity ladder we read it.
+
+\subsection{Limitations}
+\label{app:opp_limitations_submission}
+
+Several limitations bound the interpretation of this appendix.
+First, the opportunity cells are \emph{award-layer proxies}: they
+are built from the item, year, and procuring-unit identifiers
+present in the participation records, not from a full description
+of each firm's true competitive opportunity set. Second,
+procurement \emph{modality is dropped} from the cells because it
+is not present in the award layer used here; the modality-augmented
+construction is left as a sensitivity rather than the baseline.
+Third, the result is exposure-concentrated: the largest single
+CADE case contributes about $39\%$ of all observed
+defendant-contacts, and the top two cases together about $66\%$,
+so a handful of cases carry the level of contact. A formal
+leave-one-case-out exercise (and the related observation that
+roughly $47\%$ of true positives at $k=500$ trace to the largest
+case) is the subject of a separate appendix and is not resolved
+here. Fourth, and most importantly, the CADE-defendant labels are
+\emph{adjudication-anchored exposure} labels, not membership
+findings: a firm tagged here shared a tender-item with an
+adjudicated defendant; it is not thereby a cartel member, a party
+to any agreement, or liable for anything. The residual,
+opportunity-orthogonal signal that survives these audits is
+\emph{triage value} --- a basis for prioritizing scrutiny --- and
+is \textbf{not legal proof, not identification of cartel members,
+and not an estimate of damages or causal effect}.
 
 \subsection{Leakage Decomposition}
 \label{app:leakage_submission}
@@ -243,3 +645,57 @@ becomes progressively easier to police. The samples and
 adjudication links change across years. The relevant point is
 that the score remains separated from random classification in
 each rolling-origin test year.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation Audits and Threats Addressed}
+\label{tab:validation_audit_map_submission}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{L{3.2cm}L{3.7cm}L{2.4cm}L{3.8cm}L{3.2cm}L{3.7cm}}
+\toprule
+Audit & Threat addressed & Unit & What is held fixed or withheld & Main result or location & Interpretation \\
+\midrule
+Participation-volume placebo &
+Participation volume alone creates cobidder concentration &
+Firm &
+Participation-volume quartile within always-losers &
+$\valMultThreeTwo\!\times$ excess; AUC $\valAUCprePost$ &
+Concentration exceeds volume-preserving placebo assignment \\
+Opportunity-cell audits &
+Market opportunity to meet CADE anchors drives adjacency &
+Firm &
+Comparable opportunity sets using item, year, and buyer/procuring-unit support &
+Within-stratum AUC $0.771$; nested $+0.042$; App.~\ref{app:opp_cells_submission}--\ref{app:opp_limitations_submission} &
+Disciplines, but does not eliminate, opportunity-set exposure \\
+Leakage audit &
+Score construction reuses firms that define item-level labels &
+Item/firm &
+Cobidder firms withheld from score construction within folds &
+Out-of-fold AUC $\valLeakCVAUC$ &
+Signal survives the most direct label-reuse channel \\
+Temporal holdout &
+Retrospective score uses later information &
+Firm/year &
+Score formed before the test year &
+AUC $\valAUCFLfirmTemp$; Table~\ref{tab:temporal_holdout_year_submission} &
+Ranking remains separated from random classification out of time \\
+Direct-defendant scope check &
+Loser-side ranking is misread as generic cartel-membership detection &
+Firm/item &
+Target changed from cobidders to direct CADE defendants &
+Direct-defendant AUC $\valAUCdirectStd$ &
+Near-random direct-defendant classification is expected under loser-side scope \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} The audits validate forensic priority, not
+cartel membership, liability, damages, or proof. ``Held fixed''
+and ``withheld'' describe the audit discipline each exercise
+adds relative to the baseline adjudication benchmark.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
