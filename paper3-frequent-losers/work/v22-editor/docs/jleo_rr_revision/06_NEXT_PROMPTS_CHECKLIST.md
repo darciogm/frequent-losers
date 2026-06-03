@@ -169,3 +169,8 @@ User chose (a). Title changed; abstract (142w), intro 3-contributions, §4.5 sum
 ## Subprompt 11 close-out (Section 7, 2026-06-03) — VERDICT A
 - ✅ §7 verified scope-only + price appendix populated (H.1–H.9) + frontier tie. Compiles (paper 38pp / appendix 51pp, 0 errors). Logs: 30/31, section7_inventory, price_mechanism_discipline_memo, price_number_reproduction.csv.
 - **NEXT: Subprompt 12 — Appendix B: Theory, Exit Margin, Survival/Hazard.** Add dynamic exit margin (ordinary firms exit after losses; losing-role firms persist via role value) so λ_C>λ_G is DERIVED not assumed; survival/hazard audit (firm-year panel, right-censored 2019) FL cobidders vs other FL.
+
+---
+## Subprompt 12 close-out (Appendix B, 2026-06-03) — VERDICT A
+- ✅ Appendix B rewritten: exit margin DERIVES λ_C>λ_G; survival audit (FL cobidders persist longer, HR 0.155, mechanism-supporting-not-proof). NEW scripts/analysis/11_survival_hazard. paper 39pp/appendix 55pp, 0 errors. Logs 32/33.
+- **NEXT: Subprompt 13 — final integration/hygiene** (online supplement manifest, replication package, terminology/claims/number/xref/alt-text audits, appendix length pass — appendix 55pp needs trimming, final build, referee risk matrix).

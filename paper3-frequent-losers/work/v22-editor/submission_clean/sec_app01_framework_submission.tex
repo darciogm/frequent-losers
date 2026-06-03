@@ -1,107 +1,179 @@
+% CO-AUTHOR EDIT: Appendix B restructured into B.1--B.6 with a dynamic
+% exit margin that DERIVES lambda_C>lambda_G (no longer bare-assumed),
+% consolidated formal results (Assumption B1 + Proposition B1 + Corollary B1),
+% and an empirical survival audit. Formal-result count not increased.
 \section{Evidence-Allocation Framework and Legal Scope}
 \label{app:framework_submission}
 
-The model used in the main text is intentionally spare. Its job
-is to justify an ordering rule for scarce forensic attention,
-not to model the full internal organization of a cartel. Issues
-such as side payments, discipline, and leniency incentives are
-treated in the cartel literature
-(Asker, 2010; Marshall and Marx, 2012). The narrower
-object here is the pre-proof enforcement problem: why a firm
-that repeatedly loses, while continuing to appear in procurement
-records, can be a useful target for bid-level follow-up.
-
-\subsection{Primitives}
+\subsection{The pre-proof ranking problem}
 \label{app:framework_primitives}
 
-Consider a procurement environment with repeated tender-items.
-In a cartel-targeted tender, one firm is assigned the winning
-role and submits the designated bid $b^*$. A losing-role
-participant submits a bid $b_\ell>b^*$ and is not meant to win.
-The losing role has a cost $c_1>0$. Winning by mistake or by
-deviation creates an internal cartel sanction $\kappa>0$,
-interpreted broadly as the loss of cartel discipline, future
-rents, or capacity-allocation rights. Let $r$ denote the private
-gain from deviating into the winner role in a tender where the
-firm was assigned to lose.
+The model used in the main text is intentionally spare. Its job
+is to justify an ordering rule for scarce forensic attention, not
+to model the full internal organization of a cartel. Formation,
+side payments, leniency incentives, and damages are treated in the
+cartel literature (Asker, 2010; Marshall and Marx, 2012). The
+narrower object here is the pre-proof enforcement problem: why a
+firm that repeatedly loses, while continuing to appear in
+procurement records, can be a useful target for bid-level
+follow-up. The device is a reduced-form evidence-allocation rule,
+not a structural cartel model.
 
-Firms outside the winning role are of two reduced-form types.
-Type $C$ firms are cartel-deployed losing-role participants. Type
-$G$ firms are ordinary losing participants: they may be
-inefficient, capacity constrained, inexperienced, or simply
-unlucky. The type notation is a device for stating the maintained
-ranking condition; it is not an empirical classification rule.
-The empirical screen conditions on the observed event
+Consider a procurement environment with repeated tender-items. In
+a cartel-targeted tender, one firm is assigned the winning role
+and submits the designated bid $b^*$. A losing-role participant
+submits a bid $b_\ell>b^*$ and is not meant to win. The losing
+role carries a participation cost. Winning by mistake or by
+deviation creates an internal sanction $\kappa>0$, interpreted
+broadly as the loss of future rents, relational standing, or
+capacity-allocation rights. Let $r$ denote the private gain from
+deviating into the winner role in a tender where the firm was
+assigned to lose.
+
+Firms outside the winning role are of two reduced-form \emph{model}
+types. Type $C$ firms are cartel-deployed losing-role
+participants. Type $G$ firms are ordinary losing participants:
+they may be inefficient, capacity constrained, inexperienced, or
+simply unlucky. The type notation is a device for stating the
+maintained ranking condition; $C$ and $G$ are not observed
+classes and the type labels are not an empirical classification
+rule. The empirical screen conditions on the observed event
 $W_i=0$, where $W_i$ is the firm's number of wins, and ranks
 firms by participation count $T_i$.
 
+\subsection{Losing-role discipline and zero wins}
+\label{app:framework_zero_win}
+
 \begin{lemma}[Zero-win losing role]
 \label{lem:submission_zero_win}
-If the internal sanction from winning in a losing role exceeds
-the private deviation gain, $\kappa>r$, a losing-role firm's
-equilibrium bid lies above the designated winning bid:
-$b_\ell>b^*$. Hence $\Pr(W_i>0\mid C)=0$ over tenders in which
-the firm is deployed in the losing role.
+If the internal sanction from winning in a losing role exceeds the
+private deviation gain, $\kappa>r$, a losing-role participant
+avoids winning: it submits $b_\ell>b^*$, so
+$\Pr(W_i>0\mid C)=0$ over tenders in which the firm is deployed in
+the losing role.
 \end{lemma}
 
 \begin{proof}
-If the losing-role participant submits $b_\ell>b^*$, it loses
-and receives the deployment payoff net of the role cost. If it
-deviates to a winning bid, it gains $r$ but pays the sanction
-$\kappa$. The deviation is unprofitable when $\kappa>r$. The
-result fixes the win probability of the losing role, not the
-exact numerical bid. Any bid above the designated winner's bid is
-consistent with the reduced-form role. 
+A losing-role participant that submits $b_\ell>b^*$ loses and
+receives the deployment payoff net of the role cost. Deviating to
+a winning bid gains $r$ but pays the sanction $\kappa$; the
+deviation is unprofitable when $\kappa>r$. The inequality fixes
+the win probability of the losing role, not the numerical bid: any
+bid above the designated winner's bid is consistent with the
+reduced-form role.
 \end{proof}
 
-Lemma~\ref{lem:submission_zero_win} explains why the zero-win
-conditioning set is a coherent place to begin. The conditioning
-set is intentionally broad: many genuine firms also never win.
-The evidentiary content comes from the second observable,
-participation intensity.
+The inequality $\kappa>r$ supports conditioning on the zero-win
+event, but it does \emph{not} imply that all zero-win firms occupy
+a losing role. The conditioning set is intentionally broad: many
+ordinary firms also never win. The evidentiary content comes from
+the second observable, participation intensity, and from the
+dynamic margin that governs who remains in the zero-win set.
 
-\subsection{Participation as a Ranking Statistic}
+\subsection{Dynamic participation and exit}
+\label{app:framework_exit}
+
+The ranking statistic is informative only if persistent zero-win
+participation is more characteristic of a deployed losing role
+than of an ordinary losing firm. We obtain that property
+\emph{endogenously}, from a participation-and-exit margin, rather
+than assuming a type-specific rate gap.
+
+Each period a firm decides whether to keep participating on the
+platform. An ordinary zero-win firm $G$ pays a participation cost
+$c_G>0$ and earns expected gross surplus $m_G(H_{it})$, where
+$H_{it}$ is the firm's loss history at item $i$, time $t$. Under
+Bayesian updating about its own competitiveness, repeated losses
+weakly lower the firm's continuation surplus,
+$m_G(H_{it})$ weakly decreasing in the accumulated loss count. The
+firm continues if and only if
+\begin{equation}
+\label{eq:exit_G}
+  V_G(H_{it}) \;=\; m_G(H_{it}) - c_G + \beta\,
+  \mathbb{E}\!\left[V_G(H_{i,t+1})\mid H_{it}\right] \;\ge\; 0,
+\end{equation}
+and \emph{exits} when $V_G(H_{it})<0$. After a long zero-win
+history, $m_G$ has fallen enough that ordinary zero-win firms may
+exit the platform.
+
+A cartel-deployed losing-role firm $C$ does not value the tender
+through the win prospect. Its continuation value rests on a role
+value $a_C(H_{it})$ capturing future rents, relational or
+subcontracting value, capacity-allocation standing, and any
+internal compensation for sustained losing. It continues if and
+only if
+\begin{equation}
+\label{eq:exit_C}
+  V_C(H_{it}) \;=\; a_C(H_{it}) - c_C + \beta\,
+  \mathbb{E}\!\left[V_C(H_{i,t+1})\mid H_{it}\right] \;\ge\; 0 .
+\end{equation}
+Because $a_C$ derives from the cartel role rather than from the
+firm's own win prospect, it does not erode with the firm's loss
+count the way $m_G$ does. After sufficiently many zero-win periods,
+\begin{equation}
+\label{eq:exit_wedge}
+  a_C(H_{it}) - c_C \;>\; m_G(H_{it}) - c_G ,
+\end{equation}
+so $C$ keeps participating while $G$ is selectively removed from
+the zero-win risk set.
+
+The empirical consequence is a \emph{selection} result. Among
+surviving zero-win firms, the participation rate of cartel-deployed
+losing roles exceeds that of ordinary losing firms,
+\begin{equation}
+\label{eq:lambda_rank}
+  \lambda_C \;>\; \lambda_G \qquad
+  \text{on the surviving conditioning set } W_i=0 ,
+\end{equation}
+\emph{derived} from differential exit under
+\eqref{eq:exit_G}--\eqref{eq:exit_wedge}, not posited as an
+exogenous type fixed effect. The frequent-loser ordering inherits
+its content from this dynamic selection plus role value.
+
+\begin{assumption}[Role-value persistence]
+\label{assu:submission_persistence}
+Among surviving zero-win firms, cartel-deployed losing-role
+participants have weakly greater net continuation value from
+repeated losing than ordinary zero-win firms after sufficiently
+many losses: there is a loss count $\bar L$ such that for
+histories with accumulated losses exceeding $\bar L$,
+$a_C(H_{it})-c_C \ge m_G(H_{it})-c_G$.
+\end{assumption}
+
+\subsection{Monotone ranking statistic}
 \label{app:framework_participation}
 
-Within the zero-win set, let participation counts follow a
-Poisson approximation:
-\[
+Conditional on survival and zero wins, let participation counts
+follow a Poisson approximation,
+\begin{equation}
+\label{eq:poisson}
   T_i \mid \tau_i, q \sim \text{Poisson}(\lambda_q \tau_i),
   \qquad q\in\{C,G\},
-\]
+\end{equation}
 where $\tau_i$ is the length of time firm $i$ is observed and
-$\lambda_q$ is the type-specific participation rate. The
-screening assumption is
-\[
-  \lambda_C>\lambda_G
-  \quad\text{on the conditioning set } W_i=0.
-\]
-This is the substantive assumption behind the frequent-loser
-ranking. Cartel-deployed losing-role participants, if present,
-are repeatedly deployed to provide losing participation; ordinary
-zero-win firms participate less often.
-The condition $\lambda_C>\lambda_G$ is \emph{maintained}, not
-derived: it is the behavioral assumption under which repeated
-zero-win participation becomes a monotone ranking statistic for
-loser-side exposure. The empirical sections then ask whether
-the ranking implied by this assumption has validation content
-against adjudication-adjacent labels.
-The type notation is a device for stating the maintained ranking
-condition; it is not an empirical classification rule.
+$\lambda_q$ is the type-specific surviving participation rate.
+Equation~\eqref{eq:lambda_rank} supplies the ordering
+$\lambda_C>\lambda_G$ on this surviving set.
 
-\begin{proposition}[Monotone loser-side suspicion]
+\begin{proposition}[Persistence ranking]
 \label{prop:submission_monotone}
-Under the Poisson approximation and $\lambda_C>\lambda_G$, the
-posterior probability $\Pr(C\mid T_i=t,W_i=0,\tau_i)$ is
-non-decreasing in $t$. Consequently, $T_i$ and
-$\log(1+T_i)$ are rank-equivalent screening statistics for
-loser-side cartel-adjacency exposure within the zero-win
-stratum.
+Suppose (1) losing-role firms avoid winning when $\kappa>r$
+(Lemma~\ref{lem:submission_zero_win}); (2) ordinary zero-win firms
+exit when continuation value falls below the outside option
+(\eqref{eq:exit_G}); (3) role value keeps $C$ in the risk set
+longer, so the selection wedge
+\eqref{eq:exit_wedge}--\eqref{eq:lambda_rank} holds
+(Assumption~\ref{assu:submission_persistence}); and (4) among
+survivors effective participation intensity is higher for $C$ than
+for $G$, $\lambda_C>\lambda_G$. Then the posterior
+$\Pr(C\mid T_i=t,W_i=0,\tau_i)$ is non-decreasing in $t$, and
+$T_i$ and $\log(1+T_i)$ are monotone ranking statistics for
+forensic priority within the zero-win stratum.
 \end{proposition}
 
 \begin{proof}
-By Bayes' rule, the posterior odds of type $C$ against type $G$
-are proportional to the likelihood ratio
+By Bayes' rule the posterior odds of type $C$ against type $G$ are
+proportional to the Poisson likelihood ratio
 \[
   \frac{\Pr(T_i=t\mid C,\tau_i)}
        {\Pr(T_i=t\mid G,\tau_i)}
@@ -109,73 +181,197 @@ are proportional to the likelihood ratio
   \exp[-(\lambda_C-\lambda_G)\tau_i]
   \left(\frac{\lambda_C}{\lambda_G}\right)^t .
 \]
-Because $\lambda_C>\lambda_G$, the likelihood ratio is increasing
-in $t$. This is the monotone-likelihood-ratio property of the
+Under $\lambda_C>\lambda_G$ from \eqref{eq:lambda_rank}, this ratio
+is increasing in $t$: the monotone-likelihood-ratio property of the
 Poisson family (Karlin and Rubin, 1956).%
 \footnote{Karlin, S. and H.~Rubin (1956). The theory of decision
 procedures for distributions with monotone likelihood ratio.
 \textit{Annals of Mathematical Statistics} 27(2), 272--299.}
-The posterior increases
-with participation count, and the log transformation
-$\log(1+T_i)$ preserves the ranking.
+The posterior is therefore non-decreasing in the participation
+count, and $\log(1+T_i)$ preserves the ranking.
 \end{proof}
 
-The empirical binary rule used in the main text is an operational
-coarsening of Proposition~\ref{prop:submission_monotone}. It flags firms above the
-median plus $1.5$ times the interquartile range of zero-win
-participation. The threshold is not a structural parameter. It
-is an auditable way to turn a monotone ranking into an
-operational list. Agencies could instead use the continuous
-score, a capacity-constrained top-$k$ list, or a threshold
-calibrated to their investigative budget.
-The posterior language belongs to the reduced-form screening
-model. The empirical implementation uses the statistic as a
-ranking device for forensic priority, not as an estimated
-probability of legal membership.
+Condition~(4) is the key empirical content: it is the surviving
+participation gap, and it is what \S\S4--6 validate against
+adjudication-anchored labels. The proposition is a ranking result
+under maintained behavioral conditions, not an identification
+claim. The empirical binary rule used in the main text---flagging
+firms above the median plus $1.5$ times the interquartile range of
+zero-win participation---is an operational coarsening of this
+ranking. The threshold is not a structural parameter; agencies
+could instead use the continuous score, a capacity-constrained
+top-$k$ list, or a budget-calibrated cutoff.
 
-\subsection{Evidentiary Scope}
+\begin{corollary}[Legal scope]
+\label{prop:submission_scope}
+Under Lemma~\ref{lem:submission_zero_win},
+Assumption~\ref{assu:submission_persistence}, and
+Proposition~\ref{prop:submission_monotone}, the frequent-loser
+statistic orders expected investigative value within the zero-win
+stratum. It is not sufficient for liability, damages, or cartel
+membership.
+\end{corollary}
+
+\begin{proof}
+Triage requires an ordering of expected investigative value;
+Proposition~\ref{prop:submission_monotone} supplies that ordering.
+Liability and damages require different predicates---proof of
+agreement, conduct in particular tenders, and an economic measure
+of price injury. The statistic carries participation and win
+information only and omits those facts. The same statistic can be
+useful for allocating forensic attention and insufficient for
+legal adjudication.
+\end{proof}
+
+\subsection{Empirical survival audit}
+\label{app:framework_survival}
+
+The exit-margin logic of \S\ref{app:framework_exit} makes a
+testable prediction about who remains on the platform: if role
+value sustains cartel-deployed losing participation while ordinary
+zero-win firms are selectively removed, then firms most exposed to
+the cartel-adjacency labels should display longer continued
+participation. We audit this descriptively on a firm-year panel of
+the $16{,}843$ always-losers ($101{,}366$ firm-years, 2009--2019,
+right-censored at 2019). Because the audit uses \emph{full-sample}
+labels---FL cobidders, FL non-cobidders, and non-FL
+always-losers---it is retrospective and descriptive, not
+timing-disciplined; it is mechanism-supporting at most and does not
+test cartel membership or conduct.
+
+The pattern is in the predicted direction.
+Table~\ref{tab:survival_summary_submission} shows that FL
+cobidders persist markedly longer on the platform: mean active
+years $4.37$ versus $2.84$ for FL non-cobidders and $1.61$ for
+non-FL always-losers; median platform duration $6$ versus $2$
+versus $1$ years; and an exit share before 2019 of $0.54$ versus
+$0.73$ versus $0.85$ (equivalently, right-censored shares of
+$0.46$, $0.27$, $0.15$). Survival here means continued BEC
+\emph{participation}, not legal-entity survival.
+
+\begin{table}[htbp]\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\caption{Platform survival of always-losers, by full-sample label.}
+\label{tab:survival_summary_submission}\scriptsize
+\begin{tabular}{lrrrrrr}
+\toprule
+Group & $N$ firms & Mean active & Exit share & Median & Right-cens. & Hazard \\
+ & & years & $<2019$ & duration & share & ratio \\
+\midrule
+Non-FL always-loser & $14{,}104$ & $1.61$ & $0.85$ & $1$ & $0.15$ & $1.00$ \\
+FL non-cobidder     & $2{,}540$  & $2.84$ & $0.73$ & $2$ & $0.27$ & $0.368$ \\
+FL cobidder         & $192$      & $4.37$ & $0.54$ & $6$ & $0.46$ & $0.155$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\scriptsize
+\item Firm-year panel of $16{,}843$ always-losers, $101{,}366$
+firm-years, 2009--2019, right-censored at 2019. ``Active years''
+counts distinct years of platform participation; ``duration'' is
+years between first and last appearance. Hazard ratios are
+adjusted discrete-time (cloglog) estimates relative to the non-FL
+always-loser baseline (see
+Table~\ref{tab:survival_hazard_submission}). Labels are
+full-sample and the audit is therefore descriptive and
+retrospective: it is mechanism-supporting at most and is not a test
+of cartel membership.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+A discrete-time hazard model (complementary log-log, with duration
+and calendar-year fixed effects, clustered by firm) confirms the
+ordering. Table~\ref{tab:survival_hazard_submission} reports hazard
+ratios of $0.155$ for FL cobidders and $0.368$ for FL
+non-cobidders relative to non-FL always-losers, both far below
+one: exposure to the cartel-adjacency labels is associated with
+substantially lower exit hazard. A Cox specification returns a
+comparable ratio ($0.221$) but the proportional-hazards assumption
+is violated---the survival curves diverge over tenure rather than
+holding a constant ratio---so we report the cloglog model as
+primary and flag the violation honestly. The Kaplan--Meier
+log-rank test rejects equality of curves ($\chi^2 \approx 1200$,
+$p \approx 3\times10^{-261}$).
+
+\begin{table}[htbp]\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\caption{Discrete-time exit hazard (cloglog) for always-losers.}
+\label{tab:survival_hazard_submission}\scriptsize
+\begin{tabular}{lrrrr}
+\toprule
+Term & Hazard ratio & SE & $p$ & $N$ (firm-years) \\
+\midrule
+FL cobidder    & $0.155$ & $0.013$ & $\approx 10^{-102}$ & $101{,}366$ \\
+FL non-cobidder & $0.368$ & $0.011$ & $<10^{-100}$        & $101{,}366$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\scriptsize
+\item Complementary log-log discrete-time hazard with duration and
+calendar-year fixed effects, standard errors clustered by firm;
+ratios relative to non-FL always-losers. Standard errors are
+implied by the reported $p$-values; both ratios lie well below one.
+A Cox model gives a comparable ratio ($0.221$) but violates
+proportional hazards (curves diverge over tenure), so the cloglog
+model is primary. Exit-definition robustness, the Cox estimates,
+and the full sensitivity battery are reported in the online
+supplement.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The direction is stable across robustness variants: alternative
+exit definitions, excluding late cohorts, and excluding the
+largest CADE case (hazard ratio $0.146$) all keep the ratio below
+one, and a timing-disciplined to-date label attenuates it to
+$0.768$ but leaves it below one; these are reported in the online
+supplement rather than inlined here.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\textwidth]{./output/figures/fig_B_survival_curves_frequent_losers}
+\caption{Kaplan--Meier platform-survival curves for always-losers,
+by full-sample label.}
+\label{fig:survival_curves_submission}
+\par\medskip
+{\footnotesize\textit{Alt text:} Three Kaplan--Meier curves of the
+share of firms still participating on the platform against tenure
+in years. The FL-cobidder curve lies highest and declines most
+slowly; the FL-non-cobidder curve is intermediate; the non-FL
+always-loser curve falls steepest and lies lowest, with most firms
+gone after one year. \par
+\textit{Note:} Right-censored at 2019. Labels are full-sample, so
+the comparison is descriptive. ``Survival'' is continued BEC
+platform participation, not legal-entity survival.}
+\end{figure}
+
+The survival audit is not a test of cartel membership, conduct, or
+overcharge. Because it uses full-sample labels it is descriptive
+and retrospective, and ordinary zero-win firms may exit for many
+reasons unrelated to cartel status. The result is consistent with
+the appendix's exit-margin logic---role value sustaining persistent
+losing participation---and is mechanism-supporting at most. The
+paper's identification continues to rest on the
+opportunity-adjusted and timing-disciplined tests of \S\S4--6.
+
+\subsection{Evidentiary scope}
 \label{app:framework_scope}
 
-The proposition delivers a ranking result. Even if the model is
-correct, a high value of
-$\log(1+T_i)$ raises the posterior probability of loser-side
-cartel-adjacency exposure only relative to other zero-win firms.
-It does not
-identify an agreement, assign cartel membership, prove that any
-specific bid was cover, or establish a damages base. Those
-claims require evidence from the richer record: bid values,
-communications, leniency material, repeated winner rotation, or
-other case-specific facts.
+Even if the model is correct, a high value of $\log(1+T_i)$ raises
+the posterior probability of loser-side cartel-adjacency exposure
+only relative to other zero-win firms. It does not identify an
+agreement, assign cartel membership, prove that any specific bid
+was cover, or establish a damages base. Those claims require
+evidence from the richer record: bid values, communications,
+leniency material, winner-rotation patterns, or other
+case-specific facts.
 
 This boundary is the legal reason for the staged architecture in
 the main text. The award layer can allocate attention because it
-ranks firms on a statistic that is cheap, observable, and
-monotone under a transparent behavioral assumption. The bid layer
-and case record then do the evidentiary work that liability
-requires, because liability turns on conduct and agreement, not
-on suspicious participation alone.
-
-The framework does not imply that all zero-win firms occupy a
-cartel losing role, that frequent-loser status is legal
-membership, or that any specific bid is a cover bid. It supplies
-only the ranking logic for triage.
-
-\begin{proposition}[Scope separation]
-\label{prop:submission_scope}
-Under Lemma~\ref{lem:submission_zero_win} and
-Proposition~\ref{prop:submission_monotone}, the frequent-loser statistic
-is sufficient to order expected investigative value within the
-zero-win stratum. It is not sufficient for liability or damages.
-\end{proposition}
-
-\begin{proof}
-Triage requires an ordering of expected investigative value.
-Proposition~\ref{prop:submission_monotone} supplies that ordering
-within the zero-win stratum. Liability and damages require
-different predicates: proof of agreement, conduct in particular
-tenders, and an economic measure of price injury. The statistic contains
-participation and win information only. It omits the facts needed
-for those predicates. The same statistic can be useful for
-allocating forensic attention and insufficient for legal
-adjudication.
-\end{proof}
+ranks firms on a statistic that is cheap, observable, and monotone
+under a transparent behavioral assumption. The bid layer and case
+record then do the evidentiary work that liability requires,
+because liability turns on conduct and agreement, not on persistent
+participation alone. The framework supplies only the ranking logic
+for triage.
