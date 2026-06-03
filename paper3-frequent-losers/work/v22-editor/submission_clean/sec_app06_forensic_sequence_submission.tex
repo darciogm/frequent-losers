@@ -1,10 +1,4 @@
-% CO-AUTHOR EDIT: Appendix G restructured into "Sequential Gatekeeping and the
-% Cost-Recall Frontier" (Step 19). Folds in the prior forensic-sequencing prose
-% (G.1, G.2, G.9) and adds cost-denominator, frontier-grid, baseline,
-% timing-disciplined, case-holdout, operating-point, and limitations material.
-% All numbers traced to outputs/tables/appendix and outputs/diagnostics CSVs.
-% Section labels app:forensic_sequence_submission and the four subsection labels
-% are preserved for cross-references from the main text.
+% G-TRIM: granular operating-points and baseline tables moved to online supplement S-G.
 \section{Sequential Gatekeeping and the Cost-Recall Frontier}
 \label{app:forensic_sequence_submission}
 
@@ -215,44 +209,17 @@ tender-items.}
 
 The sequential rule is bracketed by two reference points. Below it,
 a random survivor pool of the same size; above the first stage alone,
-the award score with no bid recovery at all. Table~\ref{tab:G_baselines}
-reports both at the $k=500$ queue depth.
-
-\begin{table}[htbp]\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Random and award-only baselines, queue depth $k=500$.}
-\label{tab:G_baselines}
-\scriptsize
-\begin{tabular}{rrrr}
-\toprule
-$K_1$ & Random recall [95\% band] & Award-survivor recall & Sequential recall \\
-\midrule
-$500$    & $0.029$ \,[$0.005,\,0.058$] & $0.342$ & $0.184$ \\
-$1{,}000$ & $0.057$ \,[$0.026,\,0.095$] & $0.500$ & $0.184$ \\
-$1{,}500$ & $0.082$ \,[$0.047,\,0.121$] & $0.663$ & $0.500$ \\
-$2{,}000$ & $0.102$ \,[$0.058,\,0.142$] & $0.779$ & $0.479$ \\
-$3{,}000$ & $0.140$ \,[$0.095,\,0.189$] & $1.000$ & $0.521$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\scriptsize
-\item \textit{Source:} \texttt{table\_G\_random\_and\_award\_only\_baselines.csv}
-and \texttt{table\_G\_full\_cost\_recall\_frontier.csv}. ``Random recall''
-is the mean over draws of a $K_1$-sized random pool, with the $95\%$
-band; ``award-survivor recall'' is the share of the $190$ positives
-captured inside the award-ranked survivor pool \emph{before} any bid
-rerank; ``sequential recall'' is the top-$k=500$ recall after bid
-reranking.
-\item The sequential rule sits $3$--$12\times$ above the random floor
-across the grid. Award-survivor recall reaches $0.779$ at $K_1=2000$
-and $1.000$ at $K_1=3000$: the cheap first stage alone already gathers
-the positives into the survivor pool. The bid rerank then reorders that
-pool into a forensic-priority queue; it does not recover positives the
-award gate missed.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+the award score with no bid recovery at all. The sequential rule sits
+$3$--$12\times$ above the random floor across the grid (random recall
+rises from $0.029$ at $K_1=500$ to $0.140$ at $K_1=3000$). Award-survivor
+recall --- the share of the $190$ positives captured inside the
+award-ranked survivor pool \emph{before} any bid rerank --- reaches
+$0.779$ at $K_1=2000$ and $1.000$ at $K_1=3000$: the cheap first stage
+alone already gathers the positives into the survivor pool. The bid
+rerank then reorders that pool into a forensic-priority queue; it does
+not recover positives the award gate missed. The full random and
+award-only baseline table (all $K_1$, with $95\%$ bands) is in the
+online supplement, \S S-G.
 
 This is the precise sense in which the bid layer reorders rather than
 discovers. Because the award gate already places the positives inside
@@ -324,38 +291,15 @@ cartels is correspondingly weaker than the pooled figure suggests.
 
 No single $(K_1,k)$ pair is optimal for every agency; the right point
 depends on capacity and on whether the priority is recall or precision.
-Table~\ref{tab:G_operating} reports the Pareto-efficient operating
-points at $k=500$, with the use-case each one suits.
-
-\begin{table}[htbp]\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Selected operating points, sequential award\,$\to$\,bid, $k=500$.}
-\label{tab:G_operating}
-\scriptsize
-\begin{tabular}{rrrrrl}
-\toprule
-$K_1$ & Bid rows opened & TP & Recall & Precision & Use case \\
-\midrule
-$500$    & $1{,}356{,}346$ & $65$ & $0.342$ & $0.130$ & low-capacity / high-precision \\
-$1{,}000$ & $1{,}783{,}750$ & $83$ & $0.437$ & $0.166$ & balanced \\
-$1{,}500$ & $2{,}065{,}315$ & $95$ & $0.500$ & $0.190$ & balanced \\
-$3{,}000$ & $2{,}575{,}274$ & $99$ & $0.521$ & $0.198$ & high-recall / high-capacity \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\scriptsize
-\item \textit{Source:} \texttt{table\_G\_operating\_points.csv}
-(Pareto-efficient rows, $k=500$). TP and precision are at queue depth
-$k=500$ against the $190$-positive pool.
-\item $K_1=2000$ is the reference point used in the main text for the
-firm-versus-bid-row divergence; it is one point on this frontier, not a
-universally preferred choice. A capacity-constrained agency favors the
-$K_1=500$ point (smallest footprint, highest precision); an agency
-prioritizing capture favors $K_1=3000$.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+At the $k=500$ queue depth the Pareto-efficient frontier spans a
+capacity-constrained low end --- $K_1=500$, smallest footprint
+($1{,}356{,}346$ bid rows), recall $0.342$, precision $0.130$ --- through
+a balanced middle ($K_1=1000$: recall $0.437$, precision $0.166$) to a
+high-recall end at $K_1=3000$ (recall $0.521$, precision $0.198$). The
+$K_1=2000$ point used in the main text for the firm-versus-bid-row
+divergence is one point on this frontier, not a universally preferred
+choice. The full Pareto-efficient operating-points table, with use-case
+labels, is in the online supplement, \S S-G.
 
 Figures~\ref{fig:G_cost_per_tp} and \ref{fig:G_fp} render the trade-off
 two further ways: the processing footprint spent per
