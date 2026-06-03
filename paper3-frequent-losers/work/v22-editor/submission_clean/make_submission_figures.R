@@ -99,25 +99,19 @@ p1 <- ggplot() +
            label = "Routine award\nrecord",
            fontface = "bold", size = 3.4, family = "sans",
            lineheight = 0.95) +
+  # CO-AUTHOR EDIT (Subprompt 8): drop the side-by-side AUC annotations so Fig 1 is a
+  # pure information-cost diagram (consistent with the caption and the reframe); the
+  # benchmark AUCs, with full case-grouped caveats, live in Section 6.1 / Table Q.
   annotate("text",
-           x = 1, y = -(total_height + 1.2),
-           label = "Bid-distribution forensics (requires recovered bid record)",
+           x = 1, y = -(total_height + 1.4),
+           label = "Bid-distribution forensics\n(requires recovered bid record)",
            size = 2.9, family = "sans", color = "gray35",
-           fontface = "italic") +
+           fontface = "italic", lineheight = 0.95) +
   annotate("text",
-           x = 1, y = -(total_height + 2.6),
-           label = "AUC = 0.888  [0.865, 0.911]",
-           size = 3.0, family = "sans", color = "gray25") +
-  annotate("text",
-           x = 7, y = -(total_height + 1.2),
-           label = "Award-layer triage score (routine record only)",
+           x = 7, y = -(total_height + 1.4),
+           label = "Award-layer triage score\n(routine record only)",
            size = 2.9, family = "sans", color = "black",
-           fontface = "italic") +
-  annotate("text",
-           x = 7, y = -(total_height + 2.6),
-           label = "AUC = 0.903  [0.884, 0.923]",
-           size = 3.0, family = "sans", color = "black",
-           fontface = "bold") +
+           fontface = "italic", lineheight = 0.95) +
   scale_x_continuous(limits = c(-0.3, 8.3), expand = c(0, 0)) +
   scale_y_continuous(limits = c(-(total_height + 4), 3.2),
                      expand = c(0, 0)) +

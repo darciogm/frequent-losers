@@ -149,3 +149,10 @@ User chose (a). Title changed; abstract (142w), intro 3-contributions, §4.5 sum
 - ✅ COMPLETED: §5 "Economic Content and Ordinary-Loser Alternatives" (5.1–5.6) + Tables J/K/L/M/N + 3 figs; NEW Appendix H (H.1–H.9) + 6 tables + 3 figs; +19 macros. Compiles (paper 59pp / appendix 44pp, 0 errors/undefined). Claims critical=0.
 - Logs: `17_SUBPROMPT_7_SECTION5_PROFILE_LOG.md`, `18_SUBPROMPT_7_COMPLETION_REPORT.md`, `binary_vs_continuous_score_memo.md`.
 - **NEXT: Subprompt 8 — Section 6A: Bid-Layer Benchmark Audit and Complementarity.** Under reframe: award layer adds info to bid-distribution benchmark on same target (complementarity, "comparable at lower cost", NOT "outperforms"). Inputs: scripts 31/49/26 (Imhof). Then §6B cost-recall frontier (RUN script 56, empty), §7 price downgrade (script 78 theater-not-identified), App B survival, JLEO compliance.
+
+---
+
+## Subprompt 8 close-out (Section 6A, 2026-06-03) — VERDICT E
+- ✅ COMPLETED: §6.1 "Bid-Layer Forensics as a Full-Observability Benchmark" + Tables O/P/Q/R/S + 2 figs; NEW Appendix I (I.1–I.10) + tables + 2 figs; +18 macros; Fig 1 AUCs removed. Compiles (paper 64pp / appendix 55pp, 0 errors/undefined). Claims critical=0.
+- Logs: `19_SUBPROMPT_8_SECTION6A_BID_BENCHMARK_LOG.md`, `20_SUBPROMPT_8_COMPLETION_REPORT.md`, bid_pipeline_inventory/unit_definitions/model_audit.md.
+- **NEXT: Subprompt 9 — Section 6B: Cost-Recall Frontier and Sequential Gatekeeping.** RUN script 56 (output/regulatory_frontier/ EMPTY); extend 63/64 to K1×cost grid; replace "83%" with a frontier; PR/precision/recall/FP/cost-per-TP. Then §7 price downgrade (script 78), App B survival, JLEO compliance.

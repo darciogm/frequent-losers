@@ -1,3 +1,4 @@
+% COMPRESS EDIT (Subprompt: length): cut repeated disclaimers, compressed lit + robustness roadmap, removed duplicate award-vs-bid exposition; preserved all \cite/\val, hook, exposure threat, three contributions, reach-and-limits.
 \section{Introduction}
 \label{sec:intro}
 
@@ -13,26 +14,25 @@ itself. It is the allocation of proof-producing effort.
 
 That distinction matters in procurement. The empirical
 cartel-screening literature usually starts from the bid layer:
-submitted bid amounts, bid ranks, within-tender dispersion,
-bid histories, and sometimes bidder networks. Classic
-procurement screens compare bidding patterns under competition
-and collusion \citep{porter1993detection,bajari2003deciding};
-variance and descriptive screens formalize suspicious bid
-distributions \citep{abrantesmetz2006a,harrington2008detecting}
-and field-test them in procurement settings
-\citep{imhof2018screening,imhof2019detecting}. Recent work
+submitted bid amounts, ranks, dispersion, histories, and
+sometimes bidder networks. Classic screens compare bidding
+under competition and collusion
+\citep{porter1993detection,bajari2003deciding}; variance and
+descriptive screens formalize suspicious bid distributions
+\citep{abrantesmetz2006a,harrington2008detecting} and
+field-test them in procurement
+\citep{imhof2018screening,imhof2019detecting}; recent work
 extends the approach through bidder groups
 \citep{conley2016detecting}, machine learning
 \citep{huber2019machine,wallimann2023machine}, and robust
-screen design \citep{chassang2022robust}.
-Those objects are close to the evidentiary stage, but they are
-not always cheap to obtain at scale. Many procurement systems
-make contract-award records routinely visible while keeping
-per-bidder bid files in operational systems that require
-case-specific recovery. An enforcement agency then faces a
-sequencing problem: before opening the costly bid layer, can it
-use the cheap award layer to decide where bid-layer forensics
-should begin?
+screen design \citep{chassang2022robust}. Those objects are
+close to the evidentiary stage but not always cheap at scale:
+many procurement systems make contract-award records routinely
+visible while keeping per-bidder bid files in operational
+systems that require case-specific recovery. An enforcement
+agency then faces a sequencing problem---before opening the
+costly bid layer, can it use the cheap award layer to decide
+where bid-layer forensics should begin?
 
 This paper studies that question on S\~ao Paulo's BEC
 procurement platform, covering $\valSampleN$ tender-items from
@@ -41,129 +41,108 @@ award layer---participants, winners, item codes, negotiated
 prices, procuring units, years, and modalities---and also
 preserves a richer bid layer recoverable through the LANCES
 export. CADE procurement-cartel adjudications provide external
-legal anchors. This institutional combination lets us study an
-earlier stage than most bid-distribution screens: the point at
-which an agency observes award records but has not yet recovered
-the bid-level evidence needed for forensic evaluation.
+legal anchors. This combination lets us study an earlier stage
+than most bid-distribution screens: the point at which an agency
+observes award records but has not yet recovered the bid-level
+evidence needed for forensic evaluation.
 
 The award-layer statistic is deliberately simple. Among firms
 with zero wins, we rank participation intensity using
 $\log(1+\text{tenders\_count})$ and implement an auditable
-binary rule that flags \emph{frequent losers}. The economic
-logic is monotone rather than classificatory. If coordinated
-bidders use loser-side participation to create the appearance of
-competition while avoiding the win, persistent zero-win
-participation can rank loser-side exposure under a transparent
-behavioral condition. The statistic does not identify a firm
-type or assign cartel membership. In the paper's staged design,
-the rank allocates forensic attention; the richer bid layer
-remains where tender-level conduct and agreement are evaluated.
+binary rule that flags \emph{frequent losers}. The logic is
+monotone rather than classificatory: if coordinated bidders use
+loser-side participation to create the appearance of competition
+while avoiding the win, persistent zero-win participation can
+rank loser-side exposure under a transparent behavioral
+condition. The statistic does not identify a firm type or assign
+cartel membership; the rank allocates forensic attention, while
+the richer bid layer remains where tender-level conduct and
+agreement are evaluated.
 
 That legal scope determines the validation target. Direct CADE
 defendants are legal membership anchors, but they are not the
 natural object of a zero-win loser-side screen. Procurement
 cartels often allocate winning roles, rotate designated
 winners, and use other firms on the losing side of the tender
-\citep{pesendorfer2000study,asker2010leniency}. The same
-role-allocation logic is central in cartel theory and dynamic
-case evidence \citep{marshall2012economics,clark2021collusion}.
-Large-scale
-procurement evidence shows how such arrangements can appear in
-administrative bidding records \citep{kawai2022detecting}.
-We therefore
-validate the screen against always-loser firms that bid
-alongside direct CADE defendants in adjudicated cartel
-environments. These cobidders define an adjudication-anchored
-exposure target. Direct defendants anchor legally adjudicated
-environments; cobidders are the loser-side footprint the award
-layer can plausibly rank before bid-level proof is recovered.
+\citep{pesendorfer2000study,asker2010leniency}; the same
+role-allocation logic is central in cartel theory and case
+evidence \citep{marshall2012economics,clark2021collusion}, and
+large-scale procurement evidence shows how such arrangements
+appear in administrative bidding records
+\citep{kawai2022detecting}. We therefore validate the screen
+against always-loser firms that bid alongside direct CADE
+defendants in adjudicated cartel environments. These cobidders
+define an adjudication-anchored exposure target: direct
+defendants anchor legally adjudicated environments, and
+cobidders are the loser-side footprint the award layer can
+plausibly rank before bid-level proof is recovered.
 
 The empirical design is organized around the threats that would
-make such a screen uninformative for enforcement. A skeptic's
-first objection is mechanical: high-volume zero-win firms may
-simply have more opportunities to meet CADE defendants. A raw
-co-bidding association could therefore reflect participation
-volume or opportunity-set exposure rather than signal: firms
-active in the same product, buyer, year, and modality
-% CO-AUTHOR EDIT: stated the canonical mechanical objection as its own clean sentence; kept validation forward-looking (tables not yet finalized)
-environments as CADE defendants have more chances to appear
-near those legal anchors. The paper's empirical core is built
-around exactly this objection. We compare observed
-concentration with participation-disciplined placebos and
-exposure-adjusted audits that compare firms within more similar
-opportunity sets for meeting CADE defendants, add timing and
-leakage audits, and run direct-defendant scope checks.
-\ref{app:validation_audits_submission}
-reports the exact
-exposure, leakage, and timing audit construction. A
-retrospective score could reuse information from the target
-period, so we report timing exercises that form the score before
-the evaluation window and distinguish relaxed from strictly ex
-ante definitions. A loser-side statistic could be overread as a
-cartel-membership detector, so we test whether it also
-classifies direct defendants. It should not.
+make such a screen uninformative. A skeptic's first objection is
+mechanical: high-volume zero-win firms may simply have more
+opportunities to meet CADE defendants, so a raw co-bidding
+association could reflect participation volume or opportunity-set
+exposure rather than signal. We discipline the ranking against
+participation volume, opportunity exposure, timing/leakage, case
+composition, and a bid-layer benchmark; Section~4 and the
+appendices report the battery, and
+\ref{app:validation_audits_submission} gives the exact exposure,
+leakage, and timing audit construction.
 
 The results support a limited but operationally useful claim.
 The frequent-loser ranking concentrates adjudication-anchored
 cobidders inside the always-loser stratum, including when the
-score is formed before the target window.
-% CO-AUTHOR EDIT: honest exposure hedge after opportunity-adjusted validation (Subprompt 5)
-Much of this raw
+score is formed before the target window. Much of this raw
 concentration reflects procurement opportunity---firms that
 participate more, in the same environments as adjudicated
 defendants, are mechanically more exposed to them---but a
 limited and statistically significant signal survives once
-opportunity is held fixed. It performs poorly
-against direct CADE defendants, consistent with its loser-side
-scope rather than with a generic cartel-membership
-interpretation. Cobidders inside the frequent-loser stratum also
-look different from other frequent losers: they are deployed more
-broadly, appear closer to legal cartel anchors, operate in more
-concentrated product portfolios, and display bid-level patterns
-consistent with, but not diagnostic of, credible losing roles.
-% CO-AUTHOR EDIT: "adjacency target" -> "exposure target" for terminology discipline
-Those patterns give the exposure target economic content and
-make it harder to reduce the result to ordinary high-volume
-losing alone.
+opportunity is held fixed. It performs poorly against direct
+CADE defendants, consistent with its loser-side scope rather
+than a generic cartel-membership interpretation. Cobidders
+inside the stratum also look different from other frequent
+losers: deployed more broadly, closer to legal cartel anchors,
+in more concentrated product portfolios, with bid-level patterns
+consistent with, but not diagnostic of, credible losing
+roles---giving the exposure target economic content beyond
+ordinary high-volume losing.
 
-% CO-AUTHOR EDIT: demote "main result" gatekeeper claim to a complementary architecture point (Subprompt 6 reframe)
 A complementary result concerns the division of labor between the
 two layers. On the same adjudication-anchored target, the
 award-layer score carries information beyond an
 Imhof--Wallimann-style bid-distribution benchmark, so the layers
 enter at different stages: award records prioritize where to look,
-and bid records evaluate what is found. % TODO_JLEO_RR_REVALIDATE_NUMBER: gatekeeper footprint, recall, and cobidder-target counts pending cost-recall frontier
-Used as a gatekeeper within its boundary conditions, the
-award-layer ranking concentrates the bid-microdata pool the
-forensic stage must open (by \valGateFootprintPct{}, recovering
-\valGateSeqKTwoKOneTPIn{} of \valCobidders{} adjudicated
-cobidders). Joint scoring is a full-observability upper bound;
-sequential gatekeeping is the architecture relevant once an agency
-knows where the cheap layer does and does not rank.
+and bid records evaluate what is found. Used as a gatekeeper
+within its boundary conditions, the award-layer ranking
+concentrates the bid-microdata pool the forensic stage must open
+(by \valGateFootprintPct{}, recovering \valGateSeqKTwoKOneTPIn{}
+of \valCobidders{} adjudicated cobidders). Joint scoring is a
+full-observability upper bound; sequential gatekeeping is the
+architecture relevant once an agency knows where the cheap layer
+does and does not rank.
 
-% CO-AUTHOR EDIT: three contributions reframed to method + reach-and-limits map (Subprompt 6, option (a))
 This paper makes three contributions. First, it reframes
 procurement-cartel screening as evidence allocation under costly
-observability. Existing bid-distribution screens evaluate
-suspicious bidding once bid-level data have been recovered; we
-study the prior institutional stage, where agencies observe award
-records but must decide where recovery should start. This turns
+observability: existing bid-distribution screens evaluate
+suspicious bidding once bid-level data have been recovered, while
+we study the prior institutional stage, where agencies observe
+award records but must decide where recovery should start---turning
 screening toward enforcement triage, not toward treating a
 statistical flag as proof
 \citep{harrington2008detecting,sanchezgraells2019screening,chassang2022robust}.
 Second, and methodologically, we subject a minimal award-layer
-construct to a decomposition that screening studies usually omit.
-We ask not whether the construct attains a high pooled AUC, but
-how much of that performance is genuine ranking signal rather than
-mechanical opportunity exposure, retrospective information, or
-concentration in a single adjudicated case. The exercise pairs
-pre-committed rejection regions with opportunity-cell adjustment,
-strict rolling-origin timing, and leave-one-case-out tests. Third,
-that decomposition yields a map of reach and limits. Persistent
-zero-win participation does concentrate a legally limited,
-adjudication-anchored loser-side exposure target; but its
+construct to a decomposition screening studies usually omit: not
+whether it attains a high pooled AUC, but how much of that
+performance is genuine ranking signal rather than mechanical
+opportunity exposure, retrospective information, or concentration
+in a single adjudicated case---pairing pre-committed rejection
+regions with opportunity-cell adjustment, strict rolling-origin
+timing, and leave-one-case-out tests. Third, that decomposition
+yields a map of reach and limits: persistent zero-win
+participation does concentrate a legally limited,
+adjudication-anchored loser-side exposure target, but its
 discriminating power is largely retrospective and
-incumbent-specific, and a substantial share is attributable to
+incumbent-specific, with a substantial share attributable to
 procurement opportunity and to one case. Cheap administrative
 records can order forensic priority \emph{within} these
 boundaries---and locating the boundaries is itself the
@@ -172,21 +151,19 @@ enforcement-design product.
 The boundaries are part of the design. The award layer ranks
 forensic priority; the validation target is
 adjudication-anchored exposure; and the bid layer remains the
-proof-producing stage. Price evidence is scope information, not
-a damages exercise. Strategic response also shapes
-implementation: a static cutoff invites gaming, while refreshed
-thresholds, continuous ranks or capacity-constrained queues,
-bunching checks, and bid-layer follow-up fit the staged
-enforcement architecture.
+proof-producing stage. Price evidence is scope information, not a
+damages exercise. Strategic response also shapes implementation:
+a static cutoff invites gaming, while refreshed thresholds,
+continuous ranks or capacity-constrained queues, bunching checks,
+and bid-layer follow-up fit the staged enforcement architecture.
 
 The broader lesson is institutional. A legal system that waits
 for full proof before ranking investigative priorities will
-spend scarce forensic capacity poorly; a legal system that
-treats cheap suspicion as proof will overreach. The useful
-middle ground is a disciplined triage rule---cheap enough to run
-before proof exists, informative enough to order forensic
-attention within a known reach, and legally limited enough to
-leave liability where it belongs, in the richer evidentiary
-record. % CO-AUTHOR EDIT: tie closing to reach-and-limits reframe
-Knowing where such a rule stops ranking is as much a part of
-disciplined enforcement as knowing where it begins.
+spend scarce forensic capacity poorly; a system that treats cheap
+suspicion as proof will overreach. The useful middle ground is a
+disciplined triage rule---cheap enough to run before proof
+exists, informative enough to order forensic attention within a
+known reach, and legally limited enough to leave liability where
+it belongs, in the richer evidentiary record. Knowing where such
+a rule stops ranking is as much a part of disciplined enforcement
+as knowing where it begins.

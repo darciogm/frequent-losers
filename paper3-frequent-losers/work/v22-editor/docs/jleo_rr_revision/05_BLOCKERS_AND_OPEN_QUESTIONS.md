@@ -105,3 +105,11 @@ Front-end (sec 1–3) is written with forward-looking language; it does NOT asse
 - **Entrant coverage hole:** 23% of positives unrankable (no pre-window history) — structural limit of any participation-history screen.
 - **Year-level timing only** (no conduct dates) — adjudication-observable-at-time variant infeasible.
 - Carried: conservative-AUC re-estimation (Sub4); B3 absent 193 builder; App D literals not macro-bound; App D now very long (D.1–D.21).
+
+---
+
+## Subprompt 8 — bid-benchmark notes (2026-06-03)
+- **Two minor transparency items (not blockers):** (a) script 31 header says "logit/10-fold" but code is RF/5-fold — manuscript now says random forest; (b) script 31 has no per-fold RF seed → N=16,779 numbers reproduce within CV jitter (N=11,676 exact). Recommend adding `seed=20260430+k` to ranger() for bit-reproducibility (no manuscript number changes).
+- **Bid strict-timing BLOCKED:** within-tender moments can't be cleanly time-limited without per-period re-derivation; documented (Table S, Appendix I.7).
+- **Carried:** conservative-AUC re-estimation; B3 absent 193 builder; App D/H/I length (online appendix now 55pp).
+- Verdict E locked: bid benchmark is a forensic full-observability diagnostic + case-holdout robustness check, NOT a real-time bid-layer triage tool; combined = upper bound.

@@ -1,0 +1,88 @@
+=== 09_bid_benchmark_validation.R === 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-03 13:36:37  RAM_free=20Gi  RF_trees=500 
+REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
+
+========== STAGE 0. FIRM-LEVEL IMHOF FEATURE FRAME ========== 
+loading cached firm + tender Imhof feature frames 
+  [stage 0_firm_features           ] elapsed=   3.9s  RSS=1403 MB 
+
+========== STAGE 1. CANDIDATE POOL + LABELS ========== 
+cobidder positives (file): 192 distinct ; direct defendants (crossmatch): 47 distinct ; overlap (-> defendant only): 1 {09474700000192} 
+always-losers (minus 7 defendants in pool): 16836 
+CANDIDATE POOL (complete Imhof features): N=16,731 ; positives(is_cade)=190 
+positive codes not in complete-feature pool (excluded): 1 
+positives in pool linked to >=1 CADE case: 147 ; UNLINKED (no case in map): 43 
+--- primary-case positive counts (in pool) --- 
+  08700.004617/2013-41   : 104 
+  08012.002222/2011-09   : 18 
+  08012.010022/2008-16   : 14 
+  08700.005876/2019-85   : 9 
+  08700.005789/2015-02   : 1 
+  08700.007278/2015-17   : 1 
+  [stage 1_candidate_pool          ] elapsed=   4.1s  RSS=847 MB 
+
+========== DESIGN A: POOLED RANDOM 5-FOLD CV ========== 
+Design A AUC -- award_cont=0.9382  award_FL14=0.9233  bid_RF=0.8915  combined_RF=0.9580 
+(script-31 reference: fl_alone 0.921, imhof_full 0.888, imhof_full_plus_fl 0.962) 
+  [stage 3_designA                 ] elapsed=  10.6s  RSS=1055 MB 
+
+========== DESIGN E: CASE-GROUPED CV (leave-one-case-out folds) ========== 
+case-grouped folds: 6 (one per case). positives per fold: 
+rows with NA OOF bid pred (fold had no training positives or empty): 0 
+Design E POOLED out-of-fold AUC -- award_cont=0.9382  award_FL14=0.9233  bid_RF=0.8098  combined_RF=0.9363 
+
+----- Design E LOCO per-case detail (held-out case positives only) ----- 
+LOCO non-sparse mean AUC: award_cont=0.941 bid=0.787 combined=0.926 
+  [stage 4_designE                 ] elapsed=  19.2s  RSS=1095 MB 
+
+========== DESIGN F: EXCLUDE LABEL-DEFINING TENDERS ========== 
+loading cached label-excluded firm features 
+Design F pool (complete features after exclusion): N=16,665 ; positives=190 (was N=16,731/190) 
+Design F (random 5-fold, label-defining tenders EXCLUDED) AUC -- award_cont=0.9380 bid_RF=0.8743 combined_RF=0.9576 
+  contamination magnitude: bid AUC 0.8915 (A) -> 0.8743 (F)  delta=-0.0172 
+  [stage 5_designF                 ] elapsed=  26.9s  RSS=1139 MB 
+
+========== DESIGN G: ENVIRONMENT HOLDOUT (largest item-group) ========== 
+largest positive item-group = 16 (57 positives). holding it out as test. 
+Design G held-out item-group=16 : N_test=1259 pos_test=57 
+Design G AUC on held-out env -- award_cont=0.9142 bid_RF=0.8090 combined_RF=0.9203 
+  [stage 6_designG                 ] elapsed=  32.0s  RSS=1086 MB 
+
+========== TABLE Q: PERFORMANCE ACROSS DESIGNS ========== 
+--- Table Q (ROC-AUC / PR-AUC by design x model) --- 
+wrote table_Q + predictions (205,544 rows) + fold audit 
+  [stage 7_tableQ                  ] elapsed=  90.9s  RSS=1238 MB 
+
+========== TABLE R: COMPLEMENTARITY ========== 
+Spearman(award, bid_RF) [A] : overall=0.423 cobidders=0.272 non=0.408 
+[A] PR-AUC bid=0.124 award=0.126 combined=0.275  | dPR(bid->comb)=0.151 dPR(award->comb)=0.149 
+[A] DeLong combined vs bid: Z=8.690 p=3.61e-18 ; combined vs award: Z=3.303 p=9.55e-04 
+[E] PR-AUC bid=0.045 combined=0.109 dPR=0.064 ; DeLong comb vs bid Z=10.256 p=1.11e-24 
+--- top-k overlap (Design A) --- 
+residual complementarity: 122 positives missed by bid top-500; award AUC over residual pool=0.938 
+wrote table_R + 3 figures 
+  [stage 8_tableR                  ] elapsed=  92.2s  RSS=1251 MB 
+
+========== TABLE S: LEAKAGE AUDIT ========== 
+wrote table_S (9 rows) 
+  [stage 9_tableS                  ] elapsed=  92.2s  RSS=1251 MB 
+
+========== TABLE F (appendix): CALIBRATION + ERROR ANALYSIS ========== 
+combined RF Brier=0.00950 ; calibration by decile: 
+combined RF @500 (Design A): TP=99 FP=401 FN=91 
+top FP item-groups: 
+top FN item-groups: 
+  [stage 10_tableF                 ] elapsed=  92.4s  RSS=1251 MB 
+
+========== TABLE P: MODEL AUDIT ========== 
+wrote table_P + bid_benchmark_model_audit.md 
+  [stage 11_tableP                 ] elapsed=  92.4s  RSS=1251 MB 
+
+========== VERDICT INPUTS ========== 
+A pooled : award_FL14=0.923 bid_RF=0.891 combined_RF=0.958 
+E grouped: bid_RF=0.810 combined_RF=0.936 
+F excl-label: bid_RF=0.874 (delta vs A = -0.017) 
+complementarity [A] dPR(bid->combined)=0.151 ; [E] dPR(bid->combined)=0.064 
+spearman(award,bid)=0.423 ; top-500 award/bid overlap=85 
+
+=== DONE === elapsed=92.4s 

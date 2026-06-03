@@ -95,3 +95,15 @@ The toughest test landed hard. Honest downgrade implemented (§4.4).
 - **Ordinary-loser alternatives (Table N):** NARROWED not eliminated — cobidders wider/longer-lived (not low-capacity), low Convite/quorum (not padding), low first-year conc. (not explore-exit); but distance/geography/later-wins NOT_OBSERVED → specialization & geography not fully ruled out. CADE contact = distinguishing axis.
 - **★ Negative controls (STRENGTH):** real cobidder ROC-AUC 0.939 beats matched placebo-anchor null (0.755, p<0.001) + non-CADE-winner null (0.780, p<0.001) → ranking SPECIFIC to the real defendant network, not generic high-volume co-bidding. Honest caveat: placebo PR-AUC p=0.70 (base-rate inflation; ROC is the decisive ranking metric).
 - "cartel-adjacent" REMOVED (§5 retitled "Economic Content and Ordinary-Loser Alternatives"). New Appendix H. Claims critical=0.
+
+---
+
+## Subprompt 8 status update (Section 6A bid-layer benchmark, 2026-06-03) — VERDICT E
+§6.1 made transparent + honestly bounded. Bid pipeline REPRODUCIBLE (not blocked).
+- **#9 (bid-layer benchmark under-documented):** ✅ — learner = random forest (ranger 500 trees, NOT logit), 7 within-tender Imhof moments, candidate=always-losers w/ complete features, target=193 cobidders. Tables P (model audit), O (support), F (feature dictionary). Timing/bid-revision features NOT implemented (disclosed).
+- **#7 (ROC overemphasis):** ✅ — PR-AUC/precision/recall lead; Table Q. all 193 positives retained (no support problem).
+- **Complementarity (separately demonstrated):** Spearman(award,bid)=0.42; top-500 overlap 17%, award catches 33 net-new / bid 36; incremental Δ PR-AUC adding award to bid = pooled +0.151 → case-grouped +0.064 (p<0.001, halves). Combined = full-observability UPPER BOUND. Table R.
+- **STRENGTH:** cheap award FL (0.921) ≈ costly bid benchmark (0.888) → "comparable discrimination at lower informational cost" (NOT "outperforms").
+- **★ KEY CAVEAT (Verdict E):** pooled metrics use random CV folds (optimistic; positives cluster by case). Case-grouped: bid ROC 0.891→0.810, PR-AUC 0.124→0.045 (−63%); combined holds (0.936) only because label-independent award holds. Excl-label-defining-tenders: bid 0.891→0.874 (−0.017, minor contamination). Bid strict-timing BLOCKED. Table S leakage audit.
+- Fig 1 AUC annotations (0.888/0.903) REMOVED → pure info-cost diagram (benchmark AUCs live in §6.1/Table Q with caveats).
+- "outperforms"/"state of the art" absent; claims critical=0.

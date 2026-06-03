@@ -1,24 +1,16 @@
 \section{Award-Layer Triage}
 \label{sec:award_screen}
 
+% COMPRESS EDIT (length)
 The award layer observes outcomes before it observes conduct. A
 losing bid may be sincere, poorly priced, capacity constrained,
-exploratory, strategic, or coordinated. The screen therefore
-uses what the award layer can measure at the triage stage: which
-firms appeared, which firms won, and which firms kept appearing
-without ever winning. The object is a ranking for forensic
-priority, not proof of conduct or a classification of cartel
-membership.
-
-This section defines that ranking and the empirical implications
-that discipline it. Subsection~\ref{sec:award_primitive}
-introduces persistent zero-win participation as the award-layer
-primitive. Subsection~\ref{sec:award_rule} explains why the
-continuous ranking can be converted into an operational queue or
-binary frequent-loser flag. Subsection
-\ref{sec:testable_implications} states the tests that the rest
-of the paper uses to evaluate whether the ranking is informative
-for enforcement.
+exploratory, strategic, or coordinated. The screen therefore uses
+what the award layer can measure at the triage stage: which firms
+appeared, which won, and which kept appearing without ever
+winning. The object is a ranking for forensic priority, not proof
+of conduct or a classification of cartel membership. This section
+defines that ranking, the operational queue it yields, and the
+implications that discipline it.
 
 \subsection{Persistent Zero-Win Participation}
 \label{sec:award_primitive}
@@ -44,7 +36,7 @@ If cartel-deployed losing participants are present, they should
 appear more persistently in the zero-win stratum than ordinary
 losing firms, because such a role is useful only through repeated
 deployment in cartel-targeted tenders. The condition is
-maintained, not derived. \ref{app:framework_submission}
+maintained, not derived; Appendix~\ref{app:framework_submission}
 formalizes it as a monotone-likelihood-ratio ranking result. The
 main text uses it more modestly: persistent zero-win participation
 is a cheap statistic that can rank loser-side exposure under a
@@ -52,10 +44,10 @@ transparent behavioral assumption and direct attention to the bid
 layer where conduct can be evaluated. It does not assign a firm
 type or cartel membership.
 
-The zero-win restriction is therefore a scope restriction. Many
-firms never win for ordinary competitive reasons: poor fit, high costs,
+The zero-win restriction is a scope restriction: many firms never
+win for ordinary competitive reasons (poor fit, high costs,
 capacity constraints, market exploration, subcontracting
-positioning, or simple bad luck. The screen's content comes from
+positioning, or bad luck), and the screen's content comes from
 persistence inside that heterogeneous loser-side set. If the
 ranking has enforcement value, it should concentrate
 adjudication-anchored loser-side adjacency beyond what generic
@@ -66,123 +58,58 @@ meet CADE anchors would mechanically produce.
 \label{sec:award_rule}
 
 The continuous score is the central object because agencies can
-translate a rank into different investigative protocols. A team
-with fixed capacity could inspect the top $k$ firms. A
-monitoring unit could refresh the rank each quarter and examine
-bunching below old cutoffs. A case team could use the score to
-request LANCES bid files for a survivor pool before applying
-bid-distribution forensics. These implementations differ, but
-all preserve the same sequencing logic: award records first,
-costly bid recovery second.% TODO_JLEO_RR_COST_FRONTIER: the later cost-recall-frontier prompt will evaluate multiple first-stage K1 cutoffs along a cost-recall frontier.
+translate a rank into different investigative protocols: inspect
+the top $k$ firms under fixed capacity, refresh the rank each
+quarter and examine bunching below old cutoffs, or request LANCES
+bid files for a survivor pool before applying bid-distribution
+forensics. All preserve the same sequencing logic: award records
+first, costly bid recovery second.
 
 For an auditable binary implementation, we also report a
-frequent-loser flag. The rule marks zero-win firms whose
-participation count exceeds the median plus $1.5$ times the
-interquartile range of the always-loser participation
-distribution. In BEC, the statistical cutoff is
-$\valThresholdStat$, implemented as $T_i\geq\valThreshold$, which
-flags $\valFL$ firms, or $\valFLrateAL$ of the always-loser
-stratum. The cutoff is fixed from the participation distribution
-alone, before any CADE label enters the analysis.
+frequent-loser flag marking zero-win firms whose participation
+count exceeds the median plus $1.5$ times the interquartile range
+of the always-loser participation distribution. In BEC, the
+statistical cutoff is $\valThresholdStat$, implemented as
+$T_i\geq\valThreshold$, which flags $\valFL$ firms, or
+$\valFLrateAL$ of the always-loser stratum. The cutoff is fixed
+from the participation distribution alone, before any CADE label
+enters the analysis.
 
 The $T_i\geq\valThreshold$ rule is an auditable administrative
 implementation of the rank, not a structural or legal
 threshold.% CO-AUTHOR EDIT: make explicit the T_i>=14 rule is an auditable implementation, not a structural threshold
-The paper does not
-rest on the number $14$; it rests on the continuous loser-side
-participation ranking. Two analysts applying the same rule to
-the same award records obtain the same first-stage list. Above
-the cutoff does not mean cartel member; below it does not mean
-clean. Because a published static threshold can be gamed,
-strategic adaptation makes continuous ranks and periodically
-refreshed queues preferable to a permanent static cutoff: the
-enforcement architecture treats the binary flag as one
-implementation among several, alongside continuous ranks,
-top-$k$ queues, refreshed thresholds, and budget-calibrated
-survivor pools.% CO-AUTHOR EDIT: strategic adaptation favors continuous ranks / refreshed queues over a permanent static cutoff
-The strategic-adaptation analysis later returns to this point.
+The paper does not rest on the number $14$ but on the continuous
+loser-side participation ranking. Two analysts applying the same
+rule to the same award records obtain the same first-stage list;
+above the cutoff does not mean cartel member, and below it does
+not mean clean. Because a published static threshold can be gamed,
+the enforcement architecture treats the binary flag as one
+implementation among several---continuous ranks, top-$k$ queues,
+refreshed thresholds, and budget-calibrated survivor pools---and
+the strategic-adaptation analysis later returns to this point.% CO-AUTHOR EDIT: strategic adaptation favors continuous ranks / refreshed queues over a permanent static cutoff
 
 \subsection{Testable Implications}
 \label{sec:testable_implications}
 
+% COMPRESS EDIT (length): testable-implications threat-map table deleted (redundant with Section 4 and the appendix); ref repointed to prose pointer below
 The screen is useful only if it survives the threats implied by
-its limited information. Table~\ref{tab:testable_implications_submission}
-is a forward-looking validation-threat map: for each implication
-it states the required test and what would weaken the design, not
-just what the design predicts. The implications it lists are the
-checks the rest of the paper must clear, not completed evidence.
-The first and core implication is the validation claim:
-% TODO_JLEO_RR_OPPORTUNITY_TABLE: \S4.2 opportunity-adjusted validation (Table B) is the empirical answer to the mechanical-exposure threat flagged here.
-persistent zero-win participation should rank
+its limited information. The core implication is the validation
+claim: persistent zero-win participation should rank
 adjudication-anchored loser-side cobidders within the always-loser
-stratum. The main threat is mechanical exposure: frequent
-participants, and firms operating in the same procurement
-environments as CADE defendants, have more opportunities to
-appear near them even under ordinary competition.% CO-AUTHOR EDIT: foreground core implication first; name mechanical exposure (volume + opportunity set) as main threat; call Table 2 a validation-threat map
-
-The second implication is a scope check. A loser-side statistic
-should perform worse against direct CADE defendants than against
-always-loser cobidders, because it ranks a different role in the
-procurement environment. The third implication asks whether the
-cobidder target has economic content: among frequent losers,
-cobidders should differ from other frequent losers in directions
-consistent with loser-side exposure, proximity to defendants,
-market concentration, and bid-level losing behavior. These
-profiles give the validation target economic content; they do
-not prove conduct or assign legal status.
-
-The final implications evaluate the enforcement architecture.
-If award records and bid records carry different information,
-the award-layer score should add non-redundant signal to
-bid-distribution forensics. If the screen has institutional
-value, using it before bid recovery should reduce the
-bid-microdata footprint while preserving much of the
-adjudication-anchored recall. And because firms can respond to
-published administrative rules, the binary threshold should be
-treated as vulnerable to strategic adaptation rather than as a
-fixed rule immune to gaming.
-
-% CO-AUTHOR EDIT: rebuilt Table 2 as a 6-column x 10-row pre-analysis validation-threat map (test names + metric names + qualitative pass/weaken interpretations only; no result values)
-\begin{table}[htbp]
-\centering
-\caption{Validation-threat map: implications, required tests, and interpretation.}
-\label{tab:testable_implications_submission}
-\scriptsize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{p{1.9cm}p{2.3cm}p{2.4cm}p{2.2cm}p{2.5cm}p{2.5cm}}
-\toprule
-Threat / implication & Why it matters & Required test & Main metric & Interpretation if test passes & Interpretation if test weakens \\
-\midrule
-Label construction & Validation target is the paper's ground truth. & Label funnel and count reconciliation. & Cases, defendants, and cobidders by benchmark. & Target counts trace to data. & Sample-credibility problem. \\
-Participation volume & Screen could be high-volume losing only. & Volume controls and participation-matched permutations. & PR-AUC, lift, AUC, excess ratio. & Signal beyond participation volume. & Screen is volume only. \\
-Opportunity-set exposure & Firms in the same item, buyer, year, and modality cells as defendants meet them more. & Expected-contact within opportunity cells. & PR-AUC, precision@$k$, recall@$k$, excess contact. & Signal beyond exposure. & Main claim downgraded to a partial exposure artifact. \\
-Timing / leakage & Pooled AUC may reuse target-period information. & Rolling-origin, strict holdout, leakage audit. & PR-AUC, AUC, precision@$k$, recall@$k$. & Retains out-of-time discrimination. & Retrospective ranking only. \\
-Case dominance & One large case could drive the result. & Leave-one-case-out and leave-largest-case-out. & Distribution of PR-AUC, AUC, recall. & Stable across cases. & Case-composition driven. \\
-Legal-scope asymmetry & Must not be a generic membership detector. & Direct-defendant classification. & AUC and PR-AUC near random. & Not a membership detector (loser-side scope confirmed). & Scope claim unclear. \\
-Economic profile & Target should have economic content. & Firm-level and bid-level profile comparisons. & Standardized differences, bid-gap moments. & Cobidders differ on economic dimensions. & Target has less economic content. \\
-Bid-layer complementarity & Award layer must add non-redundant information. & Award, bid, and combined models on the same target. & PR-AUC, AUC, precision, recall. & Award adds non-redundant signal. & Award layer redundant. \\
-Gatekeeping & Sequencing value must hold at affordable budgets. & Cost-recall frontier over $K_1$ and cost denominators. & Recall, precision, false positives, cost per true positive. & Concentrates the pool at acceptable recall. & Sequencing value smaller or budget-specific. \\
-Strategic response & Published rules invite gaming. & Bunching, refreshed-queue, and adaptation analysis. & Threshold bunching, rank instability. & Ranks and refreshed queues robust. & Prefer continuous ranks and refreshed protocols. \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} This is a pre-analysis validation-threat
-map, not a results table. It states the tests and the
-interpretation if each test passes or weakens; it does not report
-outcomes. Predictions evaluate whether the award-layer ranking is
-useful for evidence allocation; they do not define legal
-membership or proof. The realized results of these tests are
-reported in the validation sections and the appendix.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
-
-Together, these tests evaluate the screen at the stage for which
-it is designed: the allocation of costly forensic attention
-before liability evidence is assembled. The BEC cutoff is an
+stratum, beyond what mechanical exposure---high participation
+volume and operation in the same procurement environments as CADE
+defendants---would produce under ordinary competition. The
+remaining implications are scope (the statistic should perform
+worse against direct defendants than cobidders, ranking a
+different role), economic content of the cobidder target,
+non-redundancy of the award layer relative to bid-distribution
+forensics, gatekeeping value at affordable budgets, and
+vulnerability of the published binary threshold to strategic
+adaptation. These testable implications, and the threats that
+would weaken each, are evaluated in Section~\ref{sec:validation}
+and the appendix; the screen is assessed at the stage for which it
+is designed---the allocation of costly forensic attention before
+liability evidence is assembled. The BEC cutoff is an
 implementation detail; the portable object is the staged
 architecture that uses cheap administrative records to discipline
 where costly cartel forensics should begin.

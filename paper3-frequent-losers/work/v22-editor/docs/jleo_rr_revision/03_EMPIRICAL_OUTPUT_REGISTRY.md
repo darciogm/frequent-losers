@@ -116,3 +116,14 @@ Scripts: `scripts/analysis/05_section5_profile_monotonicity.R` (groups, Table J/
 - Figures: main {fig_profile_standardized_differences, fig_cobidder_prevalence_by_participation_bin, fig_excess_contact_by_participation_bin}; appendix {fig_threshold_sensitivity, fig_threshold_bunching_T14, fig_negative_control_distribution}.
 - Diagnostics: monotonicity_score_deciles, monotonicity_topk, threshold_bunching_T14, ordinary_loser_proxy_stats, leave_one_item_group_out, section5_*_audit_log; claims_scan_after_section5.csv. memo: binary_vs_continuous_score_memo.md.
 - Manuscript: sec05 rewritten 5.1–5.6; NEW Appendix H (sec_app08_profile + \input in master); values.tex +19 \valProf* macros. NOT_OBSERVED: tender value, distance-to-winner, geography, later-wins.
+
+---
+
+## Subprompt 8 outputs (Section 6A bid benchmark, 2026-06-03)
+Scripts: `scripts/analysis/{07_bid_feature_audit, 08_bid_benchmark_reproduction, 09_bid_benchmark_validation}.R` (seed 20260603; reuse pipeline scripts 31/49). Data `v3/data/processed/bid_level_with_prices.parquet`.
+- Main tables: `outputs/tables/main/{table_O_bid_feature_support, table_P_bid_benchmark_model_audit, table_Q_bid_layer_performance, table_R_award_bid_complementarity, table_S_bid_layer_leakage_audit}.{csv,tex}`.
+- Appendix tables: `outputs/tables/appendix/{table_F_bid_feature_dictionary, table_F_bid_feature_missingness, table_F_bid_model_calibration}.*`.
+- Figures: main {fig_award_bid_pr_curves, fig_award_bid_rank_overlap}; appendix {fig_award_bid_score_scatter, fig_bid_model_calibration}. Fig 1 regenerated (AUC annotations removed).
+- Cache: bid_benchmark_predictions, imhof_firm_features(.parquet/_excl_label), imhof_tender_features. Diagnostics: bid_benchmark_{number_reproduction, fold_audit, loco_per_case, error_analysis}, bid_feature_support_diagnostics; claims_scan_after_section6a_bid_benchmark.csv.
+- Docs: bid_pipeline_inventory.md, bid_layer_unit_definitions.md, bid_benchmark_model_audit.md.
+- Manuscript: sec06 §6.1 revised; NEW Appendix I (sec_app09_bid_benchmark, I.1–I.10) + \input in master; values.tex +18 \valBid* macros (reuse \valImhof* for pooled). Fig 1 (make_submission_figures.R) AUCs removed.

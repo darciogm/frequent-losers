@@ -1451,3 +1451,26 @@
 \newcommand{\valProfNegCtrlPlaceboAUC}{0.76}   % src: ../outputs (Appendix H negative controls; matched placebo-anchor mean ROC-AUC ~0.755/0.780)
 \newcommand{\valProfBunchRatio}{1.06}          % src: ../outputs (bunching/density-ratio test at T=14; no excess mass)
 \newcommand{\valProfMarketZeroWinBest}{0.774}  % src: ../outputs (best market-specific zero-win alternative ROC vs global 0.939)
+
+% === Subprompt 8: bid-layer benchmark audit ===
+% CO-AUTHOR EDIT: bid-layer forensic benchmark, model audit, case-grouped robustness, complementarity.
+% Reuses existing \valImhofFull (0.888), \valImhofFLBin (0.921), \valImhofComboCont (0.962),
+% \valImhofPoolN (16,779) for the pooled full-observability headline (do NOT rebind those).
+\newcommand{\valBidPoolN}{16{,}779}            % src: table_O_bid_feature_support.csv (common_bid_feature_pool_31 N; script 31)
+\newcommand{\valBidPoolNsame}{11{,}676}        % src: table_O_bid_feature_support.csv (common_bid_feature_pool_49 N; adds imhof_cv_sd, ~30.7% missing for single-tender firms)
+\newcommand{\valBidPosRetained}{193}           % src: table_O_bid_feature_support.csv (positives retained in both pools; zero positive loss)
+\newcommand{\valBidLearner}{random forest}     % src: table_P_bid_benchmark_model_audit.csv (ranger, 500 trees, probability)
+\newcommand{\valBidLOCOimhofAUC}{0.810}        % src: table_Q_bid_layer_performance.csv (E_case_grouped, bid_RF, roc_auc 0.8098)
+\newcommand{\valBidLOCOimhofPRAUC}{0.045}      % src: table_Q_bid_layer_performance.csv (E_case_grouped, bid_RF, pr_auc 0.0451)
+\newcommand{\valBidPooledImhofPRAUC}{0.124}    % src: table_Q_bid_layer_performance.csv (A_pooled_random, bid_RF, pr_auc 0.1239)
+\newcommand{\valBidLOCOcomboAUC}{0.936}        % src: table_Q_bid_layer_performance.csv (E_case_grouped, combined_RF, roc_auc 0.9363)
+\newcommand{\valBidLOCOcomboPRAUC}{0.109}      % src: table_Q_bid_layer_performance.csv (E_case_grouped, combined_RF, pr_auc 0.1088)
+\newcommand{\valBidExclLabelAUC}{0.874}        % src: table_Q_bid_layer_performance.csv (F_excl_label_tenders, bid_RF, roc_auc 0.8743)
+\newcommand{\valBidComplSpearman}{0.42}        % src: table_R_award_bid_complementarity.csv (spearman_award_bid_overall_A 0.4228)
+\newcommand{\valBidComplIncrPooled}{0.151}     % src: table_R_award_bid_complementarity.csv (dprauc_bid_to_combined_A 0.1514)
+\newcommand{\valBidComplIncrLOCO}{0.064}       % src: table_R_award_bid_complementarity.csv (dprauc_bid_to_combined_E 0.0638)
+\newcommand{\valBidComplTopOverlap}{17\%}      % src: table_R_award_bid_complementarity.csv (top-500 award/bid rank overlap)
+\newcommand{\valBidComplAwardNetNew}{33}       % src: table_R_award_bid_complementarity.csv (top-500 positives award catches that bid misses)
+\newcommand{\valBidComplBidNetNew}{36}         % src: table_R_award_bid_complementarity.csv (top-500 positives bid catches that award misses)
+\newcommand{\valBidLOCOimhofPRAUCdrop}{63\%}   % src: derived; pr_auc 0.1239 -> 0.0451 case-grouped (-63.6%)
+\newcommand{\valBidAwardResidAUC}{0.94}        % src: table_R_award_bid_complementarity.csv (award_auc_over_bid_residual_pool 0.9376)
