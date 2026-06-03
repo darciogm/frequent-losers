@@ -119,3 +119,8 @@ The single-point "83%" gatekeeper became a frontier. Referee objection defeated 
 - **Case-fragile:** leave-largest-case-out recall 0.48→0.34. FP@K1=2000,k=500: 1,852 opened, 42 lost at gate, 409 final FP, 99/190 missed, precision ~0.18.
 - Timing: award-only strict 0.73; **sequential strict-timing BLOCKED** (disclosed).
 - §6B rewritten "Sequential Gatekeeping and the Cost-Recall Frontier"; old single-point `tab:gatekeeper_submission` deleted → Table 6. Intro reframed (83%→frontier). +17 \valCost* macros. K1=2000 = one operating point, not an optimum.
+
+---
+
+## Subprompt 11 status (Section 7 price/scope, 2026-06-03) — VERDICT A
+- §7 (already compressed Sub9) verified scope-only; **all 20 price numbers reproduce**; price appendix (sec_app04) expanded 214w→1042w/3 tables (honors the "full regressions in Appendix" promise); §7.2 tied to §6B frontier. No overcharge/damages/causal; sign-reversal decomposed (broad +0.064 → overlap ATT −0.097); Q4 +0.041 (only positive cell); direct-CADE null (no damages base); mechanism NOT identified (loads on genuine-bidder count, FL ns). claims critical=0. JLEO-safe.

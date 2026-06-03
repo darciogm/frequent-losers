@@ -1,38 +1,222 @@
 \section{Scope of Price Evidence}
 \label{app:scope_adaptation_submission}
 
-The main text treats price evidence as corroboration rather
-than causal identification. This appendix records the price
-decomposition that keeps that interpretation disciplined: the
-overlap sign reversal and the high-value-segment positive
-result. The strategic-adaptation simulation is reported
-separately in Appendix F.
+% CO-AUTHOR EDIT: expanded thin price appendix into H.1--H.9 (all numbers macro-bound).
+The main text (Section~\ref{sec:price_scope_conclusion}) treats price
+evidence as corroboration of economic non-neutrality, not as causal
+identification, and promises the full price regressions here. This
+appendix honors that promise. It records the price sample, the broad
+associations, the overlap-cell reweighting that reverses their sign, the
+high-value-segment exception, the direct-CADE null, and the boundary
+diagnostics that keep the interpretation as scope rather than a price
+effect. Every number is the same object reported in the main text; the
+full regression grids (all fixed-effect combinations, all quartile cells,
+all trim steps) live in the online supplement. The strategic-adaptation
+simulation is reported separately in
+Appendix~\ref{app:adaptive_deployment_submission}.
 
-\subsection{Overlap and Segment Scope}
+\subsection{H.1\quad Price sample and outcome}
+\label{app:scope_sample_submission}
+
+The outcome is the log negotiated unit price at the item--award level.
+The estimation sample is the broad item-level panel with
+$N=\valBetaBroadN$ awards, with item, year, and (where indicated)
+procuring-unit (PBU) fixed effects. The same sample underlies every
+specification below; the overlap, quartile, and trim variants reweight or
+restrict it but do not change the outcome or the unit of observation.
+
+\subsection{H.2\quad Broad price associations}
+\label{app:scope_broad_submission}
+
+In the broad specification, frequent-loser presence is positively
+associated with the log negotiated unit price. Table~\ref{tab:app_prices_broad_submission}
+reports the item$+$year specification ($\valTabPricesColOne$) and the
+$+$PBU specification ($\valTabPricesColTwo$), and splits by modality:
+Preg\~ao ($\valTabPricesColThree$) and Convite ($\valTabPricesColFour$).
+The implied headline range across estimators is $\valHeadlineRange$. The
+larger association in the electronic-auction (Preg\~ao) environment is
+inconsistent with a pure quorum-filler reading under the three-bidder
+rule; these remain descriptive associations, not causal effects.
+
+\begin{table}[htbp]
+\centering
+\caption{Broad Price Associations (log negotiated unit price)}
+\label{tab:app_prices_broad_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+ & Item$+$year & $+$PBU FE & Preg\~ao & Convite \\
+ & (1) & (2) & (3) & (4) \\
+\midrule
+FL present & $\valTabPricesColOne$ & $\valTabPricesColTwo$ & $\valTabPricesColThree$ & $\valTabPricesColFour$ \\
+ & $(\valTabPricesSEOne)$ & $(\valTabPricesSETwo)$ & $(\valTabPricesSEThree)$ & $(\valTabPricesSEFour)$ \\
+\midrule
+$N$ & $\valTabPricesNOne$ & $\valTabPricesNTwo$ & $\valTabPricesNThree$ & $\valTabPricesNFour$ \\
+$R^2$ & $\valTabPricesRsqOne$ & $\valTabPricesRsqTwo$ & $\valTabPricesRsqThree$ & $\valTabPricesRsqFour$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Log negotiated unit price on a frequent-loser
+presence indicator. Columns (1)--(2) pool modalities with item$+$year
+and item$+$year$+$PBU fixed effects; (3)--(4) split by modality.
+Standard errors clustered at the item level in parentheses. Implied
+range across estimators: $\valHeadlineRange$. Descriptive associations,
+not causal effects.
+$^{**}p<0.05$, $^{***}p<0.01$.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{H.3\quad Overlap-cell reweighting (sign reversal)}
 \label{app:overlap_scope_submission}
 
-The broad price association is positive, with the headline range
-$\valHeadlineRange$. Under overlap-cell ATT reweighting, the
-aggregate coefficient reverses to $\valScopeOverlapCoef$; under
-propensity-score trimming it becomes $\valScopePSCoef$. This
-does not refute the screening interpretation. It shows that the
-broad estimate and the overlap estimate average different parts
-of the procurement distribution.
+The positive broad coefficient is a weighting artifact, not a robust
+treatment sign. Holding the overlap cells fixed and moving from
+broad-sample weighting to the within-cell average treatment effect on the
+treated (ATT) reverses the sign monotonically:
+broad $\valBetaBroad$ ($p=\valBetaBroadP$); overlap-cell unweighted
+$\valBetaUnwOverlap$ ($p=\valBetaUnwOverlapP$); overlap-cell ATT
+$\valScopeOverlapCoef$ ($p\valScopeOverlapPlt$). Propensity-score
+trimming pushes it further to $\valScopePSCoef$. Only
+$\valDroppedItemsShare$ of treated items lack a within-cell
+counterfactual, so the reversal cannot be a dropped-observation artifact.
+Table~\ref{tab:app_overlap_decomp_submission} reports the progression.
 
-The segment decomposition is the useful object. The lowest three
-tender-value quartiles have negative coefficients
-($\valSRQoneBroad$, $\valSRQtwoBroad$, and
-$\valSRQthreeBroad$ in the broad specification). The highest
-tender-value quartile is positive in both the broad and overlap
-designs: $\valSRQfourBroad$ and $\valSRQfourATT$
-($p=\valSRQfourATTp$). Trimming heavily weighted overlap cells
-does not eliminate the negative aggregate estimate; it moves from
-$\valSRTrimNone$ with no trim to $\valSRTrimTen$ after dropping
-the top decile of cell weights and $\valSRTrimFifty$ after
-dropping the top half.
+\begin{table}[htbp]
+\centering
+\caption{Sign-Reversal Decomposition (overlap-cell reweighting)}
+\label{tab:app_overlap_decomp_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Specification & Coefficient & $p$-value \\
+\midrule
+Broad sample & $\valBetaBroad$ & $\valBetaBroadP$ \\
+Overlap-cell, unweighted & $\valBetaUnwOverlap$ & $\valBetaUnwOverlapP$ \\
+Overlap-cell ATT & $\valScopeOverlapCoef$ & $\valScopeOverlapPlt$ \\
+Overlap-cell ATT, PS-trimmed & $\valScopePSCoef$ & --- \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Same outcome and overlap cells throughout; rows
+differ only in weighting and trimming. The broad-to-ATT move reverses
+the sign because it strips the between-cell selection component. Only
+$\valDroppedItemsShare$ of treated items lack a within-cell
+counterfactual.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
 
-The legal-economic consequence is scope, not damages. The price
-results show that flagged environments are economically
-non-neutral, especially in the high-value segment where cartel
-rents are most plausible. They do not supply a causal price
-effect, a markup, or a damages calculation.
+\subsection{H.4\quad High-value segment and modality heterogeneity}
+\label{app:scope_segment_submission}
+
+The negative ATT reading survives both modalities (Convite
+$\valSignBetaConvATT$, Preg\~ao $\valSignBetaPregATT$) and every
+tender-value quartile except the highest. The high-value tail (Q4) is the
+only systematically positive cell ($\valBetaQfour$, $p=\valBetaQfourP$),
+where coordination costs are spread over larger contracts. Trimming the
+most heavily weighted overlap cells does not eliminate the negative
+aggregate: it moves from $\valSRTrimNone$ (no trim) to $\valSRTrimTen$
+(drop top decile of cell weights) to $\valSRTrimFifty$ (drop top half).
+Table~\ref{tab:app_segment_submission} reports the quartile and trim
+cells.
+
+\begin{table}[htbp]
+\centering
+\caption{High-Value Segment and Trim Sensitivity (overlap-cell ATT)}
+\label{tab:app_segment_submission}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lc@{\hskip 1.2cm}lc}
+\toprule
+Cell / modality & ATT & Trim step & ATT \\
+\midrule
+Convite & $\valSignBetaConvATT$ & No trim & $\valSRTrimNone$ \\
+Preg\~ao & $\valSignBetaPregATT$ & Drop top $1\%$ & $\valSRTrimOne$ \\
+Tender-value Q1 & $\valSignBetaQoneATT$ & Drop top $10\%$ & $\valSRTrimTen$ \\
+Tender-value Q4 & $\valSignBetaQfourATT$ & Drop top $50\%$ & $\valSRTrimFifty$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Left block: overlap-cell ATT by modality and by
+tender-value quartile; Q4 ($\valBetaQfour$, $p=\valBetaQfourP$) is the
+only positive cell. Right block: ATT after dropping the most heavily
+weighted overlap cells by cell-weight rank. The negative aggregate is
+not driven by a small set of high-weight cells.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{H.5\quad Direct-CADE overlap price check}
+\label{app:scope_cade_submission}
+
+Restricting the overlap to items involving firms named as direct
+defendants in CADE cases yields a null price estimate
+($\valBetaCADEDirect$, $p=\valBetaCADEDirectP$). The non-direct overlap
+estimate is $\valSignBetaCADENonDirectATT$. Price regressions therefore
+do not recover the legal object of the adjudicated cases: there is no
+price base from which a damages figure could be read off the direct
+defendants.
+
+\subsection{H.6\quad Why these are not damages or overcharge}
+\label{app:scope_notdamages_submission}
+
+Three facts keep the price evidence on the scope side of the line. First,
+the broad positive imprint is selection into structurally higher-priced
+cells: among non-treated items, mean log price rises from
+$\valSelTestQOne$ (Q1) to $\valSelTestQFive$ (Q5) across cell FL-share
+quintiles, a $\Delta=\valSelTestDelta$ log-point gap, with a partialled-out
+coefficient of $\valSelTestCoefFullFE$ (SE $\valSelTestSEFullFE$,
+$N=\valSelTestN$) once all five cell dimensions are absorbed. The
+within-cell object (the ATT) removes exactly this component and is
+negative. Second, the direct-CADE null (H.5) means there is no price base
+tied to the adjudicated conduct. Third, the design holds the procurement
+environment fixed rather than against a counterfactual price, so no
+overcharge can be computed. These are scope facts about where flagged
+environments sit in the price distribution, not damages.
+
+\subsection{H.7\quad Within-cell mechanism (bidder-count boundary)}
+\label{app:scope_mechanism_submission}
+
+The within-cell price compression loads on the count of genuine bidders,
+not on the frequent-loser count. The within-cell coefficient is
+$\valMechWinnerVsRef$ (SE $\valMechWinnerVsRefSE$) and falls to
+$\valMechWinnerVsRefControlled$ (SE $\valMechWinnerVsRefControlledSE$, not
+significant) once $\log(\text{n\_firms})$ is added. The price movement
+therefore operates through the bidder-count channel; the mechanism is
+\emph{not} identified by these data, and we do not read a behavioral
+mechanism off the price record.
+
+\subsection{H.8\quad Strategic-adaptation diagnostics}
+\label{app:scope_adaptation_diag_submission}
+
+We do not re-run the bunching test here. The density check at the
+operational threshold ($T=14$) appears in the profile appendix
+(Appendix~\ref{app:profile_threshold_submission}): the local density ratio
+is $1.06$, indistinguishable from no bunching, because the threshold was
+computed ex post and never disclosed, so firms had no target to game
+in-sample. The full strategic-adaptation simulation is in
+Appendix~\ref{app:adaptive_deployment_submission}. We cross-reference
+rather than duplicate.
+
+\subsection{H.9\quad Limitations}
+\label{app:scope_limits_submission}
+
+The price evidence is descriptive, environment-specific, and not causal.
+It establishes economic non-neutrality of flagged environments,
+concentrated in the high-value tail, but it is not a damages estimate, an
+overcharge, a markup, or a treatment effect on price. The coefficients are
+BEC-specific and should not be imported mechanically. Another agency
+should re-validate the ranking against its own enforcement anchors and
+price benchmarks rather than reusing these estimates or the BEC cutoff.

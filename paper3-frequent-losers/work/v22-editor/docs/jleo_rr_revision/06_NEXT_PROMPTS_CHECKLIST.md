@@ -163,3 +163,9 @@ User chose (a). Title changed; abstract (142w), intro 3-contributions, §4.5 sum
 - ✅ COMPLETED: §6B "Sequential Gatekeeping and the Cost-Recall Frontier" + Table 6 + Fig 3 (the reserved 3rd main figure); Appendix G G.1–G.11 + 5 tables + 3 figs; +17 \valCost* macros; intro reframed 83%→frontier. Compiles (paper 38pp / appendix 49pp, 0 errors/undefined). Claims critical=0. Main floats now 6 tables / 3 figures (at budget).
 - Logs: `28_SUBPROMPT_10_COST_RECALL_LOG.md`, `29_SUBPROMPT_10_COMPLETION_REPORT.md`, `cost_wedge_memo.md`.
 - **NEXT: Subprompt 11 — Section 7: Price, Legal Scope, and Strategic Adaptation.** Price = scope only (already compressed in Sub9; verify theater-not-identified + no damages/overcharge/causal). Then App B exit/survival (script 81 not built), final JLEO compliance audit.
+
+---
+
+## Subprompt 11 close-out (Section 7, 2026-06-03) — VERDICT A
+- ✅ §7 verified scope-only + price appendix populated (H.1–H.9) + frontier tie. Compiles (paper 38pp / appendix 51pp, 0 errors). Logs: 30/31, section7_inventory, price_mechanism_discipline_memo, price_number_reproduction.csv.
+- **NEXT: Subprompt 12 — Appendix B: Theory, Exit Margin, Survival/Hazard.** Add dynamic exit margin (ordinary firms exit after losses; losing-role firms persist via role value) so λ_C>λ_G is DERIVED not assumed; survival/hazard audit (firm-year panel, right-censored 2019) FL cobidders vs other FL.
