@@ -8,6 +8,7 @@ suppressPackageStartupMessages({
 
 dir.create("output/figures", showWarnings = FALSE, recursive = TRUE)
 
+# CO-AUTHOR EDIT (JLEO R&R Subprompt 3): relabel layers — routine award record vs costly recovered bid record; "data coarsening"->"information coarsening".
 # Figure 1: information layers.
 total_height <- 24
 n_bid <- 5
@@ -77,7 +78,7 @@ p1 <- ggplot() +
   annotate("text",
            x = (gate_xmin + gate_xmax) / 2,
            y = -(gate_ymin + gate_ymax) / 2,
-           label = "Data\ncoarsening",
+           label = "Information\ncoarsening",
            color = "white", size = 3.2, fontface = "bold",
            family = "sans", lineheight = 0.95) +
   geom_segment(data = bid_arrows,
@@ -91,16 +92,16 @@ p1 <- ggplot() +
                color = "black", linewidth = 0.8,
                arrow = arrow(length = unit(0.18, "cm"))) +
   annotate("text", x = 1, y = 1.3,
-           label = "Bid layer\n(forensic-recoverable)",
+           label = "Costly recovered\nbid record",
            fontface = "bold", size = 3.4, family = "sans",
            lineheight = 0.95) +
   annotate("text", x = 7, y = 1.3,
-           label = "Award layer\n(routine record)",
+           label = "Routine award\nrecord",
            fontface = "bold", size = 3.4, family = "sans",
            lineheight = 0.95) +
   annotate("text",
            x = 1, y = -(total_height + 1.2),
-           label = "Imhof full pipeline (requires bid layer)",
+           label = "Bid-distribution forensics (requires recovered bid record)",
            size = 2.9, family = "sans", color = "gray35",
            fontface = "italic") +
   annotate("text",
@@ -109,7 +110,7 @@ p1 <- ggplot() +
            size = 3.0, family = "sans", color = "gray25") +
   annotate("text",
            x = 7, y = -(total_height + 1.2),
-           label = "Screening statistic (award layer only)",
+           label = "Award-layer triage score (routine record only)",
            size = 2.9, family = "sans", color = "black",
            fontface = "italic") +
   annotate("text",

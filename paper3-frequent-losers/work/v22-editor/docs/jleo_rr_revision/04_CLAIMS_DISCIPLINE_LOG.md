@@ -98,3 +98,13 @@ Scanner: `work/v22-editor/scripts/diagnostics/scan_claims.R` → `work/v22-edito
 - Both figures: add alt text + relabel Fig 1 → Prompt 11/12.
 
 ---
+
+---
+
+## Subprompt 3 before/after (Sections 1–3, 2026-06-02)
+- **Abstract:** "ranks loser-side **cartel-adjacency risk**" → "ranks priority among zero-win firms … target is **adjudication-anchored exposure**, not cartel membership." Single "83%" headline → "concentrates the bid-microdata pool" (percentage parenthetical, REVALIDATE TODO).
+- **§1:** "loser-side **adjacency** target" → "**adjudication-anchored loser-side exposure** target"; added canonical skeptic objection ("high-volume zero-win firms may simply have more opportunities to meet CADE defendants") in forward-looking (not-resolved) wording.
+- **§2.3:** subsection "CADE Anchors and **Cartel-Adjacency** Labels" → "… **Adjudication-Anchored Exposure** Labels"; "$\valCobidders$ cartel-adjacent loser-side firms" → "always-loser cobidders."
+- **Table 1:** +Legal-interpretation column (… / "Exposure label; not membership").
+- **Table 2:** "testable implications" 4-col → "validation-threat map" 6-col (Threat · Why · Required test · Metric · Pass · Weaken), tablenote "not a results table."
+- **Scanner post-edit:** claims critical=0; numbers 8 hardcoded (baseline, sec 1–3 only the pre-existing `65`); Fig 1 alt text now present (Fig 2 still missing — later compliance prompt).

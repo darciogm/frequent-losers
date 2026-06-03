@@ -107,3 +107,10 @@ All work in `work/v22-editor/`, branch `v22`. Bind every new number into `values
 - ⚠ Gating reminder: the abstract (Prompt 2 / Sections 1–3) leans on §4 counts. U2 is RESOLVED (disclose 193 primary + 341 robustness; drop 30→19), so Sections 1–3 may proceed, but the cobidder sentence must use the U2-disclosed framing and must NOT assert "results materially unchanged" until a core AUC is re-run under the 341 label.
 
 ---
+
+---
+
+## Subprompt 3 close-out (Sections 1–3, 2026-06-02)
+- ✅ COMPLETED: abstract (137w), §1, §2 (+Table 1 4-col, Fig 1 caption/alt/relabel+regen, T_i footnote), §3 (+Table 2 threat map). Compiles 43pp, 0 errors, 0 overfull, claims critical=0.
+- Logs: `09_SUBPROMPT_3_SECTIONS_1_3_LOG.md`, `10_SUBPROMPT_3_COMPLETION_REPORT.md`, `abstract_alternatives.md`.
+- **NEXT PROMPT confirmed: "Section 4A — Label funnel and 193 vs 210 reconciliation"** (CP-1 / Prompt 3). Linkage ready (`case_cobidder_map.csv`); U2 resolved (193 primary + 341 robustness; 30→19).

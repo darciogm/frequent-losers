@@ -68,3 +68,14 @@ Reproducibility infra built; no NEW hard blockers. Findings:
 - `scripts/utils/cost_frontier.R` — cost-recall frontier over K1 × cost denominators (skeleton; needs script 56 panel).
 - `scripts/utils/exposure_validation.R` — opportunity-cell construction, leave-one-out contact rates, exposure-adjusted/stratified frames, cell-preserving permutation (mirrors script 76).
 - `scripts/utils/label_funnel.R` — Table-A schema + reconciliation helpers around script 79.
+
+---
+
+## Subprompt 3 — empirical dependencies still open after front-end (2026-06-02)
+Front-end (sec 1–3) is written with forward-looking language; it does NOT assert any of the following is resolved. Carried into the validation prompts:
+- **Label funnel counts (12/65/47/193 vs 341 / 210→reconcile / 30→19)** — NOT reconciled in prose; TODO_JLEO_RR_LABEL_FUNNEL in §2.3 + Table 1 tablenote. → Subprompt 4A.
+- **Opportunity-adjusted validation** — NOT yet in §4; §3.3 TODO_JLEO_RR_OPPORTUNITY_TABLE points to it. → Prompt 4.
+- **Cost-recall frontier** — NOT generated (`output/regulatory_frontier/` empty); abstract/§1/§3.2 carry REVALIDATE/COST_FRONTIER TODOs on 83%/131/193 + K1 grid. → Prompt 8 (run script 56).
+- **Bid benchmark audit** — NOT documented (Table E). → Prompt 7.
+- **Case-timing table (Table G) + LOCO** — NOT built. → Prompts 3/5.
+- **Cosmetic flag:** Fig 1 shows two AUCs (0.888/0.903) under a "not a horse race" caption — reconsider at Prompt 7/8.

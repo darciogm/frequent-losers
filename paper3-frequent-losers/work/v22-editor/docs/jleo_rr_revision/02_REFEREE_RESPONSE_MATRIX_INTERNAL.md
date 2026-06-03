@@ -31,3 +31,16 @@ Status legend: ⬜ not started · 🟧 in progress · ✅ implemented · ⛔ blo
 - **#5/#14 (timing):** script 77 verdict is FAIL on concentration (cobidders *more* spread, d=−0.66). Disclose observational equivalence between deployment and sincere persistence. Do not claim prospective proof.
 - **#11 (price):** script 78 says compression is genuine-bidder entry, not FL theater. The cover-bidding mechanism is **not identified** from these data.
 - **#4 (funnel):** if 210/108/30 cannot be regenerated, they must be **retired and replaced** with data-derived counts — not silently kept.
+
+---
+
+## Subprompt 3 status update (Sections 1–3, 2026-06-02)
+Front-end revision implemented + compiled (43pp, 0 errors). Referee items moved:
+- **#15 (Fig 1 lost/survives → routine/costly-recovered):** ✅ implemented — 5 labels relabeled in `make_submission_figures.R` + figure regenerated; caption is an info-cost diagram; alt text added.
+- **#16 (JLEO framing → organizational enforcement design):** 🟧 partial — abstract + §1 lead with evidence allocation under costly observability; §8 conclusion still pending (later prompt).
+- **#17 ("cartel-adjacent" sparingly / defined):** ✅ implemented in sec 1–3 — replaced by "adjudication-anchored exposure" throughout body prose; §2.3 retitled; zero affirmative "cartel-adjacent" in sec 1–3. (Other sections still to sweep.)
+- **#18 (unit-of-analysis table):** 🟧 partial — Table 1 gained a Legal-interpretation column; the standalone unit-of-analysis Table F (level/N/key) is still to build.
+- **Abstract overpacked:** ✅ 187→137 words (≤150).
+- **T_i tender-item vs Pregão offers:** ✅ footnote in §2.2 + clause in §3.1.
+- **"not proof" repetition:** ✅ thinned; architecture carries it.
+- **Table 2:** ✅ converted to a 6-col validation-threat map (pre-analysis, no results).

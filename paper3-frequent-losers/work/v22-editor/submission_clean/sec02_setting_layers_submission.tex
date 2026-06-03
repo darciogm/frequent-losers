@@ -13,8 +13,9 @@ ranking. Subsection~\ref{sec:screening_before_proof} states the
 screening-before-proof problem. Subsection
 \ref{sec:data_layers_bec} separates the award layer from the
 forensic-recoverable bid layer. Subsection~\ref{sec:cade_adjacency_labels}
-defines the CADE anchors and the loser-side cartel-adjacency
-target used for validation.
+% CO-AUTHOR EDIT: "cartel-adjacency target" -> "adjudication-anchored exposure target" (roadmap sentence missed in terminology pass)
+defines the CADE anchors and the loser-side
+adjudication-anchored exposure target used for validation.
 
 \subsection{Screening Before Proof}
 \label{sec:screening_before_proof}
@@ -78,7 +79,12 @@ dominate. \emph{Convite} is a sealed-bid invitation procedure
 under Lei~$8.666/93$ with a statutory three-bidder quorum and a
 low value cap. \emph{Preg\~ao} is a reverse electronic auction
 under Lei~$\valLeiPregao$, with progressively lower real-time
-offers and no minimum-bidder rule. The procedures differ, but
+offers and no minimum-bidder rule.% CO-AUTHOR EDIT: clarify T_i counts tender-item participations, not Pregao offer revisions (referee-flagged)
+\footnote{Throughout, a firm's participation is counted once per
+tender-item it enters. In Preg\~ao, a bidder may revise its
+offer many times within a single tender-item; these iterative
+offers do not increase the participation count \(T_i\), which is
+defined at the tender-item level.} The procedures differ, but
 both generate a routine award record before any case-specific
 bid recovery occurs. This matters because procurement rules,
 auction format, and bureaucratic implementation can shape both
@@ -114,6 +120,7 @@ features require the bid file to be recovered, cleaned, linked,
 and inspected. They are not available at the same cost or timing
 as an award-record query.
 
+% TODO_JLEO_RR_COST_FRONTIER: the cost asymmetry is institutional here; the later cost-recall-frontier prompt must substantiate the cost wedge with a cost denominator.
 The empirical design treats that cost difference as substantive
 rather than incidental. If bid microdata were already available
 for every firm at no meaningful cost, the agency could run
@@ -127,13 +134,19 @@ processing burden rather than data non-existence.
 \centering
 \includegraphics[width=0.92\textwidth]{./output/figures/fig_data_coarsening}
 \caption[Information layers in procurement-cartel enforcement]{Information
-layers in procurement-cartel enforcement. Bid-distribution
-forensics requires per-bidder bid amounts and within-tender bid
-moments; the award-layer screen uses participant identity,
-winner identity, item code, and negotiated price. The question is
-whether the cheap layer can rank where the costly bid layer should
-be opened first.}
+layers in procurement-cartel enforcement. This is an
+information-cost diagram, not a detector horse race.
+Bid-distribution forensics requires per-bidder bid amounts and
+within-tender bid moments; the award-layer screen uses
+participant identity, winner identity, item code, and negotiated
+price. The bid layer is not absent: it is costly to recover,
+clean, and inspect from the LANCES export. The question is
+whether the cheap award layer can rank where the costly bid layer
+should be opened first. A pattern in award records does not imply
+legal proof of coordination.}
 \label{fig:coarsening_submission}
+% CO-AUTHOR EDIT: JLEO-required alt text for Figure 1
+\par\noindent\textit{Alt text:} Two vertical columns of stacked boxes represent two information layers. The left column lists costly recovered bid-record features (within-tender bid moments such as dispersion, skewness, spread, and second-low ratio). The right column lists routine award-record fields (winner identity, participant identity, item code, negotiated price). A central gate links them: the thinner award layer is available earlier and more cheaply and is used to rank where the costly bid layer should be recovered first.
 \end{figure}
 
 Figure~\ref{fig:coarsening_submission} summarizes the distinction. It
@@ -144,9 +157,10 @@ methods remain the natural forensic tools once bid microdata
 have been recovered. Award-layer triage asks whether the thinner
 routine record can rank where that recovery should start.
 
-\subsection{CADE Anchors and Cartel-Adjacency Labels}
+\subsection{CADE Anchors and Adjudication-Anchored Exposure Labels}% CO-AUTHOR EDIT: subsection retitled (label unchanged for cross-refs)
 \label{sec:cade_adjacency_labels}
 
+% TODO_JLEO_RR_LABEL_FUNNEL: case/defendant/cobidder counts (12/65/47/193) to be reconciled by Subprompt 4A label funnel; 193 primary + 341 transparent-funnel robustness; conservative defendants 30 to be dropped to 19. Do not hand-change counts here.
 CADE adjudications supply the legal anchors, not the screen's
 labels mechanically. The linked BEC portfolio contains $12$
 adjudicated procurement-cartel cases with $65$ firm-defendants,
@@ -170,7 +184,7 @@ those firms as if it were a generic cartel-membership detector.
 The validation target is narrower. A cobidder is an always-loser
 firm that appears in at least one BEC tender-item with a direct
 CADE defendant. This definition yields $\valCobidders$
-cartel-adjacent loser-side firms in the main validation target.
+always-loser cobidders in the main validation target.% CO-AUTHOR EDIT: reduce "cartel-adjacent" usage
 Cobidder status is not legal membership and is not treated as a
 latent truth about agreement. It is an adjudication-anchored
 exposure label: the firm is observed on the losing side near a
@@ -206,17 +220,18 @@ validation.
 \footnotesize
 \begin{adjustbox}{max width=\textwidth,center}
 \begin{threeparttable}
-\begin{tabular}{p{3.8cm}p{2.3cm}p{7.1cm}}
+% CO-AUTHOR EDIT: restructured to 4 columns; added Legal interpretation column
+\begin{tabular}{p{3.4cm}p{1.9cm}p{5.4cm}p{2.6cm}}
 \toprule
-Object & Size / layer & Role in the analysis \\
+Object & Size / layer & Role in the analysis & Legal interpretation \\
 \midrule
-Award layer & Routine record & Participants, winners, item codes, prices, procuring units, years, and modalities; the cheap triage layer. \\
-Bid layer & LANCES export & Per-bidder offers, timestamps, revisions, and bid moments; the costly forensic layer. \\
-All BEC participants & $\valBECfirms$ firms & Outer firm universe for award-record construction. \\
-Always-losers & $\valAlwaysLosers$ firms & Zero-win stratum in which the award-layer screen ranks loser-side exposure. \\
-Frequent losers & $\valFL$ firms & Operational first-stage flag within always-losers; not a legal category. \\
-Direct CADE defendants in BEC & $\valDirectCADE$ firms & Legal anchors from adjudicated procurement-cartel cases. \\
-Always-loser cobidders & $\valCobidders$ firms & Firms losing alongside direct defendants; cartel-adjacent validation target, not legal membership. \\
+Award layer & Routine record & Participants, winners, item codes, prices, procuring units, years, and modalities; the cheap triage layer. & Administrative record; not proof. \\
+Bid layer & LANCES export & Per-bidder offers, timestamps, revisions, and bid moments; the costly forensic layer. & Forensic record; can support bid-level analysis. \\
+All BEC participants & $\valBECfirms$ firms & Outer firm universe for award-record construction. & Outer universe. \\
+Always-losers & $\valAlwaysLosers$ firms & Zero-win stratum in which the award-layer screen ranks loser-side exposure. & Screening stratum. \\
+Frequent losers & $\valFL$ firms & Operational first-stage flag within always-losers; not a legal category. & Operational flag; not a legal category. \\
+Direct CADE defendants in BEC & $\valDirectCADE$ firms & Legal anchors from adjudicated procurement-cartel cases. & Legal anchor. \\
+Always-loser cobidders & $\valCobidders$ firms & Firms losing alongside direct defendants; validation target. & Exposure label; not membership. \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -225,6 +240,7 @@ Always-loser cobidders & $\valCobidders$ firms & Firms losing alongside direct d
 Always-loser cobidders are adjudication-anchored exposure labels.
 Frequent losers are an operational screen, not a legal category.
 The categories separate legal membership from screening exposure.
+Counts will be reconciled in the label-construction funnel before submission.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
