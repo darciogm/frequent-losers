@@ -1,165 +1,109 @@
 %
 %
-\section{Bid-Layer Benchmark: Construction and Diagnostics}
+\section{Bid-Layer Benchmark and Cost-Recall Details}
 \label{app:bid_benchmark_submission}
 
 This appendix documents the construction and diagnostics behind the
-bid-layer benchmark used in Section~6.1 to ask whether the cheap,
+bid-layer benchmark used in Section~6.1, which asks whether the cheap,
 award-layer frequent-loser signal adds value over an expensive screen
 built from full bid microdata. The bid-layer benchmark is a
-\emph{forensic-stage} diagnostic: it computes seven
-Imhof--Wallimann within-tender bid-distribution moments, aggregates
-them to the firm, and feeds them to a random forest evaluated by
-cross-validation. It is not a deployable first-stage triage tool,
-because the moments require all within-tender bids to be observed and
-recovered. Throughout, ``cobidder'' denotes an
-\emph{adjudication-anchored exposure label} --- a firm that co-bid with
-a firm named in a CADE proceeding --- and never a finding of
-participation in any agreement. The aim here is reproducibility: every
-feature formula, aggregation rule, sample restriction, learner setting,
-fold scheme, seed, and missingness convention is stated exactly as
-implemented. Granular per-feature, per-fold, per-case, and calibration
-diagnostics are deposited in the online supplement (\S S-I).
+\emph{forensic-stage} diagnostic: it computes seven Imhof--Wallimann
+within-tender bid-distribution moments, aggregates them to the firm, and
+feeds them to a random forest evaluated by cross-validation. It is not a
+deployable first-stage triage tool, because the moments require all
+within-tender bids to be observed and recovered. Throughout,
+``cobidder'' denotes an \emph{adjudication-anchored exposure label} --- a
+firm that co-bid with a firm named in a CADE proceeding --- and never a
+finding of participation in any agreement; the benchmark \emph{ranks and
+prioritizes} a limited cobidder target and never \emph{detects}
+cartelists. Granular per-feature, per-fold, per-case, and calibration
+diagnostics, the full feature dictionary, and the supporting tables moved
+out of this appendix are deposited in Online Supplement~E.
 
 %--------------------------------------------------------------------
-\subsection{LANCES Bid-Layer Data and Linkage}
+\subsection{LANCES Bid-Layer Data, Units, and Support}
 \label{app:bid_data_submission}
 
 The bid layer is built from
 \texttt{v3/data/processed/bid\_level\_with\_prices.parquet}
-(approximately 245~MB), which carries one row per priced bid with
-columns \texttt{c\'odigofornecedor} (firm), \texttt{numerodaoc} (OC
-sequence), \texttt{c\'odigoitem} (item), and \texttt{bid\_price}. A bid
-is retained only if \texttt{bid\_price IS NOT NULL AND bid\_price > 0}.
-The benchmark is produced by two parallel scripts: script~31
-(\texttt{31\_imhof\_full\_pipeline.R}, \texttt{arrow}\,+\,\texttt{data.table},
-seed \texttt{20260430}) and a DuckDB twin, script~49
-(\texttt{49\_imhof\_incremental\_value.R}, seed \texttt{20260501}); a
-dedicated validation run (\texttt{09\_bid\_benchmark\_validation.R},
-seed \texttt{20260603}) generates the audit numbers reported below.
+(approximately 245~MB), one row per priced bid with columns
+\texttt{c\'odigofornecedor} (firm), \texttt{numerodaoc} (OC sequence),
+\texttt{c\'odigoitem} (item), and \texttt{bid\_price}; a bid is retained
+only if \texttt{bid\_price IS NOT NULL AND bid\_price > 0}. The benchmark
+is produced by script~31 (\texttt{31\_imhof\_full\_pipeline.R},
+\texttt{arrow}\,+\,\texttt{data.table}, seed \texttt{20260430}) and a
+DuckDB twin, script~49 (\texttt{49\_imhof\_incremental\_value.R}, seed
+\texttt{20260501}); a dedicated validation run
+(\texttt{09\_bid\_benchmark\_validation.R}, seed \texttt{20260603})
+generates the audit numbers. The bid layer links to the award layer
+through the tender-item key $(\texttt{numerodaoc},\texttt{c\'odigoitem})$
+and, for firm attachment, through
+$(\texttt{numerodaoc},\texttt{c\'odigoitem},\texttt{c\'odigofornecedor})$;
+the within-tender moments are \emph{not} recoverable from the award layer,
+which records no per-bid prices.
 
-The bid layer links to the award layer through the tender-item key
-$(\texttt{numerodaoc},\texttt{c\'odigoitem})$, which is identical to the
-key used by the award-layer screen
-(\texttt{BEC\_collapse\_final}, \texttt{LOSERS\_rebuilt}). Bid rows are
-attached to firms, and thence to the award-layer score, through
-$(\texttt{numerodaoc},\texttt{c\'odigoitem},\texttt{c\'odigofornecedor})$.
-The within-tender moments are \emph{not} recoverable from the award
-layer, which records no per-bid prices.
-
-\paragraph{Learner correction.} The benchmark learner is a
-\textbf{random forest} (\texttt{ranger}, $500$ trees,
-\texttt{probability = TRUE}), \textbf{not} a logit. An earlier script
-header and docstring described the model as ``logit / 10-fold CV''; the
-executed code uses \texttt{ranger} with $5$-fold cross-validation. The
-correct description of the benchmark is therefore
-``Imhof--Wallimann moments in a random forest, evaluated by $5$-fold
-cross-validation.''
-
-%--------------------------------------------------------------------
-\subsection{Units of Observation and Support}
-\label{app:bid_units_submission}
-
-The bid layer has six nested units, summarized in
-Table~\ref{tab:bid_units_submission}. The random forest is trained and
-scored on the \emph{firm-level} unit; the moments themselves are
-properties of the competitive field on a tender-item and are
-\emph{shared} across all firms bidding on that item. Two validation
-pools arise from a legitimate two-sample design (not a computation
-discrepancy): the \emph{max-coverage} pool requires complete
-cv/skew/kurt ($N=16{,}779$, $193$ positives, $2{,}733$ frequent losers
-FL14), while the \emph{same-universe incremental} pool additionally
-requires \texttt{imhof\_cv\_sd} ($N=11{,}676$, $193$ positives). The
-\texttt{imhof\_cv\_sd} feature is undefined for single-priced-tender
-firms (missing for $30.68\%$ of the $16{,}843$ always-losers), which is
-the entire source of the gap; all other moments are missing for fewer
-than $0.4\%$ of firms. \textbf{All $193$ positive (cobidder) labels are
+The modeling unit is the \emph{firm}: per-tender moments are shared across
+all firms bidding on a tender-item and then firm-mean aggregated. Two
+validation pools arise from a legitimate two-sample design (not a
+computation discrepancy): the \emph{max-coverage} pool requires complete
+cv/skew/kurt ($N=16{,}779$, $193$ positives, $2{,}733$ FL14), while the
+\emph{same-universe incremental} pool additionally requires
+\texttt{imhof\_cv\_sd} ($N=11{,}676$, $193$ positives). The
+\texttt{imhof\_cv\_sd} feature is undefined for single-priced-tender firms
+(missing for $30.68\%$ of the $16{,}843$ always-losers), which is the
+entire source of the gap; all other moments are missing for fewer than
+$0.4\%$ of firms. \textbf{All $193$ positive (cobidder) labels are
 non-missing on every feature in both pools}: support loss falls entirely
-on the negatives, so there is no positive attrition. (The full
-per-feature missingness table is in the online supplement, \S S-I.) The
-$47$ direct CADE defendants are excluded from the cobidder candidate
-pool by upstream label curation; the defendant-excluded validation pool
-is $N=16{,}731$ with $190$ positives.
-
-\begin{table}[htbp]\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Bid-layer units of observation.}
-\label{tab:bid_units_submission}\scriptsize
-\begin{tabular}{p{2.6cm}p{3.2cm}p{6.6cm}}
-\toprule
-Unit & Key & Definition / role \\
-\midrule
-Bid row (raw) & firm $\times$ OC $\times$ item $\times$ \texttt{bid\_price} & one priced bid; not unique on (firm, OC, item); valid-bid filter \texttt{bid\_price} $>0$. \\
-Tender-item & $(\texttt{numerodaoc},\texttt{c\'odigoitem})$ & moment-construction unit; requires $\geq 2$ priced bids; one row per item after grouping. \\
-Firm-tender-item & $(\texttt{firm},\texttt{OC},\texttt{item})$, DISTINCT & bridges tender-item moments to firms; one row per firm's participation on an item. \\
-Firm-level & \texttt{firm\_code} (14-digit) & \textbf{the modeling unit}: firm-mean of per-tender moments plus counts and award signals. \\
-Common bid-feature pool & always-loser $\cap$ complete features & \textbf{the validation sample}; $N=16{,}779$ (script~31) / $11{,}676$ (script~49). \\
-Validation / scoring & out-of-fold firm prediction & one held-out predicted probability per firm; AUC and DeLong on these out-of-fold scores against \texttt{is\_cade}. \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\scriptsize
-\item Always-losers are firms with \texttt{win\_rate} $=0$ over 2009--2019 ($16{,}843$ firms). The firm-mean aggregation gives every firm one row; \texttt{imhof\_cv\_sd} (SD of the per-tender CV) is undefined for single-priced-tender firms, which drives the $16{,}779$ vs.\ $11{,}676$ sample gap.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+on the negatives, so there is no positive attrition. The $47$ direct CADE
+defendants are excluded from the cobidder candidate pool by upstream label
+curation; the defendant-excluded validation pool is $N=16{,}731$ with
+$190$ positives. (The full units-of-observation and per-feature
+missingness tables are in Online Supplement~E.)
+% E-COMPRESS: tab:bid_units_submission moved to Online Supplement E.
 
 %--------------------------------------------------------------------
-\subsection{Bid-Feature Dictionary}
+\subsection{Bid-Feature Families}
 \label{app:bid_dictionary_submission}
 
 Seven Imhof--Wallimann moments are constructed within each tender-item
-with $\geq 2$ priced bids, then averaged across each firm's priced
-tenders to the firm level. Writing $b$ for a within-tender bid,
-$m=\mathrm{mean}(b)$, $s=\mathrm{sd}(b)$, the firm-mean moments are: the
-coefficient of variation $\mathrm{cv}=s/m$ (\texttt{imhof\_cv\_mean}),
-its within-firm SD across tenders (\texttt{imhof\_cv\_sd}, undefined for
-single-tender firms), skewness $\mathrm{mean}((b-m)^3)/s^3$
-(\texttt{imhof\_skew\_mean}), excess kurtosis
-$\mathrm{mean}((b-m)^4)/s^4-3$ (\texttt{imhof\_kurt\_mean}), normalized
-spread $(\max b-\min b)/m$ (\texttt{imhof\_spread\_mean}), log min--max
-$\log(\max b/\min b)$ (\texttt{imhof\_minmax\_mean}), and the second-low
-gap $\log(b_2/b_1)$ on the two lowest bids
-(\texttt{imhof\_second\_low\_mean}). Two auxiliary counts accompany them:
-\texttt{n\_bids} (a tender-item gating variable for the $\geq 2$ filter)
-and \texttt{n\_tenders\_priced} (a firm exposure count).
-\texttt{imhof\_second\_low\_mean} is the only moment with a
-winning-margin component; its leakage risk is low--moderate but it
-remains a field-level moment shared across firms on the same item, not a
-firm-specific outcome (script~31 lines~65--73; script~49 lines~69--111).
-\textbf{Timing, bid-revision, and late-bid features are NOT implemented}
-in this benchmark: the parquet read selects only firm, OC, item, and
-price, and no timestamp column is touched. (The full feature dictionary
-with all columns is in the online supplement, \S S-I.)
+with $\geq 2$ priced bids, then averaged across each firm's priced tenders
+to the firm level. They fall into four families: \emph{dispersion}
+(coefficient of variation \texttt{imhof\_cv\_mean} and its within-firm SD
+\texttt{imhof\_cv\_sd}, undefined for single-tender firms);
+\emph{level/relative spread} (normalized spread and log min--max,
+\texttt{imhof\_spread\_mean}, \texttt{imhof\_minmax\_mean});
+\emph{shape} (skewness \texttt{imhof\_skew\_mean} and excess kurtosis
+\texttt{imhof\_kurt\_mean}); and \emph{rank/order} (the second-low gap
+$\log(b_2/b_1)$, \texttt{imhof\_second\_low\_mean}, the only moment with a
+winning-margin component, of low--moderate leakage risk but still a
+field-level moment shared across firms, not a firm-specific outcome).
+Two auxiliary counts accompany them, \texttt{n\_bids} (gating the $\geq 2$
+filter) and \texttt{n\_tenders\_priced} (a firm exposure count). No
+co-bidding/network or timing, bid-revision, or late-bid features are
+implemented: the parquet read selects only firm, OC, item, and price, and
+no timestamp column is touched. The full feature dictionary with all
+columns and formulas is in Online Supplement~E.
+% E-COMPRESS: full feature dictionary -> Online Supplement E.
 
 %--------------------------------------------------------------------
-\subsection{Model Specifications}
+\subsection{Model Specification}
 \label{app:bid_model_submission}
 
 The learner is a random forest (\texttt{ranger}, $500$ trees,
-\texttt{probability = TRUE}, $\texttt{num.threads}=12$). There is
-\textbf{no hyperparameter tuning} (fixed $500$ trees, default
-\texttt{mtry} and \texttt{min.node.size}, no grid search) and
-\textbf{no standardization} (the random forest is scale-invariant).
-Missingness is handled \emph{listwise} through the pool restriction:
-each pool is the set of firms with the required complete feature set.
-The outcome is binary \texttt{is\_cade} ($1$ for a firm in the
-$193$-firm cobidder file, in the candidate pool, not a direct
-defendant). Evaluation is by $5$-fold cross-validation, with each firm
-receiving one held-out predicted probability from the fold in which it
-is the test set; AUC and DeLong tests are computed on these out-of-fold
-firm-level predictions.
-
-The benchmark numbers reproduce: the script~49 pool ($N=11{,}676$)
-reproduces to four decimals exactly because it sets per-fold seeds, and
-the script~31 pool ($N=16{,}779$) reproduces within cross-validation
-jitter at the third decimal because it sets no per-fold random-forest
-seed. The single-feature \texttt{imhof\_cv\_only} specification is the
-most fold-sensitive (canonical $0.585$; a single re-run produced
-$0.547$), a near-coin-flip single-feature forest for which the canonical
-CSV value stands. (The full number-reproduction audit, spec by spec, is
-in the online supplement, \S S-I.)
+\texttt{probability = TRUE}, $\texttt{num.threads}=12$) --- \textbf{not} a
+logit, despite an earlier script header that mislabeled it. There is no
+hyperparameter tuning (fixed $500$ trees, default \texttt{mtry} and
+\texttt{min.node.size}, no grid search) and no standardization (the forest
+is scale-invariant). Missingness is handled listwise through the pool
+restriction. The outcome is binary \texttt{is\_cade} ($1$ for a firm in
+the $193$-firm cobidder file, in the candidate pool, not a direct
+defendant). Evaluation is by $5$-fold cross-validation, each firm
+receiving one held-out predicted probability; AUC and DeLong tests are
+computed on these out-of-fold firm-level predictions. The numbers
+reproduce to four decimals for the script~49 pool (per-fold seeds) and
+within cross-validation jitter at the third decimal for the script~31
+pool. (The full spec-by-spec reproduction audit is in Online
+Supplement~E.)
 
 %--------------------------------------------------------------------
 \subsection{Cross-Validation and Holdout Designs}
@@ -168,88 +112,47 @@ in the online supplement, \S S-I.)
 Four validation designs are run, increasing in stringency:
 \textbf{Design~A} (pooled-random $5$-fold) is a diagnostic
 \emph{upper bound}; \textbf{Design~E} (case-grouped / leave-one-case-out)
-holds out an entire CADE case so its clustered positives never
-co-train; \textbf{Design~F} (exclude-label-defining tenders) recomputes
-the moments after dropping defendant-co-appearance tenders to test
-feature--target contamination; and \textbf{Design~G} (environment
-holdout) holds out an item-group to test environment generalization.
-Strict bid-timing validation is \textbf{blocked}: the within-tender
-moments cannot be cleanly time-limited without re-deriving them on a
-per-period bid panel.
-
-Random folds (Design~A) spread the positives roughly evenly across five
-folds; case-grouped folds (Design~E) put the positives in six very
-unequal case folds, so a held-out case's positives are absent from the
-training set. This is the central problem random folds hide: under
-Design~A, same-case positives appear in both train and test. The
-consequence is large --- the pooled bid ROC drops from $0.891$
-(Design~A) to $0.810$ (Design~E), and the bid PR-AUC from $0.124$ to
-$0.045$ --- driven by the most case-sensitive held-out cases (per-case
-LOCO AUCs as low as $0.569$, against an award score stable at
-$0.92$--$0.99$ across cases). (The full fold-composition and per-case
-LOCO tables are in the online supplement, \S S-I.)
+holds out an entire CADE case so its clustered positives never co-train;
+\textbf{Design~F} (exclude-label-defining tenders) recomputes the moments
+after dropping defendant-co-appearance tenders to test feature--target
+contamination; and \textbf{Design~G} (environment holdout) holds out an
+item-group. Strict bid-timing validation is \textbf{blocked}: the
+within-tender moments cannot be cleanly time-limited without re-deriving
+them on a per-period bid panel. Because positives cluster by case, random
+folds (Design~A) are optimistic --- same-case positives appear in both
+train and test --- and the pooled bid ROC drops from $0.891$ (A) to
+$0.810$ (E), with per-case LOCO AUCs as low as $0.569$ against an award
+score stable at $0.92$--$0.99$ across cases. (Full fold-composition and
+per-case LOCO tables are in Online Supplement~E.)
 
 %--------------------------------------------------------------------
-\subsection{Leakage and Feature--Target Contamination}
-\label{app:bid_leakage_submission}
-
-Table~\ref{tab:bid_leakage_submission} mirrors the main-text leakage
-audit. The award score is \emph{clean} (a CADE-label-independent rank on
-\texttt{log1p(tenders\_count)}), and its strict-timing variant
-($2009$--$2016 \to 2017$--$2019$ holdout) is also clean. The bid and
-combined random forests under full-period features and random folds are
-\textbf{diagnostic-only}: the random folds are optimistic because the
-positives cluster by case, and the firm-mean moments include
-\emph{label-defining tenders} (firms' co-appearances with named
-defendants). Excluding those tenders (Design~F) moves the bid ROC from
-$0.891$ to $0.874$, a $-0.017$ contamination effect --- minor, but
-disclosed. Strict bid-timing is \textbf{blocked}, and the leave-one-case-out
-design (E) is the case-holdout robustness check rather than an
-operational claim.
-
-\begin{table}[htbp]\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Bid-layer leakage audit.}
-\label{tab:bid_leakage_submission}\scriptsize
-\begin{tabular}{lcccl}
-\toprule
-Design & Label-defining tenders & Future bids & Fold grouping & Status \\
-\midrule
-Award (full)            & n/a    & n/a     & rank score & clean \\
-Award (strict timing)   & n/a    & n/a     & temporal   & clean \\
-Bid (full)              & yes    & yes     & random     & diagnostic only \\
-Bid (excl.\ label tenders) & no  & yes     & random     & diagnostic only (reduced) \\
-Bid (strict timing)     & blocked& blocked & blocked    & blocked \\
-Combined (full)         & yes    & yes     & random     & diagnostic only \\
-Combined (strict)       & blocked& blocked & temporal   & blocked \\
-LOCO (bid)              & yes    & yes     & by case    & case-holdout \\
-LOCO (combined)         & yes    & yes     & by case    & case-holdout \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\scriptsize
-\item The Imhof moments require \emph{all} within-tender bids and so cannot serve as a real-time first-stage screen; this is why the bid layer is forensic-stage. ``Diagnostic only'' permits a full-observability benchmark claim but forbids any operational triage claim. ``Blocked'' means the within-tender moments cannot be cleanly time-limited without per-period re-derivation. Allowed claim throughout: flags/prioritizes a limited $193$-cobidder target; forbidden: proof of cartel role.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
-
-%--------------------------------------------------------------------
-\subsection{Performance and Calibration}
+\subsection{Leakage, Contamination, and Performance}
 \label{app:bid_perf_submission}
 
-Table~\ref{tab:bid_perf_submission} reports the four models across the
-four designs. Reading down the bid-RF rows shows the optimism of random
-folds: ROC $0.891$ (Design~A) $\to 0.810$ (Design~E, case-grouped)
-$\to 0.874$ (Design~F, contamination-controlled). The combined model is
-the upper bound (ROC $0.958$ pooled, $0.936$ case-grouped). The award
-score is, by construction, invariant across Designs~A and~E (it is a
-fixed rank, not a learned model). The bid-RF is well calibrated:
-predicted probabilities track observed cobidder rates closely in the top
-decile ($0.108$ predicted vs.\ $0.103$ observed), with an overall Brier
-score of $0.0095$ and almost all of the signal concentrated in that top
-decile. (The full calibration-by-decile table and the calibration and
-score-scatter figures are in the online supplement, \S S-I.)
+The award score is \emph{clean} (a CADE-label-independent rank on
+\texttt{log1p(tenders\_count)}), as is its strict-timing variant. The bid
+and combined forests under full-period features and random folds are
+\textbf{diagnostic-only}: random folds are optimistic, and the firm-mean
+moments include label-defining tenders. The key result is that
+performance \emph{survives} the leakage controls --- excluding
+label-defining tenders (Design~F) moves the bid ROC only from $0.891$ to
+$0.874$ (a $-0.017$ contamination effect), and the case-grouped design (E)
+remains informative. The headline ranking performance is in
+Table~\ref{tab:bid_perf_submission}: reading down the bid-RF rows shows
+the optimism of random folds (ROC $0.891$ at A $\to 0.810$ at E
+$\to 0.874$ at F). The combined model is the upper bound (ROC $0.958$
+pooled, $0.936$ case-grouped), and on the headline same-coverage
+comparison the Imhof bid screen reaches $0.888$, the FL14 binary award
+screen $0.921$, and the combination $0.962$. The award and bid scores are
+only moderately correlated (Spearman $\approx 0.42$; top-$500$ overlap
+$\approx 17\%$), so the two layers order firms differently and combine
+constructively: the incremental PR-AUC of adding the award signal to the
+bid forest is $+0.151$ under pooled-random folds, shrinking to $+0.064$
+under case-grouped folds (DeLong $p<0.001$ in both). The bid-RF is well
+calibrated ($0.108$ predicted vs.\ $0.103$ observed cobidder rate in the
+top decile; Brier $0.0095$). (The full leakage-audit, complementarity, and
+calibration tables are in Online Supplement~E.)
+% E-COMPRESS: tab:bid_leakage_submission, tab:bid_complementarity_submission -> Online Supplement E.
 
 \begin{table}[htbp]\centering
 \begin{adjustbox}{max width=\textwidth,center}
@@ -284,71 +187,15 @@ G (env.\ holdout) & Combined RF   & 0.920 & 0.267 & 0.112 & 2.47 \\
 \end{table}
 
 %--------------------------------------------------------------------
-\subsection{Complementarity Diagnostics}
-\label{app:bid_complementarity_submission}
-
-The award and bid scores are only moderately correlated
-(Spearman $=0.42$ overall; $0.42$ under the case-grouped scoring), and
-their top-$500$ rankings overlap by roughly $17\%$, so the two layers
-order firms differently. Combining them therefore raises discrimination:
-the incremental PR-AUC of adding the award signal to the bid forest is
-$+0.151$ under pooled-random folds, which shrinks to $+0.064$ under
-case-grouped folds (DeLong $p<0.001$ in both). The combined model is an
-\emph{upper bound} on what full bid observability plus the cheap signal
-can achieve, not an operational target.
-
-\begin{table}[htbp]\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Award--bid complementarity diagnostics.}
-\label{tab:bid_complementarity_submission}\scriptsize
-\begin{tabular}{lr}
-\toprule
-Quantity & Value \\
-\midrule
-Spearman(award, bid), overall (Design A)       & 0.423 \\
-Spearman(award, bid), cobidders only (A)        & 0.272 \\
-Spearman(award, bid), overall (Design E)        & 0.417 \\
-PR-AUC bid (A) / award (A) / combined (A)        & 0.124 / 0.126 / 0.275 \\
-$\Delta$ PR-AUC bid $\to$ combined (A)           & $+0.151$ \\
-$\Delta$ PR-AUC award $\to$ combined (A)         & $+0.149$ \\
-$\Delta$ PR-AUC bid $\to$ combined (E)           & $+0.064$ \\
-DeLong $z$, combined vs.\ bid (A)                & 8.69 ($p=3.6\mathrm{e}{-18}$) \\
-DeLong $z$, combined vs.\ bid (E)                & 10.26 ($p=1.1\mathrm{e}{-24}$) \\
-Prec@500 bid / award / combined (A)              & 0.136 / 0.130 / 0.198 \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\scriptsize
-\item The pooled incremental gain ($+0.151$) is a full-observability diagnostic with random-CV optimism; the case-grouped gain ($+0.064$) is the more conservative figure. Of the $190$ positives, $122$ are missed by the bid top-$500$; over that residual pool the award score still discriminates strongly (AUC $0.938$), evidence that the two layers carry partly distinct information.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
-
-%--------------------------------------------------------------------
 \subsection{Limitations}
 \label{app:bid_limitations_submission}
 
-We close with the limitations that bound every claim in this appendix.
-First, the bid-layer benchmark is a \textbf{full-observability
-diagnostic}, not a first stage: the Imhof moments require all
-within-tender bids to be observed and recovered, which is exactly the
-information cost the award-layer screen avoids. Second, the headline
-pooled-random numbers carry \textbf{random-CV optimism}: because the
-cobidder positives cluster by CADE case, random folds let a case's
-positives co-train, and the bid ROC falls from $0.891$ to $0.810$ once
-cases are held out (Design~E). Third, the firm-mean moments include
-\textbf{label-defining tenders}; recomputing them without those tenders
-(Design~F) lowers the bid ROC by $0.017$, a minor but real
-contamination. Fourth, \textbf{strict bid-timing validation is
-infeasible}: the within-tender moments cannot be cleanly restricted to a
-time window without re-deriving them on a per-period panel, so no
-temporal-holdout bid claim is made. Fifth, the benchmark is
-deliberately modest in construction --- it is ``Imhof--Wallimann moments
-in a random forest,'' with no tuning and no standardization; it is not a
-canonical or specially engineered model, and the comparison should be
-read as one against a reasonable, transparent forensic screen.
-Finally, the target is the $193$ always-loser cobidders, an
-\textbf{adjudication-anchored exposure} measure, not membership in any
-agreement; the false positives are unlabeled firms under a narrow target,
-not ``bad firms,'' and nothing here constitutes proof of conduct.
+The bid-layer benchmark is a full-observability diagnostic, not a first
+stage: the Imhof moments require all within-tender bids, which is exactly
+the information cost the award-layer screen avoids; the headline
+pooled-random numbers carry random-CV optimism; strict bid-timing
+validation is infeasible; the benchmark is deliberately modest (untuned,
+unstandardized ``Imhof--Wallimann moments in a random forest''); and the
+target is the $193$ always-loser cobidders, an adjudication-anchored
+exposure measure, so false positives are unlabeled firms under a narrow
+target and nothing here constitutes proof of conduct.

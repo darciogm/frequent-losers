@@ -2,51 +2,47 @@
 \label{app:data_labels_submission}
 
 This appendix records the construction choices behind the
-award-layer screen and the adjudication-based labels. The aim is
-to make the empirical object reproducible and to keep each
-source in its proper evidentiary role. The screen is built from
-procurement records. The validation labels come from CADE
+award-layer screen and the adjudication-based labels, and keeps
+each source in its proper evidentiary role. The screen is built
+from procurement records; the validation labels come from CADE
 adjudications and their BEC co-bidding environments. The design
-therefore tests whether a cheap award-layer statistic ranks
-firms near legally anchored cartel cases, while leaving legal
-membership to the case record.
+therefore tests whether a cheap award-layer statistic ranks firms
+near legally anchored cartel cases, while leaving legal membership
+to the case record.
 
 \subsection{Award-Record Universe}
 \label{app:award_universe_submission}
 
 The BEC procurement universe covers $\valYearStart$--$\valYearEnd$
 and contains $\valSampleNfull$ tender-item records before the
-final price-regression restriction. The main price sample contains
-$\valSampleN$ observations. For the screening exercise, the unit
-is the firm. A firm enters the outer screening universe if it
-appears as a participant in at least one BEC tender during the
-sample window. This gives $\valBECfirms$ participating firms.
+final price-regression restriction; the main price sample contains
+$\valSampleN$ observations. For the screening exercise the unit is
+the firm: a firm enters the outer screening universe if it appears
+as a participant in at least one BEC tender during the sample
+window, giving $\valBECfirms$ participating firms.
 
-%
 \subsection{Screen Construction}
 \label{app:screen_construction_submission}
 
-For each firm $i$, we construct two award-layer variables:
-\[
-  T_i=\text{number of BEC tender-items in which firm } i
-  \text{ participates},
-\]
-and
-\[
-  W_i=\text{number of BEC tender-items won by firm } i.
-\]
-The always-loser stratum is the set $\{i:W_i=0\}$ and contains
+For each firm $i$ we construct two award-layer variables,
+$T_i$ (number of BEC tender-items in which firm $i$ participates)
+and $W_i$ (number of BEC tender-items won by firm $i$). The
+always-loser stratum is the set $\{i:W_i=0\}$ and contains
 $\valAlwaysLosers$ firms. The continuous screening score is
-$s_i=\log(1+T_i)$ within that stratum. The discrete frequent-loser
-flag is
+$s_i=\log(1+T_i)$ within that stratum, and the discrete
+frequent-loser flag is
 \[
   FL_i=\mathbf{1}\{W_i=0,\ T_i\geq\valThreshold\}.
 \]
 The threshold comes from the always-loser participation
-distribution: median plus $1.5$ times the interquartile range,
+distribution---median plus $1.5$ times the interquartile range,
 with statistical cutoff $\valThresholdStat$ and integer rule
-$T_i\geq\valThreshold$. This flags $\valFL$ firms, or
-$\valFLrateAL$ of the always-loser stratum.
+$T_i\geq\valThreshold$---and is fixed from that distribution alone,
+not estimated from CADE labels. It flags $\valFL$ firms, or
+$\valFLrateAL$ of the always-loser stratum. Because the threshold
+is pre-specified, the validation exercise asks a genuine question:
+whether an award-layer rule concentrates firms later observed near
+adjudicated cartel defendants.
 
 \begin{table}[htbp]
 \centering
@@ -68,133 +64,77 @@ Continuous score & $\log(1+T_i)$ & Rank used when a threshold is not required \\
 \end{adjustbox}
 \end{table}
 
-The threshold is not estimated from CADE labels. It is fixed from
-the participation distribution alone. That matters because the
-validation exercise then asks a genuine question: whether a
-pre-specified award-layer rule concentrates firms later observed
-near adjudicated cartel defendants.
-
-\subsection{Matching CADE Defendants to BEC Firms}
+\subsection{Matching CADE Defendants and Constructing Cobidder Labels}
 \label{app:cade_matching_submission}
 
-CADE adjudications identify firms by legal name and tax
-identifier (CNPJ). The starting CADE portfolio contains $65$
-firm-defendants across $12$ adjudicated procurement-cartel
-cases linked to BEC subject matter. We match CADE defendants
-to BEC participant records on the full $14$-digit CNPJ string,
-zero-padded to preserve leading zeros that would otherwise be
-truncated by numeric parsing. The match is implemented as exact
-string equality on the firm-identifier field
-(\emph{c\'odigofornecedor}) common to the CADE and BEC extracts;
-no fuzzy or name-based matching is used, and no manual
-overrides enter the direct-defendant set. Of the $65$
-firm-defendants, $\valDirectCADE$ have at least one BEC
-tender-item record during the sample window and define the
-direct-defendant set used in validation. The remaining
-defendants either operate outside BEC or do not appear under
-matchable identifiers in the BEC participation extract; they are
-omitted from the direct-defendant label.
+The starting CADE portfolio contains $65$ firm-defendants across
+$12$ adjudicated procurement-cartel cases linked to BEC subject
+matter. We match CADE defendants to BEC participant records by
+exact string equality on the full $14$-digit CNPJ
+(\emph{c\'odigofornecedor}), zero-padded to preserve leading zeros;
+no fuzzy, name-based, or manual matching enters the
+direct-defendant set. Of the $65$ firm-defendants, $\valDirectCADE$
+have at least one BEC tender-item record during the sample window
+and define the direct-defendant set; the remainder operate outside
+BEC or lack matchable identifiers.
 
-%
-Three terms recur below. A \emph{direct CADE defendant} is a firm
-named in an adjudicated procurement-cartel case. A
-\emph{BEC-active defendant} is a direct defendant with at least
-one BEC tender-item record during the sample window; there are
-$\valDirectCADE$ of these, corresponding to $48$ distinct
-crossmatch CNPJ of which $\valFunnelDirectActiveFTM$ are
-firm\_tender\_map-active. A \emph{defendant tender-item} is a BEC
-tender-item in which at least one BEC-active defendant
-participates; there are $\valFunnelDefItems$ such items. These
-items locate the cartel-affected environments used to build
-cobidder labels.
+% A-COMPRESS: merged the recurring-terms paragraph, cobidder-label
+% construction, and scope statement into one method+result paragraph.
+Direct defendants are not the screen's target; they locate
+cartel-affected bidding environments ($\valFunnelDefItems$
+defendant tender-items, of $48$ distinct crossmatch CNPJ of which
+$\valFunnelDirectActiveFTM$ are firm\_tender\_map-active). The
+validation target is the \emph{always-loser cobidder}: a unique
+zero-win firm that shares at least one tender-item with a direct
+CADE defendant. Three choices fix the object. Direct defendants are
+themselves excluded from the cobidder set, so the label measures
+loser-side exposure around anchors rather than the anchors;
+always-loser status is global over the
+$\valYearStart$--$\valYearEnd$ window, so a firm that ever wins is
+never a cobidder; and firms appearing across cases or under
+duplicate CNPJ are counted once. The narrow cartel-tender
+restriction yields the $\valCobidders$ main target; the broad
+shared-tender-item definition yields $\valFunnelALcobBroad$
+always-loser cobidders ($\valFunnelFLcobBroad$ frequent losers)
+over the full portfolio. The label is adjudication-anchored
+exposure, not legal membership: it says the firm appears on the
+loser side of tenders that include adjudicated cartel anchors, not
+that it was a defendant or submitted a cover bid in any particular
+tender.
 
-%
-\subsection{Constructing Cobidder Labels}
-\label{app:cade_labels_submission}
-
-CADE adjudications provide the legal anchors. Direct defendants
-are not the main target of the frequent-loser screen; they locate
-cartel-affected bidding environments.
-
-The validation target is the always-loser cobidder. A firm is an
-\emph{always-loser cobidder} if it is a unique zero-win firm that
-shares at least one tender-item with a direct CADE defendant.
-Three construction choices fix the object. First, direct
-defendants are themselves \emph{excluded} from the cobidder set:
-the label measures loser-side exposure around anchors, not the
-anchors. Second, always-loser status is \emph{global} over the
-$\valYearStart$--$\valYearEnd$ window, not window-specific, so a
-firm that ever wins is never a cobidder. Third, a firm appearing
-across multiple cases or under duplicate CNPJ records is counted
-once: all counts are unique firms. Under a narrow cartel-tender
-restriction this definition yields the $\valCobidders$ main
-target; under the broad shared-tender-item definition it yields
-$\valFunnelALcobBroad$ always-loser cobidders
-($\valFunnelFLcobBroad$ frequent losers) over the full portfolio.
-The label is adjudication-anchored exposure, not legal
-membership. It says the firm appears on the loser side of tenders
-that include legally adjudicated cartel anchors. It does not say
-the firm was a defendant, signed an agreement, or submitted a
-cover bid in a particular tender.
-
-%
 \subsection{Conservative and Timing Benchmarks}
 \label{app:conservative_timing_submission}
 
-For the conservative validation benchmark, we restrict CADE cases
-to adjudications with judgment date on or before
-$\valConservativeCutoff$-12-31. This leaves $\valConservativeCases$
-cases, $\valConservativeFD$ BEC-active direct defendants, and
-$\valConservativeCobidders$ always-loser cobidders (under the
-broad shared-tender-item definition). Among those cobidders,
-$\valConservativeFL$ are frequent losers. This benchmark
-sacrifices sample size to avoid using later case resolution to
-define the validation target.
+The conservative validation benchmark restricts CADE cases to
+adjudications with judgment date on or before
+$\valConservativeCutoff$-12-31, sacrificing sample size to avoid
+using later case resolution to define the target. This leaves
+$\valConservativeCases$ cases, $\valConservativeFD$ BEC-active
+direct defendants, and $\valConservativeCobidders$ always-loser
+cobidders (broad definition), of which $\valConservativeFL$ are
+frequent losers. The cut uses judgment dates because conduct-onset
+dates are unavailable: only judgment dates are observed, for $9$ of
+the $12$ cases, and the $3$ undated cases are placed last in any
+timing ordering. Per-case timing and benchmark membership are
+reported in the Online Supplement.
 
-The conservative cut uses judgment dates because conduct-onset
-dates are unavailable in the case record: only judgment dates are
-observed, and for $9$ of the $12$ cases. The remaining $3$ cases
-are undated and are placed last in any timing ordering.
-Table~\ref{tab:case_timing_submission} reports the per-case
-timing and benchmark membership.
+% A-COMPRESS: folded former \paragraph{Temporal-holdout timing}
+% subsection into this subsection (two paragraphs -> two paragraphs).
+The temporal-holdout exercise computes participation scores from
+$2009$--$2016$ and evaluates discrimination against labels realized
+in $2017$--$2019$. The split follows the enforcement logic rather
+than a statistical convention: at the moment an agency uses the
+award layer it does not know the completed case file, and the
+relevant question is whether earlier participation helps rank firms
+whose cartel adjacency is later revealed through adjudicated
+anchors. The design is conservative in computing the score before
+the target period but imperfect because adjudications often
+post-date conduct that can span several years; it is therefore an
+out-of-time discrimination exercise, not causal prediction or a
+field deployment.
 
-\begin{table}[htbp]
-\centering
-\caption{Case Timing and Benchmark Membership}
-\label{tab:case_timing_submission}
-\scriptsize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{cp{2.6cm}cccccc}
-\toprule
-Case & Sector & Judg.\ date & BEC-active def. & AL cobid. & FL cobid. & Main & Cons. \\
-\midrule
-A & Waste collection & 2015-01-05 & 0 & 0 & 0 & Y & Y \\
-B & Solar heaters & 2015-09-16 & 4 & 5 & 0 & Y & Y \\
-C & Trains/metro & 2019-07-08 & 13 & 208 & 107 & Y & Y \\
-D & Mobile health units & 2020-12-09 & 0 & 0 & 0 & Y & Y \\
-E & School meals & 2021-04-14 & 6 & 55 & 20 & Y & N \\
-F & Airport cafeteria & 2022-08-03 & 3 & 146 & 89 & Y & N \\
-G & Trash bags & 2023-09-13 & 3 & 176 & 99 & Y & N \\
-H & Medicines & 2024-12-11 & 12 & 99 & 59 & Y & N \\
-I & School transport & 2025-02-26 & 1 & 17 & 9 & Y & N \\
-J & SUS ambulances & --- & 0 & 0 & 0 & Y & N \\
-K & Generic medicines & --- & 0 & 0 & 0 & Y & N \\
-L & Antiretrovirals & --- & 0 & 0 & 0 & Y & N \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} Cases anonymized A--L, ordered by judgment
-date (undated last). Conduct-period dates are unavailable; $3$
-cases are undated. ``Main'' and ``Cons.'' indicate membership in
-the main and conservative pre-$\valConservativeCutoff$ benchmarks.
-Cobidder counts use the broad shared-tender-item definition and
-are unique firms; CADE rulings are public records.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+\subsection{Validation Labels and Sample Reconciliation}
+\label{app:reconciliation_submission}
 
 \begin{table}[htbp]
 \centering
@@ -217,93 +157,43 @@ Conservative frequent-loser cobidders & $\valConservativeFL$ & Frequent losers i
 \end{adjustbox}
 \end{table}
 
-The direct-defendant label is deliberately kept separate from the
-cobidder label. The former is a legal membership anchor. The
-latter is an exposure label tailored to the loser-side ranking.
-That separation is central to the paper's interpretation: direct
-defendants identify legally anchored environments, while
-cobidders provide the validation target for a statistic designed
-to find persistent losing participation.
-
-%
-\paragraph{Temporal-holdout timing.}
-\label{app:timing_submission}
-The temporal-holdout exercise computes participation scores from
-$2009$--$2016$ and evaluates discrimination against labels
-realized in $2017$--$2019$. This split follows the enforcement
-logic rather than a purely statistical convention. At the moment
-an agency uses the award layer, it does not know the completed
-case file. The relevant question is whether earlier participation
-helps rank firms whose cartel adjacency is later revealed through
-adjudicated anchors.
-
-The timing split is conservative in one respect and imperfect in
-another. It is conservative because the score is computed before
-the target period. It is imperfect because CADE adjudications
-often occur after the conduct and can cover conduct spanning
-multiple years. For that reason, the temporal design is an
-out-of-time discrimination exercise, not causal prediction or a
-field deployment. It asks whether the screen ranks
-later-adjudicated loser-side cobidders before the later labels
-are used to construct the score.
-
-%
-\subsection{Sample Restrictions and Denominator Changes}
-\label{app:sample_restrictions_submission}
-
-Several counts in the paper come from sample restrictions rather
-than the label funnel, and it is worth keeping them distinct. The
-price sample is the tender-item price-regression restriction of
-the award universe, not a firm-label object. The bid-feature
-common pool of $16{,}779$ firms and the gatekeeping pool of
-$11{,}676$ firms are evaluation samples from the Imhof
-horse-race common support (scripts 31/49) and the same-sample
-gatekeeping exercise (scripts 63/64), respectively. They are not
-label-funnel counts and must not be read as cobidder or
-defendant tallies; the label-funnel objects are exactly the rows
-of Table~\ref{tab:label_funnel_submission}.
-
-%
-\subsection{Reconciliation of Validation Samples}
-\label{app:reconciliation_submission}
-
-The validation benchmarks use two cobidder definitions, and the
-counts only line up once the definition is fixed. The
-$\valCobidders$ main target is the row count of a static
-narrow-definition file (\texttt{cade\_fl\_cobidders.csv},
-frequent-loser only, narrow cartel-tender restriction); its
-original builder is archived and is not reproduced by the current
-scripts, which is the one replication caveat we disclose here. The
-$\valConservativeCobidders$ conservative count, and the
-$210$/$108$ figures reported in earlier drafts, come instead from
-the broad shared-tender-item definition applied to the
-always-loser stratum over the early cases. The earlier
-conservative defendant figure of $30$ was an over-count; the
-reproducible value is $\valConservativeFD$, with
-$\valConservativeCobidders$ always-loser and $\valConservativeFL$
-frequent-loser cobidders.
-
-The apparent paradox---that the conservative benchmark, drawn from
-fewer cases, returns more cobidders than the $\valCobidders$ main
-target---resolves on two axes. The main target counts the
-narrower frequent-loser subset under the narrow cartel-tender
-definition, while the conservative count uses the wider
-always-loser stratum under the broad shared-tender-item
-definition. Holding the definition fixed restores the expected
-subset relations: $\valConservativeCobidders<\valFunnelALcobBroad$
-always-loser cobidders and
+The direct-defendant label is kept separate from the cobidder
+label: the former is a legal membership anchor, the latter an
+exposure label tailored to the loser-side ranking. The benchmarks
+use two cobidder definitions, and the counts only line up once the
+definition is fixed. The $\valCobidders$ main target is the row
+count of a static narrow-definition file
+(\texttt{cade\_fl\_cobidders.csv}, frequent-loser only, narrow
+cartel-tender restriction); its original builder is archived and is
+not reproduced by the current scripts, which is the one replication
+caveat we disclose. The $\valConservativeCobidders$ conservative
+count, and the $210$/$108$ figures in earlier drafts, come from the
+broad shared-tender-item definition over the early cases; the
+earlier conservative defendant figure of $30$ was an over-count,
+and the reproducible value is $\valConservativeFD$. The apparent
+paradox---that the conservative benchmark, drawn from fewer cases,
+returns more cobidders than the main target---resolves because the
+main target counts the narrower frequent-loser subset under the
+narrow definition while the conservative count uses the wider
+always-loser stratum under the broad definition. Holding the
+definition fixed restores the subset relations
+($\valConservativeCobidders<\valFunnelALcobBroad$ always-loser and
 $\valConservativeFL<\valFunnelFLcobBroad$ frequent-loser
-cobidders. Table~\ref{tab:label_funnel_submission} reports all
+cobidders), and Table~\ref{tab:label_funnel_submission} reports all
 benchmarks side by side.
 
-\subsection{What Is Excluded From the Screen}
-\label{app:excluded_screen_submission}
-
-The award-layer screen does not use bid amounts, bid ranks,
-within-tender dispersion, reference prices, LANCES timestamps,
-CADE outcomes, or price-regression residuals. Those objects enter
-later as validation, forensic benchmarks, or descriptive economic
-corroboration. Keeping them outside the screen is essential. It
-ensures that the first-stage statistic can be computed in
-award-only environments and that the bid layer remains available
-as an independent forensic stage.
+% A-COMPRESS: merged former "Sample Restrictions" and "What Is
+% Excluded From the Screen" subsections into a single closing
+% paragraph here.
+Two further distinctions matter. The bid-feature common pool of
+$16{,}779$ firms and the gatekeeping pool of $11{,}676$ firms are
+evaluation samples from the Imhof horse-race common support and the
+same-sample gatekeeping exercise; they are not label-funnel counts
+and must not be read as cobidder or defendant tallies, whose exact
+rows are those of Table~\ref{tab:label_funnel_submission}. Finally,
+the award-layer screen itself uses no bid amounts, bid ranks,
+within-tender dispersion, reference prices, LANCES timestamps, CADE
+outcomes, or price-regression residuals; those enter later as
+validation or forensic benchmarks, keeping the first-stage
+statistic computable in award-only environments and the bid layer
+available as an independent forensic stage.
