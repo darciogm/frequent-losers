@@ -1,3 +1,8 @@
+% COMPRESS PASS 2 (appendix->supplement): granular observed-vs-expected,
+% cell-construction, common-support, matched-stratum, full permutation-draw,
+% rolling-origin per-year, full per-case LOCO, and environment-dominance grid
+% tables/figures moved to online supplement (online_supplement/S_D_timing_opportunity.md);
+% headline rows/summaries retained here.
 \section{Validation Audits}
 \label{app:validation_audits_submission}
 
@@ -58,6 +63,7 @@ below.
 
 \subsection{Opportunity-Cell Construction}
 \label{app:opp_cells_submission}
+\label{app:market_opportunity_submission}
 
 A firm can appear near a CADE anchor simply because it operates
 in procurement environments where defendants are active. To
@@ -90,38 +96,13 @@ further fragment already-sparse cells, modality is dropped from
 the baseline cells and revisited as a sensitivity
 (Appendix~\ref{app:opp_sensitivity_submission}). Cell granularity
 trades bias against support: finer cells hold opportunity more
-nearly fixed but leave most firms in singleton cells.
-
-\begin{table}[htbp]
-\centering
-\caption{Opportunity-Cell Construction}
-\label{tab:opp_cell_construction_submission}
-\scriptsize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{lL{2.6cm}rrrrrrr}
-\toprule
-Cell def. & Keys & Cells & Tender-items & Participation & Median items/cell & \% cells $<5$ items & \% singleton cells & Cells w/ defendant \\
-\midrule
-COARSE & ig $\times$ year & $980$ & $116{,}296$ & $163{,}515$ & $19$ & $9.0$ & $1.0$ & $381$ \\
-MEDIUM & ig $\times$ year $\times$ pbu & $59{,}000$ & $116{,}296$ & $163{,}515$ & $1$ & $93.4$ & $53.2$ & $1{,}435$ \\
-STRICT & item $\times$ year $\times$ pbu & $102{,}589$ & $116{,}296$ & $163{,}515$ & $1$ & $99.5$ & $75.7$ & $2{,}005$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} ``ig'' is the two-digit item group; ``pbu''
-is the buyer/procuring-unit code. ``Cells w/ defendant'' counts
-opportunity cells containing at least one adjudicated CADE
-defendant. The mean cell defendant-contact rate $\bar p_g$ is
-$0.018$ (COARSE), $0.017$ (MEDIUM), $0.019$ (STRICT). Finer cells
-gain resolution at the cost of support: under STRICT, $99.5\%$ of
-cells hold fewer than five tender-items and $75.7\%$ are
-singletons.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+nearly fixed but leave most firms in singleton cells. The mean
+cell defendant-contact rate $\bar p_g$ is around $0.017$--$0.019$
+across the three definitions, and finer cells gain resolution at
+the cost of support (under STRICT, $99.5\%$ of cells hold fewer
+than five tender-items and $75.7\%$ are singletons). The full
+cell-construction grid by granularity is in the online supplement,
+\S S-D.
 
 \subsection{Expected Defendant Contact and Excess}
 \label{app:expected_contact_submission}
@@ -152,66 +133,17 @@ Z_i \;=\; \frac{O_i - E_i}{\sqrt{\sum_g n_{ig}\, p_g\,(1-p_g)}},
 treating contacts within a cell as a sum of independent
 opportunity-weighted Bernoulli draws.
 
-Table~\ref{tab:obs_exp_bins_submission} groups always-losers by
-participation tier and reports observed vs.\ expected contact and
-mean excess. The frequent-loser cut and especially the
-very-high-participation tier ($T\ge 50$) carry positive mean
-excess; lower-participation tiers sit at or slightly below their
-opportunity benchmark. The pattern is that excess contact
-concentrates where the score is high, but most of the level of
-$O_i$ is explained by $E_i$ --- exposure does the heavy lifting,
-and excess is the residual the score must still rank.
-
-\begin{table}[htbp]
-\centering
-\caption{Observed vs.\ Expected Defendant Contact, by Participation Tier}
-\label{tab:obs_exp_bins_submission}
-\scriptsize
-\begin{threeparttable}
-\begin{tabular}{lrrrrrr}
-\toprule
-Tier & $N$ & $N$ cobidder & Obs.\ prev. & Mean $O_i$ & Mean $E_i$ & Mean excess $X_i$ \\
-\midrule
-$T\le 5$        & $11{,}086$ & $0$   & $0.000$ & $0.031$ & $0.037$ & $-0.006$ \\
-$6$--$13$       & $3{,}022$  & $0$   & $0.000$ & $0.151$ & $0.158$ & $-0.007$ \\
-FL14 ($14$--$49$) & $2{,}178$ & $122$ & $0.056$ & $0.595$ & $0.595$ & $-0.000$ \\
-$T\ge 50$       & $557$      & $69$  & $0.124$ & $2.835$ & $2.766$ & $+0.068$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} Tiers are always-loser participation counts
-$T$. ``Obs.\ prev.'' is the realized cobidder rate in the tier.
-$E_i$ uses the MEDIUM cell definition. Mean excess $X_i=O_i-E_i$
-is small and negative for low-participation tiers and turns
-positive in the highest-participation tier, where the score is
-concentrated. A finer decile decomposition is reported in the
-underlying validation tables.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.82\textwidth]{./output/figures/fig_excess_contact_by_score_bins}
-\caption{Excess defendant contact by screening-score decile.}
-\label{fig:excess_contact_bins_submission}
-\begin{minipage}{0.86\textwidth}
-\footnotesize
-\textit{Notes:} Mean excess contact $X_i=O_i-E_i$ (observed minus
-opportunity-expected defendant contact) across screening-score
-deciles, with $E_i$ from the MEDIUM opportunity cells. Excess is
-near zero or slightly negative in lower deciles and rises in the
-top deciles.
-
-\textit{Alt text:} A bar chart with screening-score deciles on the
-horizontal axis and mean excess defendant contact on the
-vertical axis. Bars in the lower deciles are at or just below
-zero; bars in the top two deciles are clearly positive, showing
-that excess contact above the opportunity benchmark concentrates
-among the highest-scoring firms.
-\end{minipage}
-\end{figure}
+Grouping always-losers by participation tier, the frequent-loser
+cut and especially the very-high-participation tier ($T\ge 50$)
+carry positive mean excess (mean $X_i=+0.068$ at $T\ge 50$), while
+lower-participation tiers sit at or slightly below their
+opportunity benchmark (mean $X_i$ around $-0.006$ to $-0.000$). The
+pattern is that excess contact concentrates where the score is
+high, but most of the level of $O_i$ is explained by $E_i$ ---
+exposure does the heavy lifting, and excess is the residual the
+score must still rank. The full observed-vs-expected-by-tier table
+and the excess-by-score-decile figure are in the online supplement,
+\S S-D.
 
 \subsection{Control-Function Validation}
 \label{app:control_function_submission}
@@ -356,78 +288,23 @@ volume are matched (C).
 \end{threeparttable}
 \end{table}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.82\textwidth]{./output/figures/fig_opportunity_permutation_precision_at_k}
-\caption{Opportunity-preserving permutation: precision at $k=500$.}
-\label{fig:opp_permutation_submission}
-\begin{minipage}{0.86\textwidth}
-\footnotesize
-\textit{Notes:} Distribution of precision-at-500 under the
-opportunity-preserving nulls, with the observed precision marked.
-Approach B (firm-exposure simulation) and Approach C
-(matched-stratum permutation) yield different reference
-distributions, as discussed in the text.
-
-\textit{Alt text:} A histogram of placebo precision-at-500 values
-from the permutation nulls, with a vertical line marking the
-observed precision. The observed line sits below the bulk of the
-firm-exposure-simulation null (which is shifted high because
-opportunity alone predicts contact) and to the right of the
-matched-stratum-permutation null.
-\end{minipage}
-\end{figure}
+The full precision-at-$500$ null draws for both approaches are in
+the online supplement, \S S-D.
 
 \subsection{Matched and Stratified Validation}
 \label{app:matched_opp_submission}
 
 The matched audit holds opportunity fixed by coarsened exact
 matching (CEM) on opportunity deciles and then compares
-frequent-losers to non-frequent-losers within each stratum.
-Table~\ref{tab:matched_opp_submission} reports, by exposure
-stratum, the FL-vs-non difference in cobidder rate ($\Delta P$),
-observed contact ($\Delta O$), and excess ($\Delta X$). The
-cobidder-rate gap is positive in every stratum and grows with
-exposure; the excess gap turns positive only in the
+frequent-losers to non-frequent-losers within each stratum. The
+FL-vs-non difference in cobidder rate ($\Delta P_{\text{cob}}$) is
+positive in every exposure stratum and grows with exposure (from
+$+0.033$ in the lowest stratum to $+0.190$ in the highest); the
+excess gap ($\Delta X$) turns positive only in the
 highest-exposure stratum. Within strata the score discriminates
 cobidder contact at AUC $0.725$, and the CEM-opportunity-matched
-AUC is $0.863$.
-
-\begin{table}[htbp]
-\centering
-\caption{Opportunity-Matched (CEM) Validation, by Exposure Stratum}
-\label{tab:matched_opp_submission}
-\scriptsize
-\begin{threeparttable}
-\begin{tabular}{lrrrrr}
-\toprule
-Exposure stratum & $N$ & $n$ FL & $n$ non-FL & $\Delta P_{\text{cob}}$ & $\Delta X$ \\
-\midrule
-1 & $2{,}734$ & $367$ & $2{,}367$ & $+0.033$ & $+0.005$ \\
-2 & $1{,}076$ & $298$ & $778$   & $+0.034$ & $-0.009$ \\
-3 & $590$     & $202$ & $388$   & $+0.069$ & $-0.027$ \\
-4 & $633$     & $336$ & $297$   & $+0.080$ & $-0.108$ \\
-5 & $450$     & $314$ & $136$   & $+0.089$ & $-0.425$ \\
-6 & $557$     & $526$ & $31$    & $+0.190$ & $+0.293$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} Strata are opportunity deciles collapsed to
-sextiles for support. $\Delta P_{\text{cob}}$ is the
-frequent-loser minus non-frequent-loser difference in cobidder
-rate; $\Delta X$ the difference in excess contact. Within-stratum
-score AUC $=0.725$; CEM-opportunity-matched AUC $=0.863$ on
-$6{,}039$ matched firms. Support is fully retained for the CEM
-exercise because matching is on collapsed deciles; the cost of
-support appears under the finer common-support rules
-(Appendix~\ref{app:common_support_submission}). The cobidder-rate
-gap is uniformly positive, but the excess gap is positive only in
-the extreme-exposure stratum, underscoring that most of the level
-is opportunity.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+AUC is $0.863$ on $6{,}039$ matched firms. The full per-stratum
+table is in the online supplement, \S S-D.
 
 \subsection{Common-Support and Sparsity Diagnostics}
 \label{app:common_support_submission}
@@ -437,48 +314,17 @@ depends on the cell definition and on how strictly we require
 common support. We apply three rules --- minimal (a firm needs
 any cell), moderate (cells must clear a sparsity floor), and
 strict (cells must additionally contain a comparable non-firm
-mass) --- and report retention honestly in
-Table~\ref{tab:common_support_submission}. The headline numbers:
-under COARSE cells essentially all firms are retained; under
-MEDIUM cells the moderate and strict rules retain only about
-$46\%$ of firms; under STRICT cells retention collapses to about
-$9\%$. We do not cherry-pick the retained subset --- the
-within-stratum and matched results above use MEDIUM cells, where
-roughly half the population survives.
-
-\begin{table}[htbp]
-\centering
-\caption{Common-Support Retention by Cell Definition and Rule}
-\label{tab:common_support_submission}
-\scriptsize
-\begin{threeparttable}
-\begin{tabular}{llrrr}
-\toprule
-Cell def. & Rule & $N$ always-losers & $N$ retained & Share retained \\
-\midrule
-COARSE & minimal  & $16{,}843$ & $16{,}843$ & $1.000$ \\
-COARSE & moderate & $16{,}843$ & $16{,}806$ & $0.998$ \\
-COARSE & strict   & $16{,}843$ & $16{,}486$ & $0.979$ \\
-MEDIUM & minimal  & $16{,}843$ & $16{,}843$ & $1.000$ \\
-MEDIUM & moderate & $16{,}843$ & $7{,}735$  & $0.459$ \\
-MEDIUM & strict   & $16{,}843$ & $7{,}683$  & $0.456$ \\
-STRICT & minimal  & $16{,}843$ & $16{,}843$ & $1.000$ \\
-STRICT & moderate & $16{,}843$ & $1{,}477$  & $0.088$ \\
-STRICT & strict   & $16{,}843$ & $1{,}458$  & $0.087$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} Sparsity is the binding constraint. Under
-MEDIUM cells, $65.4\%$ of participation sits in cells with fewer
-than five tender-items; under STRICT, $94.6\%$. The moderate and
-strict rules drop singleton-heavy mass, which is why MEDIUM
-retention falls to $\approx 46\%$ and STRICT to $\approx 9\%$.
-Retention is reported in full so that the within-stratum
-estimates are read against the population they actually cover.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+mass) --- and report retention honestly. The headline numbers:
+under COARSE cells essentially all firms are retained ($\ge
+97.9\%$); under MEDIUM cells the moderate and strict rules retain
+only about $46\%$ of firms; under STRICT cells retention collapses
+to about $9\%$. Sparsity is the binding constraint: under MEDIUM
+cells $65.4\%$ of participation sits in cells with fewer than five
+tender-items, and under STRICT $94.6\%$. We do not cherry-pick the
+retained subset --- the within-stratum and matched results above
+use MEDIUM cells, where roughly half the population survives. The
+full retention grid by cell definition and rule is in the online
+supplement, \S S-D.
 
 \subsection{Sensitivity to Cell Definitions}
 \label{app:opp_sensitivity_submission}
@@ -608,37 +454,11 @@ of the arrangement.
 
 The rolling-origin exercise trains the score on years preceding
 each test year and evaluates cobidder discrimination in the test
-year. Table~\ref{tab:temporal_holdout_year_submission} reports the
-year-by-year decomposition behind the temporal-holdout figure in
-the main text.
-
-\begin{table}[htbp]
-\centering
-\caption{Temporal-Holdout AUC by Test Year}
-\label{tab:temporal_holdout_year_submission}
-\footnotesize
-\begin{threeparttable}
-\begin{tabular}{ccccc}
-\toprule
-Test year & AUC & 95\% CI & $N$ firms & $N$ CADE \\
-\midrule
-$2014$ & $0.819$ & $[0.779,\ 0.860]$ & $8{,}631$ & $88$ \\
-$2015$ & $0.817$ & $[0.776,\ 0.858]$ & $10{,}122$ & $102$ \\
-$2016$ & $0.851$ & $[0.821,\ 0.881]$ & $11{,}699$ & $127$ \\
-$2017$ & $0.862$ & $[0.832,\ 0.891]$ & $13{,}057$ & $148$ \\
-$2018$ & $0.897$ & $[0.877,\ 0.918]$ & $14{,}391$ & $161$ \\
-$2019$ & $0.922$ & $[0.912,\ 0.933]$ & $15{,}597$ & $181$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\footnotesize
-\item \textit{Notes:} Each row computes the screening score using
-participation observed before the test year and evaluates AUC
-against the cobidder label in that test year. The exercise is
-out-of-time discrimination, not a field deployment.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+year. The test-year AUC rises from $0.819$ (2014) to $0.922$
+(2019), remaining separated from random classification in every
+test year; the full year-by-year decomposition behind the
+temporal-holdout figure in the main text is in the online
+supplement, \S S-D.
 
 The year-by-year pattern is not a claim that the environment
 becomes progressively easier to police. The samples and
@@ -679,7 +499,7 @@ Temporal holdout &
 Retrospective score uses later information &
 Firm/year &
 Score formed before the test year &
-AUC $\valAUCFLfirmTemp$; Table~\ref{tab:temporal_holdout_year_submission} &
+AUC $\valAUCFLfirmTemp$; \S~\ref{app:year_holdout_submission} &
 Ranking remains separated from random classification out of time \\
 Direct-defendant scope check &
 Loser-side ranking is misread as generic cartel-membership detection &
@@ -858,71 +678,18 @@ score-zero ties are the proximate causes.
 The rolling-origin exercise expands the training window
 year-by-year for $t=2014,\dots,2019$, freezes the score on all
 years strictly before $t$, and evaluates cobidder discrimination
-in year $t$ using \emph{training-window-only} scores.
-Table~\ref{tab:rolling_origin_submission} reports the full
-universe and the within-pool (training always-loser) sample per
-origin year; the appendix figure plots the ROC trajectory.
-
-\begin{table}[htbp]
-\centering
-\caption{Rolling-Origin Validation, $t=2014,\dots,2019$ (Training-Only Scores)}
-\label{tab:rolling_origin_submission}
-\scriptsize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{crrrrrr rrrr}
-\toprule
-& \multicolumn{6}{c}{Full candidate universe} & \multicolumn{4}{c}{Training always-loser} \\
-\cmidrule(lr){2-7}\cmidrule(lr){8-11}
-Year & $N$ & Pos. & ROC & PR-AUC & Prec@500 & Rec@500 & $N$ & ROC & PR-AUC & Prec@500 \\
-\midrule
-$2014$ & $26{,}478$ & $102$ & $0.535$ & $0.0039$ & $0.000$ & $0.000$ & $11{,}985$ & $0.770$ & $0.037$ & $0.040$ \\
-$2015$ & $29{,}804$ & $127$ & $0.497$ & $0.0040$ & $0.000$ & $0.000$ & $13{,}448$ & $0.717$ & $0.034$ & $0.046$ \\
-$2016$ & $32{,}682$ & $148$ & $0.534$ & $0.0046$ & $0.000$ & $0.000$ & $14{,}577$ & $0.770$ & $0.041$ & $0.048$ \\
-$2017$ & $35{,}766$ & $161$ & $0.578$ & $0.0051$ & $0.000$ & $0.000$ & $16{,}141$ & $0.824$ & $0.052$ & $0.062$ \\
-$2018$ & $38{,}648$ & $181$ & $0.582$ & $0.0054$ & $0.000$ & $0.000$ & $17{,}273$ & $0.823$ & $0.062$ & $0.076$ \\
-$2019$ & $41{,}444$ & $193$ & $0.628$ & $0.0059$ & $0.000$ & $0.000$ & $18{,}393$ & $0.881$ & $0.077$ & $0.086$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} Each origin year freezes the score on prior
-years only. \textbf{On the full universe, every origin year posts
-PR-AUC $\approx 0.004$--$0.006$ and
-precision@$500=$recall@$500=0$}; the worst ROC is $0.497$ (2015),
-at chance. The within-pool numbers improve monotonically across
-origins, but this improvement is \emph{retrospective accumulation},
+in year $t$ using \emph{training-window-only} scores. On the full
+candidate universe, every origin year posts PR-AUC $\approx
+0.004$--$0.006$ and precision@$500=$recall@$500=0$, with the worst
+ROC at $0.497$ (2015), i.e.\ chance. The within-pool (training
+always-loser) numbers improve monotonically across origins (ROC
+$0.717$--$0.881$), but this is \emph{retrospective accumulation},
 not learning: later origins train on more years and evaluate
-against a label set that increasingly overlaps with the
-construction window, so rising AUC reflects a thicker training
-history, not a screen that detects in real time. Source:
-\texttt{table\_E\_rolling\_origin\_validation.csv}.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.78\textwidth]{./output/figures/fig_rolling_origin_auc}
-\caption{Rolling-origin ROC AUC by origin year.}
-\label{fig:rolling_origin_submission}
-\begin{minipage}{0.86\textwidth}
-\footnotesize
-\textit{Notes:} ROC AUC by origin year $t=2014,\dots,2019$, with
-the score frozen on years strictly before $t$. The full-universe
-trajectory hovers near chance; the within-pool trajectory rises
-across origins as the training history thickens (retrospective
-accumulation, not real-time learning).
-
-\textit{Alt text:} A line chart with origin year on the horizontal
-axis and ROC AUC on the vertical axis, showing two trajectories.
-The lower line, for the full candidate universe, stays close to
-0.5 across all years. The upper line, for the within-pool
-training always-loser sample, climbs from roughly 0.72--0.77 in
-the early years to about 0.88 by 2019.
-\end{minipage}
-\end{figure}
+against a label set that increasingly overlaps the construction
+window, so rising AUC reflects a thicker training history, not a
+screen that detects in real time. The full per-origin-year grid
+(both universes) and the ROC-trajectory figure are in the online
+supplement, \S S-D.
 
 \subsection{Leakage Audit}
 \label{app:timing_leakage_submission}
@@ -978,45 +745,14 @@ The CADE positives are organized into adjudicated cases, and a
 generalization concern is whether the pooled signal is carried by
 one or two cases. We link six cases with enough cobidders to
 score (a seventh, \texttt{sacos\_de\_lixo}, is too sparse at three
-positives and is flagged). Table~\ref{tab:loco_submission} reports
-per-case discrimination, and Table~\ref{tab:case_dominance_submission}
-reports the leave-largest-case-out collapse. The appendix figure
-shows how concentrated the true positives are across cases.
-
-\begin{table}[htbp]
-\centering
-\caption{Leave-One-Case-Out Discrimination (Linkable Cases)}
-\label{tab:loco_submission}
-\scriptsize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{lrrrrrr}
-\toprule
-Case (sector) & Pos. & ROC AUC & PR-AUC & Prec@500 & Rec@500 & Lgst.\ item-grp share \\
-\midrule
-trens\_metros & $104$ & $0.946$ & $0.121$ & $0.094$ & $0.452$ & $0.70$ \\
-cafeteria\_aeroporto & $32$ & $0.962$ & $0.064$ & $0.040$ & $0.625$ & $0.88$ \\
-medicamentos & $19$ & $0.948$ & $0.013$ & $0.018$ & $0.474$ & $0.74$ \\
-merenda\_escolar & $14$ & $0.942$ & $0.011$ & $0.010$ & $0.357$ & $0.86$ \\
-transporte\_escolar & $9$ & $0.932$ & $0.007$ & $0.004$ & $0.222$ & $1.00$ \\
-sacos\_de\_lixo (\textsc{sparse}) & $3$ & $0.994$ & $0.020$ & $0.006$ & $1.000$ & $1.00$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} Per-case ROC is uniformly $\approx 0.95$ and
-is \textbf{uninformative} here: with $3$--$104$ positives against
-$\approx 16{,}700$ candidates, prevalence is below $0.7\%$, so even
-a weak ranker pushes the few positives above the vast negative
-mass and ROC saturates. PR-AUC is the discriminating metric and it
-is low (mean $0.039$, max $0.121$ for \texttt{trens\_metros}). The
-\texttt{sacos\_de\_lixo} case is too sparse to interpret and is
-flagged. Source:
-\texttt{table\_G\_leave\_one\_case\_out\_validation.csv}.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+positives and is flagged). Per-case ROC is uniformly $\approx
+0.95$ and is uninformative at sub-$0.7\%$ prevalence; PR-AUC is the
+discriminating metric and it is low (mean $0.039$, max $0.121$ for
+\texttt{trens\_metros}). The full per-case leave-one-case-out
+table and the case-positive-concentration figure are in the online
+supplement, \S S-D. The decisive result is the
+leave-largest-case-out collapse,
+Table~\ref{tab:case_dominance_submission}.
 
 \begin{table}[htbp]
 \centering
@@ -1050,73 +786,21 @@ pooled operational number is carried by one case. ROC barely moves
 \end{threeparttable}
 \end{table}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.78\textwidth]{./output/figures/fig_case_positive_concentration}
-\caption{Concentration of true positives across CADE cases.}
-\label{fig:case_concentration_submission}
-\begin{minipage}{0.86\textwidth}
-\footnotesize
-\textit{Notes:} Share of adjudicated cobidder positives
-contributed by each linkable CADE case. The distribution is
-dominated by a single case (\texttt{trens\_metros}), with the
-remaining cases contributing a long thin tail.
-
-\textit{Alt text:} A bar chart with CADE cases on the horizontal
-axis and the number (or share) of cobidder true positives on the
-vertical axis. One bar, for the trens\_metros case, is far taller
-than the rest, and the other five bars descend sharply, showing
-that a single case accounts for the bulk of the positives.
-\end{minipage}
-\end{figure}
-
 \subsection{Buyer, Item-Group, and Modality Dominance}
 \label{app:environment_dominance_submission}
 
 Concentration is also structural across the procurement
 environment, not only across cases. The positives' opportunity
-mass is dominated by item group: item-group HHI is $0.188$ (the
-largest group accounts for $30.5\%$ and the top five for $82\%$ of
-contacts), the panel is $96.8\%$ Preg\~ao, and the buyer
-distribution is diffuse (buyer HHI $0.019$).
-Table~\ref{tab:environment_dominance_submission} reports
-robustness exclusions.
-
-\begin{table}[htbp]
-\centering
-\caption{Environment-Dominance Exclusions}
-\label{tab:environment_dominance_submission}
-\scriptsize
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\begin{tabular}{lrrrrr}
-\toprule
-Scenario & Pos. & ROC AUC & PR-AUC & Prec@500 & Rec@500 \\
-\midrule
-Full & $190$ & $0.939$ & $0.126$ & $0.130$ & $0.342$ \\
-Drop largest buyer & $178$ & $0.938$ & $0.120$ & $0.116$ & $0.326$ \\
-Drop largest item group ($=16$) & $132$ & $0.932$ & $0.062$ & $0.074$ & $0.280$ \\
-Drop largest buyer $\times$ item group & $181$ & $0.938$ & $0.123$ & $0.126$ & $0.348$ \\
-Preg\~ao only & $184$ & $0.940$ & $0.127$ & $0.130$ & $0.353$ \\
-Convite only & $6$ & $0.906$ & $0.002$ & $0.000$ & $0.000$ \\
-Drop top-2 positive years ($2019,2017$) & $121$ & $0.925$ & $0.048$ & $0.052$ & $0.215$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\scriptsize
-\item \textit{Notes:} Item-group HHI $0.188$ (largest group
-$30.5\%$, top five $82\%$); modality $96.8\%$ Preg\~ao; buyer HHI
-$0.019$. \textbf{Dropping the largest item group ($=16$) roughly
-halves PR-AUC ($0.126\to0.062$); dropping the top-2 positive years
-takes it to $0.048$; dropping the largest buyer barely moves it}
-($0.126\to0.120$). The signal is concentrated in item-group and
+mass is dominated by item group (item-group HHI $0.188$; largest
+group $30.5\%$, top five $82\%$ of contacts), the panel is $96.8\%$
+Preg\~ao, and the buyer distribution is diffuse (buyer HHI
+$0.019$). Dropping the largest item group ($=16$) roughly halves
+PR-AUC ($0.126\to0.062$) and dropping the top-2 positive years
+takes it to $0.048$, while dropping the largest buyer barely moves
+it ($0.126\to0.120$): the signal is concentrated in item-group and
 year, diffuse across buyers, and almost entirely a Preg\~ao
-phenomenon (Convite has only six positives and is uninformative).
-Source: \texttt{table\_D\_environment\_dominance.csv}.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+phenomenon. The full environment-dominance exclusion grid is in
+the online supplement, \S S-D.
 
 \subsection{Clustered Randomization Inference and Defendant-Group Holdout}
 \label{app:clustered_ri_submission}
@@ -1165,28 +849,6 @@ permutation cannot move). Source:
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.78\textwidth]{./output/figures/fig_clustered_randomization_inference}
-\caption{Clustered randomization inference: observed vs.\ null.}
-\label{fig:clustered_ri_submission}
-\begin{minipage}{0.86\textwidth}
-\footnotesize
-\textit{Notes:} Null distributions of the ranking metrics under
-within-cluster (buyer $\times$ item-group $\times$ year) label
-permutation, with the observed statistic marked. The observed
-ranking metrics sit in the right tail; the case-coverage statistic
-sits inside the bulk of its null.
-
-\textit{Alt text:} A panel of histograms, one per metric, of
-placebo statistics from within-cluster label permutations, each
-with a vertical line marking the observed value. For ROC, PR-AUC,
-precision and recall the observed line sits in the right tail
-beyond most of the null mass; for case coverage the observed line
-falls inside the central bulk of the null.
-\end{minipage}
-\end{figure}
 
 As a complementary case-structure check, we leave out one direct
 defendant group at a time. Of the $28$ defendants, $13$ carry at

@@ -1,4 +1,5 @@
 % CO-AUTHOR EDIT: New Appendix H documenting Section-5 economic-profile and robustness methods.
+% COMPRESS PASS 2 (appendix→supplement)
 \section{Economic Profile and Robustness: Construction and Diagnostics}
 \label{app:profile_submission}
 
@@ -157,14 +158,16 @@ For a binary variable with group proportions $\hat{p}_E,\hat{p}_D$
 the same formula applies with
 $s_p=\sqrt{\tfrac{(n_E-1)\hat{p}_E(1-\hat{p}_E)+(n_D-1)\hat{p}_D(1-\hat{p}_D)}{n_E+n_D-2}}$.
 A positive $d$ means the cobidder group~E is higher on the variable.
-Table~\ref{tab:profile_smd_submission} reports the differences.
+Table~\ref{tab:profile_smd_submission} reports the top-ranked
+differences; the full twenty-variable table is in the online
+supplement, \S S-H.
 
 \begin{table}[htbp]
 \centering
 \begin{adjustbox}{max width=\textwidth,center}
 \begin{threeparttable}
-\caption{Standardized profile differences, E (FL cobidders) minus D
-(FL non-cobidders).}
+\caption{Standardized profile differences (top variables),
+E (FL cobidders) minus D (FL non-cobidders).}
 \label{tab:profile_smd_submission}
 \scriptsize
 \begin{tabular}{cllr r}
@@ -176,20 +179,11 @@ C & $n\_def\_firms$ & \# distinct defendants & 1.335 & 3.117 \\
 C & $contact\_intensity$ & $O_i/T_i$ & 0.166 & 1.852 \\
 C & $share\_in\_def\_cells$ & part.\ in def.\ cells & 0.210 & 1.762 \\
 C & $O_i$ & observed contacts & 7.285 & 1.592 \\
-C & $E_i^{\mathrm{MED}}$ & expected contacts & 6.093 & 1.554 \\
 C & $X_i^{\mathrm{MED}}$ & excess contacts & 1.192 & 0.903 \\
 A & $n\_years$ & \# active years & 1.324 & 0.841 \\
 B & $pregao\_share$ & Preg\~ao share & 0.301 & 0.761 \\
-B & $n\_buyers$ & \# buyers & 10.551 & 0.718 \\
 B & $top\_ig\_share$ & top item-group share & 0.122 & 0.516 \\
 A & $T_i$ & \# tender-items & 28.557 & 0.505 \\
-B & $n\_items\_total$ & \# distinct tender-items & 28.557 & 0.505 \\
-A & $\log(1+T_i)$ & log participation & 0.305 & 0.464 \\
-B & $hhi\_ig$ & HHI item groups & 0.103 & 0.446 \\
-A & $items\_per\_year$ & items per active year & 2.855 & 0.086 \\
-B & $n\_item\_groups$ & \# item groups & $-2.120$ & $-0.332$ \\
-B & $hhi\_buyer$ & HHI buyers & $-0.106$ & $-0.422$ \\
-B & $top\_buyer\_share$ & top-buyer share & $-0.109$ & $-0.425$ \\
 B & $convite\_share$ & Convite share & $-0.301$ & $-0.761$ \\
 \bottomrule
 \end{tabular}
@@ -197,12 +191,14 @@ B & $convite\_share$ & Convite share & $-0.301$ & $-0.761$ \\
 \scriptsize
 \item \textit{Notes:} $n_D=2{,}544$, $n_E=191$ (modality shares use
 $n_D=2{,}536$ where modality is defined). Positive $d$: cobidders
-are higher. The largest gaps are defendant-proximity variables
-($n\_cases$ $d=3.76$, $n\_def\_firms$ $d=3.12$), which are partly
-mechanical because the cobidder label is itself adjudication-anchored
-(see \S\ref{app:profile_adjust_submission}). Item-group HHI shows a
-modest raw gap ($d=0.45$) that falls to $\approx 0.02$ after
-opportunity adjustment.
+are higher. Top eleven of twenty variables by $|d|$; the full table
+is in the online supplement, \S S-H. The largest gaps are
+defendant-proximity variables ($n\_cases$ $d=3.76$, $n\_def\_firms$
+$d=3.12$), which are partly mechanical because the cobidder label is
+itself adjudication-anchored (see
+\S\ref{app:profile_adjust_submission}). Item-group HHI shows a modest
+raw gap ($d=0.45$) that falls to $\approx 0.02$ after opportunity
+adjustment.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
@@ -265,106 +261,25 @@ participation distribution ($=13.5$, rounded up). It is an
 \emph{never published} to firms.
 
 \paragraph{Threshold sensitivity.}
-Table~\ref{tab:profile_placebo_submission} reports a grid of placebo
-thresholds (decile cuts, fixed $T\geq k$, IQR multiples, top-share
-rules). Discrimination changes smoothly across the grid with no
-discontinuity at $14$; recall is $1.0$ for all cuts up to $T\geq 14$
-and degrades gracefully thereafter, exactly as a continuous-score
-reading predicts.
-
-\begin{table}[htbp]
-\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Placebo-threshold sensitivity (always-loser universe).}
-\label{tab:profile_placebo_submission}
-\scriptsize
-\begin{tabular}{llrrrrr}
-\toprule
-Family & Label & Thr. & Flagged & Precision & Recall & Lift \\
-\midrule
-decile & p40 & 2 & 11{,}741 & 0.0163 & 1.000 & 1.43 \\
-decile & p50 & 3 & 9{,}186 & 0.0208 & 1.000 & 1.83 \\
-decile & p70 & 7 & 5{,}098 & 0.0375 & 1.000 & 3.30 \\
-decile & p90 & 22 & 1{,}687 & 0.0806 & 0.712 & 7.11 \\
-fixed & $T\geq 8$ & 8 & 4{,}574 & 0.0418 & 1.000 & 3.68 \\
-fixed & $T\geq 12$ & 12 & 3{,}181 & 0.0600 & 1.000 & 5.29 \\
-fixed & $T\geq 14$ & 14 & 2{,}735 & 0.0698 & 1.000 & 6.16 \\
-fixed & $T\geq 16$ & 16 & 2{,}385 & 0.0721 & 0.901 & 6.36 \\
-fixed & $T\geq 20$ & 20 & 1{,}871 & 0.0791 & 0.775 & 6.98 \\
-fixed & $T\geq 30$ & 30 & 1{,}159 & 0.0932 & 0.565 & 8.22 \\
-iqr & med$+1.0$IQR & 10 & 3{,}762 & 0.0508 & 1.000 & 4.48 \\
-iqr & med$+1.5$IQR & 13.5 & 2{,}735 & 0.0698 & 1.000 & 6.16 \\
-iqr & med$+2.0$IQR & 17 & 2{,}233 & 0.0743 & 0.869 & 6.56 \\
-top & top 15\% & 15 & 2{,}537 & 0.0725 & 0.963 & 6.40 \\
-top & top 10\% & 22 & 1{,}687 & 0.0806 & 0.712 & 7.11 \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\scriptsize
-\item \textit{Notes:} The $\mathrm{med}+1.5$IQR rule ($=13.5$) and
-the fixed $T\geq 14$ rule coincide and define $\mathrm{FL14}$
-($2{,}735$ flagged, recall $1.000$, lift $6.16$). Precision rises
-and recall falls monotonically as the cut tightens, with no break at
-$14$. Lift is precision relative to the base rate. A fuller grid is
-in the underlying validation table.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+Across a grid of placebo thresholds (decile cuts, fixed $T\geq k$,
+IQR multiples, top-share rules), discrimination changes smoothly with
+no discontinuity at $14$: recall is $1.0$ for all cuts up to
+$T\geq 14$ and degrades gracefully thereafter, while precision rises
+monotonically as the cut tightens, exactly as a continuous-score
+reading predicts. The $\mathrm{med}+1.5$IQR rule ($=13.5$) and the
+fixed $T\geq 14$ rule coincide and define $\mathrm{FL14}$ ($2{,}735$
+flagged, recall $1.000$, lift $6.16$). The full grid and the
+discrimination-curve figure are in the online supplement, \S S-H.
 
 \paragraph{Bunching at $T=14$.}
 A behavioral threshold would induce strategic bunching just below or
-at the cut. Figure~\ref{fig:profile_bunching_submission} plots the
-participation-count histogram around $T=14$. The density at $T=14$
-relative to a smooth local fit gives a bunching ratio of $1.06$,
-indistinguishable from $1$, consistent with no strategic bunching.
-The participation distribution declines smoothly through the cut
-(e.g.\ $T=13$: $206$ firms; $T=14$: $198$; $T=15$: $152$), and the
-cobidder share within each $T$ bin shows no jump at $14$. This is
-expected: the threshold was computed ex post and never disclosed, so
-firms had no target to bunch at.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.80\textwidth]{./output/figures/fig_threshold_bunching_T14}
-\caption{Participation-count distribution around the
-$T=14$ threshold.}
-\label{fig:profile_bunching_submission}
-\begin{minipage}{0.84\textwidth}
-\footnotesize
-\textit{Notes:} Histogram of always-loser participation counts
-$T_i$ near the $\mathrm{FL14}$ cut. The local density ratio at
-$T=14$ is $1.06$, indistinguishable from $1$, indicating no
-strategic bunching at a threshold that was never published.
-
-\textit{Alt text:} A histogram with participation count $T$ on the
-horizontal axis and firm frequency on the vertical axis. The bars
-decline smoothly and monotonically from left to right across the
-region around $T=14$; there is no spike or notch at the threshold,
-showing that firms did not bunch at the administrative cut.
-\end{minipage}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.80\textwidth]{./output/figures/fig_threshold_sensitivity}
-\caption{Discrimination across the placebo-threshold grid.}
-\label{fig:profile_threshsens_submission}
-\begin{minipage}{0.84\textwidth}
-\footnotesize
-\textit{Notes:} Precision, recall, and lift as the participation
-cut moves across the grid in
-Table~\ref{tab:profile_placebo_submission}. The curves are smooth
-with no discontinuity at $T=14$.
-
-\textit{Alt text:} A line chart with the participation threshold on
-the horizontal axis and screening-performance metrics on the
-vertical axis. Recall declines and precision rises gradually as the
-threshold increases, with smooth curves and no kink or jump at the
-$T=14$ value.
-\end{minipage}
-\end{figure}
+at the cut. The participation distribution declines smoothly through
+the cut (e.g.\ $T=13$: $206$ firms; $T=14$: $198$; $T=15$: $152$),
+with a local density ratio at $T=14$ of $1.06$, indistinguishable
+from $1$, and the cobidder share within each $T$ bin shows no jump at
+$14$. This is expected: the threshold was computed ex post and never
+disclosed, so firms had no target to bunch at. The bunching histogram
+is in the online supplement, \S S-H.
 
 %--------------------------------------------------------------------
 \subsection{Market-Specific Zero-Win Definitions}
@@ -373,76 +288,21 @@ $T=14$ value.
 The global always-loser definition compares a firm's wins against
 its \emph{global} participation. A natural alternative is a
 \emph{home-market} zero-win definition: a firm is a loser only
-within the stratum where it participates most. We construct four
-such strata and validate each against the same adjudication-anchored
-target. Table~\ref{tab:profile_marketzero_def_submission} gives the
-definitions; Table~\ref{tab:profile_marketzero_val_submission} the
-validation.
-
-\begin{table}[htbp]
-\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Market-specific zero-win definitions.}
-\label{tab:profile_marketzero_def_submission}
-\scriptsize
-\begin{tabular}{llrrr}
-\toprule
-Stratum & Zero-win within & Cand.\ (excl.\ dir.) & Positives & Overlap w/ global AL \\
-\midrule
-$ig\_modality$ & item-group $\times$ modality & 10{,}659 & 189 & 0.553 \\
-$buyer\_ig$ & buyer $\times$ item-group & 11{,}435 & 159 & 0.327 \\
-$itemcode\_modality$ & item-code $\times$ modality & 8{,}712 & 170 & 0.361 \\
-$buyer$ & buyer (home-market proxy) & 11{,}409 & 175 & 0.493 \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\scriptsize
-\item \textit{Notes:} Each stratum benchmarks a firm against its own
-home market rather than against global participation. Direct CADE
-defendants are excluded from candidate counts. ``Overlap'' is the
-share of each stratum's losers that are also global always-losers
-($0.33$--$0.55$); the home-market and global definitions therefore
-flag substantially different firm sets. The drawback common to all
-four is that the home-market (most-participated) stratum is an
-\emph{ad hoc} choice and excludes firms with no dominant market.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
-
-\begin{table}[htbp]
-\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Validation of zero-win definitions against the
-adjudication-anchored target.}
-\label{tab:profile_marketzero_val_submission}
-\scriptsize
-\begin{tabular}{lrrrrr}
-\toprule
-Definition & $N$ & Positives & ROC-AUC & PR-AUC & Prec.@500 \\
-\midrule
-\textbf{GLOBAL always-loser} & 16{,}843 & 191 & \textbf{0.939} & 0.126 & 0.130 \\
-$ig\_modality$ & 10{,}659 & 189 & 0.774 & 0.052 & 0.064 \\
-$itemcode\_modality$ & 8{,}712 & 170 & 0.609 & 0.025 & 0.020 \\
-$buyer\_ig$ & 11{,}435 & 159 & 0.555 & 0.017 & 0.016 \\
-$buyer$ & 11{,}409 & 175 & 0.554 & 0.018 & 0.012 \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\scriptsize
-\item \textit{Notes:} The global always-loser definition is
-\emph{not dominated}: its ROC-AUC of $0.939$ exceeds the best
-home-market alternative ($ig\_modality$, $0.774$); the remaining
-strata fall to $0.554$--$0.609$. A leave-one-item-group-out
-re-estimation of the global definition (dropping each item group in
-turn) holds ROC-AUC within $[0.936,0.941]$ around the full-sample
-$0.939$. We therefore retain the global definition.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
+within the stratum where it participates most. We construct four such
+strata (item-group $\times$ modality, buyer $\times$ item-group,
+item-code $\times$ modality, and buyer) and validate each against the
+same adjudication-anchored target. Each home-market definition
+overlaps the global always-loser set on only $0.33$--$0.55$ of its
+losers, so it flags substantially different firm sets, and each is an
+\emph{ad hoc} choice that excludes firms with no dominant market. The
+global definition is \emph{not dominated}: its ROC-AUC of $0.939$
+exceeds the best home-market alternative ($ig\_modality$, $0.774$),
+with the remaining strata at $0.554$--$0.609$. A
+leave-one-item-group-out re-estimation of the global definition
+(dropping each item group in turn) holds ROC-AUC within
+$[0.936,0.941]$ around the full-sample $0.939$. We therefore retain
+the global definition. The full definition and validation tables are
+in the online supplement, \S S-H.
 
 %--------------------------------------------------------------------
 \subsection{Negative Controls}
@@ -463,8 +323,8 @@ high-volume \emph{winning} firms never named by CADE, again matched
 on $T_i\times$ exposure decile.
 \end{enumerate}
 Table~\ref{tab:profile_negcontrol_submission} reports the results
-and Figure~\ref{fig:profile_negcontrol_submission} the null ROC-AUC
-distribution. The real ROC-AUC ($0.939$) lies far above both null
+(the null ROC-AUC distribution figure is in the online supplement,
+\S S-H). The real ROC-AUC ($0.939$) lies far above both null
 distributions (means $0.755$ and $0.780$; empirical $p<0.001$ in
 both designs).
 
@@ -511,27 +371,6 @@ $p<0.001$.
 \end{threeparttable}
 \end{adjustbox}
 \end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.80\textwidth]{./output/figures/fig_negative_control_distribution}
-\caption{Null ROC-AUC distributions vs.\ the real target.}
-\label{fig:profile_negcontrol_submission}
-\begin{minipage}{0.84\textwidth}
-\footnotesize
-\textit{Notes:} Histogram of null ROC-AUC values across $B=500$
-matched draws (placebo CADE anchors and non-CADE high-volume
-winners), with the real adjudication-anchored ROC-AUC ($0.939$)
-marked. The real value lies in the right tail of both nulls
-($p<0.001$).
-
-\textit{Alt text:} A histogram of null ROC-AUC values centered
-around $0.75$ to $0.78$, with a vertical reference line at $0.94$
-far to the right of the bulk of the null distribution, indicating
-that the real target's discrimination is well outside what random
-matched anchors produce.
-\end{minipage}
-\end{figure}
 
 %--------------------------------------------------------------------
 \subsection{Limitations}
