@@ -106,3 +106,13 @@ Scripts: `scripts/analysis/03_timing_case_holdout_validation.R` (timing/rolling/
 - Figures: main fig_rolling_origin_pr_auc (NEW Fig 2), fig_rolling_origin_precision_recall, fig_leave_one_case_out_distribution; appendix fig_rolling_origin_auc, fig_case_positive_concentration, fig_clustered_randomization_inference.
 - Diagnostics: strict_holdout_composition, case_dominance_summary, environment_dominance_summary, case_topk_coverage; claims_scan_after_timing_case_holdout.csv. Caches: clustered_ri_metrics.csv.
 - Docs: timing_information_sets.md. values.tex +19 `\valStrict*/\valLOCO*/...` macros.
+
+---
+
+## Subprompt 7 outputs (Section 5 profile, 2026-06-03)
+Scripts: `scripts/analysis/05_section5_profile_monotonicity.R` (groups, Table J/K/L/M, std-diffs, monotonicity; seed 20260603) + `06_section5_robustness.R` (thresholds/bunching, ordinary-loser Table N, market-zero-win, negative controls; seed 20260603).
+- Main tables: `outputs/tables/main/{table_J_economic_profile, table_K_opportunity_adjusted_profile, table_L_monotonicity_bins, table_M_binary_vs_continuous_score, table_N_ordinary_loser_alternatives}.{csv,tex}`.
+- Appendix tables: `outputs/tables/appendix/{table_E_section5_group_counts, table_E_standardized_profile_differences, table_E_placebo_thresholds, table_E_market_specific_zero_win_definitions, table_E_market_specific_zero_win_validation, table_E_negative_controls}.*`.
+- Figures: main {fig_profile_standardized_differences, fig_cobidder_prevalence_by_participation_bin, fig_excess_contact_by_participation_bin}; appendix {fig_threshold_sensitivity, fig_threshold_bunching_T14, fig_negative_control_distribution}.
+- Diagnostics: monotonicity_score_deciles, monotonicity_topk, threshold_bunching_T14, ordinary_loser_proxy_stats, leave_one_item_group_out, section5_*_audit_log; claims_scan_after_section5.csv. memo: binary_vs_continuous_score_memo.md.
+- Manuscript: sec05 rewritten 5.1–5.6; NEW Appendix H (sec_app08_profile + \input in master); values.tex +19 \valProf* macros. NOT_OBSERVED: tender value, distance-to-winner, geography, later-wins.

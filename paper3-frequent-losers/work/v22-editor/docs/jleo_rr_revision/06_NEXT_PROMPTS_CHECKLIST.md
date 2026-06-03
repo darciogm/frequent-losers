@@ -142,3 +142,10 @@ All work in `work/v22-editor/`, branch `v22`. Bind every new number into `values
 ## REFRAME executed (option (a), 2026-06-03) — "The Reach and Limits of Award-Layer Screening"
 User chose (a). Title changed; abstract (142w), intro 3-contributions, §4.5 summary, §8 conclusion reframed to the boundary-conditions contribution (honest, rigorous, NOT confessional, strengths-forward). False "survives timing" claim removed from conclusion. Contribution recast as: (1) evidence-allocation framework, (2) transferable decomposition METHOD (separate genuine signal from exposure arithmetic + case concentration), (3) reach-and-limits MAP. Paper 53pp/appendix 34pp compile clean, claims critical=0.
 **Subprompt 7 (§5) must be written UNDER this reframe**: cobidders are largely high-volume losers concentrated in one case — §5 should profile honestly (limited distinct economic content), not claim a distinct cartel firm type.
+
+---
+
+## Subprompt 7 close-out (Section 5, 2026-06-03) — VERDICT B
+- ✅ COMPLETED: §5 "Economic Content and Ordinary-Loser Alternatives" (5.1–5.6) + Tables J/K/L/M/N + 3 figs; NEW Appendix H (H.1–H.9) + 6 tables + 3 figs; +19 macros. Compiles (paper 59pp / appendix 44pp, 0 errors/undefined). Claims critical=0.
+- Logs: `17_SUBPROMPT_7_SECTION5_PROFILE_LOG.md`, `18_SUBPROMPT_7_COMPLETION_REPORT.md`, `binary_vs_continuous_score_memo.md`.
+- **NEXT: Subprompt 8 — Section 6A: Bid-Layer Benchmark Audit and Complementarity.** Under reframe: award layer adds info to bid-distribution benchmark on same target (complementarity, "comparable at lower cost", NOT "outperforms"). Inputs: scripts 31/49/26 (Imhof). Then §6B cost-recall frontier (RUN script 56, empty), §7 price downgrade (script 78 theater-not-identified), App B survival, JLEO compliance.

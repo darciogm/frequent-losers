@@ -82,3 +82,16 @@ The toughest test landed hard. Honest downgrade implemented (§4.4).
 - **Fig 2:** ROC-only replaced by PR-led rolling-origin.
 - **CLAIM DOWNGRADED:** retrospective, incumbent-pool, case-sensitive triage diagnostic — NOT prospective platform-wide screening.
 - **STRATEGIC FLAG for Darcio:** the "deployable screen" framing is no longer supportable; the honest paper is now about the LIMITS/boundary conditions of award-layer screening. Decision needed before §5+.
+
+---
+
+## Subprompt 7 status update (Section 5 profile/monotonicity, 2026-06-03) — VERDICT B
+§5 rewritten under the reframe; strengths-forward, honest.
+- **#3 (weak raw cobidder target — what does it capture?):** ✅ Table J — cobidders economically distinct (Pregão 96.6% vs 66.6% SMD 0.76; buyers 24.9 vs 14.3 SMD 0.72; persistence SMD 0.84; proximity SMD 3.76/3.12 partly mechanical).
+- **#10 (binary FL14 vs continuous):** ✅ RESOLVED — continuous ties/beats FL14 in every full-sample setup; 53's strict-pool flip (0.767>0.750, p=0.085 n.s.) is sample-specific; T=14 = median+1.5·IQR, administrative; no bunching (ratio 1.06). Table M + memo.
+- **#13 (global zero-win too blunt):** ✅ market-specific zero-win definitions tested — global NOT dominated (alt 0.554–0.774 vs 0.939); leave-one-item-group-out stable [0.936,0.941]. Keep global.
+- **Monotonicity (KEY):** cobidder prevalence rises with T_i (Spearman +0.92) but opportunity-adjusted EXCESS flat/negative (−0.93) → the rank is an EXPOSURE ranking, not collusion-intensity. Supports reframe.
+- **Opportunity-adjusted profile (Table K):** item-group HHI VANISHES (SMD 0.45→0.02); breadth attenuates; proximity halves (3.76→2.25). Much of the raw difference is procurement-environment composition.
+- **Ordinary-loser alternatives (Table N):** NARROWED not eliminated — cobidders wider/longer-lived (not low-capacity), low Convite/quorum (not padding), low first-year conc. (not explore-exit); but distance/geography/later-wins NOT_OBSERVED → specialization & geography not fully ruled out. CADE contact = distinguishing axis.
+- **★ Negative controls (STRENGTH):** real cobidder ROC-AUC 0.939 beats matched placebo-anchor null (0.755, p<0.001) + non-CADE-winner null (0.780, p<0.001) → ranking SPECIFIC to the real defendant network, not generic high-volume co-bidding. Honest caveat: placebo PR-AUC p=0.70 (base-rate inflation; ROC is the decisive ranking metric).
+- "cartel-adjacent" REMOVED (§5 retitled "Economic Content and Ordinary-Loser Alternatives"). New Appendix H. Claims critical=0.
