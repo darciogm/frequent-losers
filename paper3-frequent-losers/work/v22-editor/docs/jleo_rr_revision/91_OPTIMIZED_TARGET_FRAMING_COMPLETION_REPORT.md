@@ -81,10 +81,11 @@
   contribution ("where cheap screens stop"). This matches the title and §1/§8 as rewritten,
   but it is a materially more negative empirical paper than the GO_WITH_MINOR_REPAIRS version.
   **Darcio must read and approve the new §4/§5/§6 story before submission.**
-- (A2) Recommended robustness vs "broad label dilutes": re-run script 02 with a contact≥2
-  intensity-restricted label (~2.5 min) and report in the online supplement. Raw-AUC gradient
-  already checked (informational): rises mechanically with intensity, consistent with the
-  opportunity account.
+- (A2) ✅ **RESOLVED 2026-06-04 (post-report):** contact≥2 sensitivity run
+  (`02b_opportunity_sensitivity_contact2.R`, outputs/sensitivity_contact2/, 368 positives).
+  Deflationary result ROBUST — raw 0.854 but exposure-only 0.873/0.956 out-predicts again;
+  within-stratum 0.506 (chance); nested +0.003 p=0.47; matched perm p=0.39 ns. Reported in
+  Appendix D + one sentence in §4.2. The dilution objection is now pre-empted in print.
 - (A3) Leakage-decomposition macros (\valLeakCVAUC/\valLeakRefAUC) and conservative-AUC macros
   (\valAUCprePost etc.) are STALE-annotated and uncited; delete or regenerate at leisure.
 - (A4) Author declarations (fee, COI, funding, preprint, suggested reviewers) — unchanged from
