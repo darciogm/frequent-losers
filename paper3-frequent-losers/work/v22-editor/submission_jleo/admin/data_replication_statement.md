@@ -47,14 +47,16 @@ and the package `README.md`.
 
 - Raw BEC bid-level microdata, the raw firm registry, and any frame carrying raw
   CNPJ or other direct firm identifiers.
-- (Disclosed limitation **B3**) the legacy cobidder label files
-  `cade_fl_cobidders.csv` and `cade_bec_crossmatch.csv` have **no builder on
-  disk**. Rather than present them as reproducible, we disclose this and provide
-  a transparent reproducible alternative: the **label funnel**
-  `scripts/79_label_funnel.R` (with
-  `work/v22-editor/scripts/analysis/01_label_funnel_reconciliation.R`), which
-  rebuilds the cobidder set from the public CADE cases joined to BEC firm
-  participation.
+- The validation label is fully reproducible. The canonical builder
+  `work/v22-editor/scripts/analysis/00_build_canonical_validation_targets.R`
+  constructs the target set from scratch by joining the public CADE cases to BEC
+  firm participation, and writes the firm-level label table
+  `outputs/targets/canonical_firm_labels.csv` (the 651 always-loser cobidder
+  positives) together with `canonical_target_counts.csv`. The label is an
+  adjudication-anchored cobidder target: a unique always-loser firm that shares
+  at least one BEC tender-item with a BEC-active direct CADE defendant, with
+  defendants themselves excluded. The frequent-loser flag is **not** used to
+  construct the label.
 
 ## 5. Anonymization / hashing
 

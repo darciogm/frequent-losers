@@ -19,17 +19,26 @@ scripts depend on the Stage-1 ETL parquets and on `/tmp/p3_prepared.rds`.
 - `scripts/01_clean.R` — loads parquets, extracts BEC keys, merges LOSERS →
   `/tmp/p3_prepared.rds`.
 
-## 2. Label construction (CADE cobidder labels)
-- `scripts/79_label_funnel.R` — transparent 12→41→341 label funnel; emits
+## 2. Label construction (canonical validation target)
+- `work/v22-editor/scripts/analysis/00_build_canonical_validation_targets.R` —
+  **RUN FIRST (~2 s).** Builds the canonical main target: 651 unique always-loser
+  cobidders (shared tender-item with a BEC-active direct CADE defendant;
+  defendants excluded; **frequent-loser flag never used in the label**). Emits
+  `work/v22-editor/outputs/targets/{canonical_firm_labels,canonical_case_labels,canonical_target_counts}.csv`,
+  `outputs/cache/canonical_cobidders_broad.csv` (downstream join keys), and
+  construction assertions T1–T10.
+- `scripts/79_label_funnel.R` — transparent funnel diagnostics; emits
   `output/label_funnel/funnel.csv`, `case_cobidder_map.csv`, `case_timing.csv`.
 - `work/v22-editor/scripts/analysis/01_label_funnel_reconciliation.R`
-  (uses `utils/label_funnel.R`) — reconciles label sets → **Table 2**.
+  (uses `utils/label_funnel.R`) — funnel table → **Table 2**.
 
 ## 3. Opportunity-adjusted validation
-- `scripts/76_exposure_adjusted_audit.R` — exposure/opportunity-adjusted AUC.
 - `work/v22-editor/scripts/analysis/02_opportunity_adjusted_validation.R`
   (uses `utils/exposure_validation.R`, `utils/metrics_triage.R`) → **Table 3** +
   **Figure 2** (observed-vs-expected contact bins).
+- `work/v22-editor/scripts/analysis/02b_opportunity_sensitivity_contact2.R` —
+  contact≥2 intensity-restricted label sensitivity (isolated outputs under
+  `outputs/sensitivity_contact2/`).
 
 ## 4. Timing & case-holdout
 - `scripts/53_strict_train_period_threshold.R` — frozen-train threshold / strict timing.

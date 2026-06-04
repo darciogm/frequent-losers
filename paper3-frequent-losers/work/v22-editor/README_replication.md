@@ -1,5 +1,13 @@
 # Replication notes — *Cheap Signals, Costly Proof* (Paper 3, v22, JLEO R&R)
 
+> **⚠ SUPERSEDED (2026-06-04, canonical-target repair).** Internal historical worksheet.
+> The label discussion below (193 static file, B3/B5) predates the canonical repair: the
+> submitted validation label is built by
+> `work/v22-editor/scripts/analysis/00_build_canonical_validation_targets.R`
+> (651 always-loser cobidders; FL flag never used; assertions T1–T10); no submitted result
+> depends on `cade_fl_cobidders.csv`. The AUTHORITATIVE replication README is
+> `work/v22-editor/submission_jleo/replication/README.md`.
+
 Skeleton replication doc for the JLEO submission. This is a WORK-IN-PROGRESS during the R&R; the final ReadMe PDF (JLEO policy) is produced at the integration pass (Prompt 12). Paths relative to `paper3-frequent-losers/`.
 
 ## 1. Pipeline at a glance

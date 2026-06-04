@@ -24,16 +24,30 @@ effort: a question of enforcement design under costly and incomplete
 observability that sits squarely at the intersection of law, economics, and
 organization.
 
-The manuscript makes three contributions. First, it offers an
+The paper's contribution is not a claim that an award-layer screen identifies
+cartel members. It is a framework for auditing how far cheap administrative
+records can order forensic priority before agencies open costly bid-level
+records. In the BEC–CADE setting, the audit is deliberately deflationary: much
+raw performance reflects procurement opportunity, timing, and case
+concentration. That boundary is the institutional point.
+
+Concretely, the manuscript makes three contributions. First, it offers an
 **evidence-allocation framing** that separates the cheap, legally thin
 award layer from the costly, proof-producing bid layer and asks what the former
-can order. Second, it provides an **adjudication-anchored validation** of a
-minimal loser-side construct — persistent zero-win participation among
-always-loser firms — against CADE adjudications, with a decomposition that
-disciplines the result for procurement opportunity, case concentration, and
-timing rather than reporting raw discrimination. Third, it develops a
+can order. Second, it provides a **reproducible, adjudication-anchored
+validation** of a minimal loser-side construct against CADE adjudications: the
+label is a unique always-loser firm that shares a tender-item with a BEC-active
+direct defendant, with direct defendants excluded and the loser-side flag never
+used to build the label. A decomposition disciplines the result for procurement
+opportunity, case concentration, and timing rather than reporting raw
+discrimination, and finds that within comparable opportunity sets the residual
+ordering is marginal at best and not robust across designs. Third, it develops a
 **sequential award→bid cost-recall operating frontier** that organizes when an
-agency should pay to recover bid records.
+agency should pay to recover bid records, reported against explicit denominators
+as a recovery-footprint accounting rather than as a single optimal cutoff. The
+transferable object is this decomposition framework, not a portable cartel score:
+the estimated BEC ranking is case-sensitive and should be read as retrospective,
+incumbent-firm triage, not as platform-wide prospective deployment.
 
 We are deliberately careful about the **boundaries** of the construct. It ranks
 **forensic priority**; it does not classify cartel membership, prove liability,

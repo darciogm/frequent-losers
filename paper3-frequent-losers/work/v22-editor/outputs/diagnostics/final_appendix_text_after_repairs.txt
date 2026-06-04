@@ -1,0 +1,1950 @@
+Online Appendix to:
+Cheap Signals, Costly Proof:
+The Reach and Limits of Award-Layer Screening in Cartel
+Enforcement
+
+Appendix Roadmap
+This appendix supplies technical support for the main text and is organized around
+the evidentiary burden of an evidence-allocation design. Appendix A documents the
+award-record universe, the CADE–BEC matching rules, the direct-defendant versus
+adjudication-anchored cobidder distinction, and the label funnel and sample reconciliation. Appendix B gives the reduced-form ranking framework, the monotone-likelihoodratio result, the exit-margin logic, and the platform-survival audit. Appendix C
+reports the opportunity-adjusted, timing, leakage, and case-composition audits that
+discipline alternative interpretations of the ranking. Appendix D summarizes the
+economic-profile and score diagnostics. Appendix E documents the bid-layer benchmark and the cost-recall frontier for sequential award→bid gatekeeping. Appendix F
+reports the price-scope evidence and the adaptive-deployment protocol. Full robustness
+grids, permutation draws, threshold sweeps, the bid-feature dictionary, and additional
+diagnostic figures are collected in the Online Supplement, whose manifest maps each
+item to its generating script. Throughout, the appendix interprets the ranking as
+
+forensic priority, not proof of conduct or cartel membership, and treats price evidence
+as scope information rather than damages.
+
+Appendix A. Data Construction and Validation Labels
+This appendix records the construction choices behind the award-layer screen and
+the adjudication-anchored labels, and keeps each source in its proper evidentiary role.
+The screen is built from procurement records; the validation labels come from CADE
+adjudications and their BEC co-bidding environments. The design therefore tests
+whether a cheap award-layer statistic ranks firms near adjudicated defendants, while
+leaving legal membership to the case record. The labels are adjudication-anchored
+exposure measures, not proof of conduct or cartel membership.
+Appendix A.1. Award-Record Universe
+The BEC procurement universe covers 2009–2019 and contains 1,654,447 tenderitem records before the final price-regression restriction; the main price sample contains
+1,654,401 observations. For the screening exercise the unit is the firm: a firm enters
+the outer screening universe if it appears as a participant in at least one BEC tender
+during the sample window, giving 41,444 participating firms.
+Appendix A.2. Screen Construction
+For each firm i we construct two award-layer variables, Ti (number of BEC tenderitems in which firm i participates) and Wi (number of BEC tender-items won by firm
+i). The always-loser stratum is the set {i : Wi = 0} and contains 16,843 firms. The
+2
+
+continuous screening score is si = log(1 + Ti ) within that stratum, and the discrete
+frequent-loser flag is
+F Li = 1{Wi = 0, Ti ≥ 14}.
+
+The threshold comes from the always-loser participation distribution—median plus 1.5
+times the interquartile range, with statistical cutoff 13.5 and integer rule Ti ≥ 14—and
+is fixed from that distribution alone, not estimated from CADE labels. It flags 2,735
+firms, or 16.2% of the always-loser stratum. Because the threshold is pre-specified, the
+validation exercise asks a genuine question: whether an award-layer rule concentrates
+firms later observed near adjudicated cartel defendants.
+Table A.1: Screen Construction
+Object
+
+Value
+
+Construction role
+
+BEC participants
+
+41,444
+
+Always-losers
+
+16,843
+
+Participation threshold
+Frequent losers
+Continuous score
+
+14
+2,735
+log(1 + Ti )
+
+Outer firm universe for award-record construction
+Zero-win stratum in which the screen ranks
+firms
+Integer rule from median +1.5×IQR
+Discrete first-stage flag within always-losers
+Rank used when a threshold is not required
+
+Appendix A.3. Matching CADE Defendants and Constructing Cobidder Labels
+The starting CADE portfolio contains 65 firm-defendants across 12 adjudicated
+procurement-cartel cases linked to BEC subject matter. We match CADE defendants
+to BEC participant records by exact string equality on the full 14-digit CNPJ (códigofornecedor), zero-padded to preserve leading zeros; no fuzzy, name-based, or manual
+matching enters the direct-defendant set. Of the 65 firm-defendants, 47 have at least
+3
+
+one BEC tender-item record during the sample window and define the direct-defendant
+set; the remainder operate outside BEC or lack matchable identifiers.
+Direct defendants are not the screen’s target; matching them to BEC tender-items
+locates the adjudication-anchored exposure set (52013 defendant tender-items, of
+48 distinct crossmatch CNPJ of which 41 are firm_tender_map-active). The main
+validation target is the always-loser cobidder, constructed from the current scripts by
+a single rule: a unique always-loser firm (win rate = 0 over 2009–2019) that shares
+at least one BEC tender-item with at least one BEC-active direct CADE defendant.
+Three exclusions fix the object. Direct defendants are themselves excluded from the
+cobidder set, so the label measures loser-side exposure around the anchors rather than
+the anchors; the sentinel firm code -1 (unidentified bidder) is excluded; and firms
+appearing across cases or under duplicate CNPJ are counted once. The rule yields
+651 always-loser cobidders over the full 12-case portfolio.
+The frequent-loser flag is not used to construct the label. It is the award-layer
+score that is evaluated against the label. Of the 651 positives, 341 are frequent losers
+and 310 are not; the composition is descriptive, not a label restriction. The label
+is adjudication-anchored exposure, not legal membership: it says the firm appears
+on the loser side of tenders that include adjudicated defendants, not that it was a
+defendant or submitted a cover bid in any particular tender.
+
+4
+
+Appendix A.4. Conservative and Timing Benchmarks
+The conservative validation benchmark restricts CADE cases to adjudications with
+judgment date on or before 2020-12-31, sacrificing sample size to avoid using later
+case resolution to define the target. Under the same cobidder definition, this leaves
+4 cases, 19 crossmatch direct defendants, and 208 always-loser cobidders, of which
+107 are frequent losers. The cut uses judgment dates because conduct-onset dates
+are unavailable: only judgment dates are observed, for 9 of the 12 cases, and the 3
+undated cases are placed last in any timing ordering. Per-case timing and benchmark
+membership are reported in the Online Supplement.
+The temporal-holdout exercise computes participation scores from 2009–2016 and
+evaluates discrimination against labels realized in 2017–2019. The timing-benchmark
+labels are retrospective adjudication anchors: the judgments post-date the bidding,
+and we claim no real-time legal knowledge at the scoring date. The split follows the
+enforcement logic rather than a statistical convention: at the moment an agency uses
+the award layer it does not know the completed case file, and the relevant question is
+whether earlier participation helps rank firms whose adjudication-anchored exposure is
+later revealed. Among the 651 positives, 498 are rankable incumbents (some pre-2017
+participation history) and 153 are entrant positives with no pre-window history to rank
+(23.5% of the target). The design is conservative in computing the score before the
+target period but imperfect because adjudications often post-date conduct that can
+span several years; it is therefore a retrospective out-of-time discrimination exercise,
+
+5
+
+not causal prediction or a field deployment.
+
+Appendix A.5. Validation Labels and Sample Reconciliation
+Table A.2: Validation Labels
+Label
+
+Count
+
+Interpretation
+
+Direct CADE defendants
+in BEC
+Always-loser cobidders
+
+47
+651
+
+of which frequent losers
+
+341
+
+Adjudicated defendants from
+procurement-cartel cases (legal anchors)
+Always-losers (win rate = 0) sharing a
+tender-item with a direct defendant; main
+adjudication-anchored exposure target (not
+membership)
+Composition of the positives (the FL flag does
+not define the label)
+Composition of the positives
+
+of which
+non-frequent-losers
+Conservative cases
+Conservative direct
+defendants
+Conservative cobidders
+Conservative
+frequent-loser cobidders
+
+310
+4
+19
+
+Pre-2020 adjudication benchmark
+Crossmatch defendants in the conservative
+benchmark
+Always-loser cobidders in the conservative
+benchmark (same definition)
+Frequent losers inside the conservative
+cobidder target
+
+208
+107
+
+The direct-defendant label is kept separate from the cobidder label: the former
+is a legal anchor, the latter an exposure label tailored to the loser-side ranking. The
+main validation target and every benchmark in this paper use the same cobidder
+definition; the counts differ only because the candidate pool, the case window, or a
+common-support restriction differs. The 651 main target applies the rule across the
+full 12-case portfolio. The 208 conservative count applies the identical rule to the 4
+cases judged on or before 2020-12-31, so it is a subset of the main target (208 < 651
+always-loser cobidders; 107 < 341 frequent-loser cobidders). No paradox arises: a
+stricter case window can only remove cobidders, never add them. Table 2 reports all
+
+6
+
+benchmarks side by side, and Table A.3 traces how the positive count moves across
+exercises as the candidate pool changes while the definition is held fixed.
+Two further distinctions matter. The bid-feature common-support pool of 16,731
+firms is an evaluation sample on which the Imhof-style bid moments are complete;
+all 651 positives are retained in it, so it is not a label-funnel count and must not be
+read as a cobidder or defendant tally, whose exact rows are those of Table 2. Finally,
+the award-layer screen itself uses no bid amounts, bid ranks, within-tender dispersion,
+reference prices, LANCES timestamps, CADE outcomes, or price-regression residuals;
+those enter later as validation or forensic benchmarks, keeping the first-stage statistic
+computable in award-only environments and the bid layer available as an independent
+forensic stage.
+The positive-count concordance in Table A.3 shows that the 651 positives are
+stable across exercises under one fixed definition; the counts that differ (498 rankable
+incumbents, 153 entrant positives, 208 conservative) are common-support, timing, or
+case-window subsets, not alternative label definitions.
+
+Appendix B. Evidence-Allocation Framework and Legal Scope
+Appendix B.1. The pre-proof ranking problem
+The model is intentionally spare: it justifies an ordering rule for scarce forensic
+attention, not the internal organization of a cartel (formation, side payments, leniency,
+and damages are treated in Asker, 2010, and Marshall and Marx, 2012). The narrower
+object is the pre-proof enforcement problem—why a firm that repeatedly loses while
+7
+
+Table A.3: Positive-count concordance across validation exercises.
+Analysis
+
+Candidate pool
+
+Support restriction
+
+Pos.
+
+Pool N
+
+Why the count differs
+
+Main label funnel (Table 2)
+Opportunity-adjusted validation
+
+Always-losers (16,843)
+
+none
+
+651
+
+16,843
+
+Exposed always-losers
+(common support)
+
+exposure
+common
+support (Ei defined)
+
+651
+
+6,040
+
+Strict timing, full test universe
+
+All BEC firms scorable at
+screening date
+
+651
+
+41,444
+
+Strict timing, rankable incumbents
+Strict timing, training
+always-loser pool
+Bid-feature common support
+Cost-recall frontier
+
+Firms with pre-2017 history
+Always-losers in training
+window
+Always-losers with complete Imhof moments
+Bid-feature
+commonsupport pool
+Always-losers (16,843)
+
+score frozen 2009–
+2016;
+entrants at
+score zero
+pre-window participation > 0
+train-window AL status
+complete bid-feature
+support
+same as bid benchmark
+case-window restriction only
+
+498
+
+32,682
+
+651
+
+21,819
+
+651
+
+16,731
+
+651
+
+16,731
+
+208
+
+16,843
+
+Reference definition; full 12-case
+portfolio
+Exposed subsample retains all
+positives; denominators shrink to
+common support
+Universe widens to every scorable
+firm; 153 positives are unrankable entrants
+Entrant positives (153) excluded:
+no pre-window history to rank
+Pool defined by train-window
+zero-win status
+112 AL firms lack priced-bid moments; all positives retained
+Same pool; cost denominators
+added
+Fewer anchor cases under the
+SAME definition (subset of 651)
+
+Conservative
+benchmark
+
+pre-2020
+
+Notes. The target definition is identical in every row (broad always-loser cobidder; direct defendants excluded; frequent-loser status never
+used). Positive counts differ only because later exercises impose common-support, timing, or bid-feature restrictions on the candidate
+pool.
+
+still appearing in procurement records can be a useful target for bid-level follow-up.
+The device is a reduced-form evidence-allocation rule.
+In a cartel-targeted tender one firm is assigned the winning role and submits the
+designated bid b∗ ; a losing-role participant submits bℓ > b∗ and is not meant to win.
+Winning by deviation creates an internal sanction κ > 0 (loss of future rents, relational
+standing, or capacity-allocation rights); let r be the private gain from deviating into the
+winner role. Firms outside the winning role are of two reduced-form model types: type
+C, cartel-deployed losing-role participants, and type G, ordinary losing participants
+(inefficient, capacity constrained, or unlucky). The labels are a device for stating the
+ranking condition; C and G are not observed classes. The empirical screen conditions
+on the observed event Wi = 0 (Wi is the firm’s number of wins) and ranks firms by
+participation count Ti .
+Lemma 1 (Zero-win losing role). If the internal sanction from winning in a losing
+role exceeds the private deviation gain, κ > r, a losing-role participant avoids winning:
+8
+
+it submits bℓ > b∗ , so Pr(Wi > 0 | C) = 0 over tenders in which the firm is deployed
+in the losing role.
+Proof. Submitting bℓ > b∗ yields the deployment payoff net of the role cost. Deviating
+to a winning bid gains r but pays κ, which is unprofitable when κ > r. The inequality
+fixes the win probability of the losing role, not the numerical bid.
+
+□
+
+The inequality κ > r supports conditioning on the zero-win event but does not
+imply that all zero-win firms occupy a losing role: the conditioning set is intentionally
+broad, since many ordinary firms also never win. The evidentiary content comes
+from the second observable—participation intensity—and from the dynamic margin
+governing who remains in the zero-win set.
+
+Appendix B.2. Dynamic participation, exit, and the ranking statistic
+The ranking statistic is informative only if persistent zero-win participation is more
+characteristic of a deployed losing role than of an ordinary losing firm. We obtain that
+property endogenously from a participation-and-exit margin rather than assuming a
+type-specific rate gap. An ordinary zero-win firm G pays a participation cost cG > 0
+and earns expected gross surplus mG (Hit ), with Hit its loss history at item i, time t;
+under Bayesian updating, repeated losses weakly lower mG . It continues iff
+
+VG (Hit ) = mG (Hit ) − cG + β E[VG (Hi,t+1 ) | Hit ] ≥ 0,
+
+9
+
+(B.1)
+
+and exits when VG (Hit ) < 0. A cartel-deployed losing-role firm C instead values
+continuation through a role value aC (Hit ) (future rents, relational or subcontracting
+value, internal compensation for sustained losing). It continues iff
+
+VC (Hit ) = aC (Hit ) − cC + β E[VC (Hi,t+1 ) | Hit ] ≥ 0.
+
+(B.2)
+
+Because aC derives from the role rather than the firm’s own win prospect, it does not
+erode with the loss count the way mG does, so after sufficiently many zero-win periods
+
+aC (Hit ) − cC > mG (Hit ) − cG ,
+
+(B.3)
+
+and C keeps participating while G is selectively removed. The empirical consequence
+is a selection result: among surviving zero-win firms,
+
+λC > λG
+
+on the surviving conditioning set Wi = 0,
+
+(B.4)
+
+derived from differential exit under (B.1)–(B.3), not posited as an exogenous type
+effect.
+Assumption 2 (Role-value persistence). Among surviving zero-win firms, carteldeployed losing-role participants have weakly greater net continuation value from
+repeated losing than ordinary zero-win firms after sufficiently many losses: there is a
+loss count L̄ such that for histories with accumulated losses exceeding L̄, aC (Hit )−cC ≥
+mG (Hit ) − cG .
+
+Conditional on survival and zero wins, let participation counts follow a Poisson
+
+10
+
+approximation,
+Ti | τi , q ∼ Poisson(λq τi ),
+
+q ∈ {C, G},
+
+(B.5)
+
+with τi the length of time firm i is observed; (B.4) supplies the ordering λC > λG on
+this surviving set.
+Proposition 3 (Persistence ranking). Suppose (1) losing-role firms avoid winning
+when κ > r (Lemma 1); (2) ordinary zero-win firms exit when continuation value falls
+below the outside option ( (B.1)); (3) role value keeps C in the risk set longer, so the
+selection wedge (B.3)–(B.4) holds (Assumption 2); and (4) among survivors effective
+participation intensity is higher for C than for G, λC > λG . Then the posterior
+Pr(C | Ti = t, Wi = 0, τi ) is non-decreasing in t, and Ti and log(1 + Ti ) are monotone
+ranking statistics for forensic priority within the zero-win stratum.
+
+Proof. By Bayes’ rule the posterior odds of C against G are proportional to the Poisson
+likelihood ratio exp[−(λC − λG )τi ](λC /λG )t , which under λC > λG is increasing in
+t (monotone likelihood ratio of the Poisson family; Karlin and Rubin, 1956).1 The
+posterior is non-decreasing in the count, and log(1 + Ti ) preserves the ranking.
+
+□
+
+Condition (4)—the surviving participation gap—is the key empirical content,
+validated against adjudication-anchored labels in §§4–6. This is a ranking result under
+maintained behavioral conditions, not an identification claim. The main-text binary
+rule (flagging firms above the median plus 1.5 times the interquartile range of zero-win
+participation) is an operational coarsening of this ranking; the threshold is not a
+structural parameter, and agencies could instead use the continuous score, a top-k
+list, or a budget-calibrated cutoff.
+1
+
+Karlin, S. and H. Rubin (1956). The theory of decision procedures for distributions with monotone
+likelihood ratio. Annals of Mathematical Statistics 27(2), 272–299.
+
+11
+
+Corollary 4 (Legal scope). Under Lemma 1, Assumption 2, and Proposition 3, the
+frequent-loser statistic orders expected investigative value within the zero-win stratum.
+It is not sufficient for liability, damages, or cartel membership.
+
+Proof. Triage requires an ordering of expected investigative value, which Proposition 3
+supplies. Liability and damages require different predicates—proof of agreement,
+conduct in particular tenders, and a measure of price injury—that the statistic,
+carrying only participation and win information, omits.
+
+□
+
+Appendix B.3. Empirical survival audit
+The exit margin of §Appendix B.2 predicts who remains on the platform: if
+role value sustains cartel-deployed losing participation while ordinary zero-win firms
+are selectively removed, the most exposed firms should display longer continued
+participation. We audit this descriptively on a firm-year panel of the 16,843 alwayslosers (101,366 firm-years, 2009–2019, right-censored at 2019). Because the audit uses
+full-sample labels, it is retrospective and mechanism-supporting at most; it does not
+test cartel membership or conduct. “Survival” means continued BEC participation,
+not legal-entity survival.
+The pattern is in the predicted direction. Table B.1 shows that FL cobidders
+persist markedly longer: mean active years 3.51 versus 2.87 for FL non-cobidders and
+1.61 for non-FL always-losers; median duration 3 versus 2 versus 1 years; exit share
+before 2019 of 0.63 versus 0.73 versus 0.85. A discrete-time hazard model (cloglog,
+duration and calendar-year fixed effects, clustered by firm) confirms the ordering, with
+
+12
+
+exit-hazard ratios of 0.231 for FL cobidders and 0.365 for FL non-cobidders relative
+to non-FL always-losers—both far below one—so exposure to the labels is associated
+with substantially lower exit hazard (full hazard estimates, the Cox specification,
+and the sensitivity battery are reported in the Online Supplement). The cobidder
+coefficient is sharply estimated (z = −22.2, p < 10−100 ), and the Kaplan–Meier curves
+are clearly separated. The direction is stable across robustness variants—alternative
+exit definitions, excluding late cohorts, and excluding the largest CADE case (ratio
+0.281)—and a timing-disciplined to-date label attenuates it to 0.768 but leaves it
+below one.
+Table B.1: Platform survival of always-losers, by full-sample label.
+Group
+
+N firms
+
+Mean active
+years
+
+Exit share
+< 2019
+
+Median
+duration
+
+Right-cens.
+share
+
+Hazard
+ratio
+
+Non-FL always-loser
+FL non-cobidder
+FL cobidder
+
+14,104
+2,391
+341
+
+1.61
+2.87
+3.51
+
+0.85
+0.73
+0.63
+
+1
+2
+3
+
+0.15
+0.27
+0.37
+
+1.00
+0.365
+0.231
+
+Firm-year panel of 16,843 always-losers, 101,366 firm-years, 2009–2019, right-censored at 2019.
+“Active years” counts distinct years of platform participation; “duration” is years between first
+and last appearance. Hazard ratios are adjusted discrete-time (cloglog) estimates relative to the
+non-FL always-loser baseline (full hazard table in the Online Supplement). Labels are full-sample
+and the audit is therefore descriptive and retrospective: it is mechanism-supporting at most and is
+not a test of cartel membership.
+
+Appendix B.4. Evidentiary scope
+The survival result is consistent with the exit-margin logic—role value sustaining
+persistent losing participation—but is mechanism-supporting at most; ordinary zerowin firms may exit for many reasons. More generally, even if the model is correct, a
+high value of log(1 + Ti ) raises the posterior probability of loser-side exposure only
+relative to other zero-win firms: it does not identify an agreement, assign cartel
+
+13
+
+Platform participation survival of always-loser firms
+Right-censored at 2019. Log-rank p=2.62e-261. Full-sample group labels are descriptive/retrospective.
+Survival = continued BEC participation, NOT legal-entity survival; does not prove cartel conduct.
+
+Share still participating (KM survival)
+
+1.00
+
+0.75
+
+0.50
+
+0.25
+
+0.00
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+9
+
+10
+
+11
+
+Years since first BEC activity
+FL cobidders (CADE-linked)
+
+FL non-cobidders
+
+Non-FL always-losers
+
+Figure B.1: Kaplan–Meier platform-survival curves for always-losers, by full-sample label.
+Alt text: Three Kaplan–Meier curves of the share of firms still participating on the platform against
+tenure in years. The FL-cobidder curve lies highest and declines most slowly; the FL-non-cobidder
+curve is intermediate; the non-FL always-loser curve falls steepest and lies lowest, with most firms
+gone after one year.
+Note: Right-censored at 2019. Labels are full-sample, so the comparison is descriptive. “Survival” is
+continued BEC platform participation, not legal-entity survival.
+
+14
+
+membership, prove any specific bid was cover, or establish a damages base. Those
+claims require the richer record (bid values, communications, leniency material, winnerrotation patterns). This boundary is the legal reason for the staged architecture in
+the main text: the award layer ranks firms on a statistic that is cheap, observable,
+and monotone under a transparent behavioral assumption, while the bid layer and
+case record do the evidentiary work that liability requires. The paper’s identification
+continues to rest on the opportunity-adjusted and timing-disciplined tests of §§4–6.
+
+Appendix C. Validation Audits
+The validation design addresses three mechanical channels. Frequent participants
+have more chances to appear near any defendant, so raw co-bidding rates are not
+enough; firms may operate in the same procurement environments as CADE anchors,
+giving them more opportunities to meet those anchors even under ordinary competition;
+and item-level labels can mechanically reuse the same participation history that
+constructs the score. This appendix records the opportunity and timing audit logic
+and the interpretation each audit licenses; the main text reports the headline results.
+Throughout, “CADE-defendant contact” denotes an adjudication-anchored exposure
+label: a firm shares a tender-item with a directly adjudicated CADE defendant. It
+does not assert that the firm is a cartel member, party to any agreement, or liable for
+anything. The audits validate forensic priority, not membership, damages, or proof.
+Online Supplement C reports the full grids behind every audit summarized here.
+
+15
+
+Appendix C.1. Opportunity-Cell Construction and Expected Contact
+Purpose. A firm can appear near a CADE anchor simply because it operates
+in environments where defendants are active; the opportunity cells discipline this
+exposure before any score is credited.
+Method. We partition the award layer into procurement-opportunity cells g and
+benchmark each firm against others facing the same cells, using three nested definitions:
+COARSE = item group (two-digit item-code prefix) × year; MEDIUM = item
+group × year × buyer/procuring-unit (the reference definition for the headline withinstratum results); and STRICT = item code × year × buyer. Modality (Convite vs.
+Pregão) is intentionally dropped: it is not present in the award layer used here, and
+conditioning on it would further fragment already-sparse cells (revisited as a sensitivity
+below). For firm i, with nig the tender-items held in cell g and pg the cell defendantP
+
+contact rate, expected contact under ordinary opportunity is Ei =
+
+g nig pg ,
+
+the
+
+observed contact Oi is the firm’s actual count of defendant-sharing tender-items, and
+qP
+
+the excess is Xi = Oi − Ei with standardized form Zi = (Oi − Ei )/
+
+g nig pg (1 − pg ).
+
+To prevent a firm from being benchmarked against itself, pg is computed leave-one-out.
+Result. The mean cell defendant-contact rate p̄g is around 0.017–0.019 across the
+three definitions; finer cells gain resolution at the cost of support (under STRICT,
+99.5% of cells hold fewer than five tender-items and 75.7% are singletons). Excess
+concentrates where the score is high (mean Xi = +0.068 at participation tier T ≥ 50,
+versus ≈ −0.006 to −0.000 at lower tiers), but most of the level of Oi is explained
+
+16
+
+by Ei : exposure does the heavy lifting and excess is the residual the score must
+rank. Common-support retention is honest about sparsity — under MEDIUM cells
+the strict support rule retains about 46% of firms (the within-stratum results use
+MEDIUM), and under STRICT retention collapses to about 9%. The cell-construction,
+expected-contact, and retention grids are in Online Supplement C.
+
+Appendix C.2. Opportunity-Adjusted Validation
+Purpose. The control-function audit asks whether the screening score still ranks
+defendant contact once opportunity exposure Ei is in the model.
+Method. We estimate a ladder of logits and rank-tests (S0–S6) on the always-loser
+firms, reported in Table C.1: raw baselines (S0, including an exposure-only model),
+flexible participation (S1), score-plus-log(1+E) at each cell granularity (S2), breadth
+controls (S3), opportunity- and participation-fixed effects (S4), the binary excess
+target 1[Xi > 0] (S5), and the strict-support subsample (S6).
+Result. The honest reading is deflationary. Exposure alone already classifies
+cobidder contact well (exposure-only AUC 0.905 unconditionally; 0.713 on the exposed
+subsample), and the combined exposure-plus-score AUCs near 0.98 overstate the
+score’s marginal value because Ei encodes the label. Once exposure is held fixed,
+the residual ordering is marginal at best and not robust across designs: the nested
+DeLong increment is only +0.010 (p = 0.013), the within-opportunity-stratum AUC
+for the score is 0.471 (≈ chance), and the FL14 binary is no better (0.507). The
+score does rank the binary excess-contact target at AUC 0.764 within MEDIUM
+17
+
+Table C.1: Control-Function Validation (Selected Specifications)
+Spec
+
+Model
+
+S0
+S0
+S0
+S2
+S2
+S2
+S3
+S4
+
+raw score (log T )
+raw FL14
+exposure-only (all AL)
+score + log(1+E) [MEDIUM]
+FL14 + log(1+E) [MEDIUM]
+exposure-only logit (exposed)
+score + E + breadth
+score + opp-FE + part-FE
+(exposed)
+score ranks 1[Xi >0]
+(MEDIUM)
+FL14 ranks 1[Xi >0]
+(MEDIUM)
+score +E, strict support
+exposure-only logit
+exposure + score
+score | opportunity stratum
+FL14 | opportunity stratum
+
+S5
+S5
+S6
+NESTED
+NESTED
+WITHIN
+WITHIN
+
+N
+
+Pos.
+
+ROC AUC
+
+PR-AUC
+
+16,843
+16,843
+16,843
+16,843
+16,843
+6,040
+16,843
+6,040
+
+651
+651
+651
+651
+651
+651
+651
+651
+
+0.761
+0.688
+0.905
+0.985
+0.985
+0.713
+0.983
+0.707
+
+0.143
+0.097
+0.300
+0.708
+0.706
+0.300
+0.711
+0.255
+
+16,843
+
+475
+
+0.764
+
+0.095
+
+16,843
+
+475
+
+0.687
+
+0.073
+
+7,683
+6,040
+6,040
+6,040
+6,040
+
+446
+651
+651
+651
+651
+
+0.969
+0.713
+0.723
+0.471
+0.507
+
+0.671
+—
+—
+—
+—
+
+Notes: Outcome is adjudication-anchored cobidder contact (S5 uses the binary excess
+target 1[Xi > 0]). The combined exposure-plus-score logits in S2–S3 reach
+AUC ≈ 0.98, but this is mechanically inflated and is NOT evidence of score
+signal: the exposure term Ei is built from the same defendant-contact rates that define
+the label, so a model containing Ei partly predicts the label by construction. The score’s
+isolated contribution is not read off these combined AUCs. Holding exposure fixed, the
+residual ordering is marginal at best: the nested DeLong increment is only +0.010 over
+the exposure-only model (p = 0.013), and the within-opportunity-stratum AUC for the
+score is 0.471 (≈ chance; FL14 0.507). The companion permutation and matched audits
+in Online Supplement C do not establish a robust residual.
+
+18
+
+cells, but the three companion exercises in Online Supplement C do not corroborate
+a robust residual signal: a matched-stratum label permutation places the observed
+PR-AUC at p = 0.127 (not significant), a firm-exposure simulation out-predicts the
+raw score on level PR-AUC (p = 1.000), the CEM opportunity-matched comparison
+gives a within-stratum AUC of 0.626 (n = 6,039, full common support), and the
+within-stratum change in Pr(cobidder) for FL14 versus non-FL is in fact negative
+(−0.017). We therefore report no robust residual ordering net of opportunity; the only
+marginally positive quantity is the small nested increment, which the permutation
+tests do not support as reliable.
+Intensity-restricted label sensitivity. A natural objection is that the broad sharedtender-item label dilutes genuine exposure with incidental single-contact cobidders,
+masking a residual signal. We re-ran the full opportunity-adjusted battery restricting
+positives to cobidders sharing at least two distinct defendant tender-items (368 of the
+651 positives). The restriction strengthens the deflationary conclusion rather than
+reversing it: raw discrimination rises mechanically (ROC-AUC 0.854), but the exposureonly model rises faster (0.873 on the exposed subsample; 0.956 unconditionally) and
+again out-predicts the score; the within-opportunity-stratum AUC remains at chance
+(0.506); the nested increment falls to +0.003 (p = 0.47); and the matched-stratum
+permutation again does not reject (p = 0.39). The more tightly the label is anchored
+to intense defendant contact, the more completely procurement opportunity accounts
+for it.
+
+19
+
+Appendix C.3. Timing Information Sets and Strict Holdout
+Purpose. This block holds time fixed: could a regulator who froze the score before
+the evaluation window have ranked the firms later adjudicated as cobidders, without
+peeking at future participation, wins, threshold, or CADE adjudications?
+Method. The CADE files carry only judgment dates (data_julgamento, mostly
+2015–2025) and no conduct dates, so all timing is year-level (BEC participation
+year), never day-level (DAY_LEVEL_TIMING_UNAVAILABLE). We define seven candidate
+information sets, A–G, distinguished by which inputs (score, zero-win status, threshold,
+label) are drawn pre- versus post-window. We lead on the honest incumbent-triage
+designs — C/D/G (strict prospective score, rankable incumbent pool, retrospective
+label, read as triage rather than prospective deployment) — report A as a labeled
+retrospective upper bound, B as a leak-flagged decomposition, E to disclose the entrant
+coverage hole, and document F (adjudication-observable-at-time) as infeasible because
+all judgment dates post-date a 2009–2016 freeze. The strict holdout freezes the score,
+always-loser status, and median+1.5×IQR threshold on 2009–2016 (train-window
+threshold 7, vs. full-window 13.5) and evaluates against 2017–2019 cobidder labels.
+Table C.2 gives five nested samples; the full A–G information-set register and the
+leakage-channel cross-tabulation are in Online Supplement C.
+Result. The reading is deliberately deflationary. A within-pool ranking signal
+survives (sample 3, AUC 0.684–0.646), but on the full firm universe the strict screen
+has no operational traction (precision@500 = 0): the entrant coverage hole and
+
+20
+
+Table C.2: Strict Holdout 2009–2016 → 2017–2019 (Year-Level Timing)
+Sample
+1. Full test candidate
+2. Rankable (T train >0)
+3. Training always-loser
+4. Training AL & test-active
+5. Zero-win both (leaks)
+
+N
+
+Pos.
+
+ROC AUC
+
+PR-AUC
+
+Prec@500
+
+Recall@500
+
+Lift@500
+
+Tie-at-0
+
+41,444
+32,682
+21,819
+11,351
+16,843
+
+651
+498
+651
+312
+651
+
+0.474
+0.471
+0.684
+0.667
+0.646
+
+0.014
+0.013
+0.077
+0.084
+0.086
+
+0.000
+0.000
+0.124
+0.142
+0.136
+
+0.000
+0.000
+0.095
+0.228
+0.104
+
+0.00
+0.00
+4.16
+5.17
+3.52
+
+0.246
+0.043
+0.402
+0.772
+0.280
+
+Notes: Continuous loser-side score (log T train ). Sample 3 is the honest strict pool; within it, the FL-binary AUC is 0.646 and
+the continuous AUC is 0.684 (threshold = 7, vs. full-window 13.5). Sample 5 leaks future wins via full-period always-loser
+status and is reported as a leak-flagged sensitivity only. On the full candidate universe (sample 1) the strict screen
+collapses to chance: ROC 0.474 (below chance), PR-AUC 0.014, and precision@500 =recall@500 = 0, with about 25% of
+firms tied at score zero. Of the 498 rankable positives and 153 entrant positives (23.5% of 651), entrants form a structural
+blind spot the prospective score cannot reach. “Tie-at-0” is the share of the candidate set carrying score zero. Source:
+table_D_strict_2009_2016_to_2017_2019.csv; strict_holdout_composition.csv.
+
+the mass of score-zero ties are the proximate causes. Two companion exercises
+in Online Supplement C confirm the pattern. A rolling-origin validation expanding the training window for t = 2014, . . . , 2019 posts PR-AUC ≈ 0.012–0.014 and
+precision@500 =recall@500 = 0 on the full universe in every origin year, with the worst
+ROC below chance (0.446, 2015); the within-pool (training-always-loser) ROC stays in
+the 0.66–0.70 range across origins, again an artifact of a thicker retrospective training
+history rather than real-time learning. A leakage decomposition of the in-sample
+item-level reference AUC (0.995) confirms that the surviving structural component
+stays in the 0.86–0.89 range under cobidder-firm holdout (out-of-fold AUC 0.891) and
+temporal holdout (AUC 0.864), with the 0.10–0.13 AUC lost to mechanical reuse
+disclosed as such.
+
+Appendix C.4. Case Composition
+Purpose. A generalization concern is whether the pooled signal is carried by one
+or two adjudicated cases rather than the construct.
+Method.
+
+We link six cases with enough cobidders to score (a seventh,
+
+21
+
+sacos_de_lixo, is too sparse and is flagged) and re-evaluate the ranking after dropping the largest and the top-two cases, and under case-balanced weighting. Table C.3
+reports the leave-largest-case-out collapse.
+Table C.3: Case Dominance: Leave-Largest-Case-Out
+Scenario
+
+Pos.
+
+ROC AUC
+
+PR-AUC
+
+Prec@500
+
+Rec@500
+
+Full (pooled)
+Drop largest case
+Drop top-two cases
+Case-balanced (mean over cases)
+
+651
+443
+268
+—
+
+0.761
+0.763
+0.752
+—
+
+0.143
+0.090
+0.058
+—
+
+0.216
+0.132
+0.092
+0.043
+
+0.166
+0.149
+0.172
+0.173
+
+Notes: Dropping the single largest case (trens_metros) lowers PR-AUC from 0.143 to 0.090
+(−37%) and precision@500 from 0.216 to 0.132; dropping the top two cases takes PR-AUC
+to 0.058. Case-balanced precision@500 (weighting each case equally rather than
+each firm) is 0.043, against the firm-weighted pooled 0.216: the pooled operational
+number is concentrated in the largest case. ROC barely moves (it is uninformative at this
+prevalence). Source: table_H_case_dominance_validation.csv.
+
+Result. Dropping the single largest case lowers PR-AUC from 0.143 to 0.090
+(−37%); case-balanced precision@500 is 0.043 against the firm-weighted pooled 0.216,
+so the pooled operational number is concentrated in the largest case (which holds
+32.0% of positives and 45.4% of the true positives in the top 500). The concentration
+is structural across the environment, documented in Online Supplement C: the largest
+item group holds 21.5% of positives (item-group HHI 0.100) while the buyer distribution
+is diffuse (buyer HHI 0.009), and dropping the largest item group leaves PR-AUC
+essentially unchanged (0.143 → 0.134). A clustered randomization-inference test
+permuting cobidder labels within item-group × year clusters (B = 1,000) clears the
+null on the ranking metrics (ROC, PR-AUC, precision@500 all p = 0.001), but top-500
+case coverage is not significant (p = 0.103), consistent with one case anchoring the
+operational signal.
+
+22
+
+Appendix C.5. Direct-Defendant Scope Check
+If the statistic were a generic cartel-membership detector, it should classify direct
+CADE defendants as well as cobidders. It does not: the FL-binary score (retrospective incumbent triage) ranks direct defendants at ROC ≈ 0.49 under both full and
+strict timing (0.491 and 0.492), i.e. at chance, with precision@500 = 0. Continuous
+participation volume does carry some information about defendants—ROC 0.66–0.70,
+modestly above chance—but with precision@500 ≤ 0.004, so it does not operationally
+retrieve them either (full grid in Online Supplement C). The asymmetry is the design:
+the loser-side binary flag is uninformative about defendants, who typically sit on the
+winner side of the arrangement, while participation volume is not entirely silent. This
+is a scope boundary, not an escape hatch.
+
+Appendix C.6. Limitations
+Several limitations bound this appendix.
+
+The opportunity cells are award-
+
+layer proxies built from item, year, and procuring-unit identifiers, not a full
+description of each firm’s competitive opportunity set, and procurement modality is dropped because it is absent from that layer.
+
+All timing is year-level
+
+(DAY_LEVEL_TIMING_UNAVAILABLE): the CADE files carry only judgment dates (2015–
+2025), no conduct dates, so we cannot align the screen to when a cartel operated and
+the adjudication-observable design is infeasible rather than estimated. There is an
+entrant coverage hole (153/651, 23.5%, of positives carry score zero with no training
+history) and the signal is concentrated by case (dropping the largest cuts PR-AUC
+23
+
+by 37%), item group, and year, so the pooled operational number overstates breadth.
+ROC is a red herring at sub-1% prevalence: precision and recall—not ROC—are the
+operational metrics, and they stay low under the pooled diagnostic and collapse to
+zero on the full strict-timing universe. Most importantly, the CADE-defendant labels
+are adjudication-anchored exposure labels, not membership findings: a tagged firm
+shared a tender-item with an adjudicated defendant; it is not thereby a cartel member,
+a party to any agreement, or liable for anything. Net of opportunity and timing, the
+residual ordering is marginal at best and not robust across designs; what the award
+layer reliably delivers is a coarse, retrospective basis for prioritizing scrutiny, and it is
+not legal proof, not identification of cartel members, and not an estimate
+of damages or causal effect.
+
+Appendix D. Economic Profile and Robustness: Construction and Diagnostics
+This appendix documents the construction and diagnostics behind the Section 5
+economic-profile and robustness exercises.
+
+Throughout, “cobidder” denotes an
+
+adjudication-anchored exposure label — a firm that co-bid with a firm named in
+a CADE proceeding — and never a finding of participation in any agreement. The
+profiles below describe losing behavior on the award layer; they are descriptive inputs
+to a triage ranking, not proof of conduct.
+
+24
+
+Appendix D.1. Comparison Groups and Profile Variables
+All groups are drawn from the always-loser universe (firms with zero recorded
+wins over the calibration window, N = 16,843). The adjudication-anchored validation
+target is the broad set of 651 always-loser cobidders—firms that share at least one
+tender-item with a BEC-active direct CADE defendant—of which 341 (52.4%) satisfy
+the frequent-loser cut and 310 (47.6%) do not, so the label is not frequent-loserconditioned. The 47 direct CADE defendants are winners and are excluded from
+every cobidder group; the 6 that appear in the always-loser universe are excluded from
+the profile contrasts to keep the comparison free of named-defendant contamination.
+The Section 5 profile contrast is run within the frequent-loser stratum—group D (FL
+non-cobidders, N = 2,394) versus group E (FL cobidders, N = 341)—so that the
+estimated gaps cannot be an artifact of the cut. Online Supplement D lists all group
+definitions.
+Profile variables are computed from award records over the calibration window and
+organized in five panels: (A) participation and survival (Ti , active years, items per
+active year); (B) breadth and concentration (distinct buyers, item groups, modality mix,
+item-group and buyer HHIs); (C) defendant-proximity / opportunity layer (observed
+contacts Oi , opportunity-expected contacts EiMED , excess XiMED = Oi − EiMED , cases
+touched, contact intensity Oi /Ti , share in defendant-bearing cells); (D) modalityquorum proxies (Convite minimum-quorum share, mean competitors faced); and (E)
+timing (first-year and late-half participation shares). Three variable classes that would
+
+25
+
+sharpen interpretation are unobserved in the award layer and used nowhere in Section 5:
+tender value / contract size (price is recorded only for the winner), distance-to-winner
+(requires bid microdata), and fine geography / specialization. Because of the latter
+two, the ordinary-loser alternatives in Section 5 are narrowed but not eliminated.
+
+Appendix D.2. Standardized Differences
+Section 5 compares groups D and E using standardized mean differences (Cohen’s
+d) rather than p-values. With N in the thousands, p-values reject essentially any
+difference and convey no information about magnitude; the SMD is scale-free and
+comparable across heterogeneous variables. For a continuous variable with group
+means x̄E , x̄D and standard deviations sE , sD ,
+
+x̄E − x̄D
+,
+d=
+sp
+
+r
+
+sp =
+
+(nE −1)s2E +(nD −1)s2D
+,
+nE +nD −2
+
+with the binary analogue obtained by substituting p̂(1− p̂) for the variances. A positive
+d means cobidders (E) are higher. Table D.1 reports the top-ranked differences; the full
+variable table is in Online Supplement D. The largest gaps are the defendant-proximity
+variables (panel C), which are partly mechanical by construction; the non-mechanical
+breadth and persistence gaps (panels A and B) are moderate, with |d| near 0.4–0.5.
+The defendant-proximity gaps in panel C are partly mechanical: the cobidder
+label is defined by adjudication-anchored contact, so firms with more contact are
+mechanically more likely to be labeled. We hold exposure fixed by regressing each
+
+26
+
+Table D.1: Standardized profile differences (top variables), E (FL cobidders) minus D (FL non-cobidders).
+Panel
+C
+C
+C
+C
+C
+C
+B
+A
+B
+A
+B
+
+Variable
+
+Label
+
+n_cases
+n_def _f irms
+contact_intensity
+share_in_def _cells
+Oi
+XiMED
+n_buyers
+Ti
+pregao_share
+n_years
+convite_share
+
+# CADE cases touched
+# distinct defendants
+Oi /Ti
+part. in def. cells
+observed contacts
+excess contacts
+# distinct buyers
+# tender-items
+Pregão share
+# active years
+Convite share
+
+Raw diff.
+
+Cohen’s d
+
+1.109
+1.370
+0.172
+0.205
+7.658
+1.523
+7.831
+24.689
+0.173
+0.625
+−0.173
+
+6.169
+4.270
+2.119
+1.829
+1.806
+1.212
+0.532
+0.438
+0.436
+0.391
+−0.436
+
+Notes: nD = 2,394, nE = 341 (modality shares use nD = 2,387 where modality is
+defined). Positive d: cobidders are higher. Top eleven variables by |d|; the full table is
+in Online Supplement D. The largest gaps are defendant-proximity variables (n_cases
+d = 6.17, n_def _f irms d = 4.27), which are partly mechanical because the cobidder
+label is itself adjudication-anchored. The non-mechanical breadth and persistence gaps
+are moderate (n_buyers d = 0.53, Ti d = 0.44, n_years d = 0.39). Item-group HHI
+shows only a small raw gap (d = 0.13) that falls to ≈ 0 after opportunity adjustment.
+
+profile variable on the cobidder indicator with controls for log EiMED , a binned score
+term, breadth, and active years, and by coarsened exact matching on EiMED deciles.
+Under either adjustment the item-group HHI gap falls from d ≈ 0.13 to ≈ 0, and the
+breadth (distinct buyers) and persistence (active years) gaps likewise collapse toward
+zero, so they reflect procurement-environment composition rather than intrinsic firm
+traits. Only the defendant-contact variables (n_cases, n_def _f irms, Xi ) survive,
+and that survival is partly mechanical because the label is itself defined by defendant
+contact; it should not be read as independent corroboration of conduct.
+
+Appendix D.3. Robustness: Monotonicity, Threshold, Markets, and Null Controls
+Four robustness families bear on the exposure-ranking reading; full detail is in
+Online Supplement D, which reports the threshold sweep, the bunching histogram,
+the market-specific zero-win variants, and the negative controls. Monotonicity. Across
+
+27
+
+participation bins, cobidder prevalence rises (Spearman ρ = +0.99) while mean excess
+contact shows no rising pattern (ρ = −0.25): the score ranks firms by exposure,
+not collusion intensity. Threshold. The FL14 cut Ti ≥ 14 equals median + 1.5 ×
+IQR (= 13.5, rounded up) of the always-loser participation distribution; it is an
+administrative construction, computed ex post and never published. Discrimination
+changes smoothly across a placebo-threshold grid with no discontinuity at 14, and
+the participation distribution declines smoothly through the cut (local density ratio
+1.06, indistinguishable from 1), so there is no strategic bunching. Market-specific
+zero-win. Four home-market loser definitions overlap the global set on only 0.33–
+0.55 of their losers; the global definition is not dominated by any of them (global
+ROC-AUC 0.761 vs. the best home-market alternative 0.584) and is stable to leaveone-item-group-out re-estimation. Negative controls. Against matched null targets
+(B = 500 draws, seed 20260603), the real-anchor ROC-AUC (0.761) is statistically
+indistinguishable from the matched placebo-anchor distribution (mean 0.755; empirical
+p = 0.46), and anchors built from non-CADE high-volume winners generate raw
+discrimination at least as high (null mean 0.78; p = 0.91). The negative controls
+therefore corroborate the opportunity decomposition rather than rescue the screen:
+the raw ranking reflects generic co-participation arithmetic, not a signature specific to
+the adjudicated defendant network.
+
+28
+
+Appendix D.4. Limitations
+The defendant-contact variables carry the largest standardized gaps but are
+partly a construction artifact, and the non-mechanical breadth and persistence gaps
+largely collapse once opportunity is held fixed; the score ranks firms by exposure to
+defendant-adjacent opportunities, not by conduct intensity; ordinary specialization
+and geographic-niche alternatives are narrowed but not eliminated because distanceto-winner, geography, and tender value are unobserved. Award-layer profiles describe
+patterns of losing; they are not proof of any agreement, and “cobidder” is throughout
+an adjudication-anchored exposure label, never an assertion of membership.
+
+Appendix E. Bid-Layer Benchmark and Cost-Recall Details
+This appendix documents the construction and diagnostics behind the bid-layer
+benchmark used in Section 6.1, which asks whether the cheap, award-layer participation
+signal carries ranking information comparable to a transparent bid-moment randomforest benchmark inspired by Imhof–Wallimann-style screens, built from full bid
+microdata. The bid-layer benchmark is a forensic-stage, full-observability diagnostic: it
+computes seven Imhof–Wallimann within-tender bid-distribution moments, aggregates
+them to the firm, and feeds them to a random forest evaluated by cross-validation.
+It is not a state-of-the-art horse race and not a first-stage triage tool, because the
+moments require all within-tender bids to be observed and recovered. Throughout,
+“cobidder” denotes an adjudication-anchored exposure label — an always-loser firm
+that shares at least one BEC tender-item with a BEC-active direct CADE defendant
+29
+
+— and never a finding of participation in any agreement; the benchmark ranks and
+prioritizes the adjudication-anchored cobidder target and never detects cartelists.
+Granular per-feature, per-fold, per-case, and calibration diagnostics, the full feature
+dictionary, and the supporting tables moved out of this appendix are deposited in
+Online Supplement E.
+
+Appendix E.1. LANCES Bid-Layer Data, Units, and Support
+The bid layer is built from v3/data/processed/bid_level_with_prices.parquet
+(approximately 245 MB), one row per priced bid with columns códigofornecedor
+(firm), numerodaoc (OC sequence), códigoitem (item), and bid_price; a bid is
+retained only if bid_price IS NOT NULL AND bid_price > 0.
+
+The benchmark
+
+is produced by script 31 (31_imhof_full_pipeline.R, arrow + data.table, seed
+20260430) and a DuckDB twin, script 49 (49_imhof_incremental_value.R, seed
+20260501); a dedicated validation run (09_bid_benchmark_validation.R, seed
+20260603) generates the audit numbers. The bid layer links to the award layer
+through the tender-item key (numerodaoc, códigoitem) and, for firm attachment,
+through (numerodaoc, códigoitem, códigofornecedor); the within-tender moments
+are not recoverable from the award layer, which records no per-bid prices.
+The modeling unit is the firm: per-tender moments are shared across all firms
+bidding on a tender-item and then firm-mean aggregated. Of the 16,843 always-losers,
+64 are dropped because they have no priced bids or fewer than two bids per tender (so
+the coefficient of variation, skewness, and kurtosis are undefined). Excluding the direct
+30
+
+CADE defendants by upstream label curation leaves an evaluation pool of 16,731
+firms, of which 651 are always-loser cobidder positives. All 651 positive (cobidder)
+labels are non-missing on every Imhof moment: the support loss falls entirely
+on the negatives, so there is no positive attrition. (The full units-of-observation and
+per-feature missingness tables are in Online Supplement E.)
+
+Appendix E.2. Bid-Feature Families
+Seven Imhof–Wallimann moments are constructed within each tender-item with ≥ 2
+priced bids, then averaged across each firm’s priced tenders to the firm level. They fall
+into four families: dispersion (coefficient of variation imhof_cv_mean and its withinfirm SD imhof_cv_sd, undefined for single-tender firms); level/relative spread (normalized spread and log min–max, imhof_spread_mean, imhof_minmax_mean); shape
+(skewness imhof_skew_mean and excess kurtosis imhof_kurt_mean); and rank/order
+(the second-low gap log(b2 /b1 ), imhof_second_low_mean, the only moment with a
+winning-margin component, of low–moderate leakage risk but still a field-level moment
+shared across firms, not a firm-specific outcome). Two auxiliary counts accompany
+them, n_bids (gating the ≥ 2 filter) and n_tenders_priced (a firm exposure count).
+No co-bidding/network or timing, bid-revision, or late-bid features are implemented:
+the parquet read selects only firm, OC, item, and price, and no timestamp column
+is touched. The full feature dictionary with all columns and formulas is in Online
+Supplement E.
+
+31
+
+Appendix E.3. Model Specification
+The learner is a random forest (ranger, 500 trees, probability = TRUE,
+num.threads = 12) — not a logit, despite an earlier script header that mislabeled it.
+There is no hyperparameter tuning (fixed 500 trees, default mtry and min.node.size,
+no grid search) and no standardization (the forest is scale-invariant). Missingness is
+handled listwise through the pool restriction. The outcome is binary is_cade (1 for
+an always-loser cobidder in the candidate pool, not a direct defendant). Evaluation
+is by 5-fold cross-validation, each firm receiving one held-out predicted probability;
+AUC and DeLong tests are computed on these out-of-fold firm-level predictions. (The
+full spec-by-spec reproduction audit is in Online Supplement E.)
+
+Appendix E.4. Cross-Validation and Holdout Designs
+Four validation designs are run, increasing in stringency: Design A (pooledrandom 5-fold) is a diagnostic upper bound; Design E (case-grouped / leave-one-caseout) holds out an entire CADE case so its clustered positives never co-train; Design F
+(exclude-label-defining tenders) recomputes the moments after dropping defendant-coappearance tenders to test feature–target contamination; and Design G (environment
+holdout) holds out an item-group. Strict bid-timing validation is blocked: the
+within-tender moments cannot be cleanly time-limited without re-deriving them on a
+per-period bid panel. Because positives cluster by case, random folds (Design A) are
+optimistic — same-case positives appear in both train and test — and the bid ROC
+drops from 0.717 (A) to 0.626 (E) while its PR-AUC falls from 0.116 to 0.062, against
+32
+
+an award score that is identical across designs by construction. (Full fold-composition
+and per-case tables are in Online Supplement E.)
+
+Appendix E.5. Leakage, Contamination, and Performance
+The
+
+award
+
+score
+
+is
+
+clean
+
+(a
+
+CADE-label-independent
+
+log1p(tenders_count)), as is its strict-timing variant.
+
+rank
+
+on
+
+The bid and com-
+
+bined forests under full-period features and random folds are diagnostic-only:
+random folds are optimistic, and the firm-mean moments include label-defining tenders.
+The contamination is small: excluding label-defining tenders (Design F) leaves the
+bid ROC essentially unchanged (0.717 → 0.713), so the fragility is case clustering,
+not feature–target overlap. The headline ranking performance is in Table E.1. On
+the pooled full-observability diagnostic the cheap award layer is comparable to
+the costly bid benchmark: award-continuous ROC 0.760 / PR-AUC 0.143 versus
+bid-RF ROC 0.717 / PR-AUC 0.116. The combined model is a full-observability
+upper bound (ROC 0.756 / PR-AUC 0.188 pooled), not a first-stage rule. Under
+case-grouped folds the bid layer falls hardest — bid-RF PR-AUC 0.116 → 0.062 —
+and, critically, the combined model’s PR-AUC falls below award-only (0.103 versus
+0.143): the apparent complementarity does not survive case-grouped evaluation. The
+award and bid scores are only moderately correlated (Spearman ≈ 0.544 overall),
+so the two layers order firms differently; adding the award signal to the bid forest
+raises PR-AUC by +0.072 under pooled-random folds (DeLong p < 0.001), but this
+increment is conditional on this implemented benchmark and is case-fragile. (The full
+33
+
+leakage-audit, complementarity, and calibration tables are in Online Supplement E.)
+Table E.1: Bid-layer performance by validation design.
+Design
+
+Model
+
+A (random)
+A (random)
+A (random)
+A (random)
+E (case-grouped)
+E (case-grouped)
+E (case-grouped)
+E (case-grouped)
+F (excl. label)
+F (excl. label)
+F (excl. label)
+G (env. holdout)
+G (env. holdout)
+G (env. holdout)
+
+Award (cont.)
+Award FL14
+Bid RF
+Combined RF
+Award (cont.)
+Award FL14
+Bid RF
+Combined RF
+Award (cont.)
+Bid RF
+Combined RF
+Award (cont.)
+Bid RF
+Combined RF
+
+ROC-AUC
+
+PR-AUC
+
+Prec@500
+
+Lift@500
+
+0.760
+0.688
+0.717
+0.756
+0.760
+0.688
+0.626
+0.689
+0.829
+0.713
+0.855
+0.768
+0.747
+0.734
+
+0.143
+0.098
+0.116
+0.188
+0.143
+0.098
+0.062
+0.103
+0.156
+0.088
+0.217
+0.185
+0.171
+0.212
+
+0.216
+0.130
+0.180
+0.274
+0.216
+0.130
+0.086
+0.190
+0.216
+0.130
+0.302
+0.150
+0.150
+0.144
+
+5.55
+3.34
+4.63
+7.04
+5.55
+3.34
+2.21
+4.88
+6.33
+3.81
+8.85
+2.76
+2.76
+2.65
+
+N = 16,731 always-losers with 651 always-loser cobidder positives (defendant-excluded
+pool) for Designs A, E; N = 16,665 with 569 positives for Design F; N = 2,377 with
+129 positives for the held-out environment in Design G. PR-AUC is reported alongside
+ROC because the positive base rate is near one percent. Design A is a full-observability
+diagnostic upper bound with random-CV optimism; the case-grouped block (E) is
+the honest robustness test, where the combined model’s PR-AUC (0.103) falls below
+award-only (0.143). The award rank is identical across A and E by construction.
+Cobidders are adjudication-anchored exposure, not cartel membership; false positives
+are unlabeled firms, not “bad firms.”
+
+Appendix E.6. Limitations
+The bid-layer benchmark is a full-observability diagnostic, not a first stage: the
+Imhof moments require all within-tender bids, which is exactly the information cost
+the award-layer screen avoids; the headline pooled-random numbers carry random-CV
+optimism; strict bid-timing validation is blocked, because within-tender dispersion
+moments cannot be cleanly restricted to a pre-target window; the benchmark is
+deliberately modest (untuned, unstandardized Imhof–Wallimann moments in a random
+forest), not a state-of-the-art horse race; and the target is the 651 always-loser cobidders,
+an adjudication-anchored exposure measure, so false positives are unlabeled firms and
+nothing here constitutes proof of conduct.
+34
+
+Appendix E.7. Sequential Gatekeeping and the Cost-Recall Frontier
+The sequential architecture in the main text separates two tasks that are often
+conflated. The award-layer stage ranks firms using fields available before any bid
+microdata are recovered; the bid-layer stage then constructs richer forensic features
+only for the firms that survive the first stage. This appendix states the sequence,
+measures the recovery footprint each stage opens, and traces the cost-recall frontier
+that results, so the empirical comparison reads as an evidence-allocation design rather
+than a claim that thin records substitute for full bid files. The output is a forensicpriority queue, not a liability finding. Throughout, “cost” denotes a data-processing
+footprint — the firms, tender-items, bid rows, and buyer-item-year cells that must be
+opened to compute the bid-layer features — and never a monetary agency cost, which
+we do not observe. Discriminating performance is adjudication-anchored: positives
+are the 651 always-loser cobidder firms that link to a CADE-adjudicated case, against
+the complete-Imhof pool of 16,772 firms. Throughout, the operating points should be
+read as retrospective cost-footprint designs conditional on the validated incumbent
+ranking, not as fully prospective deployment tests.
+
+Appendix E.7.1. Candidate Pools and Ranking Rules
+The evaluation pool (Pool A) is the complete-Imhof firm set: 16,772 firms, of
+which 651 are adjudication-anchored positives; under full observability it opens 116,112
+distinct tender-items and 3,393,915 within-tender bid rows. Three prediction scores are
+defined over this pool: an award score, the zero-win-stratum continuous participation
+35
+
+score si = log(1+Ti ), computable from routine administrative fields with no bid values;
+a bid score, a random forest on within-tender bid-distribution moments requiring the
+full bid record of each opened tender-item; and a combined score on the union of the
+two feature sets. We compare seven ranking rules distinguished by which layer they
+consume and whether they triage before opening bid microdata: award-only (cheap, no
+bid recovery; the main-text screen); bid-only and joint full-observability (both require
+opening every tender-item up front; the joint rule is an upper-bound comparison,
+not an operational baseline); sequential award → bid and award → combined (rank by
+award, keep the top-K1 survivor pool, recover bid microdata only inside it, then rerank
+survivors); FL14 → bid (a binary-cutoff first-stage triage followed by bid reranking);
+and a random K1 -sized survivor pool, the no-information floor. An opportunityadjusted award score cannot serve as a gate — the exposure adjustment requires
+the same tender-level coverage the bid layer recovers — so it is reported only as an
+in-sample diagnostic in the main text. For the case-holdout exercise firms are grouped
+by the CADE case they link to, so held-out positives share no case with the calibration
+set.
+
+Appendix E.7.2. Cost Denominators
+Bid-layer recovery is costlier at scale because within-tender moments require the
+full set of bids in each opened tender-item, not only the focal firm’s bids: opening a
+survivor firm means opening every tender-item that firm participated in, in full. We
+therefore measure the recovery footprint along several denominators rather than a
+36
+
+single headline number. Table E.2 defines them.
+Table E.2: Cost denominators for the recovery footprint.
+ID
+
+Denominator (full-observability value)
+
+D1
+D2
+D3
+D4
+D5
+D6
+D7
+D8
+
+Firms opened (= |S|)
+Survivor firm-tender-item rows (with multiplicity)
+Opened tender-items (de-duplicated; recovery unit)
+Opened bid rows, full-tender (processing footprint)
+Survivor bid rows only (lower bound)
+Buyer × item-group × year cells touched
+Buyers (PBU codes) touched
+Item-groups (2-digit) touched
+
+Value
+16,772
+163,264
+116,112
+3,393,915
+391,610
+58,936
+1,244
+90
+
+Source: full_observability_costs.csv; denominator definitions in
+table_G_cost_denominator_definitions.csv. Values are the full-pool
+footprint (K1 = 16,772); the grid in Appendix E.7.3 reports them at
+each K1 .
+D4 is the realistic processing footprint: within-tender Imhof moments
+require the entire tender record, so D4 counts all bids in every opened
+tender-item, not only the survivors’ own bids (D5).
+Not observed (no value computed): LANCES export units (assumed one
+tender-item = one export, D9); legal or subpoena-style access requests
+(D10); monetary cost in reais.
+Analyst-hours are reported only as an illustrative processing-burden
+proxy (α · tender-items + β · bid-rows/1000, low/medium/high), never
+as a measured agency cost (D11).
+
+The firm count (D1) and the bid-row footprint (D4) diverge sharply, and the
+divergence is the central caution of this appendix. Survivors are high-participation
+firms: at the K1 = 2000 operating point the survivor pool is about 12% of the
+firms (2,000/16,772, an 88% firm reduction), yet it opens about 67% of the bid
+rows (2,283,924/3,393,915, only a 33% bid-row reduction). The firm-level reduction
+therefore overstates the saving; the tender-item and bid-row denominators are the
+honest processing-footprint measures.
+Appendix E.7.3. Cost-Recall Grid and Frontier
+Table E.3 reports a compact slice of the cost-recall grid for the sequential
+award → bid rule at the k = 500 forensic-queue depth, across the first-stage cut
+K1 . The full grid — all rules, all K1 , and k ∈ {100, 250, 500, 1000}, with every cost
+37
+
+denominator — is in the online supplement.
+Table E.3: Cost-recall slice, sequential award → bid, queue depth
+k = 500.
+K1
+
+Firms opened
+
+Bid rows opened
+
+Bid-row red.
+
+TP
+
+Recall
+
+500
+1,000
+2,000
+3,000
+5,000
+16,772
+
+500
+1,000
+2,000
+3,000
+5,000
+16,772
+
+1,356,346
+1,783,750
+2,283,924
+2,575,274
+2,921,977
+3,393,915
+
+0.60
+0.47
+0.33
+0.24
+0.14
+0.00
+
+108
+124
+116
+115
+102
+102
+
+0.166
+0.190
+0.178
+0.177
+0.157
+0.157
+
+Source: table_6_cost_recall_frontier.csv (sequential award→bid, k =
+500). “Bid-row red.” is the fraction of the full-pool bid-row footprint avoided,
+1 − (bid rows opened)/3,393,915. TP counts adjudication-anchored positives
+in the top-k queue (pool = 651).
+TP is non-monotone in K1 because the bid rerank reorders survivors within
+a fixed queue depth: K1 = 1,000 recovers more true positives (124) than
+K1 = 2,000 (116) at k = 500, one more sign that no K1 is optimal. The joint
+full-observability TP at k = 500 is 133, which the sequential rule approaches
+(124/133 = 93% at K1 = 1,000) but does not exceed.
+
+Figure E.1 plots recall against the tender-item footprint for the award-only, sequential, and joint rules, making the frontier shape visible: the sequential rule tracks
+close to the joint upper bound while opening fewer tender-items, but never crosses it.
+
+Appendix E.7.4. Baselines, Timing, and Case-Holdout
+The sequential rule sits well above a same-size random survivor floor across the
+grid, confirming that it is the award ranking, not the mere act of opening K1 firms,
+that carries the signal. The award-ranked survivor pool captures most of the 651
+positives before any bid rerank, so the cheap first stage alone already gathers the
+positives into the survivor pool, and the bid rerank then reorders that pool into a
+forensic-priority queue rather than recovering positives the award gate missed. This is
+the precise sense in which the bid layer reorders rather than discovers: the marginal
+contribution of the costly bid features is ordering, an evidence-allocation gain, not a
+
+38
+
+Cost-recall frontier (tender-item denominator)
+
+Recall (k=500)
+
+0.50
+
+0.45
+
+0.40
+
+0.35
+
+4e+04
+
+6e+04
+
+8e+04
+
+1e+05
+
+Opened tender-items (alternative cost denominator)
+Alt text: recall vs opened tender-items for sequential award->bid, with joint and award-only reference points.
+
+Figure E.1: Recall versus opened tender-items, by ranking rule.
+Alt text: A cost-recall scatter with opened tender-items on the horizontal axis and
+adjudication-anchored recall on the vertical axis. The joint full-observability rule sits at the far right
+(largest footprint) at the top of the recall range; award-only points sit at the far left (smallest
+footprint) at lower recall; sequential award → bid points trace an intermediate frontier that
+approaches but does not exceed the joint recall while opening fewer tender-items.
+
+39
+
+detection gain.
+A timing-disciplined gate must rank on information available before the investigation window. Re-scoring the award gate on a strict pre-period (2009–2016) and
+evaluating on later positives, the award gate remains informative under this discipline:
+its strict-timing discrimination is AUC 0.684 on the training-AL pool, against 0.761 for
+the full-window score. The drop is the honest cost of respecting the timing order. The
+sequential rule cannot be subjected to the same test — the within-tender moments
+cannot be re-derived on a pre-period basis without re-pipelining the raw LANCES
+bid records — so we report it as infeasible rather than estimate it on contaminated
+features.
+Because adjudicated positives cluster in a handful of CADE cases, apparent recall
+can be carried by a single large case: the largest case supplies 32.0% of the positives
+and 45.4% of the true positives in the top-500 queue. Grouping firms by case and
+holding out the largest case lowers recall on the remaining smaller cases materially,
+with several individual small cases near zero. Performance is therefore case-fragile
+and generalization to out-of-sample cartels is weaker than the pooled figure suggests.
+The estimated ranking is not a portable cartel score; the transferable object is the
+decomposition framework. (The full random and award-only baseline table and the
+case-holdout grid are in Online Supplement E.)
+
+40
+
+Appendix E.7.5. Operating-Point Logic
+No single (K1 , k) pair is preferred for every agency; the right point depends on
+capacity and on whether the priority is recall or precision — the frontier is a menu,
+not a cutoff. At the k = 500 queue depth the frontier spans a capacity-constrained
+low end (K1 = 500, smallest footprint 1,356,346 bid rows, recall 0.166, precision
+0.216) through K1 = 1,000 (recall 0.190, precision 0.248) and K1 = 2,000 (recall
+0.178, precision 0.232) to K1 = 3,000 (recall 0.177, precision 0.230). Recovered
+positives are non-monotone in K1 : K1 = 1,000 beats K1 = 2,000 (124 versus 116
+true positives), one more sign that no K1 is optimal. The K1 = 2,000 point used
+in the main text for the firm-versus-bid-row divergence is one operating point on
+this frontier, not a universally preferred choice. The full operating-points table with
+use-case labels, and the cost-per-true-positive and false-positive frontier figures, are in
+Online Supplement E.
+
+Appendix E.7.6. Algorithm
+The full gatekeeping procedure can be stated compactly.
+
+Algorithm E.1: Award-Layer Gatekeeping with Cost Measurement
+1. Define the firm universe from award records (participant identity,
+winner identity, item code, negotiated price, procuring unit, year,
+modality).
+
+41
+
+2. For each firm i, compute the win count Wi and the participation
+count Ti over the calibration window; restrict to the zero-win stratum
+{i : Wi = 0}.
+3. Compute the award score si = log(1 + Ti ).
+4. Over a grid of first-stage cuts K1 , form the survivor pool SK1 of
+the top-K1 firms (or apply the median-plus-1.5×IQR threshold, or a
+capacity budget).
+5. Recover bid microdata only for the tender-items touched by SK1 , and
+record the cost denominators D1–D8 at that K1 .
+6. Compute the bid-layer forensic features inside SK1 .
+7. Rerank survivors by the bid score alone or by the award-plus-bid
+combined score, over a grid of queue depths k.
+8. Deliver the top-k queue from that ranking as a forensic-priority list
+for investigative review.
+9. Trace the cost-recall frontier over (K1 , k) and select the operating
+point that fits the agency’s capacity and recall/precision priority;
+treat the output as forensic priority, not as a liability finding.
+
+Joint scoring requires bid microdata for the full pool before triage; sequential
+gatekeeping requires bid microdata only after the award-layer survivor pool is formed.
+The size of the survivor pool, the choice of threshold or top-K1 , the queue depth k,
+the bid-versus- combined rerank, and the recalibration cadence are all institutional
+42
+
+choices that the algorithm leaves to the agency.
+
+Appendix E.7.7. Limitations
+Cost is a processing footprint, not money — we measure firms, tender-items,
+bid rows, and cells opened, not monetary recovery cost, legal-request volume, or
+LANCES export units. Firm reduction overstates the saving (an 88% firm reduction
+at K1 = 2000 is only a 33% bid-row reduction); analyst-hours are illustrative only;
+labels are limited and false positives are unlabeled, so precision is a lower bound on
+the queue’s triage value; performance is case-fragile, with the largest case supplying
+32.0% of positives and leave-largest-case-out recall falling materially; the operating
+point is capacity-dependent with no dominating choice; and the sequential timing test
+is blocked, so only the award-only gate has a timing-disciplined evaluation.
+
+Appendix F. Price Scope and Adaptive Use
+The main text (Section 7) treats price evidence as corroboration of economic
+non-neutrality, not as causal identification. This appendix records the price sample,
+the broad associations, the overlap-cell reweighting that reverses their sign, the highvalue exception, the direct-CADE null, and the boundary diagnostics that keep the
+interpretation as scope rather than a price effect. Every number is the same object
+reported in the main text; the full regression grids live in Online Supplement G. The
+strategic-adaptation simulation is reported separately in Appendix F.6.
+
+43
+
+Appendix F.1. Price sample and outcome
+The outcome is the log negotiated unit price at the item–award level. The
+estimation sample is the broad item-level panel with N = 1,654,401 awards, with item,
+year, and (where indicated) procuring-unit (PBU) fixed effects. The overlap, quartile,
+and trim variants reweight or restrict this sample but do not change the outcome or
+the unit of observation.
+
+Appendix F.2. Broad associations and overlap-cell sign reversal
+In the broad specification, frequent-loser presence is positively associated with the
+log negotiated unit price, with a headline range of +3.6% – + 7.7% across estimators
+(broad coefficient +0.064; the larger association in the electronic-auction environment
+is inconsistent with a pure quorum-filler reading). These are descriptive associations,
+not causal effects; the full broad grid by modality is in Online Supplement G.
+The positive broad coefficient is a weighting artifact, not a robust treatment sign.
+Holding the overlap cells fixed and moving from broad-sample weighting to the withincell average treatment effect on the treated (ATT) reverses the sign monotonically:
+broad +0.064 (p = 0.003); overlap-cell unweighted +0.044 (p = 0.035); overlap-cell
+ATT −0.097 (p < 0.001); PS-trimmed −0.307. Only 1.06% of treated items lack a
+within-cell counterfactual, so the reversal cannot be a dropped-observation artifact.
+Table F.1 reports the progression.
+
+44
+
+Table F.1: Sign-Reversal Decomposition (overlap-cell reweighting)
+Specification
+Broad sample
+Overlap-cell, unweighted
+Overlap-cell ATT
+Overlap-cell ATT, PS-trimmed
+
+Coefficient
+
+p-value
+
++0.064
++0.044
+−0.097
+−0.307
+
+0.003
+0.035
+< 0.001
+—
+
+Notes: Same outcome and overlap cells throughout; rows
+differ only in weighting and trimming. The broad-to-ATT
+move reverses the sign because it strips the between-cell
+selection component. Only 1.06% of treated items lack a
+within-cell counterfactual.
+
+Appendix F.3. High-value segment, direct-CADE null, and the scope boundary
+The negative ATT reading survives both modalities (Convite −0.099, Pregão
+−0.098) and every tender-value quartile except the highest; the high-value tail (Q4)
+is the only systematically positive cell (+0.041, p = 0.045), where coordination costs
+are spread over larger contracts. Trimming the most heavily weighted overlap cells
+does not eliminate the negative aggregate. The full quartile and trim grid is in Online
+Supplement G. Restricting the overlap to items involving firms named as direct CADE
+defendants yields a null price estimate (−0.061, p = 0.45; non-direct overlap −0.097):
+the price regressions do not recover the legal object of the adjudicated cases. Three
+facts keep the evidence on the scope side of the line. The broad positive imprint is
+selection into structurally higher-priced cells (among non-treated items, mean log
+price rises from 1.35 to 6.93 across cell FL-share quintiles, a ∆ = 5.58 log-point gap,
+with a partialled-out coefficient +3.55 once all five cell dimensions are absorbed),
+and the within-cell ATT removes exactly this component. The direct-CADE null
+means there is no price base tied to the adjudicated conduct. And the design holds
+the procurement environment fixed rather than against a counterfactual price, so no
+
+45
+
+overcharge can be computed. These are scope facts about where flagged environments
+sit in the price distribution, not damages or overcharge.
+
+Appendix F.4. Within-cell mechanism
+The within-cell price compression loads on the count of genuine bidders, not on
+the frequent-loser count: the within-cell coefficient is −0.048 (SE 0.004) and falls to
++0.008 (not significant) once log(n_firms) is added, so the mechanism is not identified
+by these data.
+
+Appendix F.5. Limitations
+The price evidence is descriptive, environment-specific, and not causal. It establishes economic non-neutrality of flagged environments, concentrated in the high-value
+tail, but it is not a damages estimate, an overcharge, a markup, or a treatment effect
+on price. The coefficients are BEC-specific; another agency should re-validate the
+ranking against its own enforcement anchors and price benchmarks rather than reusing
+these estimates or the BEC cutoff.
+
+Appendix F.6. Adaptive Triage Designs (Retrospective)
+The award-layer score supports an incumbent-firm triage design, so a diagnostic
+simulation holds the empirical environment fixed and asks how the participation score
+behaves under simple evasive responses. This is a retrospective robustness probe, not
+a fully prospective deployment test: the labels remain adjudication-anchored, and the
+operating points should be read as conditional on the validated incumbent ranking.
+46
+
+Rotation of losing-role firms and occasional small wins leave discrimination essentially
+unchanged (0.730 and 0.720 versus baseline 0.722), absorbed by the persistence signal;
+CNPJ splitting lowers AUC to 0.653 by breaking participation history; thresholdaware capping is the most damaging (0.676, and 0.607 combined with rotation). The
+hierarchy maps to the cost–recall frontier: under an incumbent-triage reading the
+rule should be refreshed as new participation data arrive, and continuous ranks or
+capacity-constrained top-k queues should be preferred over a static published cutoff,
+since a published threshold invites bunching (consistent with the local density ratio
+≈ 1.06 at T = 14 in the profile appendix, where the threshold was computed ex post
+and never disclosed) and is the most gameable rule. The summary table appears in
+Online Supplement G. This is a diagnostic, not a full equilibrium model of evasion:
+strategic response exposes the vulnerability of a static binary rule more than it
+invalidates the two-stage architecture, and none of these magnitudes should be read
+as a platform-wide prospective deployment result.
+
+47
+
+

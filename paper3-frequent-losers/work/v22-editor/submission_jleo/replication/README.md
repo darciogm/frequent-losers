@@ -73,11 +73,14 @@ Full statement in [`DATA_CONFIDENTIALITY.md`](DATA_CONFIDENTIALITY.md). In short
 - **CADE adjudication data** are **public rulings** (gov.br/cade); the curated
   case file `cade_carteis_licitacoes_2009_2019.csv` is derived from those public
   rulings.
-- The **193-cobidder label file** `data/processed/cade_fl_cobidders.csv` has **no
-  on-disk builder** (blocker **B3**). We disclose this. The reproducible
-  alternative is the transparent label funnel in `scripts/79_label_funnel.R`
-  (plus `work/v22-editor/scripts/analysis/01_label_funnel_reconciliation.R`),
-  which rebuilds the cobidder set from public CADE cases + firm participation.
+- The **validation label is fully reproducible from this package**: the canonical
+  builder `work/v22-editor/scripts/analysis/00_build_canonical_validation_targets.R`
+  constructs the main target (651 unique always-loser cobidders; direct defendants
+  excluded; **the frequent-loser flag is never used to define the label**) from
+  `firm_tender_map.parquet`, `firm_loss_stats.parquet`, and the curated public-CADE
+  crossmatch. Outputs: `work/v22-editor/outputs/targets/canonical_firm_labels.csv`
+  (hashed ids), `canonical_case_labels.csv`, `canonical_target_counts.csv`, with
+  construction assertions in `outputs/diagnostics/target_construction_assertions.csv`.
 - **Derived / anonymized firm-level frames** (anonymous `firm_id`, no raw CNPJ)
   **may be posted**.
 - The authors will **cooperate with legitimate replication requests** (e.g.
@@ -94,14 +97,18 @@ produced by the scripts below and the rendered/CSV artifacts are kept under
 under `work/v22-editor/submission_clean/output/figures/`. See
 [`OUTPUTS_MAP.csv`](OUTPUTS_MAP.csv) for exact paths.
 
+**Label source for every validation table:** `scripts/analysis/00_build_canonical_validation_targets.R`
+(run first; ~2 s) emits the canonical 651-firm always-loser cobidder label consumed by
+scripts `01–11` below. The frequent-loser flag is never used to define the label.
+
 | Manuscript object | Content | Generating script(s) | Artifact (under `work/v22-editor/outputs/`) |
 |---|---|---|---|
 | **Table 1** | Unit-of-analysis / populations registry | hand-built from `00_REPO_AUDIT §C` + `scripts/01_clean.R` (documentation) | inline |
-| **Table 2** | Label funnel & sample reconciliation | `scripts/79_label_funnel.R` → `scripts/analysis/01_label_funnel_reconciliation.R` | `tables/main/table_A_label_funnel.{csv,tex}` |
-| **Table 3** | Opportunity-adjusted validation | `scripts/76_exposure_adjusted_audit.R` → `scripts/analysis/02_opportunity_adjusted_validation.R` | `tables/main/table_C_opportunity_adjusted_validation.{csv,tex}` |
-| **Table 4** | Timing & leave-one-case-out / dominance | `scripts/53_strict_train_period_threshold.R`, `scripts/77_reverse_causality_timing.R` → `scripts/analysis/03_timing_case_holdout_validation.R`, `04_case_holdout_dominance.R` | `tables/main/table_B_case_timing_and_benchmark_use.{csv,tex}`, `table_H_case_dominance_validation.{csv,tex}` |
-| **Table 5** | Bid-layer benchmark (Imhof) | `scripts/31_imhof_full_pipeline.R` (+ `49_imhof_incremental_value.R`) → `scripts/analysis/09_bid_benchmark_validation.R` | `tables/main/table_Q_bid_layer_performance.{csv,tex}` |
-| **Table 6** | Cost–recall frontier | `scripts/analysis/10_cost_recall_frontier.R` (uses `utils/cost_frontier.R`) | `tables/main/table_6_cost_recall_frontier.{csv,tex}` |
+| **Table 2** | Label funnel & sample reconciliation | `analysis/00_build_canonical_validation_targets.R` → `analysis/01_label_funnel_reconciliation.R` | `tables/main/table_A_label_funnel.{csv,tex}` + `outputs/targets/canonical_target_counts.csv` |
+| **Table 3** | Opportunity-adjusted validation | `analysis/00` → `analysis/02_opportunity_adjusted_validation.R` (sensitivity: `02b_opportunity_sensitivity_contact2.R`) | `tables/main/table_C_opportunity_adjusted_validation.{csv,tex}` |
+| **Table 4** | Timing & leave-one-case-out / dominance | `analysis/00` → `analysis/03_timing_case_holdout_validation.R`, `04_case_holdout_dominance.R` | `tables/main/table_D_strict_*.{csv,tex}`, `table_H_case_dominance_validation.{csv,tex}` |
+| **Table 5** | Bid-layer benchmark (bid-moment RF) | `analysis/00` → `analysis/07_bid_feature_audit.R`, `08_bid_benchmark_reproduction.R`, `09_bid_benchmark_validation.R` | `tables/main/table_Q_bid_layer_performance.{csv,tex}` |
+| **Table 6** | Cost–recall frontier | `analysis/00` → `analysis/10_cost_recall_frontier.R` (uses `utils/cost_frontier.R`) | `tables/main/table_6_cost_recall_frontier.{csv,tex}` |
 | **Figure 1** | Data-coarsening / layers diagram | `submission_clean/make_submission_figures.R` (+ `scripts/58_fig_data_coarsening.R`) | `submission_clean/output/figures/fig_data_coarsening.pdf` |
 | **Figure 2** | Observed-vs-expected defendant contact by bin | `scripts/analysis/02_opportunity_adjusted_validation.R` | `submission_clean/output/figures/fig_observed_vs_expected_contact_bins.pdf` |
 | **Figure 3** | Cost–recall frontier | `scripts/analysis/10_cost_recall_frontier.R` | `submission_clean/output/figures/fig_3_cost_recall_frontier.pdf` |
@@ -155,17 +162,19 @@ point to live under `work/v22-editor/outputs/diagnostics/`,
   (`00_build_bidlevel.py`, ~6 min).
 
 **Random seeds (deterministic resampling):** `20260430`, `20260501`, `20260530`,
-`20260602`, `20260603`. Scripts with deterministic counts only (e.g. core label
-counts in `79`, `53`, `78`) require no seed.
+`20260602`, `20260603`, `20260604`. Scripts with deterministic counts only (e.g.
+the canonical label builder `analysis/00`) require no seed.
 
 ---
 
 ## 8. Known limitations (disclosed)
 
-- **B3 — absent label builder.** `cade_fl_cobidders.csv` (the 193-cobidder file)
-  and `cade_bec_crossmatch.csv` have **no builder on disk**. The reproducible
-  alternative is `scripts/79_label_funnel.R` (transparent 12→41→341 funnel;
-  reproduces the conservative 208≈210 / 107≈108 sets but **not** the legacy 193).
+- **Curated crossmatch.** The defendant crossmatch
+  (`cade_bec_crossmatch.csv`) is a curated exact-CNPJ match of public CADE
+  rulings to BEC registrations; the curation is documented row-by-row and the
+  underlying rulings are public. All validation labels downstream of it are
+  built by `analysis/00_build_canonical_validation_targets.R` (assertion-checked,
+  deterministic); no submitted result depends on any legacy static label file.
 - **Sequential strict-timing blocked.** Conduct-onset dates are unavailable (CADE
   records judgment dates only, 9/12 dated); sequential strict-timing is blocked,
   so the timing test is reported as a **FAIL / observational-equivalence**
