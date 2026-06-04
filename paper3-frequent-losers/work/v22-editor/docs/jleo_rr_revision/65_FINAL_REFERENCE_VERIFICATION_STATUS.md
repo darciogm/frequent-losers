@@ -138,3 +138,9 @@ bibtex correctly ignored.)*
 - **`REFERENCE_VERIFICATION_BLOCKER`:** `clark2021collusion` — needs a human
   library check (low manuscript risk; verify-and-correct, not remove). Everything
   else is clear for submission.
+
+---
+## UPDATE 2026-06-03 — `clark2021collusion` REMOVED (blocker cleared)
+Two further web searches (author-combination + exact-title) confirmed the cite is **fabricated/misattributed**: the real Clark–Houde–Kastl collaboration is *"The Industrial Organization of Financial Markets,"* Handbook of IO vol. V (2021); Clark & Houde's actual collusion papers are *Collusion with Asymmetric Retailers* (AEJ:Micro 2013) and *Hub-and-Spoke Cartels* (AER 2024, with Horstmann — not Kastl). No JPE 129(8):2353–2391 *"Dynamics of Bidder Collusion"* exists.
+**Action taken:** removed the key from both multi-cite lists (sec01:69 → kept `marshall2012economics`; sec05:62 → kept `baldwin1997bidder,porter1999ohio,pesendorfer2000study,asker2010leniency`) and deleted the bib entry. Both claims remain fully supported by the retained verified references. Rebuilt: canonical 38pp / double-spaced 52pp, **0 undefined citations**, `clark2021` absent from both `.bbl`.
+**New status: 34 references, all verified or canonical-classic; 0 needs-verification; `REFERENCE_VERIFICATION_BLOCKER` CLEARED.**

@@ -55,3 +55,7 @@ After the §10 human items are resolved (estimated <1 day of author work). No te
 - [ ] Confirm **double-spaced** `..._Manuscript.pdf` is the file uploaded (not the compact backup).
 - [ ] Exclusive-submission box checked.
 - [ ] Upload: manuscript PDF, appendix PDF, cover-letter text, (supplement note).
+
+---
+## UPDATE 2026-06-03 — reference blocker cleared
+Item §7.1 / §10[1] resolved: `clark2021collusion` was verified as fabricated and **removed** (claims independently carried by retained refs; rebuilt clean). The remaining pre-submission items are now **author declarations only** (fee eligibility, corresponding email, funding, COI, case involvement, preprint, suggested reviewers) + confirming the double-spaced PDF is uploaded. Recommendation unchanged: **GO_WITH_MINOR_REPAIRS** — but the only non-administrative blocker is gone.
