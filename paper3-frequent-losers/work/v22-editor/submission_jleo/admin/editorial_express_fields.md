@@ -57,19 +57,19 @@ D44, D73, H57, K21, L41
 - **Corresponding author email:** darcio.g.martins@gmail.com
   (Note: the manuscript frontmatter lists the institutional address
   `darciogm1@insper.edu.br`; confirm which address to register on Editorial
-  Express. `HUMAN_DECISION_REQUIRED`.)
+  Express. **[AUTHOR INPUT REQUIRED]**.)
 
 ---
 
 ## Disclosures & statements
 
-- **Funding:** `HUMAN_DECISION_REQUIRED` — authors to confirm funding sources /
+- **Funding:** **[AUTHOR INPUT REQUIRED]** — authors to confirm funding sources /
   grant numbers, or state "none." Do not invent.
 - **Conflict of interest (financial-support footnote required by JLEO):**
-  `HUMAN_DECISION_REQUIRED` — authors to confirm disclosures, or state "none."
+  **[AUTHOR INPUT REQUIRED]** — authors to confirm disclosures, or state "none."
 - **Exclusive-submission confirmation:** Yes — submitted exclusively to JLEO;
   not under review elsewhere; not previously published.
-- **Prior circulation / preprint / working paper:** `HUMAN_DECISION_REQUIRED` —
+- **Prior circulation / preprint / working paper:** **[AUTHOR INPUT REQUIRED]** —
   confirm whether any preprint, working-paper, or conference version exists and
   should be disclosed.
 
@@ -96,7 +96,7 @@ D44, D73, H57, K21, L41
 
 ## Suggested / non-preferred reviewers
 
-- Use `admin/suggested_reviewers_template.md`. `HUMAN_DECISION_REQUIRED` — to be
+- Use `admin/suggested_reviewers_template.md`. **[AUTHOR INPUT REQUIRED]** — to be
   filled manually by the authors; no names invented here.
 
 ---
@@ -114,7 +114,7 @@ D44, D73, H57, K21, L41
 
 - **Submission fee: USD $100** (PayPal via Editorial Express). Waiver applies
   only to OUP developing-nations lists A/B; **Brazil is likely NOT exempt** →
-  `HUMAN_DECISION_REQUIRED`: confirm fee/waiver eligibility before payment.
+  **[AUTHOR INPUT REQUIRED]**: confirm fee/waiver eligibility before payment.
 - **Accepted file formats:** PDF / Word / RTF.
 - **Style:** abstract ≤150 words (satisfied, 142); JEL required (provided);
   double-spaced, 1.25in margins; Chicago 15th edition references.

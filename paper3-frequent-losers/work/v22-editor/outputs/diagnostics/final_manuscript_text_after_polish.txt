@@ -1,0 +1,2337 @@
+Cheap Signals, Costly Proof: The Reach and Limits of
+Award-Layer Screening in Cartel Enforcement
+Darcio Genicolo-Martins1,∗, Paulo Furquim de Azevedo1
+1
+
+INSPER, São Paulo, Brazil
+
+Abstract
+Cartel enforcement must allocate costly proof-producing effort before legal proof exists.
+Using São Paulo’s BEC procurement platform and CADE adjudications, we ask how
+far routine award records can rank where bid-level forensics should begin. We study a
+minimal award-layer construct—persistent zero-win participation, implemented as a
+frequent-loser flag—and validate it against a reproducibly constructed, adjudicationanchored cobidder label that never uses the screen itself. The decomposition is
+deliberately deflationary: the cheap signal’s apparent reach mostly reflects procurement
+opportunity and case concentration; within comparable opportunity sets the residual
+ordering is marginal at best, strict prospective ranking fails outside incumbent pools,
+and exposure concentrates in a few adjudicated cases. The transferable contribution
+is the audit framework—label construction, opportunity adjustment, timing discipline,
+case-composition and cost-recall accounting—that shows where cheap screens stop
+and what bid-layer follow-up costs. Liability remains in the richer evidentiary record.
+Keywords: cartel screening, public procurement, award-layer data, enforcement
+∗
+
+Corresponding author.
+Email address: darciogm1@insper.edu.br (Darcio Genicolo-Martins)
+We thank seminar participants at INSPER for comments; all remaining errors are our own.
+
+1
+
+triage, incomplete observability, bid rigging
+JEL No.: D44, D73, H57, K21, K42, L41
+
+1. Introduction
+Cartel enforcement begins before legal proof exists. An agency deciding where to
+investigate rarely starts with the communications, bid histories, leniency testimony,
+or tender-level conduct evidence that would support liability. It starts with thinner
+information: administrative records, complaints, procurement anomalies, repeated
+interactions, and case leads that make some firms and markets worth a closer look.
+The first legal-economic problem is therefore not proof itself. It is the allocation of
+proof-producing effort.
+That distinction matters in procurement. The empirical cartel-screening literature
+usually starts from the bid layer: submitted bid amounts, ranks, dispersion, histories,
+and sometimes bidder networks. Classic screens compare bidding under competition
+and collusion (Porter and Zona, 1993; Bajari and Ye, 2003); variance and descriptive
+screens formalize suspicious bid distributions (Abrantes-Metz et al., 2006; Harrington,
+2008) and field-test them in procurement (Imhof et al., 2018; Imhof, 2019); recent work
+extends the approach through bidder groups (Conley and Decarolis, 2016), machine
+learning (Huber and Imhof, 2019; Wallimann et al., 2023), and robust screen design
+(Chassang et al., 2022). Those objects are close to the evidentiary stage but not always
+cheap at scale: many procurement systems make contract-award records routinely
+
+2
+
+visible while keeping per-bidder bid files in operational systems that require casespecific recovery. An enforcement agency then faces a sequencing problem—before
+opening the costly bid layer, can it use the cheap award layer to decide where bid-layer
+forensics should begin?
+This paper studies that question on São Paulo’s BEC procurement platform,
+covering 1,654,401 tender-items from 2009 to 2019. BEC records a routine award
+layer—participants, winners, item codes, negotiated prices, procuring units, years, and
+modalities—and also preserves a richer bid layer recoverable through the LANCES
+export. CADE procurement-cartel adjudications provide external legal anchors. This
+combination lets us study an earlier stage than most bid-distribution screens: the point
+at which an agency observes award records but has not yet recovered the bid-level
+evidence needed for forensic evaluation.
+The award-layer statistic is deliberately simple. Among firms with zero wins, we
+rank participation intensity using log(1 + tenders_count) and implement an auditable
+binary rule that flags frequent losers. The logic is monotone rather than classificatory: if
+coordinated bidders use loser-side participation to create the appearance of competition
+while avoiding the win, persistent zero-win participation can rank loser-side exposure
+under a transparent behavioral condition. The statistic does not identify a firm type
+or assign cartel membership; the rank allocates forensic attention, while the richer bid
+layer remains where tender-level conduct and agreement are evaluated.
+That legal scope determines the validation target. Direct CADE defendants are
+
+3
+
+legal anchors, but they are not the natural object of a zero-win loser-side screen.
+Procurement cartels often allocate winning roles, rotate designated winners, and use
+other firms on the losing side of the tender (Pesendorfer, 2000; Asker, 2010); the same
+role-allocation logic is central in cartel theory and case evidence (Marshall and Marx,
+2012), and large-scale procurement evidence shows how such arrangements appear
+in administrative bidding records (Kawai and Nakabayashi, 2022). We therefore
+validate the ranking against reproducible adjudication-anchored exposure rather than
+against cartel membership: the target is the set of 651 unique always-loser firms that
+share at least one tender-item with a BEC-active direct CADE defendant, with the
+defendants themselves excluded. The label is rebuilt end-to-end from the current
+pipeline scripts, and—this point matters for the validity of every comparison that
+follows—the frequent-loser flag never enters its construction. Direct defendants anchor
+legally adjudicated environments; the always-loser cobidders are the loser-side footprint
+the award layer can plausibly rank before bid-level proof is recovered.
+The empirical design is organized around three threats that would each, on
+its own, make such a ranking uninformative. The first is opportunity arithmetic:
+high-volume zero-win firms mechanically meet more defendants, so a raw co-bidding
+association may reflect participation volume and opportunity-set exposure rather than
+any behavioral signal. The second is timing: a ranking formed using contemporaneous
+or later participation cannot order forensic priority prospectively. The third is case
+concentration: a single adjudicated case can manufacture apparent platform-wide
+
+4
+
+reach. We discipline the ranking against all three—opportunity-cell adjustment, strict
+rolling-origin timing, and leave-one-case-out tests—alongside a bid-layer benchmark;
+Section 4 and the appendices report the battery, and Appendix C gives the exact
+exposure, leakage, and timing audit construction.
+The results are deflationary, and that is the point. Read raw, the award-layer
+ranking does concentrate adjudication-anchored cobidders inside the always-loser
+stratum. The decomposition then shows how little of this survives discipline. Most of
+the raw concentration reflects procurement opportunity—firms that participate more,
+in the same environments as adjudicated defendants, are mechanically more exposed
+to them. Within comparable opportunity sets the residual ordering is marginal at
+best and not robust across designs: held to matched opportunity cells the ranking is
+close to chance, the only positive increment over an exposure-only model is small, and
+matched-stratum permutation and enrichment tests do not reject the opportunity-only
+null. Strict prospective ranking fails outside the incumbent pool—once the ranking
+must be formed before the target window and applied across the platform, it does
+not order the future cobidders. And the apparent reach is case-sensitive: a single
+adjudicated case supplies a large share of the positives and of the firms a fixed-budget
+queue would open. The ranking is also silent about direct CADE defendants, consistent
+with its loser-side scope rather than any cartel-membership reading.
+Where the framework earns its keep is in cost accounting and forensic sequencing.
+On the same adjudication-anchored target the award-layer ranking is comparable to a
+
+5
+
+transparent bid-moment random-forest benchmark inspired by Imhof–Wallimann-style
+screens, and the two combine only conditionally—a combined model improves precision
+under random cross-validation but falls below the award-only ranking under casegrouped folds. Used as a gatekeeper, the award layer traces a cost-recall frontier: across
+survivor-pool sizes it retains much of the adjudication-anchored recall of full bid-layer
+scoring while shrinking the bid-recovery footprint. The reduction is real but must be
+read against its denominator—large in firms opened, far smaller in tender-items and
+bid rows, because the survivors are high-participation firms—and there is no optimal
+cutoff: the frontier itself, not any single operating point, is the enforcement-design
+object. Because strict timing for the bid rerank is not available with the current
+bid-layer features, this is a retrospective cost-footprint design conditional on the
+validated incumbent ranking, not a fully prospective deployment test.
+This paper makes three contributions. First, it reframes procurement-cartel
+screening as evidence allocation under costly observability: existing bid-distribution
+screens evaluate suspicious bidding once bid-level data have been recovered, while we
+study the prior institutional stage, where agencies observe award records but must
+decide where recovery should start—turning screening toward enforcement triage,
+not toward treating a statistical flag as proof (Harrington, 2008; Sánchez Graells,
+2019; Chassang et al., 2022). Second, and methodologically, we offer a reproducible
+decomposition framework for auditing a cheap screen before trusting it: not whether it
+attains a high pooled AUC, but how much of that AUC is genuine ranking signal rather
+
+6
+
+than mechanical opportunity exposure, retrospective information, or concentration
+in a single adjudicated case—built from a non-circular adjudication-anchored label
+and pairing pre-committed rejection regions with opportunity-cell adjustment, strict
+rolling-origin timing, leave-one-case-out tests, a bid-layer benchmark, and cost-recall
+accounting. Third, applying that framework to São Paulo’s BEC yields a map of
+reach and limits: persistent zero-win participation concentrates a legally limited,
+adjudication-anchored exposure target in raw terms, but the residual ordering net of
+opportunity is marginal at best, prospective ranking fails outside incumbent pools,
+and the apparent reach is concentrated in one case—so the estimated ranking is not a
+portable cartel score, while the decomposition framework and the cost-recall trade-offs
+it exposes are. Locating these boundaries is itself the enforcement-design product.
+The boundaries are part of the design. The award layer ranks forensic priority,
+not liability; the validation target is adjudication-anchored exposure, not cartel
+membership; and the bid layer remains the proof-producing stage. Price evidence is
+scope information, not a damages exercise. The decomposition method is transferable
+across platforms; the estimated BEC ranking is not a portable cartel score. Strategic
+response also shapes implementation: a static cutoff invites gaming, while refreshed
+thresholds, continuous ranks or capacity-constrained queues, bunching checks, and
+bid-layer follow-up fit the staged enforcement architecture.
+The broader lesson is institutional. A legal system that waits for full proof before
+ranking investigative priorities will spend scarce forensic capacity poorly; a system
+
+7
+
+that treats cheap suspicion as proof will overreach. The useful middle ground is a
+disciplined triage rule—cheap enough to run before proof exists, informative enough
+to order forensic attention within a known reach, and legally limited enough to leave
+liability where it belongs, in the richer evidentiary record. Knowing where such a
+rule stops ranking is as much a part of disciplined enforcement as knowing where it
+begins.
+
+2. Costly Proof and Observable Awards
+The paper’s empirical object is an institutional sequence, not a stand-alone classifier.
+An enforcement agency first observes a thin administrative record, then decides whether
+to spend resources recovering richer bid-level evidence, and only later can that evidence
+contribute to legal proof. This section defines that sequence for BEC procurement:
+the legal role of a screen, the award and bid information layers, and the adjudicationanchored labels used to validate a loser-side ranking.
+
+2.1. Screening Before Proof
+Antitrust agencies do not choose investigation under full information. They choose
+it while the facts needed for liability are still costly to obtain. In a procurement-cartel
+case, proof requires evidence of coordinated conduct: communications, allocation
+rules, bid rotation, cover bidding, or tender-level patterns inconsistent with independent rivalry. Brazilian competition law treats bid rigging as an infraction under
+Lei 12.529/2011; comparable frameworks likewise require evidence beyond suspicious
+8
+
+administrative patterns (Hovenkamp, 2005). A pattern in award records does not
+contain those legal predicates.
+The institutional question is therefore earlier than proof and narrower than liability.
+The Becker–Stigler tradition treats enforcement intensity, investigation, and sanctions
+as costly instruments (Becker, 1968; Stigler, 1970), and cartel-screening work makes
+the same allocation logic operational: when investigation is costly and misconduct is
+only partially observable, agencies should use cheap screens to decide where expensive
+inquiry has the highest expected return (Baker, 2003; Harrington, 2008; OECD, 2022);
+leniency policy illustrates the same trade-off (Wils, 2007, 2016). For procurement
+cartels, the first-stage problem is not whether a cheap statistic can decide liability,
+but whether it can order the queue for recovering proof-producing evidence.
+This is the sense in which the paper studies triage rather than classification. A
+model that uses submitted bid amounts, bid ranks, and within-tender bid moments
+assumes the forensic layer has already been opened—the right information set for
+evaluating suspicious bidding, but not for deciding where the first costly bid-file request
+should be sent. An award-layer screen has value only at this earlier point: its output is
+forensic priority, not an accusation. A useful triage statistic must be computable from
+records available before case-specific bid recovery; must rank firms or environments
+where richer evidence of cartel conduct is more likely to be worth recovering; and must
+remain legally limited, so that administrative suspicion does not substitute for proof.
+The BEC setting supplies the two data layers and the external adjudication anchors
+
+9
+
+needed to evaluate whether an award-layer statistic can play that role.
+
+2.2. Award and Bid Layers in BEC
+São Paulo’s BEC platform preserves the two information layers an enforcement sequence requires. The sample contains 1,654,401 tender-items from 2009 to 2019,
+dominated by two modalities: Convite, a sealed-bid invitation procedure under
+Lei 8.666/1993 with a statutory three-bidder quorum and a low value cap; and
+Pregão, a reverse electronic auction under Lei 10.520/2002 with real-time offers and no
+minimum-bidder rule.2 Both generate a routine award record before any case-specific
+bid recovery occurs. Auction format, bureaucratic incentives, discretion, and rules can
+shape both bidding behavior and observed outcomes (Athey et al., 2011; Decarolis,
+2014; Coviello and Gagliarducci, 2017; Decarolis et al., 2020, 2025).
+The award layer is that routine administrative envelope. It records participant
+identity, winner identity, item code, negotiated price, procuring unit, year, and
+modality. These fields show who appeared, who won, what was bought, and where a
+firm repeatedly participated without winning. They do not reveal the bids submitted
+by each participant, the timing of offers, bid revisions, or within-tender dispersion.
+The award layer is therefore cheap enough for broad monitoring, but too thin to supply
+legal proof of coordination.
+The bid layer is the forensic-recoverable layer. BEC preserves per-bidder offers,
+2
+
+Throughout, a firm’s participation is counted once per tender-item it enters. In Pregão, a bidder
+may revise its offer many times within a single tender-item; these iterative offers do not increase the
+participation count Ti , which is defined at the tender-item level.
+
+10
+
+timestamps, and bid-revision sequences in the LANCES export. Those records support
+bid-distribution forensics: within-tender dispersion, skewness, spread, distance from
+the winning bid, and related transparent bid-moment features inspired by Imhof–
+Wallimann-style screens (Imhof et al., 2018; Imhof, 2019), including machine-learning
+variants that combine these bid moments at scale (Huber and Imhof, 2019; Wallimann
+et al., 2023). But these features require the bid file to be recovered, cleaned, linked,
+and inspected; they are not available at the same cost or timing as an award-record
+query. The empirical design treats that cost difference as substantive: the bid layer is
+available but costly—feasible for case work and validation, not the natural first object
+for system-wide triage. The issue is cost, timing, and processing burden, not data
+non-existence.
+Figure 1 summarizes the distinction: an information-cost diagram, not a detector
+horse race. Bid-distribution methods remain the natural forensic tools once bid
+microdata have been recovered; award-layer triage asks whether the thinner routine
+record can rank where that recovery should start.
+
+2.3. CADE Anchors and Adjudication-Anchored Exposure Labels
+CADE adjudications supply the legal anchors, not the screen’s labels mechanically.
+The linked BEC portfolio contains 12 adjudicated procurement-cartel cases with 65
+firm-defendants, of which 47 are active in BEC during the sample window. Final
+decisions span 2015–2025, with long process-to-ruling lags. That timing is central:
+whatever value a cheap ranking has lies in moving investigative attention before
+11
+
+Costly recovered
+bid record
+
+Routine award
+record
+
+Within-tender CV
+
+Winner identity
+
+Within-tender skewness
+
+Participant identity
+
+Within-tender kurtosis
+
+Information
+coarsening
+Item code
+
+Bid spread
+
+Negotiated price
+
+Second-low ratio
+
+Bid-distribution forensics
+(requires recovered bid record)
+
+Award-layer triage score
+(routine record only)
+
+Figure 1: Information layers in procurement-cartel enforcement. This is an information-cost diagram,
+not a detector horse race. Bid-distribution forensics requires per-bidder bid amounts and withintender bid moments; the award-layer screen uses participant identity, winner identity, item code, and
+negotiated price. The bid layer is not absent: it is costly to recover, clean, and inspect from the
+LANCES export. The question is whether the cheap award layer can rank where the costly bid layer
+should be opened first. A pattern in award records does not imply legal proof of coordination.
+
+Alt text: Two vertical columns of stacked boxes represent two information layers. The
+left column lists costly recovered bid-record features (within-tender bid moments such
+as dispersion, skewness, spread, and second-low ratio). The right column lists routine
+award-record fields (winner identity, participant identity, item code, negotiated price).
+A central gate links them: the thinner award layer is available earlier and more
+cheaply and is used to rank where the costly bid layer should be recovered first.
+
+12
+
+the completed adjudication record exists—a premise this paper audits rather than
+assumes.
+The adjudication record creates two objects with different roles. Direct CADE
+defendants are the legal anchors: firms named in adjudicated procurement-cartel
+cases and matched to BEC participant records. They locate environments where legal
+process established cartel conduct, but they are not the natural target of a zero-win
+loser-side statistic—defendants may occupy winner-side, allocation, or rotating roles,
+and a screen built from repeated losing should not be judged as if it were a generic
+membership classifier over adjudicated defendants.
+The validation target is narrower. A cobidder is a unique always-loser firm that
+shares at least one BEC tender-item with a BEC-active direct CADE defendant,
+yielding 651 always-loser cobidders. The frequent-loser flag is not used to construct the
+label; of the 651 cobidders, 341 are frequent losers and 310 are not. Cobidder status is
+not legal membership or a latent truth about agreement. It is an adjudication-anchored
+exposure label: the firm is observed on the losing side near a legally established cartel
+anchor, appropriate for evaluating forensic priority, not liability. Collapsing defendants
+and cobidders into a single cartel class would overstate what award records establish;
+requiring a loser-side screen to recover direct defendants would misstate what the
+statistic is designed to rank. The relevant question is whether persistent zero-win
+participation concentrates the loser-side firms most plausibly worth bid-layer followup around adjudicated cartel environments. Because adjacency can also arise from
+
+13
+
+opportunity—firms active in the same items, years, modalities, or buyers as CADE
+anchors have more chances to meet them—the validation design later disciplines
+participation volume and opportunity-set exposure separately from the ranking signal.
+Table 1 fixes the roles used throughout the paper: the outer BEC population, the
+always-loser stratum the award layer can rank, the frequent-loser operational screen,
+the direct-defendant legal anchors, and the cobidder loser-side validation target.
+Table 1: Data Layers, Populations, and Legal-Economic Roles
+Object
+
+Size / layer
+
+Role in the analysis
+
+Legal interpretation
+
+Award layer
+
+Routine
+record
+
+Participants, winners, item codes,
+prices, procuring units, years, and
+modalities; the cheap triage layer.
+
+Administrative
+record; not proof.
+
+Bid layer
+
+LANCES export
+
+Per-bidder offers, timestamps, revisions, and bid moments; the costly
+forensic layer.
+
+Forensic record;
+can support bidlevel analysis.
+
+All BEC participants
+
+41,444 firms
+
+Outer firm universe for awardrecord construction.
+
+Outer universe.
+
+Always-losers
+
+16,843 firms
+
+Zero-win stratum in which the
+award-layer screen ranks loser-side
+exposure.
+
+Screening
+tum.
+
+Frequent losers
+
+2,735 firms
+
+Operational first-stage flag within
+always-losers; not a legal category.
+
+Operational flag;
+not a legal category.
+
+Direct CADE defen- 47 firms
+dants in BEC
+
+Legal anchors from adjudicated
+procurement-cartel cases.
+
+Legal anchor.
+
+Always-loser cobidders
+
+Always-losers sharing a tender-item
+with direct defendants; main validation target.
+
+Exposure label;
+not membership.
+
+651 firms
+
+stra-
+
+Notes: Direct CADE defendants are legal anchors. Always-loser cobidders are adjudicationanchored exposure labels. Frequent losers are an operational screen, not a legal category. The
+categories separate legal membership from screening exposure. Benchmark-specific cobidder
+counts and the funnel reconciliation appear in Table 2.
+
+The rest of the paper keeps these objects separate: the screen operates inside the
+always-loser stratum, the validation target is cobidder adjacency, direct defendants
+anchor the environments without defining the screen’s success, and bid-layer forensics
+14
+
+remains the proof-producing stage. This separation lets the paper evaluate a legally
+limited triage architecture without turning suspicion into adjudication.
+
+3. Award-Layer Triage
+The award layer observes outcomes before it observes conduct. A losing bid may
+be sincere, poorly priced, capacity constrained, exploratory, strategic, or coordinated.
+The screen therefore uses what the award layer can measure at the triage stage: which
+firms appeared, which won, and which kept appearing without ever winning. The
+object is a ranking for forensic priority, not proof of conduct or a classification of
+cartel membership. This section defines that ranking, the operational queue it yields,
+and the implications that discipline it.
+3.1. Persistent Zero-Win Participation
+Let Ti denote the number of BEC tender-items in which firm i participates, and let
+Wi denote the number it wins. In Pregão, a firm may revise its offer repeatedly within
+one tender-item; Ti counts tender-item participations, so these iterative offers do not
+raise Ti .The award-layer screen operates inside the zero-win stratum, {i : Wi = 0},
+which contains 16,843 firms. Within that stratum, the continuous score is
+
+si = log(1 + Ti ).
+
+The log transformation stabilizes the scale but does not change the ordering. The
+economic object is the rank: among firms the award layer observes only as losers,
+15
+
+which ones appear persistently enough to warrant bid-layer follow-up?
+The maintained condition is monotonic rather than classificatory. If cartel-deployed
+losing participants are present, they should appear more persistently in the zero-win
+stratum than ordinary losing firms, because such a role is useful only through repeated
+deployment in cartel-targeted tenders. The condition is maintained, not derived;
+Appendix B formalizes it as a monotone-likelihood-ratio ranking result. The main
+text uses it more modestly: persistent zero-win participation is a cheap statistic that
+can rank loser-side exposure under a transparent behavioral assumption and direct
+attention to the bid layer where conduct can be evaluated. It orders firms for forensic
+priority; it does not assign a firm type.
+The zero-win restriction is a scope restriction: many firms never win for ordinary
+competitive reasons (poor fit, high costs, capacity constraints, market exploration, subcontracting positioning, or bad luck), and the screen’s content comes from persistence
+inside that heterogeneous loser-side set. Appendix B adds the dynamic margin behind
+this: ordinary zero-win firms face participation costs and may exit after repeated
+losses, while a losing role that carries strategic value or compensation can sustain
+persistence, and a platform-survival audit finds that frequent-loser cobidders remain
+active markedly longer than other frequent losers—consistent with persistence as a
+triage signal, not a legal category. If the ranking has enforcement value, it should
+concentrate adjudication-anchored loser-side adjacency beyond what generic participation volume, product-market overlap, and opportunity to meet CADE anchors would
+
+16
+
+mechanically produce.
+
+3.2. From Ranking to an Operational Queue
+The continuous score is the central object because agencies can translate a rank
+into different investigative protocols: inspect the top k firms under fixed capacity,
+refresh the rank each quarter and examine bunching below old cutoffs, or request
+LANCES bid files for a survivor pool before applying bid-distribution forensics. All
+preserve the same sequencing logic: award records first, costly bid recovery second.
+For an auditable binary implementation, we also report a frequent-loser flag
+marking zero-win firms whose participation count exceeds the median plus 1.5 times
+the interquartile range of the always-loser participation distribution. In BEC, the
+statistical cutoff is 13.5, implemented as Ti ≥ 14, which flags 2,735 firms, or 16.2% of
+the always-loser stratum. The cutoff is fixed from the participation distribution alone,
+before any CADE label enters the analysis.
+The Ti ≥ 14 rule is an auditable administrative implementation of the rank, not a
+structural or legal threshold.The paper does not rest on the number 14 but on the
+continuous loser-side participation ranking. Two analysts applying the same rule to
+the same award records obtain the same first-stage list; above the cutoff does not
+mean cartel member, and below it does not mean clean. Because a published static
+threshold can be gamed, the enforcement architecture treats the binary flag as one
+implementation among several—continuous ranks, top-k queues, refreshed thresholds,
+and budget-calibrated survivor pools—and the strategic-adaptation analysis later
+17
+
+returns to this point.
+
+3.3. Testable Implications
+The ranking can organize incumbent-firm triage only if it survives the threats
+implied by its limited information. The core implication is the validation claim: persistent zero-win participation should rank adjudication-anchored loser-side cobidders
+within the always-loser stratum, beyond what mechanical exposure—high participation
+volume and operation in the same procurement environments as CADE defendants—
+would produce under ordinary competition. The remaining implications are scope
+(the statistic should perform worse against direct defendants than cobidders, ranking a
+different role), economic content of the cobidder target, non-redundancy of the award
+layer relative to bid-distribution forensics, gatekeeping value at affordable budgets, and
+vulnerability of the published binary threshold to strategic adaptation. These testable
+implications, and the threats that would weaken each, are evaluated in Section 4
+and the appendix; the screen is assessed at the stage for which it is designed—the
+allocation of costly forensic attention before liability evidence is assembled. The BEC
+cutoff is an implementation detail; the portable object is the staged architecture that
+uses cheap administrative records to discipline where costly cartel forensics should
+begin.
+
+18
+
+4. Validating the Loser-Side Ranking
+This section validates the award-layer ranking, not the legal status of ranked firms.
+The validation target is the one defined in Section 2.3: always-loser firms observed
+alongside direct CADE defendants in adjudicated procurement-cartel environments.
+These cobidders carry an adjudication-anchored exposure label; they are not legal
+members of a cartel. A useful ranking must do more than report a high AUC. The main
+threat is exposure—firms that participate often, or operate in the same environments
+as defendants, have more opportunities to appear near those anchors even under
+ordinary competition, so a screen must concentrate loser-side firms beyond what
+participation volume and opportunity alone imply (Porter and Zona, 1993; Bajari and
+Ye, 2003; Conley and Decarolis, 2016; Kawai and Nakabayashi, 2022). Two further
+threats are timing (the screen should rank before the target information is used) and
+legal overreach (it should not be read as a generic cartel-membership detector).
+Subsection 4.1 constructs the label and reconciles the validation samples. Subsection 4.2 is the central exercise: it disciplines the ranking against procurement
+opportunity and asks what, if anything, the score adds net of exposure. Subsection 4.3 imposes strict timing and case-composition discipline. Subsection 4.4 folds the
+direct-defendant scope check into a bounded reading of what the validation establishes.
+4.1. Label Construction and Sample Reconciliation
+The full CADE legal portfolio comprises 12 adjudicated procurement-cartel cases
+with 65 legal firm-defendants. We match defendants to BEC participant records by
+19
+
+exact 14-digit CNPJ equality, with no fuzzy or manual step; 47 are active in BEC and
+define the direct-defendant set. Their defendant tender-items (52013 distinct items)
+locate the adjudicated environments.
+The main validation label is constructed from current scripts by matching BECactive direct CADE defendants to tender-items and identifying unique always-loser
+firms that share at least one BEC tender-item with those anchors. Direct defendants
+are excluded. The frequent-loser flag is not used to define the label; it is the awardlayer score evaluated against the label. This yields 651 always-loser cobidders, of
+which 341 are frequent losers and 310 are not—the label spans both sides of the
+screen’s threshold, so the validation cannot be circular in the score. The conservative
+benchmark restricts the CADE portfolio to the 4 cases judged on or before 2020
+under the same definition, yielding 208 cobidders from 19 matched defendants; it is
+a strict subset of the main label. Table 2 reports the funnel. Positive counts differ
+across later tables only because later exercises impose common-support, timing, or
+bid-feature restrictions on the candidate pool; Table A.3 in the appendix reconciles
+each denominator.
+Table 2: Label-Construction Funnel and Benchmark Reconciliation
+Sample / benchmark
+
+Cases
+
+Legal def.
+
+BEC-active def.
+
+AL cobid.
+
+FL among
+
+Cobidder def.
+
+Role
+
+Full CADE portfolio
+
+12
+
+65
+
+47
+
+651
+
+341
+
+shared tenderitem
+
+reference
+
+Main validation target
+
+12
+
+65
+
+41
+
+651
+
+341
+
+shared tenderitem
+
+primary
+
+Conservative pre-2020
+
+4
+
+–
+
+19
+
+208
+
+107
+
+shared tenderitem (same)
+
+early-cases subset
+
+Notes: A cobidder is an adjudication-anchored exposure label, not membership. The main label is a unique always-loser firm (win rate
+= 0 over 2009–2019) sharing at least one BEC tender-item with a BEC-active direct CADE defendant; direct defendants are excluded;
+the frequent-loser flag is not used to construct the label. “FL among” is the descriptive composition of positives, not a label restriction.
+The 47 cited active defendants correspond to 48 distinct crossmatch CNPJ, of which 41 are present in the firm–tender map. Counts
+are unique firms.
+
+20
+
+Before adding stricter discipline, a baseline question: do firms flagged by the
+award-layer rule appear disproportionately among always-loser firms near adjudicated
+anchors? They do. A frequent loser is a cobidder with probability 12.5% (341/2,735),
+against 2.2% for non-frequent-loser always-losers (310/14,108)—an enrichment ratio
+near 5.7×. On the full always-loser pool the continuous score ranks the label at
+ROC-AUC 0.761 (PR-AUC 0.143; precision@500 0.216, lift 5.6×), and the binary flag
+at 0.688. Persistent zero-win participation is not random with respect to adjudicationanchored loser-side exposure. But this baseline is not yet evidence of anything beyond
+arithmetic, because participation volume and shared environments mechanically manufacture proximity. The next subsection asks how much of the ranking survives once
+opportunity is held comparable—and the answer is: very little.
+
+4.2. Opportunity-Adjusted Validation
+This is the central validation exercise. The threat is mechanical: a firm with
+high participation Ti co-appears with defendants more often by construction, and a
+firm in the same item, buyer, year, and modality cells is more exposed even under
+ordinary competition. We measure opportunity directly. For each always-loser firm
+we count observed contact with direct defendants, Oi , and construct expected contact
+under random matching, Ei =
+
+P
+
+g nig pg , where nig is participation in cell g and pg
+
+its defendant-density. We build Ei at three cell granularities and restrict to common
+support; the exposed subsample retains n = 6,040 always-loser firms containing all
+651 positives (construction in Appendix C.1). Holding Ei fixed, we ask whether the
+21
+
+score reproduces the label better than exposure alone, whether it adds anything net
+of exposure, and whether it ranks within equal-opportunity strata.
+The answer is deflationary on every margin. First, exposure is not merely a strong
+baseline—it is the better model. An exposure-only model with no score reproduces the
+label at PR-AUC 0.300 in the exposed subsample, more than double the raw score’s
+0.143, and an unconditional exposure-only ranking over the full always-loser pool
+reaches ROC-AUC 0.905, far above the raw score’s 0.761. Combined exposure-plusscore logits reach ROC-AUC near 0.99 (Table 3), but those numbers are mechanically
+inflated because Ei is built from the cells where defendants live and so encodes the
+label directly; we report them only to make the inflation visible.
+Second, conditional on opportunity the residual ordering is marginal at best and
+not robust across designs. The nested model that adds the score to the exposureonly model raises AUC by 0.010 (DeLong p = 0.013)—small and only marginally
+significant. Within opportunity strata, where firms are compared only against others
+with comparable expected contact, the continuous score ranks the label at AUC
+0.471 and the binary flag at 0.507—both indistinguishable from chance. A coarsenedexact opportunity match yields AUC 0.626, and the within-stratum gap in cobidder
+probability between flagged and non-flagged always-losers is −0.017—negative. The
+score does rank positive excess contact Oi − Ei > 0 at AUC 0.764, but that diagnostic
+shares the score’s participation component and cannot carry the residual claim alone.
+The exposure-preserving permutation tests settle the question. Under a pure-
+
+22
+
+exposure binomial null the observed PR-AUC 0.143 does not beat the null (null mean
+0.264; empirical p = 1.00): a pure-exposure model out-predicts the raw score on the
+rare-target metric. And under the permutation that shuffles cobidder labels only
+within matched exposure-by-participation strata—the design that isolates any residual
+signal—the observed PR-AUC does not reject the null either (p = 0.127), and the
+frequent-loser enrichment within matched strata is likewise not significant (p = 0.067).
+Both permutation distributions are reported in Appendix C. Nor is this an artifact of
+label breadth: restricting positives to firms sharing at least two defendant tender-items
+strengthens the conclusion rather than reversing it—the exposure-only model improves
+faster than the score, the within-stratum AUC stays at chance (0.506), and the nested
+increment vanishes (+0.003, p = 0.47; Appendix C).
+The reading we carry forward is therefore stronger than caution: under a reproducible, non-circular label, the award-layer score does not reproduce adjudicationanchored exposure any better than procurement opportunity does, and once opportunity is held fixed there is no robust residual ordering left. The cheap signal’s
+apparent reach is opportunity arithmetic. What survives for practice is the audit
+itself: an agency that runs this decomposition learns, before opening any bid record,
+that loser-side concentration should not be used as a stand-alone prioritization device
+in this setting—and the same audit, run on another platform, would show where (if
+anywhere) a cheap screen retains residual value there. The remaining threats—timing,
+leakage, and case composition—sharpen the same conclusion and are taken up next.
+
+23
+
+Table 3: Opportunity-Adjusted Validation of the Award-Layer Ranking
+Score
+
+N
+
+Pos.
+
+ROC-AUC
+
+PR-AUC
+
+Prec@500
+
+Rec@500
+
+95% CI / p
+
+Raw score
+
+log_tc
+
+16,843
+
+651
+
+0.761
+
+0.143
+
+0.216
+
+0.166
+
+[0.741, 0.780]
+
+Raw FL14
+
+fl14
+
+16,843
+
+651
+
+0.688
+
+0.097
+
+0.128
+
+0.098
+
+[0.669, 0.707]
+
+Exposure-only benchmark
+
+log Ei
+
+6,040
+
+651
+
+0.713
+
+0.300
+
+0.372
+
+0.286
+
+[0.691, 0.735]
+
+Within-opportunity stratum
+
+log_tc | opp
+
+6,040
+
+651
+
+0.471
+
+—
+
+—
+
+—
+
+pooled C (chance)
+
+Within-opportunity stratum
+
+fl14 | opp
+
+6,040
+
+651
+
+0.507
+
+—
+
+—
+
+—
+
+pooled C (chance)
+
+Nested increment over exposure
+
++log_tc
+
+6,040
+
+651
+
++0.010
+
+—
+
+—
+
+—
+
+DeLong p = 0.013
+
+Score ranks excess contact
+
+log_tc
+
+16,843
+
+475
+
+0.764
+
+0.095
+
+0.150
+
+0.158
+
+1[Oi −Ei >0]
+
+Permutation B (pure exposure null)
+
+log_tc
+
+16,843
+
+651
+
+—
+
+0.143
+
+—
+
+—
+
+p = 1.00
+
+Permutation C (matched
+strata)
+
+log_tc
+
+16,843
+
+651
+
+—
+
+0.143
+
+—
+
+—
+
+p = 0.127
+
+Matched / stratified (CEMopp)
+
+log_tc
+
+6,040
+
+651
+
+0.626
+
+—
+
+—
+
+—
+
+∆ = −0.017
+
+Design
+
+Notes: The validation target is adjudication-anchored exposure (cobidder status) among always-loser firms, not cartelP
+membership; the
+label never uses the frequent-loser flag (341 of 651 positives are frequent losers, 310 are not). Expected contact Ei =
+n p is built
+g ig g
+from procurement opportunity cells (item, buyer, year, modality); cell definitions and retained support are in Appendix C.1. PR-AUC
+is the primary metric because the target is rare (651/16,843). The exposure-only benchmark reproduces the label better than the raw
+score on the rare-target metric; within-stratum and matched designs are at or below chance; the matched-strata permutation does not
+reject. Combined exposure-plus-score logits (ROC-AUC near 0.99) are deliberately omitted because Ei mechanically encodes the label
+and their fit is not score evidence.
+
+Observed vs expected defendant contact by score decile
+
+Mean defendant contact
+
+1.5
+
+1.0
+
+Expected contact (E_i)
+Observed contact (O_i)
+
+0.5
+
+0.0
+2
+
+4
+
+6
+
+Loss-intensity score decile
+
+Figure 2: Opportunity-adjusted diagnostic: observed defendant contact Oi versus expected contact
+Ei under random matching, by award-layer score bin. Expected contact is built from procurement
+opportunity cells (item, buyer, year, modality); the comparison shows how much of the apparent
+score–contact relation survives the opportunity benchmark. Alt text: A binned plot with award-layer
+score bins on the horizontal axis and defendant-contact counts on the vertical axis. Two series
+are shown per bin, observed contact and expected contact under random matching; the two series
+track each other closely across score bins, indicating that expected contact under random matching
+accounts for most of the observed gradient.
+
+24
+
+4.3. Timing, Leakage, and Case Composition
+The previous subsection found no robust residual ordering net of opportunity. This
+subsection asks the operational question anyway —can the raw ranking, whatever
+its source, be used prospectively?—and the answer compounds the downgrade. The
+ranking is a retrospective, incumbent-pool diagnostic, concentrated in a few adjudicated
+cases, and it does not support prospective, platform-wide deployment.
+A retrospective rank measures; it does not deploy. Every benchmark anchors its
+labels to CADE adjudications that close years after the bidding they describe, so even
+a high in-sample AUC would certify construct validity, not field performance. The
+strict-timing design freezes the score, the always-loser status, and the frequent-loser
+threshold to the 2009–2016 window and evaluates against 2017–2019 labels. On
+the realistic full candidate universe—every firm scorable at the screening date, with
+entrants carried at score zero—discrimination is at or below chance: ROC-AUC 0.474,
+PR-AUC 0.014, and precision@500 = 0 and recall@500 = 0. A screen that returns
+zero true positives in its top 500 candidates cannot be deployed. Inside the training
+always-loser pool the frozen score retains ROC-AUC 0.684 (binary flag 0.646), which is
+the incumbent-triage residue: a retrospective ordering among firms the agency already
+observes. The mechanical cause of the collapse is structural: of the 651 positives,
+153 (23.5%) are entrants with no pre-window history, so the frozen score cannot rank
+them; only 498 positives are rankable at all, and roughly a quarter of the universe
+is tied at score zero. A loser-side score built from past losing cannot order firms
+
+25
+
+that have not yet lost. The rolling-origin design confirms this: on the full universe
+every test year from 2014 to 2019 returns precision@500 and recall@500 of zero, with
+ROC-AUC between 0.446 (2015, below chance) and 0.50. The rolling-origin curves
+are in Appendix C.
+Case composition is the second structural fact. The largest case (trens/metros,
+CADE process 08700.004617/2013-41) supplies 32.0% of all positives and 45.4% of
+the top-500 true positives. Dropping it cuts PR-AUC from 0.143 to 0.090 (−37%)
+and precision@500 from 0.216 to 0.132; dropping the top two cases leaves PR-AUC
+0.058. ROC barely moves (0.761 → 0.763), which is precisely why ROC is the wrong
+lead metric here—it is insensitive to the case concentration the operational metrics
+expose. Case-balanced precision@500 is 0.043 against the firm-weighted pooled 0.216;
+six linkable cases contribute top-500 true positives, the largest accounting for 45–50%
+across cutoffs. Concentration also appears across environments: the largest itemgroup holds 21.5% of positives and 85.4% of positives sit in Pregão. A clustered
+randomization-inference test (item-group×year cells, B = 1,000) shows the pooled
+ordering is distinguishable from a within-cell shuffle (p = 0.001) but case-coverage
+breadth is not (p = 0.103): what the raw ranking picks up is concentrated exposure,
+not breadth. The leave-one-case-out distribution is reported in Appendix C; Table 4
+synthesizes the battery.
+The most this design supports is incumbent-firm triage under retrospective
+adjudication-anchored validation: an ordering among firms the agency already ob-
+
+26
+
+serves, useful as one input to where a forensic team looks first, and explicitly not a
+prospective, platform-wide screen. The estimated ranking is not a portable cartel
+score. The transferable object is the decomposition framework: label construction, opportunity adjustment, timing discipline, case-composition audit, bid-layer comparison,
+and cost-recall accounting.
+Table 4: Timing and Case-Composition Synthesis
+Design
+
+Information set
+
+N
+
+Pos.
+
+ROC-AUC
+
+PR-AUC
+
+Prec@500
+
+Rec@500
+
+Full-sample retrospective diagnostic
+
+Full retrospective
+
+16,843
+
+651
+
+0.761
+
+0.143
+
+0.216
+
+0.166
+
+Construct validity only;
+upper bound
+
+Strict full test universe
+
+Strict; entrants at
+score 0
+
+41,444
+
+651
+
+0.474
+
+0.014
+
+0
+
+0
+
+Collapse: no prospective
+ranking
+
+Strict rankable (incumbent)
+
+Strict; prior-history
+firms
+
+32,682
+
+498
+
+0.471
+
+0.013
+
+0
+
+0
+
+Entrant exclusion does
+not rescue
+
+Strict training alwaysloser pool
+
+Strict; train-window
+AL
+
+21,819
+
+651
+
+0.684
+
+0.077
+
+0.124
+
+0.095
+
+Incumbent-triage residue
+
+Rolling-origin (2014–
+2019)
+
+Strict; full universe
+
+per-year
+
+381–651
+
+0.45–0.50
+
+≈ 0.012
+
+0
+
+0
+
+Zero at the top every
+year
+
+Interpretation
+
+Leave-largest-case-out
+
+Full retrospective
+
+16,393
+
+443
+
+0.763
+
+0.090
+
+0.132
+
+0.149
+
+−37% PR-AUC
+
+Leave-top-two-casesout
+
+Full retrospective
+
+16,361
+
+268
+
+0.752
+
+0.058
+
+0.092
+
+0.172
+
+Thin residual tail
+
+Clustered randomization inference
+
+Label shuffle in cells
+
+16,843
+
+651
+
+0.761
+
+0.143
+
+0.216
+
+—
+
+p = 0.001; coverage p =
+0.103
+
+Direct-defendant
+scope
+
+Strict and full scores
+
+—
+
+47
+
+0.49–0.70
+
+—
+
+—
+
+—
+
+Scope boundary (Section 4.4)
+
+Notes: PR-AUC, precision@500, and recall@500 are the primary metrics because the target is rare; ROC-AUC is reported alongside but is insensitive
+to the case concentration the operational metrics expose. The full-sample retrospective row is a diagnostic upper bound, not a timing claim. In the
+strict and rolling-origin designs the score is frozen before the test window; later CADE adjudications are still used as labels but were not legally
+observable at the screening date, so these designs distinguish prospective scoring from retrospective adjudication. Cobidders are adjudication-anchored
+exposure labels, not cartel members. The strict full universe carries entrants at score zero; roughly a quarter of that universe is tied at zero. “0”
+denotes an exact zero true positives in the top 500.
+
+4.4. Direct-Defendant Scope and Bounded Reading
+The direct-defendant exercise aligns the validation target with the screen’s legaleconomic role. Direct CADE defendants are the legal anchors that locate adjudicated
+environments; they need not be persistent zero-win firms, since defendants may
+occupy winner-side, allocation, or rotating roles. The award-layer flag ranks the loser
+side by construction, and against direct defendants the binary flag is uninformative:
+AUC 0.491, indistinguishable from random. Continuous participation volume, by
+contrast, ranks defendants moderately above chance (AUC 0.66–0.70 across designs)—
+27
+
+defendants are active firms, so volume alone carries some defendant-side information
+even though the loser-side flag does not. The role separation in the data is consistent
+with this: 14.9% of direct defendants are always-losers, and their median win rate is
+0.261 versus 0.086 for cobidders. The lesson is scope, not detection: a loser-side flag is
+silent about the winner side of adjudicated conduct, and nothing in this paper ranks
+defendants. The full scope matrix is in Appendix C.
+Taken together, the benchmarks draw a boundary rather than certify a screen.
+Each addresses a distinct pre-registered threat—legal anchoring, participation volume,
+market exposure, timing, leakage, and scope asymmetry—and the consolidated threat
+map is in Appendix C. Persistent zero-win participation concentrates adjudicationanchored loser-side exposure in the raw data, but the decomposition shows that this
+concentration is what procurement opportunity already implies: the residual ordering
+net of opportunity is marginal at best and not robust across designs, the prospective
+ranking fails outside incumbent pools, and the raw signal is concentrated in a few
+adjudicated cases. The defensible product is the audit, not the screen: a reproducible
+decomposition that tells an enforcement agency how far a cheap award-layer statistic
+can be trusted before costly bid-layer work begins—here, not far—and that transfers
+to other platforms where the answer may differ. The next section asks what the
+always-loser cobidders look like as firms, which disciplines interpretation of what the
+raw concentration is made of.
+
+28
+
+5. Economic Content and Ordinary-Loser Alternatives
+The validation results show that the award-layer ranking concentrates adjudicationanchored loser-side exposure. The validation target is the broad set of 651 always-loser
+cobidders—unique always-loser firms that share at least one tender-item with a BECactive direct CADE defendant—of which 341 (52.4%) satisfy the frequent-loser cut and
+310 (47.6%) do not. The label is therefore not frequent-loser-conditioned. This section
+gives that exposure target economic content through a demanding within-stratum
+comparison: among always-loser firms, do the firms our screen targets—those observed
+co-bidding with direct CADE defendants—differ from other always-losers in dimensions
+relevant for loser-side forensic prioritization? The profile contrast below is run within
+the frequent-loser stratum (the 341 FL cobidders versus the FL non-cobidders), holding
+the cut fixed so that the gaps cannot be an artifact of the cut itself. Throughout,
+“cobidder” denotes an adjudication-anchored exposure label, not legal membership.
+Because the samples are large (thousands of firms), we report standardized mean
+differences (SMD, Cohen’s d) rather than p-values: significance is uninformative
+at this N , while standardized differences speak to economic magnitude. The full
+profile, opportunity-adjusted differences, monotonicity bins, binary-versus-continuous
+comparison, and the ordinary-loser adjudication table are reported in Appendix D;
+we summarize the headline findings here.
+
+29
+
+5.1. Economic content and network specificity
+Cobidders are economically distinct from other frequent losers, though the gaps are
+moderate rather than dramatic. The 341 FL cobidders are predominantly electronicauction firms—a Pregão share of 84.0% against 66.6% for the 2,394 other frequent losers
+(SMD 0.44)—they are active somewhat more broadly, reaching 21.9 distinct buyers
+versus 14.1 (SMD 0.53), they are modestly more persistent across active years (SMD
+0.39), and they sit much closer to the legal anchors used in validation (standardized
+difference in CADE cases touched 6.17). These are breadth and proximity measures,
+not legal conclusions: cobidders occupy a wider, longer-lived loser-side footprint
+within the always-loser pool, anchored to the adjudicated network. The breadth and
+persistence gaps are real but moderate (SMDs near 0.4–0.5); only the defendantproximity variables show large gaps, and those are partly mechanical because the label
+is itself adjudication-anchored. The negative controls cut in the same deflationary
+direction as the opportunity decomposition: replacing the true CADE defendants with
+matched placebo anchors reproduces the raw ranking (real-anchor ROC-AUC 0.761
+against a placebo-anchor mean of 0.755; empirical p = 0.46), and anchors built from
+non-CADE high-volume winners generate raw discrimination at least as high (null mean
+0.78; p = 0.91). The raw concentration is therefore generic co-participation arithmetic
+rather than a signature of the adjudicated network—exactly what Section 4.2 finds
+with the opportunity benchmark. The global zero-win definition does retain more raw
+discrimination than any market-specific alternative (best alternative 0.584 against the
+
+30
+
+global 0.761), so the definition itself is not the weak link (Appendix D). This reading
+is consistent with evidence that auction collusion can operate through bidder roles,
+repeated relationships, and cartel organization (Baldwin et al., 1997; Porter and Zona,
+1999; Pesendorfer, 2000; Asker, 2010).
+
+5.2. An exposure ranking, not a collusion-intensity ranking
+Most of the raw distinction is procurement-environment composition and partly
+mechanical proximity that attenuates—and in several cases vanishes—once we adjust
+for opportunity, the expected contact and exposure a firm would accumulate given
+its participation profile. The item-group concentration difference, raw SMD 0.13,
+vanishes under adjustment (adjusted SMD −0.02): the apparent product specialization
+of cobidders is procurement-environment composition, not an intrinsic portfolio trait.
+The breadth gap (distinct buyers) and the persistence gap (active years) likewise vanish
+under opportunity adjustment, leaving them as composition rather than intrinsic
+traits. Proximity to the legal anchors attenuates only modestly—the CADE-cases
+SMD falls from 6.17 to 4.99—so the defendant-contact variables are the only profile
+dimensions that survive adjustment, and those are partly mechanical because the
+label is itself defined by defendant contact. Once opportunity is held fixed, almost
+none of the non-mechanical profile distinction remains (Appendix D).
+The most informative diagnostic concerns what the ranking actually orders. Binning
+firms by participation Ti , cobidder prevalence rises monotonically with participation—
+from near zero in the lowest bins to roughly 28% in the highest (rank correlation
+31
+
++0.99)—but opportunity-adjusted excess contact Xi = Oi − Ei is flat-to-negative
+across the same bins (rank correlation −0.25). Higher-ranked firms are not contacting
+defendants more than their exposure predicts; they are simply more exposed. The
+award-layer rank is therefore an exposure ranking, not a collusion-intensity
+ranking—exactly what the reach-and-limits reframe expects. This also reframes the
+binary FL14 cutoff as an administrative implementation of the exposure ranking, not
+a structural break: the continuous score log(1 + Ti ) ties or beats the FL14 binary in
+every full-sample configuration (full-universe ROC-AUC 0.761 continuous vs. 0.688
+binary), and there is no bunching at the threshold—the density ratio at T = 14 is
+1.06, essentially flat (Appendix D). FL14 buys a simple reporting cut, not a behavioral
+discontinuity.
+
+5.3. Ordinary-loser alternatives and what Section 5 establishes
+Could the same profile arise from ordinary, non-collusive reasons that firms lose
+persistently? The honest summary is that ordinary-loser alternatives are narrowed
+but not eliminated. Cobidders are wider and longer-lived rather than narrow and
+short-lived, with a lower Convite and minimum-quorum share, which weakens—but
+does not exclude—the low-capacity quorum-filler story. The proxies that would settle
+the remaining alternatives—distance-to-winner, geography and logistics, and later
+wins—are unobserved at the award layer, so benign specialization and geography
+remain possible (Appendix D). What distinguishes cobidders from these ordinary
+stories is the one axis the alternatives do not predict: contact with the adjudicated
+32
+
+CADE network, the axis the screen is built on.
+Section 5 therefore gives the award-layer exposure target modest but bounded
+economic content. The strengths are real—cobidders are economically distinct and
+the ranking is specific to the real defendant network (p < 0.001 on ROC against
+matched placebo nulls)—but the limits are equally clear, and on balance the limits
+dominate: most of the raw distinction is procurement-environment composition and
+partly mechanical proximity that vanishes or attenuates sharply under opportunity
+adjustment; breadth and persistence gaps do not survive the adjustment; the rank
+is monotone in exposure but flat in opportunity-adjusted excess contact; FL14 is
+administrative, not structural; and ordinary-loser alternatives are narrowed, not
+eliminated. The construct is a disciplined exposure ranking whose non-mechanical
+economic content is modest. It does not establish membership, agreement, liability, or
+cover bidding in any tender, and it is not diagnostic by itself. Read together with the
+validation of Section 4 and the operational sequencing of Section 6, it supports triage,
+not liability: the award layer orders attention toward adjudication-anchored loser-side
+exposure, and richer records evaluate what the screen has prioritized. The next section
+turns from content to implementation, asking whether the award-layer rank can be
+placed before bid-distribution forensics in a sequence that saves bid-microdata recovery
+while preserving adjudication-anchored recall.
+
+33
+
+6. From Award-Layer Triage to Bid-Layer Forensics
+The preceding sections validate the award-layer ranking on the margin for which it
+is designed. Section 4 shows that persistent zero-win participation orders adjudicationanchored loser-side exposure; Section 5 shows that the exposed firms have an economically distinctive profile rather than merely high procurement volume. The remaining
+question is how an enforcement agency should use such a signal. The answer is
+not to stop at the award layer, and it is not to replace bid-layer forensics. A thin
+administrative record can rank priorities, but it cannot by itself evaluate the bid
+conduct that richer cartel evidence requires.
+This section turns from validation to sequencing. Whatever value the award-layer
+ranking retains lies in where it sits: before costly proof-producing work, using records
+the agency observes broadly—who participated, who won, and who kept appearing
+without winning—whereas bid-layer forensics use submitted offers, within-tender bid
+moments, and distance from the winning bid, which are more probative but more
+expensive to recover, clean, and inspect at scale. The issue is not whether a cheap signal
+should replace a costly one, but whether it can discipline where the costly one is opened
+first. We evaluate that architecture in three steps: we place the award-layer ranking
+and an Imhof–Wallimann-style bid-distribution benchmark on the same adjudicationanchored target, so performance can be read against information cost; we ask whether
+the two layers are complements; and we implement the operational gatekeeper, in
+which award records create a survivor pool and bid forensics rank firms inside it.
+
+34
+
+The object is a cost-recall frontier for forensic attention, not a horse race under full
+observability. This is the paper’s central enforcement implication: administrative
+records rank where proof-producing forensics should begin, while bid-level evidence
+remains the stage at which conduct is evaluated.
+
+6.1. Bid-Layer Forensics as a Full-Observability Benchmark
+The two layers sit at different points in the evidentiary pipeline. The award layer
+uses records the agency already holds; the bid layer uses the submitted offers, which in
+the Brazilian setting are not in the routine award file and must be recovered from the
+underlying LANCES bid histories, harmonized, and reduced to within-tender moments
+before any firm can be scored. The bid-layer benchmark is therefore the forensic stage,
+not a free comparator: it becomes available only after the agency has paid the cost of
+opening the bid file. The right question is how much ranking information is already
+present before that file is opened.
+The benchmark is a transparent bid-moment random-forest benchmark inspired
+by Imhof–Wallimann-style screens rather than a black box. The learner is a random
+forest (ranger, 500 trees, probability mode, no hyperparameter search), trained on
+seven within-tender Imhof–Wallimann moments—the coefficient of variation and its
+within-firm dispersion, skewness, kurtosis, spread, the log min–max ratio, and the
+second-lowest-bid gap—each averaged across the tenders a firm contests (AbrantesMetz et al., 2006; Imhof et al., 2018; Imhof, 2019; Huber and Imhof, 2019; Wallimann
+et al., 2023). The candidate pool is the always-losers for which these moments are
+35
+
+computable, the target is the same adjudication-anchored cobidder exposure used
+throughout Section 4, and all 651 positives—always-loser cobidders—are retained; the
+small attrition is mechanical and concentrated among non-positives. Timing and bidrevision features are excluded because the records carry no usable per-bid timestamps.
+The candidate-support audit, the model-design audit, and the leakage-boundary table
+are reported in full in Appendix E.
+Performance.. Table 5 reports precision, recall, and PR-AUC alongside ROC, since
+the positive base rate is near one percent and ranking quality is what an agency cares
+about. Two facts stand out. First, on the pooled full-observability diagnostic the
+cheap award layer is comparable to the costly bid benchmark: the award-continuous
+score reaches ROC 0.760 / PR-AUC 0.143 and the bid-layer random forest reaches
+ROC 0.717 / PR-AUC 0.116—comparable discrimination at lower informational cost,
+not a victory of one layer over the other. The combined award-plus-bid model reaches
+ROC 0.756 / PR-AUC 0.188, but it requires bid microdata for every firm and is
+therefore a full-observability upper bound, not a first-stage rule. Second, the pooled
+metrics rest on random cross-validation folds that are optimistic because the cobidder
+positives cluster by CADE case. Under case-grouped folds, where the positives from a
+held-out case never co-train, the bid layer falls hardest: its PR-AUC drops from 0.116
+to 0.062 and its ROC from 0.717 to 0.626. Crucially, the combined model’s PR-AUC
+also falls—to 0.103, below the award-only 0.143—so the apparent complementarity
+does not survive case-grouped evaluation: it is the label-independent award score, not
+
+36
+
+the bid layer, that continues to rank firms when the case signal thins. Excluding the
+label-defining tenders leaves the bid ROC essentially unchanged (0.717 → 0.713), so
+the fragility is case clustering, not feature–target overlap.
+Complementarity.. The two layers carry partially different ranking information rather
+than duplicating one another: the Spearman rank correlation between the award and
+bid scores is only 0.544, and adding the award score to the bid benchmark improves
+PR-AUC by +0.072 under pooled folds (DeLong p < 0.001). The complementarity is
+conditional on this implemented benchmark and is case-fragile: under case-grouped
+folds the combined PR-AUC (0.103) falls below award-only (0.143), so what marginal
+gain exists is mostly the award score rescuing the bid layer rather than the reverse.
+The combined model is therefore an upper bound on what the two layers can jointly
+do under full observability, not an operational first-stage rule. Neither score is proof of
+an agreement: the bid benchmark measures the shape of a firm’s bid distribution, and
+false positives are unlabeled firms, not “bad firms.” A strict-timing version of the bid
+benchmark is blocked, because within-tender dispersion moments cannot be cleanly
+restricted to a pre-target window; the award score, by contrast, is label-independent
+and admits a clean temporal holdout. The full complementarity decomposition, rankoverlap diagram, and leakage boundary appear in Appendix E. What the benchmark
+establishes is the discriminating ceiling under this implemented full-observability
+comparator, and how much of it the cheap award layer already reaches at far lower
+informational cost.
+
+37
+
+Table 5: Bid-Layer Benchmark and Award-Layer Screen: Ranking Performance
+Design
+
+Pooled (random folds)
+
+Case-grouped (held-out case)
+
+Excl. label-defining tenders
+
+Model
+
+PR-AUC
+
+Prec@500
+
+Rec@500
+
+Prec@1000
+
+ROC
+
+Award continuous
+
+0.143
+
+0.216
+
+0.166
+
+0.177
+
+0.760
+
+Award FL14
+
+0.098
+
+0.130
+
+0.100
+
+0.129
+
+0.688
+
+Bid-layer random forest
+
+0.116
+
+0.180
+
+0.138
+
+0.156
+
+0.717
+
+Combined award + bid
+
+0.188
+
+0.274
+
+0.210
+
+0.189
+
+0.756
+
+Award continuous
+
+0.143
+
+0.216
+
+0.166
+
+0.177
+
+0.760
+
+Award FL14
+
+0.098
+
+0.130
+
+0.100
+
+0.129
+
+0.688
+
+Bid-layer random forest
+
+0.062
+
+0.086
+
+0.066
+
+0.083
+
+0.626
+
+Combined award + bid
+
+0.103
+
+0.190
+
+0.146
+
+0.139
+
+0.689
+
+Bid-layer random forest
+
+0.088
+
+0.130
+
+0.114
+
+0.128
+
+0.713
+
+Notes: N = 16,731 always-losers with computable bid moments; 651 in-pool always-loser cobidder positives, all
+retained. PR-AUC is reported alongside ROC because the positive base rate is near one percent. The pooled
+block is a full-observability diagnostic with random-fold optimism; the case-grouped block is the honest robustness
+test (positives clustered by case never co-train), where the bid layer falls hardest (PR-AUC 0.116 → 0.062) and the
+combined model’s PR-AUC (0.103) falls below award-only (0.143). The award scores are label-independent and so do
+not change across designs. Cobidders are adjudication-anchored exposure, not cartel membership; false positives are
+unlabeled firms, not “bad firms.” The combined model is a full-observability upper bound, not a first-stage screen,
+and its complementarity is conditional on this implemented benchmark and case-fragile. Candidate support, model
+audit, complementarity, and the leakage boundary are in Appendix E.
+
+6.2. Sequential Gatekeeping and the Cost-Recall Frontier
+Similar discrimination at lower cost does not by itself establish a useful two-stage
+architecture. The two layers sit at different points in the evidentiary pipeline, and that
+ordering is the operational lever. The award layer is routine and cheap: it uses records
+the agency already holds. The bid layer is richer and more probative but costlier: in
+this setting the submitted offers are not in the award file and must be recovered from
+the underlying LANCES histories, harmonized, and reduced to within-tender moments
+before any firm can be scored. A model that gives the classifier both layers for every
+firm—the joint model—is an upper bound on what the two layers can do under
+full observability, but it has already paid the full cost of opening the bid file. The
+implementable object is therefore sequential: rank where the costly layer should be
+opened first.
+
+38
+
+The sequential rule imposes that constraint directly. Firms are ranked using
+only the award layer; the top K1 firms form a survivor pool SK1 ; bid microdata are
+recovered only for the survivors in SK1 ; and the bid-distribution benchmark then
+reranks firms within that smaller pool by the combined award-plus-bid score, producing
+the final top-k forensic queue. Full observability is the upper-bound benchmark, not
+the deployed policy; award-only is the zero-bid-cost baseline that opens no bid records
+at all; the sequential rule is the operating architecture in between.
+Because the opportunity audit shows no robust residual ordering net of exposure,
+this frontier should be read strictly as the retrospective recovery footprint of a
+cheap exposure-ranking architecture, not as evidence that the frequent-loser score
+identifies active conduct. Furthermore, because strict timing for the bid rerank is
+unavailable with the current bid-layer feature construction, this framework represents
+an enforcement-accounting baseline conditional on the validated incumbent ranking,
+rather than a prospective platform-wide deployment test.
+Cost is not only firms.. The first-order honest point is that the firm count is the
+wrong denominator for forensic burden. Recovering the within-tender bid moments
+requires the full tender-item LANCES record for every tender a survivor contested,
+so the relevant cost is measured in opened tender-items and opened bid rows, not
+in firms. Table 6 reports all three. At the K1 = 2,000 operating point the rule
+opens only 12% of firms (a firm reduction of 88% relative to full observability), but
+it recovers 34% fewer tender-items and only 33% fewer bid rows. Survivors are the
+
+39
+
+highest-participation always-losers, so opening 12% of firms still opens roughly 67% of
+the bid rows. The frontier reports firms, tender-items, and bid rows precisely so this
+divergence is visible: the honest processing-burden cut is about a third at the bid-row
+level, not the firm-level figure. We report the firm-vs-bid-row divergence (88% versus
+33%) as the core caveat, not a footnote.
+The frontier, not a cutoff.. Varying K1 traces a cost-recall frontier rather than
+identifying a single best rule. At k = 500, the number of positives the sequential
+award→bid rule recovers is non-monotone in K1 : 108 true positives at K1 = 500, 124
+at 1,000, 116 at 2,000, 115 at 3,000, and 102 at 5,000 (Fig. 3). Notably K1 = 1,000
+beats K1 = 2,000 at k = 500 (124 versus 116 true positives, recovering 124/133 = 93%
+of the joint upper bound’s true positives at a 47% bid-row reduction)—further proof
+that no K1 is “optimal.” The sequential rule never exceeds the joint full-observability
+upper bound (133 true positives at k = 500, 191 at k = 1,000). K1 = 2,000 is therefore
+one operating point on the frontier, not a calibrated optimum: agencies with larger
+forensic capacity sit higher on the frontier and agencies with less capacity sit lower.
+The contribution is the frontier itself—the menu of recall-versus-scope trade-offs—not
+a universal cutoff.
+What the bid rerank does, and does not, add.. The bid layer adds little operationally
+at a fixed survivor pool. The award-defined survivor pool already gathers most of the
+positives the final queue recovers; the subsequent bid rerank only reorders firms inside
+that pool rather than surfacing positives the award gate missed. The architecture’s
+40
+
+value is therefore in cost—preserving much of the target capture while reducing the
+scope of proof-producing forensics—rather than in the bid layer locating new targets.
+This is the opposite of a claim that the bid stage drives recovery: it is the award gate
+that determines which positives are reachable, and the rerank that orders them.
+False positives and missed positives.. The frontier is explicit about both error margins.
+At K1 = 2,000, k = 500, the final top-500 queue contains 116 true positives and
+384 unlabeled firms, for a precision of 0.232 and a recall of 0.178 against the 651
+positives; 543 positives are missed overall. We do not read modest precision as failure:
+in forensic triage, routing a manageable queue to the next, costlier evidentiary stage
+is the operative property, and the 384 unlabeled firms in the queue are unverified, not
+exonerated.
+Baselines.. The frontier is bracketed by three reference points. Award-only is the zerobid-cost baseline (recall 0.166 at k = 500), achievable with no bid recovery whatever.
+Bid-only and joint scoring are full-observability benchmarks that require opening the
+entire pool’s bid records; joint is the upper bound the sequential rule approaches but
+never exceeds. A random survivor pool of the same size is far below the award-ranked
+one, confirming that it is the award ranking, not the mere act of opening K1 firms,
+that carries the signal.
+The institutional reading follows directly. The rule is not designed to beat full
+information; it preserves much of the target capture while reducing the proof-producing
+forensic scope—and even that reduction is honest only at the firm level and modest at
+41
+
+the bid-row level. The bid rerank’s marginal contribution at a fixed survivor pool is
+reordering, not new recall. A screen of this kind does not decide liability; it decides,
+under a stated capacity constraint, which files deserve the next and more expensive
+form of evidentiary attention.
+The frontier is also case-fragile. The single largest CADE case supplies 32.0%
+of the positives and 45.4% of the true positives in the top-500 queue, so leaving
+it out lowers sequential recall materially. The signal is real but concentrated; a
+different case mix would move the frontier, and the operating points should be read
+as setting-specific rather than portable magnitudes. The estimated ranking is not
+a portable cartel score; the transferable object is the decomposition framework—
+label construction, opportunity adjustment, timing discipline, case-composition audit,
+bid-layer comparison, and cost-recall accounting.
+Timing discipline.. The frontier above uses the full feature window, which is close to
+the adjudication target; the reading caveat stated at the opening of this subsection
+applies throughout. A stricter timing audit restricts the award-layer score to a 2009–
+2016 window and evaluates against later adjudication-anchored exposure; this is not a
+real-time field deployment, since the labels remain adjudication-based, but it disciplines
+the information used to rank firms before bid forensics are allocated. Under that
+restriction the award-only score remains usable on the training-AL pool, with ROC
+0.684 against the full-window 0.761. The sequential rule, by contrast, cannot be cleanly
+time-limited: the within-tender bid moments that drive the rerank cannot be restricted
+
+42
+
+Table 6: Cost-Recall Frontier for Sequential Award→Bid Gatekeeping
+Rule
+
+K1
+
+Firms
+
+Tender
+
+Bid
+
+open
+
+items
+
+rows
+
+TP
+
+FP
+
+Recall
+
+Prec.
+
+∆Firm
+
+∆Bid
+
+RLoss
+
+red.
+
+red.
+
+vs joint
+
+Panel A: forensic queue k = 500
+Award-only (no bid)
+
+—
+
+500
+
+41,704
+
+1,356,346
+
+108
+
+392
+
+0.166
+
+0.216
+
+0.97
+
+0.60
+
+0.038
+
+Bid-only (full obs)
+
+—
+
+16,772
+
+116,112
+
+3,393,915
+
+102
+
+398
+
+0.157
+
+0.204
+
+—
+
+—
+
+0.048
+
+Joint (full obs, U.B.)
+
+—
+
+16,772
+
+116,112
+
+3,393,915
+
+133
+
+367
+
+0.204
+
+0.266
+
+—
+
+—
+
+0.00
+
+Sequential
+
+500
+
+500
+
+41,704
+
+1,356,346
+
+108
+
+392
+
+0.166
+
+0.216
+
+0.97
+
+0.60
+
+0.038
+
+Sequential
+
+1,000
+
+1,000
+
+58,408
+
+1,783,750
+
+124
+
+376
+
+0.190
+
+0.248
+
+0.94
+
+0.47
+
+0.014
+
+Sequential
+
+2,000
+
+2,000
+
+77,097
+
+2,283,924
+
+116
+
+384
+
+0.178
+
+0.232
+
+88%
+
+33%
+
+0.026
+
+Sequential
+
+3,000
+
+3,000
+
+87,714
+
+2,575,274
+
+115
+
+385
+
+0.177
+
+0.230
+
+0.82
+
+0.24
+
+0.028
+
+Sequential
+
+5,000
+
+5,000
+
+99,977
+
+2,921,977
+
+102
+
+398
+
+0.157
+
+0.204
+
+0.70
+
+0.14
+
+0.048
+
+Panel B: forensic queue k = 1,000
+Award-only (no bid)
+
+—
+
+1,000
+
+58,408
+
+1,783,750
+
+177
+
+823
+
+0.272
+
+0.177
+
+0.94
+
+0.47
+
+0.022
+
+Bid-only (full obs)
+
+—
+
+16,772
+
+116,112
+
+3,393,915
+
+157
+
+843
+
+0.241
+
+0.157
+
+—
+
+—
+
+0.052
+
+Joint (full obs, U.B.)
+
+—
+
+16,772
+
+116,112
+
+3,393,915
+
+191
+
+809
+
+0.293
+
+0.191
+
+—
+
+—
+
+0.00
+
+Sequential
+
+1,000
+
+1,000
+
+58,408
+
+1,783,750
+
+177
+
+823
+
+0.272
+
+0.177
+
+0.94
+
+0.47
+
+0.022
+
+Sequential
+
+2,000
+
+2,000
+
+77,097
+
+2,283,924
+
+185
+
+815
+
+0.284
+
+0.185
+
+88%
+
+33%
+
+0.009
+
+Sequential
+
+3,000
+
+3,000
+
+87,714
+
+2,575,274
+
+184
+
+816
+
+0.283
+
+0.184
+
+0.82
+
+0.24
+
+0.011
+
+Sequential
+
+5,000
+
+5,000
+
+99,977
+
+2,921,977
+
+176
+
+824
+
+0.270
+
+0.176
+
+0.70
+
+0.14
+
+0.023
+
+Notes: Evaluation pool: 16,772 always-loser firms with computable complete-Imhof bid-distribution features; positives are
+651 always-loser cobidders. The target is adjudication-anchored exposure, not cartel membership. “Firms open,” “Tender
+items,” and “Bid rows” report the forensic footprint that must be recovered before the rule’s final queue can be scored;
+full observability opens all 16,772 firms / 116,112 tender-items / 3,393,915 bid rows. The firm count is not the only
+denominator: opened tender-items and bid rows better approximate processing burden, and the firm reduction (∆Firm
+red.) substantially overstates the bid-row reduction (∆Bid red.) because survivors are the highest-participation firms.
+Award-only opens no bid records as a pure award screen; the bid-footprint columns for the award-only rows are the
+hypothetical scope if it were verified at the bid layer. Bid-only and joint require full bid observability for the entire pool; the
+sequential rule recovers bid microdata only for the K1 survivors. Cost reductions are computed relative to full observability.
+“RLoss vs joint” is recall lost relative to the joint upper bound at the same k. False positives (FP) are non-labeled firms, not
+exonerated. ROC is not the decision metric here; recall against the adjudication-anchored target at a fixed forensic queue
+size is.
+
+43
+
+Cost-recall frontier: sequential gatekeeping vs full observability
+
+Recall of CADE cobidders (final k=500)
+
+Each sequential point = a first-stage cut K1. Bid/joint require opening all records (full obs).
+
+0.50
+
+0.45
+
+0.40
+
+0.35
+1,500,000
+
+2,000,000
+
+2,500,000
+
+3,000,000
+
+Opened bid rows (full-tender record; realistic forensic cost)
+Award-only
+
+Bid-only (full obs)
+
+Joint (full obs)
+
+Sequential award->bid
+
+Sequential award->combined
+
+Alt text: recall vs opened bid rows; sequential award->bid and award->combined trace a frontier as K1 grows, approaching the joint full-observability point at far higher cost.
+
+Figure 3: Cost-recall frontier for sequential award→bid gatekeeping. Points trace operational tradeoffs in forensic attention, not legal proof. The horizontal axis is the recovered bid-record footprint
+(bid-row reduction relative to full observability) and the vertical axis is recall against adjudicationanchored cobidder exposure at a fixed forensic queue size. Full-observability benchmarks (bid-only,
+joint) require whole-pool bid recovery and are plotted as horizontal reference lines; the sequential
+points vary K1 ∈ {500, 1,000, 2,000, 3,000, 5,000} and never exceed the joint upper bound; award-only
+is the zero-bid-cost baseline. No K1 is optimal: at k = 500 the recovered-positive count peaks at
+K1 = 1,000.
+
+Alt text: A scatter-and-line plot. The horizontal axis is the reduction in recovered bid
+records relative to opening every firm’s bid history; the vertical axis is recall of
+adjudication-anchored cobidder positives at a fixed forensic queue size. A curve of
+sequential operating points rises and then falls as K1 grows from 500 to 5,000, staying
+below a horizontal dashed line marking the joint full-observability upper bound; it
+never rises above that line. A second horizontal line marks the lower bid-only
+full-observability benchmark, and a marker at the far right shows the zero-bid-cost
+award-only baseline at lower recall. The visual message is that opening fewer bid
+records costs recall along a frontier, the sequential rule at best matches but never
+exceeds full information, and the firm-level footprint reduction overstates the bid-row
+footprint reduction.
+
+44
+
+to a pre-target window without contaminating them with post-window tenders, so
+a strict-timing sequential frontier is blocked. We state this rather than fabricate a
+number. The conclusion of Section 6 is therefore retrospective and bounded: cheap
+administrative records can structure the order in which expensive proof-producing
+evidence is assembled and, on the award layer, survive a timing holdout; the richer bid
+layer remains the place where conduct is evaluated, and its strict timing properties
+cannot be certified here.
+
+7. Scope, Limits, and Price Corroboration
+Section 6 carries the paper’s central enforcement-design result. Price evidence
+enters here in a narrower, corroborative role only. It is scope evidence: it speaks to
+whether the award-layer screen points to economically non-neutral environments. It is
+not a damages estimate, an overcharge, a cartel markup, a causal price effect of frequentloser presence, or proof of a cover-bidding mechanism. Overcharge measurement has
+its own evidentiary tradition (Bryant and Eckard, 1991; Connor, 2007), distinct from
+screening (Marshall and Marx, 2012; Harrington, 2008). We state this boundary once
+and hold to it throughout. The full price regressions are reported in Appendix F.
+In the broad item-level regressions, frequent-loser presence is positively associated
+with log negotiated unit price (+0.064, p = 0.003; range +3.6% – + 7.7% across
+estimators), and the association is larger in pregão than in convite. That broad sign,
+however, is a weighting result: holding the overlap cells fixed and moving to the withincell average treatment effect on the treated reverses it (−0.097, p < 0.001), because the
+45
+
+broad sample mixes a positive between-cell selection component—flagged environments
+sit in structurally higher-priced cells—with a negative within-cell component. The
+reversal is robust outside the high-value tail, the direct-CADE overlap estimate is
+null (−0.061, p = 0.45), and the within-cell movement loads on the count of genuine
+bidders rather than on the frequent-loser count. These two facts—a selection-driven
+broad imprint and an unidentified within-cell channel—place the evidence on the
+scope side of the line: it indicates that the award-layer signal points to economically
+non-neutral environments, no more. The full regressions, the decomposition table,
+and the bidder-count boundary appear in Appendix F.
+
+7.1. Adaptive Use and Gaming
+If an agency uses an award-layer ranking to prioritize forensic attention, it should
+treat it as a moving queue rather than a static legal trigger. Any administrative rule can
+generate strategic response once firms learn which observable patterns attract attention;
+firms could rotate loser roles, engineer occasional wins, fragment identities, or avoid a
+known participation threshold. That possibility does not undermine the sequencing
+architecture, but it rules out naive use of the binary cutoff as a permanent enforcement
+boundary—a standard concern for cartel enforcement and screening (Green and Porter,
+1984; Haltiwanger and Harrington, 1991; Harrington, 2008; Sánchez Graells, 2019).
+The natural responses are to use continuous ranks or capacity-constrained top-k
+queues, refresh thresholds, monitor bunching below operational cutoffs, and combine
+award-layer triage with bid-layer forensics whenever bid files can be recovered. The
+46
+
+survivor-pool size of the refreshed queue is itself a point on the cost–recall frontier of
+Section 6, so investigative capacity and gaming-robustness are chosen together rather
+than tuned in isolation. A firm that moves to avoid one observable pattern may create
+another: discontinuous participation, suspicious identity changes, or shifts in bid-level
+behavior. This is also the right legal posture. The ranking is not a rule of liability and
+should not be used as one. It is a way to order scarce investigative attention when
+proof is costly and the first observable record is legally thin—a disciplined place to
+begin auditing, without pretending that the beginning is the end of the evidentiary
+process.
+
+8. Conclusion
+Cartel enforcement often begins before the agency has the evidence needed to
+prove a case. Procurement records then pose a problem prior to liability: how should
+scarce investigative capacity be allocated when the cheap administrative record is
+broad but legally thin, and the richer bid-level record is costly to recover and evaluate?
+This paper treats procurement-cartel screening as evidence allocation under costly
+proof.
+The empirical design separates the award layer from the bid layer. The award layer
+observes participation and outcomes before bid histories are opened. The bid layer
+observes submitted offers and within-tender conduct; it remains the natural stage for
+proof-producing forensic evaluation. The contribution is not to collapse these layers,
+but to sequence them: administrative records rank where investigation should begin,
+47
+
+and bid-level evidence evaluates conduct inside the prioritized set.
+The validation evidence maps that division of labor within sharp limits, and establishing those limits is the point. Persistent zero-win participation orders adjudicationanchored loser-side exposure, but a disciplined decomposition—opportunity-cell adjustment, strict rolling-origin timing, leave-one-case-out, and environment-dominance
+checks—shows that the cheap signal’s apparent reach mostly reflects procurement
+opportunity and case concentration. Once participation volume and opportunity-set
+exposure are held fixed, the residual ordering is marginal at best and not robust across
+designs: within comparable opportunity sets the discrimination is near chance, the
+nested increment is small and only borderline significant, matched-stratum permutation and enrichment tests do not reject the opportunity null, and the performance is
+concentrated in a single adjudicated case and one procurement environment. Strict
+prospective ranking fails outside incumbent pools—new entrants cannot be ranked by
+prior losing, so the ordering is retrospective and incumbent-bound. The ranking does
+not behave like a generic direct-defendant detector, consistent with its loser-side scope.
+Separating this fragile residual from exposure arithmetic and case concentration—and
+saying plainly where each begins—is the paper’s methodological contribution.
+The two layers’ division of labor is likewise conditional. On the same adjudicationanchored target, the award-layer score is comparable to a transparent bid-moment
+benchmark, and a combined model adds information only under some validation folds
+and falls below the award-layer ranking under case-grouped folds; the complementarity
+
+48
+
+is real but case-fragile, not a clean dominance. Joint scoring is a full-observability
+upper bound; sequential gatekeeping is the architecture relevant once an agency knows
+where the cheap layer ranks and where it does not, and the cost–recall frontier—not
+any single cutoff—is the object it offers.
+The limits are part of the design. The cheap screen creates forensic priority, not
+proof. The validation target is adjudication-anchored exposure, not cartel membership.
+Price evidence is scope evidence, not damages. The architecture is portable only
+where award records, repeated participation, comparable procurement categories, and
+recoverable bid files coexist. A static cutoff can be gamed, so use should rely on
+refreshed thresholds, continuous ranks or top-k queues, bunching checks, and bid-layer
+follow-up.
+The estimated ranking is not a portable cartel score. The transferable object is
+the decomposition framework: label construction, opportunity adjustment, timing
+discipline, case-composition audit, bid-layer comparison, and cost-recall accounting.
+Cheap suspicion should neither be ignored nor treated as proof. Award-layer triage
+gives an agency a disciplined way to order scarce investigative attention before the
+richer evidentiary record is assembled—and, just as usefully, a disciplined way to know
+when a cheap administrative signal is mostly exposure and concentration rather than
+evidence. The statistic indicates where legal attention should start, not where legal
+responsibility ends; mapping that reach, and its edge, is what makes the cheap layer
+safe to audit with.
+
+49
+
+References
+Abrantes-Metz, R. M., L. M. Froeb, J. F. Geweke, and C. T. Taylor (2006). A variance
+screen for collusion. International Journal of Industrial Organization 24 (3), 467–486.
+Asker, J. (2010). A study of the internal organization of a bidding cartel. American Economic
+Review 100 (3), 724–762.
+Athey, S., J. Levin, and E. Seira (2011). Comparing open and sealed bid auctions: Evidence
+from timber auctions. Quarterly Journal of Economics 126 (1), 207–257.
+Bajari, P. and L. Ye (2003). Deciding between competition and collusion. Review of
+Economics and Statistics 85 (4), 971–989.
+Baker, J. B. (2003). The case for antitrust enforcement. Journal of Economic Perspectives 17 (4), 27–50.
+Baldwin, L. H., R. C. Marshall, and J.-F. Richard (1997). Bidder collusion at forest service
+timber sales. Journal of Political Economy 105 (4), 657–699.
+Becker, G. S. (1968). Crime and punishment: An economic approach. Journal of Political
+Economy 76 (2), 169–217.
+Bryant, P. G. and E. W. Eckard (1991). A price-fixing probability index. Review of
+Economics and Statistics 73 (4), 749–752.
+Chassang, S., K. Kawai, J. Nakabayashi, and J. Ortner (2022). Robust screens for noncompetitive bidding in procurement auctions. Econometrica 90 (1), 315–346.
+Conley, T. G. and F. Decarolis (2016). Detecting bidder groups in collusive auctions.
+American Economic Journal: Microeconomics 8 (2), 1–38.
+Connor, J. M. (2007). Price-fixing overcharges: Legal and economic evidence. In Research
+
+50
+
+in Law and Economics, Volume 22, pp. 59–153. Elsevier.
+Coviello, D. and S. Gagliarducci (2017). Tenure in office and public procurement. American
+Economic Journal: Economic Policy 9 (3), 59–105.
+Decarolis, F. (2014). Awarding price, contract performance, and bids screening: Evidence
+from procurement auctions. American Economic Journal: Applied Economics 6 (1),
+108–132.
+Decarolis, F., R. Fisman, P. Pinotti, and S. Vannutelli (2025). Rules, discretion, and
+corruption in procurement: Evidence from italian government contracting. Journal of
+Political Economy Microeconomics 3 (2), 213–254.
+Decarolis, F., L. M. Giuffrida, E. Iossa, V. Mollisi, and G. Spagnolo (2020). Bureaucratic competence and procurement outcomes. Journal of Law, Economics, and Organization 36 (3),
+537–597.
+Green, E. J. and R. H. Porter (1984). Noncooperative collusion under imperfect price
+information. Econometrica 52 (1), 87–100.
+Haltiwanger, J. and J. E. Harrington (1991). The impact of cyclical demand movements on
+collusive behavior. RAND Journal of Economics 22 (1), 89–106.
+Harrington, J. E. (2008). Detecting cartels. In P. Buccirossi (Ed.), Handbook of Antitrust
+Economics, pp. 213–258. MIT Press.
+Hovenkamp, H. (2005). Federal Antitrust Policy: The Law of Competition and Its Practice.
+Thomson West.
+Huber, M. and D. Imhof (2019). Machine learning with screens for detecting bid-rigging
+cartels. International Journal of Industrial Organization 65, 277–301.
+Imhof, D. (2019). Detecting bid-rigging cartels with descriptive statistics. Journal of
+
+51
+
+Competition Law & Economics 15 (4), 427–467.
+Imhof, D., Y. Karagök, and S. Rutz (2018). Screening for bid rigging—does it work? Journal
+of Competition Law & Economics 14 (2), 235–261.
+Kawai, K. and J. Nakabayashi (2022). Detecting large-scale collusion in procurement auctions.
+Journal of Political Economy 130 (5), 1364–1411.
+Marshall, R. C. and L. M. Marx (2012). The Economics of Collusion: Cartels and Bidding
+Rings. Cambridge, MA: MIT Press.
+OECD (2022). Data screening tools for competition investigations. Technical Report 284,
+OECD Publishing, Paris.
+Pesendorfer, M. (2000). A study of collusion in first-price auctions. Review of Economic
+Studies 67 (3), 381–411.
+Porter, R. H. and J. D. Zona (1993). Detection of bid rigging in procurement auctions.
+Journal of Political Economy 101 (3), 518–538.
+Porter, R. H. and J. D. Zona (1999). Ohio school milk markets: An analysis of bidding.
+RAND Journal of Economics 30 (2), 263–288.
+Sánchez Graells, A. (2019). “Screening for Cartels” in Public Procurement: Cheating at
+Solitaire to Sell Fool’s Gold? Journal of European Competition Law & Practice 10 (4),
+199–211.
+Stigler, G. J. (1970). The optimum enforcement of laws. Journal of Political Economy 78 (3),
+526–536.
+Wallimann, H., D. Imhof, and M. Huber (2023). A machine learning approach for flagging
+incomplete bid-rigging cartels. Computational Economics 62 (4), 1669–1720.
+Wils, W. P. J. (2007). Leniency in antitrust enforcement: Theory and practice. World
+
+52
+
+Competition 30 (1), 25–64.
+Wils, W. P. J. (2016). The use of leniency in EU cartel enforcement: An assessment after
+twenty years. World Competition 39 (3), 327–388.
+
+53
+
+

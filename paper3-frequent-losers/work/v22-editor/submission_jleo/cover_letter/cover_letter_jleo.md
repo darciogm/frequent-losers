@@ -24,12 +24,13 @@ effort: a question of enforcement design under costly and incomplete
 observability that sits squarely at the intersection of law, economics, and
 organization.
 
-The paper's contribution is not a claim that an award-layer screen identifies
-cartel members. It is a framework for auditing how far cheap administrative
-records can order forensic priority before agencies open costly bid-level
-records. In the BEC–CADE setting, the audit is deliberately deflationary: much
-raw performance reflects procurement opportunity, timing, and case
-concentration. That boundary is the institutional point.
+Instead of proposing a standalone algorithmic cartel screen, the paper
+contributes an organizational framework for auditing the reach, boundaries, and
+apparent performance of cheap administrative screens within public procurement
+platforms before agencies open costly bid-level records. In the BEC–CADE
+setting, the audit is deliberately deflationary: much raw performance reflects
+procurement opportunity, timing, and case concentration. That boundary is the
+institutional point.
 
 Concretely, the manuscript makes three contributions. First, it offers an
 **evidence-allocation framing** that separates the cheap, legally thin
@@ -64,8 +65,8 @@ administrative and confidential** and cannot be redistributed, so we intend to
 request the JLEO **proprietary-data exemption** for them. We will provide
 analysis code, derived/anonymized firm-level frames, and an output-to-script map
 so that the results can be reproduced by re-running on access-controlled inputs.
-`HUMAN_DECISION_REQUIRED`: funding sources and any conflict-of-interest
-disclosures to be confirmed by the authors before submission.
+Funding and conflict-of-interest disclosures will be provided in the
+submission form.
 
 Thank you for considering our work. Please direct any correspondence to the
 corresponding author, Darcio Genicolo-Martins (darcio.g.martins@gmail.com).
