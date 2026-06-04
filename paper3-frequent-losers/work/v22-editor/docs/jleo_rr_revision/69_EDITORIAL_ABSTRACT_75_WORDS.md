@@ -1,0 +1,3 @@
+# 69 — EDITORIAL ABSTRACT (≈75 words)
+
+Cartel enforcement allocates investigative effort before proof exists. Using São Paulo procurement records and CADE adjudications, we ask whether cheap award-layer data—who participates, who wins, who keeps losing—can rank where costly bid-layer forensics should begin. A persistent-losing statistic concentrates adjudication-anchored exposure once procurement opportunity, timing, and case composition are held fixed, and a sequential award-to-bid frontier organizes recovery cost. The paper maps where cheap administrative records order forensic priority, and where they stop.

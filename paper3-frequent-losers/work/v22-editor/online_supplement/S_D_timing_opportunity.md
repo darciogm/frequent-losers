@@ -83,5 +83,5 @@ seeds 20260603).
   table source: `outputs/tables/appendix/table_D_clustered_randomization_inference.csv`.
 - **Leave-one-direct-defendant-group-out** (full per-defendant grid; submitted
   appendix keeps the one-paragraph summary: 13/28 defendants ≥5 positives,
-  mean ROC 0.944, dominated by 61288437000167 / trens_metros lead).
+  mean ROC 0.944, dominated by a single rail-sector defendant group).
   Source: `outputs/tables/appendix/table_D_leave_one_defendant_group_out.csv`.
