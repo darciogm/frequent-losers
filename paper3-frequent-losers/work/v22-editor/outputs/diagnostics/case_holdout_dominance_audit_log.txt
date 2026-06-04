@@ -1,83 +1,85 @@
 === 04_case_holdout_dominance.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-03 11:27:21  RAM_free=20Gi 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-04 16:14:46  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 
 ========== A. CANDIDATE SET ========== 
-cobidder positives (file): 193 rows, 192 distinct firm_code 
+cobidder positives (canonical broad): 651 rows, 651 distinct firm_code 
 direct CADE defendants (crossmatch, raw): 47 distinct firm_code 
-overlap cobidder/defendant (excluded from positives, kept as defendant): 1 {09474700000192} 
+overlap cobidder/defendant (excluded from positives, kept as defendant): 0 {} 
 candidate set (always-losers minus 7 direct defendants): 16836 firms 
-positives (cobidder, in candidate set): 190 
-positive codes not in candidate universe (excluded from npos): 1 
-AL-cobidder -> case link rows: 181 ; distinct firms linked: 147 ; distinct cases: 6 
-positives linked to >=1 CADE case: 147 ; UNLINKED positives (no case in map): 43 
-NOTE: 43 unlinked positives stay in the FULL validation but cannot be assigned to a LOCO case. 
+positives (cobidder, in candidate set): 651 
+positive codes not in candidate universe (excluded from npos): 0 
+AL-cobidder -> case link rows: 706 ; distinct firms linked: 651 ; distinct cases: 7 
+positives linked to >=1 CADE case: 651 ; UNLINKED positives (no case in map): 0 
+NOTE: 0 unlinked positives stay in the FULL validation but cannot be assigned to a LOCO case. 
 --- positive cobidders per case (linked) --- 
-  08700.004617/2013-41   : 104 
-  08700.007278/2015-17   : 32 
-  08012.002222/2011-09   : 19 
-  08012.010022/2008-16   : 14 
-  08700.005876/2019-85   : 9 
-  08700.005789/2015-02   : 3 
-LARGEST case = 08700.004617/2013-41 (104 positives, 70.7% of linked, 54.7% of all positives) 
-  [stage A_candidate_set           ] elapsed=   0.3s  RSS=239 MB 
+  08700.004617/2013-41   : 208 
+  08700.005789/2015-02   : 176 
+  08700.007278/2015-17   : 146 
+  08012.002222/2011-09   : 99 
+  08012.010022/2008-16   : 55 
+  08700.005876/2019-85   : 17 
+  08012.001273/2010-24   : 5 
+LARGEST case = 08700.004617/2013-41 (208 positives, 32.0% of linked, 32.0% of all positives) 
+  [stage A_candidate_set           ] elapsed=   0.1s  RSS=241 MB 
 
 ========== B0. defendant contact O_i + environment (DuckDB) ========== 
 firms with O_i>0 (any defendant contact): 4,792 
 firm x case contact rows: 5,591 
-positive-firm participation rows (with env): 13,016 
-positive participations with modality matched: 99.6% 
-  [stage B0_contact_env            ] elapsed=   8.3s  RSS=263 MB 
+positive-firm participation rows (with env): 23,235 
+positive participations with modality matched: 99.1% 
+  [stage B0_contact_env            ] elapsed=   3.9s  RSS=265 MB 
 
 ========== A. LEAVE-ONE-CASE-OUT (LOCO) ========== 
 --- LOCO per-case (sorted by positives) --- 
-cases too_sparse (<5 pos): 1 of 6 
-LOCO PR-AUC : mean=0.039 min=0.007 max=0.121 (over 6 evaluable) 
-LOCO recall@500 : mean=0.522 min=0.222 max=1.000 
-LOCO ROC-AUC : mean=0.954 min=0.932 max=0.994 (non-too-sparse: mean=0.946) 
-  [stage A_loco                    ] elapsed=   9.1s  RSS=369 MB 
+cases too_sparse (<5 pos): 0 of 7 
+LOCO PR-AUC : mean=0.034 min=0.000 max=0.085 (over 7 evaluable) 
+LOCO recall@500 : mean=0.173 min=0.000 max=0.281 
+LOCO ROC-AUC : mean=0.746 min=0.646 max=0.802 (non-too-sparse: mean=0.746) 
+  [stage A_loco                    ] elapsed=   4.4s  RSS=435 MB 
 wrote fig_leave_one_case_out_distribution.pdf 
 
 ========== B. CASE-DOMINANCE SUMMARY ========== 
 --- case_dominance_summary --- 
-CONFIRM: largest case 08700.004617/2013-41 share of TP@500 = 72.3% (Sub5 reported ~47%) 
+CONFIRM: largest case 08700.004617/2013-41 share of TP@500 = 45.4% (Sub5 reported ~47%) 
 
 ----- DECISIVE: leave-largest-case-out ----- 
-FULL          : ROC=0.939 PR=0.126 prec@500=0.1300 rec@500=0.342 (npos=190) 
-DROP-LARGEST  : ROC=0.929 PR=0.036 prec@500=0.0400 rec@500=0.233 (npos=86)  [drop 08700.004617/2013-41] 
-DROP-TOP-TWO  : ROC=0.925 PR=0.029 prec@500=0.0300 rec@500=0.200 (npos=75) 
+FULL          : ROC=0.761 PR=0.143 prec@500=0.2160 rec@500=0.166 (npos=651) 
+DROP-LARGEST  : ROC=0.763 PR=0.090 prec@500=0.1320 rec@500=0.149 (npos=443)  [drop 08700.004617/2013-41] 
+DROP-TOP-TWO  : ROC=0.752 PR=0.058 prec@500=0.0920 rec@500=0.172 (npos=268) 
 
 ----- case-balanced vs firm-weighted ----- 
-recall@500   : firm-weighted=0.342   case-balanced(mean over cases)=0.522 
-precision@500: firm-weighted=0.1300   case-balanced(mean over cases)=0.0287 
+recall@500   : firm-weighted=0.166   case-balanced(mean over cases)=0.173 
+precision@500: firm-weighted=0.2160   case-balanced(mean over cases)=0.0431 
 
 ----- top-k case coverage (# distinct cases among TP) ----- 
 wrote fig_case_positive_concentration.pdf 
-  [stage B_case_dominance          ] elapsed=   9.9s  RSS=381 MB 
+  [stage B_case_dominance          ] elapsed=   4.9s  RSS=425 MB 
 
 ========== C. ENVIRONMENT DOMINANCE ========== 
 --- environment_dominance_summary --- 
 --- environment robustness (MAIN metrics) --- 
-  [stage C_environment             ] elapsed=  10.7s  RSS=382 MB 
+  [stage C_environment             ] elapsed=   5.5s  RSS=426 MB 
 
 ========== D. LEAVE-ONE-DEFENDANT-GROUP-OUT ========== 
-positive x defendant contact rows: 281 ; distinct defendants touching a positive: 28 
-defendants linked to >=5 distinct positives (feasible LODGO groups): 13 of 28 
+positive x defendant contact rows: 867 ; distinct defendants touching a positive: 38 
+defendants linked to >=5 distinct positives (feasible LODGO groups): 25 of 38 
 --- leave-one-defendant-group-out (top groups) --- 
-LODGO non-sparse: 13 groups; mean ROC-AUC=0.944 (non-sparse), mean rec@500=0.405 
-  [stage D_lodgo                   ] elapsed=  13.8s  RSS=314 MB 
+LODGO non-sparse: 25 groups; mean ROC-AUC=0.744 (non-sparse), mean rec@500=0.189 
+  [stage D_lodgo                   ] elapsed=   7.1s  RSS=314 MB 
 
 ========== E. CLUSTERED RANDOMIZATION INFERENCE ========== 
-RI tight (buyer x item_group x year): 153 positive-bearing cells; frac positives in shufflable(>=2 firm) cells = 0.732 
-RI chosen stratification: buyer_x_item_group_x_year (73.2% positives shufflable) 
+RI tight (buyer x item_group x year): 536 positive-bearing cells; frac positives in shufflable(>=2 firm) cells = 0.499 
+RI fallback (item_group x year): 225 positive-bearing cells; frac shufflable = 0.997 
+RI chosen stratification: item_group_x_year (99.7% positives shufflable) 
 --- clustered RI: observed vs null --- 
 wrote fig_clustered_randomization_inference.pdf + clustered_ri_metrics.csv 
-  [stage E_clustered_ri            ] elapsed= 977.3s  RSS=377 MB 
+  [stage E_clustered_ri            ] elapsed=  18.8s  RSS=353 MB 
 
 ========== VERDICT INPUTS ========== 
-largest case = 08700.004617/2013-41 : 54.7% of positives, 72.3% of TP@500 
-FULL  ROC=0.939 PR=0.126 | DROP-LARGEST ROC=0.929 PR=0.036 (prec@500 0.1300->0.0400; rec@500 0.342->0.233) 
+largest case = 08700.004617/2013-41 : 32.0% of positives, 45.4% of TP@500 
+FULL  ROC=0.761 PR=0.143 | DROP-LARGEST ROC=0.763 PR=0.090 (prec@500 0.2160->0.1320; rec@500 0.166->0.149) 
 TP@500 case coverage = 6 distinct cases 
-item_group HHI=0.188 largest=0.305 ; buyer HHI=0.019 largest=0.063 
+item_group HHI=0.100 largest=0.215 ; buyer HHI=0.009 largest=0.035 
 
-=== DONE === elapsed=977.3s 
+=== DONE === elapsed=18.8s 

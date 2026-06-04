@@ -18,7 +18,8 @@
 # without ever exporting raw CNPJ in per-firm files.
 #
 # Groups (identical to E1):
-#   cobidder   = 193 narrow target (cade_fl_cobidders.csv)
+#   cobidder   = canonical broad AL cobidder label (651, reproducible, FL never used)
+#                (outputs/cache/canonical_cobidders_broad.csv, broad_cobidder==1)
 #   always-loser = base universe
 #   FL         = fl14 == 1  (tenders_count >= 14)
 #   direct defendants (cade_bec_crossmatch) EXCLUDED from candidates
@@ -81,10 +82,13 @@ norm14 <- function(x) sprintf("%014.0f", as.numeric(x))
 # =============================================================================
 say("\n----- 0. rebuild firm panel + labels + exposure (replay E1 build) -----")
 
-cob <- fread(file.path(DATA, "cade_fl_cobidders.csv"))
-cob[, firm_code := norm14(firm_cnpj)]
-cob_codes <- unique(cob$firm_code)
-say("cobidder positives (193 file): %d distinct firm_code", length(cob_codes))
+# POSITIVE LABEL: canonical broad AL cobidder label (651, reproducible, FL never used).
+# `códigofornecedor` is the raw 14-char BEC join key; norm14 is idempotent and keeps
+# this set in the same format as the firm_loss_stats / FREQ_PARTICIP codes.
+cob <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+cob[, firm_code := norm14(`códigofornecedor`)]
+cob_codes <- unique(cob[broad_cobidder == 1L, firm_code])
+say("cobidder positives (canonical broad AL label): %d distinct firm_code", length(cob_codes))
 
 xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
 xm[, firm_code := norm14(firm_cnpj)]
@@ -650,7 +654,7 @@ real_prauc<- average_precision(al$cobidder, al$score_i)
 say("REAL: cobidder ROC-AUC=%.4f PR-AUC=%.4f (n_pos=%d)", real_auc, real_prauc, sum(al$cobidder))
 
 # Build eligibility pool: all firms in FTM that are NOT direct defendants, NOT in the
-# 193 cobidders, NOT global always-losers? -> pseudo-defendants should be WINNERS like
+# canonical broad AL cobidder set, NOT global always-losers? -> pseudo-defendants should be WINNERS like
 # real defendants (defendants are winners). Require win_rate>0. Match on participation
 # + market exposure deciles of the REAL defendants. Compute defendant decile profile.
 con <- dbConnect(duckdb())

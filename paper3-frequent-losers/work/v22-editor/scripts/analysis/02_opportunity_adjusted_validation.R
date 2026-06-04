@@ -14,7 +14,7 @@
 # (+0.04, within-stratum 0.77). Report attenuation honestly; do NOT overclaim.
 #
 # Steps (A-J per Subprompt brief):
-#   A  candidate set (always-losers, cobidder_i = the 193)
+#   A  candidate set (always-losers, cobidder_i = canonical broad AL cobidder label, 651, reproducible, FL never used)
 #   B  observed defendant contact O_i (DuckDB self-join)
 #   C  opportunity cells (COARSE / MEDIUM / STRICT)  -> Table D-construction
 #   D  expected contact E_i, excess X_i, standardized Z_i
@@ -107,10 +107,14 @@ strat_auc <- function(dat, score, label, stratum) {
 # A. CANDIDATE SET
 # =============================================================================
 say("\n----- A. candidate set -----")
-cob <- fread(file.path(DATA, "cade_fl_cobidders.csv"))
-cob[, firm_code := norm14(firm_cnpj)]
-cob_codes <- unique(cob$firm_code)
-say("cobidder positives (193 file): %d distinct firm_code", length(cob_codes))
+# POSITIVE LABEL: canonical broad AL cobidder label (651, reproducible, FL never used).
+# `códigofornecedor` is the raw BEC firm code (14-char zero-padded), the same join key
+# produced by norm14() on FREQ_PARTICIP / firm_loss_stats / firm_tender_map.
+CANON_COB <- file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv")
+cob <- fread(CANON_COB)
+cob[, firm_code := norm14(`códigofornecedor`)]
+cob_codes <- unique(cob[broad_cobidder == 1L, firm_code])
+say("cobidder positives (canonical broad AL label): %d distinct firm_code", length(cob_codes))
 
 xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
 xm[, firm_code := norm14(firm_cnpj)]
@@ -255,11 +259,11 @@ for (v in c("O_i","n_def_firms","n_contact_pairs","n_cases","contact_items_cased
 dt[, Y_broad := as.integer(O_i > 0L)]          # broad label = any defendant contact
 dt[, contact_intensity := ifelse(T_i>0, O_i/T_i, 0)]
 
-# overlap of broad label with the 193 cobidder set
-say("\nBroad label Y_i=1[O_i>0]: %d firms ; cobidder(193): %d", dt[Y_broad==1,.N], dt[cobidder==1,.N])
+# overlap of the internal Y_broad=1[O_i>0] sensitivity label with the canonical cobidder set
+say("\nBroad label Y_i=1[O_i>0]: %d firms ; cobidder(canonical broad AL label): %d", dt[Y_broad==1,.N], dt[cobidder==1,.N])
 say("  overlap(Y_broad & cobidder)=%d ; cobidder & !Y_broad=%d ; Y_broad & !cobidder=%d",
     dt[Y_broad==1 & cobidder==1,.N], dt[cobidder==1 & Y_broad==0,.N], dt[Y_broad==1 & cobidder==0,.N])
-say("  -> PRIMARY label = cobidder (the 193, narrow static set); Y_broad reported as robustness")
+say("  -> PRIMARY label = cobidder (canonical broad AL cobidder label, reproducible, FL never used); Y_broad=1[O_i>0] reported as robustness")
 
 # observed-contact summary diagnostic
 osum <- rbindlist(list(

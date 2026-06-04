@@ -1,11 +1,11 @@
 === 06_section5_robustness.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-03 12:46:14  RAM_free=20Gi 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-04 16:15:11  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 
 ----- 0. rebuild firm panel + labels + exposure (replay E1 build) ----- 
-cobidder positives (193 file): 192 distinct firm_code 
+cobidder positives (canonical broad AL label): 651 distinct firm_code 
 direct defendants: raw=47 ; cleaned (winners only, NEW HOPE excluded)=46 
-always-losers: 16843 ; cobidders in universe: 191 ; FL14: 2735 
+always-losers: 16843 ; cobidders in universe: 651 ; FL14: 2735 
 ASSERT firm_id alignment with exported frame (T_i,cobidder,fl14): TRUE 
 CADE cases by #always-losers linked: 
     proc=08700.004617/2013-41  n_AL=208 
@@ -16,79 +16,79 @@ CADE cases by #always-losers linked:
     proc=08700.005876/2019-85  n_AL=17 
     proc=08012.001273/2010-24  n_AL=5 
 largest case = 08700.004617/2013-41 ; AL firms linked = 208 (excluded in sensitivity column) 
-  [stage 0_rebuild_panel               ] elapsed=   0.1s  RSS=254 MB 
+  [stage 0_rebuild_panel               ] elapsed=   0.1s  RSS=255 MB 
 
 ----- A. placebo thresholds + bunching ----- 
-base cobidder rate among always-losers: 0.01134 (191 / 16843) 
-continuous score_i ROC-AUC=0.9386  PR-AUC=0.1264 (reference, not a threshold row) 
+base cobidder rate among always-losers: 0.03865 (651 / 16843) 
+continuous score_i ROC-AUC=0.7608  PR-AUC=0.1432 (reference, not a threshold row) 
 wrote table_E_placebo_thresholds.csv (25 threshold rows) 
-  T>=14: flagged=2735 precision=0.0698 recall=1.0000 lift=6.16 PR-AUC=0.0846 excess=1.41 
+  T>=14: flagged=2735 precision=0.1247 recall=0.5238 lift=3.23 PR-AUC=0.0972 excess=0.91 
   fixed-family precision sweep (T-threshold -> precision): 
-    5:0.029  8:0.042  10:0.051  12:0.060  14:0.070  16:0.072  20:0.079  25:0.084  30:0.093 
+    5:0.076  8:0.093  10:0.104  12:0.114  14:0.125  16:0.129  20:0.138  25:0.152  30:0.167 
   fixed-family PR-AUC sweep: 
-    5:0.036  8:0.051  10:0.062  12:0.073  14:0.085  16:0.081  20:0.078  25:0.073  30:0.073 
+    5:0.075  8:0.086  10:0.090  12:0.093  14:0.097  16:0.095  20:0.092  25:0.092  30:0.091 
 wrote fig_threshold_sensitivity.pdf 
 bunching @ T=14: freq=198 ; neighbor-mean(12,13,15,16)=187.5 ; ratio=1.056 (≈1 => no bunching) 
 wrote threshold_bunching_T14.csv 
 wrote fig_threshold_bunching_T14.pdf 
-  [stage A_thresholds_bunching         ] elapsed=   1.4s  RSS=274 MB 
+  [stage A_thresholds_bunching         ] elapsed=   0.9s  RSS=273 MB 
 
 ----- B. ordinary-loser alternatives (FL cobidders vs FL non-cobidders) ----- 
 market-structure proxies built for 16843 always-losers 
 modality/quorum proxies built for 16843 always-losers (modality from item_value_panel) 
-FL14 firms: 2735 ; FL cobidders=191 ; FL non-cobidders=2544 
+FL14 firms: 2735 ; FL cobidders=341 ; FL non-cobidders=2394 
 wrote ordinary_loser_proxy_stats.csv (13 proxies) 
-    A_breadth_n_buyers               FLcob=24.8743  FLnon=14.3231  wilcox_p=1.32e-16 
-    A_breadth_n_item_groups          FLcob=8.1623  FLnon=10.2822  wilcox_p=2.48e-08 
-    A_survival_n_years               FLcob=3.6230  FLnon=2.2991  wilcox_p=4.61e-23 
-    A_volume_n_items                 FLcob=68.3298  FLnon=39.7728  wilcox_p=5.63e-06 
-    B_item_group_HHI                 FLcob=0.3810  FLnon=0.2779  wilcox_p=1.08e-15 
-    B_top_item_group_share           FLcob=0.5128  FLnon=0.3905  wilcox_p=6.43e-15 
-    B_buyer_HHI                      FLcob=0.1452  FLnon=0.2512  wilcox_p=1.86e-12 
-    B_top_buyer_share                FLcob=0.2406  FLnon=0.3492  wilcox_p=1.07e-09 
-    C_first_year_concentration       FLcob=0.4053  FLnon=0.6332  wilcox_p=1.46e-16 
-    C_late_half_participation        FLcob=0.3811  FLnon=0.2597  wilcox_p=1.66e-10 
-    D_convite_share                  FLcob=0.0336  FLnon=0.3133  wilcox_p=2.24e-28 
-    D_convite_min_quorum_share       FLcob=0.0029  FLnon=0.0240  wilcox_p=2.38e-08 
-    D_mean_competitors               FLcob=19.5091  FLnon=12.0540  wilcox_p=6.83e-26 
+    A_breadth_n_buyers               FLcob=21.9150  FLnon=14.0835  wilcox_p=9.73e-17 
+    A_breadth_n_item_groups          FLcob=10.2845  FLnon=10.1128  wilcox_p=0.744 
+    A_survival_n_years               FLcob=2.9384  FLnon=2.3137  wilcox_p=7.6e-10 
+    A_volume_n_items                 FLcob=63.3783  FLnon=38.6888  wilcox_p=1.86e-10 
+    B_item_group_HHI                 FLcob=0.3113  FLnon=0.2813  wilcox_p=0.000123 
+    B_top_item_group_share           FLcob=0.4399  FLnon=0.3932  wilcox_p=1.79e-05 
+    B_buyer_HHI                      FLcob=0.1784  FLnon=0.2531  wilcox_p=5.88e-10 
+    B_top_buyer_share                FLcob=0.2760  FLnon=0.3510  wilcox_p=8.03e-08 
+    C_first_year_concentration       FLcob=0.5007  FLnon=0.6339  wilcox_p=3.3e-09 
+    C_late_half_participation        FLcob=0.3473  FLnon=0.2569  wilcox_p=2.76e-07 
+    D_convite_share                  FLcob=0.1551  FLnon=0.3135  wilcox_p=3.64e-13 
+    D_convite_min_quorum_share       FLcob=0.0078  FLnon=0.0246  wilcox_p=1.92e-06 
+    D_mean_competitors               FLcob=17.2585  FLnon=11.9074  wilcox_p=5.06e-25 
 wrote table_N_ordinary_loser_alternatives.{csv,tex} 
-  [stage B_ordinary_loser              ] elapsed=   3.3s  RSS=321 MB 
+  [stage B_ordinary_loser              ] elapsed=   2.3s  RSS=320 MB 
 
 ----- C. market-specific zero-win definitions ----- 
-  [ig_modality] cand=10666 (excl direct=10659, pos=189) overlapGlobalAL=0.553  ROC-AUC=0.7737 PR-AUC=0.0517 p@500=0.064 
-  [buyer_ig] cand=11448 (excl direct=11435, pos=159) overlapGlobalAL=0.327  ROC-AUC=0.5553 PR-AUC=0.0171 p@500=0.016 
-  [itemcode_modality] cand=8722 (excl direct=8712, pos=170) overlapGlobalAL=0.361  ROC-AUC=0.6094 PR-AUC=0.0252 p@500=0.020 
-  [buyer] cand=11418 (excl direct=11409, pos=175) overlapGlobalAL=0.493  ROC-AUC=0.5543 PR-AUC=0.0177 p@500=0.012 
+  [ig_modality] cand=10666 (excl direct=10659, pos=478) overlapGlobalAL=0.553  ROC-AUC=0.5845 PR-AUC=0.0659 p@500=0.096 
+  [buyer_ig] cand=11448 (excl direct=11435, pos=329) overlapGlobalAL=0.327  ROC-AUC=0.4869 PR-AUC=0.0295 p@500=0.034 
+  [itemcode_modality] cand=8722 (excl direct=8712, pos=327) overlapGlobalAL=0.361  ROC-AUC=0.5115 PR-AUC=0.0369 p@500=0.024 
+  [buyer] cand=11418 (excl direct=11409, pos=411) overlapGlobalAL=0.493  ROC-AUC=0.5063 PR-AUC=0.0374 p@500=0.044 
   leave-one-item-group-out (global always-loser, score_i vs cobidder): 
-    full-sample ROC-AUC=0.9386 ; leave-one-group-out range=[0.9355, 0.9410] over 22 groups 
+    full-sample ROC-AUC=0.7608 ; leave-one-group-out range=[0.7550, 0.7655] over 22 groups 
 wrote table_E_market_specific_zero_win_definitions.csv + _validation.csv + leave_one_item_group_out.csv 
-  GLOBAL benchmark: ROC-AUC=0.9386 PR-AUC=0.1264 p@500=0.130 r@500=0.340 lift@500=11.46 
-  [stage C_market_specific             ] elapsed=  10.3s  RSS=409 MB 
+  GLOBAL benchmark: ROC-AUC=0.7608 PR-AUC=0.1432 p@500=0.216 r@500=0.166 lift@500=5.59 
+  [stage C_market_specific             ] elapsed=   8.9s  RSS=392 MB 
 
 ----- D. negative controls ----- 
-REAL: cobidder ROC-AUC=0.9386 PR-AUC=0.1264 (n_pos=191) 
+REAL: cobidder ROC-AUC=0.7608 PR-AUC=0.1432 (n_pos=651) 
 real defendants matched: 46 of 46 have FTM profile 
 eligible pseudo-defendant pool (winners, non-defendant, non-cobidder): 24561 firms 
 precomputed item-sets: AL rows=163,515 ; pool rows=16,646,470 
 placebo-anchor draws: B=500 ; firms per draw=46 ; seed=20260603 
-    draw 100/500  elapsed=5.3s  mean_pseudo_pos=819 
-    draw 200/500  elapsed=11.5s  mean_pseudo_pos=831 
-    draw 300/500  elapsed=19.2s  mean_pseudo_pos=825 
-    draw 400/500  elapsed=25.3s  mean_pseudo_pos=823 
-    draw 500/500  elapsed=32.0s  mean_pseudo_pos=838 
-PLACEBO ANCHORS: real AUC=0.9386 ; placebo AUC mean=0.7547 sd=0.0276 [0.6926,0.7977] ; empirical p(placebo>=real)=0.0000 
-PLACEBO ANCHORS: real PR-AUC=0.1264 ; placebo PR-AUC mean=0.1595 ; empirical p=0.7020 
+    draw 100/500  elapsed=5.9s  mean_pseudo_pos=832 
+    draw 200/500  elapsed=11.4s  mean_pseudo_pos=828 
+    draw 300/500  elapsed=16.5s  mean_pseudo_pos=807 
+    draw 400/500  elapsed=22.0s  mean_pseudo_pos=805 
+    draw 500/500  elapsed=27.3s  mean_pseudo_pos=812 
+PLACEBO ANCHORS: real AUC=0.7608 ; placebo AUC mean=0.7553 sd=0.0261 [0.6982,0.7996] ; empirical p(placebo>=real)=0.4560 
+PLACEBO ANCHORS: real PR-AUC=0.1432 ; placebo PR-AUC mean=0.1573 ; empirical p=0.5540 
 high-volume winner pool (top-decile participation): 2458 firms (T>=1016) 
-HIGH-VOLUME WINNERS: real AUC=0.9386 ; pseudo AUC mean=0.7803 [0.7393,0.8128] ; empirical p=0.0000 
+HIGH-VOLUME WINNERS: real AUC=0.7608 ; pseudo AUC mean=0.7822 [0.7445,0.8128] ; empirical p=0.9080 
 wrote table_E_negative_controls.csv 
 wrote fig_negative_control_distribution.pdf 
-  [stage D_negative_controls           ] elapsed= 172.7s  RSS=2117 MB 
+  [stage D_negative_controls           ] elapsed= 166.2s  RSS=2139 MB 
 
 ========================= SECTION 5 ROBUSTNESS SUMMARY ========================= 
-A. Threshold sensitivity: T=14 precision=0.070 recall=1.000 PR-AUC=0.085 ; bunching ratio @14=1.06 
+A. Threshold sensitivity: T=14 precision=0.125 recall=0.524 PR-AUC=0.097 ; bunching ratio @14=1.06 
    precision varies smoothly across fixed thresholds 5..30 -> T=14 NOT special (administrative). 
 B. Ordinary-loser alternatives: 13 proxies compared; NOT_OBSERVED = distance-to-winner, geography, later-wins. 
-C. Market-specific zero-win: GLOBAL ROC-AUC=0.9386 ; alternatives ROC-AUC range [0.5543, 0.7737] -> global NOT dominated 
-D. Negative controls: real AUC=0.9386 vs matched-placebo null mean=0.7547 (p=0.0000) ; high-vol null mean=0.7803 (p=0.0000) 
-  [stage FINAL                         ] elapsed= 172.7s  RSS=2117 MB 
+C. Market-specific zero-win: GLOBAL ROC-AUC=0.7608 ; alternatives ROC-AUC range [0.4869, 0.5845] -> global NOT dominated 
+D. Negative controls: real AUC=0.7608 vs matched-placebo null mean=0.7553 (p=0.4560) ; high-vol null mean=0.7822 (p=0.9080) 
+  [stage FINAL                         ] elapsed= 166.2s  RSS=2139 MB 
 DONE. 

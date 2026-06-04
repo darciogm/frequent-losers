@@ -13,8 +13,8 @@
 \newcommand{\valBECfirms}{41{,}444}
 % src: scripts/54_threshold_table_q3iqr.R :: output/threshold_table_q3iqr/threshold_table_q3iqr.csv :: median_plus_1.5_iqr
 \newcommand{\valThreshold}{14}
-% src: data/processed/FREQ_PARTICIP_rebuilt.parquet :: data/processed/firm_loss_stats.parquet :: data/processed/cade_*.csv
-\newcommand{\valCobidders}{193}
+% src: outputs/targets/canonical_target_counts.csv :: B_broad_AL_cobidders_MAIN (rebound 2026-06-04 canonical broad AL label) -- prefer \valMainCobidders in new prose
+\newcommand{\valCobidders}{651}
 % src: data/processed/FREQ_PARTICIP_rebuilt.parquet :: data/processed/firm_loss_stats.parquet :: data/processed/cade_*.csv
 \newcommand{\valDirectCADE}{47}
 % src: data/processed/FREQ_PARTICIP_rebuilt.parquet :: data/processed/firm_loss_stats.parquet :: data/processed/cade_*.csv
@@ -28,6 +28,7 @@
 % src: data/processed/FREQ_PARTICIP_rebuilt.parquet :: data/processed/firm_loss_stats.parquet :: data/processed/cade_*.csv
 \newcommand{\valYearsCount}{11}
 % src: scripts/54_threshold_table_q3iqr.R :: output/threshold_table_q3iqr/threshold_table_q3iqr.csv :: median_plus_1.5_iqr
+% STALE (old 193 label) -- firm-level cobidder AUC under old narrow label; do not cite as canonical validation
 \newcommand{\valAUCFLfirm}{0.924}
 % src: scripts/54_threshold_table_q3iqr.R :: output/threshold_table_q3iqr/threshold_table_q3iqr.csv :: median_plus_1.5_iqr
 \newcommand{\valAUCFLfirmCIlo}{0.921}
@@ -47,6 +48,7 @@
 \newcommand{\valDeLongZ}{-4.38}
 % src: scripts/36_gate_d1_harmonized.R (FL14>=14 re-run 2026-05-25) :: log_tc vs FL14 DeLong
 \newcommand{\valDeLongP}{1.2e-05}
+% STALE (old 193 label) -- script 49 Imhof-incremental AUCs validated against the old narrow cobidder label; do not cite as canonical (block through \valAUCTCaloneCI)
 % src: scripts/49_imhof_incremental_value.R :: output/imhof_incremental/imhof_incremental.csv :: imhof_full
 \newcommand{\valAUCImhofFull}{0.846}
 % src: scripts/49_imhof_incremental_value.R :: output/imhof_incremental/imhof_incremental.csv :: imhof_full
@@ -506,7 +508,7 @@
 \newcommand{\valRVqOne}{17.5\%}
 % src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
 \newcommand{\valOsterDelta}{261.6}
-% src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
+% STALE -- conservative AUC not re-estimated under canonical pipeline; do not cite
 \newcommand{\valAUCprePost}{0.748}
 % src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
 \newcommand{\valAUCcontemp}{0.75}
@@ -580,9 +582,9 @@
 \newcommand{\valCADEpermObs}{1{,}622}
 % src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
 \newcommand{\valCADEpermPerm}{31{,}447}
-% src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
+% STALE -- conservative AUC/enrichment not re-estimated under canonical pipeline; do not cite
 \newcommand{\valCADEenrich}{3.95\%}
-% src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
+% STALE -- conservative AUC/enrichment not re-estimated under canonical pipeline; do not cite
 \newcommand{\valCADEbase}{1.24\%}
 % src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
 \newcommand{\valThreshOnexN}{1{,}885}
@@ -632,8 +634,8 @@
 \newcommand{\valCSAttExitCIlo}{-0.039}
 % src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
 \newcommand{\valAUCstandard}{0.85}
-% src: v13 legacy verified constants (no CSV source --manual back-of-envelope)
-\newcommand{\valAUCdirectStd}{0.49}
+% src: script 03 scope log (FL binary vs 47 BEC defendants, random) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valAUCdirectStd}{0.491}
 % src: v13 legacy verified constants (final coverage pass)
 \newcommand{\valMechCrowdInUC}{+0.184}
 % src: v13 legacy verified constants (final coverage pass)
@@ -836,7 +838,7 @@
 \newcommand{\valMultEnrich}{2.6}
 % src: v13 legacy verified constants (final 100% literal binding)
 \newcommand{\valMultThreeOnEight}{3.18}
-% src: v13 legacy verified constants (final 100% literal binding)
+% STALE -- conservative AUC/enrichment not re-estimated under canonical pipeline; do not cite
 \newcommand{\valMultThreeTwo}{3.2}
 % src: v13 legacy verified constants (final 100% literal binding)
 \newcommand{\valMultThreeFive}{3.5}
@@ -995,6 +997,7 @@
 \newcommand{\valHorseConvThree}{+0.169^{***}}
 \newcommand{\valHorseConvThreeSE}{0.013}
 \newcommand{\valHorseN}{1{,}653{,}658}
+% STALE (old 193 label) -- horse-race AUCs validated against the old narrow cobidder label; do not cite as canonical
 \newcommand{\valHorseAUCBin}{0.924}
 \newcommand{\valHorseAUCBinCI}{[0.921,\,0.926]}
 \newcommand{\valHorseAUCCont}{0.939}
@@ -1073,9 +1076,9 @@
 % src: scripts/25_sham_fl_permutation.R + manuscript prose
 \newcommand{\valConservativeCases}{4}
 % CO-AUTHOR EDIT: rebound to reproducible broad-def counts (CP-1 label-funnel)
-\newcommand{\valConservativeFD}{19}      % src: outputs/.../funnel.csv S6 (was 30, unreproducible over-count)
-\newcommand{\valConservativeCobidders}{208} % src: funnel.csv S6 broad-def AL, 4 conservative cases (was 210)
-\newcommand{\valConservativeFL}{107}     % src: funnel.csv S6 broad-def FL (was 108)
+\newcommand{\valConservativeFD}{19}      % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (conservative BEC-active defendants)
+\newcommand{\valConservativeCobidders}{208} % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (conservative broad-def AL cobidders, 4 cases)
+\newcommand{\valConservativeFL}{107}     % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (conservative broad-def FL cobidders, 4 cases)
 \newcommand{\valConservativeCutoff}{2020}
 
 % --- Excl-CADE robustness (§6.4 prose) -----------------------------
@@ -1084,6 +1087,7 @@
 
 % --- Imhof full pipeline (Table tab:imhof_full) --------------------
 % src: scripts/31_imhof_full_pipeline.R (re-run 2026-05-22 under FL14 = tenders_count >= 14)
+% STALE (old 193 label) -- script 31 Imhof-full AUCs validated against the old narrow cobidder label; do not cite as canonical (block through \valImhofComboContCI)
 \newcommand{\valImhofFLBin}{0.921}
 \newcommand{\valImhofFLBinCI}{[0.914,\,0.928]}
 \newcommand{\valImhofFLcont}{0.884}
@@ -1100,10 +1104,12 @@
 
 % --- Leakage audit (Table tab:leakage_audit) -----------------------
 % src: scripts/40_leakage_audit_d3.R
+% STALE (old 193 label) -- do not cite; source CSV (output/leakage_audit_d3/) not regenerated under canonical broad AL pipeline
 \newcommand{\valLeakRefAUC}{0.995}
 \newcommand{\valLeakRefAUCCI}{[0.995,\,0.995]}
 \newcommand{\valLeakDirectAUC}{0.506}
 \newcommand{\valLeakDirectAUCCI}{[0.505,\,0.507]}
+% STALE (old 193 label) -- do not cite; source CSV (output/leakage_audit_d3/) not regenerated under canonical broad AL pipeline
 \newcommand{\valLeakCVAUC}{0.891}
 \newcommand{\valLeakCVAUCCI}{[0.887,\,0.894]}
 \newcommand{\valLeakDirectTempAUC}{0.511}
@@ -1145,7 +1151,7 @@
 \newcommand{\valImhofIncFLp}{0.014}
 \newcommand{\valImhofIncCombo}{+0.096\text{ to }+0.098}
 
-% --- Sign-reversal decomposition (Subprompt 3, script 59) ----------
+% ===== Sign-reversal decomposition (script 59) =====
 % src: scripts/59_sign_reversal_decomp.R :: output/sign_reversal_decomp/headline_specs.csv
 \newcommand{\valBetaBroad}{+0.064}
 \newcommand{\valBetaBroadP}{0.003}
@@ -1181,7 +1187,7 @@
 \newcommand{\valSurvDirectShare}{0.024}
 \newcommand{\valDropDirectP}{0.33}
 
-% --- Theory-validation bridge (Subprompt 4, script 60) -------------
+% ===== Theory-validation bridge (script 60) =====
 % src: scripts/60_theory_validation_bridge.R :: output/theory_bridge/summary_means_wide.csv
 \newcommand{\valBridgeTendCob}{136.5}
 \newcommand{\valBridgeTendFLnc}{76.7}
@@ -1202,8 +1208,9 @@
 \newcommand{\valBridgeRepeatShareFLnc}{33.4\%}
 \newcommand{\valBridgeRepeatShareD}{-0.38}
 
-% --- Subprompt 7 reproducibility-linking macros ---------------------
+% ===== Reproducibility-linking macros =====
 % src: scripts/25_sham_fl_permutation.R :: output/sham_fl/cade_permutation.csv
+% STALE -- conservative AUC not re-estimated under canonical pipeline; do not cite
 \newcommand{\valAUCprePostCIlo}{0.713}
 \newcommand{\valAUCprePostCIhi}{0.783}
 \newcommand{\valAUCprePostCI}{[\valAUCprePostCIlo,\,\valAUCprePostCIhi]}
@@ -1251,7 +1258,8 @@
 \newcommand{\valScopeRowSix}{0.770}
 \newcommand{\valScopeRowSeven}{0.565}
 \newcommand{\valScopeRowEight}{0.511}
-\newcommand{\valAUCParticDefendants}{0.383}
+% src: script 03 scope log (continuous score vs 47 BEC defendants, full) (rebound 2026-06-04 canonical broad AL label) -- direction CHANGED, now above chance
+\newcommand{\valAUCParticDefendants}{0.658}
 % --- AN-028 within-FL standardized differences (vs FL_non_cobidder)
 % src: scripts/60_theory_validation_bridge.R :: output/theory_bridge/standardized_diffs.csv
 \newcommand{\valDiffTendersFL}{+0.67}
@@ -1372,93 +1380,93 @@
 \newcommand{\valMechMidHighBidderDelta}{+0.052}
 \newcommand{\valMechDenseBidderDelta}{-0.015}
 
-% === Subprompt 4: label-funnel reconciliation (CP-1) ===
+% ===== Label-funnel reconciliation (CP-1, script 01_label_funnel_reconciliation.R) =====
 % Auto-generated by work/v22-editor/scripts/analysis/01_label_funnel_reconciliation.R
 % NEW reproducible label-funnel macros (JLEO R&R v22 CP-1).
-\newcommand{\valFunnelFLcobBroad}{341}      % src: broad-def FL cobidders, full portfolio
-\newcommand{\valFunnelALcobBroad}{651}      % src: broad-def always-loser cobidders, full portfolio
-\newcommand{\valFunnelConsALcob}{208}       % src: broad-def AL cobidders, 4 conservative cases (was 210)
-\newcommand{\valFunnelConsFLcob}{107}       % src: broad-def FL cobidders, 4 conservative cases (was 108)
-\newcommand{\valFunnelConsFD}{19}          % src: BEC-active defendants, 4 conservative cases (drop 30->19)
+\newcommand{\valFunnelFLcobBroad}{341}      % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (broad-def FL cobidders, full portfolio)
+\newcommand{\valFunnelALcobBroad}{651}      % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (broad-def always-loser cobidders, full portfolio)
+\newcommand{\valFunnelConsALcob}{208}       % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (broad-def AL cobidders, 4 conservative cases)
+\newcommand{\valFunnelConsFLcob}{107}       % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (broad-def FL cobidders, 4 conservative cases)
+\newcommand{\valFunnelConsFD}{19}          % src: canonical_target_counts.csv / 01_label_funnel_reconciliation.R (BEC-active defendants, 4 conservative cases)
 \newcommand{\valFunnelDirectActiveFTM}{41} % src: crossmatch defendants present in firm_tender_map
 \newcommand{\valFunnelDefItems}{52013}        % src: distinct defendant tender-items
 \newcommand{\valFunnelStaticOverlap}{149}   % src: |static193 INT broadFL341|
 \newcommand{\valFunnelStaticTarget}{193}    % src: static cade_fl_cobidders.csv row count
 
-% === Subprompt 5: opportunity-adjusted validation ===
+% === Opportunity-adjusted validation (table_C_opportunity_adjusted_validation) ===
 % CO-AUTHOR EDIT: macros for the central opportunity-adjusted result (Verdict B).
-\newcommand{\valExpOnlyAUC}{0.946}            % src: outputs/.../table_C (exposure-only ROC-AUC benchmark, full-sample reference)
-\newcommand{\valExpExposedN}{6{,}040}         % src: outputs/.../table_C (S2_exposure_only_logit n, exposed subsample)
-\newcommand{\valExpNpos}{191}                 % src: outputs/.../table_C (positives in exposed subsample)
-\newcommand{\valExpWithinAUC}{0.771}          % src: outputs/.../table_C (WITHIN_STRATUM_log_tc pooled C-stat)
-\newcommand{\valExpWithinFLAUC}{0.771}        % src: outputs/.../table_C (WITHIN_STRATUM_fl14 pooled C-stat, 0.7709)
-\newcommand{\valExpIncrement}{0.042}          % src: outputs/.../table_C (NESTED auc_increment 0.0415)
-\newcommand{\valExpDeLongP}{2.1\times10^{-6}} % src: outputs/.../table_C (NESTED delong_p 2.08e-06)
-\newcommand{\valExpExposedFLAUC}{0.842}        % src: outputs/.../table_C (exposed-subsample FL14 AUC)
-\newcommand{\valExpExposedLogAUC}{0.863}       % src: outputs/.../table_C (exposed-subsample log_tc AUC / CEM-matched)
-\newcommand{\valExpScoreExcessAUC}{0.764}      % src: outputs/.../table_C (S5_score_vs_excessPos roc_auc 0.7640)
-\newcommand{\valExpRawScoreAUC}{0.939}         % src: outputs/.../table_C (S0_raw_score roc_auc 0.9386)
-\newcommand{\valExpRawScorePRAUC}{0.126}       % src: outputs/.../table_C (S0_raw_score pr_auc 0.1264)
-\newcommand{\valExpRawFLPRAUC}{0.085}          % src: outputs/.../table_C (S0_raw_fl14 pr_auc 0.0846)
-\newcommand{\valExpExpOnlyPRAUC}{0.194}        % src: outputs/.../table_C (S2_exposure_only_logit pr_auc 0.1941)
-\newcommand{\valExpPermBp}{1.00}               % src: outputs/.../table_D (Approach B p_pr)
-\newcommand{\valExpPermCp}{0.023}              % src: outputs/.../table_D (Approach C p_pr 0.0230)
-\newcommand{\valExpFLenrichP}{0.001}           % src: outputs/.../table_D (FL14-enrichment p_fl_enrich <0.001 both approaches)
-\newcommand{\valExpMatchedDelta}{0.083}        % src: outputs/.../table_C (within-exposure-stratum FL14 vs non DeltaP(cobidder))
-\newcommand{\valExpCEMmatchedAUC}{0.863}       % src: outputs/.../table_C (CEM-opportunity-matched AUC)
-\newcommand{\valExpTopCaseTPshare}{47\%}       % src: outputs/.../table_C (largest CADE case share of TP@500)
+\newcommand{\valExpOnlyAUC}{0.713}            % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (exposure-only logit ROC, exposed n=6,040) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpExposedN}{6{,}040}         % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (S2_exposure_only_logit n, exposed subsample) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpNpos}{651}                 % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (positives) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpWithinAUC}{0.471}          % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (WITHIN_STRATUM_log_tc pooled C-stat 0.4705 ~chance) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpWithinFLAUC}{0.507}        % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (WITHIN_STRATUM_fl14 pooled C-stat 0.5065) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpIncrement}{0.010}          % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (NESTED auc_increment +0.0100) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpDeLongP}{0.013}            % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (NESTED delong_p 0.0129) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpExposedFLAUC}{0.842}        % src: outputs/.../table_C (exposed-subsample FL14 AUC; old-label, not in NEW_NUMBERS_MAP)
+\newcommand{\valExpExposedLogAUC}{0.863}       % src: outputs/.../table_C (exposed-subsample log_tc AUC / CEM-matched; old-label, not in NEW_NUMBERS_MAP)
+\newcommand{\valExpScoreExcessAUC}{0.764}      % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (S5_score_vs_excessPos roc_auc 0.7640) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpRawScoreAUC}{0.761}         % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (S0_raw_score roc_auc 0.761) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpRawScorePRAUC}{0.143}       % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (S0_raw_score pr_auc 0.143) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpRawFLPRAUC}{0.097}          % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (S0_raw_fl14 pr_auc 0.097) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpExpOnlyPRAUC}{0.300}        % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (S2_exposure_only_logit pr_auc 0.300) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpPermBp}{1.00}               % src: outputs/tables/main/table_D_opportunity_permutation_validation.csv (Approach B p_pr) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpPermCp}{0.127}              % src: outputs/tables/main/table_D_opportunity_permutation_validation.csv (Approach C p_pr 0.127, NOT significant) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpFLenrichP}{0.067}           % src: outputs/tables/main/table_D_opportunity_permutation_validation.csv (FL14-enrichment within matched strata p=0.067, NOT significant) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpMatchedDelta}{-0.017}       % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (within-stratum FL14 vs non DeltaP(cobidder) -0.0172, NEGATIVE) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpCEMmatchedAUC}{0.626}       % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (CEM-opportunity-matched AUC, n=6,039) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valExpTopCaseTPshare}{45\%}       % src: outputs/tables/main/table_C_opportunity_adjusted_validation.csv (largest CADE case share of TP@500, 45.4%) (rebound 2026-06-04 canonical broad AL label)
 
-% === Subprompt 6: timing & case-holdout ===
-% CO-AUTHOR EDIT: timing, leakage, and case-composition macros (§4.4). No prior \valStrict* existed; all new (no rebind required).
-\newcommand{\valStrictFLAUC}{0.767}            % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (sample 3_training_always_loser, repro_fl_binary_auc 0.7672)
-\newcommand{\valStrictContAUC}{0.750}          % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (sample 3_training_always_loser, roc_auc / log_tc 0.7505)
+% === Timing & case-holdout (table_D/E strict; table_G/H case-dominance) ===
+% CO-AUTHOR EDIT: timing, leakage, and case-composition macros (§4.4).
+\newcommand{\valStrictFLAUC}{0.646}            % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (training-AL pool, FL binary 0.646) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valStrictContAUC}{0.684}          % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (training-AL pool, continuous roc_auc 0.684) (rebound 2026-06-04 canonical broad AL label)
 \newcommand{\valStrictThreshTrain}{7}          % src: ../outputs/diagnostics/strict_holdout_composition.csv (threshold_train 7; full-window threshold 13.5)
-\newcommand{\valStrictFullAUC}{0.55}           % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (sample 1_full_test_candidate, roc_auc 0.5462)
-\newcommand{\valStrictFullPrec}{0}             % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (sample 1_full_test_candidate, prec_500 = 0; recall_500 = 0; pr_auc 0.005)
-\newcommand{\valEntrantPosShare}{23\%}         % src: ../outputs/diagnostics/strict_holdout_composition.csv (cobidders_entrant 45 / cobidders_total 193 = 0.233)
-\newcommand{\valStrictRankablePos}{148}        % src: ../outputs/diagnostics/strict_holdout_composition.csv (cobidders_rankable 148)
-\newcommand{\valRollWorstAUC}{0.50}            % src: ../outputs/tables/main/table_E_rolling_origin_validation.csv (worst full-universe year 2015 roc_auc 0.4974, below chance)
-\newcommand{\valLOCOfullPRAUC}{0.126}          % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (scenario full, pr_auc 0.1263)
-\newcommand{\valLOCOdropLargestPRAUC}{0.036}   % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (scenario drop_largest_case, pr_auc 0.0361, -71%)
-\newcommand{\valLOCOdropLargestPrec}{0.040}    % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (scenario drop_largest_case, precision_500 0.04)
-\newcommand{\valTopCasePosShare}{55\%}         % src: ../outputs/tables/main/table_G_leave_one_case_out_validation.csv (case 08700.004617/2013-41 positives 104 / 190 = 0.547)
-\newcommand{\valTopCaseTP}{72\%}               % src: case-dominance diagnostic (largest case share of TP@500, 72.3%)
-\newcommand{\valCaseBalancedPrec}{0.029}       % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (case_balanced(mean over cases) precision_500 0.0287)
-\newcommand{\valFullPrec}{0.130}               % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (firm_weighted(pooled) precision_500 0.13)
-\newcommand{\valClusterRIp}{0.015}             % src: clustered randomization inference, B=1000 (observed PR-AUC 0.126 vs null mean 0.101, p=0.015)
-\newcommand{\valClusterRIcovP}{0.32}           % src: clustered randomization inference (case-coverage breadth p=0.32, not significant)
+\newcommand{\valStrictFullAUC}{0.474}          % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (full test universe 41,444; 651 pos; roc_auc 0.474, below chance) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valStrictFullPrec}{0}             % src: ../outputs/tables/main/table_D_strict_2009_2016_to_2017_2019.csv (full test universe, prec_500 = 0; recall_500 = 0; pr_auc 0.0137) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valEntrantPosShare}{23.5\%}       % src: ../outputs/diagnostics/strict_holdout_composition.csv (unrankable entrant 153 / 651 = 0.235) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valStrictRankablePos}{498}        % src: ../outputs/diagnostics/strict_holdout_composition.csv (rankable-incumbent cobidders 498) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valRollWorstAUC}{0.446}           % src: ../outputs/tables/main/table_E_rolling_origin_validation.csv (worst full-universe year 2015 roc_auc 0.446, below chance) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valLOCOfullPRAUC}{0.143}          % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (scenario full, pr_auc 0.143) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valLOCOdropLargestPRAUC}{0.090}   % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (scenario drop_largest_case, pr_auc 0.0895, -37%) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valLOCOdropLargestPrec}{0.132}    % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (scenario drop_largest_case, precision_500 0.132) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valTopCasePosShare}{32.0\%}       % src: ../outputs/tables/main/table_G_leave_one_case_out_validation.csv (largest case trens_metros 208 / 651 = 0.320) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valTopCaseTP}{45.4\%}             % src: case-dominance diagnostic (largest case share of TP@500, 45.4%) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valCaseBalancedPrec}{0.043}       % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (case_balanced(mean over cases) precision_500 0.043) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valFullPrec}{0.216}               % src: ../outputs/tables/main/table_H_case_dominance_validation.csv (firm_weighted(pooled) precision_500 0.216) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valClusterRIp}{0.001}             % src: clustered randomization inference, item_group x year (observed ROC/PR/prec p=0.001) (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valClusterRIcovP}{0.103}          % src: clustered randomization inference (case-coverage breadth p=0.103, not significant) (rebound 2026-06-04 canonical broad AL label)
 \newcommand{\valDirectStrictAUC}{0.49}         % src: ../outputs/tables/main/table_D_* / scope matrix (direct-defendant ROC ~0.49 under full and strict scores)
-\newcommand{\valTopItemGroupShare}{31\%}       % src: case-environment concentration (largest item-group share; dropping it halves PR-AUC 0.126->0.062)
+\newcommand{\valTopItemGroupShare}{21.5\%}     % src: case-environment concentration (largest item-group share 21.5%; item-group HHI 0.100) (rebound 2026-06-04 canonical broad AL label)
 
-% === Subprompt 7: section 5 profile ===
+% === Section 5 economic profile (table_J_economic_profile) ===
 % CO-AUTHOR EDIT: hand-appended (do NOT regen via script 99; see values.tex pipeline divergence memory)
-\newcommand{\valProfNcob}{2{,}544}            % src: ../outputs/tables/main/table_J_economic_profile.csv (N_noncob)
-\newcommand{\valProfCob}{191}                  % src: ../outputs/tables/main/table_J_economic_profile.csv (N_cob)
-\newcommand{\valProfPregaoCob}{96.6\%}         % src: table_J_economic_profile.csv panel B pregao_share cob 0.9662
-\newcommand{\valProfPregaoNoncob}{66.6\%}      % src: table_J_economic_profile.csv panel B pregao_share noncob 0.6657
-\newcommand{\valProfPregaoSMD}{0.76}           % src: table_J_economic_profile.csv panel B pregao_share std_diff 0.7613
-\newcommand{\valProfBuyersCob}{24.9}           % src: table_J_economic_profile.csv panel B n_buyers cob 24.874
-\newcommand{\valProfBuyersNoncob}{14.3}        % src: table_J_economic_profile.csv panel B n_buyers noncob 14.323
-\newcommand{\valProfBuyersSMD}{0.72}           % src: table_J_economic_profile.csv panel B n_buyers std_diff 0.7179
-\newcommand{\valProfYearsSMD}{0.84}            % src: table_J_economic_profile.csv panel A n_years std_diff 0.8410
-\newcommand{\valProfNcasesSMD}{3.76}           % src: table_J_economic_profile.csv panel C n_cases std_diff 3.7567
-\newcommand{\valProfHHIigRawSMD}{0.45}         % src: table_K_opportunity_adjusted_profile.csv hhi_ig raw_smd 0.4459
-\newcommand{\valProfHHIigAdjSMD}{0.02}         % src: table_K_opportunity_adjusted_profile.csv hhi_ig adj_smd 0.0159
-\newcommand{\valProfNcasesAdjSMD}{2.25}        % src: table_K_opportunity_adjusted_profile.csv n_cases adj_smd 2.2460
-\newcommand{\valProfMonoPrevRho}{+0.92}        % src: table_L_monotonicity_bins.csv (Spearman rank corr cob_prev vs mean_T across bins)
-\newcommand{\valProfMonoExcessRho}{-0.93}      % src: table_L_monotonicity_bins.csv (Spearman rank corr mean_X vs mean_T across bins)
-\newcommand{\valProfNegCtrlRealAUC}{0.939}     % src: ../outputs (Appendix H negative controls; real-anchor ROC-AUC)
-\newcommand{\valProfNegCtrlPlaceboAUC}{0.76}   % src: ../outputs (Appendix H negative controls; matched placebo-anchor mean ROC-AUC ~0.755/0.780)
+\newcommand{\valProfNcob}{2{,}394}            % src: table_J_economic_profile.csv N_noncob (rebound 2026-06-04 canonical broad AL label; within-FL stratum)
+\newcommand{\valProfCob}{341}                  % src: table_J_economic_profile.csv N_cob (rebound 2026-06-04; FL cobidders within-FL profile comparison)
+\newcommand{\valProfPregaoCob}{84.0\%}         % src: table_J_economic_profile.csv panel B pregao_share cob 0.840 (rebound 2026-06-04)
+\newcommand{\valProfPregaoNoncob}{66.6\%}      % src: table_J_economic_profile.csv panel B pregao_share noncob 0.666 (rebound 2026-06-04)
+\newcommand{\valProfPregaoSMD}{0.44}           % src: table_J_economic_profile.csv panel B pregao_share std_diff 0.436 (rebound 2026-06-04)
+\newcommand{\valProfBuyersCob}{21.9}           % src: table_J_economic_profile.csv panel B n_buyers cob 21.91 (rebound 2026-06-04)
+\newcommand{\valProfBuyersNoncob}{14.1}        % src: table_J_economic_profile.csv panel B n_buyers noncob 14.08 (rebound 2026-06-04)
+\newcommand{\valProfBuyersSMD}{0.53}           % src: table_J_economic_profile.csv panel B n_buyers std_diff 0.532 (rebound 2026-06-04)
+\newcommand{\valProfYearsSMD}{0.39}            % src: table_J_economic_profile.csv panel A n_years std_diff 0.391 (rebound 2026-06-04)
+\newcommand{\valProfNcasesSMD}{6.17}           % src: table_J_economic_profile.csv panel C n_cases std_diff 6.169 (rebound 2026-06-04)
+\newcommand{\valProfHHIigRawSMD}{0.13}         % src: table_K_opportunity_adjusted_profile.csv hhi_ig raw_smd 0.129 (rebound 2026-06-04)
+\newcommand{\valProfHHIigAdjSMD}{-0.02}        % src: table_K_opportunity_adjusted_profile.csv hhi_ig adj_smd -0.017 (rebound 2026-06-04)
+\newcommand{\valProfNcasesAdjSMD}{4.99}        % src: table_K_opportunity_adjusted_profile.csv n_cases adj_smd 4.988 (rebound 2026-06-04)
+\newcommand{\valProfMonoPrevRho}{+0.99}        % src: table_L_monotonicity_bins.csv Spearman cob_prev vs mean_T (rebound 2026-06-04)
+\newcommand{\valProfMonoExcessRho}{-0.25}      % src: table_L_monotonicity_bins.csv Spearman mean_X vs mean_T (rebound 2026-06-04; weak under canonical label)
+\newcommand{\valProfNegCtrlRealAUC}{0.761}     % src: outputs/tables/appendix/table_E_negative_controls.csv real_auc (rebound 2026-06-04 canonical broad AL label)
+\newcommand{\valProfNegCtrlPlaceboAUC}{0.755}  % src: table_E_negative_controls.csv placebo_cade_anchors_matched null_auc_mean (rebound 2026-06-04; real 0.761 vs placebo p=0.456 NS)
 \newcommand{\valProfBunchRatio}{1.06}          % src: ../outputs (bunching/density-ratio test at T=14; no excess mass)
-\newcommand{\valProfMarketZeroWinBest}{0.774}  % src: ../outputs (best market-specific zero-win alternative ROC vs global 0.939)
+\newcommand{\valProfMarketZeroWinBest}{0.584}  % src: outputs/tables/appendix/table_E_market_specific_zero_win_validation.csv ig_modality roc_auc (rebound 2026-06-04 canonical broad AL label)
 
-% === Subprompt 8: bid-layer benchmark audit ===
+% === Bid-layer benchmark audit (table_O/P/Q/R) ===
 % CO-AUTHOR EDIT: bid-layer forensic benchmark, model audit, case-grouped robustness, complementarity.
 % Reuses existing \valImhofFull (0.888), \valImhofFLBin (0.921), \valImhofComboCont (0.962),
 % \valImhofPoolN (16,779) for the pooled full-observability headline (do NOT rebind those).
 \newcommand{\valBidPoolN}{16{,}779}            % src: table_O_bid_feature_support.csv (common_bid_feature_pool_31 N; script 31)
 \newcommand{\valBidPoolNsame}{11{,}676}        % src: table_O_bid_feature_support.csv (common_bid_feature_pool_49 N; adds imhof_cv_sd, ~30.7% missing for single-tender firms)
-\newcommand{\valBidPosRetained}{193}           % src: table_O_bid_feature_support.csv (positives retained in both pools; zero positive loss)
+\newcommand{\valBidPosRetained}{651}           % src: table_O_bid_feature_support.csv (positives retained in both pools; zero positive loss) (rebound 2026-06-04 canonical broad AL label)
 \newcommand{\valBidLearner}{random forest}     % src: table_P_bid_benchmark_model_audit.csv (ranger, 500 trees, probability)
 \newcommand{\valBidLOCOimhofAUC}{0.810}        % src: table_Q_bid_layer_performance.csv (E_case_grouped, bid_RF, roc_auc 0.8098)
 \newcommand{\valBidLOCOimhofPRAUC}{0.045}      % src: table_Q_bid_layer_performance.csv (E_case_grouped, bid_RF, pr_auc 0.0451)
@@ -1475,12 +1483,12 @@
 \newcommand{\valBidLOCOimhofPRAUCdrop}{63\%}   % src: derived; pr_auc 0.1239 -> 0.0451 case-grouped (-63.6%)
 \newcommand{\valBidAwardResidAUC}{0.94}        % src: table_R_award_bid_complementarity.csv (award_auc_over_bid_residual_pool 0.9376)
 
-% === Subprompt 10: cost-recall frontier ===
+% === Cost-recall frontier (table_6_cost_recall_frontier) ===
 % CO-AUTHOR EDIT: cost-recall frontier replacing single-point gatekeeper. Pool = 16,772 always-loser
 % complete-Imhof firms, 190 positives. Full observability = open all (16,772 firms / 116,112 tender-items
 % / 3,393,915 bid rows). Honest core: firm reduction overstates burden saving (88% firms but only 33% bid rows).
 \newcommand{\valCostPoolN}{16{,}772}              % src: table_6_cost_recall_frontier.csv (evaluation pool, full-obs firms_opened bid-only row)
-\newcommand{\valCostNpos}{190}                     % src: table_6_cost_recall_frontier.csv (TP+positives_missed = 190 positives)
+\newcommand{\valCostNpos}{651}                     % src: table_6_cost_recall_frontier.csv (TP+positives_missed = 651 positives) (rebound 2026-06-04 canonical broad AL label)
 \newcommand{\valCostFirmRedTwoK}{88\%}            % src: table_6_cost_recall_frontier.csv (K1=2000 cost_reduction_firms 0.8808)
 \newcommand{\valCostTenderRedTwoK}{34\%}          % src: derived; K1=2000 opened_tender_items 77,097 vs full 116,112 (1-0.664=0.336)
 \newcommand{\valCostBidRowRedTwoK}{33\%}          % src: table_6_cost_recall_frontier.csv (K1=2000 cost_reduction_bid_rows 0.3271)
@@ -1496,3 +1504,15 @@
 \newcommand{\valCostPosLostGateTwoK}{42}          % src: ../outputs (K1=2000: positives not in award survivor pool, lost at the gate)
 \newcommand{\valCostRandomRecallTwoK}{0.10}       % src: ../outputs (random survivor pool of size K1=2000, k=500 recall ~0.10; 3-12x worse)
 \newcommand{\valCostLOCOdrop}{0.34}               % src: ../outputs (leave-largest-case-out: sequential recall 0.48 -> 0.34; one case = 55% of positives)
+
+% ===== Canonical reproducible target macros (2026-06-04 final optimization) =====
+% Auto-generated by work/v22-editor/scripts/analysis/00_build_canonical_validation_targets.R
+% Canonical reproducible target macros (JLEO final optimization). Bind in values.tex.
+\newcommand{\valMainCobidders}{651}        % src: canonical_target_counts.csv B_broad_AL_cobidders_MAIN
+\newcommand{\valMainCobFL}{341}            % src: composition FL among positives (descriptive)
+\newcommand{\valMainCobNonFL}{310}         % src: composition non-FL among positives (descriptive)
+\newcommand{\valMainConsCobidders}{208}    % src: conservative broad AL cobidders (same def)
+\newcommand{\valMainConsFD}{19}           % src: conservative BEC-active defendants
+\newcommand{\valMainTimingCobidders}{498}  % src: rankable-incumbent cobidders
+\newcommand{\valMainEntrantPositives}{153} % src: unrankable entrant positives
+\newcommand{\valMainBidSupportCob}{651}    % src: bid-feature-support cobidders

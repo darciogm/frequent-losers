@@ -10,8 +10,8 @@
 #
 # Reuses the canonical Sub5 firm frame:
 #   work/v22-editor/outputs/cache/firm_opportunity_adjusted_frame.csv
-# (one row per always-loser; cobidder = the 191 in-AL adjudication-anchored
-#  narrow static target; fl14 = 1[T_i>=14]; direct CADE defendants EXCLUDED).
+# (one row per always-loser; cobidder = canonical broad AL cobidder label
+#  (651, reproducible, FL never used); fl14 = 1[T_i>=14]; direct CADE defendants EXCLUDED).
 #
 # Steps:
 #   A  Groups (Step 5)               -> table_E_section5_group_counts
@@ -242,10 +242,14 @@ ff[, grp_E := as.integer(fl14==1 & cobidder==1)]         # FL cobidders      (MA
 ff[, grp_F := as.integer(cobidder==1)]                   # AL cobidders
 ff[, grp_G := as.integer(cobidder==0)]                   # AL non-cobidders
 
-# ASSERT: every cobidder is fl14 (so D,E partition FL); direct defendants excluded.
-.assert_cob_fl <- all(ff[cobidder==1, fl14]==1)
-say("ASSERT all cobidders are FL14: %s (cobidders not FL14: %d)",
-    .assert_cob_fl, ff[cobidder==1 & fl14==0,.N])
+# Canonical broad AL cobidder label (651, reproducible, FL never used) spans the
+# whole always-loser universe, so cobidders are NOT all FL14 (this is by design;
+# the old FL-only 193 label was). D,E still partition the FL14 cobidder cell;
+# F,G partition all cobidders. Diagnostic kept (non-gating); invariant relaxed.
+.cob_fl14_share <- if (ff[cobidder==1,.N]>0) ff[cobidder==1, mean(fl14==1)] else NA_real_
+.assert_cob_fl <- ff[cobidder==1,.N] > 0          # relaxed: positives > 0
+say("DIAG cobidder positives=%d ; FL14 share among cobidders=%.3f (cobidders not FL14: %d)",
+    ff[cobidder==1,.N], .cob_fl14_share, ff[cobidder==1 & fl14==0,.N])
 
 # Opportunity groups (high = top quartile of E_i_MEDIUM / X_i_MEDIUM / score)
 e_hi  <- quantile(ff$E_i_MEDIUM, 0.75)
@@ -284,7 +288,11 @@ gc_tab <- rbindlist(lapply(names(gdef), function(g) {
 }))
 # Group H reported SEPARATELY (direct defendants) — never mixed into A-G.
 xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
-cob_codes <- unique(norm14(fread(file.path(DATA,"cade_fl_cobidders.csv"))$firm_cnpj))
+# POSITIVE LABEL: canonical broad AL cobidder label (651, reproducible, FL never used).
+# `códigofornecedor` is already the raw 14-char join key; norm14 is idempotent and
+# keeps this set in the same format as the norm14(xm$firm_cnpj) defendant set below.
+.canon_cob <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+cob_codes <- unique(norm14(.canon_cob[broad_cobidder == 1L][["códigofornecedor"]]))
 direct_codes <- setdiff(unique(norm14(xm$firm_cnpj)), cob_codes)
 H_in_frame <- sum(direct_codes %in% ff$firm_code)
 gc_tab <- rbind(gc_tab, data.table(

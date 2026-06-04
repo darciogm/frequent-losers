@@ -1,4 +1,4 @@
-%
+% REVISED: canonical-target reframe 2026-06-04
 %
 \section{Economic Profile and Robustness: Construction and Diagnostics}
 \label{app:profile_submission}
@@ -16,14 +16,21 @@ descriptive inputs to a triage ranking, not proof of conduct.
 \label{app:profile_groups_submission}
 
 All groups are drawn from the always-loser universe (firms with zero
-recorded wins over the calibration window, $N=16{,}843$). The narrow
-adjudication-anchored target is the set of $191$ always-loser
-cobidders. The $46$ direct CADE defendants are \emph{winners} and are
-\emph{excluded} from every cobidder group; the $6$ that appear in the
-always-loser universe are excluded from the profile contrasts to keep
-the comparison free of named-defendant contamination. The principal
-Section~5 contrast is D (FL non-cobidders, $N=2{,}544$) versus E (FL
-cobidders, $N=191$). Online Supplement~D lists all group definitions.
+recorded wins over the calibration window, $N=16{,}843$). The
+adjudication-anchored validation target is the broad set of
+$\valMainCobidders$ always-loser cobidders---firms that share at least
+one tender-item with a BEC-active direct CADE defendant---of which
+$\valMainCobFL$ ($52.4\%$) satisfy the frequent-loser cut and
+$\valMainCobNonFL$ ($47.6\%$) do not, so the label is not
+frequent-loser-conditioned. The $\valDirectCADE$ direct CADE
+defendants are \emph{winners} and are \emph{excluded} from every
+cobidder group; the $6$ that appear in the always-loser universe are
+excluded from the profile contrasts to keep the comparison free of
+named-defendant contamination. The Section~5 profile contrast is run
+\emph{within} the frequent-loser stratum---group D (FL non-cobidders,
+$N=2{,}394$) versus group E (FL cobidders, $N=341$)---so that the
+estimated gaps cannot be an artifact of the cut. Online Supplement~D
+lists all group definitions.
 % DF-COMPRESS: moved tab:profile_groups_submission to Online Supplement D
 
 Profile variables are computed from award records over the calibration
@@ -37,7 +44,7 @@ contact intensity $O_i/T_i$, share in defendant-bearing cells); (D)
 modality-quorum proxies (Convite minimum-quorum share, mean competitors
 faced); and (E) timing (first-year and late-half participation shares).
 Three variable classes that would sharpen interpretation are
-NOT\_OBSERVED in the award layer and used nowhere in Section~5: tender
+unobserved in the award layer and used nowhere in Section~5: tender
 value / contract size (price is recorded only for the \emph{winner}),
 distance-to-winner (requires bid microdata), and fine geography /
 specialization. Because of the latter two, the ordinary-loser
@@ -62,8 +69,11 @@ s_p=\sqrt{\tfrac{(n_E-1)s_E^2+(n_D-1)s_D^2}{n_E+n_D-2}} ,
 with the binary analogue obtained by substituting
 $\hat{p}(1-\hat{p})$ for the variances. A positive $d$ means cobidders
 (E) are higher. Table~\ref{tab:profile_smd_submission} reports the
-top-ranked differences; the full twenty-variable table is in Online
-Supplement~D.
+top-ranked differences; the full variable table is in Online
+Supplement~D. The largest gaps are the defendant-proximity variables
+(panel C), which are partly mechanical by construction; the
+non-mechanical breadth and persistence gaps (panels A and B) are
+moderate, with $|d|$ near $0.4$--$0.5$.
 
 \begin{table}[htbp]
 \centering
@@ -77,30 +87,31 @@ E (FL cobidders) minus D (FL non-cobidders).}
 \toprule
 Panel & Variable & Label & Raw diff. & Cohen's $d$ \\
 \midrule
-C & $n\_cases$ & \# CADE cases touched & 1.108 & 3.757 \\
-C & $n\_def\_firms$ & \# distinct defendants & 1.335 & 3.117 \\
-C & $contact\_intensity$ & $O_i/T_i$ & 0.166 & 1.852 \\
-C & $share\_in\_def\_cells$ & part.\ in def.\ cells & 0.210 & 1.762 \\
-C & $O_i$ & observed contacts & 7.285 & 1.592 \\
-C & $X_i^{\mathrm{MED}}$ & excess contacts & 1.192 & 0.903 \\
-A & $n\_years$ & \# active years & 1.324 & 0.841 \\
-B & $pregao\_share$ & Preg\~ao share & 0.301 & 0.761 \\
-B & $top\_ig\_share$ & top item-group share & 0.122 & 0.516 \\
-A & $T_i$ & \# tender-items & 28.557 & 0.505 \\
-B & $convite\_share$ & Convite share & $-0.301$ & $-0.761$ \\
+C & $n\_cases$ & \# CADE cases touched & 1.109 & 6.169 \\
+C & $n\_def\_firms$ & \# distinct defendants & 1.370 & 4.270 \\
+C & $contact\_intensity$ & $O_i/T_i$ & 0.172 & 2.119 \\
+C & $share\_in\_def\_cells$ & part.\ in def.\ cells & 0.205 & 1.829 \\
+C & $O_i$ & observed contacts & 7.658 & 1.806 \\
+C & $X_i^{\mathrm{MED}}$ & excess contacts & 1.523 & 1.212 \\
+B & $n\_buyers$ & \# distinct buyers & 7.831 & 0.532 \\
+A & $T_i$ & \# tender-items & 24.689 & 0.438 \\
+B & $pregao\_share$ & Preg\~ao share & 0.173 & 0.436 \\
+A & $n\_years$ & \# active years & 0.625 & 0.391 \\
+B & $convite\_share$ & Convite share & $-0.173$ & $-0.436$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \scriptsize
-\item \textit{Notes:} $n_D=2{,}544$, $n_E=191$ (modality shares use
-$n_D=2{,}536$ where modality is defined). Positive $d$: cobidders
-are higher. Top eleven of twenty variables by $|d|$; the full table
+\item \textit{Notes:} $n_D=2{,}394$, $n_E=341$ (modality shares use
+$n_D=2{,}387$ where modality is defined). Positive $d$: cobidders
+are higher. Top eleven variables by $|d|$; the full table
 is in Online Supplement~D. The largest gaps are
-defendant-proximity variables ($n\_cases$ $d=3.76$, $n\_def\_firms$
-$d=3.12$), which are partly mechanical because the cobidder label is
-itself adjudication-anchored. Item-group HHI shows a modest
-raw gap ($d=0.45$) that falls to $\approx 0.02$ after opportunity
-adjustment.
+defendant-proximity variables ($n\_cases$ $d=6.17$, $n\_def\_firms$
+$d=4.27$), which are partly mechanical because the cobidder label is
+itself adjudication-anchored. The non-mechanical breadth and
+persistence gaps are moderate ($n\_buyers$ $d=0.53$, $T_i$ $d=0.44$,
+$n\_years$ $d=0.39$). Item-group HHI shows only a small raw gap
+($d=0.13$) that falls to $\approx 0$ after opportunity adjustment.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
@@ -113,40 +124,52 @@ hold exposure fixed by regressing each profile variable on the cobidder
 indicator with controls for $\log E_i^{\mathrm{MED}}$, a binned score
 term, breadth, and active years, and by coarsened exact matching on
 $E_i^{\mathrm{MED}}$ deciles. Under either adjustment the item-group
-HHI gap falls from $d\approx 0.45$ to $\approx 0.02$. Proximity-variable
-survival under these adjustments is \emph{partly mechanical} and should
-not be read as independent corroboration of conduct.
+HHI gap falls from $d\approx 0.13$ to $\approx 0$, and the breadth
+(distinct buyers) and persistence (active years) gaps likewise
+collapse toward zero, so they reflect procurement-environment
+composition rather than intrinsic firm traits. Only the
+defendant-contact variables ($n\_cases$, $n\_def\_firms$, $X_i$)
+survive, and that survival is \emph{partly mechanical} because the
+label is itself defined by defendant contact; it should not be read as
+independent corroboration of conduct.
 
 %--------------------------------------------------------------------
 \subsection{Robustness: Monotonicity, Threshold, Markets, and Null Controls}
 \label{app:profile_robustness_submission}
 
-Four robustness families support the exposure-ranking reading; full
+Four robustness families bear on the exposure-ranking reading; full
 detail is in Online Supplement~D, which reports the threshold sweep,
 the bunching histogram, the market-specific zero-win variants, and the
 negative controls. \emph{Monotonicity.} Across participation bins,
-cobidder prevalence rises (Spearman $\rho=+0.92$) while mean excess
-contact falls ($\rho=-0.93$): the score ranks firms by \emph{exposure},
-not collusion intensity. \emph{Threshold.} The $\mathrm{FL14}$ cut
-$T_i\geq 14$ equals $\mathrm{median}+1.5\times\mathrm{IQR}$ ($=13.5$,
-rounded up) of the always-loser participation distribution; it is an
-\emph{administrative} construction, computed ex post and \emph{never
-published}. Discrimination changes smoothly across a placebo-threshold
-grid with no discontinuity at $14$, and the participation distribution
-declines smoothly through the cut (local density ratio $1.06$,
+cobidder prevalence rises (Spearman $\rho=\valProfMonoPrevRho$) while
+mean excess contact shows no rising pattern
+($\rho=\valProfMonoExcessRho$): the score ranks firms by
+\emph{exposure}, not collusion intensity.
+\emph{Threshold.} The $\mathrm{FL14}$ cut $T_i\geq 14$ equals
+$\mathrm{median}+1.5\times\mathrm{IQR}$ ($=13.5$, rounded up) of the
+always-loser participation distribution; it is an \emph{administrative}
+construction, computed ex post and \emph{never published}.
+Discrimination changes smoothly across a placebo-threshold grid with no
+discontinuity at $14$, and the participation distribution declines
+smoothly through the cut (local density ratio $\valProfBunchRatio$,
 indistinguishable from $1$), so there is no strategic bunching.
 \emph{Market-specific zero-win.} Four home-market loser definitions
 overlap the global set on only $0.33$--$0.55$ of their losers; the
-global definition is not dominated (ROC-AUC $0.939$ vs.\ the best
-home-market alternative $0.774$) and is stable to
-leave-one-item-group-out re-estimation ($[0.936,0.941]$). \emph{Negative
+global definition is not dominated by any of them (global ROC-AUC
+$\valProfNegCtrlRealAUC$ vs.\ the best home-market alternative
+$\valProfMarketZeroWinBest$) and is stable to
+leave-one-item-group-out re-estimation. \emph{Negative
 controls.} Against matched null targets ($B=500$ draws, seed
-\texttt{20260603}), the real ROC-AUC ($0.939$) lies far above both null
-distributions (means $0.755$ and $0.780$; empirical $p<0.001$). The
-placebo does \emph{not} separate on PR-AUC ($p=0.70$) because random
-$T_i$-matched anchors touch several times more firms than the $191$ real
-positives, inflating the base rate; ROC-AUC, base-rate invariant, is the
-decisive metric.
+\texttt{20260603}), the real-anchor ROC-AUC
+($\valProfNegCtrlRealAUC$) is statistically indistinguishable from
+the matched placebo-anchor distribution (mean
+$\valProfNegCtrlPlaceboAUC$; empirical $p=0.46$), and anchors built
+from non-CADE high-volume winners generate raw discrimination at
+least as high (null mean $0.78$; $p=0.91$). The negative controls
+therefore corroborate the opportunity decomposition rather than
+rescue the screen: the raw ranking reflects generic
+co-participation arithmetic, not a signature specific to the
+adjudicated defendant network.
 % DF-COMPRESS: moved tab:profile_negcontrol_submission to Online Supplement D
 
 %--------------------------------------------------------------------
@@ -154,10 +177,11 @@ decisive metric.
 \label{app:profile_limits_submission}
 
 The defendant-contact variables carry the largest standardized gaps but
-are partly a construction artifact; the score ranks firms by exposure to
-defendant-adjacent opportunities, not by conduct intensity; ordinary
-specialization and geographic-niche alternatives are narrowed but not
-eliminated because distance-to-winner, geography, and tender value are
-NOT\_OBSERVED. Award-layer profiles describe patterns of \emph{losing};
+are partly a construction artifact, and the non-mechanical breadth and
+persistence gaps largely collapse once opportunity is held fixed; the
+score ranks firms by exposure to defendant-adjacent opportunities, not
+by conduct intensity; ordinary specialization and geographic-niche
+alternatives are narrowed but not eliminated because
+distance-to-winner, geography, and tender value are unobserved. Award-layer profiles describe patterns of \emph{losing};
 they are not proof of any agreement, and ``cobidder'' is throughout an
 adjudication-anchored exposure label, never an assertion of membership.

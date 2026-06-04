@@ -1,8 +1,8 @@
 === 05_section5_profile_monotonicity.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-03 12:49:09  RAM_free=20Gi 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-04 16:15:06  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 loaded firm frame: 16843 firms, 48 cols 
-  cobidder=191  fl14=2735  fl14&cobidder=191  Y_broad=770  exposed=6040 
+  cobidder=651  fl14=2735  fl14&cobidder=341  Y_broad=770  exposed=6040 
 
 ----- reconstruct firm_id<->CNPJ map (sorted-CNPJ index) ----- 
   firm_id<->CNPJ map verified (T_i == tenders_count for all 16843 firms) 
@@ -10,57 +10,57 @@ loaded firm frame: 16843 firms, 48 cols
 
 ----- panel-derived firm features (modality / value / bidder-env / HHI) ----- 
   modality observed for 96.7% of AL firm-items (mean over firms) 
-  tender-value coverage: cobidder firms w/ >=1 valued item = 1.0% ; all AL = 0.9% 
+  tender-value coverage: cobidder firms w/ >=1 valued item = 0.8% ; all AL = 0.9% 
   -> tender VALUE marked NOT_OBSERVED for the loser-side population (coverage < 50% among cobidders). 
      item_value_panel is winner/modality-built; always-losers rarely appear -> mean_tender_value dropped. 
   -> bidder-count environment marked NOT_OBSERVED (same item_value_panel coverage limit). 
-  [stage panel_features                ] elapsed=   1.4s  RSS=311 MB 
+  [stage panel_features                ] elapsed=   1.4s  RSS=307 MB 
 
 ========== A. GROUPS (Step 5) ========== 
-ASSERT all cobidders are FL14: TRUE (cobidders not FL14: 0) 
+DIAG cobidder positives=651 ; FL14 share among cobidders=0.524 (cobidders not FL14: 310) 
 ASSERT direct defendants NOT in cobidder set: TRUE 
-Group counts: D(FL non-cob)=2544  E(FL cob)=191  F(AL cob)=191  G(AL non-cob)=16652 
-  [stage A_groups                      ] elapsed=   1.5s  RSS=325 MB 
+Group counts: D(FL non-cob)=2394  E(FL cob)=341  F(AL cob)=651  G(AL non-cob)=16192 
+  [stage A_groups                      ] elapsed=   1.5s  RSS=318 MB 
 
 ========== B/C. ECONOMIC PROFILE (D vs E) ========== 
 wrote table_J / table_E_std / fig_profile_standardized_differences.pdf 
   TOP |SMD| (D vs E): 
-    # CADE cases touched             d=+3.757 (diff=1.11) 
-    # distinct defendants contacted  d=+3.117 (diff=1.33) 
-    O_i / T_i                        d=+1.852 (diff=0.166) 
-    share of part. in defendant-bearing cells d=+1.762 (diff=0.21) 
-    observed defendant contacts      d=+1.592 (diff=7.29) 
-    expected contacts (opportunity)  d=+1.554 (diff=6.09) 
-  [stage BC_profile_smd                ] elapsed=   1.9s  RSS=336 MB 
+    # CADE cases touched             d=+6.169 (diff=1.11) 
+    # distinct defendants contacted  d=+4.270 (diff=1.37) 
+    O_i / T_i                        d=+2.119 (diff=0.172) 
+    share of part. in defendant-bearing cells d=+1.829 (diff=0.205) 
+    observed defendant contacts      d=+1.806 (diff=7.66) 
+    expected contacts (opportunity)  d=+1.658 (diff=6.13) 
+  [stage BC_profile_smd                ] elapsed=   1.9s  RSS=328 MB 
 
 ========== D. OPPORTUNITY-ADJUSTED PROFILE (Step 8) ========== 
   Opportunity-adjustment results: 
-    n_years              raw_d=+0.841 -> adj_d=+0.537  [survives] 
-    n_item_groups        raw_d=-0.332 -> adj_d=-0.429  [survives] 
-    n_buyers             raw_d=+0.718 -> adj_d=+0.190  [attenuates] 
-    hhi_ig               raw_d=+0.446 -> adj_d=+0.016  [VANISHES (opportunity-composition)] 
-    n_cases              raw_d=+3.757 -> adj_d=+2.246  [survives] 
-    n_def_firms          raw_d=+3.117 -> adj_d=+1.618  [survives] 
-    X_i_MEDIUM           raw_d=+0.903 -> adj_d=+0.434  [survives] 
-  [stage D_opp_adjusted                ] elapsed=   2.0s  RSS=336 MB 
+    n_years              raw_d=+0.391 -> adj_d=-0.020  [VANISHES (opportunity-composition)] 
+    n_item_groups        raw_d=+0.027 -> adj_d=+0.067  [attenuates] 
+    n_buyers             raw_d=+0.532 -> adj_d=+0.053  [VANISHES (opportunity-composition)] 
+    hhi_ig               raw_d=+0.129 -> adj_d=-0.017  [attenuates] 
+    n_cases              raw_d=+6.169 -> adj_d=+4.988  [survives] 
+    n_def_firms          raw_d=+4.270 -> adj_d=+2.861  [survives] 
+    X_i_MEDIUM           raw_d=+1.212 -> adj_d=+1.014  [survives] 
+  [stage D_opp_adjusted                ] elapsed=   2.0s  RSS=328 MB 
 
 ========== E. MONOTONICITY (Step 9) ========== 
   largest CADE case among cobidders: 08700.004617/2013-41 
-  cobidders mapped to largest case: 104 
-  monotonicity Spearman(bin-rank): prevalence=0.917  excess_X=-0.227  excess_Z=-0.927 
+  cobidders mapped to largest case: 208 
+  monotonicity Spearman(bin-rank): prevalence=0.991  excess_X=-0.255  excess_Z=-0.927 
   -> prevalence RISES with T_i ; EXCESS X FLAT/non-monotone ; EXCESS Z weak 
-  [stage E_monotonicity                ] elapsed=   2.4s  RSS=336 MB 
+  [stage E_monotonicity                ] elapsed=   2.5s  RSS=328 MB 
 
 ========== F. BINARY vs CONTINUOUS SCORE (Step 10) ========== 
   script-53 outputs found: 9 (53_strict_train_period_threshold_20260501_103843.log, strict_train_threshold.csv, 53_strict_train_period_threshold.R) 
-  dominant cobidder item-group: 16 (n=4861 participations) 
+  dominant cobidder item-group: 16 (n=6640 participations) 
   Table M (ROC-AUC, continuous vs FL14): 
-    full_AL              continuous=0.9386  fl14=0.9236  continuous wins/ties 
-    opp_common_supp      continuous=0.8635  fl14=0.8417  continuous wins/ties 
-    excl_largest_case    continuous=0.9293  fl14=0.9236  continuous wins/ties 
-    excl_largest_ig      continuous=0.9349  fl14=0.9245  continuous wins/ties 
-  [stage F_binary_vs_continuous        ] elapsed=   4.0s  RSS=377 MB 
+    full_AL              continuous=0.7608  fl14=0.6880  continuous wins/ties 
+    opp_common_supp      continuous=0.6269  fl14=0.6040  continuous wins/ties 
+    excl_largest_case    continuous=0.7634  fl14=0.6902  continuous wins/ties 
+    excl_largest_ig      continuous=0.7588  fl14=0.6843  continuous wins/ties 
+  [stage F_binary_vs_continuous        ] elapsed=   4.0s  RSS=368 MB 
 wrote binary_vs_continuous_score_memo.md 
-  [stage F_memo                        ] elapsed=   4.0s  RSS=377 MB 
+  [stage F_memo                        ] elapsed=   4.0s  RSS=368 MB 
 
 === DONE. total elapsed=4.0s === 

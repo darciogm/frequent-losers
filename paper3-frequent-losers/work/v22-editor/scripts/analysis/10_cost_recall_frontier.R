@@ -100,8 +100,10 @@ firm_features <- as.data.table(read_parquet(cache_feat))   # keyed by firm_code 
 fp <- as.data.table(read_parquet(file.path(DATA, "FREQ_PARTICIP_rebuilt.parquet")))
 fp[, firm_code := as.character(`códigofornecedor`)]         # already 14-char zero-padded
 
-cob <- fread(file.path(DATA, "cade_fl_cobidders.csv"))
-cob[, firm_code := norm14(firm_cnpj)]
+# canonical reproducible broad always-loser cobidder label (positive = broad_cobidder==1, 651 firms)
+cob <- fread(file.path(REPO, "work", "v22-editor", "outputs", "cache", "canonical_cobidders_broad.csv"))
+cob <- cob[broad_cobidder == 1L]                       # broad AL cobidder positive set (651)
+cob[, firm_code := norm14(`códigofornecedor`)]
 cob_codes <- unique(cob$firm_code)
 xm  <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
 xm[, firm_code := norm14(firm_cnpj)]
@@ -158,11 +160,13 @@ auc_aw   <- m_rocauc(y, poolA$award_continuous)
 auc_fl   <- m_rocauc(y, poolA$award_FL14)
 say("RF re-run AUC: award_cont=%.4f  award_FL14=%.4f  bid_RF=%.4f  combined_RF=%.4f",
     auc_aw, auc_fl, auc_bid, auc_comb)
-say("validation targets: bid_RF~0.888  combined_RF~0.962")
+# NOTE: historical benchmarks (0.888/0.962) were computed under the archived 193 label;
+# under the canonical broad label (651) deviations are expected and informational, not failures.
+say("historical (193-label) reference AUCs: bid_RF~0.888  combined_RF~0.962 (informational; broad-label deviations expected)")
 flag_bid  <- abs(auc_bid  - 0.888) > 0.01
 flag_comb <- abs(auc_comb - 0.962) > 0.01
-if (flag_bid)  say("  *** FLAG: bid_RF AUC %.4f off target 0.888 by >0.01", auc_bid)
-if (flag_comb) say("  *** FLAG: combined_RF AUC %.4f off target 0.962 by >0.01", auc_comb)
+if (flag_bid)  say("  (info) bid_RF AUC %.4f deviates from historical 193-label 0.888 (expected under broad label)", auc_bid)
+if (flag_comb) say("  (info) combined_RF AUC %.4f deviates from historical 193-label 0.962 (expected under broad label)", auc_comb)
 fwrite(poolA[, .(firm_code, tenders_count, is_cade, award_continuous, award_FL14,
                  bid_RF, combined_RF, firm_id)],
        file.path(dir_cache, "cost_frontier_poolA_scores.csv"))
@@ -559,8 +563,8 @@ for (kq in FINALK_GRID) {
                     kq, rr$tp, rr$recall, rr$precision, rr$firms_opened,
                     100*rr$cost_reduction_firms, 100*rr$cost_reduction_tender_items, 100*rr$cost_reduction_bid_rows)
 }
-say("(target: seq recovers 131/193 cobidders firm-footprint; precision@500 seq 0.192; recall@1000 seq 0.679)")
-say("Pool A positives=%d (vs 193 raw, vs 190 in 09-cache; differs by defendant-exclusion)", P_A)
+say("(historical 193-label reference: seq recovered 131/193 cobidders firm-footprint; precision@500 seq 0.192; recall@1000 seq 0.679 -- informational, broad-label results differ)")
+say("Pool A positives=%d (canonical broad AL cobidder label, 651 before defendant-exclusion/feature-support)", P_A)
 
 # =============================================================================
 # COST-DENOMINATOR DEFINITIONS TABLE (appendix G)

@@ -21,8 +21,8 @@
 # calibration + error analysis (appendix Table F).
 #
 # Candidate pool = always-losers with COMPLETE Imhof features, EXCLUDING direct
-# CADE defendants (crossmatch). Target = is_cade (193-file cobidder, in candidate
-# pool, not a defendant). Seed 20260603. ranger 500 trees, num.threads=12.
+# CADE defendants (crossmatch). Target = is_cade (canonical broad AL cobidder label
+# (651), in candidate pool, not a defendant). Seed 20260603. ranger 500 trees, num.threads=12.
 #
 # Run:
 #   cd <repo>; Rscript work/v22-editor/scripts/analysis/09_bid_benchmark_validation.R \
@@ -154,8 +154,10 @@ say("\n========== STAGE 1. CANDIDATE POOL + LABELS ==========")
 fp <- as.data.table(read_parquet(file.path(DATA, "FREQ_PARTICIP_rebuilt.parquet")))
 fp[, firm_code := norm14(`códigofornecedor`)]
 
-cob <- fread(file.path(DATA, "cade_fl_cobidders.csv"))
-cob[, firm_code := norm14(firm_cnpj)]
+# canonical reproducible broad always-loser cobidder label (positive = broad_cobidder==1, 651 firms)
+cob <- fread(file.path(REPO, "work", "v22-editor", "outputs", "cache", "canonical_cobidders_broad.csv"))
+cob <- cob[broad_cobidder == 1L]                       # broad AL cobidder positive set (651)
+cob[, firm_code := norm14(`códigofornecedor`)]
 cob_codes <- unique(cob$firm_code)
 xm  <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
 xm[, firm_code := norm14(firm_cnpj)]
@@ -822,7 +824,7 @@ err_summary <- rbindlist(list(
   data.table(error_type="FP", item_group=fp$item_group),
   data.table(error_type="FN", item_group=fn$item_group)))
 err_env <- err_summary[, .N, by=.(error_type, item_group)][order(error_type, -N)]
-err_env[, note := "FPs are non-labeled firms under a limited (193-cobidder) target, not 'bad firms'"]
+err_env[, note := "FPs are non-labeled firms under the canonical broad AL cobidder target (651), not 'bad firms'"]
 fwrite(err_env, file.path(dir_diag, "bid_benchmark_error_analysis.csv"))
 say("top FP item-groups:"); print(head(err_env[error_type=="FP"], 5))
 say("top FN item-groups:"); print(head(err_env[error_type=="FN"], 5))
@@ -854,7 +856,7 @@ tableP <- data.table(
   candidate_pool = c("always-losers (minus defendants)","always-losers (minus defendants)",
                      "always-losers w/ complete Imhof features (minus defendants)",
                      "always-losers w/ complete Imhof features","always-losers (minus defendants)"),
-  target_label = rep("is_cade (193-file cobidder, in pool, not defendant)", 5),
+  target_label = rep("is_cade (canonical broad AL cobidder label (651), in pool, not defendant)", 5),
   support_N = c(nrow(al), nrow(al), nrow(al_complete), nrow(al_complete), nrow(al)),
   positives = c(sum(al$is_cade), sum(al$is_cade), sum(al_complete$is_cade), sum(al_complete$is_cade), sum(al$is_cade)),
   operational_interpretation = c(
@@ -863,7 +865,7 @@ tableP <- data.table(
     "rich-data forensic benchmark; NOT first-stage (needs all within-tender bids)",
     "forensic benchmark combining cheap signal + bid microdata",
     "exposure-corrected deployable screen"),
-  legal_interpretation = rep("flags/prioritizes; NOT proof of cartel role; limited 193-cobidder target", 5),
+  legal_interpretation = rep("flags/prioritizes; NOT proof of cartel role; canonical broad AL cobidder target (651)", 5),
   notes = c(
     "score_award; same target as RF models, same sample (minus feature-incompletes)",
     "binary FL14",
@@ -892,7 +894,7 @@ sprintf("_Generated %s by `09_bid_benchmark_validation.R` (seed %d). Numbers are
 "",
 "## Specification",
 sprintf("- **Learner**: random forest (ranger, %d trees, `probability=TRUE`), num.threads=%d.", RF_TREES, RF_THREADS),
-"- **Outcome**: `is_cade` (1 = 193-file CADE cobidder, in candidate pool, not a direct defendant).",
+"- **Outcome**: `is_cade` (1 = canonical broad AL CADE cobidder (651), in candidate pool, not a direct defendant).",
 sprintf("- **Candidate pool**: always-losers with COMPLETE Imhof feature set, direct CADE defendants excluded. N=%s, positives=%d.", format(nrow(al_complete), big.mark=","), sum(al_complete$is_cade)),
 sprintf("- **Features (7, firm-mean of within-tender moments)**: %s.", paste(IMHOF_FEATS, collapse=", ")),
 "- **Standardization**: none (RF is scale-invariant).",
@@ -906,7 +908,7 @@ sprintf("- **Features (7, firm-mean of within-tender moments)**: %s.", paste(IMH
 "## 20 questions",
 sprintf("1. **What is the learner?** RF (ranger, %d trees, probability forest).", RF_TREES),
 "2. **Is it tuned?** No — fixed 500 trees, default mtry/min.node.size, no grid search.",
-"3. **What is the outcome?** Binary `is_cade` (193-file cobidder in pool, not a defendant).",
+"3. **What is the outcome?** Binary `is_cade` (canonical broad AL cobidder (651) in pool, not a defendant).",
 sprintf("4. **What is the candidate pool?** Always-losers with complete Imhof features, defendants excluded (N=%s, %d positives).", format(nrow(al_complete), big.mark=","), sum(al_complete$is_cade)),
 "5. **What are the features?** 7 firm-mean within-tender bid-distribution moments (CV, CV-sd, skew, kurtosis, spread, min-max-log, second-lowest-distance).",
 "6. **Standardized?** No (RF scale-invariant).",
@@ -922,7 +924,7 @@ sprintf("12. **What happens excluding them?** Design F bid AUC=%.3f (vs %.3f poo
 "16. **Is there a future-info control?** No for bid features (full-period moments). Award has a strict-timing variant (Sub6); bid strict-timing is BLOCKED (cannot re-derive within-tender moments on a time-limited panel cleanly).",
 "17. **Is the complementarity real?** Pooled yes (Table R), but it is a full-observability diagnostic with random-CV optimism — see how it changes under Design E.",
 "18. **What is the operational interpretation?** Bid/combined RF are rich-data FORENSIC benchmarks (need all within-tender bids); NOT first-stage triage.",
-"19. **What is the legal interpretation?** Flags/prioritizes a limited 193-cobidder target; NOT proof of cartel role.",
+"19. **What is the legal interpretation?** Flags/prioritizes the canonical broad AL cobidder target (651); NOT proof of cartel role.",
 "20. **What is the headline risk?** Two: (a) random-CV optimism (case clustering), (b) label-defining-tender contamination. Both quantified in Designs E and F.",
 "",
 "## Cross-references",

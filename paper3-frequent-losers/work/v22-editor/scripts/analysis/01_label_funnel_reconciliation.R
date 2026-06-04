@@ -315,27 +315,27 @@ tabA <- rbindlist(list(
        "broad: shared tender-item", n_FL, nrow(cob_stat[, .N, by = cnpj]), n_FL,
        "FL14", "defendants, -1 sentinel",
        "BEC-active subset (41 ftm-active of 48 crossmatch)", "ftm-active defendants only"),
-  list("Main validation target (static narrow, 193)", "2009-2019 conduct",
-       "any", "2009-2019", "Convite+Pregao", "narrow cartel-tender restriction (undocumented)",
-       "CADE direct defendant", uniqueN(cart$proc), 65L, NA_integer_, NA_integer_,
-       "win_rate==0", NA_integer_, "narrow: cartel-tender (builder ABSENT)", n_cob_file,
-       NA_integer_, n_cob_file, "FL14", "defendants",
-       "(this IS the main target)",
-       "static cade_fl_cobidders.csv; FL-only; narrow def; builder not in repo"),
-  list("Main transparent broad funnel (341/651 robustness)", "2009-2019 conduct",
+  list("Main validation target (broad AL cobidders)", "2009-2019 conduct",
        "any", "2009-2019", "Convite+Pregao", "any shared tender-item",
        "crossmatch CNPJ in firm_tender_map", uniqueN(cart$proc), 65L, n_def_ftm, n_def_item_ti,
        "win_rate==0", n_AL, "broad: shared tender-item", n_FL, nrow(cob_stat[, .N, by = cnpj]),
-       n_FL, "FL14", "defendants, -1 sentinel",
-       "broad cobidder def + AL stratum (vs narrow FL-only 193)",
-       "fully scripted; overlap w/ static193 = 149"),
+       n_FL, "FL14 is the score, NOT a label input", "defendants, -1 sentinel",
+       "(this IS the main target)",
+       "fully scripted from current data; FL status never used to define the label"),
+  list("Archived narrow file (INTERNAL COMPARISON ONLY)", "2009-2019 conduct",
+       "any", "2009-2019", "Convite+Pregao", "narrow cartel-tender restriction (undocumented)",
+       "CADE direct defendant", uniqueN(cart$proc), 65L, NA_integer_, NA_integer_,
+       "win_rate==0", NA_integer_, "narrow: cartel-tender (NOT reproducible)", n_cob_file,
+       NA_integer_, n_cob_file, "FL-only (circular for FL score)", "defendants",
+       "NOT a submitted label; internal set comparison only",
+       "static cade_fl_cobidders.csv; FL-only; builder absent; excluded from submitted tables"),
   list("Conservative pre-2020 benchmark (4/19/208/107)", "judged <=2020-12-31",
        "<=2020-12-31", "2009-2019", "Convite+Pregao", "any shared tender-item",
        "crossmatch CNPJ in firm_tender_map", n_cons_cases, NA_integer_, n_cons_def, n_cons_def_items,
        "win_rate==0", n_cons_AL, "broad: shared tender-item", n_cons_FL, n_cons_AL,
        n_cons_FL, "FL14", "defendants, -1 sentinel, cases judged after 2020",
-       "broad def restricted to 4 early cases (vs narrow FL-only full 193)",
-       "208/107 reproduce \\valConservativeCobidders=210 / 108; def=19 (manuscript 30 over-count)"),
+       "same broad AL def restricted to 4 early cases (subset of main 651)",
+       "208 AL / 107 FL-composition; 19 crossmatch defendants in conservative cases"),
   list("Strict 2009-2016 -> 2017-2019 timing target", "2009-2019 conduct",
        "any", "train 2009-2016 / test 2017-2019", "Convite+Pregao", "shared tender-item by award year",
        "crossmatch CNPJ in firm_tender_map", NA_integer_, NA_integer_, NA_integer_, NA_integer_,
@@ -360,9 +360,12 @@ say("[write] table_A_label_funnel.csv (", nrow(tabA), " rows)")
 # --- Table A .tex (compact booktabs, decision-relevant columns) -------------
 fmt <- function(x) ifelse(is.na(x), "--", formatC(as.integer(x), format = "d", big.mark = ","))
 esc <- function(s) gsub("_", "\\\\_", ifelse(is.na(s), "--", s))
-rowsA <- character(nrow(tabA))
-for (i in seq_len(nrow(tabA))) {
-  r <- tabA[i]
+# Submitted .tex EXCLUDES the archived narrow file (internal comparison only;
+# not reproducible, FL-conditioned -> never a submitted label)
+tabA_tex <- tabA[!grepl("^Archived narrow file", sample_name)]
+rowsA <- character(nrow(tabA_tex))
+for (i in seq_len(nrow(tabA_tex))) {
+  r <- tabA_tex[i]
   rowsA[i] <- paste(
     esc(r$sample_name), fmt(r$number_cade_cases), fmt(r$number_legal_firm_defendants),
     fmt(r$number_bec_active_direct_defendants), fmt(r$number_unique_always_loser_cobidders),
@@ -391,10 +394,11 @@ texA <- c(
   "\\end{adjustbox}",
   "\\begin{tablenotes}[flushleft]\\scriptsize",
   "\\item \\textit{Notes.} Cobidder = adjudication-anchored exposure label (not cartel membership). ",
-  "The 193 main target uses the static narrow cartel-tender definition (builder archived; absent from repo). ",
-  "The 341/651 transparent funnel uses the broad shared-tender-item definition (any tender-item shared with a BEC-active direct defendant). ",
-  "The conservative benchmark (4 cases judged $\\leq$ 2020-12-31) reproduces to 208 always-loser / 107 frequent-loser cobidders under the broad definition. ",
-  "Counts are unique firms unless a column says pairs. AL = always-loser (win rate $=0$); FL = frequent loser (FL14, tenders\\_count $\\geq 14$). ",
+  "The main validation label is constructed from current scripts by matching BEC-active direct CADE defendants to tender-items and identifying unique always-loser firms (win rate $=0$) that share at least one BEC tender-item with those anchors; direct defendants are excluded. ",
+  "The frequent-loser flag is not used to construct the label; it is the award-layer score evaluated against the label. ",
+  sprintf("Of the %d positives, %d are frequent losers and %d are not (composition, not a label restriction). ", n_AL, n_FL, n_AL - n_FL),
+  "The conservative benchmark restricts CADE cases to judgment dates $\\leq$ 2020-12-31 under the SAME definition. ",
+  "Counts are unique firms unless a column says pairs. AL = always-loser; FL = frequent loser (FL14, tenders\\_count $\\geq 14$). ",
   "Legal-defendant roster (65) is not reproducible from the CADE rulings CSV (empty CNPJ column); shown for context.",
   "\\end{tablenotes}",
   "\\end{threeparttable}",
@@ -425,7 +429,7 @@ tabB <- merge(tabB, cob_case_agg, by = "proc", all.x = TRUE)
 for (cc in c("n_def","n_items","n_AL_cob","n_FL_cob")) tabB[is.na(get(cc)), (cc) := 0L]
 setorder(tabB, jdate, na.last = TRUE)
 tabB[, case_id := paste0("Case ", LETTERS[seq_len(.N)])]
-tabB[, included_main_target := "Y"]  # static 193 spans full portfolio
+tabB[, included_main_target := "Y"]  # main broad AL target spans the full 12-case portfolio
 tabB[, included_conservative_pre2020 := ifelse(proc %in% cons_procs, "Y", "N")]
 tabB[, conduct_dates := "NA — CASE_TIMING_MISSING"]
 tabB[, notes := ifelse(is.na(jdate), "judgment date MISSING (undated case)", "")]
@@ -623,19 +627,17 @@ fig_err <- ""
 # Only nodes whose counts this script reproduces are plotted.
 nF1 <- list(x = 1.0, y = 5, lab = sprintf("All BEC firms\n%s",        format(n_all_BEC,     big.mark = ",")))
 nF2 <- list(x = 1.0, y = 4, lab = sprintf("Always-losers\n%s",        format(n_AL_univ,     big.mark = ",")))
-nF3 <- list(x = 0.4, y = 3, lab = sprintf("Main FL cobidders\n(static narrow) %d", n_cob_file))
-nF4 <- list(x = 1.6, y = 3, lab = sprintf("Broad FL cobidders\n(robustness) %d",   n_FL))
+nF3 <- list(x = 1.0, y = 3, lab = sprintf("Main target: always-loser\ncobidders %d\n(%d FL / %d non-FL)", n_AL, n_FL, n_AL - n_FL))
 nA1 <- list(x = 3.0, y = 5, lab = sprintf("BEC-active direct\ndefendants %d",       n_def_ftm))
 nA2 <- list(x = 3.0, y = 4, lab = sprintf("Defendant\ntender-items %s",   format(n_def_item_ti, big.mark = ",")))
-nA3 <- list(x = 3.0, y = 3, lab = sprintf("Main cobidder\ntarget %d",                n_cob_file))
-nodes <- rbindlist(lapply(list(nF1,nF2,nF3,nF4,nA1,nA2,nA3), as.data.table))
+nA3 <- list(x = 3.0, y = 3, lab = sprintf("Shared tender-item\nexposure label %d",   n_AL))
+nodes <- rbindlist(lapply(list(nF1,nF2,nF3,nA1,nA2,nA3), as.data.table))
 # segments: parent (x,y) -> child (xend,yend), drawn from node-edge to node-edge
 seg <- rbindlist(list(
   data.table(x = nF1$x, y = nF1$y, xend = nF2$x, yend = nF2$y),  # all BEC -> AL
-  data.table(x = nF2$x, y = nF2$y, xend = nF3$x, yend = nF3$y),  # AL -> static 193
-  data.table(x = nF2$x, y = nF2$y, xend = nF4$x, yend = nF4$y),  # AL -> broad 341
+  data.table(x = nF2$x, y = nF2$y, xend = nF3$x, yend = nF3$y),  # AL -> main broad AL 651
   data.table(x = nA1$x, y = nA1$y, xend = nA2$x, yend = nA2$y),  # defendants -> items
-  data.table(x = nA2$x, y = nA2$y, xend = nA3$x, yend = nA3$y))) # items -> target
+  data.table(x = nA2$x, y = nA2$y, xend = nA3$x, yend = nA3$y))) # items -> label
 fig <- tryCatch({
   p <- ggplot(nodes, aes(x = x, y = y)) +
     geom_segment(data = seg, aes(x = x, xend = xend, y = y - 0.32, yend = yend + 0.32),

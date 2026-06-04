@@ -13,8 +13,7 @@ Sample / benchmark & Cases & Legal def. & BEC-act. def. & AL cobid. & FL cobid. 
 \midrule
 Full CADE legal portfolio & 12 & 65 & 48 & 651 & 341 & broad: shared tender-item w/ & (reference portfolio) \\
 BEC-linked CADE portfolio & 12 & 65 & 41 & 651 & 341 & broad: shared tender-item & BEC-active subset (41 ftm-active of 48 c \\
-Main validation target (static narrow, 193) & 12 & 65 & -- & -- & 193 & narrow: cartel-tender (build & (this IS the main target) \\
-Main transparent broad funnel (341/651 robustness) & 12 & 65 & 41 & 651 & 341 & broad: shared tender-item & broad cobidder def + AL stratum (vs narr \\
+Main validation target (broad AL cobidders) & 12 & 65 & 41 & 651 & 341 & broad: shared tender-item & (this IS the main target) \\
 Conservative pre-2020 benchmark (4/19/208/107) & 4 & -- & 19 & 208 & 107 & broad: shared tender-item & broad def restricted to 4 early cases (v \\
 Strict 2009-2016 -> 2017-2019 timing target & -- & -- & -- & -- & -- & broad: shared tender-item & temporal holdout split (not a label coun \\
 Common bid-feature pool & -- & -- & -- & -- & -- & -- & not a label-funnel object \\
@@ -24,10 +23,11 @@ Gatekeeping pool & -- & -- & -- & -- & -- & -- & not a label-funnel object \\
 \end{adjustbox}
 \begin{tablenotes}[flushleft]\scriptsize
 \item \textit{Notes.} Cobidder = adjudication-anchored exposure label (not cartel membership). 
-The 193 main target uses the static narrow cartel-tender definition (builder archived; absent from repo). 
-The 341/651 transparent funnel uses the broad shared-tender-item definition (any tender-item shared with a BEC-active direct defendant). 
-The conservative benchmark (4 cases judged $\leq$ 2020-12-31) reproduces to 208 always-loser / 107 frequent-loser cobidders under the broad definition. 
-Counts are unique firms unless a column says pairs. AL = always-loser (win rate $=0$); FL = frequent loser (FL14, tenders\_count $\geq 14$). 
+The main validation label is constructed from current scripts by matching BEC-active direct CADE defendants to tender-items and identifying unique always-loser firms (win rate $=0$) that share at least one BEC tender-item with those anchors; direct defendants are excluded. 
+The frequent-loser flag is not used to construct the label; it is the award-layer score evaluated against the label. 
+Of the 651 positives, 341 are frequent losers and 310 are not (composition, not a label restriction). 
+The conservative benchmark restricts CADE cases to judgment dates $\leq$ 2020-12-31 under the SAME definition. 
+Counts are unique firms unless a column says pairs. AL = always-loser; FL = frequent loser (FL14, tenders\_count $\geq 14$). 
 Legal-defendant roster (65) is not reproducible from the CADE rulings CSV (empty CNPJ column); shown for context.
 \end{tablenotes}
 \end{threeparttable}

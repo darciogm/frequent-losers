@@ -93,10 +93,16 @@ stopifnot(all(fp$always_loser == 1L))   # universe is the 16,843 always-losers
 cat(sprintf("[labels] always-loser universe N=%d ; FL14 N=%d\n",
             nrow(fp), sum(fp$FL14)))
 
-cob <- fread(file.path(DATA, "cade_fl_cobidders.csv"), colClasses="character")
+# canonical broad AL cobidder label (651, reproducible, FL never used):
+# positives = rows with broad_cobidder==1 in the canonical reproducible file
+# (always-losers, direct defendants already excluded). Replaces the static
+# narrow cade_fl_cobidders.csv (193 rows, FL-only, irreproducible).
+cob <- fread(file.path(OUT, "cache", "canonical_cobidders_broad.csv"),
+             colClasses = list(character = "códigofornecedor"))
+cob <- cob[broad_cobidder == 1L]
 cob[, cf := sprintf("%014.0f", as.numeric(`códigofornecedor`))]
 cobidders <- unique(cob$cf)
-cat(sprintf("[labels] CADE FL cobidders N=%d\n", length(cobidders)))
+cat(sprintf("[labels] canonical broad AL cobidders N=%d\n", length(cobidders)))
 
 cm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"), colClasses="character")
 cm[, cf := sprintf("%014.0f", as.numeric(firm_cnpj))]

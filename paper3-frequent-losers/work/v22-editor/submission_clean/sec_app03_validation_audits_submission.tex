@@ -1,3 +1,4 @@
+% REVISED: canonical-target reframe 2026-06-04
 % C-COMPRESS: appendix reduced to opportunity + timing validation details
 % (6 threat-family subsections, 3 anchor tables). Permutation, matched,
 % leakage, audit-map, timing-sets, timing-leakage, clustered-RI, and
@@ -98,20 +99,21 @@ strict-support subsample (S6).
 \toprule
 Spec & Model & $N$ & Pos. & ROC AUC & PR-AUC \\
 \midrule
-S0 & raw score (log\,$T$) & $16{,}843$ & $191$ & $0.939$ & $0.126$ \\
-S0 & raw FL14 & $16{,}843$ & $191$ & $0.924$ & $0.085$ \\
-S0 & exposure-only (all AL) & $16{,}843$ & $191$ & $0.946$ & $0.194$ \\
-S1 & flexible participation ns($T$,4) & $16{,}843$ & $191$ & $0.938$ & $0.118$ \\
-S2 & score $+\log(1{+}E)$ [COARSE] & $16{,}843$ & $191$ & $0.958$ & $0.205$ \\
-S2 & score $+\log(1{+}E)$ [MEDIUM] & $16{,}843$ & $191$ & $0.982$ & $0.383$ \\
-S2 & score $+\log(1{+}E)$ [STRICT] & $16{,}843$ & $191$ & $0.988$ & $0.434$ \\
-S2 & exposure-only logit (exposed) & $6{,}040$ & $191$ & $0.847$ & $0.194$ \\
-S3 & score $+\,E\,+$ breadth & $16{,}843$ & $191$ & $0.980$ & $0.461$ \\
-S4 & score $+$ opp-FE $+$ part-FE (exposed) & $6{,}040$ & $191$ & $0.896$ & $0.182$ \\
+S0 & raw score (log\,$T$) & $16{,}843$ & $651$ & $0.761$ & $0.143$ \\
+S0 & raw FL14 & $16{,}843$ & $651$ & $0.688$ & $0.097$ \\
+S0 & exposure-only (all AL) & $16{,}843$ & $651$ & $0.905$ & $0.300$ \\
+S2 & score $+\log(1{+}E)$ [MEDIUM] & $16{,}843$ & $651$ & $0.985$ & $0.708$ \\
+S2 & FL14 $+\log(1{+}E)$ [MEDIUM] & $16{,}843$ & $651$ & $0.985$ & $0.706$ \\
+S2 & exposure-only logit (exposed) & $6{,}040$ & $651$ & $0.713$ & $0.300$ \\
+S3 & score $+\,E\,+$ breadth & $16{,}843$ & $651$ & $0.983$ & $0.711$ \\
+S4 & score $+$ opp-FE $+$ part-FE (exposed) & $6{,}040$ & $651$ & $0.707$ & $0.255$ \\
 S5 & score ranks $\mathbf{1}[X_i{>}0]$ (MEDIUM) & $16{,}843$ & $475$ & $0.764$ & $0.095$ \\
 S5 & FL14 ranks $\mathbf{1}[X_i{>}0]$ (MEDIUM) & $16{,}843$ & $475$ & $0.687$ & $0.073$ \\
-S6 & raw score, strict support & $7{,}683$ & $163$ & $0.866$ & $0.110$ \\
-S6 & score $+E$, strict support & $7{,}683$ & $163$ & $0.965$ & $0.376$ \\
+S6 & score $+E$, strict support & $7{,}683$ & $446$ & $0.969$ & $0.671$ \\
+NESTED & exposure-only logit & $6{,}040$ & $651$ & $0.713$ & --- \\
+NESTED & exposure $+$ score & $6{,}040$ & $651$ & $0.723$ & --- \\
+WITHIN & score $\mid$ opportunity stratum & $6{,}040$ & $651$ & $0.471$ & --- \\
+WITHIN & FL14 $\mid$ opportunity stratum & $6{,}040$ & $651$ & $0.507$ & --- \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -124,36 +126,39 @@ evidence of score signal:} the exposure term $E_i$ is built from
 the same defendant-contact rates that define the label, so a
 model containing $E_i$ partly predicts the label by construction.
 The score's \emph{isolated} contribution is not read off these
-combined AUCs. It is the nested DeLong increment of $+0.042$ over
-the exposure-only model ($p=2.1\times10^{-6}$) and the
-within-opportunity-stratum AUC of $0.771$ (S5 / matched audit),
-both of which hold exposure fixed before crediting the score.
+combined AUCs. Holding exposure fixed, the residual ordering is
+marginal at best: the nested DeLong increment is only $+0.010$
+over the exposure-only model ($p=0.013$), and the
+within-opportunity-stratum AUC for the score is $0.471$ ($\approx$
+chance; FL14 $0.507$). The companion permutation and matched audits
+in Online Supplement~C do not establish a robust residual.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
 \end{table}
 
-\textit{Result.} The honest reading is conservative. Exposure
-alone already classifies cobidder contact at AUC $0.946$; the
-combined exposure-plus-score AUCs near $0.98$ overstate the
-score's marginal value because $E_i$ encodes the label. What
-survives once exposure is held fixed is modest but real: the
-score adds $+0.042$ AUC over exposure (nested DeLong
-$p=2.1\times10^{-6}$), ranks the binary excess-contact target at
-AUC $0.764$ within MEDIUM cells, and discriminates cobidders at
-AUC $0.771$ within opportunity strata. Three complementary
-exercises in Online Supplement~C agree on this residual reading:
-two opportunity-preserving permutation nulls (the matched-stratum
-null places the observed PR-AUC at the $97.8$th percentile,
-$p=0.023$, while a firm-exposure simulation out-predicts the raw
-score on level PR-AUC, $p=1.000$); a CEM opportunity-matched
-comparison (within-stratum AUC $0.725$; matched AUC $0.863$ on
-$6{,}039$ firms; FL-vs-non cobidder gap rising from $+0.033$ to
-$+0.190$ across exposure strata); and a granularity sensitivity
-in which the opportunity-orthogonal quantities (raw strict-support
-AUC $0.866$, within-stratum/matched AUCs) stay stable even as the
-inflated combined AUCs climb $0.958 \to 0.982 \to 0.988$ across
-COARSE/MEDIUM/STRICT.
+\textit{Result.} The honest reading is deflationary. Exposure
+alone already classifies cobidder contact well (exposure-only AUC
+$0.905$ unconditionally; $0.713$ on the exposed subsample), and the
+combined exposure-plus-score AUCs near $0.98$ overstate the score's
+marginal value because $E_i$ encodes the label. Once exposure is
+held fixed, the residual ordering is \emph{marginal at best and not
+robust across designs}: the nested DeLong increment is only
+$+0.010$ ($p=0.013$), the within-opportunity-stratum AUC for the
+score is $0.471$ ($\approx$ chance), and the FL14 binary is no
+better ($0.507$). The score does rank the binary excess-contact
+target at AUC $0.764$ within MEDIUM cells, but the three companion
+exercises in Online Supplement~C do not corroborate a robust
+residual signal: a matched-stratum label permutation places the
+observed PR-AUC at $p=0.127$ (not significant), a firm-exposure
+simulation out-predicts the raw score on level PR-AUC ($p=1.000$),
+the CEM opportunity-matched comparison gives a within-stratum AUC
+of $0.626$ ($n=6{,}039$, full common support), and the within-stratum
+change in $\Pr(\text{cobidder})$ for FL14 versus non-FL is in fact
+\emph{negative} ($-0.017$). We therefore report no robust residual
+ordering net of opportunity; the only marginally positive quantity
+is the small nested increment, which the permutation tests do not
+support as reliable.
 
 \subsection{Timing Information Sets and Strict Holdout}
 \label{app:strict_holdout_submission}
@@ -172,8 +177,9 @@ participation year), never day-level
 (\texttt{DAY\_LEVEL\_TIMING\_UNAVAILABLE}). We define seven
 candidate information sets, A--G, distinguished by which inputs
 (score, zero-win status, threshold, label) are drawn pre- versus
-post-window. We lead on the honest deployable designs --- C/D/G
-(strict prospective score, rankable pool, retrospective label) ---
+post-window. We lead on the honest incumbent-triage designs --- C/D/G
+(strict prospective score, rankable incumbent pool, retrospective
+label, read as triage rather than prospective deployment) ---
 report A as a labeled retrospective upper bound, B as a
 leak-flagged decomposition, E to disclose the entrant coverage
 hole, and document F (adjudication-observable-at-time) as
@@ -197,11 +203,11 @@ leakage-channel cross-tabulation are in Online Supplement~C.
 \toprule
 Sample & $N$ & Pos. & ROC AUC & PR-AUC & Prec@500 & Recall@500 & Lift@500 & Tie-at-0 \\
 \midrule
-1. Full test candidate & $41{,}444$ & $193$ & $0.546$ & $0.005$ & $0.000$ & $0.000$ & $0.00$ & $0.246$ \\
-2. Rankable ($T^{\text{train}}{>}0$) & $32{,}682$ & $148$ & $0.588$ & $0.005$ & $0.000$ & $0.000$ & $0.00$ & $0.043$ \\
-3. Training always-loser & $21{,}819$ & $193$ & $0.750$ & $0.045$ & $0.062$ & $0.161$ & $7.01$ & $0.402$ \\
-4. Training AL \& test-active & $11{,}351$ & $135$ & $0.763$ & $0.072$ & $0.112$ & $0.415$ & $9.42$ & $0.772$ \\
-5. Zero-win both (\textsc{leaks}) & $16{,}843$ & $193$ & $0.725$ & $0.050$ & $0.070$ & $0.181$ & $6.11$ & $0.280$ \\
+1. Full test candidate & $41{,}444$ & $651$ & $0.474$ & $0.014$ & $0.000$ & $0.000$ & $0.00$ & $0.246$ \\
+2. Rankable ($T^{\text{train}}{>}0$) & $32{,}682$ & $498$ & $0.471$ & $0.013$ & $0.000$ & $0.000$ & $0.00$ & $0.043$ \\
+3. Training always-loser & $21{,}819$ & $651$ & $0.684$ & $0.077$ & $0.124$ & $0.095$ & $4.16$ & $0.402$ \\
+4. Training AL \& test-active & $11{,}351$ & $312$ & $0.667$ & $0.084$ & $0.142$ & $0.228$ & $5.17$ & $0.772$ \\
+5. Zero-win both (\textsc{leaks}) & $16{,}843$ & $651$ & $0.646$ & $0.086$ & $0.136$ & $0.104$ & $3.52$ & $0.280$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -214,10 +220,11 @@ $=\valStrictThreshTrain$, vs.\ full-window $13.5$). Sample 5 leaks
 future wins via full-period always-loser status and is reported as
 a leak-flagged sensitivity only. \textbf{On the full candidate
 universe (sample 1) the strict screen collapses to chance:} ROC
-$\valStrictFullAUC$, PR-AUC $0.005$, and
-precision@$500=$recall@$500=\valStrictFullPrec$, with $25\%$ of
-firms tied at score zero. Of the $148$ rankable positives and
-$45$ entrant positives ($23\%$ of $193$), entrants form a
+$\valStrictFullAUC$ (below chance), PR-AUC $0.014$, and
+precision@$500=$recall@$500=\valStrictFullPrec$, with about $25\%$ of
+firms tied at score zero. Of the $\valStrictRankablePos$ rankable
+positives and $\valMainEntrantPositives$ entrant positives
+($\valEntrantPosShare$ of $\valMainCobidders$), entrants form a
 structural blind spot the prospective score cannot reach. ``Tie-at-0''
 is the share of the candidate set carrying score zero. Source:
 \texttt{table\_D\_strict\_2009\_2016\_to\_2017\_2019.csv};
@@ -229,18 +236,18 @@ is the share of the candidate set carrying score zero. Source:
 
 \textit{Result.} The reading is deliberately deflationary. A
 within-pool ranking signal survives (sample 3, AUC
-$\valStrictContAUC$--$\valStrictFLAUC$), but on the deployable
-full universe the strict screen has no operational traction
+$\valStrictContAUC$--$\valStrictFLAUC$), but on the full
+firm universe the strict screen has no operational traction
 (precision@$500=\valStrictFullPrec$): the entrant coverage hole
 and the mass of score-zero ties are the proximate causes. Two
 companion exercises in Online Supplement~C confirm the pattern. A
 rolling-origin validation expanding the training window for
-$t=2014,\dots,2019$ posts PR-AUC $\approx 0.004$--$0.006$ and
-precision@$500=0$ on the full universe in every origin year, with
-the worst ROC at chance ($0.497$, 2015); the within-pool ROC
-rises $0.717 \to 0.881$ across origins, but this is retrospective
-accumulation of a thicker training history, not real-time
-learning. A leakage decomposition of the in-sample item-level
+$t=2014,\dots,2019$ posts PR-AUC $\approx 0.012$--$0.014$ and
+precision@$500=$recall@$500=0$ on the full universe in every origin
+year, with the worst ROC below chance ($\valRollWorstAUC$, 2015);
+the within-pool (training-always-loser) ROC stays in the
+$0.66$--$0.70$ range across origins, again an artifact of a thicker
+retrospective training history rather than real-time learning. A leakage decomposition of the in-sample item-level
 reference AUC ($\valLeakRefAUC$) confirms that the surviving
 structural component stays in the
 $\valLeakStructLow$--$\valLeakStructHigh$ range under
@@ -274,42 +281,46 @@ leave-largest-case-out collapse.
 \toprule
 Scenario & Pos. & ROC AUC & PR-AUC & Prec@500 & Rec@500 \\
 \midrule
-Full (pooled) & $190$ & $0.939$ & $\valLOCOfullPRAUC$ & $0.130$ & $0.342$ \\
-Drop largest case & $86$ & $0.929$ & $\valLOCOdropLargestPRAUC$ & $\valLOCOdropLargestPrec$ & $0.233$ \\
-Drop top-two cases & $75$ & $0.925$ & $0.029$ & $0.030$ & $0.200$ \\
-Case-balanced (mean over cases) & --- & --- & --- & $0.029$ & $0.522$ \\
+Full (pooled) & $651$ & $0.761$ & $\valLOCOfullPRAUC$ & $\valFullPrec$ & $0.166$ \\
+Drop largest case & $443$ & $0.763$ & $\valLOCOdropLargestPRAUC$ & $\valLOCOdropLargestPrec$ & $0.149$ \\
+Drop top-two cases & $268$ & $0.752$ & $0.058$ & $0.092$ & $0.172$ \\
+Case-balanced (mean over cases) & --- & --- & --- & $\valCaseBalancedPrec$ & $0.173$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \scriptsize
 \item \textit{Notes:} Dropping the single largest case
-(\texttt{trens\_metros}) collapses PR-AUC from
-$\valLOCOfullPRAUC$ to $\valLOCOdropLargestPRAUC$ ($-71\%$) and
-precision@$500$ from $0.130$ to $\valLOCOdropLargestPrec$; dropping
-the top two cases takes PR-AUC to $0.029$. \textbf{Case-balanced
-precision@$500$ (weighting each case equally rather than each
-firm) is $0.029$, against the firm-weighted pooled $0.130$:} the
-pooled operational number is carried by one case. ROC barely moves
-(it is uninformative at this prevalence). Source:
+(\texttt{trens\_metros}) lowers PR-AUC from
+$\valLOCOfullPRAUC$ to $\valLOCOdropLargestPRAUC$ ($-37\%$) and
+precision@$500$ from $\valFullPrec$ to $\valLOCOdropLargestPrec$;
+dropping the top two cases takes PR-AUC to $0.058$.
+\textbf{Case-balanced precision@$500$ (weighting each case equally
+rather than each firm) is $\valCaseBalancedPrec$, against the
+firm-weighted pooled $\valFullPrec$:} the pooled operational number
+is concentrated in the largest case. ROC barely moves (it is
+uninformative at this prevalence). Source:
 \texttt{table\_H\_case\_dominance\_validation.csv}.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\textit{Result.} Dropping the single largest case collapses
-PR-AUC from $\valLOCOfullPRAUC$ to $\valLOCOdropLargestPRAUC$
-($-71\%$); case-balanced precision@$500$ is $0.029$ against the
-firm-weighted pooled $0.130$, so the pooled operational number is
-carried by one case. The same concentration is structural across
-the environment, documented in Online Supplement~C: dropping the
-largest item group roughly halves PR-AUC ($0.126 \to 0.062$), the
-panel is $96.8\%$ Preg\~ao, and the buyer distribution is diffuse
-(buyer HHI $0.019$). A clustered randomization-inference test
-permuting cobidder labels within buyer $\times$ item-group
-$\times$ year clusters ($B=1{,}000$) clears the null on the
-ranking metrics but only thinly (ROC $p=0.001$, PR-AUC $p=0.015$,
-precision@$500$ $p=0.013$), and top-$500$ case coverage is
-\emph{not} significant ($p=0.317$), consistent with one case
+\textit{Result.} Dropping the single largest case lowers PR-AUC
+from $\valLOCOfullPRAUC$ to $\valLOCOdropLargestPRAUC$ ($-37\%$);
+case-balanced precision@$500$ is $\valCaseBalancedPrec$ against the
+firm-weighted pooled $\valFullPrec$, so the pooled operational
+number is concentrated in the largest case (which holds
+$\valTopCasePosShare$ of positives and $\valTopCaseTP$ of the
+true positives in the top $500$). The concentration is structural
+across the environment, documented in Online Supplement~C: the
+largest item group holds $\valTopItemGroupShare$ of positives
+(item-group HHI $0.100$) while the buyer distribution is diffuse
+(buyer HHI $0.009$), and dropping the largest item group leaves
+PR-AUC essentially unchanged ($0.143 \to 0.134$). A clustered
+randomization-inference test permuting cobidder labels within
+item-group $\times$ year clusters ($B=1{,}000$) clears the null on
+the ranking metrics (ROC, PR-AUC, precision@$500$ all
+$p=\valClusterRIp$), but top-$500$ case coverage is \emph{not}
+significant ($p=\valClusterRIcovP$), consistent with one case
 anchoring the operational signal.
 
 \subsection{Direct-Defendant Scope Check}
@@ -318,15 +329,18 @@ anchoring the operational signal.
 
 If the statistic were a generic cartel-membership detector, it
 should classify direct CADE defendants as well as cobidders. It
-does not: the deployable FL-binary score ranks direct defendants
-at ROC $\approx \valDirectStrictAUC$ under both full and strict
-timing ($0.491$ and $0.492$), i.e.\ at chance, with
-precision@$500=0$; the continuous score reaches ROC $0.66$--$0.70$
-but with precision@$500\le0.004$, so it does not operationally
-retrieve them either (full grid in Online Supplement~C). This is a
-scope boundary, not an escape hatch: the screen is a loser-side
-ranker, and direct defendants typically sit on the winner side of
-the arrangement.
+does not: the FL-binary score (retrospective incumbent triage)
+ranks direct defendants at ROC $\approx \valDirectStrictAUC$ under
+both full and strict timing ($0.491$ and $0.492$), i.e.\ at chance,
+with precision@$500=0$. Continuous participation volume does carry
+some information about defendants---ROC $0.66$--$0.70$, modestly
+above chance---but with precision@$500\le0.004$, so it does not
+operationally retrieve them either (full grid in Online
+Supplement~C). The asymmetry is the design: the loser-side
+\emph{binary} flag is uninformative about defendants, who typically
+sit on the winner side of the arrangement, while participation
+volume is not entirely silent. This is a scope boundary, not an
+escape hatch.
 
 \subsection{Limitations}
 \label{app:opp_limitations_submission}
@@ -341,20 +355,23 @@ because it is absent from that layer. All timing is
 CADE files carry only judgment dates (2015--2025), no conduct
 dates, so we cannot align the screen to when a cartel operated and
 the adjudication-observable design is infeasible rather than
-estimated. There is an \emph{entrant coverage hole} ($45/193$,
-$23\%$, of positives carry score zero with no training history)
-and the signal is \emph{concentrated} by case (dropping the
-largest cuts PR-AUC by $71\%$), item group, and year, so the
-pooled operational number overstates breadth. High ROC is a red
-herring at sub-$1\%$ prevalence (it saturates near $0.95$ while
-the operational metrics stay low and collapse to chance on the
-full strict-timing universe). Most importantly, the
+estimated. There is an \emph{entrant coverage hole}
+($\valMainEntrantPositives/\valMainCobidders$,
+$\valEntrantPosShare$, of positives carry score zero with no
+training history) and the signal is \emph{concentrated} by case
+(dropping the largest cuts PR-AUC by $37\%$), item group, and year,
+so the pooled operational number overstates breadth. ROC is a red
+herring at sub-$1\%$ prevalence: precision and recall---not
+ROC---are the operational metrics, and they stay low under the
+pooled diagnostic and collapse to zero on the full strict-timing
+universe. Most importantly, the
 CADE-defendant labels are \emph{adjudication-anchored exposure}
 labels, not membership findings: a tagged firm shared a
 tender-item with an adjudicated defendant; it is not thereby a
 cartel member, a party to any agreement, or liable for anything.
-The residual, opportunity- and time-orthogonal signal that
-survives these audits is \emph{triage value} --- a basis for
-prioritizing scrutiny --- and is \textbf{not legal proof, not
+Net of opportunity and timing, the residual ordering is
+\emph{marginal at best and not robust across designs}; what the
+award layer reliably delivers is a coarse, retrospective basis for
+prioritizing scrutiny, and it is \textbf{not legal proof, not
 identification of cartel members, and not an estimate of damages
 or causal effect}.

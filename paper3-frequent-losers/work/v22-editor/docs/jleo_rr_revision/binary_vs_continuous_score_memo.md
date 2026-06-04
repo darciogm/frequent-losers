@@ -1,15 +1,15 @@
 # Binary vs. Continuous Score — Section 5 Memo (v22 JLEO R&R)
-_Generated 2026-06-03 by 05_section5_profile_monotonicity.R (seed 20260603)._
+_Generated 2026-06-04 by 05_section5_profile_monotonicity.R (seed 20260603)._
 
 ## Q1. Is the score <-> exposure relationship monotone?
-- Cobidder prevalence vs. T_i-bin rank: Spearman = 0.917 -> prevalence rises monotonically with participation.
-- BUT opportunity-adjusted EXCESS contact: Spearman(X_i) = -0.227, Spearman(Z_i) = -0.927.
+- Cobidder prevalence vs. T_i-bin rank: Spearman = 0.991 -> prevalence rises monotonically with participation.
+- BUT opportunity-adjusted EXCESS contact: Spearman(X_i) = -0.255, Spearman(Z_i) = -0.927.
   -> Excess is FLAT / non-monotone. Prevalence rises mechanically with exposure; the opportunity-adjusted
   residual does not track the rank in the same way, weakening a STRUCTURAL reading of T_i.
 
 ## Q2. Does FL14 outperform the continuous score in any sample?
-- full always-loser:        continuous=0.9386 vs FL14=0.9236 -> continuous wins/ties
-- opportunity common support: continuous=0.8635 vs FL14=0.8417 -> continuous wins/ties
+- full always-loser:        continuous=0.7608 vs FL14=0.6880 -> continuous wins/ties
+- opportunity common support: continuous=0.6269 vs FL14=0.6040 -> continuous wins/ties
 - Reference (script 53, strict-timing): FL14 binary 0.767 > continuous 0.750, DeLong p=0.085 (NOT significant).
   The flip is SAMPLE-SPECIFIC (strict-timing common support), not a general dominance of the binary.
 
@@ -29,16 +29,20 @@ _Generated 2026-06-03 by 05_section5_profile_monotonicity.R (seed 20260603)._
 ```
                sample        score_form     N positives roc_auc pr_auc prec_500
                <char>            <char> <int>     <int>   <num>  <num>    <num>
- 1:           full_AL continuous_log1pT 16843       191  0.9386 0.1264    0.130
- 2:           full_AL       fl14_binary 16843       191  0.9236 0.1264    0.130
- 3:           full_AL     binned_decile 16843       191  0.9279 0.1264    0.130
- 4:   opp_common_supp continuous_log1pT  6040       191  0.8635 0.1450    0.138
- 5:   opp_common_supp       fl14_binary  6040       191  0.8417 0.1450    0.138
- 6:   opp_common_supp     binned_decile  6040       191  0.8455 0.1450    0.138
- 7: excl_largest_case continuous_log1pT 16739        87  0.9293 0.0365    0.040
- 8: excl_largest_case       fl14_binary 16739        87  0.9236 0.0365    0.040
- 9: excl_largest_case     binned_decile 16739        87  0.9241 0.0365    0.040
-10:   excl_largest_ig continuous_log1pT 15706       148  0.9349 0.0808    0.088
-11:   excl_largest_ig       fl14_binary 15706       148  0.9245 0.0728    0.078
-12:   excl_largest_ig     binned_decile 15706       148  0.9257 0.0714    0.076
+ 1:           full_AL continuous_log1pT 16843       651  0.7608 0.1432    0.216
+ 2:           full_AL       fl14_binary 16843       651  0.6880 0.1432    0.216
+ 3:           full_AL     binned_decile 16843       651  0.7552 0.1432    0.216
+ 4:           full_AL        spline_ns4 16843       651  0.7608 0.1432    0.216
+ 5:   opp_common_supp continuous_log1pT  6040       651  0.6269 0.1857    0.242
+ 6:   opp_common_supp       fl14_binary  6040       651  0.6040 0.1857    0.242
+ 7:   opp_common_supp     binned_decile  6040       651  0.6209 0.1857    0.242
+ 8:   opp_common_supp        spline_ns4  6040       651  0.6289 0.1859    0.242
+ 9: excl_largest_case continuous_log1pT 16635       443  0.7634 0.0894    0.132
+10: excl_largest_case       fl14_binary 16635       443  0.6902 0.0894    0.132
+11: excl_largest_case     binned_decile 16635       443  0.7577 0.0894    0.132
+12: excl_largest_case        spline_ns4 16635       443  0.7634 0.0894    0.132
+13:   excl_largest_ig continuous_log1pT 15706       558  0.7588 0.1188    0.180
+14:   excl_largest_ig       fl14_binary 15706       558  0.6843 0.0899    0.120
+15:   excl_largest_ig     binned_decile 15706       558  0.7534 0.1029    0.140
+16:   excl_largest_ig        spline_ns4 15706       558  0.7588 0.1188    0.180
 ```

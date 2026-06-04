@@ -1,4 +1,4 @@
-%
+% REVISED: canonical-target reframe 2026-06-04
 \section{Scope, Limits, and Price Corroboration}
 \label{sec:price_scope_conclusion}
 
@@ -12,93 +12,53 @@ mechanism. Overcharge measurement has its own evidentiary tradition
 \citep{bryant1991price,connor2007price}, distinct from screening
 \citep{marshall2012economics,harrington2008detecting}. We state this
 boundary once and hold to it throughout. The full price regressions are
-reported in Appendix~\ref{app:scope_adaptation_submission}.
+reported in \ref{app:scope_adaptation_submission}.
 
-\paragraph{The broad price imprint.}
 In the broad item-level regressions, frequent-loser presence is positively
-associated with log negotiated unit price: $\valTabPricesColOne$ with item
-and year fixed effects and $\valTabPricesColTwo$ after adding procuring-unit
-fixed effects, with an implied range of $\valHeadlineRange$. The association
-is larger in pregão ($\valTabPricesColThree$) than in convite
-($\valTabPricesColFour$). If frequent losers were only mechanical quorum
-fillers under the three-bidder rule, the imprint should be stronger in
-convite; the larger association in the electronic-auction environment weighs
-against a pure procedural-artifact reading. These are descriptive
-associations used to assess economic non-neutrality, not causal effects.
+associated with log negotiated unit price ($+\valBetaBroad$,
+$p=\valBetaBroadP$; range $\valHeadlineRange$ across estimators), and the
+association is larger in pregão than in convite. That broad sign, however, is
+a weighting result: holding the overlap cells fixed and moving to the
+within-cell average treatment effect on the treated reverses it
+($\valScopeOverlapCoef$, $p\valScopeOverlapPlt$), because the broad sample
+mixes a positive between-cell selection component---flagged environments sit
+in structurally higher-priced cells---with a negative within-cell component.
+The reversal is robust outside the high-value tail, the direct-CADE overlap
+estimate is null ($\valBetaCADEDirect$, $p=\valBetaCADEDirectP$), and the
+within-cell movement loads on the count of genuine bidders rather than on the
+frequent-loser count. These two facts---a selection-driven broad imprint and
+an unidentified within-cell channel---place the evidence on the scope side of
+the line: it indicates that the award-layer signal points to economically
+non-neutral environments, no more. The full regressions, the decomposition
+table, and the bidder-count boundary appear in
+\ref{app:scope_adaptation_submission}.
 
-\paragraph{The sign reversal, decomposed.}
-The positive broad-sample coefficient ($+\valBetaBroad$, $p=\valBetaBroadP$)
-reverses under overlap-cell ATT weighting to $\valScopeOverlapCoef$
-($p\valScopeOverlapPlt$); under propensity-score trimming it becomes
-$\valScopePSCoef$. Only $\valDroppedItemsShare$ of treated items lack a
-within-cell counterfactual, so the reversal is a weighting result, not a
-dropped-observation artifact. The two coefficients measure different objects.
-The broad sample mixes a positive \emph{selection} component---cartels
-concentrate in cells with structurally higher underlying prices: among
-non-treated items, mean log price rises from $\valSelTestQOne$ (Q1) to
-$\valSelTestQFive$ (Q5) across cell FL-share quintiles, a
-$\Delta=\valSelTestDelta$ log-point gap, with a partialled-out coefficient of
-$\valSelTestCoefFullFE$ (SE $\valSelTestSEFullFE$, $N=\valSelTestN$)---with a
-negative \emph{within-cell} component, the overlap-cell ATT, which isolates
-the latter. The progression is monotone: broad-sample $+\valBetaBroad$;
-overlap-cell unweighted $+\valBetaUnwOverlap$ ($p=\valBetaUnwOverlapP$);
-overlap-cell ATT $\valScopeOverlapCoef$ ($p<10^{-9}$). The negative ATT
-reading survives both modalities (Convite $\valSignBetaConvATT$, Pregão
-$\valSignBetaPregATT$), every PBU-size quartile, and tender-value quartiles
-Q1--Q3; the only systematic positive cell is the high-value tail
-($\valBetaQfour$, $p=\valBetaQfourP$), where coordination costs are spread
-over larger contracts. The direct-CADE overlap estimate is null
-($\valBetaCADEDirect$, $p=\valBetaCADEDirectP$): price regressions do not
-recover the legal object of the case and supply no damages base. Full
-regressions and the bidder-count boundary appear in
-Appendix~\ref{app:scope_adaptation_submission}.
-
-\paragraph{An honest limit on the mechanism.}
-The within-cell price compression loads on the count of genuine bidders, not
-on the frequent-loser count: adding $\log(\text{n\_firms})$ drives the
-within-cell coefficient from $\valMechWinnerVsRef$ to
-$\valMechWinnerVsRefControlled$ (not significant). The within-cell price
-movement therefore operates through the bidder-count channel, and we do not
-claim to have identified a cover-bidding mechanism from the price record; the
-mechanism is \emph{not} identified by these data. The decomposition
-establishes only that the broad positive imprint is selection-into-high-price-cells
-rather than a treatment effect, and that price evidence stops aligning with
-the loser-side scope outside the high-value tail. The institutional
-implication stands: the award-layer signal is a trigger for richer evidence
-collection, not a stand-alone measure of price injury. Price evidence may be
-consistent with economic relevance, but it does not transform an award-layer
-statistic into proof of agreement or price injury. Award records rank where
-costly bid-level and documentary evidence should be assembled; bid records,
-case documents, and legal process determine whether the conduct supports an
-antitrust case. The architecture is more portable than the estimates: another
-agency should validate the ranking against its own enforcement anchors and
-observability constraints rather than importing the BEC cutoff or performance
-metrics mechanically.
-
-\subsection{Adaptive Deployment}
+\subsection{Adaptive Use and Gaming}
 \label{sec:adaptive_deployment_submission}
 
-The screen should be deployed as a moving queue rather than a static legal
-trigger. Any administrative rule can generate strategic response once firms
-learn which observable patterns attract attention; firms could rotate loser
-roles, engineer occasional wins, fragment identities, or avoid a known
-participation threshold. That possibility does not undermine the sequencing
-architecture, but it rules out naive use of the binary cutoff as a permanent
-enforcement boundary---a standard concern for cartel enforcement and
-screening \citep{green1984noncooperative,haltiwanger1991the,
-harrington2008detecting,sanchezgraells2019screening}. Agencies should use
-continuous ranks or capacity-constrained top-$k$ queues, refresh thresholds,
-monitor bunching below operational cutoffs, and combine award-layer screening
-with bid-layer forensics whenever bid files can be recovered.
+If an agency uses an award-layer ranking to prioritize forensic attention, it
+should treat it as a moving queue rather than a static legal trigger. Any
+administrative rule can generate strategic response once firms learn which
+observable patterns attract attention; firms could rotate loser roles,
+engineer occasional wins, fragment identities, or avoid a known participation
+threshold. That possibility does not undermine the sequencing architecture,
+but it rules out naive use of the binary cutoff as a permanent enforcement
+boundary---a standard concern for cartel enforcement and screening
+\citep{green1984noncooperative,haltiwanger1991the,
+harrington2008detecting,sanchezgraells2019screening}. The natural responses
+are to use continuous ranks or capacity-constrained top-$k$ queues, refresh
+thresholds, monitor bunching below operational cutoffs, and combine
+award-layer triage with bid-layer forensics whenever bid files can be
+recovered.
 %
 The survivor-pool size of the refreshed queue is itself a point on the
-cost--recall frontier of Section~\ref{sec:screening_forensics}, so deployment
+cost--recall frontier of Section~\ref{sec:screening_forensics}, so investigative
 capacity and gaming-robustness are chosen together rather than tuned in
 isolation. A firm that
 moves to avoid one observable pattern may create another: discontinuous
 participation, suspicious identity changes, or shifts in bid-level behavior.
-This is also the right legal posture. The screen is not a rule of liability
+This is also the right legal posture. The ranking is not a rule of liability
 and should not be used as one. It is a way to order scarce investigative
 attention when proof is costly and the first observable record is legally
-thin---a disciplined place to begin without pretending that the beginning is
-the end of the evidentiary process.
+thin---a disciplined place to begin auditing, without pretending that the
+beginning is the end of the evidentiary process.

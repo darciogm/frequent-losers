@@ -41,7 +41,8 @@ dir.create("/tmp/duckdb_spill", recursive = TRUE, showWarnings = FALSE)
 
 bid_path <- file.path(BASE, "v3/data/processed/bid_level_with_prices.parquet")
 fp_path  <- file.path(BASE, "data/processed/FREQ_PARTICIP_rebuilt.parquet")
-cobid_path <- file.path(BASE, "data/processed/cade_fl_cobidders.csv")
+# canonical reproducible broad always-loser cobidder label (positive = broad_cobidder==1, 651 firms)
+cobid_path <- file.path(BASE, "work/v22-editor/outputs/cache/canonical_cobidders_broad.csv")
 direct_path <- file.path(BASE, "data/processed/cade_bec_crossmatch.csv")
 
 # ---------------------------------------------------------------------------
@@ -105,6 +106,7 @@ log_step(sprintf("firm_features rows: %s", format(nrow(firm_features), big.mark=
 fp <- as.data.table(read_parquet(fp_path))
 fp[, firm_code := sprintf("%014.0f", as.numeric(`códigofornecedor`))]
 cobid <- fread(cobid_path)
+cobid <- cobid[broad_cobidder == 1L]   # canonical broad AL cobidder positive set (651)
 cobid[, firm_code := sprintf("%014.0f", as.numeric(`códigofornecedor`))]
 cobid_codes <- unique(cobid$firm_code)
 direct <- fread(direct_path)
@@ -329,7 +331,7 @@ pops <- list(
   list(name = "frequent_losers_FL14", N_award = n_fl, sub = al[is_fl == 1L],
        note = "always-losers with tenders_count>=14"),
   list(name = "always_loser_cobidders", N_award = n_cobid, sub = al[is_cade == 1L],
-       note = "the 193 positive labels (cade_fl_cobidders)"),
+       note = "canonical broad AL cobidder label (651) (canonical_cobidders_broad)"),
   list(name = "direct_cade_defendants", N_award = n_direct, sub = NULL,
        note = "cade_bec_crossmatch (49); EXCLUDED from cobidder candidate pool"),
   list(name = "common_bid_feature_pool_31", N_award = nrow(pool31), sub = pool31,
@@ -405,7 +407,7 @@ for (i in seq_len(nrow(support))) {
 }
 tex2 <- c(tex2, "\\bottomrule", "\\end{tabular}",
   "\\begin{tablenotes}\\small",
-  "\\item ``$N$ feat.'' = with complete cv/skew/kurt (script-31 pool). All 193 cobidder positives are retained.",
+  "\\item ``$N$ feat.'' = with complete cv/skew/kurt (script-31 pool). Cobidder positives use the canonical broad AL label (651).",
   "\\item Source: \\texttt{scripts/analysis/07\\_bid\\_feature\\_audit.R}.",
   "\\end{tablenotes}", "\\end{table}")
 writeLines(tex2, file.path(TAB_MAIN, "table_O_bid_feature_support.tex"))
@@ -438,10 +440,10 @@ diag <- data.table(
             n_cobid - sum(pool31$is_cade), n_cobid - sum(pool49$is_cade),
             round(mean(!is.na(al$imhof_cv_sd) & is.finite(al$imhof_cv_sd)), 4)),
   note = c("FREQ_PARTICIP always_loser==1", "tenders_count>=14",
-           "cade_fl_cobidders (positive class)", "cade_bec_crossmatch (excluded)",
-           "all 193 cobidders are always-losers; direct defendants reported only",
-           "complete cv/skew/kurt", "ALL 193 positives retained", "2 FL lost to feature missingness",
-           "all 7 features incl cv_sd", "ALL 193 positives retained", "FL14 retained in pool49",
+           "canonical broad AL cobidder label (651) (positive class)", "cade_bec_crossmatch (excluded)",
+           "all canonical broad cobidders are always-losers; direct defendants reported only",
+           "complete cv/skew/kurt", "broad-label positives retained in pool31", "FL lost to feature missingness",
+           "all 7 features incl cv_sd", "broad-label positives retained in pool49", "FL14 retained in pool49",
            "negatives only", "negatives only (cv_sd single-tender drop)",
            "ZERO positive loss", "ZERO positive loss",
            "cv_sd undefined for single-priced-tender firms -> drives 16779->11676"))

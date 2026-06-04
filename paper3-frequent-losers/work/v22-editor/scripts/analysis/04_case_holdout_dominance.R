@@ -7,8 +7,9 @@
 # test. Be exact, never invent, never hide case dominance.
 #
 # Candidate set = always-losers (16,843). Score_i = log1p(tenders_count)
-# (CADE-label-INDEPENDENT -> no leakage). Positives = the 193-file cobidders that
-# are in the always-loser universe and are NOT direct defendants. Direct CADE
+# (CADE-label-INDEPENDENT -> no leakage). Positives = the canonical broad AL
+# cobidder label (651, reproducible, FL never used) that are in the always-loser
+# universe and are NOT direct defendants. Direct CADE
 # defendants (crossmatch, 47) are EXCLUDED from the candidate set entirely
 # (NEW HOPE 09474700000192 is miscoded as both -> treated as defendant only,
 # excluded from positives).
@@ -91,10 +92,15 @@ m_fp     <- function(y, s, k) safe(false_positives_at_k(y, s, k))
 # =============================================================================
 say("\n========== A. CANDIDATE SET ==========")
 
-cob <- fread(file.path(DATA, "cade_fl_cobidders.csv"))
-cob[, firm_code := norm14(firm_cnpj)]
+# canonical broad AL cobidder label (651, reproducible, FL never used):
+# positives = rows with broad_cobidder==1 in the canonical reproducible file
+# (always-losers, direct defendants already excluded). Replaces the static
+# narrow cade_fl_cobidders.csv (193 rows, FL-only, irreproducible).
+cob <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+cob <- cob[broad_cobidder == 1L]
+cob[, firm_code := norm14(`códigofornecedor`)]
 cob_codes <- unique(cob$firm_code)
-say("cobidder positives (file): %d rows, %d distinct firm_code", nrow(cob), length(cob_codes))
+say("cobidder positives (canonical broad): %d rows, %d distinct firm_code", nrow(cob), length(cob_codes))
 
 xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
 xm[, firm_code := norm14(firm_cnpj)]

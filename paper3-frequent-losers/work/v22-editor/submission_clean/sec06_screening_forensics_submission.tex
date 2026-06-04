@@ -1,3 +1,4 @@
+% REVISED: canonical-target reframe 2026-06-04
 \section{From Award-Layer Triage to Bid-Layer Forensics}
 \label{sec:screening_forensics}
 
@@ -55,8 +56,9 @@ paid the cost of opening the bid file. The right question is how
 much ranking information is already present before that file is
 opened.
 
-The benchmark is a fair, transparent forensic comparator rather
-than a black box. The learner is a \valBidLearner{} (ranger, 500
+The benchmark is a transparent bid-moment random-forest benchmark
+inspired by Imhof--Wallimann-style screens rather than a black box.
+The learner is a \valBidLearner{} (ranger, 500
 trees, probability mode, no hyperparameter search), trained on
 seven within-tender Imhof--Wallimann moments---the coefficient of
 variation and its within-firm dispersion, skewness, kurtosis,
@@ -66,65 +68,66 @@ gap---each averaged across the tenders a firm contests
 The candidate pool is the always-losers for which these moments
 are computable, the target is the same adjudication-anchored
 cobidder exposure used throughout Section~\ref{sec:validation},
-and all $\valBidPosRetained$ positives are retained; the small
-attrition is mechanical and concentrated among non-positives.
+and all $\valBidPosRetained$ positives---always-loser cobidders---are
+retained; the small attrition is mechanical and concentrated among
+non-positives.
 Timing and bid-revision features are excluded because the records
 carry no usable per-bid timestamps. The candidate-support audit,
 the model-design audit, and the leakage-boundary table are
-reported in full in Appendix~\ref{app:bid_benchmark_submission}.
+reported in full in \ref{app:bid_benchmark_submission}.
 
 \paragraph{Performance.}
 Table~\ref{tab:bid_layer_performance} reports precision, recall,
-and PR-AUC first and ROC second, since the positive base rate is
+and PR-AUC alongside ROC, since the positive base rate is
 near one percent and ranking quality is what an agency cares
-about. Two facts stand out. First, in the pooled
-full-observability design the cheap award flag is \emph{comparable}
-to the costly bid benchmark: the binary frequent-loser flag
-reaches ROC $\valImhofFLBin$ and the bid-layer \valBidLearner{}
-reaches ROC $\valImhofFull$, with overlapping confidence
-intervals---comparable discrimination at lower informational
-cost, not a victory of one layer over the other. The combined
-award-plus-bid model reaches ROC $\valImhofComboCont$ and
-PR-AUC $0.275$, but it requires bid microdata for every firm and
-is therefore a full-observability upper bound rather than a
-deployable screen. Second, the pooled metrics rest on
-\emph{random} cross-validation folds that are optimistic because
-the cobidder positives cluster by CADE case. Under case-grouped
-folds, where the positives from a held-out case never co-train,
-the bid layer falls hardest: its PR-AUC drops from
-$\valBidPooledImhofPRAUC$ to $\valBidLOCOimhofPRAUC$, a
-$\valBidLOCOimhofPRAUCdrop$ reduction, and its ROC from $0.891$ to
-$\valBidLOCOimhofAUC$. The combined model holds up (ROC
-$\valBidLOCOcomboAUC$) only because the label-independent award
-score continues to rank firms when the bid signal thins.
-Excluding the label-defining tenders lowers the bid ROC only
-modestly (to $\valBidExclLabelAUC$, $-0.017$), so the fragility is
-case clustering, not feature--target overlap.
+about. Two facts stand out. First, on the pooled
+full-observability diagnostic the cheap award layer is
+\emph{comparable} to the costly bid benchmark: the award-continuous
+score reaches ROC $0.760$ / PR-AUC $0.143$ and the bid-layer
+\valBidLearner{} reaches ROC $0.717$ / PR-AUC $0.116$---comparable
+discrimination at lower informational cost, not a victory of one
+layer over the other. The combined award-plus-bid model reaches ROC
+$0.756$ / PR-AUC $0.188$, but it requires bid microdata for every
+firm and is therefore a full-observability upper bound, not a
+first-stage rule. Second, the pooled metrics rest on \emph{random}
+cross-validation folds that are optimistic because the cobidder
+positives cluster by CADE case. Under case-grouped folds, where the
+positives from a held-out case never co-train, the bid layer falls
+hardest: its PR-AUC drops from $0.116$ to $0.062$ and its ROC from
+$0.717$ to $0.626$. Crucially, the \emph{combined} model's PR-AUC
+also falls---to $0.103$, \emph{below} the award-only $0.143$---so the
+apparent complementarity does not survive case-grouped evaluation:
+it is the label-independent award score, not the bid layer, that
+continues to rank firms when the case signal thins. Excluding the
+label-defining tenders leaves the bid ROC essentially unchanged
+($0.717 \to 0.713$), so the fragility is case clustering, not
+feature--target overlap.
 
 \paragraph{Complementarity.}
 The two layers carry partially different ranking information
 rather than duplicating one another: the Spearman rank correlation
-between the award and bid scores is only $0.42$, and adding the
+between the award and bid scores is only $0.544$, and adding the
 award score to the bid benchmark improves PR-AUC by
-$+0.151$ under pooled folds (DeLong $p<0.001$). We report the
-honest bound on that increment: under case-grouped folds it more
-than halves to $+0.064$ PR-AUC (still $p<0.001$), and what
-survives is mostly the award score \emph{rescuing} the bid layer
-rather than the reverse. The combined model is therefore an upper
-bound on what the two layers can jointly do under full
-observability, not an operational first-stage rule. Neither score
-is proof of an agreement: the bid benchmark measures the shape of
-a firm's bid distribution, and false positives are non-labeled
-firms, not ``bad firms.'' A strict-timing version of the bid
-benchmark is \emph{blocked}, because within-tender dispersion
-moments cannot be cleanly restricted to a pre-target window; the
-award score, by contrast, is label-independent and admits a clean
-temporal holdout. The full complementarity decomposition,
-rank-overlap diagram, and leakage boundary appear in
-Appendix~\ref{app:bid_benchmark_submission}. What the benchmark
-establishes is the discriminating ceiling under full
-observability, and how much of it the cheap award layer already
-reaches at far lower informational cost.
+$+0.072$ under pooled folds (DeLong $p<0.001$). The complementarity
+is conditional on this implemented benchmark and is case-fragile:
+under case-grouped folds the combined PR-AUC ($0.103$) falls below
+award-only ($0.143$), so what marginal gain exists is mostly the
+award score \emph{rescuing} the bid layer rather than the reverse.
+The combined model is therefore an upper bound on what the two
+layers can jointly do under full observability, not an operational
+first-stage rule. Neither score is proof of an agreement: the bid
+benchmark measures the shape of a firm's bid distribution, and
+false positives are unlabeled firms, not ``bad firms.'' A
+strict-timing version of the bid benchmark is \emph{blocked},
+because within-tender dispersion moments cannot be cleanly
+restricted to a pre-target window; the award score, by contrast, is
+label-independent and admits a clean temporal holdout. The full
+complementarity decomposition, rank-overlap diagram, and leakage
+boundary appear in \ref{app:bid_benchmark_submission}.
+What the benchmark establishes is the discriminating ceiling under
+this implemented full-observability comparator, and how much of it
+the cheap award layer already reaches at far lower informational
+cost.
 
 \begin{table}[htbp]
 \centering
@@ -138,38 +141,40 @@ reaches at far lower informational cost.
 Design & Model & PR-AUC & Prec@500 & Rec@500 & Prec@1000 & ROC \\
 \midrule
 \multirow{4}{*}{Pooled (random folds)}
- & Award continuous & $0.126$ & $0.130$ & $0.342$ & $0.095$ & $0.938$ \\
- & Award FL14 & $0.085$ & $0.088$ & $0.232$ & $0.089$ & $\valImhofFLBin$ \\
- & Bid-layer \valBidLearner{} & $\valBidPooledImhofPRAUC$ & $0.136$ & $0.358$ & $0.100$ & $\valImhofFull$ \\
- & Combined award $+$ bid & $0.275$ & $0.198$ & $0.521$ & $0.149$ & $\valImhofComboCont$ \\
+ & Award continuous & $0.143$ & $0.216$ & $0.166$ & $0.177$ & $0.760$ \\
+ & Award FL14 & $0.098$ & $0.130$ & $0.100$ & $0.129$ & $0.688$ \\
+ & Bid-layer \valBidLearner{} & $0.116$ & $0.180$ & $0.138$ & $0.156$ & $0.717$ \\
+ & Combined award $+$ bid & $0.188$ & $0.274$ & $0.210$ & $0.189$ & $0.756$ \\
 \midrule
 \multirow{4}{*}{Case-grouped (held-out case)}
- & Award continuous & $0.126$ & $0.130$ & $0.342$ & $0.095$ & $0.938$ \\
- & Award FL14 & $0.085$ & $0.088$ & $0.232$ & $0.089$ & $\valImhofFLBin$ \\
- & Bid-layer \valBidLearner{} & $\valBidLOCOimhofPRAUC$ & $0.054$ & $0.142$ & $0.059$ & $\valBidLOCOimhofAUC$ \\
- & Combined award $+$ bid & $\valBidLOCOcomboPRAUC$ & $0.122$ & $0.321$ & $0.121$ & $\valBidLOCOcomboAUC$ \\
+ & Award continuous & $0.143$ & $0.216$ & $0.166$ & $0.177$ & $0.760$ \\
+ & Award FL14 & $0.098$ & $0.130$ & $0.100$ & $0.129$ & $0.688$ \\
+ & Bid-layer \valBidLearner{} & $0.062$ & $0.086$ & $0.066$ & $0.083$ & $0.626$ \\
+ & Combined award $+$ bid & $0.103$ & $0.190$ & $0.146$ & $0.139$ & $0.689$ \\
 \midrule
-Excl.\ label-defining tenders & Bid-layer \valBidLearner{} & $0.075$ & $0.092$ & $0.242$ & $0.084$ & $\valBidExclLabelAUC$ \\
+Excl.\ label-defining tenders & Bid-layer \valBidLearner{} & $0.088$ & $0.130$ & $0.114$ & $0.128$ & $0.713$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \scriptsize
 \item \textit{Notes:} $N=16{,}731$ always-losers with computable
-bid moments; $190$ in-pool cobidder positives. PR-AUC is reported
-first because the positive base rate is near one percent. The
+bid moments; $\valBidPosRetained$ in-pool always-loser cobidder
+positives, all retained. PR-AUC is reported alongside ROC because
+the positive base rate is near one percent. The
 \textbf{pooled} block is a full-observability diagnostic with
 random-fold optimism; the \textbf{case-grouped} block is the
 honest robustness test (positives clustered by case never
-co-train) and shows the bid layer falling hardest (PR-AUC
-$\valBidPooledImhofPRAUC\!\to\!\valBidLOCOimhofPRAUC$,
-$\valBidLOCOimhofPRAUCdrop$). The award scores are
+co-train), where the bid layer falls hardest (PR-AUC
+$0.116\!\to\!0.062$) and the combined model's PR-AUC ($0.103$)
+falls \emph{below} award-only ($0.143$). The award scores are
 label-independent and so do not change across designs. Cobidders
 are adjudication-anchored exposure, not cartel membership; false
-positives are non-labeled firms, not ``bad firms.'' The combined
+positives are unlabeled firms, not ``bad firms.'' The combined
 model is a full-observability upper bound, not a first-stage
-screen. Candidate support, model audit, complementarity, and the
-leakage boundary are in
-Appendix~\ref{app:bid_benchmark_submission}.
+screen, and its complementarity is conditional on this implemented
+benchmark and case-fragile. Candidate support, model audit,
+complementarity, and the leakage boundary are in
+\ref{app:bid_benchmark_submission}.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
@@ -232,63 +237,56 @@ $\valCostBidRowRedTwoK$) as the core caveat, not a footnote.
 
 \paragraph{The frontier, not a cutoff.}
 Varying $K_1$ traces a cost-recall frontier rather than identifying
-a single best rule. At $k=500$, sequential award$\rightarrow$bid
-recall is non-monotone in $K_1$:
-$0.34$ at $K_1=500$, $0.44$ at $1{,}000$,
-$\valCostRecallSeqTwoKkFiveH$ at $2{,}000$,
-$\valCostRecallSeqThreeKkFiveH$ at $3{,}000$, and $0.42$ at $5{,}000$,
-peaking near $K_1=3{,}000$ (Fig.~\ref{fig:cost_recall_frontier}).
-At $K_1=3{,}000$ the sequential rule \emph{matches} joint
-full-observability recall ($\valCostRecallSeqThreeKkFiveH$ versus
-$\valCostRecallJointkFiveH$ at $k=500$) at roughly a $24\%$ bid-row
-reduction, but it never exceeds the joint upper bound
-($\valCostRecallJointkFiveH$ at $k=500$,
-$\valCostRecallJointkOneK$ at $k=1{,}000$). $K_1=2{,}000$ is
-\emph{one operating point, not a calibrated optimum}: agencies with
-larger forensic capacity sit higher on the frontier and agencies
-with less capacity sit lower. The contribution is the frontier
-itself---the menu of recall-versus-scope trade-offs---not a
-universal cutoff.
+a single best rule. At $k=500$, the number of positives the
+sequential award$\rightarrow$bid rule recovers is non-monotone in
+$K_1$: $108$ true positives at $K_1=500$, $124$ at $1{,}000$,
+$116$ at $2{,}000$, $115$ at $3{,}000$, and $102$ at $5{,}000$
+(Fig.~\ref{fig:cost_recall_frontier}). Notably $K_1=1{,}000$
+\emph{beats} $K_1=2{,}000$ at $k=500$ ($124$ versus $116$ true
+positives, recovering $124/133 = 93\%$ of the joint upper bound's
+true positives at a $47\%$ bid-row reduction)---further proof that
+no $K_1$ is ``optimal.'' The sequential rule never exceeds the
+joint full-observability upper bound ($133$ true positives at
+$k=500$, $191$ at $k=1{,}000$). $K_1=2{,}000$ is therefore
+\emph{one operating point on the frontier, not a calibrated
+optimum}: agencies with larger forensic capacity sit higher on the
+frontier and agencies with less capacity sit lower. The
+contribution is the frontier itself---the menu of
+recall-versus-scope trade-offs---not a universal cutoff.
 
 \paragraph{What the bid rerank does, and does not, add.}
 The bid layer adds little operationally at a fixed survivor pool.
-At $K_1=2{,}000$ the award-defined survivor pool \emph{already}
-contains $\valCostSurvRecallTwoK$ of the positives the final queue
-recovers; the subsequent bid rerank only reorders firms inside that
-pool and does not surface new positives. The architecture's value
-is therefore in cost---preserving much of the target capture while
-reducing the scope of proof-producing forensics---rather than in
-the bid layer locating targets the award layer missed. This is the
-opposite of a claim that the bid stage drives recovery: it is the
-award gate that determines which positives are reachable, and the
-rerank that orders them.
+The award-defined survivor pool already gathers most of the
+positives the final queue recovers; the subsequent bid rerank only
+reorders firms inside that pool rather than surfacing positives the
+award gate missed. The architecture's value is therefore in
+cost---preserving much of the target capture while reducing the
+scope of proof-producing forensics---rather than in the bid layer
+locating new targets. This is the opposite of a claim that the bid
+stage drives recovery: it is the award gate that determines which
+positives are reachable, and the rerank that orders them.
 
 \paragraph{False positives and missed positives.}
 The frontier is explicit about both error margins. At
-$K_1=2{,}000$, $k=500$, the rule opens $\valCostFPrecoveryTwoK$
-non-cobidder firms for bid recovery, loses
-$\valCostPosLostGateTwoK$ positives at the award gate (they never
-enter the survivor pool), and ends with $409$ non-labeled firms in
-the final top-$500$ queue; $\valCostMissedTwoKkFiveH$ of the
-$\valCostNpos$ positives are missed overall, and precision is
-modest at about $0.18$. We do not read modest precision as failure:
-in forensic triage, high recall that routes a manageable queue to
-the next, costlier evidentiary stage is the operative property, and
-the $409$ non-labeled firms in the queue are unverified, not
-exonerated.
+$K_1=2{,}000$, $k=500$, the final top-$500$ queue contains $116$
+true positives and $384$ unlabeled firms, for a precision of
+$0.232$ and a recall of $0.178$ against the $\valCostNpos$
+positives; $543$ positives are missed overall. We do not read
+modest precision as failure: in forensic triage, routing a
+manageable queue to the next, costlier evidentiary stage is the
+operative property, and the $384$ unlabeled firms in the queue are
+unverified, not exonerated.
 
 \paragraph{Baselines.}
 The frontier is bracketed by three reference points. Award-only is
-the \emph{zero-bid-cost} baseline (recall
-$\valCostRecallAwardkFiveH$ at $k=500$), achievable with no bid
-recovery whatever. Bid-only and joint scoring are full-observability
-benchmarks that require opening the entire pool's bid records; joint
-is the upper bound the sequential rule approaches but never
-exceeds. A random survivor pool of the same size is far below the
-award-ranked one (recall $\valCostRandomRecallTwoK$ at
-$K_1=2{,}000$, three to twelve times worse across operating points),
-confirming that it is the award ranking, not the mere act of opening
-$K_1$ firms, that carries the signal.
+the \emph{zero-bid-cost} baseline (recall $0.166$ at $k=500$),
+achievable with no bid recovery whatever. Bid-only and joint
+scoring are full-observability benchmarks that require opening the
+entire pool's bid records; joint is the upper bound the sequential
+rule approaches but never exceeds. A random survivor pool of the
+same size is far below the award-ranked one, confirming that it is
+the award ranking, not the mere act of opening $K_1$ firms, that
+carries the signal.
 
 The institutional reading follows directly. The rule is not
 designed to beat full information; it preserves much of the target
@@ -300,13 +298,17 @@ kind does not decide liability; it decides, under a stated capacity
 constraint, which files deserve the next and more expensive form of
 evidentiary attention.
 
-The frontier is also case-fragile. Leaving out the single largest
-CADE case---which supplies $55\%$ of the positives---drops
-sequential recall at $K_1=2{,}000$ from $\valCostRecallSeqTwoKkFiveH$
-to $\valCostLOCOdrop$ at $k=500$. The signal is real but
-concentrated; a different case mix would move the frontier, and the
-operating points should be read as setting-specific rather than
-portable magnitudes.
+The frontier is also case-fragile. The single largest CADE case
+supplies $32.0\%$ of the positives and $45.4\%$ of the true
+positives in the top-$500$ queue, so leaving it out lowers
+sequential recall materially. The signal is real but concentrated;
+a different case mix would move the frontier, and the operating
+points should be read as setting-specific rather than portable
+magnitudes. The estimated ranking is not a portable cartel score;
+the transferable object is the decomposition framework---label
+construction, opportunity adjustment, timing discipline,
+case-composition audit, bid-layer comparison, and cost-recall
+accounting.
 
 \begin{table}[htbp]
 \centering
@@ -321,30 +323,30 @@ Rule & $K_1$ & Firms & Tender & Bid & TP & FP & Recall & Prec. & $\Delta$Firm & 
  & & open & items & rows & & & & & red. & red. & vs joint \\
 \midrule
 \multicolumn{12}{l}{\textit{Panel A: forensic queue $k=500$}} \\
-Award-only (no bid) & --- & $500$ & $41{,}704$ & $1{,}356{,}346$ & $65$ & $435$ & $\valCostRecallAwardkFiveH$ & $0.13$ & $0.97$ & $0.60$ & $0.18$ \\
-Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $66$ & $434$ & $0.35$ & $0.13$ & --- & --- & $0.17$ \\
-Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $99$ & $401$ & $\valCostRecallJointkFiveH$ & $0.20$ & --- & --- & $0.00$ \\
-Sequential & $500$ & $500$ & $41{,}704$ & $1{,}356{,}346$ & $65$ & $435$ & $0.34$ & $0.13$ & $0.97$ & $0.60$ & $0.18$ \\
-Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $83$ & $417$ & $0.44$ & $0.17$ & $0.94$ & $0.47$ & $0.08$ \\
-Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $91$ & $409$ & $\valCostRecallSeqTwoKkFiveH$ & $0.18$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.04$ \\
-Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $99$ & $401$ & $\valCostRecallSeqThreeKkFiveH$ & $0.20$ & $0.82$ & $0.24$ & $0.00$ \\
-Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $79$ & $421$ & $0.42$ & $0.16$ & $0.70$ & $0.14$ & $0.11$ \\
+Award-only (no bid) & --- & $500$ & $41{,}704$ & $1{,}356{,}346$ & $108$ & $392$ & $0.166$ & $0.216$ & $0.97$ & $0.60$ & $0.038$ \\
+Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $102$ & $398$ & $0.157$ & $0.204$ & --- & --- & $0.048$ \\
+Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $133$ & $367$ & $0.204$ & $0.266$ & --- & --- & $0.00$ \\
+Sequential & $500$ & $500$ & $41{,}704$ & $1{,}356{,}346$ & $108$ & $392$ & $0.166$ & $0.216$ & $0.97$ & $0.60$ & $0.038$ \\
+Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $124$ & $376$ & $0.190$ & $0.248$ & $0.94$ & $0.47$ & $0.014$ \\
+Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $116$ & $384$ & $0.178$ & $0.232$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.026$ \\
+Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $115$ & $385$ & $0.177$ & $0.230$ & $0.82$ & $0.24$ & $0.028$ \\
+Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $102$ & $398$ & $0.157$ & $0.204$ & $0.70$ & $0.14$ & $0.048$ \\
 \midrule
 \multicolumn{12}{l}{\textit{Panel B: forensic queue $k=1{,}000$}} \\
-Award-only (no bid) & --- & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $95$ & $905$ & $0.50$ & $0.10$ & $0.94$ & $0.47$ & $0.28$ \\
-Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $99$ & $901$ & $0.52$ & $0.10$ & --- & --- & $0.26$ \\
-Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $149$ & $851$ & $\valCostRecallJointkOneK$ & $0.15$ & --- & --- & $0.00$ \\
-Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $95$ & $905$ & $0.50$ & $0.10$ & $0.94$ & $0.47$ & $0.28$ \\
-Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $127$ & $873$ & $\valCostRecallSeqTwoKkOneK$ & $0.13$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.12$ \\
-Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $140$ & $860$ & $0.74$ & $0.14$ & $0.82$ & $0.24$ & $0.05$ \\
-Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $113$ & $887$ & $0.59$ & $0.11$ & $0.70$ & $0.14$ & $0.19$ \\
+Award-only (no bid) & --- & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $177$ & $823$ & $0.272$ & $0.177$ & $0.94$ & $0.47$ & $0.022$ \\
+Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $157$ & $843$ & $0.241$ & $0.157$ & --- & --- & $0.052$ \\
+Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $191$ & $809$ & $0.293$ & $0.191$ & --- & --- & $0.00$ \\
+Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $177$ & $823$ & $0.272$ & $0.177$ & $0.94$ & $0.47$ & $0.022$ \\
+Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $185$ & $815$ & $0.284$ & $0.185$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.009$ \\
+Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $184$ & $816$ & $0.283$ & $0.184$ & $0.82$ & $0.24$ & $0.011$ \\
+Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $176$ & $824$ & $0.270$ & $0.176$ & $0.70$ & $0.14$ & $0.023$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \scriptsize
 \item \textit{Notes:} Evaluation pool: $\valCostPoolN$ always-loser
 firms with computable complete-Imhof bid-distribution features;
-positives are $\valCostNpos$ CADE-cobidders. The target is
+positives are $\valCostNpos$ always-loser cobidders. The target is
 \emph{adjudication-anchored exposure}, not cartel membership.
 ``Firms open,'' ``Tender items,'' and ``Bid rows'' report the
 forensic footprint that must be recovered before the rule's final
@@ -383,16 +385,17 @@ size. Full-observability benchmarks (bid-only, joint) require
 whole-pool bid recovery and are plotted as horizontal reference
 lines; the sequential points vary $K_1\in\{500,1{,}000,2{,}000,
 3{,}000,5{,}000\}$ and never exceed the joint upper bound;
-award-only is the zero-bid-cost baseline.}
+award-only is the zero-bid-cost baseline. No $K_1$ is optimal:
+at $k=500$ the recovered-positive count peaks at $K_1=1{,}000$.}
 \label{fig:cost_recall_frontier}
 \par\noindent\textit{Alt text:} A scatter-and-line plot. The
 horizontal axis is the reduction in recovered bid records relative
 to opening every firm's bid history; the vertical axis is recall of
 adjudication-anchored cobidder positives at a fixed forensic queue
 size. A curve of sequential operating points rises and then falls as
-$K_1$ grows from 500 to 5{,}000, peaking near $K_1=3{,}000$ where it
-touches a horizontal dashed line marking the joint full-observability
-upper bound; it never rises above that line. A second horizontal line
+$K_1$ grows from 500 to 5{,}000, staying below a horizontal dashed
+line marking the joint full-observability upper bound; it never rises
+above that line. A second horizontal line
 marks the lower bid-only full-observability benchmark, and a marker at
 the far right shows the zero-bid-cost award-only baseline at lower
 recall. The visual message is that opening fewer bid records costs
@@ -403,21 +406,26 @@ bid-row cost saving.
 
 \paragraph{Timing discipline.}
 The frontier above uses the full feature window, which is close to
-the adjudication target. A stricter timing audit restricts the
+the adjudication target. Because strict timing for the bid rerank is
+not available with the current LANCES features, the sequential
+frontier should be read as a retrospective cost-footprint design
+conditional on the validated incumbent ranking, not as a fully
+prospective deployment test. A stricter timing audit restricts the
 award-layer score to a 2009--2016 window and evaluates against later
 adjudication-anchored exposure; this is not a real-time field
 deployment, since the labels remain adjudication-based, but it
 disciplines the information used to rank firms before bid forensics
 are allocated. Under that restriction the \emph{award-only} score
-remains usable, with ROC falling to $0.73$ from the full-window
-$0.94$. The \emph{sequential} rule, by contrast, cannot be cleanly
-time-limited: the within-tender bid moments that drive the rerank
-cannot be restricted to a pre-target window without contaminating
-them with post-window tenders, so a strict-timing sequential frontier
-is \emph{blocked}. We state this rather than fabricate a number. The
-conclusion of Section~\ref{sec:screening_forensics} is therefore
-operational and bounded: cheap administrative records can structure
-the order in which expensive proof-producing evidence is assembled
-and, on the award layer, survive a timing holdout; the richer bid
-layer remains the place where conduct is evaluated, and its strict
-timing properties cannot be certified here.
+remains usable on the training-AL pool, with ROC $0.684$ against the
+full-window $0.761$. The \emph{sequential} rule, by contrast, cannot
+be cleanly time-limited: the within-tender bid moments that drive the
+rerank cannot be restricted to a pre-target window without
+contaminating them with post-window tenders, so a strict-timing
+sequential frontier is \emph{blocked}. We state this rather than
+fabricate a number. The conclusion of
+Section~\ref{sec:screening_forensics} is therefore retrospective and
+bounded: cheap administrative records can structure the order in
+which expensive proof-producing evidence is assembled and, on the
+award layer, survive a timing holdout; the richer bid layer remains
+the place where conduct is evaluated, and its strict timing
+properties cannot be certified here.

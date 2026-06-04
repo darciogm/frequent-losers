@@ -1,3 +1,4 @@
+% REVISED: canonical-target reframe 2026-06-04
 \section{Costly Proof and Observable Awards}
 \label{sec:setting_layers}
 
@@ -95,8 +96,8 @@ The \emph{bid layer} is the forensic-recoverable layer. BEC
 preserves per-bidder offers, timestamps, and bid-revision
 sequences in the LANCES export. Those records support
 bid-distribution forensics: within-tender dispersion, skewness,
-spread, distance from the winning bid, and related
-Imhof--Wallimann-style features
+spread, distance from the winning bid, and related transparent
+bid-moment features inspired by Imhof--Wallimann-style screens
 \citep{imhof2018screening,imhof2019detecting}, including
 machine-learning variants that combine these bid moments at scale
 \citep{huber2019machine,wallimann2023machine}. But these features
@@ -148,19 +149,23 @@ screen is useful, it is because it can move investigative
 attention before the completed adjudication record exists.
 
 The adjudication record creates two objects with different
-roles. Direct CADE defendants are legal membership anchors: firms
+roles. Direct CADE defendants are the legal anchors: firms
 named in adjudicated procurement-cartel cases and matched to BEC
 participant records. They locate environments where legal process
 established cartel conduct, but they are not the natural target of
 a zero-win loser-side statistic---defendants may occupy
 winner-side, allocation, or rotating roles, and a screen built
 from repeated losing should not be judged as if it were a generic
-cartel-membership detector.
+membership classifier over adjudicated defendants.
 
-The validation target is narrower. A cobidder is an always-loser
-firm that appears in at least one BEC tender-item with a direct
-CADE defendant, yielding $\valCobidders$ always-loser cobidders.%
-Cobidder status is not legal membership or a latent truth about
+The validation target is narrower. A cobidder is a unique
+always-loser firm that shares at least one BEC tender-item with a
+BEC-active direct CADE defendant, yielding $\valMainCobidders$
+always-loser cobidders. The frequent-loser flag is not used to
+construct the label; of the $\valMainCobidders$ cobidders,
+$\valMainCobFL$ are frequent losers and $\valMainCobNonFL$ are
+not.%
+\ Cobidder status is not legal membership or a latent truth about
 agreement. It is an adjudication-anchored exposure label: the firm
 is observed on the losing side near a legally established cartel
 anchor, appropriate for evaluating forensic priority, not
@@ -201,7 +206,7 @@ All BEC participants & $\valBECfirms$ firms & Outer firm universe for award-reco
 Always-losers & $\valAlwaysLosers$ firms & Zero-win stratum in which the award-layer screen ranks loser-side exposure. & Screening stratum. \\
 Frequent losers & $\valFL$ firms & Operational first-stage flag within always-losers; not a legal category. & Operational flag; not a legal category. \\
 Direct CADE defendants in BEC & $\valDirectCADE$ firms & Legal anchors from adjudicated procurement-cartel cases. & Legal anchor. \\
-Always-loser cobidders & $\valCobidders$ firms & Firms losing alongside direct defendants; validation target. & Exposure label; not membership. \\
+Always-loser cobidders & $\valMainCobidders$ firms & Always-losers sharing a tender-item with direct defendants; main validation target. & Exposure label; not membership. \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}

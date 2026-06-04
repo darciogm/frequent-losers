@@ -67,10 +67,15 @@ tlog(sprintf("V22 outputs=%s", OUTS))
 # ---- CADE ground truth ------------------------------------------------------
 norm_cnpj <- function(x) sprintf("%014.0f", as.numeric(x))
 
-cobid <- fread(file.path(BASE, "data/processed/cade_fl_cobidders.csv"))
-# authoritative key = códigofornecedor (firm_cnpj collapses 2 empty-CNPJ rows).
-cobid_codes <- unique(sprintf("%014.0f", as.numeric(cobid[["códigofornecedor"]])))
-stopifnot(length(cobid_codes) == 193L)
+# canonical broad AL cobidder label (651, reproducible, FL never used):
+# positives = rows with broad_cobidder==1 in the canonical reproducible file
+# (always-losers, direct defendants already excluded). Replaces the static
+# narrow cade_fl_cobidders.csv (193 rows, FL-only, irreproducible).
+cobid <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+# authoritative key = códigofornecedor (same join key as firm_tender_map).
+cobid_codes <- unique(sprintf("%014.0f",
+                              as.numeric(cobid[broad_cobidder == 1L][["códigofornecedor"]])))
+stopifnot(length(cobid_codes) > 0L)
 
 xm <- fread(file.path(BASE, "data/processed/cade_bec_crossmatch.csv"))
 xm[, firm_code := norm_cnpj(firm_cnpj)]
@@ -162,8 +167,9 @@ build_holdout <- function(train_years, test_years) {
   # Two always-loser definitions:
   #  * always_loser_train_s53: W_train==0 over EVERY firm that ever appears in
   #    BEC (entrants with T_train=0 included). This reproduces script 53's pool
-  #    (n=21,819, npos=193, threshold=7) and is the definition used for the
-  #    "training always-loser" headline so the locked numbers reproduce.
+  #    (n=21,819, threshold=7); npos now = the canonical broad AL cobidder label
+  #    (651, reproducible, FL never used) and is the definition used for the
+  #    "training always-loser" headline.
   #  * always_loser_train: W_train==0 AND T_train>0 (genuinely observed losing
   #    in the training window) -- the strict rankable definition.
   d[, always_loser_train_s53 := as.integer(W_train == 0L)]
@@ -320,7 +326,7 @@ write_strict_tex <- function(dt, path) {
             dt$threshold_train[1], dt$threshold_full[1]),
     "\\bottomrule","\\end{tabular}",
     "\\begin{minipage}{\\linewidth}\\vspace{2pt}\\footnotesize",
-    "\\textit{Notes:} Score $=\\log(1+\\text{2009--2016 losses})$. Positives are 193 adjudicated cobidders evaluated in the test window. The zero-win-both row leaks future wins (always-loser status across both windows) and is shown only for comparison.",
+    sprintf("\\textit{Notes:} Score $=\\log(1+\\text{2009--2016 losses})$. Positives are the %d adjudicated always-loser cobidders (canonical broad reproducible label) evaluated in the test window. The zero-win-both row leaks future wins (always-loser status across both windows) and is shown only for comparison.", length(cobid_codes)),
     "\\end{minipage}","\\end{table}")
   writeLines(lines, path)
 }
@@ -486,7 +492,7 @@ audit <- data.table(
   notes = c(
     "Headline construct validity; never a timing claim",
     "Leaks future wins via always-loser status; sensitivity only",
-    "Reproduces script 53 strict pool (n=21819, npos=193)",
+    "Reproduces script 53 strict pool (n=21819); canonical broad AL cobidder label (651, reproducible, FL never used)",
     "Excludes score-0 entrant ties at the bottom",
     "T_train=0 & T_test>0; structural blind spot",
     "DAY_LEVEL_TIMING_UNAVAILABLE; documented, not estimated",

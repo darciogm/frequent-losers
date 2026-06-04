@@ -1,15 +1,17 @@
 === 10_cost_recall_frontier.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-03 15:02:16  RAM_free=20Gi  RF_trees=500 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-04 16:23:56  RAM_free=20Gi  RF_trees=500 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 
 ========== STAGE A. POOL + RF (CNPJ-keyed) ========== 
-cobidders=192  direct_defendants=47  positives(after excl)=191 
-Pool A (always-loser complete-Imhof, CNPJ-keyed): N=16,772  positives=190 
-Pool B (all always-losers): N=16,836  positives=190 
+cobidders=651  direct_defendants=47  positives(after excl)=651 
+Pool A (always-loser complete-Imhof, CNPJ-keyed): N=16,772  positives=651 
+Pool B (all always-losers): N=16,836  positives=651 
 re-running RF (5-fold, seed=20260603, ranger 500 trees) keyed by CNPJ ... 
-RF re-run AUC: award_cont=0.9384  award_FL14=0.9234  bid_RF=0.8860  combined_RF=0.9567 
-validation targets: bid_RF~0.888  combined_RF~0.962 
-  [stage A_pool_rf                     ] elapsed=   5.8s  RSS=474 MB 
+RF re-run AUC: award_cont=0.7603  award_FL14=0.6878  bid_RF=0.7106  combined_RF=0.7505 
+historical (193-label) reference AUCs: bid_RF~0.888  combined_RF~0.962 (informational; broad-label deviations expected) 
+  (info) bid_RF AUC 0.7106 deviates from historical 193-label 0.888 (expected under broad label) 
+  (info) combined_RF AUC 0.7505 deviates from historical 193-label 0.962 (expected under broad label) 
+  [stage A_pool_rf                     ] elapsed=  14.7s  RSS=603 MB 
 
 ========== STAGE B. COST DENOMINATORS (DuckDB) ========== 
 building per-item full-tender n_bids view (imhof n_bids; missing item -> 1 bid row) 
@@ -17,56 +19,57 @@ per-firm cost aggregates: 16772 firms
 building firm->tender-item edge cache with full-tender n_bids ... 
 edge rows (Pool A firm x tender-item): 163,264 
 distinct tender-items touched by Pool A: 116,112 (total full bid rows if all opened=3,393,915) 
-  [stage B_cost_caches                 ] elapsed=   6.4s  RSS=948 MB 
+  [stage B_cost_caches                 ] elapsed=  15.7s  RSS=1025 MB 
 --- full-observability baseline (S = full Pool A, N=16772) --- 
-  [stage B_full_obs                    ] elapsed=   6.5s  RSS=948 MB 
+  [stage B_full_obs                    ] elapsed=  15.7s  RSS=1025 MB 
 
 ========== STAGE C. RANKING RULES + GRIDS ========== 
 K1 grid: 250,500,1000,1500,2000,3000,5000,7500,16772 
 final-k grid: 100,250,500,1000 ; feasible (k<=K1) combos: 33 
-  [stage C_rules_grids                 ] elapsed=   6.5s  RSS=948 MB 
+  [stage C_rules_grids                 ] elapsed=  15.7s  RSS=1025 MB 
 
 ========== STAGE D. FRONTIER GRID ========== 
-FL14 survivor pool size=2730  positives_in=190 
+FL14 survivor pool size=2730  positives_in=341 
 computing random-survivor baseline (B=1000) ... 
-  [stage D_frontier_grid               ] elapsed=  18.2s  RSS=577 MB 
+  [stage D_frontier_grid               ] elapsed=  25.6s  RSS=707 MB 
 frontier grid rows: 86 
-  [stage D_attach                      ] elapsed=  18.2s  RSS=577 MB 
+  [stage D_attach                      ] elapsed=  25.6s  RSS=707 MB 
 
 ========== K1=2000 REPRODUCTION ========== 
 seq award->bid @ K1=2000: 
-  k=100   TP=29  recall=0.153  precision=0.290  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
-  k=250   TP=63  recall=0.332  precision=0.252  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
-  k=500   TP=91  recall=0.479  precision=0.182  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
-  k=1000  TP=127  recall=0.668  precision=0.127  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
-(target: seq recovers 131/193 cobidders firm-footprint; precision@500 seq 0.192; recall@1000 seq 0.679) 
-Pool A positives=190 (vs 193 raw, vs 190 in 09-cache; differs by defendant-exclusion) 
-  [stage E_defs                        ] elapsed=  18.2s  RSS=577 MB 
+  k=100   TP=32  recall=0.049  precision=0.320  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
+  k=250   TP=70  recall=0.108  precision=0.280  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
+  k=500   TP=116  recall=0.178  precision=0.232  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
+  k=1000  TP=185  recall=0.284  precision=0.185  firms_opened=2000  reduce_firms=88.1%  reduce_items=33.6%  reduce_bidrows=32.7% 
+(historical 193-label reference: seq recovered 131/193 cobidders firm-footprint; precision@500 seq 0.192; recall@1000 seq 0.679 -- informational, broad-label results differ) 
+Pool A positives=651 (canonical broad AL cobidder label, 651 before defendant-exclusion/feature-support) 
+  [stage E_defs                        ] elapsed=  25.7s  RSS=707 MB 
 
 ========== STAGE E. MAIN TABLE 6 ========== 
 --- Table 6 Panel A (k=500) --- 
-  [stage E_table6                      ] elapsed=  18.3s  RSS=577 MB 
+  [stage E_table6                      ] elapsed=  25.7s  RSS=707 MB 
 
 ========== STAGE F. FIGURES ========== 
 wrote fig_3_cost_recall_frontier.pdf 
 wrote 5 appendix figures 
-  [stage F_figures                     ] elapsed=  19.3s  RSS=588 MB 
+  [stage F_figures                     ] elapsed=  26.6s  RSS=716 MB 
 
 ========== STAGE G. BASELINES / OPERATING POINTS / CASE-HOLDOUT ========== 
 --- award-only survivor recall vs random, by K1 (k=500) --- 
-case linkage: 147/190 positives linked; cases: 
-  08700.004617/2013-41   : 104 
-  08012.002222/2011-09   : 18 
-  08012.010022/2008-16   : 14 
-  08700.005876/2019-85   : 9 
-  08700.005789/2015-02   : 1 
-  08700.007278/2015-17   : 1 
+case linkage: 651/651 positives linked; cases: 
+  08700.004617/2013-41   : 203 
+  08700.005789/2015-02   : 174 
+  08700.007278/2015-17   : 104 
+  08012.002222/2011-09   : 93 
+  08012.010022/2008-16   : 55 
+  08700.005876/2019-85   : 17 
+  08012.001273/2010-24   : 5 
 --- case-holdout (seq award->bid, k=500) --- 
-leave-largest-case-out: largest=08700.004617/2013-41 removes 104 positives; remaining=86; seq K1=2000 k=500 recovers 29 (recall=0.337) 
+leave-largest-case-out: largest=08700.004617/2013-41 removes 203 positives; remaining=448; seq K1=2000 k=500 recovers 61 (recall=0.136) 
 
 --- timing: award-only strict 2009-2016 award score --- 
-award-only AUC: strict 2009-16 score=0.7300  vs full-window=0.9384 
-  [stage G_baselines                   ] elapsed=  19.8s  RSS=648 MB 
+award-only AUC: strict 2009-16 score=0.6454  vs full-window=0.7603 
+  [stage G_baselines                   ] elapsed=  27.2s  RSS=778 MB 
 
 ========== DONE ========== 
 outputs: 
@@ -84,4 +87,4 @@ outputs:
   /home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/cache/cost_recall_frontier_full.csv 
   /home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/cache/cost_frontier_poolA_scores.csv 
   /home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/figures/main/fig_3_cost_recall_frontier.pdf 
-elapsed total=19.8s 
+elapsed total=27.2s 
