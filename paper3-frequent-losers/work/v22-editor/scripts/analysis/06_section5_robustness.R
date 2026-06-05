@@ -114,7 +114,7 @@ if (cfg$cade_layout == "bec_csv") {
   direct_codes_raw <- unique(norm14(xm$firm_cnpj))
 } else {
   xm <- as.data.table(read_parquet(cfg$cade$direct_defendants))
-  .dcol <- intersect(c("códigofornecedor","cnpj","firm_cnpj","cnpj14"), names(xm))[1]
+  .dcol <- intersect(c("códigofornecedor","cnpj","firm_cnpj","cnpj14","firm_id"), names(xm))[1] # SOURCE-CONFIG ADAPTATION (firm_id = 14-digit estab CNPJ in cade_link_v3, fix 2026-06-05)
   if (is.na(.dcol)) stop("direct_defendants_federal: no recognizable CNPJ column")
   direct_codes_raw <- unique(norm14(xm[[.dcol]]))
 }

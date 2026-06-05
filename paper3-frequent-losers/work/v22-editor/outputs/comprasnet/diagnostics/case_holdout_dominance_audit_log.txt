@@ -1,5 +1,5 @@
 === 04_case_holdout_dominance.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-05 19:31:20  RAM_free=20Gi 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-05 19:41:32  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 
 ========== A. CANDIDATE SET ========== 
@@ -22,14 +22,14 @@ NOTE: 0 unlinked positives stay in the FULL validation but cannot be assigned to
   08012.010022/2008-16   : 8 
   08700.005876/2019-85   : 4 
 LARGEST case = 08700.004617/2013-41 (69 positives, 35.4% of linked, 35.4% of all positives) 
-  [stage A_candidate_set           ] elapsed=   0.3s  RSS=256 MB 
+  [stage A_candidate_set           ] elapsed=   0.4s  RSS=256 MB 
 
 ========== B0. defendant contact O_i + environment (DuckDB) ========== 
 firms with O_i>0 (any defendant contact): 4,191 
 firm x case contact rows: 4,968 
 positive-firm participation rows (with env): 15,036 
 positive participations with modality matched: 98.0% 
-  [stage B0_contact_env            ] elapsed=  12.8s  RSS=281 MB 
+  [stage B0_contact_env            ] elapsed=  10.6s  RSS=282 MB 
 
 ========== A. LEAVE-ONE-CASE-OUT (LOCO) ========== 
 --- LOCO per-case (sorted by positives) --- 
@@ -37,7 +37,7 @@ cases too_sparse (<5 pos): 1 of 7
 LOCO PR-AUC : mean=0.003 min=0.000 max=0.008 (over 7 evaluable) 
 LOCO recall@500 : mean=0.021 min=0.000 max=0.101 
 LOCO ROC-AUC : mean=0.690 min=0.440 max=0.777 (non-too-sparse: mean=0.731) 
-  [stage A_loco                    ] elapsed=  13.5s  RSS=393 MB 
+  [stage A_loco                    ] elapsed=  11.4s  RSS=393 MB 
 wrote fig_leave_one_case_out_distribution.pdf 
 
 ========== B. CASE-DOMINANCE SUMMARY ========== 
@@ -55,20 +55,20 @@ precision@500: firm-weighted=0.0160   case-balanced(mean over cases)=0.0023
 
 ----- top-k case coverage (# distinct cases among TP) ----- 
 wrote fig_case_positive_concentration.pdf 
-  [stage B_case_dominance          ] elapsed=  14.3s  RSS=408 MB 
+  [stage B_case_dominance          ] elapsed=  12.2s  RSS=408 MB 
 
 ========== C. ENVIRONMENT DOMINANCE ========== 
 --- environment_dominance_summary --- 
 modality robustness: convite branch SKIPPED (source=comprasnet has no convite; gate G5 pure pregao) 
 --- environment robustness (MAIN metrics) --- 
-  [stage C_environment             ] elapsed=  15.1s  RSS=415 MB 
+  [stage C_environment             ] elapsed=  13.0s  RSS=411 MB 
 
 ========== D. LEAVE-ONE-DEFENDANT-GROUP-OUT ========== 
 positive x defendant contact rows: 225 ; distinct defendants touching a positive: 22 
 defendants linked to >=5 distinct positives (feasible LODGO groups): 13 of 22 
 --- leave-one-defendant-group-out (top groups) --- 
 LODGO non-sparse: 13 groups; mean ROC-AUC=0.772 (non-sparse), mean rec@500=0.030 
-  [stage D_lodgo                   ] elapsed=  22.4s  RSS=356 MB 
+  [stage D_lodgo                   ] elapsed=  19.9s  RSS=352 MB 
 
 ========== E. CLUSTERED RANDOMIZATION INFERENCE ========== 
 RI tight (buyer x item_group x year): 170 positive-bearing cells; frac positives in shufflable(>=2 firm) cells = 0.918 
