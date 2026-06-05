@@ -1,0 +1,227 @@
+% DRAFT SKELETON — Phase 3 prep, numbers pending federal run chain (Phase 1/2). NOT \input anywhere.
+% ============================================================================
+% Standalone draft of the proposed main-text section "The Audit on a Second
+% Platform". Placement is decision D-iii (pending). DO NOT \input. DO NOT edit
+% values.tex; every numeric claim below is a \valTODO placeholder carrying an
+% inline % TODO_NUMBER tag for the lead to wire into values.tex after the
+% federal run chain completes. Voice, macro style, and table conventions mirror
+% sec04_validation_submission.tex and sec05_cobidder_type_submission.tex.
+%
+% Placeholder macro convention used here (defined in DRAFT_MACROS block below
+% only so this file compiles standalone; the lead should REPLACE these with
+% real values.tex bindings and DELETE the block before integration):
+% ----------------------------------------------------------------------------
+\providecommand{\valTODO}{\textbf{[??]}}
+% ============================================================================
+
+\section{The Audit on a Second Platform}
+\label{sec:comparative}
+
+The validation in Section~\ref{sec:validation} draws a boundary on
+one platform: under a reproducible, non-circular label, the
+award-layer score concentrates adjudication-anchored loser-side
+exposure in the raw data, but almost nothing survives once
+procurement opportunity is held fixed, and the prospective ranking
+collapses outside the incumbent pool. The defensible product is not
+the screen but the audit---the decomposition that tells an agency
+how far a cheap award-layer statistic can be trusted before costly
+bid-layer work begins. A decomposition is only worth carrying,
+however, if it travels. This section runs the same audit, unchanged,
+on a second procurement system, and asks what the protocol returns
+where the institutions differ. The exercise tests portability of the
+\emph{method} and of the loser-side construct; it is not an
+independent cartel universe, and we read it as neither confirmation
+nor refutation of the legal status of any firm.
+
+\subsection{A Different Procurement System}
+\label{sec:comparative_setting}
+
+The federal platform differs from BEC--SP on the dimensions that
+matter for the audit. ComprasNet is a single national system: where
+BEC is one state-level platform inside the federal legal frame,
+ComprasNet aggregates procuring units (UASGs) across the whole
+federal administration. Its modality mix is also narrower. The
+federal panel is effectively pure Preg\~ao---about $15\%$ regular
+electronic auction and $85\%$ price-registration (SRP, \emph{sistema
+de registro de pre\c{c}os})---and the sealed-bid Convite modality
+that supplies the institutional contrast in the main text is
+extinct federally. The audit therefore runs on a panel with no
+modality margin to stratify on, which sharpens rather than weakens
+the test: the loser-side construct must earn its keep without the
+modality variation that organized the BEC reading. The observable
+window is $2013$--$2019$, the federal-overlap window with the BEC
+panel.
+
+The observability gap is the second contrast, and it is on-thesis.
+The public federal data expose participation and the winner flag,
+but no bid microdata---there is no federal analogue to the BEC
+\texttt{LANCES} bid ladder. A screen that reads only the award layer
+is exactly the screen one \emph{can} build here; the bid-layer
+forensic step that the main text positions downstream of the screen
+cannot be constructed from the public federal release at all. The
+federal panel is thus the natural stress test for a cheap award-layer
+audit: it is the environment where bid-microdata screens are
+unavailable, so the question of how far the award layer alone can be
+trusted is not academic but binding.
+
+\subsection{Data, Label, and Linkage}
+\label{sec:comparative_data}
+
+The federal panel comprises $\valTODO$ participation rows % TODO_NUMBER \valFedPanelRows (51.0M)
+across $\valTODO$ distinct CNPJ-14 firms, % TODO_NUMBER \valFedFirms (92,600)
+built from the Comptroller-General (CGU) open bulk dumps and
+restricted to the Preg\~ao modalities (regular and SRP) under the
+canonical schema used throughout the main text. Of these,
+$\valTODO$ are always-losers---firms with a win rate of zero over % TODO_NUMBER \valFedAlwaysLosers (35,943)
+the observed window. Applying the \emph{same} IQR rule used for
+BEC---$\textit{median} + 1.5\cdot\textit{IQR}$ on the tenders-count
+distribution of always-losers, not the Tukey upper-quartile
+rule---re-derives a federal frequent-loser threshold of $\valTODO$ % TODO_NUMBER \valFedFLthreshold (32)
+(against $14$ on BEC), and the canonical federal frequent-loser
+count above that threshold is $\valTODO$ firms. The threshold is % TODO_NUMBER \valFedFLcount (6,491)
+re-estimated from the federal data, not transported: the construct
+is the rule, not the cutoff value, exactly as the rules of
+engagement in the main text require.
+
+The legal anchors are the \emph{same} CADE cases that anchor the BEC
+validation---$\valTODO$ numbered adjudicated procurement-cartel % TODO_NUMBER \valFedAudCases (7)
+processes, with one unnumbered summary case excluded for lack of
+firm-level identification. This is the honest statement of what the
+federal exercise is: a second platform with \emph{partially
+overlapping} legal anchors, not a fresh cartel population. The
+federal evidence therefore tests whether the audit protocol and the
+loser-side construct \emph{port} across procurement systems; it does
+not assemble an independent ground truth, and we do not read it as
+one. Direct defendants are matched to federal participant records by
+the canonical establishment-anchored CNPJ rule. Expanding the
+anchored tender-items yields $\valTODO$ federal cobidders under the % TODO_NUMBER \valFedAudCobiddersAll (3,851)
+broad rule and $\valTODO$ under the broad always-loser restriction % TODO_NUMBER \valFedAudCobiddersBroadAL (196)
+that mirrors the main-text validation target; the frequent-loser
+flag is never used to build the label, so the federal validation is
+non-circular in the score by the same construction as the BEC
+validation.
+
+\subsection{Side-by-Side Audit Verdict}
+\label{sec:comparative_verdict}
+
+Table~\ref{tab:comparative_audit} runs each stage of the
+Section~\ref{sec:validation} battery on both platforms and reports
+the comparable quantity in each column. The point of the table is
+not the absolute levels but the \emph{shape} of the audit: whether
+each successive discipline---opportunity adjustment, within-stratum
+restriction, power-bounding, matched permutation, label-frozen
+timing, case concentration, negative controls---moves the federal
+verdict the way it moves the BEC verdict.
+
+\begin{table}[htbp]
+\centering
+\caption{The Audit on Two Platforms: BEC--SP versus ComprasNet}
+\label{tab:comparative_audit}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{5.4cm}cc}
+\toprule
+Audit stage & BEC--SP & ComprasNet \\
+\midrule
+Raw award-layer ROC-AUC & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpRawScoreAUC | \valFedAudRawAUC
+Label-blind opportunity expectation (AUC) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorExpLB | \valFedAudLabelBlindAUC
+Within-stratum residual (AUC, MEDIUM cells) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpWithinAUC | \valFedAudWithinAUC
+Power-bounded residual (det.\ prob.\ @ true AUC $0.55$) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorPowerFive | \valFedAudPowerFive
+Matched-permutation $p$ (within-strata shuffle) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpPermCp | \valFedAudPermCp
+Label-frozen prospective timing (AUC) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorFrozenProspAUC | \valFedAudFrozenProspAUC
+Top-case concentration (share of positives) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valTopCasePosShare | \valFedAudTopCaseShare
+Negative-control verdict & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valTODO(BEC: generic geometry) | \valFedAudNegControlVerdict
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Each row is the comparable quantity from the
+Section~\ref{sec:validation} battery, re-run on the federal panel
+under the same definitions; the federal construction is detailed in
+\ref{app:federal_audit_submission}. Cobidder labels are
+adjudication-anchored exposure, not cartel membership, on both
+platforms; neither column ranks defendants. The federal panel has no
+sealed-bid modality, so no modality stratification is reported.
+PR-AUC is the lead metric for the rare-target rows; ROC-AUC is shown
+for comparability. Every cell is a placeholder pending the federal
+run chain (\valTODO).
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Interpretation}
+\label{sec:comparative_interpretation}
+
+% ----------------------------------------------------------------------------
+% CONDITIONAL DRAFT — two mutually exclusive paragraphs. After the federal run
+% chain resolves the within-stratum / permutation rows of
+% Table~\ref{tab:comparative_audit}, KEEP exactly one and DELETE the other.
+% Both obey the locked language rules: flags / screens / concentrates risk;
+% never detects / proves / outperforms. Neither makes a legal claim.
+% ----------------------------------------------------------------------------
+
+% --- DRAFT A: deflation replicates (federal residual also vanishes) ----------
+\paragraph{[Draft A --- deflation replicates.]}
+On the federal panel the audit returns the same verdict it returns
+on BEC. The raw award-layer score concentrates loser-side exposure
+($\valTODO$ ROC-AUC), but the concentration is again what % TODO_NUMBER \valFedAudRawAUC
+procurement opportunity already implies: the label-blind opportunity
+ranking reaches $\valTODO$ on its own, the within-stratum residual % TODO_NUMBER \valFedAudLabelBlindAUC
+collapses to $\valTODO$, and the matched-strata permutation does not % TODO_NUMBER \valFedAudWithinAUC
+reject ($p=\valTODO$). The deflation is platform-agnostic: the cheap % TODO_NUMBER \valFedAudPermCp
+screen's apparent reach is opportunity arithmetic on the federal
+system as well. What ports is the audit, not a deployable ranking.
+An agency on either platform that runs this decomposition learns,
+before opening any bid record, that loser-side concentration should
+not be used as a stand-alone prioritization device here---and on the
+federal platform that lesson is sharper still, because the bid-layer
+step that might follow the screen cannot be constructed from public
+data at all.
+
+% --- DRAFT B: residual survives federally (institution-coupled value) --------
+\paragraph{[Draft B --- residual survives.]}
+On the federal panel the audit returns a \emph{different} verdict at
+the margin that matters. The raw concentration is again largely
+opportunity arithmetic---the label-blind opportunity ranking reaches
+$\valTODO$ on its own---but unlike BEC a residual ordering survives % TODO_NUMBER \valFedAudLabelBlindAUC
+the within-stratum restriction ($\valTODO$, above the BEC chance % TODO_NUMBER \valFedAudWithinAUC
+level), the matched-strata permutation rejects ($p=\valTODO$), and % TODO_NUMBER \valFedAudPermCp
+the power calibration places this above the threshold the test can
+detect. We read this as institution-coupled screening value, not as
+detection: where the federal system removes the modality and
+bid-layer information that a richer platform exposes, a cheap
+loser-side screen retains residual concentration that the audit on
+BEC dissolves. The construct flags risk more informatively exactly
+where the cheaper information set binds. The same audit thus does
+double duty---it deflates the screen on one platform and locates
+residual value on another---which is the property a portable
+protocol should have.
+
+% ----------------------------------------------------------------------------
+
+\subsection{Observability as an On-Thesis Finding}
+\label{sec:comparative_observability}
+
+The two platforms differ in what they let an analyst see, and the
+differences are not nuisance---they are the finding. Item groups are
+not observed federally in the BEC sense: federal item codes are
+embedded in buyer-specific catalogs rather than a shared
+classification, so the item-group margin that the BEC audit
+stratifies on (the COARSE cell) has no clean federal counterpart,
+and the federal opportunity cells are built on the buyer$\times$year
+margins instead (\ref{app:federal_audit_submission}). The bid tier
+is absent entirely: no federal bid ladder means no bid-dispersion
+benchmark, no bid-layer forensic comparator, and no way to run the
+downstream costly-proof step on public data. Both gaps point the
+same way. The award-layer audit is precisely the audit that remains
+feasible where the richer information is missing, which is the
+common case for an enforcement agency staring at a national platform
+with participation records and little else. That the loser-side
+construct can be re-derived, the label re-anchored, and the full
+deflation battery re-run on a system with no bid microdata is itself
+the portability result: the cheap screen runs where the expensive
+screens cannot be built, and the audit tells the agency how far to
+trust it before the expensive screens---if they ever become
+available---are worth commissioning.

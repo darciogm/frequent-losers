@@ -674,8 +674,17 @@ keep_cols <- c("firm_id","T_i","W_i","score_i","fl14","cobidder","Y_broad","O_i"
                "n_items_total","n_buyers","n_years","n_item_groups",
                grep("^(E_i_|E_i_loo_|X_i_|X_i_loo_|Z_i_|log_E_|n_cells_|n_def_cells_|max_cell_rate_|share_in_def_cells_)",
                     names(ff), value=TRUE))
-fwrite(ff[, ..keep_cols], file.path(dir_cache, "firm_opportunity_adjusted_frame.csv"))
-say("wrote firm_opportunity_adjusted_frame.csv (%d firms, %d cols, anon firm_id, NO raw CNPJ)",
+# SOURCE-CONFIG ADAPTATION (Phase 1 chain-fix, 2026-06-05): GAP-2 disambiguation.
+# This is the contact>=2 SENSITIVITY frame, NOT the canonical primary frame. Write it
+# under a distinct name so it can NEVER be confused with 02's canonical
+# firm_opportunity_adjusted_frame.csv. (Note: 02b's `dir_cache` is the isolated
+# sensitivity_contact2/cache subdir, NOT the shared cfg$dirs$cache that 05/06/12/12b
+# read, so there is no actual overwrite today; this rename is belt-and-suspenders so a
+# future refactor pointing 02b at the shared cache can't silently swap the variant in.
+# Applied to BOTH sources: no consumer reads 02b's output under the old name in either
+# mode (grep of all scripts: only 02 & 02b write this basename; all readers take 02's).)
+fwrite(ff[, ..keep_cols], file.path(dir_cache, "firm_opportunity_adjusted_frame_contact2.csv"))
+say("wrote firm_opportunity_adjusted_frame_contact2.csv (%d firms, %d cols, anon firm_id, NO raw CNPJ)",
     nrow(ff), length(keep_cols))
 stamp("D_firm_frame")
 

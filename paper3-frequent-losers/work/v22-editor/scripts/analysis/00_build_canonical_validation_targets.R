@@ -453,6 +453,35 @@ fwrite(lab_all[, .(`códigofornecedor` = cnpj, broad_cobidder, conservative_broa
        file.path(D_CACH, "canonical_cobidders_broad.csv"))
 say("[write] outputs/cache/canonical_cobidders_broad.csv (raw keys, downstream joins)")
 
+# SOURCE-CONFIG ADAPTATION (Phase 1 chain-fix, 2026-06-05): GAP-1 emit.
+# FEDERAL ONLY: emit the cobidder->case map (already built here in `cobidder_case`,
+# the verbatim S3 join MIRRORING the BEC producer scripts/79_label_funnel.R:212-216).
+# Consumers and their exact column contract (VERIFIED by reading the consuming code):
+#   - 04_case_holdout_dominance.R:184-198 (federal branch) reads cnpj, proc (character),
+#     derives firm_code from cnpj; restricts to NUMBERED procs itself. Does NOT use is_AL.
+#   - 05_section5_profile_monotonicity.R:625-634 reads cnpj, proc. Does NOT use is_AL.
+#   - 06_section5_robustness.R:153-166 reads cnpj, proc, AND is_AL (line 159: `ccm[is_AL==1 | ...]`).
+# Union of consumer needs => columns {cnpj, proc, is_AL}, matching the BEC producer.
+# is_AL = always-loser status of the cobidder (loss.always_loser), 0 when absent.
+# Written to BOTH filenames the chain reads (04 wants the _federal suffix; 05/06 want
+# the bare name). BEC mode writes NOTHING here: BEC consumers read the legacy
+# output/label_funnel/case_cobidder_map.csv produced by 79 (R1 byte-identity preserved).
+if (cfg$source == "comprasnet") {
+  ccm_fed <- setDT(dbGetQuery(con, "
+    SELECT cc.cnpj AS cnpj, cc.proc AS proc,
+           COALESCE(CAST(l.always_loser AS INTEGER), 0) AS is_AL
+    FROM cobidder_case cc
+    LEFT JOIN loss l ON l.\"códigofornecedor\" = cc.cnpj"))
+  ccm_fed[, cnpj := as.character(cnpj)]
+  ccm_fed[, proc := as.character(proc)]
+  ccm_fed[is.na(is_AL), is_AL := 0L]
+  setorder(ccm_fed, cnpj, proc)
+  fwrite(ccm_fed, file.path(D_CACH, "case_cobidder_map_federal.csv"))  # consumed by 04
+  fwrite(ccm_fed, file.path(D_CACH, "case_cobidder_map.csv"))          # consumed by 05/06
+  say("[write] case_cobidder_map{_federal,}.csv (", nrow(ccm_fed),
+      " cobidder-case rows; cols cnpj,proc,is_AL; ", ccm_fed[is_AL==1L,.N], " AL) -> federal cache")
+}
+
 # ---- set comparisons (internal; archived file ONLY here) -----------------------
 set_static <- unique(cobS$cnpj)
 set_B      <- lab[broad_cobidder == 1L, cnpj]
