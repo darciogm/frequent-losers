@@ -58,7 +58,7 @@ ANALYSIS="$V22/scripts/analysis"
 CLASSIFY="$V22/scripts/build/r1_diff_classify.sh"
 VERDICTS="$V22/outputs/comprasnet/diagnostics/r1_extended_verdicts.csv"
 LOGDIR="$V22/outputs/comprasnet/logs/r1_extended"
-SNAPDIR="$V22/outputs/comprasnet/cache/r1_extended_baseline"   # snapshot of untracked baselines (federal cache tree, never a BEC path)
+SNAPDIR="$V22/outputs/comprasnet/cache/r1_extended_baseline"   # snapshot STORE for untracked BEC baselines; the dir itself lives under the comprasnet (non-BEC) tree so snapshots never collide with the BEC outputs they mirror
 
 # ----------------------------------------------------------------------------- args
 MODE="run"; ONLY=""; SKIP_FED_CHECK=0
@@ -71,6 +71,31 @@ for a in "$@"; do
     *) echo "unknown arg: $a" >&2; exit 2 ;;
   esac
 done
+
+# ----------------------------------------------------------------------------- --only ownership guard
+# 12 and 12b SHARE five audit_armor/ files (frozen_timing.csv + defendant_roles.csv
+# have 12b-owned schemas in the committed state; three more are 12b-overwritten).
+# Running 12 WITHOUT 12b would verify 12's bytes for files whose committed state is
+# 12b's -> false DIFF, and would leave the shared dir in 12's (non-committed) state.
+# Refuse any --only selection that includes 12 but not 12b.
+if [[ -n "$ONLY" ]]; then
+  _has12=0; _has12b=0
+  IFS=',' read -ra _onlyarr <<<"$ONLY"
+  for _x in "${_onlyarr[@]}"; do
+    [[ "$_x" == "12"  ]] && _has12=1
+    [[ "$_x" == "12b" ]] && _has12b=1
+  done
+  if [[ "$_has12" -eq 1 && "$_has12b" -eq 0 ]]; then
+    echo "ABORT: --only includes 12 without 12b." >&2
+    echo "       12 and 12b share five files under outputs/diagnostics/audit_armor/" >&2
+    echo "       (frozen_timing.csv + defendant_roles.csv carry 12b-owned schemas in the" >&2
+    echo "       committed state; granularity_sweep.csv + permutation_power_curve.csv +" >&2
+    echo "       audit_armor_macros.tex are 12b-overwritten). Verifying 12 alone would" >&2
+    echo "       false-DIFF against the committed 12b state and leave the shared dir in 12's" >&2
+    echo "       (non-committed) state. Re-run with --only=12,12b (or drop 12)." >&2
+    exit 2
+  fi
+fi
 
 # ============================================================================ MANIFEST
 # Each manifest row:  TAG | SCRIPT_FILE | REL_OUTPUT_PATH | HINT | EXPECT
@@ -202,22 +227,36 @@ read -r -d '' MANIFEST <<'EOF'
 # NOTE (TRAP): armor_flags.csv is written ONLY when ARMOR_FLAGS is non-empty
 # (degrade-gracefully). On a clean BEC run all components are present -> no flags
 # -> file absent. Classified new-expected (presence OK, absence OK; not a DIFF).
-# frozen_timing.csv is written on the d1/d2 frozen-timing branch (present in BEC).
+# NOTE (SHARED-OWNERSHIP): 12 ALSO writes frozen_timing.csv (5 cols) and
+# defendant_roles.csv (long labels), but 12b OVERWRITES both with a DIFFERENT
+# schema (frozen_timing 4 cols; defendant_roles short labels) and the committed
+# on-disk state is 12b's. They are therefore 12b-OWNED in this manifest and live
+# in the 12b block below; they are intentionally NOT listed here (verifying them
+# against 12's schema would FAIL against the committed 12b state). See the
+# shared-overwrite NOTE on the 12b block.
 12|12_audit_armor.R|outputs/diagnostics/audit_armor/leakage_check_cell_level.csv|plain|baseline
 12|12_audit_armor.R|outputs/diagnostics/audit_armor/granularity_sweep.csv|plain|baseline
 12|12_audit_armor.R|outputs/diagnostics/audit_armor/permutation_power_curve.csv|plain|baseline
-12|12_audit_armor.R|outputs/diagnostics/audit_armor/frozen_timing.csv|plain|baseline
-12|12_audit_armor.R|outputs/diagnostics/audit_armor/defendant_roles.csv|plain|baseline
 12|12_audit_armor.R|outputs/diagnostics/audit_armor/audit_armor_macros.tex|plain|baseline
 12|12_audit_armor.R|outputs/diagnostics/audit_armor/armor_flags.csv|plain|new-expected
 # --- 12b_audit_armor_fixup --------------------------------------------------
-# NOTE (TRAP): 12b OVERWRITES granularity_sweep.csv + permutation_power_curve.csv
-# + audit_armor_macros.tex in the SAME audit_armor/ dir as 12. It runs LAST so 12's
-# byte-identity is verified before 12b touches them; the post-12b state is the
-# committed manuscript state. armor_flags_12b.csv is conditional (new-expected).
+# NOTE (SHARED-OVERWRITE): 12b runs LAST and OVERWRITES FIVE files in the SAME
+# audit_armor/ dir that 12 also writes:
+#     granularity_sweep.csv         (12 writes, 12b overwrites)
+#     permutation_power_curve.csv   (12 writes, 12b overwrites)
+#     audit_armor_macros.tex        (12 writes, 12b overwrites)
+#     frozen_timing.csv             (12: 5 cols  -> 12b: 4 cols  [12b committed])
+#     defendant_roles.csv           (12: long labels -> 12b: short labels [12b committed])
+# Ownership: the COMMITTED manuscript state for all five is 12b's. 12b running
+# AFTER 12 means 12's bytes are verified (for the three it shares with the same
+# schema) before 12b touches them; for frozen_timing/defendant_roles the schemas
+# DIFFER, so only 12b's version is baselined here -- they are 12b-owned and were
+# removed from the 12 block above. armor_flags_12b.csv is conditional (new-expected).
 12b|12b_audit_armor_fixup.R|outputs/diagnostics/audit_armor/granularity_sweep.csv|plain|baseline
 12b|12b_audit_armor_fixup.R|outputs/diagnostics/audit_armor/permutation_power_curve.csv|plain|baseline
 12b|12b_audit_armor_fixup.R|outputs/diagnostics/audit_armor/audit_armor_macros.tex|plain|baseline
+12b|12b_audit_armor_fixup.R|outputs/diagnostics/audit_armor/frozen_timing.csv|plain|baseline
+12b|12b_audit_armor_fixup.R|outputs/diagnostics/audit_armor/defendant_roles.csv|plain|baseline
 12b|12b_audit_armor_fixup.R|outputs/diagnostics/audit_armor/armor_flags_12b.csv|plain|new-expected
 EOF
 
@@ -250,6 +289,7 @@ selected(){  # honor --only
 federal_live(){
   pgrep -f 'run_federal_chain' >/dev/null 2>&1 && return 0
   pgrep -f 'build_federal_price_panel' >/dev/null 2>&1 && return 0
+  pgrep -f -- '--source=comprasnet' >/dev/null 2>&1 && return 0
   return 1
 }
 

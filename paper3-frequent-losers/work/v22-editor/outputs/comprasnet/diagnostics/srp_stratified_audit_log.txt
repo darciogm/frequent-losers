@@ -1,5 +1,5 @@
 === 13_srp_stratified_validation.R  (SMOKE) === 
-host=DarcioWork  nproc=14  seed=20260605  date=2026-06-05 18:27:11 
+host=DarcioWork  nproc=14  seed=20260605  date=2026-06-05 18:56:45 
 SOURCE=comprasnet  (ComprasNet (federal, 2013-2019, pure Pregao)) 
 DATA=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/data/processed_comprasnet 
 SPILL=/tmp/duckdb_spill_srp13  DUCK_THREADS=2  DUCK_MEM=2GB 
@@ -25,7 +25,7 @@ stratum-active firm counts (firm_tender_map JOIN itemmap):
   phase n_firms_active n_AL_active n_cob_active n_def_active
 1     5          26353        6266           50           13
 2  9999          24433        4386           46           19
-  [stage B_stratum_assignment      ] elapsed=   5.8s  RSS=442 MB 
+  [stage B_stratum_assignment      ] elapsed=   7.0s  RSS=456 MB 
 AL firm x stratum membership rows: 10,652 
 
 ----- SMOKE verification: stratum counts vs feasibility scan ----- 
@@ -35,6 +35,6 @@ AL firm x stratum membership rows: 10,652
   NOTE: SMOKE scans a LIMIT-8M bid sample, so cobidder/defendant counts will be 
   BELOW the feasibility figures (those are full-window). Rough proportionality + correct 
   phase codes (5 / 9999) + clean modality-uniqueness assert are the smoke pass criteria. 
-  [stage SMOKE_DONE                ] elapsed=  10.6s  RSS=256 MB 
+  [stage SMOKE_DONE                ] elapsed=  12.6s  RSS=255 MB 
 
 SMOKE DONE -- full AUC/permutation NOT run (concurrent chain owns the machine). 

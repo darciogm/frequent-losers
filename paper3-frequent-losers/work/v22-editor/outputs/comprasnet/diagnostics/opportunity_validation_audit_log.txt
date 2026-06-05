@@ -54,3 +54,42 @@ wrote opportunity_common_support.csv (9 rule x def rows)
   unconditional exposure-only AUC (all AL) = 0.8974  (locked 0.946) 
   S5 Z_i ~ fl14: beta=-0.0236 (p=0.0826) ; Z_i ~ score_i: beta=-0.0100 (p=0.00877) 
   S6 strict-support sample: 34761 firms (pos=192) 
+wrote table_D_control_function_validation_full.csv (17 specs) 
+SEPARATION/non-convergence flags (npos=191 rare-event): S1 
+
+[F.repro] nested-logit increment over exposure-only (exposed firms, n=15134): 
+  exposure-only logit AUC=0.7544 ; +score AUC=0.7596 ; increment=+0.0052 ; DeLong Z=-1.309 p=0.191 
+  within-opp-stratum AUC: log_tc=0.4624  fl14=0.4779  (76: 0.7715/0.7709) 
+wrote table_C_opportunity_adjusted_validation.{csv,tex} 
+  [stage F_control_function        ] elapsed= 854.1s  RSS=3199 MB 
+
+----- G. observed vs expected by score bins ----- 
+wrote observed-vs-expected table + 2 figures 
+  [stage G_obs_vs_exp              ] elapsed= 854.5s  RSS=3209 MB 
+
+----- H. cell-preserving permutation ----- 
+  Approach B done (firm-exposure sim, B=2000) 
+  Approach C done (matched-exposure label perm, B=2000) 
+wrote permutation table + 2 figures + metrics cache 
+  OBS pr_auc=0.0142 roc=0.7443 prec500=0.0160 rec500=0.0410 fl_enrich=2.669 
+  null(B) pr_auc mean=0.0709 p=1.0000 ; null(C) pr_auc mean=0.0158 p=0.9055 
+  [stage H_permutation             ] elapsed=1026.7s  RSS=3373 MB 
+
+----- I. matched / stratified validation ----- 
+  mean within-stratum dP(cobidder) FL14 vs non = -0.0034 ; within-stratum AUC=0.4530 ; CEM AUC=0.6661 (n=15,133) ; support retained=100.0% 
+  [stage I_matched                 ] elapsed=1026.8s  RSS=3373 MB 
+
+----- J. case / buyer / item-group contribution ----- 
+  top case  08700.004617/2013-41 share of cobidder contacts = 47.8%   
+  top buyer 120097 share = 32.3%   
+  item-group decomposition: NA  (item-group NOT_OBSERVED on this platform (buyer-collinear composite item code)) 
+  TP@500 top case 08700.004617/2013-41 share = 93.8% 
+  [stage J_contribution            ] elapsed=1230.6s  RSS=2967 MB 
+
+========== VERDICT ========== 
+exposure-only AUC: unconditional(all AL)=0.8974 (locked 0.946) ; logit-within-exposed=0.7544 (locked 0.8467) 
+within-stratum log_tc=0.4624 (locked 0.7715) ; nested increment=+0.0052 DeLong p=0.191 (locked +0.0415, 2.08e-06) ; exposed n=15134 (locked 6040) ; npos=195 (locked 191) 
+VERDICT: C (signal disappears under exposure adjustment) 
+
+ALL DONE. 
+  [stage DONE                      ] elapsed=1230.6s  RSS=2967 MB 

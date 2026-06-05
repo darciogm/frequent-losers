@@ -11,6 +11,12 @@
 #   benign-tokenorder  : CSV identical after sorting the DISTINCT tokens inside
 #                        the known nondeterministic column `case_ids_broad`
 #                        (STRING_AGG(DISTINCT ...) with no ORDER BY).
+#                        INACTIVE FOR THIS MANIFEST: no R1-EXTENDED manifest row
+#                        carries the `tokenorder` hint (all rows are plain/pdf/
+#                        telemetry), so this branch is never reached by the
+#                        current harness. The code is retained for parity with
+#                        gate R1's taxonomy and for future manifests that emit a
+#                        case_ids_broad column.
 #   benign-telemetry   : timestamped telemetry log (*_audit_log.txt) whose only
 #                        diffs are run timestamps / RSS / a SOURCE= line.
 #   new-expected       : baseline absent AND file is on the known new-file list
@@ -48,11 +54,23 @@ case "$hint" in
   pdf)
     if command -v pdftotext >/dev/null 2>&1; then
       ct="$(mktemp)"; bt="$(mktemp)"
-      pdftotext -q "$cur"  "$ct" 2>/dev/null || true
-      pdftotext -q "$base" "$bt" 2>/dev/null || true
+      pdftotext -q "$cur"  "$ct" 2>/dev/null; rc_cur=$?
+      pdftotext -q "$base" "$bt" 2>/dev/null; rc_base=$?
+      # benign-metadata requires PROOF the content is genuinely identical: both
+      # extractions must succeed AND at least one must yield non-empty text.
+      # A failed extraction (or two empty extractions that trivially compare
+      # equal) cannot prove metadata-only -> DIFF.
+      if [[ "$rc_cur" -ne 0 || "$rc_base" -ne 0 ]]; then
+        rm -f "$ct" "$bt"
+        emit "DIFF" "PDF pdftotext extraction FAILED (cur rc=$rc_cur, base rc=$rc_base) -- cannot prove metadata-only"
+      fi
+      if [[ ! -s "$ct" && ! -s "$bt" ]]; then
+        rm -f "$ct" "$bt"
+        emit "DIFF" "PDF pdftotext extracted NO text from either file -- cannot prove metadata-only"
+      fi
       if cmp -s "$ct" "$bt"; then
         rm -f "$ct" "$bt"
-        emit "benign-metadata" "cairo_pdf metadata-only: pdftotext content IDENTICAL; byte diff in trailing stream (CreationDate/ID)"
+        emit "benign-metadata" "cairo_pdf metadata-only: pdftotext content IDENTICAL (both extractions succeeded, non-empty); byte diff in trailing stream (CreationDate/ID)"
       fi
       rm -f "$ct" "$bt"
       emit "DIFF" "PDF pdftotext content DIFFERS -- not metadata-only"
@@ -75,6 +93,8 @@ case "$hint" in
     ;;
 
   tokenorder)
+    # INACTIVE FOR THIS MANIFEST (no manifest row carries the tokenorder hint).
+    # Retained for gate-R1 parity / future manifests; see header note.
     # The only sanctioned nondeterminism is intra-cell DISTINCT-token ORDER in
     # the column `case_ids_broad` (STRING_AGG DISTINCT, no ORDER BY). Compare
     # after sorting the semicolon/comma-separated tokens within that column.

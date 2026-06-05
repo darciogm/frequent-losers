@@ -105,6 +105,21 @@ MANU_BEC  <- 41444L  # manuscript all-BEC firms (BEC reference; federal logs onl
 
 pad14 <- function(x){ x <- gsub("[^0-9]", "", as.character(x)); ifelse(x == "", NA_character_, formatC(x, width = 14, flag = "0")) }
 
+# SOURCE-CONFIG ADAPTATION (Phase 1 label-fix, 2026-06-05): modality string is
+# cfg-driven (ComprasNet is pure Pregao; BEC pools Convite+Pregao). BEC renders
+# byte-identical to the historical hardcode (gate R1): MODALITY_RULE_FULL =
+# "Convite+Pregao (2,3)", MODALITY_RULE = "Convite+Pregao". Federal renders the
+# honest equivalent from cfg$has_convite / cfg$phase_codes (no convite in panel).
+.mod_codes <- paste(unlist(cfg$phase_codes), collapse = ",")  # bec "2,3" ; fed "5,9999"
+if (isTRUE(cfg$has_convite)) {
+  MODALITY_RULE      <- "Convite+Pregao"
+  MODALITY_RULE_FULL <- paste0(MODALITY_RULE, " (", .mod_codes, ")")
+} else {
+  MODALITY_RULE      <- "Pregao (incl. SRP)"               # pure Pregao + SRP, no convite
+  MODALITY_RULE_FULL <- paste0(MODALITY_RULE, " (", .mod_codes, ")")
+}
+say("[modality] rule=", MODALITY_RULE_FULL, " (has_convite=", cfg$has_convite, ")")
+
 # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): CADE input-normalization branch
 # keyed on cfg$cade_layout, mapping either layout into the same internal frames:
 #   cross : data.table(cnpj, proc)  -- defendant CNPJ (14-digit estab) x case
@@ -432,7 +447,7 @@ NAc <- NA_character_
 tabA <- rbindlist(list(
   list(sample_name = "Full CADE legal portfolio",
        case_window = "2009-2019 conduct (CADE rulings)", decision_date_rule = "any",
-       bec_window = "2009-2019", modality_rule = "Convite+Pregao (2,3)",
+       bec_window = "2009-2019", modality_rule = MODALITY_RULE_FULL,  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix, 2026-06-05)
        item_rule = "all defendant tender-items", direct_defendant_definition = "CADE legal defendant",
        number_cade_cases = uniqueN(cart$proc), number_legal_firm_defendants = 65L,
        number_bec_active_direct_defendants = n_def_cross, number_defendant_tender_items = n_def_item_ti,
@@ -442,35 +457,35 @@ tabA <- rbindlist(list(
        number_frequent_loser_cobidders = n_FL, screen_threshold = "FL14 (tenders_count>=14)",
        exclusions = "defendants, -1 sentinel", reason_for_difference_from_main_target = "(reference portfolio)",
        notes = "65 legal defendants not reproducible from carteis csv (cnpj col empty)"),
-  list("BEC-linked CADE portfolio", "2009-2019 conduct", "any", "2009-2019", "Convite+Pregao",
+  list("BEC-linked CADE portfolio", "2009-2019 conduct", "any", "2009-2019", MODALITY_RULE,
        "all defendant tender-items", "crossmatch CNPJ present in firm_tender_map",
        uniqueN(cart$proc), 65L, n_def_ftm, n_def_item_ti, "win_rate==0", n_AL,
        "broad: shared tender-item", n_FL, nrow(cob_stat[, .N, by = cnpj]), n_FL,
        "FL14", "defendants, -1 sentinel",
        "BEC-active subset (41 ftm-active of 48 crossmatch)", "ftm-active defendants only"),
   list("Main validation target (broad AL cobidders)", "2009-2019 conduct",
-       "any", "2009-2019", "Convite+Pregao", "any shared tender-item",
+       "any", "2009-2019", MODALITY_RULE, "any shared tender-item",
        "crossmatch CNPJ in firm_tender_map", uniqueN(cart$proc), 65L, n_def_ftm, n_def_item_ti,
        "win_rate==0", n_AL, "broad: shared tender-item", n_FL, nrow(cob_stat[, .N, by = cnpj]),
        n_FL, "FL14 is the score, NOT a label input", "defendants, -1 sentinel",
        "(this IS the main target)",
        "fully scripted from current data; FL status never used to define the label"),
   list("Archived narrow file (INTERNAL COMPARISON ONLY)", "2009-2019 conduct",
-       "any", "2009-2019", "Convite+Pregao", "narrow cartel-tender restriction (undocumented)",
+       "any", "2009-2019", MODALITY_RULE, "narrow cartel-tender restriction (undocumented)",
        "CADE direct defendant", uniqueN(cart$proc), 65L, NA_integer_, NA_integer_,
        "win_rate==0", NA_integer_, "narrow: cartel-tender (NOT reproducible)", n_cob_file,
        NA_integer_, n_cob_file, "FL-only (circular for FL score)", "defendants",
        "NOT a submitted label; internal set comparison only",
        "static cade_fl_cobidders.csv; FL-only; builder absent; excluded from submitted tables"),
   list(cons_sample_name, cons_case_window,  # TARGET-QUALITY FIX (Phase 1, 2026-06-05): dynamic conservative-rule strings
-       cons_date_rule, "2009-2019", "Convite+Pregao", "any shared tender-item",
+       cons_date_rule, "2009-2019", MODALITY_RULE, "any shared tender-item",
        "crossmatch CNPJ in firm_tender_map", n_cons_cases, NA_integer_, n_cons_def, n_cons_def_items,
        "win_rate==0", n_cons_AL, "broad: shared tender-item", n_cons_FL, n_cons_AL,
        n_cons_FL, "FL14", cons_excl_str,
        cons_reason_str,
        cons_tabA_note),
   list("Strict 2009-2016 -> 2017-2019 timing target", "2009-2019 conduct",
-       "any", "train 2009-2016 / test 2017-2019", "Convite+Pregao", "shared tender-item by award year",
+       "any", "train 2009-2016 / test 2017-2019", MODALITY_RULE, "shared tender-item by award year",
        "crossmatch CNPJ in firm_tender_map", NA_integer_, NA_integer_, NA_integer_, NA_integer_,
        "win_rate==0", NA_integer_, "broad: shared tender-item", NA_integer_, NA_integer_,
        NA_integer_, "FL14", NAc,

@@ -203,9 +203,11 @@ stamp("A_pooled_construct")
 # =============================================================================
 say("\n----- B. stratum assignment (item-modality map) -----")
 # po_phase_code lives in bid_level_full at the (numerodaoc, codigoitem) grain.
-# Items are MODALITY-UNIQUE (verified: 7,413,963 single-phase vs 205 two-phase
-# = 0.003%); we ASSERT this on a sample and MAX() over the 0.003% ambiguous
-# items so the map is a clean 1:1 (numerodaoc,codigoitem) -> phase.
+# HOSTILE-REVIEW FIX (2026-06-05): doc figures now match the code. Items are
+# MODALITY-UNIQUE (verified: 7,413,963 single-phase vs 205 two-phase = 0.003%);
+# we ASSERT this on a <=2M-row sample (fail only if multi-phase share > 1%, see
+# line below) and MAX() over the 0.003% ambiguous items so the map is a clean
+# 1:1 (numerodaoc,codigoitem) -> phase.
 con <- dbConnect(duckdb())
 invisible(dbExecute(con, sprintf("PRAGMA threads=%d", DUCK_THREADS)))
 invisible(dbExecute(con, sprintf("PRAGMA memory_limit='%s'", DUCK_MEM)))
@@ -318,14 +320,18 @@ say("\n----- C. within-stratum (year x buyer) cells + AL participation -----")
 # (year,pbu)), but the participation rows + cells are SUBSET to the stratum.
 register_keymap_local <- function(con) {
   # (numerodaoc,codigoitem) -> (codigo_ug buyer, result year), multi-UASG dropped.
-  view <- cfg$drop_multi_ug_pairs(con)
-  ymap <- cfg$get_year_map(con)
+  # HOSTILE-REVIEW FIX (2026-06-05): buyer comes from panel_single_ug (multi-UASG
+  # pairs dropped), but cfg$get_year_map() reads the FULL panel. The old
+  # merge(all=TRUE) re-introduced the ~265 dropped pairs with buyer NA, producing
+  # degenerate "year|" cells. Build the year map from the SAME single-UG view and
+  # INNER-join, so the dropped pairs are excluded consistently from buyer+year+cells.
+  view <- cfg$drop_multi_ug_pairs(con)   # registers TEMP VIEW panel_single_ug
   km <- DBI::dbGetQuery(con, sprintf("
     SELECT CAST(numerodaoc AS VARCHAR) AS numerodaoc,
            CAST(\"códigoitem\" AS VARCHAR) AS \"códigoitem\",
-           CAST(MAX(%s) AS VARCHAR) AS buyer
+           CAST(MAX(%s) AS VARCHAR)             AS buyer,
+           CAST(MAX(CAST(year AS INTEGER)) AS INTEGER) AS year
     FROM %s GROUP BY 1,2", cfg$buyer_col, view))
-  km <- merge(km, ymap, by = c("numerodaoc", "códigoitem"), all = TRUE)
   DBI::dbWriteTable(con, "keymap", km, overwrite = TRUE)
   invisible(km)
 }
@@ -389,7 +395,10 @@ eval_one_stratum <- function(nm) {
   dat[, log_E := log1p(pmax(E_i, 0))]
 
   # within-stratum cell key for the C-statistic (year x buyer the firm most participates in)
-  firm_cell <- opp2[, .N, by=.(firm_code, cell_id)][order(-N)][, .SD[1], by=firm_code][, .(firm_code, cell_id)]
+  # HOSTILE-REVIEW FIX (2026-06-05): explicit stable tiebreak on cell_id so the
+  # modal-cell pick is deterministic when two cells tie on participation count
+  # (was an implicit order-dependent tie-break).
+  firm_cell <- opp2[, .N, by=.(firm_code, cell_id)][order(-N, cell_id)][, .SD[1], by=firm_code][, .(firm_code, cell_id)]
   dat <- merge(dat, firm_cell, by="firm_code", all.x=TRUE)
   dat[is.na(cell_id), cell_id := "__none__"]
 
