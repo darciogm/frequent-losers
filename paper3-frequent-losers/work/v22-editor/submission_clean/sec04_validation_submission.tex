@@ -199,8 +199,8 @@ alone.
 The exposure-preserving permutation tests settle the question.
 Under a pure-exposure binomial null the observed PR-AUC
 $\valExpRawScorePRAUC$ does not beat the null (null mean $0.264$;
-empirical $p=\valExpPermBp$): a pure-exposure model out-predicts
-the raw score on the rare-target metric. And under the permutation
+empirical $p=\valExpPermBp$): the pure-exposure PR-AUC exceeds
+the raw score's on the rare-target metric. And under the permutation
 that shuffles cobidder labels only within matched
 exposure-by-participation strata---the design that isolates any
 residual signal---the observed PR-AUC does \emph{not} reject the
@@ -413,7 +413,7 @@ Rolling-origin (2014--2019) & Strict; full universe & per-year & $381$--$651$ & 
 Leave-largest-case-out & Full retrospective & $16{,}393$ & $443$ & $0.763$ & $\valLOCOdropLargestPRAUC$ & $\valLOCOdropLargestPrec$ & $0.149$ & $-37\%$ PR-AUC \\
 Leave-top-two-cases-out & Full retrospective & $16{,}361$ & $268$ & $0.752$ & $0.058$ & $0.092$ & $0.172$ & Thin residual tail \\
 Clustered randomization inference & Label shuffle in cells & $16{,}843$ & $\valExpNpos$ & $0.761$ & $\valLOCOfullPRAUC$ & $\valFullPrec$ & --- & $p=\valClusterRIp$; coverage $p=\valClusterRIcovP$ \\
-Direct-defendant scope & Strict and full scores & --- & $47$ & $0.49$--$0.70$ & --- & --- & --- & Scope boundary (Section~\ref{sec:validation_direct}) \\
+Direct-defendant scope & Strict and full scores & --- & $47$ & $0.49$ (binary) / $0.66$--$0.70$ (continuous) & --- & --- & --- & Scope boundary (Section~\ref{sec:validation_direct}) \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -429,7 +429,11 @@ legally observable at the screening date, so these designs
 distinguish prospective scoring from retrospective adjudication.
 Cobidders are adjudication-anchored exposure labels, not cartel
 members. The strict full universe carries entrants at score zero;
-roughly a quarter of that universe is tied at zero. ``$0$'' denotes
+roughly a quarter of that universe is tied at zero; AUC uses the
+rank-based (Mann--Whitney) estimator under the midrank convention,
+which assigns every tied score--label pair a credit of exactly
+$0.5$, so the reported figures are the convention-neutral expected
+AUC. ``$0$'' denotes
 an exact zero true positives in the top $500$.
 \end{tablenotes}
 \end{threeparttable}
