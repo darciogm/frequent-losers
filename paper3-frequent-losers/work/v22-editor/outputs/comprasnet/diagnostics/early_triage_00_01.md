@@ -62,3 +62,57 @@ leaves ≥130 positives. Healthy for the leave-one-case-out design.
 3. **D-i cause wording (soft FLAG).** Decomposition arithmetic is clean and sizes match the brief
    exactly, but the diagnostic note attributes the v3→canonical drop to estab-anchoring, not to
    "TI/DF unnumbered-case exclusion." Confirm the true driver before the manuscript cites a reason.
+
+---
+
+## POST-FIX SECTION (2026-06-05, target-quality fix; chain restarted 18:18)
+
+All three flag items above are now resolved by the target-quality fix. The chain was restarted at
+**18:18** after the fix landed.
+
+### Fixes applied
+1. **Sentinel CNPJ dropped.** The all-zeros junk CNPJ `000000000000-2` is now excluded from the
+   cobidder builder (same junk filter the defendant path already used). This removes the 1 spurious
+   positive flagged in check 6 / item 1.
+2. **D-i cause PROVEN (resolves item 3 / check 3 FLAG).** The v3→canonical cobidder delta is now
+   decomposed exactly and is **NOT** an establishment-vs-raiz anchoring artifact:
+   - **TI/DF-case exclusion = 313 cobidders (26 of them always-losers)** — the unverifiable
+     no-process-number DF information-technology case (A8).
+   - **junk = 1** (the all-zeros sentinel).
+   - **estab-vs-raiz grain = 0**: v3 reproduces **bit-for-bit** when the TI/DF defendants are
+     reinstated. The earlier note's "estab-anchored rebuild vs cobidders_federal.parquet" wording
+     is retired; the gap is the disclosed case exclusion + one junk record.
+3. **Conservative-rule label (item 2)** is unchanged numerically (conservative broad-AL 171, def 20,
+   5 cases); the date-rule label correction is a wording item carried to the manuscript pass, not a
+   count change.
+
+### New canonical counts (post-fix)
+| Quantity | Pre-fix | Post-fix |
+|---|---|---|
+| Cobidders (broad rule, all) | 3,851 | **3,850** |
+| Broad-AL positives (MAIN target) | 196 | **195** |
+| FL composition of broad-AL | 95 | **94** (non-FL stays 101) |
+| AL firm-case rows | 206 | **205** |
+| Conservative broad-AL | 171 | 171 (unchanged) |
+| Defendants active / cases / AL / FL32 / window | — | 25 / 7 / 35,943 / 6,491 / 2013–2019 (unchanged) |
+
+### Per-case AL distribution (post-fix) — the sentinel was in Case F
+The dropped sentinel sat in **Case F (medic_genericos, 08012.005928/2003-12)**, so the per-case AL
+distribution changes only there: **F = 23 → 22**.
+
+| Case | Process | Sector | AL cobidders (post-fix) | Share of 205 AL rows |
+|---|---|---|---|---|
+| A | 08700.004617/2013-41 | trens_metros | 69 | 33.7% |
+| D | 08012.002222/2011-09 | medicamentos | 63 | 30.7% |
+| C | 08700.005789/2015-02 | sacos_de_lixo | 27 | 13.2% |
+| F | 08012.005928/2003-12 | medic_genericos | **22** | 10.7% |
+| G | 08012.008821/2008-22 | antirretrovirais | 12 | 5.9% |
+| B | 08012.010022/2008-16 | merenda_escolar | 8 | 3.9% |
+| E | 08700.005876/2019-85 | transporte_escolar | 4 | 2.0% |
+
+**Top-case A = 69 = 33.7% of 205 (was 33%); top-2 (A+D) = 132 = 64.4% of 205 (was 64%).** A and D
+are unchanged, so the top-2 numerator is unchanged at 132; only the denominator dropped 206→205.
+LOCO feasibility verdict is unaffected — still healthy, no single case dominates.
+
+*Verified against `outputs/comprasnet/cache/case_cobidder_map_federal.csv` (post-18:18 rerun): the
+sentinel CNPJ is absent; per-process is_AL=1 row counts are A=69, D=63, C=27, F=22, G=12, B=8, E=4.*

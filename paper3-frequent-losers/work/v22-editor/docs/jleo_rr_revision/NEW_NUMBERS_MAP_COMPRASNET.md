@@ -1,5 +1,13 @@
 # NEW NUMBERS MAP — BEC↔ComprasNet side-by-side delta table (R3 verification gate)
 
+> **CHANGELOG 2026-06-05 (target-quality fix, post 18:18 rerun).** Federal canonical
+> counts updated after the sentinel CNPJ `000000000000-2` was dropped from the cobidder
+> builder: cobidders all **3,851→3,850**; broad-AL positives **196→195**; FL composition of
+> broad-AL **95→94** (non-FL stays 101); conservative broad-AL 171 unchanged. D-i rebuild
+> delta is now PROVEN as TI/DF-exclusion = 313 cobidders (26 AL) + 1 junk CNPJ; the
+> establishment-vs-raiz anchoring grain contributes **0** (v3 reproduced bit-for-bit when
+> TI/DF reinstated) — earlier "estab-anchored rebuild" attribution is retired.
+
 **Purpose.** Authoritative skeleton for the two-platform comparative numbers. The **BEC column is
 PRE-FILLED** from canonical sources (each row cites BOTH the `values.tex` macro AND the regenerated
 output file). The **ComprasNet column is a named slot**: the EXACT `outputs/comprasnet/...` file the
@@ -36,14 +44,15 @@ construction differences; absolute-level gaps are expected and are not, by thems
 | STRICT opportunity cell | item_code × year × PBU | item_code × year × UASG |
 | Modality margin | convite (sealed) + pregão | **pure pregão** (~15% regular + ~85% SRP); convite extinct federally → no modality stratification |
 | CADE anchors | 12-case portfolio, BEC-active | **7 numbered cases** (same cases, **partially overlapping**), establishment-anchored CNPJ; 1 unnumbered summary case excluded; TI/DF defendants excluded |
-| Cobidder label (broad AL) | **651** | **196** (federal broad-AL cobidders) |
+| Cobidder label (broad AL) | **651** | **195** (federal broad-AL cobidders) |
 | Static archived comparison rows | 193 (dead/circular) | 4,164 (internal only; never a label) |
 | Bid tier | LANCES bid ladder present | **absent** — no federal bid microdata; no bid-layer forensic / Imhof benchmark constructible from public data |
 
-**Cobidder magnitude note.** The "3,851 federal cobidders" cited in `sec_comparative_DRAFT.tex`
+**Cobidder magnitude note.** The "3,850 federal cobidders" cited in `sec_comparative_DRAFT.tex`
 line 97 (`\valFedAudCobiddersAll`) is the broad-RULE cobidder set BEFORE the always-loser restriction;
-the **196** figure (`\valFedAudCobiddersBroadAL`) is the broad-AL-restricted main target that mirrors
-the BEC 651. The draft text earlier (line 70–98) also names placeholders `\valFedPanelRows (51.0M)`,
+the **195** figure (`\valFedAudCobiddersBroadAL`) is the broad-AL-restricted main target that mirrors
+the BEC 651. (Both dropped by 1 in the 2026-06-05 target-quality fix that removed the all-zeros
+sentinel CNPJ `000000000000-2`.) The draft text earlier (line 70–98) also names placeholders `\valFedPanelRows (51.0M)`,
 `\valFedFirms (92,600)`, `\valFedAlwaysLosers (35,943)`, `\valFedFLthreshold (32)`,
 `\valFedFLcount (6,491)` in the `\valFed*` (non-Aud) namespace — those are the panel/universe
 descriptors, distinct from the `\valFedAud*` audit-battery macros. See namespace finding below.
@@ -61,11 +70,11 @@ Federal source files (built): `outputs/comprasnet/targets/canonical_target_count
 | CADE cases (numbered portfolio) | 12 | `canonical_target_counts.csv::cade_cases` ; `\valFunnel*` family / `\valDirectCADE` context | `outputs/comprasnet/targets/canonical_target_counts.csv::cade_cases` `[built: 7]` | `\valFedAudCases` |
 | Legal direct defendants (crossmatch) | 48 | `canonical_target_counts.csv::A_direct_defendants_crossmatch` ; `\valDirectCADE`=47 (cited) | `…/canonical_target_counts.csv::A_direct_defendants_crossmatch` `[built: 25]` | `\valFedAudLegalDef` |
 | Platform-active direct defendants | 41 | `canonical_target_counts.csv::A_direct_defendants_bec_active` ; `\valFunnelDirectActiveFTM`=41 | `…/canonical_target_counts.csv::A_direct_defendants_bec_active` `[built: 25]` | `\valFedAudFedActiveDef` |
-| Cobidders — broad rule (all) | n/a (BEC reports broad-AL only) | — (BEC has no separate pre-AL broad count in canonical_target_counts) | `outputs/comprasnet/cache/canonical_cobidders_broad.csv` (row count) `[PENDING confirm; draft cites 3,851]` | `\valFedAudCobiddersAll` |
-| Cobidders — broad-AL (MAIN target) | **651** | `canonical_target_counts.csv::B_broad_AL_cobidders_MAIN` ; `\valMainCobidders`=651 / `\valCobidders`=651 | `…/canonical_target_counts.csv::B_broad_AL_cobidders_MAIN` `[built: 196]` | `\valFedAudCobiddersBroadAL` |
+| Cobidders — broad rule (all) | n/a (BEC reports broad-AL only) | — (BEC has no separate pre-AL broad count in canonical_target_counts) | `outputs/comprasnet/cache/canonical_cobidders_broad.csv` (row count) `[PENDING confirm; draft cites 3,850]` | `\valFedAudCobiddersAll` |
+| Cobidders — broad-AL (MAIN target) | **651** | `canonical_target_counts.csv::B_broad_AL_cobidders_MAIN` ; `\valMainCobidders`=651 / `\valCobidders`=651 | `…/canonical_target_counts.csv::B_broad_AL_cobidders_MAIN` `[built: 195]` | `\valFedAudCobiddersBroadAL` |
 | Cobidders — conservative (broad-AL, pre-cutoff) | 208 | `canonical_target_counts.csv::D_conservative_broad_AL_cobidders` ; `\valFunnelConsALcob`=208 | `…/canonical_target_counts.csv::D_conservative_broad_AL_cobidders` `[built: 171]` | `\valFedAudConsBroadAL` |
 | Conservative platform-active defendants | 16 | `canonical_target_counts.csv::D_conservative_defendants_bec_active` ; `\valFunnelConsFD`=19 (crossmatch) | `…/canonical_target_counts.csv::D_conservative_defendants_bec_active` `[built: 20]` | `\valFedAudConsFedDef` |
-| Composition: FL among positives | 341 | `canonical_target_counts.csv::B_composition_FL` ; `\valMainCobFL`=341 | `…/canonical_target_counts.csv::B_composition_FL` `[built: 95]` | `\valFedAudCompFL` |
+| Composition: FL among positives | 341 | `canonical_target_counts.csv::B_composition_FL` ; `\valMainCobFL`=341 | `…/canonical_target_counts.csv::B_composition_FL` `[built: 94]` | `\valFedAudCompFL` |
 | Composition: non-FL among positives | 310 | `canonical_target_counts.csv::B_composition_nonFL` ; `\valMainCobNonFL`=310 | `…/canonical_target_counts.csv::B_composition_nonFL` `[built: 101]` | `\valFedAudCompNonFL` |
 | Defendant tender-items (anchor set) | 52,013 | `canonical_target_counts.csv::defendant_tender_items` ; `\valFunnelDefItems`=52013 | `…/canonical_target_counts.csv::defendant_tender_items` `[built: 31,200]` | `\valFedAudDefItems` |
 
