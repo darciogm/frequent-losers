@@ -18,9 +18,12 @@ reading the named output file, double-check against the diagnostics CSV, then bi
 `values.tex` with a `% src:` comment (protocol at the bottom of this file).
 
 **Macro namespace.** Both draft tex files (`sec_comparative_DRAFT.tex` and `sec_appG_federal_DRAFT.tex`)
-use a single consistent federal namespace: `\valFedAud*` (distinct from the existing `\valFed*`
-replication macros in `sec_app07_comprasnet_submission.tex`). **No namespace mismatch between the two
-drafts** — verified row by row (see findings).
+use a single consistent federal namespace: `\valFedAud*` (distinct from the five `\valFed*`
+panel/universe descriptor macros). **No namespace mismatch between the two
+drafts** — verified row by row (see findings). *Note: the legacy `\valFed*` replication macros
+formerly lived in `sec_app07_comprasnet_submission.tex`, which was DELETED 2026-06-05 (orphan,
+gutted; the two salvageable slivers merged into `sec_appG_federal_DRAFT.tex`). The five `\valFed*`
+universe macros remain and are now referenced only by the comparative + appG drafts.*
 
 **Already-built federal targets.** Phase-1 funnel/universe targets are ALREADY materialized in
 `outputs/comprasnet/targets/canonical_target_counts.csv` and `canonical_case_labels.csv`, so the

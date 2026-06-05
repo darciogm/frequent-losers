@@ -391,7 +391,9 @@ strict_rows[sample == "3_training_always_loser",
             `:=`(repro_fl_binary_auc = repro_bin, repro_log_tc_auc = repro_cont,
                  repro_match_script53 = !(flag_bin | flag_cont))]
 
-fwrite(strict_rows, file.path(DIR_TAB_MAIN, "table_D_strict_2009_2016_to_2017_2019.csv"))
+# SOURCE-CONFIG ADAPTATION (Phase 1 filename-fix, 2026-06-05): holdout years in filename are cfg-driven
+strict_fname <- sprintf("table_D_strict_%d_%d_to_%d_%d", min(cfg$holdout_train), max(cfg$holdout_train), min(cfg$holdout_test), max(cfg$holdout_test))
+fwrite(strict_rows, file.path(DIR_TAB_MAIN, paste0(strict_fname, ".csv")))
 
 # composition diagnostic
 comp <- data.table(
@@ -455,7 +457,7 @@ write_strict_tex <- function(dt, path) {
     "\\end{minipage}","\\end{table}")
   writeLines(lines, path)
 }
-write_strict_tex(strict_rows, file.path(DIR_TAB_MAIN, "table_D_strict_2009_2016_to_2017_2019.tex"))
+write_strict_tex(strict_rows, file.path(DIR_TAB_MAIN, paste0(strict_fname, ".tex")))
 
 rm(H, S1, S2, S3, S4, S5); gc()
 

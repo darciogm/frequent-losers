@@ -1,9 +1,34 @@
 # sec_app07 Reconciliation Memo — Orphaned ComprasNet Appendix vs. the v22 Federal Battery
 
-**Date:** 2026-06-05 · **Author:** Mr. Frequent Losers (reviewer mode) · **Status:** DECISION
+**Date:** 2026-06-05 · **Author:** Mr. Frequent Losers (reviewer mode) · **Status:** DECISION EXECUTED 2026-06-05
 **Scope:** `submission_clean/sec_app07_comprasnet_submission.tex` (legacy, orphaned)
 vs. `sec_appG_federal_DRAFT.tex` (new federal audit battery) + `sec_comparative_DRAFT.tex`.
 **Discipline:** READ-ONLY on manuscript files; this memo + one salvage-block draft are the only writes.
+
+---
+
+## ✅ DECISION EXECUTED — 2026-06-05
+
+GUT + DELETE + salvage-merge carried out exactly as planned:
+
+- **Salvage merged.** The two surviving slivers (graduation table + structural-boundary
+  statement + one stripped linkage-provenance sentence) were merged from
+  `sec_appG_salvage_block_DRAFT.tex` into `sec_appG_federal_DRAFT.tex` as the new closing
+  subsection **"Graduation: What Ports and What Deflates"**, inserted immediately **before**
+  `\subsection{Replication}` (per §3a). The redundant `\providecommand{\valTODO}` preamble was
+  dropped (the host file already declares it); all `% TODO_NUMBER` tags and `\valTODO`
+  placeholders preserved. New macros introduced: `\valFedAudBoundaryAUC`,
+  `\valFedAudBoundaryAUCLow`, `\valFedAudBoundaryAUCHi`, `\valFedAudDirectsWinshare`,
+  `\valFedAudDirectsN`.
+- **Salvage file deleted.** `submission_clean/sec_appG_salvage_block_DRAFT.tex` removed.
+- **Orphan deleted.** `git rm submission_clean/sec_app07_comprasnet_submission.tex` (orphan
+  re-verified: zero `\input`/`\include` in any master; only comment mentions remained).
+- **Compile check.** `sec_appG_federal_DRAFT.tex` compiles standalone with **0 LaTeX errors**
+  (6 pages; the 19 "undefined" messages are expected cross-document `\ref`s in a fragment, not
+  errors; `\valTODO` resolves via the file's own `\providecommand`, 61 placeholders intact).
+- **Docs updated.** `values_tex_federal_block_DRAFT.tex` (provenance list + app07 status note) and
+  `NEW_NUMBERS_MAP_COMPRASNET.md` (namespace note) annotated "sec_app07 DELETED 2026-06-05"; the
+  five `\valFed*` universe macros explicitly noted as REMAINING (referenced by comparative + appG).
 
 ---
 
@@ -114,14 +139,14 @@ comparative *re-introduces with explicit `% TODO_NUMBER` bindings* (e.g. `\valFe
 | `\valFedPeakThreshold`, `\valFedPeakAUC`, `\valFedAucDrop`, `\valFedTc*` | **none — die** (or, if the tail-descriptive is wanted, fold into appG funnel notes) | AUC-peak operational claim dropped as circular. |
 | `\valFedCade*`, `\valFedRaizes*`, `\valFedAnchored*`, `\valFedCobidders`, `\valFedALcobidders`, `\valFedFLcobidders` | **`\valFedAudCases` / `\valFedAudCobiddersAll` / `\valFedAudCobiddersBroadAL`** (appG funnel) + the one salvaged provenance sentence | Linkage counts re-expressed in the funnel; provenance prose salvaged, framing stripped. |
 
-### 3c. Deletion mechanics (for the lead, post-salvage)
+### 3c. Deletion mechanics (for the lead, post-salvage) — ✅ DONE 2026-06-05
 
-1. Confirm the salvage block (§3a) is folded into `sec_appG_federal_DRAFT.tex` and the lead is
-   satisfied with the graduation table.
-2. `git rm submission_clean/sec_app07_comprasnet_submission.tex`.
-3. Grep-verify zero `sec_app07` references remain (only the appG comment, which should be updated to
-   stop calling app07 a live "companion").
-4. No master edit needed (app07 was never `\input`).
+1. ✅ Salvage block (§3a) folded into `sec_appG_federal_DRAFT.tex` before `\subsection{Replication}`.
+2. ✅ `git rm submission_clean/sec_app07_comprasnet_submission.tex`.
+3. ✅ Grep-verified: zero live `sec_app07` references remain. Residual mentions are only the
+   provenance comments inside `sec_appG_federal_DRAFT.tex`/`sec_appG_salvage_block`(deleted) and the
+   two doc annotations, all now marked "DELETED 2026-06-05"; no live `\input`/`\include` ever existed.
+4. ✅ No master edit needed (app07 was never `\input`).
 
 ---
 
@@ -154,5 +179,5 @@ comparative *re-introduces with explicit `% TODO_NUMBER` bindings* (e.g. `\valFe
 ## 5. Files written by this memo task
 
 - `docs/jleo_rr_revision/sec_app07_reconciliation_memo.md` (this file)
-- `submission_clean/sec_appG_salvage_block_DRAFT.tex` (ready-to-paste closing subsection for
-  Appendix G; `\valTODO` placeholders + `% TODO_NUMBER` tags only; NOT `\input` anywhere)
+- ~~`submission_clean/sec_appG_salvage_block_DRAFT.tex`~~ (merged into
+  `sec_appG_federal_DRAFT.tex` and DELETED 2026-06-05 — see DECISION EXECUTED block above)
