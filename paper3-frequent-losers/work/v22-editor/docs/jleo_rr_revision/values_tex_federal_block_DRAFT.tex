@@ -1,0 +1,319 @@
+% ============================================================================
+% values_tex_federal_block_DRAFT.tex
+% ----------------------------------------------------------------------------
+% MECHANICAL WIRING BLOCK for the ComprasNet (federal) extension.
+% Drop-in for submission_clean/values.tex AFTER the federal chain delivers
+% numbers. This is a DRAFT staging file: do NOT compile it into the paper as-is
+% (it contains TODO sentinels that will not typeset as numbers).
+%
+% PROVENANCE
+%   Built 2026-06-05 from the UNION of:
+%     (a) every \valFed* / \valFedAud* macro referenced in the three drafts
+%         submission_clean/{sec_comparative_DRAFT.tex, sec_appG_federal_DRAFT.tex,
+%         sec_appG_salvage_block_DRAFT.tex}; and
+%     (b) every macro proposed in docs/jleo_rr_revision/NEW_NUMBERS_MAP_COMPRASNET.md
+%         (51-row BEC<->ComprasNet delta map, 10 row-groups).
+%   Federal chain run date: <FILL: chain completion date>.
+%   source_config commit:   <FILL: source_config.R commit hash at chain run>.
+%
+% FILL PROTOCOL (binding; mirrors the map's VERIFICATION PROTOCOL)
+%   1. Fill each TODO ONLY by READING the exact named output file/column on the
+%      `% src:` line below. NEVER transcribe a value from a run log, console
+%      output, or a .log file. The CSV/JSON the script wrote is the only source.
+%   2. Double-check every value against the diagnostics twin under
+%      outputs/comprasnet/diagnostics/ before binding; if the two disagree,
+%      STOP and log an R3 blocker -- do not fill.
+%   3. Confirm construction parity (window 2013-2019; MEDIUM = year x UASG;
+%      pure-Pregao; 7 CADE anchors) before trusting any number.
+%   4. On fill: replace TODO with the value, drop the "| TODO_NUMBER" tail of the
+%      comment, and keep the rest of the `% src:` provenance line intact.
+%   5. Then replace the matching \valTODO sentinels in the DRAFT tex files and
+%      delete their \providecommand{\valTODO} block before integration.
+%
+% NAMESPACE RULE (do not merge the two namespaces)
+%   * \valFedAud*  -- audit-battery macros (Groups 1,3-10). New, federal-only.
+%   * \valFed*     -- panel/universe descriptors (Group 2 + panel rows): exactly
+%                     FIVE macros reuse this EXISTING namespace:
+%                     \valFedPanelRows, \valFedFirms, \valFedAlwaysLosers,
+%                     \valFedFLthreshold, \valFedFLcount.
+%     STATUS CHECK (2026-06-05): these five are NOT YET defined in
+%     submission_clean/values.tex (grep `newcommand{\valFed` => 0 hits). The
+%     orphaned sec_app07 referenced them but they were reported undefined, which
+%     this confirms. They are therefore DEFINED HERE (no conflict to flag), with
+%     their already-known Phase-0/Phase-1 values, marked FILLED.
+%
+% CROSS-REFERENCE AUDIT (tex drafts <-> numbers map)
+%   73 distinct \valFed*/\valFedAud* macros are referenced in the 3 drafts.
+%   63 macros are proposed in the numbers map.
+%   This block is their UNION = 81 distinct macros, so nothing dangles at
+%   integration. Mismatches resolved here:
+%
+%   (A) REFERENCED IN TEX BUT ABSENT FROM THE MAP (18) -- included below, slotted
+%       into the row-group whose output file they read; src is the BEST-MATCH
+%       federal twin, flagged `[src-INFERRED]` for the lead to confirm at fill:
+%         \valFedAudBoundaryAUC, \valFedAudBoundaryAUCLow, \valFedAudBoundaryAUCHi
+%             (Group 3/armor: within-opportunity boundary AUC + CI band)
+%         \valFedAudCombinedAUC, \valFedAudExposedN, \valFedAudNestedExpAUC,
+%         \valFedAudRawN  (Group 3: extra cells of table_C nested/raw rows)
+%         \valFedAudConsCases, \valFedAudConsCobidders (Group 1: conservative
+%             funnel cells, pair with \valFedAudConsFedDef/\valFedAudConsBroadAL)
+%         \valFedAudDirectsN, \valFedAudDirectsWinshare (Group 1/8: direct-
+%             defendant N and win-share, the D4-analogue)
+%         \valFedAudLOCOdropPct, \valFedAudLOCOdropTwoPRAUC (Group 8: LOCO
+%             drop-percentage + drop-two-cases PR-AUC)
+%         \valFedAudClusterRIverdict, \valFedAudClusterRIcovVerdict (Group 8:
+%             clustered-RI verdict strings)
+%         \valFedAudBreadthIncrement, \valFedAudBreadthP, \valFedAudBreadthVerdict
+%             (Group 10: breadth >=2-shared-item increment/p/verdict)
+%
+%   (B) PROPOSED IN MAP BUT NOT (YET) REFERENCED IN ANY DRAFT (8) -- included
+%       below so the wiring is complete if the prose adds them; flagged
+%       `[map-only; not yet cited]`:
+%         \valFedAudCompFL, \valFedAudCompNonFL, \valFedAudDefItems (Group 1),
+%         \valFedAudPowerTwo (Group 4), \valFedAudRollWorstAUC (Group 7),
+%         \valFedAudWithinLB, \valFedAudWithinLBall (Group 10),
+%         \valFedAudWithinMedium (Group 5; map row "Within-AUC MEDIUM cells").
+%
+%   FILLED now (values already known from completed Phase-0/Phase-1 runs): 5
+%   universe macros + 9 funnel counts that exist in
+%   outputs/comprasnet/targets/canonical_target_counts.csv = 14 FILLED.
+%   Remaining 67 stay TODO pending the running chain.
+% ============================================================================
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 1 -- Label-construction funnel
+% src base: outputs/comprasnet/targets/canonical_target_counts.csv
+%           + outputs/comprasnet/tables/table_A_label_funnel.csv
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: cade_cases | numbered CADE portfolio (federal) | FILLED 2026-06-05
+\newcommand{\valFedAudCases}{7}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: A_direct_defendants_crossmatch | legal direct defendants, all crossmatch CNPJ | FILLED 2026-06-05
+\newcommand{\valFedAudLegalDef}{25}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: A_direct_defendants_bec_active | platform-active direct defendants (federal FTM-active) | FILLED 2026-06-05
+\newcommand{\valFedAudFedActiveDef}{25}
+% src: outputs/comprasnet/cache/canonical_cobidders_broad.csv :: row count | cobidders, broad rule (pre-AL); draft cites 3,851 | TODO_NUMBER
+\newcommand{\valFedAudCobiddersAll}{TODO}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: B_broad_AL_cobidders_MAIN | MAIN validation target, broad-AL cobidders (federal 651-analogue) | FILLED 2026-06-05
+\newcommand{\valFedAudCobiddersBroadAL}{196}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: D_conservative_broad_AL_cobidders | conservative (pre-cutoff) broad-AL cobidders | FILLED 2026-06-05
+\newcommand{\valFedAudConsBroadAL}{171}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: D_conservative_defendants_bec_active | conservative platform-active defendants | FILLED 2026-06-05
+\newcommand{\valFedAudConsFedDef}{20}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: B_composition_FL | FL among positives (composition) | FILLED 2026-06-05
+\newcommand{\valFedAudCompFL}{95}                  % [map-only; not yet cited in drafts]
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: B_composition_nonFL | non-FL among positives (composition) | FILLED 2026-06-05
+\newcommand{\valFedAudCompNonFL}{101}              % [map-only; not yet cited in drafts]
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: defendant_tender_items | defendant tender-items (exposure anchor set) | FILLED 2026-06-05
+\newcommand{\valFedAudDefItems}{31{,}200}          % [map-only; not yet cited in drafts]
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: conservative_cases | conservative CADE cases (judged <= 2020-12-31) | FILLED 2026-06-05  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudConsCases}{5}
+% src: outputs/comprasnet/cache/canonical_cobidders_conservative_broad.csv :: row count | conservative broad-rule cobidders (pre-AL pair of ConsBroadAL) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudConsCobidders}{TODO}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: A_direct_defendants_bec_active | N direct defendants used in D4-analogue win-share test | FILLED 2026-06-05  [src-INFERRED: tex-but-not-map; pairs with \valFedAudFedActiveDef]
+\newcommand{\valFedAudDirectsN}{25}
+% src: outputs/comprasnet/diagnostics/cade_directs_winshare.csv :: median_win_rate | direct-defendant median win-share (D4 winner-heavy analogue) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudDirectsWinshare}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 2 -- Universe (REUSES existing \valFed* namespace; NOT \valFedAud*)
+% src base: outputs/comprasnet/diagnostics/phase0_*.csv
+%           + outputs/comprasnet/targets/canonical_target_counts.csv
+% NOTE: none of these five exist in values.tex yet => no conflict; defined here.
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/diagnostics/phase0_g2_panel_semantics.csv :: panel participation rows | federal participation-row count (2013-2019) | FILLED 2026-06-05 (canonical display 51.0M; confirm exact integer at fill)
+\newcommand{\valFedPanelRows}{51.0M}
+% src: outputs/comprasnet/diagnostics/phase0_g5_al_universe.csv :: distinct firms | distinct CNPJ-14 firms in federal panel | FILLED 2026-06-05
+\newcommand{\valFedFirms}{92{,}600}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: universe_always_losers | always-losers candidate pool (W_i = 0), federal | FILLED 2026-06-05
+\newcommand{\valFedAlwaysLosers}{35{,}943}
+% src: outputs/comprasnet/diagnostics/phase0_g5_al_universe.csv :: threshold (median+1.5*IQR) | re-estimated federal FL cut | FILLED 2026-06-05
+\newcommand{\valFedFLthreshold}{32}
+% src: outputs/comprasnet/targets/canonical_target_counts.csv :: universe_FL14 | FL count above federal threshold (score stratum, NOT a label) | FILLED 2026-06-05
+\newcommand{\valFedFLcount}{6{,}491}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 3 -- Opportunity-adjusted validation (headline deflation)
+% src base: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv
+%           + outputs/comprasnet/tables/table_D_opportunity_permutation_validation.csv
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S0_raw_score roc_auc | raw award-layer ROC-AUC, score=log T | TODO_NUMBER
+\newcommand{\valFedAudRawAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S0_raw_score pr_auc | raw award-layer PR-AUC | TODO_NUMBER
+\newcommand{\valFedAudRawPRAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S0_raw_fl14 roc_auc | raw FL binary-cut ROC-AUC | TODO_NUMBER
+\newcommand{\valFedAudRawFLAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S0_raw_fl14 pr_auc | raw FL binary-cut PR-AUC | TODO_NUMBER
+\newcommand{\valFedAudRawFLPRAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S0_raw_score N (positives) | N positives in the S0 raw row | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudRawN}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S2_exposure_only_logit roc | exposure-only logit ROC (exposed subsample) | TODO_NUMBER
+\newcommand{\valFedAudExpOnlyAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S2_exposure_only_logit pr_auc | exposure-only logit PR-AUC | TODO_NUMBER
+\newcommand{\valFedAudExpOnlyPRAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S2_exposure_only_logit N (exposed) | exposed-subsample N | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudExposedN}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: WITHIN_STRATUM_log_tc roc_auc | within-stratum residual AUC (score | MEDIUM cells) | TODO_NUMBER
+\newcommand{\valFedAudWithinAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: WITHIN_STRATUM_fl14 roc_auc | within-stratum FL | stratum AUC | TODO_NUMBER
+\newcommand{\valFedAudWithinFLAUC}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: label-blind E (opportunity expectation) | label-blind opportunity-expectation AUC | TODO_NUMBER
+\newcommand{\valFedAudLabelBlindAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: NESTED auc_increment | nested increment (exposure -> exposure+score) | TODO_NUMBER
+\newcommand{\valFedAudNestedIncrement}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: NESTED delong_p | nested DeLong p | TODO_NUMBER
+\newcommand{\valFedAudNestedP}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: NESTED exposure+score roc_auc | nested exposure+score ROC | TODO_NUMBER
+\newcommand{\valFedAudNestedExpScoreAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: NESTED exposure-only roc_auc | nested exposure-only ROC (S2 cell of NESTED row) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudNestedExpAUC}{TODO}
+% src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: S2 score+log(1+E) [MEDIUM] roc_auc | combined score+exposure label-encoding AUC | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudCombinedAUC}{TODO}
+% src: outputs/comprasnet/tables/table_D_opportunity_permutation_validation.csv :: Approach C p_pr | matched-permutation p (within-strata shuffle) | TODO_NUMBER
+\newcommand{\valFedAudPermCp}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: within-opportunity boundary AUC (point) | boundary within-AUC (Group 3 boundary band) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudBoundaryAUC}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: within-opportunity boundary AUC CI low | boundary within-AUC, CI lower | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudBoundaryAUCLow}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: within-opportunity boundary AUC CI high | boundary within-AUC, CI upper | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudBoundaryAUCHi}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 4 -- Power bounds (matched-permutation calibration)
+% src base: outputs/comprasnet/diagnostics/audit_armor/permutation_power_curve.csv
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/diagnostics/audit_armor/permutation_power_curve.csv :: within_auc=0.52 detect_prob | detection prob @ true within-AUC 0.52 | TODO_NUMBER  [map-only; not yet cited in drafts]
+\newcommand{\valFedAudPowerTwo}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/permutation_power_curve.csv :: within_auc=0.55 detect_prob | detection prob @ true within-AUC 0.55 | TODO_NUMBER
+\newcommand{\valFedAudPowerFive}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/permutation_power_curve.csv :: within_auc=0.60 detect_prob | detection prob @ true within-AUC 0.60 | TODO_NUMBER
+\newcommand{\valFedAudPowerTen}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: O_i control (MEDIUM) | within-stratum positive control O_i, MEDIUM | TODO_NUMBER
+\newcommand{\valFedAudOiControlMedium}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 5 -- Matched-permutation verdict + granularity sweep
+% src base: outputs/comprasnet/tables/table_D_opportunity_permutation_validation.csv
+%           + outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/tables/table_D_opportunity_permutation_validation.csv :: Approach C verdict | matched-permutation verdict string (rejects / does NOT reject) | TODO_NUMBER
+\newcommand{\valFedAudPermVerdict}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: COARSE within_auc | within-AUC, COARSE cells | TODO_NUMBER
+\newcommand{\valFedAudWithinCoarse}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: MEDIUM within_auc | within-AUC, MEDIUM cells | TODO_NUMBER  [map-only; not yet cited in drafts]
+\newcommand{\valFedAudWithinMedium}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: STRICT within_auc | within-AUC, STRICT cells | TODO_NUMBER
+\newcommand{\valFedAudWithinStrict}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 6 -- Opportunity-cell construction (appendix grid)
+% src base: outputs/comprasnet/tables/table_D_opportunity_cell_construction.csv
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/tables/table_D_opportunity_cell_construction.csv :: mean_p_g (range across granularities) | mean cell defendant-contact rate p-bar_g range | TODO_NUMBER
+\newcommand{\valFedAudPbarRange}{TODO}
+% src: outputs/comprasnet/tables/table_D_opportunity_cell_construction.csv :: pct_cells_lt5_items (STRICT) | share of STRICT cells with <5 tender-items | TODO_NUMBER
+\newcommand{\valFedAudStrictSparseShare}{TODO}
+% src: outputs/comprasnet/tables/table_D_opportunity_cell_construction.csv :: support_retained_share (MEDIUM) | common-support retention, MEDIUM | TODO_NUMBER
+\newcommand{\valFedAudMediumRetention}{TODO}
+% src: outputs/comprasnet/tables/table_D_opportunity_cell_construction.csv :: support_retained_share (STRICT) | common-support retention, STRICT | TODO_NUMBER
+\newcommand{\valFedAudStrictRetention}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 7 -- Timing / leakage / label-frozen prospective test
+% src base: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv
+%           + outputs/comprasnet/tables/table_E_rolling_origin_validation.csv
+%           + outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv
+% NOTE: full-sample retrospective upper bound reuses \valFedAudRawAUC (no new macro).
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict full test universe roc_auc (entrants@0) | strict full-universe ROC | TODO_NUMBER
+\newcommand{\valFedAudStrictFullAUC}{TODO}
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict full universe prec@500 | strict full-universe precision@500 | TODO_NUMBER
+\newcommand{\valFedAudStrictPrec}{TODO}
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict training-AL pool continuous roc_auc | strict training-AL pool, continuous ROC | TODO_NUMBER
+\newcommand{\valFedAudStrictContAUC}{TODO}
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict training-AL pool FL-binary roc_auc | strict training-AL pool, FL binary ROC | TODO_NUMBER
+\newcommand{\valFedAudStrictFLAUC}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv :: frozen_pool_size | frozen pool size | TODO_NUMBER
+\newcommand{\valFedAudFrozenPool}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv :: prospective roc_auc (new contact) | label-frozen prospective ROC | TODO_NUMBER
+\newcommand{\valFedAudFrozenProspAUC}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv :: prospective N | label-frozen prospective N | TODO_NUMBER
+\newcommand{\valFedAudFrozenProspN}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv :: retrospective roc_auc (leakage-closed) | label-frozen retrospective ROC | TODO_NUMBER
+\newcommand{\valFedAudFrozenRetroAUC}{TODO}
+% src: outputs/comprasnet/tables/table_E_rolling_origin_validation.csv :: worst-year roc_auc | worst rolling-origin year ROC | TODO_NUMBER  [map-only; not yet cited in drafts]
+\newcommand{\valFedAudRollWorstAUC}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 8 -- Case concentration + leave-one-case-out (LOCO)
+% src base: outputs/comprasnet/tables/table_G_leave_one_case_out_validation.csv
+%           + outputs/comprasnet/tables/table_H_case_dominance_validation.csv
+%           + outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/tables/table_G_leave_one_case_out_validation.csv :: top_case_pos_share | top-case share of positives | TODO_NUMBER
+\newcommand{\valFedAudTopCaseShare}{TODO}
+% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: top_case_TP@500 | top-case share of top-500 TP | TODO_NUMBER
+\newcommand{\valFedAudTopCaseTP}{TODO}
+% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: full pr_auc | LOCO full PR-AUC | TODO_NUMBER
+\newcommand{\valFedAudLOCOfullPRAUC}{TODO}
+% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: drop_largest_case pr_auc | LOCO drop-largest-case PR-AUC | TODO_NUMBER
+\newcommand{\valFedAudLOCOdropLargestPRAUC}{TODO}
+% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: drop_largest_case pct_change | LOCO drop-largest percentage change | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudLOCOdropPct}{TODO}
+% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: drop_two_cases pr_auc | LOCO drop-two-cases PR-AUC | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudLOCOdropTwoPRAUC}{TODO}
+% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: roc_auc emp_p | clustered RI p, pooled ordering | TODO_NUMBER
+\newcommand{\valFedAudClusterRIp}{TODO}
+% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: roc_auc verdict | clustered-RI verdict, pooled ordering (distinguishable / not) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudClusterRIverdict}{TODO}
+% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: topk500_case_coverage emp_p | clustered RI p, case-coverage breadth | TODO_NUMBER
+\newcommand{\valFedAudClusterRIcovP}{TODO}
+% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: topk500_case_coverage verdict | clustered-RI verdict, case-coverage breadth | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudClusterRIcovVerdict}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 9 -- Negative controls
+% src base: outputs/comprasnet/tables/table_E_negative_controls.csv
+% NOTE: real (CADE-anchor) ROC reuses \valFedAudWithinAUC / raw -- no new macro.
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: placebo_cade_anchors_matched null_auc_mean | placebo-anchor null ROC (matched volume) | TODO_NUMBER
+\newcommand{\valFedAudPlaceboAUC}{TODO}
+% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: nonCADE_high_volume_winners null_auc_mean | non-CADE high-volume-winner null ROC | TODO_NUMBER
+\newcommand{\valFedAudHVWinnerAUC}{TODO}
+% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: verdict (derived from placebo NS + HV-winner NS) | negative-control verdict string | TODO_NUMBER
+\newcommand{\valFedAudNegControlVerdict}{TODO}
+
+
+% ----------------------------------------------------------------------------
+% ROW GROUP 10 -- Armor extras (secondary federal robustness)
+% src base: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv
+%           (+ audit_armor_macros.tex twin for cross-check)
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: LOO E (firm-level exposure benchmark) | firm-level LOO exposure benchmark E_i | TODO_NUMBER
+\newcommand{\valFedAudExpLOO}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: label-blind E (non-cobidder p_g) | label-blind opportunity-ranking AUC | TODO_NUMBER
+\newcommand{\valFedAudExpLB}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: within-AUC label-blind (MEDIUM) | within-AUC label-blind, MEDIUM | TODO_NUMBER  [map-only; not yet cited in drafts]
+\newcommand{\valFedAudWithinLB}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: within-AUC label-blind (all-AL) | within-AUC label-blind, all-AL | TODO_NUMBER  [map-only; not yet cited in drafts]
+\newcommand{\valFedAudWithinLBall}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: breadth (>=2 shared def items) within_auc | breadth within-AUC | TODO_NUMBER
+\newcommand{\valFedAudBreadthWithinAUC}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: breadth (>=2 shared def items) auc_increment | breadth increment vs base | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudBreadthIncrement}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: breadth (>=2 shared def items) p | breadth increment p | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudBreadthP}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: breadth verdict | breadth verdict string (strengthens / reverses) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+\newcommand{\valFedAudBreadthVerdict}{TODO}
+
+% ============================================================================
+% END federal wiring block. Macro tally: 81 total = 14 FILLED + 67 TODO.
+% ============================================================================

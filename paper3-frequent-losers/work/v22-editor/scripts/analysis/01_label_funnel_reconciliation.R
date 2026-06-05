@@ -279,10 +279,22 @@ if (HAVE_CONS) {
     SELECT COUNT(DISTINCT (numerodaoc||'|'||\"códigoitem\")) ni
     FROM def_items WHERE proc IN (%s)",
     paste(sprintf("'%s'", cons_procs), collapse = ",")))$ni
+  # TARGET-QUALITY FIX (Phase 1, 2026-06-05) -- FIX 2: truthful conservative-rule
+  # label sourced DYNAMICALLY from cfg$CONS_DATE (mirrors script 00). For BEC,
+  # CONS_DATE = 2020-12-31 < latest judgment -> a genuine prospective cut, and the
+  # rendered strings are BYTE-IDENTICAL to the previous hardcoded "2020-12-31" text
+  # (R1 preserved). Federally CONS_DATE = latest judgment date -> the cut is
+  # equivalent to all dated cases (undated cases excluded); the label says so.
+  n_cases_total   <- uniqueN(cart$proc)
+  n_cases_dated   <- uniqueN(proc_dates$proc)
+  n_cases_undated <- n_cases_total - n_cases_dated
+  cons_is_vacuous <- isTRUE(CONS_DATE >= suppressWarnings(max(proc_dates$jdate, na.rm = TRUE)))
 } else {
   say("[S6] NOTE conservative benchmark SKIPPED: cfg$CONS_DATE is NA (",
       cfg$source, " has no wired-in judgment dates).")
   cons_procs   <- character(0)
+  n_cases_undated <- NA_integer_
+  cons_is_vacuous <- FALSE
   n_cons_cases <- 0L
   n_cons_def   <- NA_integer_
   set_consAL   <- character(0)
@@ -293,6 +305,47 @@ if (HAVE_CONS) {
 }
 say("[S6] conservative cases=", n_cons_cases, " def=", n_cons_def,
     " AL=", n_cons_AL, " FL=", n_cons_FL, " def_items=", n_cons_def_items)
+
+# TARGET-QUALITY FIX (Phase 1, 2026-06-05) -- FIX 2: dynamic conservative-rule labels.
+# cons_date_str renders the cut date; cons_rule_def is the funnel "definition" string;
+# cons_rule_note appends the federal honesty clause when the cut is vacuous (CONS_DATE =
+# latest judgment date). For BEC these render to the prior hardcoded text verbatim.
+cons_date_str <- if (HAVE_CONS) format(CONS_DATE) else NA_character_
+cons_rule_def <- if (!HAVE_CONS) {
+  "conservative benchmark not applicable (CONS_DATE NA)"
+} else if (isTRUE(cons_is_vacuous)) {
+  sprintf("cases judged on/before %s (equivalent to all %d dated cases; %d undated excluded)",
+          cons_date_str, n_cons_cases, n_cases_undated)
+} else {
+  sprintf("cases judged on/before %s", cons_date_str)
+}
+say("[S6] conservative rule: ", cons_rule_def)
+
+# TARGET-QUALITY FIX (Phase 1, 2026-06-05) -- FIX 2: Table-A row strings, dynamic.
+# These render BYTE-IDENTICAL to the previous hardcoded BEC text when CONS_DATE =
+# 2020-12-31 and counts = 4/19/208/107 (cons_is_vacuous = FALSE for BEC). Federally
+# (cons_is_vacuous = TRUE) they state the truth: the cut equals all dated cases.
+cons_sample_name <- if (isTRUE(cons_is_vacuous)) {
+  sprintf("Conservative benchmark, all dated cases (%d/%d/%d/%d)",
+          n_cons_cases, n_cons_def, n_cons_AL, n_cons_FL)
+} else {
+  sprintf("Conservative pre-2020 benchmark (%d/%d/%d/%d)",
+          n_cons_cases, n_cons_def, n_cons_AL, n_cons_FL)
+}
+cons_case_window <- sprintf("judged <=%s", cons_date_str)
+cons_date_rule   <- sprintf("<=%s", cons_date_str)
+cons_excl_str    <- if (isTRUE(cons_is_vacuous)) {
+  sprintf("defendants, -1 sentinel, %d undated case(s) excluded", n_cases_undated)
+} else {
+  "defendants, -1 sentinel, cases judged after 2020"
+}
+cons_reason_str  <- if (isTRUE(cons_is_vacuous)) {
+  sprintf("same broad AL def restricted to %d dated cases (subset of main %d)", n_cons_cases, n_AL)
+} else {
+  sprintf("same broad AL def restricted to %d early cases (subset of main %d)", n_cons_cases, n_AL)
+}
+cons_tabA_note   <- sprintf("%d AL / %d FL-composition; %d crossmatch defendants in conservative cases",
+                            n_cons_AL, n_cons_FL, n_cons_def)
 
 # =============================================================================
 # (1) COUNT REPRODUCTION TABLE
@@ -344,8 +397,8 @@ cr <- rbindlist(list(
        "broad shared-tender-item ALWAYS-LOSER cobidders, full portfolio",
        "transparent scripted broad definition"),
   list("conservative_cases", n_cons_cases, 4L, status(n_cons_cases, 4L),
-       "cade_carteis (jdate<=2020-12-31)", "01_label_funnel_reconciliation.R",
-       "cases judged on/before 2020-12-31", "exact"),
+       sprintf("cade_carteis (jdate<=%s)", cons_date_str), "01_label_funnel_reconciliation.R",
+       cons_rule_def, "exact"),  # TARGET-QUALITY FIX (Phase 1, 2026-06-05): dynamic date/rule
   list("conservative_defendants", n_cons_def, 30L, status(n_cons_def, 30L),
        "crossmatch (conservative cases)", "01_label_funnel_reconciliation.R",
        "BEC-active direct defendants in 4 conservative cases",
@@ -409,13 +462,13 @@ tabA <- rbindlist(list(
        NA_integer_, n_cob_file, "FL-only (circular for FL score)", "defendants",
        "NOT a submitted label; internal set comparison only",
        "static cade_fl_cobidders.csv; FL-only; builder absent; excluded from submitted tables"),
-  list("Conservative pre-2020 benchmark (4/19/208/107)", "judged <=2020-12-31",
-       "<=2020-12-31", "2009-2019", "Convite+Pregao", "any shared tender-item",
+  list(cons_sample_name, cons_case_window,  # TARGET-QUALITY FIX (Phase 1, 2026-06-05): dynamic conservative-rule strings
+       cons_date_rule, "2009-2019", "Convite+Pregao", "any shared tender-item",
        "crossmatch CNPJ in firm_tender_map", n_cons_cases, NA_integer_, n_cons_def, n_cons_def_items,
        "win_rate==0", n_cons_AL, "broad: shared tender-item", n_cons_FL, n_cons_AL,
-       n_cons_FL, "FL14", "defendants, -1 sentinel, cases judged after 2020",
-       "same broad AL def restricted to 4 early cases (subset of main 651)",
-       "208 AL / 107 FL-composition; 19 crossmatch defendants in conservative cases"),
+       n_cons_FL, "FL14", cons_excl_str,
+       cons_reason_str,
+       cons_tabA_note),
   list("Strict 2009-2016 -> 2017-2019 timing target", "2009-2019 conduct",
        "any", "train 2009-2016 / test 2017-2019", "Convite+Pregao", "shared tender-item by award year",
        "crossmatch CNPJ in firm_tender_map", NA_integer_, NA_integer_, NA_integer_, NA_integer_,
@@ -477,7 +530,13 @@ texA <- c(
   "The main validation label is constructed from current scripts by matching BEC-active direct CADE defendants to tender-items and identifying unique always-loser firms (win rate $=0$) that share at least one BEC tender-item with those anchors; direct defendants are excluded. ",
   "The frequent-loser flag is not used to construct the label; it is the award-layer score evaluated against the label. ",
   sprintf("Of the %d positives, %d are frequent losers and %d are not (composition, not a label restriction). ", n_AL, n_FL, n_AL - n_FL),
-  "The conservative benchmark restricts CADE cases to judgment dates $\\leq$ 2020-12-31 under the SAME definition. ",
+  # TARGET-QUALITY FIX (Phase 1, 2026-06-05): conservative cutoff sourced from cfg$CONS_DATE.
+  sprintf("The conservative benchmark restricts CADE cases to judgment dates $\\leq$ %s under the SAME definition%s. ",
+          cons_date_str,
+          if (isTRUE(cons_is_vacuous))
+            sprintf(" (this cutoff equals the latest judgment date, so it retains all %d dated cases and excludes %d undated case%s)",
+                    n_cons_cases, n_cases_undated, if (n_cases_undated == 1L) "" else "s")
+          else ""),
   "Counts are unique firms unless a column says pairs. AL = always-loser; FL = frequent loser (FL14, tenders\\_count $\\geq 14$). ",
   "Legal-defendant roster (65) is not reproducible from the CADE rulings CSV (empty CNPJ column); shown for context.",
   "\\end{tablenotes}",
@@ -554,8 +613,16 @@ texB <- c(
   "\\end{adjustbox}",
   "\\begin{tablenotes}[flushleft]\\scriptsize",
   "\\item \\textit{Notes.} CADE rulings are public; process numbers anonymized to Case A--L (ordered by judgment date, undated last) for cleanliness; full process numbers in the replication CSV. ",
-  "Conduct-period dates are unavailable; only judgment dates exist (9/12 cases). Undated cases marked judgment year ``n.d.''. ",
-  "AL/FL cobidder counts use the broad shared-tender-item definition. ``Conserv.'' = included in the pre-2020 conservative benchmark.",
+  # TARGET-QUALITY FIX (Phase 1, 2026-06-05): dated/total + conservative cutoff from data/cfg.
+  # BEC (cons_is_vacuous=FALSE) renders BYTE-IDENTICAL to the prior "9/12 cases" +
+  # "pre-2020 conservative benchmark" text; federal states the truthful cutoff/exclusion.
+  sprintf("Conduct-period dates are unavailable; only judgment dates exist (%d/%d cases). Undated cases marked judgment year ``n.d.''. ",
+          uniqueN(cart$proc) - (if (HAVE_CONS) n_cases_undated else 0L), uniqueN(cart$proc)),
+  if (isTRUE(cons_is_vacuous))
+    sprintf("AL/FL cobidder counts use the broad shared-tender-item definition. ``Conserv.'' = included in the conservative benchmark (judgment date $\\leq$ %s; equals all dated cases).",
+            cons_date_str)
+  else
+    "AL/FL cobidder counts use the broad shared-tender-item definition. ``Conserv.'' = included in the pre-2020 conservative benchmark.",
   "\\end{tablenotes}",
   "\\end{threeparttable}",
   "\\end{table}")

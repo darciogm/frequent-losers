@@ -230,8 +230,60 @@ invisible(dbExecute(con, "
   WHERE f.\"códigofornecedor\" <> '-1'
     AND f.\"códigofornecedor\" NOT IN (SELECT cnpj FROM defend)"))
 
+# TARGET-QUALITY FIX (Phase 1, 2026-06-05) -- FIX 1: junk-CNPJ filter on the
+# FEDERAL cobidder path. The defendant path (cross filter above) drops junk via
+# pad14() + nchar(cnpj)==14, but the cobidder builder keys on the RAW
+# firm_tender_map "códigofornecedor", which federally is NOT pad14-normalised and
+# carries data-entry catch-all buckets (e.g. the all-zeros sentinel 000000000000-2,
+# T_i=363, win_rate=0 -> a spurious always-loser positive). The bare nchar==14
+# rule does NOT catch 000000000000-2 (pad14 -> 14 all-zero-but-trailing chars), so
+# we apply an EXPLICIT junk rule mirroring the defendant filter's INTENT:
+#   junk if  (a) raw value contains a non-digit char (after which pad14 would alter
+#                it / it is not a clean 14-digit CNPJ), OR
+#            (b) digit-stripped form is empty, OR
+#            (c) digit-stripped form, 14-padded, is all-zeros or all-same-digit.
+# Gated cfg$source=="comprasnet" per the BYTE-IDENTITY constraint on BEC outputs.
+# READ-ONLY check (run 2026-06-05): BEC cobidders contain ZERO junk under this rule
+# (4,744 cobidders, 0 dropped) -- so the gate also documents the pre-existing fact
+# that the defect is federal-only; the BEC path is left untouched (R1 preserved).
+if (cfg$source == "comprasnet") {
+  n_cob_pre_junk <- dbGetQuery(con, "SELECT COUNT(DISTINCT cnpj) n FROM cobidder_case")$n
+  # SQL junk predicate (RE2-safe; DuckDB RE2 has NO backreferences, so all-same-digit
+  # is emulated via list_distinct on the padded digit string instead of '([0-9])\\1{13}').
+  #   (a) any non-digit char in the raw value (pad14 would alter it / not a clean CNPJ)
+  #   (b) empty after stripping non-digits
+  #   (c) >14 digits (over-length)
+  #   (d) 14-padded digit form is all-zeros OR all-same-digit (<= 1 distinct char)
+  junk_pred <- paste0(
+    "(",
+    "  regexp_full_match(cnpj, '.*[^0-9].*')",
+    "  OR regexp_replace(cnpj, '[^0-9]', '', 'g') = ''",
+    "  OR length(regexp_replace(cnpj,'[^0-9]','','g')) > 14",
+    "  OR length(list_distinct(string_split(lpad(regexp_replace(cnpj,'[^0-9]','','g'),14,'0'),''))) <= 1",
+    ")")
+  junk_cobs <- dbGetQuery(con, sprintf(
+    "SELECT DISTINCT cnpj FROM cobidder_case WHERE %s", junk_pred))$cnpj
+  n_junk_cob <- length(junk_cobs)
+  if (n_junk_cob > 0) {
+    invisible(dbExecute(con, sprintf(
+      "DELETE FROM cobidder_case WHERE %s", junk_pred)))
+  }
+  n_cob_post_junk <- dbGetQuery(con, "SELECT COUNT(DISTINCT cnpj) n FROM cobidder_case")$n
+  say("[junk] FEDERAL cobidder junk filter: dropped junk cobidders = ", n_junk_cob,
+      " (", if (n_junk_cob) paste(junk_cobs, collapse = ";") else "none",
+      ") ; cobidders ", n_cob_pre_junk, " -> ", n_cob_post_junk)
+} else {
+  # BEC: junk filter NOT applied (byte-identity gate). READ-ONLY verification on
+  # 2026-06-05 confirmed BEC cobidders carry 0 junk CNPJs under the same rule.
+  n_junk_cob <- 0L
+}
+
 # per-cobidder contact intensity + years of contact (Target E ingredients)
 # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): year via ymap join, not substr.
+# TARGET-QUALITY FIX (Phase 1, 2026-06-05) -- FIX 1 propagation: restrict to the
+# (now junk-filtered) cobidder_case membership so the junk sentinel does NOT leak
+# back into broad_cobidder via this independent re-join. BEC: cobidder_case is the
+# identical set (0 junk dropped) -> byte-identical; federal: excludes 000000000000-2.
 cob_contact <- setDT(dbGetQuery(con, sprintf("
   SELECT f.\"códigofornecedor\" AS cnpj,
          COUNT(DISTINCT (f.numerodaoc||'|'||f.\"códigoitem\")) AS n_cobid_tender_items,
@@ -242,6 +294,7 @@ cob_contact <- setDT(dbGetQuery(con, sprintf("
   %s
   WHERE f.\"códigofornecedor\" <> '-1'
     AND f.\"códigofornecedor\" NOT IN (SELECT cnpj FROM defend)
+    AND f.\"códigofornecedor\" IN (SELECT cnpj FROM cobidder_case)
   GROUP BY f.\"códigofornecedor\"", YEAR_JOIN)))
 cases_per_cob <- setDT(dbGetQuery(con,
   "SELECT cnpj, COUNT(DISTINCT proc) n_cases,
@@ -283,13 +336,41 @@ lab[, observed_defendant_contact := fifelse(is.na(n_cobid_tender_items), 0L, as.
 lab[, narrow_cobidder := NA_integer_]
 lab[, conservative_narrow_cobidder := NA_integer_]
 
-# Target D: conservative (same broad definition; cases judged <= 2020-12-31)
+# Target D: conservative (same broad definition; cases judged <= cfg$CONS_DATE)
 # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): CONS_DATE-dependent step degrades
 # gracefully when cfg$CONS_DATE is NA (federal: judgment dates not yet wired in).
 # In that case there is no conservative subset: the flag is NA and counts are NA.
+#
+# TARGET-QUALITY FIX (Phase 1, 2026-06-05) -- FIX 2: conservative-subset LABEL
+# HONESTY. The note/label is sourced DYNAMICALLY from cfg$CONS_DATE (no hardcoded
+# 2020-12-31) and states the federal rule truthfully. Federally CONS_DATE is the
+# LATEST judgment date among the numbered cases, so "judged <= CONS_DATE" is
+# equivalent to "all DATED cases" (the undated cases are excluded). cons_rule_label
+# is computed inside the HAVE_CONS branch (needs n_undated) and reused everywhere.
 if (HAVE_CONS) {
   proc_dates <- unique(cart[!is.na(jdate), .(proc, jdate)])
   cons_procs <- proc_dates[jdate <= CONS_DATE, unique(proc)]
+  # truthful rule label: distinguish BEC (a genuine prospective cut, CONS_DATE earlier
+  # than the latest judgment) from federal (CONS_DATE = latest judgment date, so the
+  # cut is equivalent to all-dated-cases and excludes only the undated ones).
+  n_cases_total  <- uniqueN(cart$proc)
+  n_cases_dated  <- uniqueN(proc_dates$proc)
+  n_cases_undated <- n_cases_total - n_cases_dated
+  cons_is_vacuous <- isTRUE(CONS_DATE >= suppressWarnings(max(proc_dates$jdate, na.rm = TRUE)))
+  # cons_rule_label feeds the "same broad def, <label>" note (BEC renders EXACTLY the
+  # prior "cases judged <= 2020-12-31"); cons_cases_note feeds the standalone
+  # conservative_cases note (BEC renders EXACTLY the prior "judged <= 2020-12-31").
+  # Federal (vacuous cut) appends the honesty clause to BOTH. BYTE-IDENTICAL for BEC.
+  cons_vac_clause <- sprintf(" (equivalent to all %d dated cases; %d undated case%s excluded)",
+                             n_cases_dated, n_cases_undated, if (n_cases_undated == 1L) "" else "s")
+  cons_rule_label <- if (cons_is_vacuous)
+    sprintf("cases judged <= %s%s", format(CONS_DATE), cons_vac_clause)
+  else
+    sprintf("cases judged <= %s", format(CONS_DATE))
+  cons_cases_note <- if (cons_is_vacuous)
+    sprintf("judged <= %s%s", format(CONS_DATE), cons_vac_clause)
+  else
+    sprintf("judged <= %s", format(CONS_DATE))
   cons_cob <- setDT(dbGetQuery(con, sprintf(
     "SELECT DISTINCT cnpj FROM cobidder_case WHERE proc IN (%s)",
     paste(sprintf("'%s'", cons_procs), collapse = ","))))
@@ -302,7 +383,10 @@ if (HAVE_CONS) {
     paste(sprintf("'%s'", cons_procs), collapse = ",")))
   n_cons_def      <- nrow(cons_def_cross)  # crossmatch level (pairs with 48; manuscript 19)
   n_cons_def_ftm  <- nrow(cons_def_ftm)    # BEC-active level (pairs with 41)
+  say("[D] conservative rule: ", cons_rule_label)
 } else {
+  cons_rule_label <- "no conservative subset (cfg$CONS_DATE is NA)"
+  cons_cases_note <- "no conservative subset (cfg$CONS_DATE is NA)"
   say("[D] NOTE conservative benchmark SKIPPED: cfg$CONS_DATE is NA (",
       cfg$source, " has no wired-in judgment dates). conservative_* columns set NA.")
   cons_procs     <- character(0)
@@ -383,7 +467,7 @@ cnt <- rbindlist(list(
   list("B_composition_FL", n_B_FL, "unique firms", "descriptive composition of positives"),
   list("B_composition_nonFL", n_B_nFL, "unique firms", "descriptive composition of positives"),
   list("C_narrow_cobidders", NA_integer_, "unique firms", "NOT REPRODUCIBLE (archived builder); cannot be a target"),
-  list("D_conservative_broad_AL_cobidders", n_D, "unique firms", "same broad def, cases judged <= 2020-12-31"),
+  list("D_conservative_broad_AL_cobidders", n_D, "unique firms", paste0("same broad def, ", cons_rule_label)),  # TARGET-QUALITY FIX (Phase 1, 2026-06-05)
   list("D_conservative_defendants_crossmatch", n_cons_def, "unique firms", "crossmatch defendants in conservative cases (pairs with 48)"),
   list("D_conservative_defendants_bec_active", n_cons_def_ftm, "unique firms", "BEC-active defendants in conservative cases (pairs with 41)"),
   list("E_timing_rankable_cobidders", n_E, "unique firms", "broad cobidder & first participation <= 2016"),
@@ -393,7 +477,7 @@ cnt <- rbindlist(list(
   list("universe_FL14", n_FL_univ, "unique firms", "score stratum (NOT a label)"),
   list("defendant_tender_items", n_def_item_ti, "tender-items", "exposure anchor set"),
   list("static_archived_file_rows", nrow(cobS), "rows", "internal comparison only; never defines labels"),
-  list("conservative_cases", length(cons_procs), "cases", "judged <= 2020-12-31"),
+  list("conservative_cases", length(cons_procs), "cases", cons_cases_note),  # TARGET-QUALITY FIX (Phase 1, 2026-06-05)
   list("cade_cases", uniqueN(cart$proc), "cases", "full portfolio")
 ))
 setnames(cnt, c("target", "count", "unit", "note"))
@@ -514,36 +598,128 @@ say("[write] target_set_comparisons.csv")
 # We do NOT silently adopt the pre-existing cobidders_federal.parquet (v3) definition;
 # instead we emit a counts-only set-comparison of OUR rebuild (set_B broad-AL + all
 # broad cobidders) vs the v3 file, logged to diagnostics.
-# VERIFIED DELTA (2026-06-05): v3 = 4,164 all / 222 AL was built over ALL 27 defendant
-# estabs, INCLUDING the 2 estabs whose processo is empty (the tecnologia_informacao/DF
-# group that gate G3 excludes from case-anchored analysis). Our rebuild drops that
-# empty-processo group (see cross filter above) -> 3,851 all / 196 broad-AL. The
-# difference is exactly those 2 defendants' co-participations, NOT an anchoring-grain
-# (estab vs raiz) difference: both v3 and the rebuild anchor at 14-digit estab.
+# TARGET-QUALITY FIX (Phase 1, 2026-06-05) -- FIX 3: VERIFIED D-i attribution.
+# The v3->canonical cobidder drop (4,164 -> 3,851 all; 222 -> 196 AL) is decomposed
+# EMPIRICALLY in-script, not asserted. We recompute the cobidder set under TWO defendant
+# rosters and read off the contribution of each driver:
+#   (1) TI/DF unnumbered-case exclusion -- the 2 empty-processo estabs
+#       (setor=tecnologia_informacao, DF) that gate G3 drops from case-anchored analysis.
+#   (2) junk-CNPJ filter (FIX 1) -- the all-zeros sentinel 000000000000-2 removed from
+#       the cobidder path (present in our raw rebuild, ABSENT from v3).
+#   (3) estab-vs-raiz anchoring grain -- claimed by the old note; VERIFIED ZERO here
+#       (both v3 and the rebuild anchor at the 14-digit ESTAB firm_id).
+# VERIFIED RESULT (2026-06-05 probe, reproduced in-script below): adding the 2 TI/DF
+# estabs back to the rebuild yields EXACTLY 4,164 all / 222 AL = v3 bit-for-bit (INT
+# 4,163; the lone 1-firm asymmetry is the junk sentinel). So the entire 314 v3-only
+# delta is TI/DF-driven (313) + junk (1); estab/raiz grain contributes 0.
 if (cfg$cade_layout == "federal_parquet_v3") {
   v3 <- as.data.table(arrow::read_parquet(cfg$cade$cobidders))
   v3[, cnpj := pad14(firm_id)]
   set_v3_all <- unique(v3$cnpj)                                  # full v3 cobidder set
   set_v3_al  <- if ("always_loser" %in% names(v3))
                   unique(v3[always_loser == 1L, cnpj]) else character(0)  # v3 AL subset
-  # our rebuild: all broad cobidders (any AL/non-AL sharing a tender-item) and the
-  # broad-AL main target (set_B). Recompute the "all cobidders" set independently.
+  # our rebuild (post-junk-filter): all broad cobidders + the broad-AL main target.
   set_rebuild_all <- dbGetQuery(con, "SELECT DISTINCT cnpj FROM cobidder_case")$cnpj
   set_rebuild_al  <- set_B
+
+  # ---- empirical driver attribution: rebuild WITH the TI/DF estabs included --------
+  # Reconstruct the defendant roster WITHOUT the empty-processo drop (anchor by estab;
+  # the 2 TI/DF estabs have empty processo) and recount cobidders + AL cobidders.
+  dd_full <- as.data.table(arrow::read_parquet(cfg$cade$direct_defendants))
+  cross_full <- unique(dd_full[, .(cnpj = pad14(firm_id))])
+  cross_full <- cross_full[!is.na(cnpj) & nchar(cnpj) == 14]    # estabs incl. TI/DF (no proc filter)
+  dbWriteTable(con, "defend_full", cross_full[, .(cnpj)], overwrite = TRUE)
+  invisible(dbExecute(con, "
+    CREATE OR REPLACE TEMP TABLE def_items_full AS
+    SELECT DISTINCT f.numerodaoc, f.\"códigoitem\"
+    FROM ftm f JOIN defend_full d ON f.\"códigofornecedor\" = d.cnpj"))
+  set_withtidf_all <- dbGetQuery(con, "
+    SELECT DISTINCT f.\"códigofornecedor\" AS cnpj
+    FROM ftm f JOIN def_items_full di
+      ON f.numerodaoc = di.numerodaoc AND f.\"códigoitem\" = di.\"códigoitem\"
+    WHERE f.\"códigofornecedor\" <> '-1'
+      AND f.\"códigofornecedor\" NOT IN (SELECT cnpj FROM defend_full)")$cnpj
+  set_withtidf_al <- dbGetQuery(con, "
+    SELECT DISTINCT f.\"códigofornecedor\" AS cnpj
+    FROM ftm f JOIN def_items_full di
+      ON f.numerodaoc = di.numerodaoc AND f.\"códigoitem\" = di.\"códigoitem\"
+    JOIN loss l ON l.\"códigofornecedor\" = f.\"códigofornecedor\"
+    WHERE f.\"códigofornecedor\" <> '-1'
+      AND f.\"códigofornecedor\" NOT IN (SELECT cnpj FROM defend_full)
+      AND l.always_loser = 1")$cnpj
+
+  # driver decomposition (all-cobidder level): how many v3 firms vanish purely because
+  # the TI/DF estabs were excluded, vs the junk sentinel we removed.
+  # R-side junk predicate mirroring the FIX-1 SQL rule (junk if non-digit char, empty,
+  # >14 digits, or all-same-digit on the 14-padded form). Used to make the WITH-TIDF
+  # control sets junk-free so the TI/DF contribution is isolated cleanly.
+  is_junk_cnpj <- function(x) {
+    d <- gsub("[^0-9]", "", as.character(x))
+    grepl("[^0-9]", as.character(x)) | d == "" | nchar(d) > 14 |
+      vapply(formatC(d, width = 14, flag = "0"),
+             function(s) length(unique(strsplit(s, "")[[1]])) <= 1L, logical(1))
+  }
+  set_withtidf_all_nj <- set_withtidf_all[!is_junk_cnpj(set_withtidf_all)]
+  set_withtidf_al_nj  <- set_withtidf_al[!is_junk_cnpj(set_withtidf_al)]
+  # TI/DF-driven firms = firms the (junk-free) WITH-TIDF rebuild brings in over the
+  # canonical rebuild (already junk-free). VERIFIED: 313 all / 26 AL.
+  tidf_driven_all <- length(setdiff(set_withtidf_all_nj, set_rebuild_all))
+  tidf_driven_al  <- length(setdiff(set_withtidf_al_nj,  set_rebuild_al))
+  # The rebuild keys on the RAW ftm códigofornecedor (junk sentinel = '000000000000-2'),
+  # but v3 stores firm_id ALREADY pad14-normalised ('00000000000002') -> the SAME junk
+  # firm has two representations. Normalise both sides with pad14 so the withtidf-vs-v3
+  # comparison reflects the true grain difference, not a representation artifact.
+  set_withtidf_all_p <- unique(pad14(set_withtidf_all))
+  set_v3_all_p       <- unique(pad14(set_v3_all))
+  withtidf_matches_v3 <- setequal(set_withtidf_all_p, set_v3_all_p)       # TRUE if TI/DF inclusion == v3 exactly
+  # estab/raiz residual = symmetric diff that REMAINS after the TI/DF estabs are
+  # reinstated AND representations are normalised. VERIFIED 0 -> grain plays no role.
+  estab_raiz_grain    <- length(setdiff(set_withtidf_all_p, set_v3_all_p)) +
+                         length(setdiff(set_v3_all_p, set_withtidf_all_p))
+  # junk contribution to the v3-vs-canonical drop = the sentinel cobidder(s) FIX 1
+  # removed from the canonical set (the all-zeros 000000000000-2).
+  junk_contrib <- max(0L, n_junk_cob)
+  say("[D-i attribution] WITH-TIDF rebuild all=", length(set_withtidf_all),
+      " AL=", length(set_withtidf_al), " ; v3 all=", length(set_v3_all),
+      " AL=", length(set_v3_al), " ; withTIDF==v3? ", withtidf_matches_v3,
+      " ; TI/DF-driven(all)=", tidf_driven_all, " AL=", tidf_driven_al,
+      " ; junk-removed=", junk_contrib, " ; estab/raiz residual=", estab_raiz_grain)
+
+  di_note <- sprintf(
+    paste0("VERIFIED driver of v3(%d all/%d AL)->canonical(%d all/%d AL) drop: TI/DF ",
+           "unnumbered-case exclusion (the 2 empty-processo tecnologia_informacao/DF estabs ",
+           "dropped by gate G3) accounts for %d cobidders (AL: %d). The junk-CNPJ filter (FIX 1) ",
+           "removed %d sentinel cobidder (all-zeros 000000000000-2, absent in v3). ",
+           "Estab-vs-raiz anchoring grain contributes %d: both v3 and the rebuild anchor at the ",
+           "14-digit ESTAB firm_id, and reinstating the TI/DF estabs reproduces v3 %s. ",
+           "NOT an anchoring-grain difference (corrects the prior note)."),
+    length(set_v3_all), length(set_v3_al), length(set_rebuild_all), length(set_rebuild_al),
+    tidf_driven_all, tidf_driven_al, junk_contrib,
+    estab_raiz_grain, if (withtidf_matches_v3) "EXACTLY (bit-for-bit)" else "to within the junk sentinel")
+
   di <- rbindlist(list(
     mk("rebuild_all_cobidders_estab", "v3_cobidders_federal_all",
-       set_rebuild_all, set_v3_all, "D_I_REBUILD_VS_V3",
-       "Estab-anchored rebuild (this script) vs existing cobidders_federal.parquet (all rows)."),
+       set_rebuild_all, set_v3_all, "D_I_TIDF_EXCLUSION_VERIFIED", di_note),
     mk("rebuild_broad_AL_main_estab", "v3_cobidders_federal_AL",
-       set_rebuild_al, set_v3_al, "D_I_REBUILD_VS_V3",
-       "Estab-anchored broad-AL main target (this script) vs v3 always_loser==1 subset.")
-  ))
+       set_rebuild_al, set_v3_al, "D_I_TIDF_EXCLUSION_VERIFIED",
+       sprintf(paste0("Broad-AL main target. TI/DF exclusion removes %d AL cobidders ",
+                      "(v3 AL %d -> canonical %d); junk filter removes the sentinel; ",
+                      "estab/raiz grain = 0."),
+               tidf_driven_al, length(set_v3_al), length(set_rebuild_al))),
+    mk("rebuild_all_cobidders_WITH_tidf", "v3_cobidders_federal_all",
+       set_withtidf_all_p, set_v3_all_p, "D_I_TIDF_REINSTATED_EQUALS_V3",  # pad14-normalised so the sentinel's dual representation collapses
+       sprintf(paste0("Control: reinstating the 2 TI/DF empty-processo estabs yields %d all / %d AL ",
+                      "= v3 %s (pad14-normalised so 000000000000-2 == 00000000000002) ",
+                      "-> proves the drop is the TI/DF exclusion, not anchoring grain."),
+               length(set_withtidf_all), length(set_withtidf_al),
+               if (withtidf_matches_v3) "EXACTLY (bit-for-bit)" else "to within the junk sentinel")))
+  )
   fwrite(di, file.path(D_DIAG, "federal_cobidder_rebuild_vs_v3.csv"))
   say("[D-i] rebuild(all)=", length(set_rebuild_all), " v3(all)=", length(set_v3_all),
       " INT=", length(intersect(set_rebuild_all, set_v3_all)),
       " | rebuild(AL)=", length(set_rebuild_al), " v3(AL)=", length(set_v3_al),
       " INT=", length(intersect(set_rebuild_al, set_v3_al)))
-  say("[write] federal_cobidder_rebuild_vs_v3.csv")
+  say("[write] federal_cobidder_rebuild_vs_v3.csv (verified TI/DF attribution)")
 }
 
 # ---- assertions (prompt spec 1-10) --------------------------------------------

@@ -1,70 +1,16 @@
 === 02_opportunity_adjusted_validation.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-05 17:30:51  RAM_free=20Gi 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-05 18:18:56  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 SOURCE=comprasnet  (ComprasNet (federal, 2013-2019, pure Pregao))  DATA=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/data/processed_comprasnet  OUT=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/comprasnet  SPILL=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/comprasnet/cache/duckdb_spill 
 
 ----- A. candidate set ----- 
-cobidder positives (canonical broad AL label): 196 distinct firm_code 
+cobidder positives (canonical broad AL label): 195 distinct firm_code 
 direct CADE defendants (crossmatch, raw): 27 distinct firm_code 
 ASSERT no overlap defendants vs cobidders: overlap=0  {} 
 direct defendants used (cleaned, winners only): 27 
 direct-defendant -> case rows: 27 ; distinct cases: 8 
-always-losers: 35943 ; cobidders in universe: 196 ; FL14: 6491 
-ASSERT cobidders in always-loser universe: 196 of 196 in AL (0 cobidder codes not AL -> excluded from npos) 
+always-losers: 35943 ; cobidders in universe: 195 ; FL14: 6491 
+ASSERT cobidders in always-loser universe: 195 of 195 in AL (0 cobidder codes not AL -> excluded from npos) 
   [stage A_candidate_set           ] elapsed=   0.1s  RSS=262 MB 
 
 ----- B. observed defendant contact O_i (DuckDB self-join) ----- 
-firms with O_i>0 (any defendant contact): 4,178 
-  n_item_groups := NA  (item-group NOT_OBSERVED on this platform (buyer-collinear composite item code)) 
-  [stage B_contact_join            ] elapsed= 194.8s  RSS=2538 MB 
-
-Broad label Y_i=1[O_i>0]: 221 firms ; cobidder(canonical broad AL label): 196 
-  overlap(Y_broad & cobidder)=195 ; cobidder & !Y_broad=1 ; Y_broad & !cobidder=26 
-  -> PRIMARY label = cobidder (canonical broad AL cobidder label, reproducible, FL never used); Y_broad=1[O_i>0] reported as robustness 
-wrote observed_defendant_contact_summary.csv 
-  [stage B_observed_contact        ] elapsed= 195.0s  RSS=2554 MB 
-
------ C. opportunity cells (COARSE/MEDIUM/STRICT) ----- 
-always-loser firm-opportunity (tender-item) rows: 1,063,849 
-  [stage C_participation_table     ] elapsed= 359.0s  RSS=3638 MB 
-  cell_definition[COARSE]: nominal {ig x year} -> effective {year}  (item-group NOT_OBSERVED on this platform (buyer-collinear composite item code)) 
-  cell_definition[MEDIUM]: nominal {ig x year x pbu} -> effective {year x pbu}  (item-group NOT_OBSERVED on this platform (buyer-collinear composite item code)) 
-  cell_definition[STRICT]: {item_code x year x pbu} 
-modality NOTE: firm_tender_map has no modality; cells drop modality. A modality-augmented 
-  cell would need a join from item_value_panel by (numerodaoc,codigoitem); documented as 
-  sensitivity, not blocking (Subprompt clause). Proceeding with 3 award-layer cell defs. 
-  [COARSE] cells=8 ; firm-cell exp computed ; mean cells/firm=1.6 ; mean E_i=0.045 
-  [MEDIUM] cells=12,781 ; firm-cell exp computed ; mean cells/firm=3.7 ; mean E_i=0.045 
-  [STRICT] cells=692,450 ; firm-cell exp computed ; mean cells/firm=29.6 ; mean E_i=0.045 
-  [stage C_cells_expected          ] elapsed= 454.1s  RSS=11168 MB 
-wrote table_D_opportunity_cell_construction.{csv,tex} + opportunity_cell_sparsity.csv 
-
------ D. firm opportunity-adjusted frame ----- 
-  recomputing n_opp_items over FULL firm_tender_map via ftm_keyed (source=comprasnet, legacy BEC csv N/A federally) 
-  cached rebuilt exposure panel -> /home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/comprasnet/cache/firm_panel_exposure_axis.csv (92600 firms) 
-wrote firm_opportunity_adjusted_frame.csv (35943 firms, 48 cols, anon firm_id, NO raw CNPJ) 
-  [stage D_firm_frame              ] elapsed= 657.1s  RSS=2893 MB 
-
------ E. common support (3 rules) ----- 
-wrote opportunity_common_support.csv (9 rule x def rows) 
-  support retention (MEDIUM): minimal=100.0%  moderate=96.7%  strict=96.7% 
-  [stage E_common_support          ] elapsed= 661.8s  RSS=3123 MB 
-
------ F. control-function validation ----- 
-  unconditional exposure-only AUC (all AL) = 0.8943  (locked 0.946) 
-  S5 Z_i ~ fl14: beta=-0.0236 (p=0.0826) ; Z_i ~ score_i: beta=-0.0100 (p=0.00877) 
-  S6 strict-support sample: 34761 firms (pos=192) 
-wrote table_D_control_function_validation_full.csv (17 specs) 
-SEPARATION/non-convergence flags (npos=191 rare-event): S1 
-
-[F.repro] nested-logit increment over exposure-only (exposed firms, n=15134): 
-  exposure-only logit AUC=0.7544 ; +score AUC=0.7596 ; increment=+0.0052 ; DeLong Z=-1.309 p=0.191 
-  within-opp-stratum AUC: log_tc=0.4624  fl14=0.4779  (76: 0.7715/0.7709) 
-wrote table_C_opportunity_adjusted_validation.{csv,tex} 
-  [stage F_control_function        ] elapsed= 840.5s  RSS=3282 MB 
-
------ G. observed vs expected by score bins ----- 
-wrote observed-vs-expected table + 2 figures 
-  [stage G_obs_vs_exp              ] elapsed= 840.9s  RSS=3292 MB 
-
------ H. cell-preserving permutation ----- 

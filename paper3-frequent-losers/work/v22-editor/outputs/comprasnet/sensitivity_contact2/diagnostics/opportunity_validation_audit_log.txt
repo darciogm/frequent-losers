@@ -1,0 +1,28 @@
+=== 02b_opportunity_sensitivity_contact2.R === 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-05 17:51:08  RAM_free=20Gi 
+REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
+SOURCE=comprasnet  (ComprasNet (federal, 2013-2019, pure Pregao))  DATA=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/data/processed_comprasnet  OUT=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/comprasnet/sensitivity_contact2  SPILL=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/comprasnet/cache/duckdb_spill 
+
+----- A. candidate set ----- 
+cobidder positives (canonical broad AL label): 196 distinct firm_code 
+direct CADE defendants (crossmatch, raw): 27 distinct firm_code 
+ASSERT no overlap defendants vs cobidders: overlap=0  {} 
+direct defendants used (cleaned, winners only): 27 
+direct-defendant -> case rows: 27 ; distinct cases: 8 
+always-losers: 35943 ; cobidders in universe: 196 ; FL14: 6491 
+ASSERT cobidders in always-loser universe: 196 of 196 in AL (0 cobidder codes not AL -> excluded from npos) 
+  [stage A_candidate_set           ] elapsed=   0.2s  RSS=262 MB 
+
+----- B. observed defendant contact O_i (DuckDB self-join) ----- 
+firms with O_i>0 (any defendant contact): 4,178 
+  [stage B_contact_join            ] elapsed= 226.4s  RSS=2547 MB 
+  n_item_groups := NA  (item-group NOT_OBSERVED on this platform (buyer-collinear composite item code)) 
+SENSITIVITY contact>=2: positives 196 -> 108 
+
+Broad label Y_i=1[O_i>0]: 221 firms ; cobidder(canonical broad AL label): 108 
+  overlap(Y_broad & cobidder)=108 ; cobidder & !Y_broad=0 ; Y_broad & !cobidder=113 
+  -> PRIMARY label = cobidder (canonical broad AL cobidder label, reproducible, FL never used); Y_broad=1[O_i>0] reported as robustness 
+wrote observed_defendant_contact_summary.csv 
+  [stage B_observed_contact        ] elapsed= 226.6s  RSS=2562 MB 
+
+----- C. opportunity cells (COARSE/MEDIUM/STRICT) ----- 
