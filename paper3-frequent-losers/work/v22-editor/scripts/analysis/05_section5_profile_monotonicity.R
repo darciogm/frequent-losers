@@ -76,7 +76,13 @@ LOG <- file.path(dir_diag, "section5_profile_audit_log.txt")
 say <- function(...) { m <- sprintf(...); cat(m, "\n"); cat(m, "\n", file = LOG, append = TRUE) }
 rss_mb <- function() tryCatch(round(as.numeric(system(sprintf("ps -o rss= -p %d", Sys.getpid()), intern=TRUE))/1024), error=function(e) NA_real_)
 stamp <- function(s) say("  [stage %-30s] elapsed=%6.1fs  RSS=%s MB", s, as.numeric(difftime(Sys.time(),.t0,units="secs")), rss_mb())
-norm14 <- function(x) sprintf("%014.0f", as.numeric(x))
+# SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05): source-gated 14-char
+# normalizer (cfg$norm14_safe). Applied here to FREQ_PARTICIP / canonical-cobidder
+# códigofornecedor (NA-collapse risk for the 119 federal non-numeric ESTRANG*/junk
+# codes) AND to CADE-side firm_cnpj/firm_id (numeric -> harmless). BEC -> exact legacy
+# sprintf("%014.0f", as.numeric(x)) (byte-identity, gate R1); federal -> numeric pad14,
+# non-numeric RAW passthrough (they legitimately never match a CADE CNPJ).
+norm14 <- cfg$norm14_safe
 
 say("=== 05_section5_profile_monotonicity.R ===")
 say("host=%s  nproc=%s  seed=%d  date=%s  RAM_free=%s",

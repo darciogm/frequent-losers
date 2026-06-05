@@ -86,7 +86,12 @@ say("host=%s  nproc=%s  seed=%d  date=%s  RAM_free=%s",
     tryCatch(system("free -h | awk 'NR==2{print $7}'", intern=TRUE), error=function(e)"?"))
 say("REPO=%s", REPO)
 
-norm14 <- function(x) sprintf("%014.0f", as.numeric(x))
+# SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05): source-gated 14-char
+# normalizer. BEC -> exact legacy literal sprintf("%014.0f", as.numeric(x)) (byte-
+# identity, gate R1, incl. the '-1' sentinel). Federal -> numeric pad14 / non-numeric
+# (ESTRANG* foreign suppliers, 14-char junk) RAW passthrough -- they legitimately
+# never match a CADE CNPJ; never NA-collapse them. Proven equivalent on BEC vectors.
+norm14 <- cfg$norm14_safe
 
 # safe metric wrappers (return NA / count on degenerate input, never error out)
 safe <- function(expr) tryCatch(suppressWarnings(expr), error = function(e) NA_real_)
@@ -241,6 +246,11 @@ say("\n========== B0. defendant contact O_i + environment (DuckDB) ==========")
 ftm_path <- cfg$firm_tender_map
 ivp_path <- cfg$item_panel
 IVP_ITEM_COL <- cfg$item_panel_item_col       # "codigoitem" (BEC) | "códigoitem" (FED)
+# SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05): in-SQL firm-code
+# normalizer expr. BEC -> exact legacy printf('%014.0f', CAST(... AS DOUBLE)) (byte-
+# identity). Federal -> numeric pad14 / non-numeric (ESTRANG*, 14-char junk) RAW
+# (CAST AS DOUBLE would crash on 'ESTRANG...'). Proven 0-mismatch on BEC distinct codes.
+FC_SQL <- cfg$norm14_sql_expr("\"códigofornecedor\"")
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
 dbExecute(con, sprintf("PRAGMA temp_directory='%s'", cfg$temp_directory))
@@ -255,7 +265,7 @@ dbWriteTable(con, "def_case", as.data.frame(def_case), overwrite = TRUE)
 # O_i = # distinct (oc,item) where firm i AND >=1 direct defendant co-appear.
 contact <- as.data.table(dbGetQuery(con, sprintf("
   WITH ftm AS (
-    SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+    SELECT %s AS firm_code,
            CAST(\"numerodaoc\" AS VARCHAR) AS oc,
            CAST(\"códigoitem\" AS VARCHAR) AS item
     FROM read_parquet('%s')),
@@ -267,13 +277,13 @@ contact <- as.data.table(dbGetQuery(con, sprintf("
     FROM ftm f JOIN def_items di ON f.oc=di.oc AND f.item=di.item)
   SELECT firm_code, COUNT(*) AS O_i
   FROM firm_contact
-  GROUP BY firm_code", ftm_path)))
+  GROUP BY firm_code", FC_SQL, ftm_path)))
 say("firms with O_i>0 (any defendant contact): %s", format(nrow(contact), big.mark=","))
 
 # per-firm contact BY CASE (which case's defendants did firm i touch)
 contact_case <- as.data.table(dbGetQuery(con, sprintf("
   WITH ftm AS (
-    SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+    SELECT %s AS firm_code,
            CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item
     FROM read_parquet('%s')),
   def_items AS (
@@ -286,7 +296,7 @@ contact_case <- as.data.table(dbGetQuery(con, sprintf("
     SELECT DISTINCT fc.firm_code, dc.proc, fc.oc, fc.item
     FROM fc JOIN def_case dc ON fc.def_code = dc.firm_code)
   SELECT firm_code, proc, COUNT(*) AS contact_items
-  FROM fcc GROUP BY firm_code, proc", ftm_path)))
+  FROM fcc GROUP BY firm_code, proc", FC_SQL, ftm_path)))
 say("firm x case contact rows: %s", format(nrow(contact_case), big.mark=","))
 
 # Environment attributes of each POSITIVE firm: where do its participations live?
@@ -303,7 +313,7 @@ dbWriteTable(con, "pos", pos_tab, overwrite = TRUE)
 if (cfg$key_is_composite) {
   pos_env <- as.data.table(dbGetQuery(con, sprintf("
     WITH ftm AS (
-      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+      SELECT %s AS firm_code,
              CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item
       FROM read_parquet('%s')),
     ivp AS (
@@ -317,13 +327,13 @@ if (cfg$key_is_composite) {
            v.modality AS modality
     FROM ftm f JOIN pos p ON f.firm_code = p.firm_code
     LEFT JOIN ivp v ON f.oc = v.oc AND f.item = v.item",
-    ftm_path, IVP_ITEM_COL, cfg$modality_col, ivp_path,
+    FC_SQL, ftm_path, IVP_ITEM_COL, cfg$modality_col, ivp_path,
     cfg$buyer_from_key("f.oc"), cfg$year_from_key("f.oc"))))
 } else {
   # FEDERAL: buyer (codigo_ug), result year, modality (po_phase_code) ALL from panel.
   pos_env <- as.data.table(dbGetQuery(con, sprintf("
     WITH ftm AS (
-      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+      SELECT %s AS firm_code,
              CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item
       FROM read_parquet('%s')),
     ivp AS (
@@ -339,7 +349,7 @@ if (cfg$key_is_composite) {
            v.modality AS modality
     FROM ftm f JOIN pos p ON f.firm_code = p.firm_code
     LEFT JOIN ivp v ON f.oc = v.oc AND f.item = v.item",
-    ftm_path, IVP_ITEM_COL, cfg$buyer_col, cfg$modality_col, ivp_path)))
+    FC_SQL, ftm_path, IVP_ITEM_COL, cfg$buyer_col, cfg$modality_col, ivp_path)))
 }
 say("positive-firm participation rows (with env): %s", format(nrow(pos_env), big.mark=","))
 say("positive participations with modality matched: %.1f%%",
@@ -728,7 +738,7 @@ dbWriteTable(con2, "direct", data.frame(firm_code = direct_codes), overwrite=TRU
 dbWriteTable(con2, "pos", data.frame(firm_code = pos_all$firm_code), overwrite=TRUE)
 pos_def <- as.data.table(dbGetQuery(con2, sprintf("
   WITH ftm AS (
-    SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+    SELECT %s AS firm_code,
            CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item
     FROM read_parquet('%s')),
   def_items AS (
@@ -737,7 +747,7 @@ pos_def <- as.data.table(dbGetQuery(con2, sprintf("
   SELECT DISTINCT p.firm_code, di.def_code
   FROM ftm f JOIN pos p ON f.firm_code=p.firm_code
   JOIN def_items di ON f.oc=di.oc AND f.item=di.item
-  WHERE p.firm_code <> di.def_code", ftm_path)))
+  WHERE p.firm_code <> di.def_code", FC_SQL, ftm_path)))
 dbDisconnect(con2, shutdown=TRUE)
 say("positive x defendant contact rows: %d ; distinct defendants touching a positive: %d",
     nrow(pos_def), uniqueN(pos_def$def_code))
@@ -789,7 +799,7 @@ dbWriteTable(con3, "cand", data.frame(firm_code = al$firm_code), overwrite=TRUE)
 if (cfg$key_is_composite) {
   cell_map <- as.data.table(dbGetQuery(con3, sprintf("
     WITH ftm AS (
-      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+      SELECT %s AS firm_code,
              %s AS buyer,
              SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS item_group,
              %s AS year
@@ -800,6 +810,7 @@ if (cfg$key_is_composite) {
              ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY COUNT(*) DESC, buyer, item_group, year) rn
       FROM j GROUP BY firm_code, buyer, item_group, year)
     SELECT firm_code, buyer, item_group, year FROM cnt WHERE rn=1",
+    FC_SQL,
     cfg$buyer_from_key("CAST(\"numerodaoc\" AS VARCHAR)"),
     cfg$year_from_key("CAST(\"numerodaoc\" AS VARCHAR)"), ftm_path)))
 } else {
@@ -810,7 +821,7 @@ if (cfg$key_is_composite) {
              CAST(\"%s\" AS VARCHAR) AS buyer, CAST(year AS VARCHAR) AS year
       FROM read_parquet('%s')),
     ftm AS (
-      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+      SELECT %s AS firm_code,
              CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
              SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS item_group
       FROM read_parquet('%s')),
@@ -823,7 +834,7 @@ if (cfg$key_is_composite) {
              ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY COUNT(*) DESC, buyer, item_group, year) rn
       FROM j GROUP BY firm_code, buyer, item_group, year)
     SELECT firm_code, buyer, item_group, year FROM cnt WHERE rn=1",
-    IVP_ITEM_COL, cfg$buyer_col, ivp_path, ftm_path)))
+    IVP_ITEM_COL, cfg$buyer_col, ivp_path, FC_SQL, ftm_path)))
 }
 dbDisconnect(con3, shutdown=TRUE)
 al2 <- merge(al, cell_map, by="firm_code", all.x=TRUE)

@@ -84,7 +84,13 @@ say("host=%s  nproc=%s  seed=%d  date=%s  RAM_free=%s",
     tryCatch(system("free -h | awk 'NR==2{print $7}'", intern=TRUE), error=function(e)"?"))
 say("REPO=%s", REPO)
 
-norm14 <- function(x) sprintf("%014.0f", as.numeric(x))
+# SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05): source-gated 14-char
+# normalizer (cfg$norm14_safe). Applied to FREQ_PARTICIP / canonical-cobidder
+# códigofornecedor (NA-collapse risk for the 119 federal non-numeric ESTRANG*/junk
+# codes) AND to CADE-side firm_cnpj/firm_id (numeric -> harmless). BEC -> exact legacy
+# sprintf("%014.0f", as.numeric(x)) (byte-identity, gate R1); federal -> numeric pad14,
+# non-numeric RAW passthrough (they legitimately never match a CADE CNPJ).
+norm14 <- cfg$norm14_safe
 
 # =============================================================================
 # 0. REBUILD firm panel (firm_code <-> anon firm_id), labels, breadth, exposure

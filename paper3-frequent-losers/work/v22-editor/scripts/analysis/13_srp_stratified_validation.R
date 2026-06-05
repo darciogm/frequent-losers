@@ -138,10 +138,14 @@ say("DESIGN: stratify EVALUATION (sample active in stratum + within-stratum year
 say("        keep POOLED score=log1p(tenders_count), FL32 cut (>=32), label=broad_cobidder.")
 say("        FL32 NEVER re-derived per stratum (per-variant IQR thresholds 33.5 vs 64.5 -> different constructs).")
 
-# norm14: 14-char zero-padded firm code. The clean canonical file carries ONE
-# non-numeric sentinel ('000000000000-2', broad_cobidder=0, the removed sentinel)
-# that coerces to NA -- harmless (never a positive); suppress its coercion warning.
-norm14 <- function(x) suppressWarnings(sprintf("%014.0f", as.numeric(x)))
+# SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05): source-gated 14-char
+# firm-code normalizer (cfg$norm14_safe), replacing the suppressWarnings/NA-collapse
+# band-aid. BEC -> exact legacy sprintf("%014.0f", as.numeric(x)) (byte-identity, gate
+# R1). Federal -> numeric pad14; non-numeric (ESTRANG* foreign suppliers + 14-char
+# sentinels like '000000000000-2') pass through RAW instead of coercing to NA -- they
+# legitimately never match a CADE CNPJ, so RAW vs NA is label-equivalent but RAW no
+# longer needs the warning suppression and keeps the codes inspectable.
+norm14 <- cfg$norm14_safe
 
 # pROC AUC + CI wrapper (mirror script 02 auc_ci)
 auc_ci <- function(label, score, dat) {

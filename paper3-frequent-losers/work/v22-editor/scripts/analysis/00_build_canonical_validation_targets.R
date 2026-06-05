@@ -248,18 +248,34 @@ invisible(dbExecute(con, "
 # that the defect is federal-only; the BEC path is left untouched (R1 preserved).
 if (cfg$source == "comprasnet") {
   n_cob_pre_junk <- dbGetQuery(con, "SELECT COUNT(DISTINCT cnpj) n FROM cobidder_case")$n
+  # SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05): EXEMPT the legitimate
+  # foreign-supplier pattern (ESTRANG-prefixed codes) from the junk rule. The federal
+  # firm_tender_map carries 117 'ESTRANG*' codes that are REAL foreign firms (they
+  # legitimately never match a CADE CNPJ; they self-exclude by never matching, NOT by
+  # being dropped). Clause (a) "any non-digit char = junk" would otherwise flag every
+  # ESTRANG code. Structurally this could wrongly drop an ESTRANG always-loser that
+  # co-bids with a defendant; the leading NOT-LIKE 'ESTRANG%' guard prevents that.
+  # READ-ONLY verification (2026-06-05): the ESTRANG-AL-cobidder set is EMPTY -- 0
+  # ESTRANG firms are always-losers and 0 ESTRANG firms co-bid with any direct
+  # defendant -- so this guard changes NO current count; it is a defensive correctness
+  # fix. The all-zeros sentinel 000000000000-2 is NOT ESTRANG and is STILL caught by
+  # clauses (a)+(d) (dropped as before). BEC sees 0 ESTRANG codes -> byte-identical.
+  #
   # SQL junk predicate (RE2-safe; DuckDB RE2 has NO backreferences, so all-same-digit
   # is emulated via list_distinct on the padded digit string instead of '([0-9])\\1{13}').
+  #   exempt: ESTRANG-prefixed real foreign suppliers (never junk)
   #   (a) any non-digit char in the raw value (pad14 would alter it / not a clean CNPJ)
   #   (b) empty after stripping non-digits
   #   (c) >14 digits (over-length)
   #   (d) 14-padded digit form is all-zeros OR all-same-digit (<= 1 distinct char)
   junk_pred <- paste0(
     "(",
-    "  regexp_full_match(cnpj, '.*[^0-9].*')",
-    "  OR regexp_replace(cnpj, '[^0-9]', '', 'g') = ''",
-    "  OR length(regexp_replace(cnpj,'[^0-9]','','g')) > 14",
-    "  OR length(list_distinct(string_split(lpad(regexp_replace(cnpj,'[^0-9]','','g'),14,'0'),''))) <= 1",
+    "  NOT (cnpj LIKE 'ESTRANG%') AND (",
+    "     regexp_full_match(cnpj, '.*[^0-9].*')",
+    "     OR regexp_replace(cnpj, '[^0-9]', '', 'g') = ''",
+    "     OR length(regexp_replace(cnpj,'[^0-9]','','g')) > 14",
+    "     OR length(list_distinct(string_split(lpad(regexp_replace(cnpj,'[^0-9]','','g'),14,'0'),''))) <= 1",
+    "  )",
     ")")
   junk_cobs <- dbGetQuery(con, sprintf(
     "SELECT DISTINCT cnpj FROM cobidder_case WHERE %s", junk_pred))$cnpj

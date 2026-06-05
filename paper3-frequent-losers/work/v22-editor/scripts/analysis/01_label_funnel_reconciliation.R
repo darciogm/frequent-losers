@@ -103,6 +103,20 @@ CONS_DATE <- cfg$CONS_DATE
 HAVE_CONS <- !is.na(CONS_DATE)
 MANU_BEC  <- 41444L  # manuscript all-BEC firms (BEC reference; federal logs only)
 
+# SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): platform-name + FL-cut
+# label strings for the rendered Table A/B notes and labels. The config exposes no
+# short platform name (only the verbose cfg$label), so derive it from cfg$source:
+#   bec        -> "BEC"        (R1 byte-identity: matches every prior hardcode)
+#   comprasnet -> "ComprasNet" (honest federal platform name)
+# FL_LABEL renders the FL screen string from cfg$FL_CUT + cfg$FL_CONVENTION:
+#   bec -> "FL14, tenders\\_count $\\geq 14$" (byte-identical to prior hardcode)
+#   fed -> "FL32, tenders\\_count $\\geq 32$"
+PLAT <- if (identical(cfg$source, "bec")) "BEC" else "ComprasNet"
+.fl_ge <- if (identical(cfg$FL_CONVENTION, ">=")) "\\geq" else "="  # both current sources use ">="
+FL_LABEL <- sprintf("FL%d, tenders\\_count $%s %d$", FL_CUT, .fl_ge, FL_CUT)
+FL_TAG   <- sprintf("FL%d", FL_CUT)  # short tag for CSV screen_threshold fields
+say("[label] PLAT=", PLAT, "  FL_LABEL=", FL_LABEL)
+
 pad14 <- function(x){ x <- gsub("[^0-9]", "", as.character(x)); ifelse(x == "", NA_character_, formatC(x, width = 14, flag = "0")) }
 
 # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix, 2026-06-05): modality string is
@@ -452,22 +466,24 @@ tabA <- rbindlist(list(
        number_cade_cases = uniqueN(cart$proc), number_legal_firm_defendants = 65L,
        number_bec_active_direct_defendants = n_def_cross, number_defendant_tender_items = n_def_item_ti,
        always_loser_definition = "win_rate==0", number_unique_always_loser_cobidders = n_AL,
-       cobidder_definition = "broad: shared tender-item w/ BEC-active defendant",
+       # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): PLAT + FL_TAG in CSV strings.
+       cobidder_definition = sprintf("broad: shared tender-item w/ %s-active defendant", PLAT),
        number_unique_FL_cobidders = n_FL, number_firm_case_cobidder_pairs = nrow(cob_stat[, .N, by = cnpj]),
-       number_frequent_loser_cobidders = n_FL, screen_threshold = "FL14 (tenders_count>=14)",
+       number_frequent_loser_cobidders = n_FL, screen_threshold = sprintf("%s (tenders_count>=%d)", FL_TAG, FL_CUT),
        exclusions = "defendants, -1 sentinel", reason_for_difference_from_main_target = "(reference portfolio)",
        notes = "65 legal defendants not reproducible from carteis csv (cnpj col empty)"),
-  list("BEC-linked CADE portfolio", "2009-2019 conduct", "any", "2009-2019", MODALITY_RULE,
+  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): PLAT/FL_TAG + data-grounded ftm/crossmatch counts.
+  list(sprintf("%s-linked CADE portfolio", PLAT), "2009-2019 conduct", "any", "2009-2019", MODALITY_RULE,
        "all defendant tender-items", "crossmatch CNPJ present in firm_tender_map",
        uniqueN(cart$proc), 65L, n_def_ftm, n_def_item_ti, "win_rate==0", n_AL,
        "broad: shared tender-item", n_FL, nrow(cob_stat[, .N, by = cnpj]), n_FL,
-       "FL14", "defendants, -1 sentinel",
-       "BEC-active subset (41 ftm-active of 48 crossmatch)", "ftm-active defendants only"),
+       FL_TAG, "defendants, -1 sentinel",
+       sprintf("%s-active subset (%d ftm-active of %d crossmatch)", PLAT, n_def_ftm, n_def_cross), "ftm-active defendants only"),
   list("Main validation target (broad AL cobidders)", "2009-2019 conduct",
        "any", "2009-2019", MODALITY_RULE, "any shared tender-item",
        "crossmatch CNPJ in firm_tender_map", uniqueN(cart$proc), 65L, n_def_ftm, n_def_item_ti,
        "win_rate==0", n_AL, "broad: shared tender-item", n_FL, nrow(cob_stat[, .N, by = cnpj]),
-       n_FL, "FL14 is the score, NOT a label input", "defendants, -1 sentinel",
+       n_FL, sprintf("%s is the score, NOT a label input", FL_TAG), "defendants, -1 sentinel",  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05)
        "(this IS the main target)",
        "fully scripted from current data; FL status never used to define the label"),
   list("Archived narrow file (INTERNAL COMPARISON ONLY)", "2009-2019 conduct",
@@ -481,14 +497,14 @@ tabA <- rbindlist(list(
        cons_date_rule, "2009-2019", MODALITY_RULE, "any shared tender-item",
        "crossmatch CNPJ in firm_tender_map", n_cons_cases, NA_integer_, n_cons_def, n_cons_def_items,
        "win_rate==0", n_cons_AL, "broad: shared tender-item", n_cons_FL, n_cons_AL,
-       n_cons_FL, "FL14", cons_excl_str,
+       n_cons_FL, FL_TAG, cons_excl_str,  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): FL_TAG
        cons_reason_str,
        cons_tabA_note),
   list("Strict 2009-2016 -> 2017-2019 timing target", "2009-2019 conduct",
        "any", "train 2009-2016 / test 2017-2019", MODALITY_RULE, "shared tender-item by award year",
        "crossmatch CNPJ in firm_tender_map", NA_integer_, NA_integer_, NA_integer_, NA_integer_,
        "win_rate==0", NA_integer_, "broad: shared tender-item", NA_integer_, NA_integer_,
-       NA_integer_, "FL14", NAc,
+       NA_integer_, FL_TAG, NAc,  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): FL_TAG
        "temporal holdout split (not a label count)",
        "counts not cheaply derivable from label-funnel objects; see precision@k audit (script 43)"),
   list("Common bid-feature pool", NAc, NAc, NAc, NAc, NAc, NAc,
@@ -532,7 +548,8 @@ texA <- c(
   "\\scriptsize",
   "\\begin{tabular}{lrrrrrll}",
   "\\toprule",
-  paste("Sample / benchmark", "Cases", "Legal def.", "BEC-act. def.",
+  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): platform name in column header.
+  paste("Sample / benchmark", "Cases", "Legal def.", sprintf("%s-act. def.", PLAT),
         "AL cobid.", "FL cobid.", "Cobidder def.", "Reason vs main target", sep = " & "),
   " \\\\",
   "\\midrule",
@@ -542,7 +559,8 @@ texA <- c(
   "\\end{adjustbox}",
   "\\begin{tablenotes}[flushleft]\\scriptsize",
   "\\item \\textit{Notes.} Cobidder = adjudication-anchored exposure label (not cartel membership). ",
-  "The main validation label is constructed from current scripts by matching BEC-active direct CADE defendants to tender-items and identifying unique always-loser firms (win rate $=0$) that share at least one BEC tender-item with those anchors; direct defendants are excluded. ",
+  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): platform name from PLAT.
+  sprintf("The main validation label is constructed from current scripts by matching %s-active direct CADE defendants to tender-items and identifying unique always-loser firms (win rate $=0$) that share at least one %s tender-item with those anchors; direct defendants are excluded. ", PLAT, PLAT),
   "The frequent-loser flag is not used to construct the label; it is the award-layer score evaluated against the label. ",
   sprintf("Of the %d positives, %d are frequent losers and %d are not (composition, not a label restriction). ", n_AL, n_FL, n_AL - n_FL),
   # TARGET-QUALITY FIX (Phase 1, 2026-06-05): conservative cutoff sourced from cfg$CONS_DATE.
@@ -552,7 +570,8 @@ texA <- c(
             sprintf(" (this cutoff equals the latest judgment date, so it retains all %d dated cases and excludes %d undated case%s)",
                     n_cons_cases, n_cases_undated, if (n_cases_undated == 1L) "" else "s")
           else ""),
-  "Counts are unique firms unless a column says pairs. AL = always-loser; FL = frequent loser (FL14, tenders\\_count $\\geq 14$). ",
+  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): FL cut from FL_LABEL.
+  sprintf("Counts are unique firms unless a column says pairs. AL = always-loser; FL = frequent loser (%s). ", FL_LABEL),
   "Legal-defendant roster (65) is not reproducible from the CADE rulings CSV (empty CNPJ column); shown for context.",
   "\\end{tablenotes}",
   "\\end{threeparttable}",
@@ -618,7 +637,8 @@ texB <- c(
   "\\scriptsize",
   "\\begin{tabular}{llrrrrrc}",
   "\\toprule",
-  paste("Case", "Sector", "Judg. yr", "BEC def.", "Def. items",
+  # SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): platform name in column header.
+  paste("Case", "Sector", "Judg. yr", sprintf("%s def.", PLAT), "Def. items",
         "AL cobid.", "FL cobid.", "Conserv.", sep = " & "),
   " \\\\",
   "\\midrule",
@@ -794,10 +814,11 @@ fig_err <- ""
 # at the bottom into the static-193 target and the broad-341 robustness node.
 # Anchor branch (x=3) descends to the same main 193 cobidder target.
 # Only nodes whose counts this script reproduces are plotted.
-nF1 <- list(x = 1.0, y = 5, lab = sprintf("All BEC firms\n%s",        format(n_all_BEC,     big.mark = ",")))
+# SOURCE-CONFIG ADAPTATION (Phase 1 label-fix-2, 2026-06-05): platform name (PLAT) in figure node labels.
+nF1 <- list(x = 1.0, y = 5, lab = sprintf("All %s firms\n%s", PLAT, format(n_all_BEC,     big.mark = ",")))
 nF2 <- list(x = 1.0, y = 4, lab = sprintf("Always-losers\n%s",        format(n_AL_univ,     big.mark = ",")))
 nF3 <- list(x = 1.0, y = 3, lab = sprintf("Main target: always-loser\ncobidders %d\n(%d FL / %d non-FL)", n_AL, n_FL, n_AL - n_FL))
-nA1 <- list(x = 3.0, y = 5, lab = sprintf("BEC-active direct\ndefendants %d",       n_def_ftm))
+nA1 <- list(x = 3.0, y = 5, lab = sprintf("%s-active direct\ndefendants %d", PLAT, n_def_ftm))
 nA2 <- list(x = 3.0, y = 4, lab = sprintf("Defendant\ntender-items %s",   format(n_def_item_ti, big.mark = ",")))
 nA3 <- list(x = 3.0, y = 3, lab = sprintf("Shared tender-item\nexposure label %d",   n_AL))
 nodes <- rbindlist(lapply(list(nF1,nF2,nF3,nA1,nA2,nA3), as.data.table))

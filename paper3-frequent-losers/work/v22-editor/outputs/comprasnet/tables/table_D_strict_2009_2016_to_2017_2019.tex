@@ -1,0 +1,22 @@
+% JLEO-R&R v22: strict timing holdout 2013-2016 -> 2017-2019
+\begin{table}[htbp]\centering
+\caption{Strict Timing Holdout: Score Frozen on 2013--2016, Evaluated on 2017--2019}
+\label{tab:strict_timing_holdout}
+\footnotesize
+\begin{tabular}{lrrrrrr}
+\toprule
+Sample & $N$ & Pos. & ROC-AUC & PR-AUC & Prec@500 & Recall@500 \\
+\midrule
+Full test-candidate (entrants score 0) & 92,070 & 195 & 0.489 & 0.002 & 0.000 & 0.000 \\
+Rankable ($T_{i}^{train}>0$) & 66,734 & 135 & 0.496 & 0.002 & 0.000 & 0.000 \\
+Training always-loser & 50,230 & 195 & 0.666 & 0.010 & 0.014 & 0.036 \\
+Training AL \& test-active & 32,768 & 116 & 0.643 & 0.009 & 0.020 & 0.086 \\
+Zero-win both \textit{(leaks)} & 35,414 & 195 & 0.622 & 0.012 & 0.018 & 0.046 \\
+\midrule
+\multicolumn{7}{l}{\footnotesize Train-window threshold (2013--2016 AL): 7.5; full-sample reference: 32.0. Scores use \textbf{only} 2013--2016 participation.} \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\linewidth}\vspace{2pt}\footnotesize
+\textit{Notes:} Score $=\log(1+\text{2009--2016 losses})$. Positives are the 195 adjudicated always-loser cobidders (canonical broad reproducible label) evaluated in the test window. The zero-win-both row leaks future wins (always-loser status across both windows) and is shown only for comparison.
+\end{minipage}
+\end{table}

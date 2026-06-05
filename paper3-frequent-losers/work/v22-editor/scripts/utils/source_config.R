@@ -434,6 +434,62 @@ get_source_config <- function(source = c("bec", "comprasnet")) {
     invisible(cfg$dirs)
   }
 
+  # ---------------------------------------------------------------------------
+  # SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05)
+  # 14-char firm-code normalizers, source-gated for BEC byte-identity (gate R1).
+  #
+  # PROBLEM: the federal firm_tender_map carries 119/92,600 distinct non-numeric
+  #   supplier codes -- 117 'ESTRANG*' foreign-supplier codes plus 2 already-14-char
+  #   '000...-NN' codes. printf('%014.0f', CAST(x AS DOUBLE)) CRASHES on these
+  #   ("Could not convert string 'ESTRANG0014259' to DOUBLE"). They are REAL foreign
+  #   firms: they legitimately never match a CADE CNPJ; they must pass through RAW,
+  #   never be dropped or NA-collapsed.
+  #
+  # SAFE NORMALIZATION (locked design): a numeric-pattern code is zero-padded to 14;
+  #   a non-numeric code passes through RAW (.character / its own VARCHAR).
+  #
+  # BEC BYTE-IDENTITY PROOF (2026-06-05, this machine):
+  #   * SQL: over DISTINCT BEC firm_tender_map códigofornecedor (41,444 distinct),
+  #     printf('%014d', BIGINT) == printf('%014.0f', DOUBLE) for ALL 41,443 NUMERIC
+  #     codes (0 mismatch; max BIGINT 9.867e13 < 2^53). The ONE divergence is the
+  #     sentinel '-1' (regex [0-9]+ rejects the sign): literal renders '-0000000000001',
+  #     safe renders '-1'. '-1' is NOT in the always-loser universe (FREQ_PARTICIP),
+  #     but R1 is strict -> the safe SQL is GATED FEDERAL-ONLY and BEC keeps the literal.
+  #   * R: over the vectors norm14 is actually applied to (FREQ_PARTICIP 16,843;
+  #     crossmatch firm_cnpj 47; canonical_cobidders_broad 16,877) there are ZERO
+  #     non-numeric BEC codes and ZERO norm14/norm14_safe mismatches. BEC is still
+  #     gated to the literal for defensive R1 identity on any future BEC vector.
+  #
+  # => BOTH helpers reproduce the EXACT legacy literal for source=="bec"; the safe
+  #    numeric-or-raw branch fires ONLY for federal.
+  # ---------------------------------------------------------------------------
+
+  # norm14_sql_expr(col_sql): returns a SQL scalar expression that normalizes the
+  #   given (already SQL-quoted) column reference to a 14-char firm code. BEC: exact
+  #   legacy literal. Federal: numeric -> printf('%014d', BIGINT); else RAW VARCHAR.
+  cfg$norm14_sql_expr <- if (identical(cfg$source, "bec")) {
+    function(col_sql) sprintf("printf('%%014.0f', CAST(%s AS DOUBLE))", col_sql)
+  } else {
+    function(col_sql) sprintf(paste0(
+      "CASE WHEN regexp_full_match(CAST(%1$s AS VARCHAR), '[0-9]+') ",
+      "THEN printf('%%014d', CAST(%1$s AS BIGINT)) ELSE CAST(%1$s AS VARCHAR) END"),
+      col_sql)
+  }
+
+  # norm14_safe(x): R-side vector normalizer. BEC: exact legacy sprintf("%014.0f",
+  #   as.numeric(x)). Federal: numeric-pattern element -> pad14; else as.character raw.
+  cfg$norm14_safe <- if (identical(cfg$source, "bec")) {
+    function(x) sprintf("%014.0f", as.numeric(x))
+  } else {
+    function(x) {
+      x   <- as.character(x)
+      num <- grepl("^[0-9]+$", x)
+      out <- x
+      out[num] <- sprintf("%014.0f", as.numeric(x[num]))
+      out
+    }
+  }
+
   class(cfg) <- c("source_config", "list")
   cfg
 }

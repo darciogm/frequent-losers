@@ -62,7 +62,12 @@ ARMOR_FLAGS <- character(0)
 flag <- function(...) { m <- sprintf(...); ARMOR_FLAGS[[length(ARMOR_FLAGS)+1L]] <<- m; say("FLAG: %s", m) }
 
 ftm_path <- cfg$firm_tender_map
-norm14 <- function(x) sprintf("%014.0f", as.numeric(x))
+# SOURCE-CONFIG ADAPTATION (Phase 1 estrang-fix, 2026-06-05): source-gated 14-char
+# normalizer (cfg$norm14_safe). Applied to firm_loss_stats firm_code (NA-collapse risk
+# for the 119 federal non-numeric ESTRANG*/junk codes) AND CADE-side firm_cnpj/firm_id
+# (numeric -> harmless). BEC -> exact legacy sprintf("%014.0f", as.numeric(x)) (byte-
+# identity, gate R1); federal -> numeric pad14, non-numeric RAW passthrough.
+norm14 <- cfg$norm14_safe
 
 # --- upstream caches (00_build_canonical_validation_targets.R + 02 + 12 part A) -
 frame_path <- file.path(cfg$dirs$cache, "firm_opportunity_adjusted_frame.csv")

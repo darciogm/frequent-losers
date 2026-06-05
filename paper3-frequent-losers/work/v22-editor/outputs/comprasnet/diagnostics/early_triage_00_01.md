@@ -116,3 +116,85 @@ LOCO feasibility verdict is unaffected — still healthy, no single case dominat
 
 *Verified against `outputs/comprasnet/cache/case_cobidder_map_federal.csv` (post-18:18 rerun): the
 sentinel CNPJ is absent; per-process is_AL=1 row counts are A=69, D=63, C=27, F=22, G=12, B=8, E=4.*
+
+---
+
+## POST-02b SECTION — federal contact≥2 sensitivity (2026-06-05, reviewer-mode triage)
+
+Read-only triage of `02b_opportunity_sensitivity_contact2.R` (ComprasNet, stricter cobidder
+definition: co-participation **≥2** with a direct CADE defendant). Light reads only; script 03 owned
+the machine concurrently. The MAIN federal run is script 02 (contact≥1, broad-AL target, 195 positives).
+
+### Log health
+- **Clean exit (status 0)**, wall 24:04, peak RSS 15.4 GB (within budget). All 10 stages (A–J) ran.
+- Only warnings: two cosmetic `sprintf("%014.0f", ...) NAs introduced by coercion` (CNPJ zero-pad on a
+  non-numeric token — same benign warning as the main run); no separation/non-convergence flags
+  (`SEPARATION/non-convergence flags (npos=191 rare-event): none`). No NA-degrade beyond the disclosed
+  item-group `NOT_OBSERVED` (buyer-collinear composite item code on this platform — same as main).
+- **N+ under contact≥2: `positives 195 -> 108`.** 108 of the 195 broad-AL cobidders co-participated ≥2
+  times with a direct defendant (55.4% survive the stricter rule). Strict-support S6 sample npos=105.
+
+### Side-by-side: MAIN (contact≥1) vs SENSITIVITY (contact≥2)
+
+| Metric | MAIN (02, contact≥1) | SENSITIVITY (02b, contact≥2) | Δ |
+|---|---|---|---|
+| N+ (positives) | 195 | **108** | −87 (55.4% retained) |
+| Raw score AUC (S0_raw_score) | 0.744 | **0.791** | +0.047 |
+| Raw FL14 AUC | — | 0.660 | — |
+| Exposure-only AUC (within-exposed nested base) | 0.754 | **0.838** | +0.084 |
+| Unconditional exposure-only (all AL) | 0.946 (locked) | **0.932** | −0.014 |
+| Within-stratum AUC (log_tc, opp-decile) | 0.462 | **0.432** | −0.030 |
+| Within-stratum AUC (fl14) | — | 0.452 | — |
+| Nested increment (score over exposure) | +0.0052 | **+0.0035** | ~flat |
+| Nested DeLong p | 0.191 | **0.655** | weaker still |
+| Exposed n (nested base) | 15,134 | 15,134 | 0 |
+| Matched-perm p (Approach C, PR-AUC) | 0.906 | **0.951** | +0.045 |
+| Firm-exposure-sim p (Approach B, PR-AUC) | — | 1.000 | — |
+| CEM matched AUC | — | 0.621 (n=10,067) | — |
+| Mean within-stratum dP(cobidder) FL14 | — | −0.0054 | — |
+| Verdict label (script self-report) | C (deflation) | **C (signal disappears under exposure adjustment)** | same |
+
+(All 02b figures from `sensitivity_contact2/tables/main/table_C...csv`, `.../table_D_...permutation...csv`,
+and `.../appendix/table_D_matched_opportunity_validation_summary.csv`; log lines 30, 74, 84–85, 100–105, 122–124.)
+
+### Reading of the divergences
+- **The two AUC rises (raw +0.047, exposure-only +0.084) are NOT a signal recovery** — they are the
+  expected consequence of a cleaner, more exposure-loaded positive set. Restricting to firms that hit a
+  defendant ≥2× selects high-participation always-losers, so the *exposure* axis discriminates them better
+  (exposure-only jumps 0.754→0.838); the raw log_tc score rises in lockstep because log_tc IS largely an
+  exposure proxy. The decisive object is what survives **after** exposure adjustment, and that does not move.
+- **Within-stratum AUC stays sub-0.5 (0.432 vs 0.462)** — the score still has NO discriminating power once
+  opportunity is held fixed; if anything it is marginally worse under contact≥2.
+- **Nested increment shrinks (+0.0052→+0.0035) and its DeLong p worsens (0.191→0.655)** — adding the score
+  on top of exposure buys essentially nothing, and less than in the main run.
+- **Permutation p stays non-significant and rises (0.906→0.951)** — the observed PR-AUC sits squarely
+  inside the matched-exposure null.
+- **No sign flip anywhere.** Every exposure-conditioned object points the same direction as the main run.
+  The only >0.05 AUC moves are on the *raw/exposure-only* (pre-adjustment) axis, and those move in the
+  direction that is mechanically expected and that the framework explicitly discounts.
+
+### Power honesty
+- N+ = **108** (strict-support 105). This is small in absolute terms, and the nested-increment / DeLong
+  test on a +0.0035 AUC gap with 108 positives is **underpowered to detect a small true signal** —
+  but that cuts the right way here: we are NOT claiming a null from a failure to reject. The deflation
+  reading rests on (i) the within-stratum AUC being **below 0.5** (a positive collapse, not a null), and
+  (ii) the permutation p being far from significant — both robust to N. The +0.084 exposure-only rise and
+  +0.047 raw rise are large enough to be real, and they REINFORCE the exposure-confound interpretation
+  rather than threaten it. So: **the comparison is powered enough for the claim being made** (signal does
+  not survive exposure adjustment), and the headline numbers it can't precisely pin down (the size of the
+  near-zero residual increment) are exactly the numbers the thesis does not need.
+
+### Verdict: **CONSISTENT (deflation anatomy holds under contact≥2).**
+The federal contact≥2 sensitivity replicates the main run's deflation: within-stratum AUC sub-0.5,
+nested increment ~0 with non-significant DeLong, permutation p non-significant — same script-reported
+verdict C. No sign flip; the only material (>0.05) divergences are pre-adjustment AUC *increases* that
+are explained by, and supportive of, the exposure-confound story. **BEC twin already confirmed direction;
+federal contact≥2 now confirms it too.**
+
+### Effect on provisional Draft A
+**No change — strengthened.** Draft A's deflation reading was provisional on the contact≥1 main run; the
+stricter contact≥2 definition does not overturn it and removes the obvious referee objection ("your result
+is an artifact of the loose 1-contact cobidder rule"). Draft A can cite contact≥2 as a robustness column.
+The one caveat to carry forward (not new, inherited from script 00 triage): top case A still drives a large
+share of contacts (log J: top case 47.7% of cobidder contacts, TP@500 top-case share 100%) — concentration
+is a live limitation for both definitions, independent of this sensitivity.
