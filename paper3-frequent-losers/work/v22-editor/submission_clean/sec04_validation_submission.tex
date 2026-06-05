@@ -139,37 +139,62 @@ ask whether the score reproduces the label better than exposure
 alone, whether it adds anything net of exposure, and whether it
 ranks within equal-opportunity strata.
 
-The answer is deflationary on every margin. First, exposure is not
-merely a strong baseline---it is the better model. An exposure-only
-model with no score reproduces the label at PR-AUC
-$\valExpExpOnlyPRAUC$ in the exposed subsample, more than double
-the raw score's $\valExpRawScorePRAUC$, and an unconditional
-exposure-only ranking over the full always-loser pool reaches
-ROC-AUC $0.905$, far above the raw score's
-$\valExpRawScoreAUC$. Combined exposure-plus-score logits reach
-ROC-AUC near $0.99$
-(Table~\ref{tab:opportunity_adjusted_validation}), but those
-numbers are mechanically inflated because $E_i$ is built from the
-cells where defendants live and so encodes the label directly; we
-report them only to make the inflation visible.
+The answer is deflationary on every margin, and we are explicit
+about which comparisons carry the weight. Exposure-based
+benchmarks must be read in tiers, because contact-derived
+quantities partially encode a contact-defined label. At the
+mechanical extreme, ranking by observed contact $O_i$ reproduces
+the label at ROC-AUC $0.905$ and a plug-in $E_i$ reaches
+$0.985$---these encode the label (a cobidder \emph{is} a firm
+with $O_i>0$) and are reported only to expose the inflation, as
+are the combined exposure-plus-score logits near $0.99$
+(Table~\ref{tab:opportunity_adjusted_validation}). The firm-level
+leave-one-out $E_i$ used as the exposure benchmark reaches
+$\valArmorExpLOO$; an audit of that benchmark shows it, too, is
+partially label-encoding---recomputing each cell's defendant
+density from \emph{non-cobidder} rows only, so that no eventual
+positive contributes to any firm's expected contact, leaves a
+label-blind opportunity ranking at only $\valArmorExpLB$
+(\ref{app:validation_audits_submission}). Genuine opportunity
+structure, purged of the label, therefore explains little on its
+own. What the tiers establish is not that ``opportunity is the
+better model'' but something sharper: \emph{any}
+contact-derived benchmark---and any contact-defined label---is
+mechanically entangled with participation volume, which is
+exactly why raw validation over-credits the screen.
 
 Second, conditional on opportunity the residual ordering is
-marginal at best and not robust across designs. The nested model
-that adds the score to the exposure-only model raises AUC by
-$\valExpIncrement$ (DeLong $p=\valExpDeLongP$;
-\citealp{delong1988comparing})---small and only
-marginally significant. \emph{Within} opportunity strata, where
-firms are compared only against others with comparable expected
-contact, the continuous score ranks the label at AUC
+marginal at best and not robust across designs---and the
+within-stratum design itself survives an audit of its ability to
+detect. The nested model that adds the score to the exposure-only
+model raises AUC by $\valExpIncrement$ (DeLong
+$p=\valExpDeLongP$; \citealp{delong1988comparing})---small and
+only marginally significant. \emph{Within} opportunity strata,
+where firms are compared only against others with comparable
+expected contact, the continuous score ranks the label at AUC
 $\valExpWithinAUC$ and the binary flag at
-$\valExpWithinFLAUC$---both indistinguishable from chance. A
-coarsened-exact opportunity match yields AUC
-$\valExpCEMmatchedAUC$, and the within-stratum gap in cobidder
-probability between flagged and non-flagged always-losers is
-$\valExpMatchedDelta$---negative. The score does rank positive
-excess contact $O_i-E_i>0$ at AUC $\valExpScoreExcessAUC$, but that
-diagnostic shares the score's participation component and cannot
-carry the residual claim alone.
+$\valExpWithinFLAUC$---both indistinguishable from chance. This
+null is falsifiable, not built in: within the \emph{same} strata
+a positive-control score ($O_i$ itself) ranks the label at
+$\valArmorOiControlMedium$, so the design detects a residual when
+one exists; and the within-stratum AUC is stable across cell
+granularities ($\valArmorWithinCoarse$--$\valArmorWithinStrict$
+from coarse to strict cells;
+\ref{app:validation_audits_submission}). Because label-soaked
+strata could in principle flatten a true signal, we also
+stratify on the \emph{label-blind} expected contact: there the
+score retains $\valArmorWithinLBall$---but the negative controls
+in Section~\ref{sec:cobidder_type} show this same ordering arises
+under placebo anchors and under non-CADE high-volume-winner
+anchors, identifying it as generic co-participation geometry
+rather than anything cartel-specific. A coarsened-exact
+opportunity match yields AUC $\valExpCEMmatchedAUC$, and the
+within-stratum gap in cobidder probability between flagged and
+non-flagged always-losers is $\valExpMatchedDelta$---negative.
+The score does rank positive excess contact $O_i-E_i>0$ at AUC
+$\valExpScoreExcessAUC$, but that diagnostic shares the score's
+participation component and cannot carry the residual claim
+alone.
 
 The exposure-preserving permutation tests settle the question.
 Under a pure-exposure binomial null the observed PR-AUC
@@ -181,8 +206,16 @@ exposure-by-participation strata---the design that isolates any
 residual signal---the observed PR-AUC does \emph{not} reject the
 null either ($p=\valExpPermCp$), and the frequent-loser enrichment
 within matched strata is likewise not significant
-($p=\valExpFLenrichP$). Both permutation distributions are
-reported in \ref{app:validation_audits_submission}. Nor is this an
+($p=\valExpFLenrichP$). These non-rejections are informative, not
+merely underpowered: a calibration that injects synthetic residual
+signal into the labels shows the permutation test is correctly
+sized under the null and rejects with probability
+$\valArmorPowerFive$ once the true within-stratum AUC reaches
+$0.55$ (probability $\valArmorPowerTen$ at $0.60$), so the
+non-rejection bounds any surviving residual well below the weakest
+ordering that could matter operationally
+(\ref{app:validation_audits_submission}). Both permutation
+distributions are reported there. Nor is this an
 artifact of label breadth: restricting positives to firms sharing
 at least two defendant tender-items strengthens the conclusion
 rather than reversing it---the exposure-only model improves faster
@@ -308,8 +341,22 @@ loser-side score built from past losing cannot order firms that
 have not yet lost. The rolling-origin design confirms this: on the
 full universe every test year from $2014$ to $2019$ returns
 precision@500 and recall@500 of zero, with ROC-AUC between
-$\valRollWorstAUC$ (2015, below chance) and $0.50$. The
-rolling-origin curves are in
+$\valRollWorstAUC$ (2015, below chance) and $0.50$. A fully
+label-frozen variant closes the residual leakage concern in this
+design: freezing the pool, the score, \emph{and} the label
+ingredients to the training window (always-loser status from
+$2009$--$2016$ wins only; defendant contact from $2009$--$2016$
+tender-items only) leaves $\valArmorFrozenPool$ rankable
+incumbents, among whom the frozen score ranks \emph{new}
+defendant contact arising in $2017$--$2019$ at AUC
+$\valArmorFrozenProspAUC$ ($\valArmorFrozenProspN$ positives;
+fully frozen retrospective contact: $\valArmorFrozenRetroAUC$).
+Read against the negative controls of
+Section~\ref{sec:cobidder_type}, this is participation volume
+forecasting generic future contact with active firms---not a
+cartel-specific signal that the stricter designs missed---and the
+full-universe zeros above remain the operative deployment result.
+The rolling-origin curves and the label-frozen construction are in
 \ref{app:validation_audits_submission}.
 
 Case composition is the second structural fact. The largest case
@@ -406,8 +453,8 @@ designs)---defendants are active firms, so volume alone carries
 some defendant-side information even though the loser-side flag
 does not. The role separation in the data is consistent with this:
 $\valDirectShareAL$\% of direct defendants are always-losers, and
-their median win rate is $\valDirectMedWR$ versus
-$\valOthersMedWR$ for cobidders. The lesson is scope, not
+their median win rate is $\valDirectMedWR$, whereas the cobidder
+target sits in the zero-win stratum by construction. The lesson is scope, not
 detection: a loser-side flag is silent about the winner side of
 adjudicated conduct, and nothing in this paper ranks defendants.
 The full scope matrix is in

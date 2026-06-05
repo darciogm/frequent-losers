@@ -135,6 +135,20 @@ overstate bid-row savings (33%); K1=1000 happens to beat K1=2000 at k=500 in thi
 one more reason no K is "optimal". Sequential at K1=1000 recovers 124/133 = 93% of the joint
 upper bound's TP at k=500. Recovery-footprint measures, not measured agency budget savings.
 
+## Audit-armor pack (scripts 12/12b, 2026-06-04 — doc 97 M2; outputs/diagnostics/audit_armor/)
+
+| Quantity | Value | Use |
+|---|---|---|
+| Exposure tiers: O_i / E_plug / E_firm-LOO / **E label-blind** | 0.905 / 0.985 / 0.855 / **0.553** | §4.2 tiering — exposure benchmark is an upper bound on opportunity's role |
+| Within-stratum sweep (E_loo): COARSE/MEDIUM/STRICT | 0.508 / 0.493 / 0.600 (N 15,246/2,213/615) | falsifiability + granularity stability |
+| Positive control O_i within MEDIUM strata | **0.953** | design detects residual when one exists |
+| Within-stratum on label-blind E (all AL / exposed) | **0.722** / 0.665 | generic co-participation geometry (per negative controls) |
+| Permutation power (α=.05): within-AUC 0.52/0.55/0.60 | 0.28 / **0.97** / 1.00; size 0.05 at null | non-rejection bounds residual < ~0.55 |
+| Label-frozen timing: pool / prospective / retrospective | 13,051 / **0.713** (231 pos) / 0.718 (582 pos) | clean timing benchmark; volume forecasts generic contact |
+| Defendant roles (regenerated): share AL / med WR / cobidder WR | 14.9% / 0.261 / **0.000 (by construction)** | \valOthersMedWR 0.086 is DEAD — never cite |
+
+Macros: \valArmor* + \valDirect*new in values.tex.
+
 ## Intensity sensitivity (lead's quick check, informational — NOT yet a manuscript number)
 
 Raw AUC rises with contact-intensity-restricted positives (contact≥1: 0.72; ≥2: 0.80; ≥5: 0.89;

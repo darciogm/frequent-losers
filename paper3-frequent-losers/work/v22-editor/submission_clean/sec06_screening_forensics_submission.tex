@@ -1,4 +1,5 @@
 % REVISED: canonical-target reframe 2026-06-04
+% REVISED: hostile-review action plan 2026-06-04
 \section{From Award-Layer Triage to Bid-Layer Forensics}
 \label{sec:screening_forensics}
 
@@ -87,7 +88,15 @@ full-observability diagnostic the cheap award layer is
 score reaches ROC $0.760$ / PR-AUC $0.143$ and the bid-layer
 \valBidLearner{} reaches ROC $0.717$ / PR-AUC $0.116$---comparable
 discrimination at lower informational cost, not a victory of one
-layer over the other. The combined award-plus-bid model reaches ROC
+layer over the other. The bid benchmark is deliberately a
+transparent, replicable bid-moment comparator rather than a tuned
+modern learner; a learner with richer tender-level covariates and
+bid-revision features would plausibly raise the bid-layer ceiling.
+That would \emph{strengthen} the sequencing argument rather than
+weaken the paper: a more powerful costly stage raises the value of
+cheap triage that decides where to deploy it, because the gain from
+correctly routing scarce forensic attention grows with the payoff
+of opening the right file. The combined award-plus-bid model reaches ROC
 $0.756$ / PR-AUC $0.188$, but it requires bid microdata for every
 firm and is therefore a full-observability upper bound, not a
 first-stage rule. Second, the pooled metrics rest on \emph{random}
@@ -114,11 +123,8 @@ is conditional on this implemented benchmark and is case-fragile:
 under case-grouped folds the combined PR-AUC ($0.103$) falls below
 award-only ($0.143$), so what marginal gain exists is mostly the
 award score \emph{rescuing} the bid layer rather than the reverse.
-The combined model is therefore an upper bound on what the two
-layers can jointly do under full observability, not an operational
-first-stage rule. Neither score is proof of an agreement: the bid
-benchmark measures the shape of a firm's bid distribution, and
-false positives are unlabeled firms, not ``bad firms.'' A
+Neither score is proof of an agreement: the bid
+benchmark measures the shape of a firm's bid distribution. A
 strict-timing version of the bid benchmark is \emph{blocked},
 because within-tender dispersion moments cannot be cleanly
 restricted to a pre-target window; the award score, by contrast, is
@@ -200,9 +206,10 @@ not in the award file and must be recovered from the underlying
 \texttt{LANCES} histories, harmonized, and reduced to within-tender
 moments before any firm can be scored. A model that gives the
 classifier both layers for every firm---the \emph{joint} model---is
-an upper bound on what the two layers can do under full
-observability, but it has already paid the full cost of opening the
-bid file. The implementable object is therefore sequential: rank
+a hypothetical full-observability ceiling, never an operating
+policy: it is an upper bound on what the two layers can do under
+full observability, but it has already paid the full cost of opening
+the bid file. The implementable object is therefore sequential: rank
 where the costly layer should be opened first.
 
 The sequential rule imposes that constraint directly. Firms are
@@ -225,6 +232,18 @@ the bid rerank is unavailable with the current bid-layer feature
 construction, this framework represents an enforcement-accounting
 baseline conditional on the validated incumbent ranking, rather
 than a prospective platform-wide deployment test.
+
+What, then, is the frontier accounting? The award ranking orders
+firms by exposure, and adjudication-anchored cobidders do cluster
+where exposure is high, mechanically. Routing recovery effort
+toward high-exposure firms is therefore a coherent
+evidence-allocation policy even in the absence of any
+conduct-specific residual: the frontier prices that policy's
+recovery footprint---how much of the adjudication-anchored target
+a capacity-constrained agency can reach for a given volume of
+opened bid records. What the frontier does \emph{not} do is certify
+that the firms opened first are likelier to have coordinated;
+Section~\ref{sec:validation} forecloses that reading.
 
 \paragraph{Cost is not only firms.}
 The first-order honest point is that the firm count is the wrong

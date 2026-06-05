@@ -73,3 +73,36 @@ Non-circular 651 label with composition disclosure; scope-check asymmetry (binar
 
 **HOLD_FOR_REVISION (major-revision-equivalent, tractable).** Integrity verdicts: NUMBERS_CLEAN · REFERENCES_NO_FABRICATION · HYGIENE_CLEAN · VISUAL_PASS · COVER_LETTER_PASS. Substance verdicts: §4 CREDIBLE WITH REPAIRS · §5/§6 KEEP WITH REPAIRS · §7.1 RESTRUCTURE/CUT · framing P(desk)≈0.45 as-is.
 Estimated effort to convert: prose items (1,2,4,5,6) ≈ 1–2 days; computation pack (3) ≈ 1 day. Post-repair calibration: P(desk) → ~0.25–0.30; P(R&R | refereed) → ~0.55–0.60.
+
+---
+
+## ACTION PLAN EXECUTION ADDENDUM (2026-06-04, same day)
+
+**Status: ALL ITEMS EXECUTED** (M2 computations authorized by author via "executa o Action Plan").
+
+| Item | Execution |
+|---|---|
+| M1 stakes | sec01: Fazekas/OECD institutional-red-flag lineage + counterfactual-practice sentences |
+| M2 armor pack | scripts 12/12b (`outputs/diagnostics/audit_armor/`): exposure tiers (O_i 0.905 / plug 0.985 / firm-LOO 0.855 / **label-blind 0.553**); granularity sweep 0.508/0.493/0.600 + **positive control O_i 0.953** (falsifiability proven); permutation power **0.97 @ within-AUC 0.55** (size 0.05 — non-rejection bounds residual < ~0.55); label-frozen timing pool 13,051, prospective **0.713** (231 pos), retrospective 0.718; defendant roles regenerated (14.9%/0.261; cobidder WR ≡ 0 by construction — dead 0.086 removed from prose). Integrated: §4.2 re-tiered (no more "exposure is the better model" — tiers + entanglement statement), §4.3 label-frozen variant, §4.4 fix, App C "Audit of the audit" subsection, \valArmor* macros |
+| M3a §5 | re-sequenced: vanish leads; raw SMDs = "what adjustment removes"; winner-null sentence added; closing contradiction removed |
+| M3b §6.2 | positive bridge paragraph (exposure-triage coherent absent conduct residual; frontier prices the policy; §4 forecloses the certification reading) |
+| M3c §7.1 | gaming reframed as instability-of-published-cutoff (option b); App F.6 intro reframed as institutional-design exercise; one paragraph in main |
+| M4 | contributions reordered (C1 organizational result; C2 audit protocol, "framework" downgraded; C3 reach/limits map); quotable principle in abstract+intro+conclusion; Becker–Stigler margin + Decarolis 2020 JLEO engagement |
+| M5 | strawman judo in §6.1 main text (stronger bid model ⇒ stronger sequencing argument) |
+| M6 | §2.1 folded into §1 (sec02 −18.5%); §7 compressed; App E dedup (headline-number restatements → pointers; Lift column cut; boilerplate −2); joint-ceiling labels |
+| Minors | DeLong cited; green/haltiwanger re-anchored; Fazekas verified+added; 16,731/16,772 bridged; 341↔651 verified present; defendant-trio provenance regenerated |
+
+**Note on the armor findings (honest update to the report's own M2):** the leakage audit
+confirmed the validation referee's F1 beyond expectation — genuine label-blind opportunity
+ranks the label at only 0.553, so the earlier "exposure is the better model" framing was
+itself partially mechanical and has been removed. The deflationary verdict is unchanged but
+re-grounded: the decisive evidence is the anchor-agnostic battery (negative controls,
+powered permutation, label-frozen timing), and the §4 prose now says exactly that.
+
+**Build after execution:** 4/4 docs 0 errors / 0 undefined; paper 54 pp + appendix 49 pp
+(JLEO pair); abstract 133 words; package + PDFs refreshed.
+
+**Post-repair calibration (updated):** P(desk) ≈ 0.25; P(R&R | refereed) ≈ 0.55–0.60.
+**Remaining before upload:** author read of the revised §1/§4/§5/§6/§7 narrative
+(substantial prose changed today) + author declarations. The paper is now at
+**READY_FOR_AUTHOR_FINAL_READ**.

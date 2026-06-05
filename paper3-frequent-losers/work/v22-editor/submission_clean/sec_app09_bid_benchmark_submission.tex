@@ -1,4 +1,5 @@
 % REVISED: canonical-target reframe 2026-06-04
+% REVISED: hostile-review action plan 2026-06-04
 %
 \section{Bid-Layer Benchmark and Cost-Recall Details}
 \label{app:bid_benchmark_submission}
@@ -130,22 +131,18 @@ and combined forests under full-period features and random folds are
 moments include label-defining tenders. The contamination is small:
 excluding label-defining tenders (Design~F) leaves the bid ROC essentially
 unchanged ($0.717 \to 0.713$), so the fragility is case clustering, not
-feature--target overlap. The headline ranking performance is in
-Table~\ref{tab:bid_perf_submission}. On the pooled full-observability
-diagnostic the cheap award layer is \emph{comparable} to the costly bid
-benchmark: award-continuous ROC $0.760$ / PR-AUC $0.143$ versus bid-RF ROC
-$0.717$ / PR-AUC $0.116$. The combined model is a full-observability
-\emph{upper bound} (ROC $0.756$ / PR-AUC $0.188$ pooled), not a first-stage
-rule. Under case-grouped folds the bid layer falls hardest --- bid-RF
-PR-AUC $0.116 \to 0.062$ --- and, critically, the combined model's PR-AUC
-falls \emph{below} award-only ($0.103$ versus $0.143$): the apparent
-complementarity does not survive case-grouped evaluation. The award and
-bid scores are only moderately correlated (Spearman $\approx 0.544$
-overall), so the two layers order firms differently; adding the award
-signal to the bid forest raises PR-AUC by $+0.072$ under pooled-random
-folds (DeLong $p<0.001$), but this increment is conditional on this
-implemented benchmark and is case-fragile. (The full leakage-audit,
-complementarity, and calibration tables are in Online Supplement~E.)
+feature--target overlap. The headline ranking comparison---the cheap
+award layer's comparable discrimination at lower cost, the combined
+model's case-grouped collapse below award-only, and the moderate award/bid
+rank correlation---is reported and interpreted in the main text
+(Section~6.1, Table~5) and not restated here. The full
+design-by-design audit is in Table~\ref{tab:bid_perf_submission}; the
+remaining content of this subsection is the construction and contamination
+audit behind it. The case-grouped result (Design~E) and the
+contamination check (Design~F, ROC $0.717\to0.713$) together establish that
+the bid layer's apparent reach is driven by case clustering rather than by
+feature--target overlap. (The full leakage-audit, complementarity, and
+calibration tables are in Online Supplement~E.)
 % E-COMPRESS: tab:bid_leakage_submission, tab:bid_complementarity_submission -> Online Supplement E.
 
 \begin{table}[htbp]\centering
@@ -153,24 +150,24 @@ complementarity, and calibration tables are in Online Supplement~E.)
 \begin{threeparttable}
 \caption{Bid-layer performance by validation design.}
 \label{tab:bid_perf_submission}\scriptsize
-\begin{tabular}{llrrrr}
+\begin{tabular}{llrrr}
 \toprule
-Design & Model & ROC-AUC & PR-AUC & Prec@500 & Lift@500 \\
+Design & Model & ROC-AUC & PR-AUC & Prec@500 \\
 \midrule
-A (random)        & Award (cont.) & 0.760 & 0.143 & 0.216 & 5.55 \\
-A (random)        & Award FL14    & 0.688 & 0.098 & 0.130 & 3.34 \\
-A (random)        & Bid RF        & 0.717 & 0.116 & 0.180 & 4.63 \\
-A (random)        & Combined RF   & 0.756 & 0.188 & 0.274 & 7.04 \\
-E (case-grouped)  & Award (cont.) & 0.760 & 0.143 & 0.216 & 5.55 \\
-E (case-grouped)  & Award FL14    & 0.688 & 0.098 & 0.130 & 3.34 \\
-E (case-grouped)  & Bid RF        & 0.626 & 0.062 & 0.086 & 2.21 \\
-E (case-grouped)  & Combined RF   & 0.689 & 0.103 & 0.190 & 4.88 \\
-F (excl.\ label)  & Award (cont.) & 0.829 & 0.156 & 0.216 & 6.33 \\
-F (excl.\ label)  & Bid RF        & 0.713 & 0.088 & 0.130 & 3.81 \\
-F (excl.\ label)  & Combined RF   & 0.855 & 0.217 & 0.302 & 8.85 \\
-G (env.\ holdout) & Award (cont.) & 0.768 & 0.185 & 0.150 & 2.76 \\
-G (env.\ holdout) & Bid RF        & 0.747 & 0.171 & 0.150 & 2.76 \\
-G (env.\ holdout) & Combined RF   & 0.734 & 0.212 & 0.144 & 2.65 \\
+A (random)        & Award (cont.) & 0.760 & 0.143 & 0.216 \\
+A (random)        & Award FL14    & 0.688 & 0.098 & 0.130 \\
+A (random)        & Bid RF        & 0.717 & 0.116 & 0.180 \\
+A (random)        & Combined RF   & 0.756 & 0.188 & 0.274 \\
+E (case-grouped)  & Award (cont.) & 0.760 & 0.143 & 0.216 \\
+E (case-grouped)  & Award FL14    & 0.688 & 0.098 & 0.130 \\
+E (case-grouped)  & Bid RF        & 0.626 & 0.062 & 0.086 \\
+E (case-grouped)  & Combined RF   & 0.689 & 0.103 & 0.190 \\
+F (excl.\ label)  & Award (cont.) & 0.829 & 0.156 & 0.216 \\
+F (excl.\ label)  & Bid RF        & 0.713 & 0.088 & 0.130 \\
+F (excl.\ label)  & Combined RF   & 0.855 & 0.217 & 0.302 \\
+G (env.\ holdout) & Award (cont.) & 0.768 & 0.185 & 0.150 \\
+G (env.\ holdout) & Bid RF        & 0.747 & 0.171 & 0.150 \\
+G (env.\ holdout) & Combined RF   & 0.734 & 0.212 & 0.144 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\scriptsize
@@ -184,7 +181,8 @@ the case-grouped block (E) is the honest robustness test, where the
 combined model's PR-AUC ($0.103$) falls below award-only ($0.143$). The
 award rank is identical across A and E by construction. Cobidders are
 adjudication-anchored exposure, not cartel membership; false positives are
-unlabeled firms, not ``bad firms.''
+unlabeled firms, not ``bad firms.'' Lift omitted; PR-AUC is the
+rare-target metric and carries the comparison.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}

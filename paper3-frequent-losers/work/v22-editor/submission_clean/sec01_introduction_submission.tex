@@ -1,4 +1,5 @@
 % REVISED: canonical-target reframe 2026-06-04
+% REVISED: hostile-review action plan 2026-06-04
 %
 \section{Introduction}
 \label{sec:intro}
@@ -11,7 +12,18 @@ It starts with thinner information: administrative records,
 complaints, procurement anomalies, repeated interactions, and
 case leads that make some firms and markets worth a closer
 look. The first legal-economic problem is therefore not proof
-itself. It is the allocation of proof-producing effort.
+itself. It is the allocation of proof-producing effort. The
+Becker--Stigler tradition treats investigation and sanctions as
+costly instruments whose intensity must be chosen optimally
+\citep{becker1968crime,stigler1970optimum}; the margin we study
+is the one prior to any sanction---how a resource-constrained
+authority sequences costly evidence acquisition before it knows
+whom to charge. This is the enforcement-side counterpart to the
+procurement-governance questions in \citet{decarolis2020bureaucratic},
+where bureaucratic competence and discretion shape award
+outcomes: there the question is how a buyer runs a tender well;
+here it is how an enforcer decides where to spend forensic
+capacity once the tenders are run.
 
 That distinction matters in procurement. The empirical
 cartel-screening literature usually starts from the bid layer:
@@ -27,20 +39,30 @@ extends the approach through bidder groups
 \citep{conley2016detecting}, machine learning
 \citep{huber2019machine,wallimann2023machine}, and robust
 screen design \citep{chassang2022robust}. Those objects are
-close to the evidentiary stage but not always cheap at scale:
-many procurement systems make contract-award records routinely
-visible while keeping per-bidder bid files in operational
-systems that require case-specific recovery. Cheap
-administrative red flags built from exactly such routine
-records are already in institutional use---corruption-risk
-indicators such as single bidding are computed from
-contract-award data across entire procurement systems
-\citep{fazekas2020uncovering,oecd2022datascreening}---which is
-precisely why their reach needs auditing before they steer
-costly forensic effort. An enforcement
-agency then faces a sequencing problem---before opening the
-costly bid layer, can it use the cheap award layer to decide
-where bid-layer forensics should begin?
+close to the evidentiary stage but not always cheap at scale.
+This is the central asymmetry the paper exploits: many
+procurement systems make contract-award records routinely
+visible---who participated, who won, item codes, and negotiated
+prices---while keeping per-bidder bid files in operational
+systems that must be recovered, cleaned, and inspected case by
+case. The award layer is cheap and broad but legally thin; the
+bid layer is forensically rich but costly to open.
+
+Cheap administrative red flags built from exactly such routine
+records are already in institutional use. Corruption-risk
+indicators such as single bidding and repeat-participation
+anomalies are computed from contract-award data across entire
+procurement systems and used by multilateral institutions and
+audit bodies precisely because bid-level records are costly to
+recover \citep{fazekas2020uncovering,oecd2022datascreening}. The
+zero-win construct we study is the cartel-facing member of this
+cheap-red-flag family: a statistic an authority can run over
+award data before committing to forensic recovery. The paper
+audits the reach of this family before it steers scarce forensic
+effort. An enforcement agency thus faces a sequencing
+problem---before opening the costly bid layer, can it use the
+cheap award layer to decide where bid-layer forensics should
+begin?
 
 This paper studies that question on S\~ao Paulo's BEC
 procurement platform, covering $\valSampleN$ tender-items from
@@ -108,24 +130,22 @@ leakage, and timing audit construction.
 
 The results are deflationary, and that is the point. Read raw,
 the award-layer ranking does concentrate adjudication-anchored
-cobidders inside the always-loser stratum. The decomposition then
-shows how little of this survives discipline. Most of the raw
-concentration reflects procurement opportunity---firms that
+cobidders inside the always-loser stratum; the decomposition then
+shows how little survives discipline. Most of the raw
+concentration reflects procurement opportunity, because firms that
 participate more, in the same environments as adjudicated
 defendants, are mechanically more exposed to them. Within
 comparable opportunity sets the residual ordering is marginal at
-best and not robust across designs: held to matched opportunity
-cells the ranking is close to chance, the only positive increment
-over an exposure-only model is small, and matched-stratum
-permutation and enrichment tests do not reject the
-opportunity-only null. Strict prospective ranking fails outside
-the incumbent pool---once the ranking must be formed before the
-target window and applied across the platform, it does not order
-the future cobidders. And the apparent reach is case-sensitive: a
-single adjudicated case supplies a large share of the positives
-and of the firms a fixed-budget queue would open. The ranking is
-also silent about direct CADE defendants, consistent with its
-loser-side scope rather than any cartel-membership reading.
+best and not robust across designs: held to matched cells the
+ranking is close to chance, the increment over an exposure-only
+model is small, and matched-stratum permutation and enrichment
+tests do not reject the opportunity-only null. Strict prospective
+ranking fails outside the incumbent pool, and the apparent reach
+is case-sensitive---a single adjudicated case supplies a large
+share of the positives and of the firms a fixed-budget queue would
+open. The ranking is also silent about direct CADE defendants,
+consistent with its loser-side scope rather than any
+cartel-membership reading.
 
 %
 Where the framework earns its keep is in cost accounting and
@@ -148,46 +168,57 @@ current bid-layer features, this is a retrospective cost-footprint
 design conditional on the validated incumbent ranking, not a fully
 prospective deployment test.
 
-This paper makes three contributions. First, it reframes
-procurement-cartel screening as evidence allocation under costly
-observability: existing bid-distribution screens evaluate
-suspicious bidding once bid-level data have been recovered, while
-we study the prior institutional stage, where agencies observe
-award records but must decide where recovery should start---turning
-screening toward enforcement triage, not toward treating a
-statistical flag as proof
-\citep{harrington2008detecting,sanchezgraells2019screening,chassang2022robust}.
-Second, and methodologically, we offer a reproducible
-decomposition framework for auditing a cheap screen before
-trusting it: not whether it attains a high pooled AUC, but how
-much of that AUC is genuine ranking signal rather than mechanical
-opportunity exposure, retrospective information, or concentration
-in a single adjudicated case---built from a non-circular
-adjudication-anchored label and pairing pre-committed rejection
-regions with opportunity-cell adjustment, strict rolling-origin
-timing, leave-one-case-out tests, a bid-layer benchmark, and
-cost-recall accounting. Third, applying that framework to São
-Paulo's BEC yields a map of reach and limits: persistent zero-win
-participation concentrates a legally limited, adjudication-anchored
-exposure target in raw terms, but the residual ordering net of
-opportunity is marginal at best, prospective ranking fails outside
-incumbent pools, and the apparent reach is concentrated in one
-case---so the estimated ranking is not a portable cartel score,
-while the decomposition framework and the cost-recall trade-offs it
-exposes are. Locating these boundaries is itself the
-enforcement-design product.
+This paper makes three contributions. The first is
+organizational, and it is the law-economics-organization payload:
+the award-to-bid recovery decision is a sequential
+evidence-allocation problem, and the object an enforcement
+designer chooses is not any cutoff on the cheap screen but the
+cost-recall frontier that the screen traces when used as a
+gatekeeper. Reframing procurement-cartel screening this way turns
+it from a classification exercise---does the flag attain a high
+AUC---into a sequencing problem: how a resource-constrained
+authority orders costly evidence acquisition under incomplete
+observability, where suspicion is cheap and proof is dear
+\citep{becker1968crime,stigler1970optimum,harrington2008detecting,sanchezgraells2019screening,chassang2022robust}.
+Existing bid-distribution screens evaluate suspicious bidding once
+bid-level data have been recovered; we study the prior stage,
+where agencies observe award records but must decide where
+recovery should start, and we show that the frontier---not a
+detector-versus-detector horse race---is the design margin.
 
-The boundaries are part of the design. The award layer ranks
-forensic priority, not liability; the validation target is
-adjudication-anchored exposure, not cartel membership; and the bid
-layer remains the proof-producing stage. Price evidence is scope
-information, not a damages exercise. The decomposition method is
-transferable across platforms; the estimated BEC ranking is not a
-portable cartel score. Strategic response also shapes
-implementation: a static cutoff invites gaming, while refreshed
-thresholds, continuous ranks or capacity-constrained queues,
-bunching checks, and bid-layer follow-up fit the staged
-enforcement architecture.
+The second contribution is a disciplined audit protocol whose
+components are individually standard but whose sequencing for the
+award-to-bid decision is, to our knowledge, new: a non-circular
+adjudication-anchored label, opportunity-cell adjustment, strict
+rolling-origin timing, leave-one-case-out tests, a bid-layer
+benchmark, and cost-recall accounting, applied to ask not whether
+a cheap screen attains a high pooled AUC but how much of that AUC
+is genuine ranking signal rather than mechanical opportunity
+exposure, retrospective information, or concentration in a single
+adjudicated case. We do not claim a validated, transferable
+framework; what is portable is the \emph{principle}---validating
+an administrative screen against adjudicated cases without
+adjusting for procurement opportunity systematically over-credits
+it---and the order in which the audit steps must be run.
+
+Third, applying that protocol to S\~ao Paulo's BEC yields a map
+of reach and limits for this setting: persistent zero-win
+participation concentrates a legally limited,
+adjudication-anchored exposure target in raw terms, but the
+residual ordering net of opportunity is marginal at best,
+prospective ranking fails outside incumbent pools, and the
+apparent reach is concentrated in one case---so the estimated
+ranking is not a portable cartel score, while the audit principle
+and the cost-recall trade-offs it exposes are what transfer.
+Locating these boundaries is itself the enforcement-design
+product.
+
+Two scope points round out the design. Price evidence enters only
+as scope information, not as a damages exercise. And strategic
+response shapes implementation: a static cutoff invites gaming,
+while refreshed thresholds, continuous ranks or
+capacity-constrained queues, bunching checks, and bid-layer
+follow-up fit the staged enforcement architecture.
 
 The broader lesson is institutional. A legal system that waits
 for full proof before ranking investigative priorities will
