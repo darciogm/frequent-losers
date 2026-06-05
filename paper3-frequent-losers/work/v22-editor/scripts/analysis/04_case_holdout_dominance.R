@@ -39,24 +39,34 @@ if (!exists(".script_dir")) {
 REPO <- normalizePath(file.path(.script_dir, "..", "..", "..", ".."), mustWork = FALSE)
 if (!dir.exists(file.path(REPO, "data", "processed")))
   REPO <- normalizePath("/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers")
-DATA <- file.path(REPO, "data", "processed")
 V22  <- file.path(REPO, "work", "v22-editor")
-OUT  <- file.path(V22, "outputs")
 UTIL <- file.path(V22, "scripts", "utils")
 DOCS <- file.path(V22, "docs", "jleo_rr_revision")
 
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): one config, zero forked logic.
+# --source= flag (default "bec"); ALL paths/constants/lambdas from get_source_config().
+.src_arg <- sub("^--source=", "",
+                commandArgs(TRUE)[grep("^--source=", commandArgs(TRUE))])
+SRC <- if (length(.src_arg)) .src_arg[1L] else "bec"
+source(file.path(UTIL, "source_config.R"))
+cfg <- get_source_config(SRC)
+cfg$ensure_dirs()
+
+DATA <- cfg$data_dir
+OUT  <- cfg$out_root
+
 source(file.path(UTIL, "metrics_triage.R"))
 
-dir_main_t <- file.path(OUT, "tables", "main")
-dir_app_t  <- file.path(OUT, "tables", "appendix")
-dir_main_f <- file.path(OUT, "figures", "main")
-dir_app_f  <- file.path(OUT, "figures", "appendix")
-dir_diag   <- file.path(OUT, "diagnostics")
-dir_cache  <- file.path(OUT, "cache")
-dir_logs   <- file.path(OUT, "logs")
+dir_main_t <- cfg$dirs$tables_main
+dir_app_t  <- cfg$dirs$tables_app
+dir_main_f <- cfg$dirs$figures_main
+dir_app_f  <- cfg$dirs$figures_app
+dir_diag   <- cfg$dirs$diagnostics
+dir_cache  <- cfg$dirs$cache
+dir_logs   <- cfg$dirs$logs
 for (d in c(dir_main_t, dir_app_t, dir_main_f, dir_app_f, dir_diag, dir_cache, dir_logs, DOCS))
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
-dir.create("/tmp/duckdb_spill", recursive = TRUE, showWarnings = FALSE)
+dir.create(cfg$temp_directory, recursive = TRUE, showWarnings = FALSE)
 
 setDTthreads(12L)
 SEED <- 20260603L
@@ -92,20 +102,46 @@ m_fp     <- function(y, s, k) safe(false_positives_at_k(y, s, k))
 # =============================================================================
 say("\n========== A. CANDIDATE SET ==========")
 
-# canonical broad AL cobidder label (651, reproducible, FL never used):
-# positives = rows with broad_cobidder==1 in the canonical reproducible file
-# (always-losers, direct defendants already excluded). Replaces the static
-# narrow cade_fl_cobidders.csv (193 rows, FL-only, irreproducible).
-cob <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): canonical broad AL cobidder label
+# (BEC: 651, reproducible, FL never used). positives = rows with broad_cobidder==1.
+# Cache lives in this source's cache dir (cfg$dirs$cache).
+canon_cobid_path <- file.path(cfg$dirs$cache, "canonical_cobidders_broad.csv")
+if (!file.exists(canon_cobid_path)) {
+  stop(sprintf(paste0(
+    "BLOCKER (source=%s): canonical broad-cobidder label not found at %s.\n",
+    "  For BEC this ships in outputs/cache/. For ComprasNet it is produced by the\n",
+    "  Phase-1 canonical federal cobidder rebuild (NOT YET RUN as of 2026-06-05);\n",
+    "  cobidders_federal.parquet is SET-COMPARISON ONLY, not a substitute."),
+    SRC, canon_cobid_path))
+}
+cob <- fread(canon_cobid_path)
 cob <- cob[broad_cobidder == 1L]
 cob[, firm_code := norm14(`códigofornecedor`)]
 cob_codes <- unique(cob$firm_code)
 say("cobidder positives (canonical broad): %d rows, %d distinct firm_code", nrow(cob), length(cob_codes))
 
-xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
-xm[, firm_code := norm14(firm_cnpj)]
-direct_codes_raw <- unique(xm$firm_code)
-say("direct CADE defendants (crossmatch, raw): %d distinct firm_code", length(direct_codes_raw))
+# Direct CADE defendants. BEC: cade_bec_crossmatch.csv (firm_cnpj). FEDERAL:
+# direct_defendants_federal.parquet (firm_id = 14-digit estab CNPJ), with a
+# firm->processo map; the unnumbered TI/DF case (empty processo) is EXCLUDED from
+# any case-anchored use (gate G3: no CADE process number = unverifiable anchor).
+if (cfg$cade_layout == "bec_csv") {
+  xm <- fread(cfg$cade$crossmatch)
+  xm[, firm_code := norm14(firm_cnpj)]
+  direct_codes_raw <- unique(xm$firm_code)
+  def_proc_map <- unique(xm[, .(firm_code, proc = processo)])
+} else {
+  dd <- as.data.table(read_parquet(cfg$cade$direct_defendants))
+  dd[, firm_code := norm14(firm_id)]
+  n_unnum <- dd[is.na(processo) | trimws(processo) == "", uniqueN(firm_code)]
+  dd_num  <- dd[!is.na(processo) & trimws(processo) != ""]   # drop TI/DF (unnumbered)
+  say("FEDERAL defendants: %d numbered cases; dropped %d estab(s) of the unnumbered TI/DF case (gate G3)",
+      uniqueN(dd_num$processo), n_unnum)
+  # ALL defendant estabs (numbered + unnumbered) are excluded from the candidate
+  # set; but only NUMBERED-case defendants drive case-anchored linkage.
+  direct_codes_raw <- unique(dd$firm_code)
+  def_proc_map <- unique(dd_num[, .(firm_code, proc = processo)])
+}
+say("direct CADE defendants (raw, all): %d distinct firm_code", length(direct_codes_raw))
 
 # NEW HOPE-style overlap: a firm both cobidder-positive AND direct-defendant ->
 # treat as DEFENDANT only (exclude from positives AND from candidate set).
@@ -114,7 +150,8 @@ say("overlap cobidder/defendant (excluded from positives, kept as defendant): %d
     length(overlap), paste(overlap, collapse=","))
 
 # always-loser candidate universe
-fp <- as.data.table(read_parquet(file.path(DATA, "FREQ_PARTICIP_rebuilt.parquet")))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): FREQ_PARTICIP path + FL cut from cfg.
+fp <- as.data.table(read_parquet(cfg$freq_particip))
 fp[, firm_code := norm14(`códigofornecedor`)]
 al <- fp[always_loser == 1L, .(firm_code, T_i = tenders_count)]
 # EXCLUDE direct defendants from the candidate set
@@ -122,7 +159,7 @@ al <- al[!firm_code %in% direct_codes_raw]
 setorder(al, firm_code)
 al[, firm_id := .I]                                   # anonymized deterministic id
 al[, score_i  := log1p(T_i)]
-al[, fl14      := as.integer(T_i >= 14L)]
+al[, fl14      := as.integer(cfg$fl_predicate(T_i))]  # BEC >=14 ; FED >=32
 # positive label = cobidder & in candidate universe & not a defendant
 pos_codes <- setdiff(cob_codes, direct_codes_raw)
 al[, cobidder := as.integer(firm_code %in% pos_codes)]
@@ -132,13 +169,34 @@ say("positives (cobidder, in candidate set): %d", al[cobidder==1L, .N])
 .cob_not_al <- sum(!pos_codes %in% al$firm_code)
 say("positive codes not in candidate universe (excluded from npos): %d", .cob_not_al)
 
-# case linkage from case_cobidder_map: cobidder -> case, AL flag
-ccm <- fread(file.path(REPO, "output", "label_funnel", "case_cobidder_map.csv"),
-             colClasses = list(character = c("cnpj","proc")))
-ccm[, firm_code := norm14(cnpj)]
-# AL cobidder -> case links, restricted to firms in our positive candidate set
-case_links <- unique(ccm[is_AL == 1L & firm_code %in% al[cobidder==1L]$firm_code,
-                         .(firm_code, proc)])
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): case linkage source per cfg.
+# BEC: cobidder->case map in output/label_funnel/case_cobidder_map.csv (is_AL flag).
+# FEDERAL: there is no federal cobidder->case map yet (Phase-1 canonical cobidder
+# rebuild produces it). Until then the federal LOCO cannot run -> clear blocker.
+if (cfg$cade_layout == "bec_csv") {
+  ccm <- fread(file.path(REPO, "output", "label_funnel", "case_cobidder_map.csv"),
+               colClasses = list(character = c("cnpj","proc")))
+  ccm[, firm_code := norm14(cnpj)]
+  # AL cobidder -> case links, restricted to firms in our positive candidate set
+  case_links <- unique(ccm[is_AL == 1L & firm_code %in% al[cobidder==1L]$firm_code,
+                           .(firm_code, proc)])
+} else {
+  fed_ccm <- file.path(cfg$dirs$cache, "case_cobidder_map_federal.csv")
+  if (!file.exists(fed_ccm)) {
+    stop(sprintf(paste0(
+      "BLOCKER (source=%s): federal cobidder->case map not found at %s.\n",
+      "  LOCO requires AL-cobidder -> processo links restricted to the 7 NUMBERED\n",
+      "  federal cases (TI/DF excluded, gate G3). This map is produced by the Phase-1\n",
+      "  canonical federal cobidder rebuild (NOT YET RUN as of 2026-06-05). Build it,\n",
+      "  then re-run. The numbered-case anchor (def_proc_map) is already wired."), SRC, fed_ccm))
+  }
+  ccm <- fread(fed_ccm, colClasses = list(character = c("cnpj","proc")))
+  ccm[, firm_code := norm14(cnpj)]
+  # restrict to NUMBERED cases only (gate G3) and to positive candidates
+  numbered_procs <- unique(def_proc_map$proc)
+  case_links <- unique(ccm[firm_code %in% al[cobidder==1L]$firm_code &
+                           proc %in% numbered_procs, .(firm_code, proc)])
+}
 say("AL-cobidder -> case link rows: %d ; distinct firms linked: %d ; distinct cases: %d",
     nrow(case_links), uniqueN(case_links$firm_code), uniqueN(case_links$proc))
 n_pos      <- al[cobidder==1L, .N]
@@ -157,10 +215,18 @@ say("LARGEST case = %s (%d positives, %.1f%% of linked, %.1f%% of all positives)
     largest_case, case_pos$n_pos_case[1],
     100*case_pos$n_pos_case[1]/n_linked, 100*case_pos$n_pos_case[1]/n_pos)
 
-# case timing metadata (sector / defendant count) for labelling
-ctime <- fread(file.path(REPO, "output", "label_funnel", "case_timing.csv"),
-               colClasses = list(character = "proc"))
-case_meta <- merge(case_pos, ctime[, .(proc, setor, n_bec_defendants)], by="proc", all.x=TRUE)
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): case metadata (sector / defendant
+# count) for labelling. BEC: output/label_funnel/case_timing.csv. FEDERAL: derived
+# from direct_defendants_federal.parquet (numbered cases only; setor + estab count).
+if (cfg$cade_layout == "bec_csv") {
+  ctime <- fread(file.path(REPO, "output", "label_funnel", "case_timing.csv"),
+                 colClasses = list(character = "proc"))
+  case_meta <- merge(case_pos, ctime[, .(proc, setor, n_bec_defendants)], by="proc", all.x=TRUE)
+} else {
+  ctime <- unique(dd_num[, .(proc = processo, setor)])[
+    , .(setor = setor[1], n_bec_defendants = .N), by = proc]
+  case_meta <- merge(case_pos, ctime, by="proc", all.x=TRUE)
+}
 stamp("A_candidate_set")
 
 # =============================================================================
@@ -168,16 +234,22 @@ stamp("A_candidate_set")
 #     Also: environment attributes of each positive (buyer/item_group/modality/year).
 # =============================================================================
 say("\n========== B0. defendant contact O_i + environment (DuckDB) ==========")
-ftm_path <- file.path(DATA, "firm_tender_map.parquet")
-ivp_path <- file.path(DATA, "item_value_panel.parquet")
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): paths + spill dir + item-panel
+# item-column name from cfg. BEC item panel uses `codigoitem` (no accent); federal
+# `item_level_panel` uses `códigoitem` (accent). The buyer/year derivation also
+# differs (see below).
+ftm_path <- cfg$firm_tender_map
+ivp_path <- cfg$item_panel
+IVP_ITEM_COL <- cfg$item_panel_item_col       # "codigoitem" (BEC) | "códigoitem" (FED)
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", cfg$temp_directory))
 
 direct_codes <- setdiff(direct_codes_raw, pos_codes)   # winners-only defendant set
 dbWriteTable(con, "direct", data.frame(firm_code = direct_codes), overwrite = TRUE)
-# defendant -> case map (a defendant may map to >=1 case)
-def_case <- unique(xm[firm_code %in% direct_codes, .(firm_code, proc = processo)])
+# defendant -> case map (a defendant may map to >=1 case). cfg-driven: BEC uses the
+# crossmatch processo; FEDERAL uses def_proc_map (numbered cases only, TI/DF dropped).
+def_case <- unique(def_proc_map[firm_code %in% direct_codes, .(firm_code, proc)])
 dbWriteTable(con, "def_case", as.data.frame(def_case), overwrite = TRUE)
 
 # O_i = # distinct (oc,item) where firm i AND >=1 direct defendant co-appear.
@@ -218,26 +290,57 @@ contact_case <- as.data.table(dbGetQuery(con, sprintf("
 say("firm x case contact rows: %s", format(nrow(contact_case), big.mark=","))
 
 # Environment attributes of each POSITIVE firm: where do its participations live?
-# (buyer = SUBSTR(oc,1,11), item_group = SUBSTR(item,1,2), year = SUBSTR(oc,12,4),
-#  item_code = item; modality from item_value_panel join).
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): buyer / year / modality derivation
+# differs by source (gate G1/G5).
+#   BEC : buyer = SUBSTR(oc,1,11); year = SUBSTR(oc,12,4); modality = panel `modality`
+#         (1/3); item panel item column = `codigoitem` (no accent).
+#   FED : buyer = panel `codigo_ug` (NOT a substring); year = panel `year` (result
+#         year, NOT the numbering year in oc); modality = panel `po_phase_code`
+#         (5/9999); item panel item column = `códigoitem` (accent).
+#   item_group = SUBSTR(item,1,2) in both (item-code prefix is source-agnostic).
 pos_tab <- data.frame(firm_code = al[cobidder==1L]$firm_code)
 dbWriteTable(con, "pos", pos_tab, overwrite = TRUE)
-pos_env <- as.data.table(dbGetQuery(con, sprintf("
-  WITH ftm AS (
-    SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
-           CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item
-    FROM read_parquet('%s')),
-  ivp AS (
-    SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(codigoitem AS VARCHAR) AS item,
-           CAST(modality AS VARCHAR) AS modality
-    FROM read_parquet('%s'))
-  SELECT f.firm_code, f.oc, f.item,
-         SUBSTR(f.oc,1,11) AS buyer,
-         SUBSTR(f.item,1,2) AS item_group,
-         SUBSTR(f.oc,12,4) AS year,
-         v.modality AS modality
-  FROM ftm f JOIN pos p ON f.firm_code = p.firm_code
-  LEFT JOIN ivp v ON f.oc = v.oc AND f.item = v.item", ftm_path, ivp_path)))
+if (cfg$key_is_composite) {
+  pos_env <- as.data.table(dbGetQuery(con, sprintf("
+    WITH ftm AS (
+      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+             CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item
+      FROM read_parquet('%s')),
+    ivp AS (
+      SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(\"%s\" AS VARCHAR) AS item,
+             CAST(%s AS VARCHAR) AS modality
+      FROM read_parquet('%s'))
+    SELECT f.firm_code, f.oc, f.item,
+           %s AS buyer,
+           SUBSTR(f.item,1,2) AS item_group,
+           %s AS year,
+           v.modality AS modality
+    FROM ftm f JOIN pos p ON f.firm_code = p.firm_code
+    LEFT JOIN ivp v ON f.oc = v.oc AND f.item = v.item",
+    ftm_path, IVP_ITEM_COL, cfg$modality_col, ivp_path,
+    cfg$buyer_from_key("f.oc"), cfg$year_from_key("f.oc"))))
+} else {
+  # FEDERAL: buyer (codigo_ug), result year, modality (po_phase_code) ALL from panel.
+  pos_env <- as.data.table(dbGetQuery(con, sprintf("
+    WITH ftm AS (
+      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+             CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item
+      FROM read_parquet('%s')),
+    ivp AS (
+      SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(\"%s\" AS VARCHAR) AS item,
+             CAST(\"%s\" AS VARCHAR) AS buyer,
+             CAST(year AS VARCHAR) AS year,
+             CAST(%s AS VARCHAR) AS modality
+      FROM read_parquet('%s'))
+    SELECT f.firm_code, f.oc, f.item,
+           v.buyer AS buyer,
+           SUBSTR(f.item,1,2) AS item_group,
+           v.year AS year,
+           v.modality AS modality
+    FROM ftm f JOIN pos p ON f.firm_code = p.firm_code
+    LEFT JOIN ivp v ON f.oc = v.oc AND f.item = v.item",
+    ftm_path, IVP_ITEM_COL, cfg$buyer_col, cfg$modality_col, ivp_path)))
+}
 say("positive-firm participation rows (with env): %s", format(nrow(pos_env), big.mark=","))
 say("positive participations with modality matched: %.1f%%",
     100*mean(!is.na(pos_env$modality)))
@@ -550,11 +653,21 @@ env_robust <- function(label, drop_codes) {
              pr_auc=mb["pr_auc"], precision_500=mb["prec_500"], recall_500=mb["rec_500"])
 }
 
-# Pregao-only / Convite-only: restrict positives to those whose modal modality is 3/1.
-# Candidate set stays full always-losers; only the POSITIVE LABEL is gated by modality.
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): modality codes from cfg.
+# Pregao-only / Convite-only: restrict positives to those whose modal modality is the
+# pregao / convite code. BEC modality column codes pregao=3, convite=1. FEDERAL is
+# PURE PREGAO (po_phase_code 5 / 9999, cfg$has_convite==FALSE): the pregao set is
+# all positives and the convite branch is SKIPPED with a logged note.
 mod_map <- pmaps$modality
-pregao_codes  <- mod_map[v=="3", firm_code]
-convite_codes <- mod_map[v=="1", firm_code]
+.pregao_vals <- as.character(unlist(cfg$modalities[grepl("pregao", names(cfg$modalities))]))
+pregao_codes  <- mod_map[v %in% .pregao_vals, firm_code]
+if (isTRUE(cfg$has_convite)) {
+  .convite_vals <- as.character(unlist(cfg$modalities[grepl("convite", names(cfg$modalities))]))
+  convite_codes <- mod_map[v %in% .convite_vals, firm_code]
+} else {
+  convite_codes <- character(0)
+  say("modality robustness: convite branch SKIPPED (source=%s has no convite; gate G5 pure pregao)", SRC)
+}
 # years with most positives
 yr_counts <- pmaps$year[, .N, by=v][order(-N)]
 top_years <- yr_counts$v[1:2]
@@ -576,7 +689,14 @@ mod_robust <- function(label, keep_codes) {
   data.table(scenario=label, n_pos=mb["n_pos"], roc_auc=mb["roc_auc"],
              pr_auc=mb["pr_auc"], precision_500=mb["prec_500"], recall_500=mb["rec_500"])
 }
-if (length(pregao_codes)  >= 5) rob_list <- c(rob_list, list(mod_robust("pregao_only(modal modality=3)", pregao_codes)))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): labels keep BEC byte-identical
+# ("modality=3"/"modality=1"); federal labels its pregao codes generically.
+.pregao_lab <- if (cfg$cade_layout == "bec_csv") {
+  "pregao_only(modal modality=3)"
+} else {
+  sprintf("pregao_only(modal modality in {%s})", paste(.pregao_vals, collapse=","))
+}
+if (length(pregao_codes)  >= 5) rob_list <- c(rob_list, list(mod_robust(.pregao_lab, pregao_codes)))
 if (length(convite_codes) >= 5) rob_list <- c(rob_list, list(mod_robust("convite_only(modal modality=1)", convite_codes)))
 rob_list <- c(rob_list, list(env_robust(sprintf("drop_top_positive_years=%s", paste(top_years, collapse=",")), top_year_codes)))
 
@@ -603,6 +723,7 @@ say("\n========== D. LEAVE-ONE-DEFENDANT-GROUP-OUT ==========")
 # We already have case-level holdout (LOCO). For defendant granularity:
 con2 <- dbConnect(duckdb())
 dbExecute(con2, "PRAGMA threads=12"); dbExecute(con2, "PRAGMA memory_limit='12GB'")
+dbExecute(con2, sprintf("PRAGMA temp_directory='%s'", cfg$temp_directory))  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
 dbWriteTable(con2, "direct", data.frame(firm_code = direct_codes), overwrite=TRUE)
 dbWriteTable(con2, "pos", data.frame(firm_code = pos_all$firm_code), overwrite=TRUE)
 pos_def <- as.data.table(dbGetQuery(con2, sprintf("
@@ -659,20 +780,51 @@ say("\n========== E. CLUSTERED RANDOMIZATION INFERENCE ==========")
 # candidate firms. Build cell map via DuckDB (mode per firm).
 con3 <- dbConnect(duckdb())
 dbExecute(con3, "PRAGMA threads=12"); dbExecute(con3, "PRAGMA memory_limit='12GB'")
+dbExecute(con3, sprintf("PRAGMA temp_directory='%s'", cfg$temp_directory))  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
 dbWriteTable(con3, "cand", data.frame(firm_code = al$firm_code), overwrite=TRUE)
-cell_map <- as.data.table(dbGetQuery(con3, sprintf("
-  WITH ftm AS (
-    SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS buyer,
-           SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS item_group,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4) AS year
-    FROM read_parquet('%s')),
-  j AS (SELECT f.* FROM ftm f JOIN cand c ON f.firm_code=c.firm_code),
-  cnt AS (
-    SELECT firm_code, buyer, item_group, year, COUNT(*) n,
-           ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY COUNT(*) DESC, buyer, item_group, year) rn
-    FROM j GROUP BY firm_code, buyer, item_group, year)
-  SELECT firm_code, buyer, item_group, year FROM cnt WHERE rn=1", ftm_path)))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): per-firm (buyer,item_group,year)
+# cell map. BEC derives buyer + year from the composite numerodaoc (substr). FEDERAL
+# joins item_level_panel for buyer (codigo_ug) and RESULT year (gate G1: never substr
+# the federal numbering year). item_group = item-code prefix in both.
+if (cfg$key_is_composite) {
+  cell_map <- as.data.table(dbGetQuery(con3, sprintf("
+    WITH ftm AS (
+      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+             %s AS buyer,
+             SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS item_group,
+             %s AS year
+      FROM read_parquet('%s')),
+    j AS (SELECT f.* FROM ftm f JOIN cand c ON f.firm_code=c.firm_code),
+    cnt AS (
+      SELECT firm_code, buyer, item_group, year, COUNT(*) n,
+             ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY COUNT(*) DESC, buyer, item_group, year) rn
+      FROM j GROUP BY firm_code, buyer, item_group, year)
+    SELECT firm_code, buyer, item_group, year FROM cnt WHERE rn=1",
+    cfg$buyer_from_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+    cfg$year_from_key("CAST(\"numerodaoc\" AS VARCHAR)"), ftm_path)))
+} else {
+  # FEDERAL: buyer + result year come from the panel join on (numerodaoc, codigoitem).
+  cell_map <- as.data.table(dbGetQuery(con3, sprintf("
+    WITH panel AS (
+      SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(\"%s\" AS VARCHAR) AS item,
+             CAST(\"%s\" AS VARCHAR) AS buyer, CAST(year AS VARCHAR) AS year
+      FROM read_parquet('%s')),
+    ftm AS (
+      SELECT printf('%%014.0f', CAST(\"códigofornecedor\" AS DOUBLE)) AS firm_code,
+             CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
+             SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS item_group
+      FROM read_parquet('%s')),
+    fp AS (
+      SELECT f.firm_code, p.buyer, f.item_group, p.year
+      FROM ftm f JOIN panel p ON f.oc=p.oc AND f.item=p.item),
+    j AS (SELECT fp.* FROM fp JOIN cand c ON fp.firm_code=c.firm_code),
+    cnt AS (
+      SELECT firm_code, buyer, item_group, year, COUNT(*) n,
+             ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY COUNT(*) DESC, buyer, item_group, year) rn
+      FROM j GROUP BY firm_code, buyer, item_group, year)
+    SELECT firm_code, buyer, item_group, year FROM cnt WHERE rn=1",
+    IVP_ITEM_COL, cfg$buyer_col, ivp_path, ftm_path)))
+}
 dbDisconnect(con3, shutdown=TRUE)
 al2 <- merge(al, cell_map, by="firm_code", all.x=TRUE)
 al2[, y := cobidder]

@@ -30,22 +30,38 @@ args_file <- sub("^--file=", "",
 SCRIPT_DIR <- if (length(args_file)) dirname(normalizePath(args_file[1L])) else getwd()
 BASE  <- normalizePath(file.path(SCRIPT_DIR, "..", "..", "..", ".."), mustWork = TRUE)  # repo root
 V22   <- normalizePath(file.path(SCRIPT_DIR, "..", ".."), mustWork = TRUE)              # work/v22-editor
-OUTS  <- file.path(V22, "outputs")
 
-DIR_TAB_MAIN <- file.path(OUTS, "tables", "main")
-DIR_TAB_APP  <- file.path(OUTS, "tables", "appendix")
-DIR_FIG_MAIN <- file.path(OUTS, "figures", "main")
-DIR_FIG_APP  <- file.path(OUTS, "figures", "appendix")
-DIR_DIAG     <- file.path(OUTS, "diagnostics")
-DIR_LOG      <- file.path(OUTS, "logs")
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): one config, zero forked logic.
+# --source= flag (default "bec"); ALL paths/constants/lambdas come from get_source_config().
+.src_arg <- sub("^--source=", "",
+                commandArgs(TRUE)[grep("^--source=", commandArgs(TRUE))])
+SRC <- if (length(.src_arg)) .src_arg[1L] else "bec"
+.script_dir <- SCRIPT_DIR  # for .resolve_repo() inside source_config.R
+source(file.path(V22, "scripts", "utils", "source_config.R"))
+cfg <- get_source_config(SRC)
+cfg$ensure_dirs()
+
+OUTS  <- cfg$out_root
+
+DIR_TAB_MAIN <- cfg$dirs$tables_main
+DIR_TAB_APP  <- cfg$dirs$tables_app
+DIR_FIG_MAIN <- cfg$dirs$figures_main
+DIR_FIG_APP  <- cfg$dirs$figures_app
+DIR_DIAG     <- cfg$dirs$diagnostics
+DIR_LOG      <- cfg$dirs$logs
 for (d in c(DIR_TAB_MAIN, DIR_TAB_APP, DIR_FIG_MAIN, DIR_FIG_APP, DIR_DIAG, DIR_LOG))
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
 
 source(file.path(V22, "scripts", "utils", "metrics_triage.R"))
 stopifnot(exists(".METRICS_TRIAGE_VERSION"))
 
-FTM <- file.path(BASE, "data", "processed", "firm_tender_map.parquet")
+FTM <- cfg$firm_tender_map
 stopifnot(file.exists(FTM))
+
+# analysis window + holdout split now come from cfg (was hardcoded 2009..2019 /
+# build_holdout(2009:2016, 2017:2019)).
+YEAR_MIN <- cfg$year_min; YEAR_MAX <- cfg$year_max
+HOLDOUT_TRAIN <- cfg$holdout_train; HOLDOUT_TEST <- cfg$holdout_test
 
 # ---- telemetry --------------------------------------------------------------
 .t0 <- Sys.time()
@@ -67,49 +83,119 @@ tlog(sprintf("V22 outputs=%s", OUTS))
 # ---- CADE ground truth ------------------------------------------------------
 norm_cnpj <- function(x) sprintf("%014.0f", as.numeric(x))
 
-# canonical broad AL cobidder label (651, reproducible, FL never used):
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): CADE ground truth is cfg-driven.
+# canonical broad AL cobidder label (BEC: 651, reproducible, FL never used):
 # positives = rows with broad_cobidder==1 in the canonical reproducible file
 # (always-losers, direct defendants already excluded). Replaces the static
 # narrow cade_fl_cobidders.csv (193 rows, FL-only, irreproducible).
-cobid <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+# The canonical cobidder cache lives in this source's cache dir (cfg$dirs$cache).
+canon_cobid_path <- file.path(cfg$dirs$cache, "canonical_cobidders_broad.csv")
+if (!file.exists(canon_cobid_path)) {
+  stop(sprintf(paste0(
+    "BLOCKER (source=%s): canonical broad-cobidder label not found at %s.\n",
+    "  For BEC this file ships in outputs/cache/. For ComprasNet it is built by the\n",
+    "  Phase-1 canonical federal cobidder rebuild (NOT YET RUN as of 2026-06-05); the\n",
+    "  set-comparison-only cobidders_federal.parquet is NOT a substitute. Run the\n",
+    "  federal canonical-cobidder rebuild first, then re-run this script."),
+    SRC, canon_cobid_path))
+}
+cobid <- fread(canon_cobid_path)
 # authoritative key = códigofornecedor (same join key as firm_tender_map).
 cobid_codes <- unique(sprintf("%014.0f",
                               as.numeric(cobid[broad_cobidder == 1L][["códigofornecedor"]])))
 stopifnot(length(cobid_codes) > 0L)
 
-xm <- fread(file.path(BASE, "data/processed/cade_bec_crossmatch.csv"))
-xm[, firm_code := norm_cnpj(firm_cnpj)]
-NEW_HOPE <- "09474700000192"          # miscoded in BOTH files -> excluded from defendants
-defendant_codes <- setdiff(unique(xm$firm_code), NEW_HOPE)
+# Direct CADE defendants. BEC: cade_bec_crossmatch.csv (firm_cnpj), NEW HOPE miscode
+# excluded. FEDERAL: direct_defendants_federal.parquet (firm_id = 14-digit estab CNPJ),
+# excluding the unnumbered TI/DF case (empty processo, gate G3: unverifiable anchor).
+if (cfg$cade_layout == "bec_csv") {
+  xm <- fread(cfg$cade$crossmatch)
+  xm[, firm_code := norm_cnpj(firm_cnpj)]
+  NEW_HOPE <- "09474700000192"        # miscoded in BOTH files -> excluded from defendants
+  defendant_codes <- setdiff(unique(xm$firm_code), NEW_HOPE)
+} else {
+  # FEDERAL (federal_parquet_v3): defendants from direct_defendants_federal.parquet.
+  dd <- as.data.table(arrow::read_parquet(cfg$cade$direct_defendants))
+  n_unnum <- sum(is.na(dd$processo) | trimws(dd$processo) == "")
+  dd <- dd[!is.na(processo) & trimws(processo) != ""]   # drop unnumbered TI/DF case
+  tlog(sprintf("FEDERAL defendants: dropped %d estab(s) from the unnumbered TI/DF case (gate G3)", n_unnum))
+  defendant_codes <- unique(norm_cnpj(dd$firm_id))
+}
 # assert disjoint after exclusion
 stopifnot(length(intersect(defendant_codes, cobid_codes)) == 0L)
-tlog(sprintf("cobidder positives=%d | direct defendants=%d (NEW HOPE excluded; disjoint OK)",
+tlog(sprintf("cobidder positives=%d | direct defendants=%d (disjoint OK)",
              length(cobid_codes), length(defendant_codes)))
 
 # ---- DuckDB: firm x year participation/wins panel ---------------------------
-dir.create("/tmp/duckdb_spill", recursive = TRUE, showWarnings = FALSE)
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): spill dir + threads from cfg.
+dir.create(cfg$temp_directory, recursive = TRUE, showWarnings = FALSE)
 con <- dbConnect(duckdb(), ":memory:")
 dbExecute(con, "PRAGMA threads=12")
 dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", cfg$temp_directory))
 
-tlog("Building firm x year participation/win panel via DuckDB ...")
-fy <- as.data.table(dbGetQuery(con, sprintf("
-  SELECT
-    LPAD(CAST(\"códigofornecedor\" AS VARCHAR), 14, '0') AS firm_code,
-    CAST(SUBSTR(CAST(\"numerodaoc\" AS VARCHAR), 12, 4) AS INTEGER) AS year,
-    SUM(CASE WHEN won = 0 THEN 1 ELSE 0 END) AS losses,
-    SUM(CASE WHEN won = 1 THEN 1 ELSE 0 END) AS wins,
-    COUNT(*) AS n
-  FROM read_parquet('%s')
-  GROUP BY firm_code, year
-", FTM)))
-fy <- fy[year >= 2009 & year <= 2019]
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): YEAR HANDLING (gate G1).
+# BEC: numerodaoc encodes the year in chars 12-15 -> substr is stable, use a SQL
+#   expression (cfg$year_from_key) directly in the aggregation queries.
+# FEDERAL: the numerodaoc trailing year is the NUMBERING year, WRONG for 22.8% of
+#   rows. We MUST instead join the (numerodaoc, codigoitem) -> RESULT year map from
+#   item_level_panel. Materialize it ONCE, cache to cfg$dirs$cache, and register a
+#   DuckDB table `year_map` that the firm-year / exposure queries JOIN on.
+if (!is.null(cfg$year_from_key)) {
+  # BEC path: inline substr expression; no year-map join.
+  YEAR_SQL_FY   <- cfg$year_from_key("CAST(\"numerodaoc\" AS VARCHAR)")  # in GROUP BY query
+  USE_YEAR_MAP  <- FALSE
+} else {
+  # FEDERAL path: build + cache the (numerodaoc, codigoitem) -> year map once.
+  ymap_cache <- file.path(cfg$dirs$cache, "year_map.parquet")
+  if (!file.exists(ymap_cache)) {
+    tlog("Materializing federal (numerodaoc,codigoitem)->result-year map (cached) ...")
+    ymap_df <- cfg$get_year_map(con)
+    arrow::write_parquet(ymap_df, ymap_cache)
+    rm(ymap_df)
+  } else {
+    tlog("Loading cached federal year map ...")
+  }
+  dbExecute(con, sprintf(
+    "CREATE OR REPLACE TEMP VIEW year_map AS SELECT * FROM read_parquet('%s')",
+    ymap_cache))
+  USE_YEAR_MAP <- TRUE
+}
+
+tlog(sprintf("Building firm x year participation/win panel via DuckDB (source=%s) ...", SRC))
+if (!USE_YEAR_MAP) {
+  fy <- as.data.table(dbGetQuery(con, sprintf("
+    SELECT
+      LPAD(CAST(\"códigofornecedor\" AS VARCHAR), 14, '0') AS firm_code,
+      CAST(%s AS INTEGER) AS year,
+      SUM(CASE WHEN won = 0 THEN 1 ELSE 0 END) AS losses,
+      SUM(CASE WHEN won = 1 THEN 1 ELSE 0 END) AS wins,
+      COUNT(*) AS n
+    FROM read_parquet('%s')
+    GROUP BY firm_code, year
+  ", YEAR_SQL_FY, FTM)))
+} else {
+  # join firm_tender_map to the result-year map on (numerodaoc, codigoitem)
+  fy <- as.data.table(dbGetQuery(con, sprintf("
+    SELECT
+      LPAD(CAST(f.\"códigofornecedor\" AS VARCHAR), 14, '0') AS firm_code,
+      CAST(ym.year AS INTEGER) AS year,
+      SUM(CASE WHEN f.won = 0 THEN 1 ELSE 0 END) AS losses,
+      SUM(CASE WHEN f.won = 1 THEN 1 ELSE 0 END) AS wins,
+      COUNT(*) AS n
+    FROM read_parquet('%s') f
+    JOIN year_map ym
+      ON CAST(f.\"numerodaoc\" AS VARCHAR) = ym.\"numerodaoc\"
+     AND CAST(f.\"códigoitem\" AS VARCHAR) = ym.\"códigoitem\"
+    GROUP BY firm_code, year
+  ", FTM)))
+}
+fy <- fy[!is.na(year) & year >= YEAR_MIN & year <= YEAR_MAX]
 setkey(fy, firm_code, year)
-tlog(sprintf("firm-year rows=%s | firms=%s | years %d-%d",
+tlog(sprintf("firm-year rows=%s | firms=%s | years %d-%d (window %d-%d)",
              format(nrow(fy), big.mark=","),
              format(uniqueN(fy$firm_code), big.mark=","),
-             min(fy$year), max(fy$year)))
+             min(fy$year), max(fy$year), YEAR_MIN, YEAR_MAX))
 
 # Opportunity exposure O_i: does firm i share a test tender-item with a direct
 # defendant in the test window? Build a firm x year "shares-cell-with-defendant"
@@ -119,25 +205,52 @@ tlog(sprintf("firm-year rows=%s | firms=%s | years %d-%d",
 tlog("Building firm x year opportunity-with-defendant exposure (O_i) ...")
 dbWriteTable(con, "def_codes", data.frame(firm_code = defendant_codes),
              temporary = TRUE, overwrite = TRUE)
-oexp <- as.data.table(dbGetQuery(con, sprintf("
-  WITH base AS (
-    SELECT
-      LPAD(CAST(\"códigofornecedor\" AS VARCHAR), 14, '0') AS firm_code,
-      CAST(\"numerodaoc\" AS VARCHAR) AS oc,
-      CAST(\"códigoitem\" AS VARCHAR) AS item,
-      CAST(SUBSTR(CAST(\"numerodaoc\" AS VARCHAR), 12, 4) AS INTEGER) AS year
-    FROM read_parquet('%s')
-  ),
-  def_cells AS (
-    SELECT DISTINCT oc, item, year
-    FROM base
-    WHERE firm_code IN (SELECT firm_code FROM def_codes)
-  )
-  SELECT b.firm_code, b.year, 1 AS shares_cell_with_defendant
-  FROM base b
-  JOIN def_cells d ON b.oc = d.oc AND b.item = d.item AND b.year = d.year
-  GROUP BY b.firm_code, b.year
-", FTM)))
+if (!USE_YEAR_MAP) {
+  YEAR_SQL_BASE <- cfg$year_from_key("CAST(\"numerodaoc\" AS VARCHAR)")
+  oexp <- as.data.table(dbGetQuery(con, sprintf("
+    WITH base AS (
+      SELECT
+        LPAD(CAST(\"códigofornecedor\" AS VARCHAR), 14, '0') AS firm_code,
+        CAST(\"numerodaoc\" AS VARCHAR) AS oc,
+        CAST(\"códigoitem\" AS VARCHAR) AS item,
+        CAST(%s AS INTEGER) AS year
+      FROM read_parquet('%s')
+    ),
+    def_cells AS (
+      SELECT DISTINCT oc, item, year
+      FROM base
+      WHERE firm_code IN (SELECT firm_code FROM def_codes)
+    )
+    SELECT b.firm_code, b.year, 1 AS shares_cell_with_defendant
+    FROM base b
+    JOIN def_cells d ON b.oc = d.oc AND b.item = d.item AND b.year = d.year
+    GROUP BY b.firm_code, b.year
+  ", YEAR_SQL_BASE, FTM)))
+} else {
+  # FEDERAL: year via year_map join on (numerodaoc, codigoitem)
+  oexp <- as.data.table(dbGetQuery(con, sprintf("
+    WITH base AS (
+      SELECT
+        LPAD(CAST(f.\"códigofornecedor\" AS VARCHAR), 14, '0') AS firm_code,
+        CAST(f.\"numerodaoc\" AS VARCHAR) AS oc,
+        CAST(f.\"códigoitem\" AS VARCHAR) AS item,
+        CAST(ym.year AS INTEGER) AS year
+      FROM read_parquet('%s') f
+      JOIN year_map ym
+        ON CAST(f.\"numerodaoc\" AS VARCHAR) = ym.\"numerodaoc\"
+       AND CAST(f.\"códigoitem\" AS VARCHAR) = ym.\"códigoitem\"
+    ),
+    def_cells AS (
+      SELECT DISTINCT oc, item, year
+      FROM base
+      WHERE firm_code IN (SELECT firm_code FROM def_codes)
+    )
+    SELECT b.firm_code, b.year, 1 AS shares_cell_with_defendant
+    FROM base b
+    JOIN def_cells d ON b.oc = d.oc AND b.item = d.item AND b.year = d.year
+    GROUP BY b.firm_code, b.year
+  ", FTM)))
+}
 setkey(oexp, firm_code, year)
 tlog(sprintf("firm-year rows with defendant co-cell exposure=%s",
              format(nrow(oexp), big.mark=",")))
@@ -189,11 +302,14 @@ build_holdout <- function(train_years, test_years) {
   d[]
 }
 
-# Full-sample threshold reference (median+1.5*IQR over 2009-2019 always-losers)
+# Full-sample threshold reference (median+1.5*IQR over full-window always-losers)
 fy_full <- fy[, .(T = sum(n), L = sum(losses), W = sum(wins)), by = firm_code]
 fy_full[, al_full := as.integer(W == 0L & T > 0L)]
 THR_FULL <- with(fy_full[al_full == 1L], median(L) + 1.5 * IQR(L))
-tlog(sprintf("full-sample threshold (2009-2019 always-losers) = %.2f (expect ~13.5)", THR_FULL))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): window from cfg (was 2009-2019).
+tlog(sprintf("full-sample threshold (%d-%d always-losers) = %.2f%s",
+             YEAR_MIN, YEAR_MAX, THR_FULL,
+             if (cfg$cade_layout == "bec_csv") " (BEC expect ~13.5)" else ""))
 
 # =============================================================================
 # Metric block: compute the full metric row for (labels, scores) on a sample
@@ -231,12 +347,17 @@ metric_row <- function(d, score_col = "score_train", label_col = "is_cobidder",
 }
 
 # =============================================================================
-# B. STRICT 2009-2016 -> 2017-2019  (Step 6)
+# B. STRICT TRAIN -> TEST holdout  (Step 6)
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): split from cfg (HOLDOUT_TRAIN /
+# HOLDOUT_TEST). BEC = 2009:2016 -> 2017:2019 (unchanged). FED = 2013:2016 ->
+# 2017:2019 (same test window for comparability; PROVISIONAL pending lead review).
 # =============================================================================
-tlog("=== STEP 6: strict 2009-2016 -> 2017-2019 ===")
-H <- build_holdout(2009:2016, 2017:2019)
+.tr_lab <- sprintf("%d-%d", min(HOLDOUT_TRAIN), max(HOLDOUT_TRAIN))
+.te_lab <- sprintf("%d-%d", min(HOLDOUT_TEST),  max(HOLDOUT_TEST))
+tlog(sprintf("=== STEP 6: strict %s -> %s ===", .tr_lab, .te_lab))
+H <- build_holdout(HOLDOUT_TRAIN, HOLDOUT_TEST)
 thrB <- attr(H, "thr_train")
-tlog(sprintf("strict train-window threshold = %.2f (expect 7)", thrB))
+tlog(sprintf("strict train-window threshold = %.2f (BEC expect ~7)", thrB))
 
 # five evaluation samples
 # "full test-candidate" = firm active in either window; entrants kept (score 0)
@@ -299,10 +420,14 @@ tlog(sprintf("ENTRANT diag (S1 full-candidate): pos-share=%.3f | FN-share=%.3f |
 # ---- LaTeX export for strict table -----------------------------------------
 write_strict_tex <- function(dt, path) {
   fmt <- function(x, d=3) ifelse(is.na(x), "---", formatC(x, format="f", digits=d))
+  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): window labels from cfg holdout
+  # split (LaTeX en-dash form). BEC reproduces "2009--2016"/"2017--2019" exactly.
+  tr_tex <- sprintf("%d--%d", min(HOLDOUT_TRAIN), max(HOLDOUT_TRAIN))
+  te_tex <- sprintf("%d--%d", min(HOLDOUT_TEST),  max(HOLDOUT_TEST))
   lines <- c(
-    "% JLEO-R&R v22: strict timing holdout 2009-2016 -> 2017-2019",
+    sprintf("%% JLEO-R&R v22: strict timing holdout %s -> %s", .tr_lab, .te_lab),
     "\\begin{table}[htbp]\\centering",
-    "\\caption{Strict Timing Holdout: Score Frozen on 2009--2016, Evaluated on 2017--2019}",
+    sprintf("\\caption{Strict Timing Holdout: Score Frozen on %s, Evaluated on %s}", tr_tex, te_tex),
     "\\label{tab:strict_timing_holdout}",
     "\\footnotesize",
     "\\begin{tabular}{lrrrrrr}",
@@ -322,8 +447,8 @@ write_strict_tex <- function(dt, path) {
       fmt(r$roc_auc), fmt(r$pr_auc), fmt(r$prec_500), fmt(r$recall_500)))
   }
   lines <- c(lines, "\\midrule",
-    sprintf("\\multicolumn{7}{l}{\\footnotesize Train-window threshold (2009--2016 AL): %.1f; full-sample reference: %.1f. Scores use \\textbf{only} 2009--2016 participation.} \\\\",
-            dt$threshold_train[1], dt$threshold_full[1]),
+    sprintf("\\multicolumn{7}{l}{\\footnotesize Train-window threshold (%s AL): %.1f; full-sample reference: %.1f. Scores use \\textbf{only} %s participation.} \\\\",
+            tr_tex, dt$threshold_train[1], dt$threshold_full[1], tr_tex),
     "\\bottomrule","\\end{tabular}",
     "\\begin{minipage}{\\linewidth}\\vspace{2pt}\\footnotesize",
     sprintf("\\textit{Notes:} Score $=\\log(1+\\text{2009--2016 losses})$. Positives are the %d adjudicated always-loser cobidders (canonical broad reproducible label) evaluated in the test window. The zero-win-both row leaks future wins (always-loser status across both windows) and is shown only for comparison.", length(cobid_codes)),
@@ -335,12 +460,17 @@ write_strict_tex(strict_rows, file.path(DIR_TAB_MAIN, "table_D_strict_2009_2016_
 rm(H, S1, S2, S3, S4, S5); gc()
 
 # =============================================================================
-# C. ROLLING-ORIGIN  (Step 7)  t in 2014..2019: train 2009..(t-1), test year t
+# C. ROLLING-ORIGIN  (Step 7)  test year t: train YEAR_MIN..(t-1), test year t.
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): expanding window from cfg.
+# Rolling start = min(test window) - 3 so BEC reproduces 2014..2019 exactly
+# (min(HOLDOUT_TEST)=2017 -> 2014); FED gives 2014..2019 over the 2013- window.
 # =============================================================================
-tlog("=== STEP 7: rolling-origin 2014..2019 ===")
+ROLL_START <- min(HOLDOUT_TEST) - 3L
+ROLL_YEARS <- ROLL_START:YEAR_MAX
+tlog(sprintf("=== STEP 7: rolling-origin %d..%d ===", min(ROLL_YEARS), max(ROLL_YEARS)))
 roll_rows <- list()
-for (t in 2014:2019) {
-  Ht <- build_holdout(2009:(t-1L), t)
+for (t in ROLL_YEARS) {
+  Ht <- build_holdout(YEAR_MIN:(t-1L), t)
   thrt <- attr(Ht, "thr_train")
   samples <- list(
     full     = Ht[T_train > 0L | test_active == 1L],
@@ -401,7 +531,7 @@ roll_full <- roll[sample == "full"][order(origin_test_year)]
 p1 <- ggplot(roll_full, aes(origin_test_year, pr_auc)) +
   geom_line(color = "#d73027") + geom_point(size = 2.4, color = "#d73027") +
   geom_text(aes(label = formatC(pr_auc, format="f", digits=3)), vjust = -1, size = 3) +
-  scale_x_continuous(breaks = 2014:2019) +
+  scale_x_continuous(breaks = ROLL_YEARS) +  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
   labs(x = "Test year", y = "PR-AUC",
        title = "Rolling-origin PR-AUC of the frozen loser-side score",
        subtitle = "Scores use ONLY pre-test-year participation (expanding window 2009..t-1)") +
@@ -414,7 +544,7 @@ pr_long <- melt(roll_full[, .(origin_test_year, Precision = prec_500, Recall = r
                 id.vars = "origin_test_year", variable.name = "metric", value.name = "value")
 p2 <- ggplot(pr_long, aes(origin_test_year, value, color = metric, shape = metric)) +
   geom_line() + geom_point(size = 2.4) +
-  scale_x_continuous(breaks = 2014:2019) +
+  scale_x_continuous(breaks = ROLL_YEARS) +  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
   scale_color_manual(values = c("Precision" = "#d73027", "Recall" = "#5b8aa6")) +
   labs(x = "Test year", y = "Value at k=500", color = NULL, shape = NULL,
        title = "Rolling-origin precision@500 and recall@500",
@@ -427,7 +557,7 @@ ggsave(file.path(DIR_FIG_MAIN, "fig_rolling_origin_precision_recall.pdf"), p2,
 p3 <- ggplot(roll_full, aes(origin_test_year, roc_auc)) +
   geom_line(color = "#4d4d4d") + geom_point(size = 2.4, color = "#4d4d4d") +
   geom_text(aes(label = formatC(roc_auc, format="f", digits=3)), vjust = -1, size = 3) +
-  scale_x_continuous(breaks = 2014:2019) +
+  scale_x_continuous(breaks = ROLL_YEARS) +  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
   labs(x = "Test year", y = "ROC-AUC",
        title = "Rolling-origin ROC-AUC (appendix)",
        subtitle = "Scores use ONLY pre-test-year participation") +
@@ -544,33 +674,48 @@ tlog("=== STEP 14: direct-defendant temporal scope check ===")
 # Full-sample firm frame
 ff <- copy(fy_full)
 ff[, score_full := log1p(L)]
-# script 33 keyed defendants on firm_cnpj WITHOUT excluding the NEW HOPE
-# miscode (47 distinct). To reproduce \valAUCdirectCADE=0.491 exactly we use the
-# script-33 set (47) for the reproduction line; the disjoint 46-firm set is used
-# for the timing comparison (one firm out of 41,444 -> AUC unchanged to 3 dp).
-defendant_codes_s33 <- unique(xm$firm_code)               # 47 (NEW HOPE included)
-ff[, is_defendant      := as.integer(firm_code %in% defendant_codes)]      # 46, disjoint
-ff[, is_defendant_s33  := as.integer(firm_code %in% defendant_codes_s33)]  # 47, script-33
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): the script-33 reproduction line
+# (\valAUCdirectCADE=0.491, NEW HOPE 47-vs-46, tenders_count>14) is BEC-specific.
+# For BEC we keep it byte-identical. For federal there is no script-33 lock and no
+# NEW HOPE miscode: the "s33" set == the federal defendant set, and the precomputed
+# FL flag uses cfg$FL_CUT (32) via cfg$fl_predicate.
+if (cfg$cade_layout == "bec_csv") {
+  # script 33 keyed defendants on firm_cnpj WITHOUT excluding the NEW HOPE
+  # miscode (47 distinct). To reproduce \valAUCdirectCADE=0.491 exactly we use the
+  # script-33 set (47) for the reproduction line; the disjoint 46-firm set is used
+  # for the timing comparison (one firm out of 41,444 -> AUC unchanged to 3 dp).
+  defendant_codes_s33 <- unique(xm$firm_code)               # 47 (NEW HOPE included)
+} else {
+  defendant_codes_s33 <- defendant_codes                    # federal: no NEW HOPE split
+}
+ff[, is_defendant      := as.integer(firm_code %in% defendant_codes)]      # disjoint set
+ff[, is_defendant_s33  := as.integer(firm_code %in% defendant_codes_s33)]
 ff[, always_loser_full := al_full]
-# full-sample FL binary flag (median+1.5*IQR over 2009-2019 AL pool = THR_FULL)
+# full-sample FL binary flag (median+1.5*IQR over the full-window AL pool = THR_FULL)
 ff[, fl_full := as.integer(al_full == 1L & L > THR_FULL)]
-# script-33 exact reproduction input: FREQ_PARTICIP precomputed is_fl uses
-# tenders_count > 14 (NOT losses > 13.5). Use it ONLY for the 0.491 repro line.
+# precomputed FL repro input: FREQ_PARTICIP is_fl. Path now from cfg.
+# NOTE: BEC reproduction line deliberately uses the script-33 STRICT `> FL_CUT`
+# comparison (tenders_count > 14L) -- preserved byte-identical for BEC. The federal
+# branch has no script-33 lock and uses the canonical cfg$fl_predicate (>= FL_CUT).
 suppressWarnings({
-  .fp <- tryCatch(as.data.table(arrow::read_parquet(
-    file.path(BASE, "data/processed/FREQ_PARTICIP_rebuilt.parquet"))),
+  .fp <- tryCatch(as.data.table(arrow::read_parquet(cfg$freq_particip)),
     error = function(e) NULL)
 })
 if (!is.null(.fp)) {
   .fp[, firm_code := sprintf("%014.0f", as.numeric(`códigofornecedor`))]
-  .fp[, is_fl_s33 := as.integer(always_loser == 1L & tenders_count > 14L)]
+  if (cfg$cade_layout == "bec_csv") {
+    .fp[, is_fl_s33 := as.integer(always_loser == 1L & tenders_count > 14L)]  # script-33 lock
+  } else {
+    .fp[, is_fl_s33 := as.integer(always_loser == 1L & cfg$fl_predicate(tenders_count))]
+  }
   ff <- merge(ff, .fp[, .(firm_code, is_fl_s33)], by = "firm_code", all.x = TRUE)
   ff[is.na(is_fl_s33), is_fl_s33 := 0L]
 } else {
   ff[, is_fl_s33 := fl_full]   # fallback
 }
-# strict-training score (2009-2016) + train FL binary
-Hd <- build_holdout(2009:2016, 2017:2019)
+# strict-training score (cfg holdout train window) + train FL binary
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): split from cfg.
+Hd <- build_holdout(HOLDOUT_TRAIN, HOLDOUT_TEST)
 ff <- merge(ff, Hd[, .(firm_code, score_train, always_loser_train, fl_train)],
             by = "firm_code", all.x = TRUE)
 ff[is.na(score_train), score_train := 0]
@@ -606,8 +751,15 @@ dd <- rbindlist(list(
 fwrite(dd, file.path(DIR_TAB_APP, "table_D_direct_defendant_timing_scope_check.csv"))
 
 repro_dd <- dd[design=="0_repro_script33_FLbinary", roc_auc]
-tlog(sprintf("direct-defendant repro (FL-binary, all BEC, 47 def): AUC=%.4f (expect 0.491)%s",
-             repro_dd, if (abs(repro_dd-0.491)>0.005) "  !! DEVIATION" else ""))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): the 0.491 lock is a BEC script-33
+# reproduction target; federal has no such lock (console-only message, no file diff).
+if (cfg$cade_layout == "bec_csv") {
+  tlog(sprintf("direct-defendant repro (FL-binary, all BEC, 47 def): AUC=%.4f (expect 0.491)%s",
+               repro_dd, if (abs(repro_dd-0.491)>0.005) "  !! DEVIATION" else ""))
+} else {
+  tlog(sprintf("direct-defendant FL-binary AUC (federal, %d def): AUC=%.4f (no BEC lock)",
+               sum(ff$is_defendant_s33), repro_dd))
+}
 print(dd[, .(design, universe, label, n_defendants, roc_auc = round(roc_auc,3), pr_auc = round(pr_auc,4))])
 
 # =============================================================================

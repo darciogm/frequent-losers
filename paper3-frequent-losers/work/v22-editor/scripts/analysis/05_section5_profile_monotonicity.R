@@ -39,23 +39,32 @@ if (!exists(".script_dir")) {
 REPO <- normalizePath(file.path(.script_dir, "..", "..", "..", ".."), mustWork = FALSE)
 if (!dir.exists(file.path(REPO, "data", "processed")))
   REPO <- normalizePath("/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers")
-DATA <- file.path(REPO, "data", "processed")
 V22  <- file.path(REPO, "work", "v22-editor")
-OUT  <- file.path(V22, "outputs")
 UTIL <- file.path(V22, "scripts", "utils")
 DOCS <- file.path(V22, "docs", "jleo_rr_revision")
 
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): --source= flag (default "bec");
+# ALL data paths / constants / key lambdas / output+cache+spill dirs come from cfg.
+source(file.path(UTIL, "source_config.R"))
+.args <- commandArgs(TRUE)
+.src  <- sub("^--source=", "", .args[grep("^--source=", .args)])
+SRC   <- if (length(.src)) .src[1L] else "bec"
+cfg   <- get_source_config(SRC)
+cfg$ensure_dirs()
+
 source(file.path(UTIL, "metrics_triage.R"))
 
-dir_main_t <- file.path(OUT, "tables", "main")
-dir_app_t  <- file.path(OUT, "tables", "appendix")
-dir_main_f <- file.path(OUT, "figures", "main")
-dir_diag   <- file.path(OUT, "diagnostics")
-dir_cache  <- file.path(OUT, "cache")
-dir_log    <- file.path(OUT, "logs")
+# cfg-driven dirs (BEC: identical to the prior literal paths; FED: isolated tree)
+dir_main_t <- cfg$dirs$tables_main
+dir_app_t  <- cfg$dirs$tables_app
+dir_main_f <- cfg$dirs$figures_main
+dir_diag   <- cfg$dirs$diagnostics
+dir_cache  <- cfg$dirs$cache
+dir_log    <- cfg$dirs$logs
+SPILL      <- cfg$temp_directory
 for (d in c(dir_main_t,dir_app_t,dir_main_f,dir_diag,dir_cache,dir_log,DOCS))
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
-dir.create("/tmp/duckdb_spill", recursive = TRUE, showWarnings = FALSE)
+dir.create(SPILL, recursive = TRUE, showWarnings = FALSE)
 
 setDTthreads(12L)
 SEED <- 20260603L
@@ -90,7 +99,7 @@ say("  cobidder=%d  fl14=%d  fl14&cobidder=%d  Y_broad=%d  exposed=%d",
 # modality / tender value / bidder-count environment from the panels.
 # =============================================================================
 say("\n----- reconstruct firm_id<->CNPJ map (sorted-CNPJ index) -----")
-fp <- as.data.table(read_parquet(file.path(DATA, "FREQ_PARTICIP_rebuilt.parquet")))
+fp <- as.data.table(read_parquet(cfg$freq_particip))
 fp[, firm_code := norm14(`códigofornecedor`)]
 al_map <- fp[always_loser == 1L, .(firm_code, tenders_count)]
 setorder(al_map, firm_code)
@@ -110,43 +119,66 @@ stamp("firmid_map")
 # All cheap via DuckDB: aggregate firm_tender_map JOIN item_value_panel by firm.
 # =============================================================================
 say("\n----- panel-derived firm features (modality / value / bidder-env / HHI) -----")
-ftm_path <- file.path(DATA, "firm_tender_map.parquet")
-ivp_path <- file.path(DATA, "item_value_panel.parquet")
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): cfg-driven paths + key lambdas.
+ftm_path <- cfg$firm_tender_map
+ivp_path <- cfg$item_panel
 MODALITY_OBS <- TRUE; VALUE_OBS <- TRUE; BIDDER_OBS <- TRUE
+HAS_IG <- isTRUE(cfg$has_item_group)   # federal: SUBSTR item-group is buyer-collinear -> FALSE
+
+# Panel column names differ by source: BEC item_value_panel carries (modality,
+# item_value, n_firms, codigoitem-no-accent); FED item_level_panel carries
+# (po_phase_code, valor_item, n_firms, códigoitem-accent + codigo_ug for buyer).
+P_ITEM <- sprintf("\"%s\"", cfg$item_panel_item_col)   # panel item-code column
+P_MOD  <- cfg$modality_col                              # modality / po_phase_code
+P_VAL  <- cfg$item_value_col                            # item_value / valor_item
+P_NF   <- cfg$n_firms_col                               # n_firms (both)
+# pregao-family codes = all modality codes EXCEPT convite (BEC list also holds convite).
+.pregao_names <- setdiff(names(cfg$modalities), "convite")
+PREGAO_CODES  <- paste(unlist(cfg$modalities[.pregao_names]), collapse=",")  # BEC: 3 ; FED: 5,9999
+CONVITE_CODE  <- if (cfg$has_convite) cfg$modalities$convite else NA_integer_
+# Buyer-from-key (BEC) vs buyer-from-panel codigo_ug (FED). For BEC the buyer is a
+# substr of the FTM numerodaoc; federally the FTM has NO buyer column, so buyer
+# (codigo_ug) is carried from the item panel via the (oc,item) join.
+BUYER_FROM_KEY <- !is.null(cfg$buyer_from_key)
+# item-group select expr from FTM códigoitem (BEC only; NULL placeholder federally)
+IG_SEL <- if (HAS_IG) sprintf("%s AS ig", cfg$ig_from_key("CAST(\"códigoitem\" AS VARCHAR)")) else "NULL AS ig"
+PBU_SEL_FTM <- if (BUYER_FROM_KEY) sprintf("%s AS pbu", cfg$buyer_from_key("CAST(\"numerodaoc\" AS VARCHAR)")) else "NULL AS pbu"
 
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))
 dbWriteTable(con, "al_firms", data.frame(firm_code = al_map$firm_code), overwrite = TRUE)
 
-# Firm x tender-item with modality/value/bidder-count joined from item_value_panel.
-# HHI across item_groups and buyers computed from FTM participation counts.
+# Firm x tender-item with modality/value/bidder-count joined from the item panel.
+# Federally buyer (codigo_ug) is carried from the panel (FTM has no buyer column).
+convite_sel <- if (cfg$has_convite)
+  sprintf("SUM(CASE WHEN %s=%d THEN 1 ELSE 0 END)", P_MOD, CONVITE_CODE) else "0"
 firm_feat <- tryCatch(as.data.table(dbGetQuery(con, sprintf("
   WITH ftm AS (
     SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
            CAST(\"numerodaoc\" AS VARCHAR) AS oc,
            CAST(\"códigoitem\" AS VARCHAR) AS item,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu,
-           SUBSTR(CAST(\"códigoitem\"  AS VARCHAR),1,2) AS ig
+           %s,
+           %s
     FROM read_parquet('%s')
   ),
   al_ftm AS (
     SELECT f.* FROM ftm f JOIN al_firms a ON f.firm_code = a.firm_code
   ),
   panel AS (
-    SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(codigoitem AS VARCHAR) AS item,
-           modality, item_value, n_firms, n_bids
+    SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(%s AS VARCHAR) AS item,
+           %s AS modality, %s AS item_value, %s AS n_firms%s
     FROM read_parquet('%s')
   ),
   joined AS (
     SELECT a.firm_code, a.oc, a.item, a.pbu, a.ig,
-           p.modality, p.item_value, p.n_firms, p.n_bids
+           p.modality, p.item_value, p.n_firms%s
     FROM al_ftm a LEFT JOIN panel p ON a.oc = p.oc AND a.item = p.item
   )
   SELECT firm_code,
          COUNT(*)                                              AS n_items_ftm,
-         SUM(CASE WHEN modality=3 THEN 1 ELSE 0 END)           AS n_pregao,
-         SUM(CASE WHEN modality=1 THEN 1 ELSE 0 END)           AS n_convite,
+         SUM(CASE WHEN modality IN (%s) THEN 1 ELSE 0 END)     AS n_pregao,
+         %s                                                    AS n_convite,
          SUM(CASE WHEN modality IS NOT NULL THEN 1 ELSE 0 END) AS n_modality_obs,
          SUM(CASE WHEN item_value IS NOT NULL AND item_value>0 THEN 1 ELSE 0 END) AS n_value_obs,
          AVG(CASE WHEN item_value>0 THEN item_value END)       AS mean_tender_value,
@@ -155,43 +187,82 @@ firm_feat <- tryCatch(as.data.table(dbGetQuery(con, sprintf("
          MEDIAN(CASE WHEN n_firms>0 THEN n_firms END)          AS med_bidder_count
   FROM joined
   GROUP BY firm_code
-", ftm_path, ivp_path))), error=function(e){say("  panel-join FAILED: %s", conditionMessage(e)); NULL})
+",
+  PBU_SEL_FTM, IG_SEL, ftm_path,
+  P_ITEM, P_MOD, P_VAL, P_NF, if (BUYER_FROM_KEY) "" else sprintf(", codigo_ug AS buyer_panel"),
+  ivp_path,
+  if (BUYER_FROM_KEY) "" else ", p.buyer_panel",
+  PREGAO_CODES, convite_sel))),
+  error=function(e){say("  panel-join FAILED: %s", conditionMessage(e)); NULL})
 
 if (is.null(firm_feat)) { MODALITY_OBS <- VALUE_OBS <- BIDDER_OBS <- FALSE }
 
-# HHI across item_groups and buyers + top-share, computed separately (cheap).
-firm_hhi <- as.data.table(dbGetQuery(con, sprintf("
+# HHI across item_groups (BEC only) and buyers + top-share, computed separately.
+# Federally item-group is NOT_OBSERVED (buyer-collinear prefix) -> hhi_ig/top_ig
+# are emitted NULL and filled with the trivial single-group value downstream.
+# Buyer HHI: BEC buyer = substr(FTM numerodaoc); FED buyer = codigo_ug via panel join.
+if (BUYER_FROM_KEY) {
+  buyer_ftm_cte <- sprintf("
   WITH ftm AS (
     SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu,
-           SUBSTR(CAST(\"códigoitem\"  AS VARCHAR),1,2) AS ig
+           %s,
+           %s
+    FROM read_parquet('%s')
+  ),", PBU_SEL_FTM, IG_SEL, ftm_path)
+} else {
+  # federal: join FTM to panel to bring codigo_ug as the buyer (pbu); ig stays NULL.
+  buyer_ftm_cte <- sprintf("
+  WITH panel AS (
+    SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(%s AS VARCHAR) AS item, codigo_ug AS pbu
     FROM read_parquet('%s')
   ),
-  al_ftm AS (SELECT f.* FROM ftm f JOIN al_firms a ON f.firm_code = a.firm_code),
-  ig_counts AS (SELECT firm_code, ig, COUNT(*) AS n FROM al_ftm GROUP BY firm_code, ig),
-  bu_counts AS (SELECT firm_code, pbu, COUNT(*) AS n FROM al_ftm GROUP BY firm_code, pbu),
+  ftm AS (
+    SELECT LPAD(CAST(f.\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+           p.pbu AS pbu,
+           NULL AS ig
+    FROM read_parquet('%s') f
+    LEFT JOIN panel p
+      ON CAST(f.\"numerodaoc\" AS VARCHAR)=p.oc AND CAST(f.\"códigoitem\" AS VARCHAR)=p.item
+  ),", P_ITEM, ivp_path, ftm_path)
+}
+ig_agg_sql <- if (HAS_IG) "
+  ig_counts AS (SELECT firm_code, ig, COUNT(*) AS n FROM al_ftm WHERE ig IS NOT NULL GROUP BY firm_code, ig),
   ig_tot AS (SELECT firm_code, SUM(n) AS tot FROM ig_counts GROUP BY firm_code),
-  bu_tot AS (SELECT firm_code, SUM(n) AS tot FROM bu_counts GROUP BY firm_code),
   ig_agg AS (
     SELECT c.firm_code,
            SUM( (CAST(c.n AS DOUBLE)/t.tot)*(CAST(c.n AS DOUBLE)/t.tot) ) AS hhi_ig,
            MAX(CAST(c.n AS DOUBLE))/MAX(t.tot) AS top_ig_share
     FROM ig_counts c JOIN ig_tot t ON c.firm_code=t.firm_code GROUP BY c.firm_code
-  ),
+  )," else ""
+ig_sel_final <- if (HAS_IG) "ig.hhi_ig, ig.top_ig_share" else "NULL AS hhi_ig, NULL AS top_ig_share"
+ig_join_final <- if (HAS_IG) "JOIN ig_agg ig ON ig.firm_code = b.firm_code" else ""
+firm_hhi <- as.data.table(dbGetQuery(con, sprintf("%s
+  al_ftm AS (SELECT f.* FROM ftm f JOIN al_firms a ON f.firm_code = a.firm_code),
+  bu_counts AS (SELECT firm_code, pbu, COUNT(*) AS n FROM al_ftm WHERE pbu IS NOT NULL GROUP BY firm_code, pbu),
+  bu_tot AS (SELECT firm_code, SUM(n) AS tot FROM bu_counts GROUP BY firm_code),
+  %s
   bu_agg AS (
     SELECT c.firm_code,
            SUM( (CAST(c.n AS DOUBLE)/t.tot)*(CAST(c.n AS DOUBLE)/t.tot) ) AS hhi_buyer,
            MAX(CAST(c.n AS DOUBLE))/MAX(t.tot) AS top_buyer_share
     FROM bu_counts c JOIN bu_tot t ON c.firm_code=t.firm_code GROUP BY c.firm_code
   )
-  SELECT i.firm_code, i.hhi_ig, i.top_ig_share, b.hhi_buyer, b.top_buyer_share
-  FROM ig_agg i JOIN bu_agg b ON i.firm_code = b.firm_code
-", ftm_path)))
+  SELECT b.firm_code, %s, b.hhi_buyer, b.top_buyer_share
+  FROM bu_agg b %s
+", buyer_ftm_cte, ig_agg_sql, ig_sel_final, ig_join_final)))
+if (!HAS_IG) say("  item-group HHI marked NOT_OBSERVED federally (SUBSTR codigoitem prefix == codigo_ug buyer; buyer-collinear).")
 dbDisconnect(con, shutdown = TRUE); gc()
 
 if (!is.null(firm_feat)) {
   firm_feat[, pregao_share  := ifelse(n_modality_obs>0, n_pregao/n_modality_obs, NA_real_)]
-  firm_feat[, convite_share := ifelse(n_modality_obs>0, n_convite/n_modality_obs, NA_real_)]
+  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): convite_share only where convite
+  # exists. Federal is pure Pregao -> convite_share NA (NOT_OBSERVED), logged skip.
+  if (cfg$has_convite) {
+    firm_feat[, convite_share := ifelse(n_modality_obs>0, n_convite/n_modality_obs, NA_real_)]
+  } else {
+    firm_feat[, convite_share := NA_real_]
+    say("  [skip] convite_share NOT computed (source=%s is pure Pregao; no convite modality).", cfg$source)
+  }
   say("  modality observed for %.1f%% of AL firm-items (mean over firms)",
       100*mean(firm_feat$n_modality_obs/firm_feat$n_items_ftm, na.rm=TRUE))
   ff <- merge(ff, firm_feat[, .(firm_code, pregao_share, convite_share,
@@ -220,8 +291,11 @@ if (!is.null(firm_feat)) {
   }
 }
 ff <- merge(ff, firm_hhi, by="firm_code", all.x=TRUE)
-# top-item-group / top-buyer share NA -> firms always have >=1 group/buyer, so set 1
-ff[is.na(hhi_ig), `:=`(hhi_ig=1, top_ig_share=1)]
+# top-item-group / top-buyer share NA -> firms always have >=1 group/buyer, so set 1.
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group HHI fill only where the
+# item-group is observed (BEC). Federally hhi_ig/top_ig_share stay NA (NOT_OBSERVED:
+# SUBSTR codigoitem prefix is the buyer code; reusing it would be buyer-collinear).
+if (HAS_IG) ff[is.na(hhi_ig), `:=`(hhi_ig=1, top_ig_share=1)]
 ff[is.na(hhi_buyer), `:=`(hhi_buyer=1, top_buyer_share=1)]
 stamp("panel_features")
 
@@ -287,13 +361,24 @@ gc_tab <- rbindlist(lapply(names(gdef), function(g) {
              notes="")
 }))
 # Group H reported SEPARATELY (direct defendants) — never mixed into A-G.
-xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
-# POSITIVE LABEL: canonical broad AL cobidder label (651, reproducible, FL never used).
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): direct-defendant set is CADE-layout
+# specific. BEC: cade_bec_crossmatch.csv (firm_cnpj). FED: direct_defendants_federal
+# parquet (cnpj/codigofornecedor). Canonical cobidder set lives in the isolated cache.
+if (cfg$cade_layout == "bec_csv") {
+  xm <- fread(cfg$cade$crossmatch)
+  direct_raw <- norm14(xm$firm_cnpj)
+} else {
+  xm <- as.data.table(read_parquet(cfg$cade$direct_defendants))
+  .dcol <- intersect(c("códigofornecedor","cnpj","firm_cnpj","cnpj14"), names(xm))[1]
+  if (is.na(.dcol)) stop("direct_defendants_federal: no recognizable CNPJ column")
+  direct_raw <- norm14(xm[[.dcol]])
+}
+# POSITIVE LABEL: canonical broad AL cobidder label (reproducible, FL never used).
 # `códigofornecedor` is already the raw 14-char join key; norm14 is idempotent and
-# keeps this set in the same format as the norm14(xm$firm_cnpj) defendant set below.
-.canon_cob <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+# keeps this set in the same format as the direct-defendant set below.
+.canon_cob <- fread(file.path(dir_cache, "canonical_cobidders_broad.csv"))
 cob_codes <- unique(norm14(.canon_cob[broad_cobidder == 1L][["códigofornecedor"]]))
-direct_codes <- setdiff(unique(norm14(xm$firm_cnpj)), cob_codes)
+direct_codes <- setdiff(unique(direct_raw), cob_codes)
 H_in_frame <- sum(direct_codes %in% ff$firm_code)
 gc_tab <- rbind(gc_tab, data.table(
   group_name="H", definition="direct CADE defendants (REPORTED SEPARATELY)",
@@ -342,11 +427,8 @@ profile_vars <- list(
   list("items_per_active_year","A","cont","items per active year"),
   # Panel B: breadth / concentration
   list("n_items_total","B","cont","# distinct tender-items"),
-  list("n_item_groups","B","cont","# item groups"),
   list("n_buyers","B","cont","# buyers"),
-  list("hhi_ig","B","cont","HHI across item groups"),
   list("hhi_buyer","B","cont","HHI across buyers"),
-  list("top_ig_share","B","cont","top-item-group share"),
   list("top_buyer_share","B","cont","top-buyer share"),
   # Panel C: CADE proximity (PARTLY MECHANICAL for cobidders)
   list("O_i","C","cont","observed defendant contacts"),
@@ -357,11 +439,22 @@ profile_vars <- list(
   list("contact_intensity","C","cont","O_i / T_i"),
   list("share_in_def_cells_MEDIUM","C","cont","share of part. in defendant-bearing cells")
 )
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group breadth vars only where
+# the item-group is observed (BEC). Federally these are NOT_OBSERVED (buyer-collinear).
+if (HAS_IG) {
+  profile_vars <- c(profile_vars, list(
+    list("n_item_groups","B","cont","# item groups"),
+    list("hhi_ig","B","cont","HHI across item groups"),
+    list("top_ig_share","B","cont","top-item-group share")))
+} else {
+  say("  [skip] item-group profile vars (n_item_groups/hhi_ig/top_ig_share) NOT_OBSERVED for source=%s.", cfg$source)
+}
 # modality vars only if observed
 if (MODALITY_OBS) {
-  profile_vars <- append(profile_vars, list(
-    list("pregao_share","B","cont","Pregao share"),
-    list("convite_share","B","cont","Convite share")), after=11)
+  profile_vars <- c(profile_vars, list(list("pregao_share","B","cont","Pregao share")))
+  # convite share only where convite exists (BEC); federal pure-Pregao -> skip.
+  if (cfg$has_convite)
+    profile_vars <- c(profile_vars, list(list("convite_share","B","cont","Convite share")))
 }
 # environment vars only if observed
 if (VALUE_OBS)  profile_vars <- c(profile_vars, list(list("mean_tender_value","D","cont","mean tender value (R$)")))
@@ -455,7 +548,10 @@ stamp("BC_profile_smd")
 #   raw diff (D vs E) vs exposure-adjusted diff (cobidder coef w/ controls)
 # =============================================================================
 say("\n========== D. OPPORTUNITY-ADJUSTED PROFILE (Step 8) ==========")
-adj_vars <- c("n_years","n_item_groups","n_buyers","hhi_ig","n_cases","n_def_firms","X_i_MEDIUM")
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group adjustment vars/controls
+# only where the item-group is observed (BEC). Federally drop n_item_groups/hhi_ig.
+adj_vars <- c("n_years","n_buyers","n_cases","n_def_firms","X_i_MEDIUM")
+if (HAS_IG)     adj_vars <- c("n_years","n_item_groups","n_buyers","hhi_ig","n_cases","n_def_firms","X_i_MEDIUM")
 if (BIDDER_OBS) adj_vars <- c(adj_vars, "mean_bidder_count")
 if (VALUE_OBS)  adj_vars <- c(adj_vars, "mean_tender_value")
 
@@ -463,7 +559,8 @@ if (VALUE_OBS)  adj_vars <- c(adj_vars, "mean_tender_value")
 fl <- ff[fl14==1]
 fl[, T_dec := cut(T_i, breaks=unique(quantile(T_i, probs=seq(0,1,0.1))), include.lowest=TRUE, labels=FALSE)]
 fl[, T_dec_f := factor(T_dec)]
-control_terms <- c("log_E_MEDIUM","T_dec_f","n_item_groups","n_buyers","n_years")
+control_terms <- if (HAS_IG) c("log_E_MEDIUM","T_dec_f","n_item_groups","n_buyers","n_years") else
+                            c("log_E_MEDIUM","T_dec_f","n_buyers","n_years")
 
 # CEM on E_i_MEDIUM decile (cheap): match cobidders to non-cobidders within decile
 fl[, E_dec := cut(E_i_MEDIUM, breaks=unique(quantile(E_i_MEDIUM, probs=seq(0,1,0.1))),
@@ -521,12 +618,24 @@ stamp("D_opp_adjusted")
 # =============================================================================
 say("\n========== E. MONOTONICITY (Step 9) ==========")
 # largest-case share per firm (for "share of positives from largest case")
-ccm <- fread(file.path(REPO,"output","label_funnel","case_cobidder_map.csv"), colClasses=c(cnpj="character"))
-ccm[, cnpj := norm14(cnpj)]
-largest_case <- ccm[cnpj %in% cob_codes, .N, by=proc][order(-N)][1, proc]
-say("  largest CADE case among cobidders: %s", largest_case)
-cob_in_largest <- unique(ccm[cnpj %in% cob_codes & proc==largest_case, cnpj])
-ff[, cob_largest := as.integer(cobidder==1 & firm_code %in% cob_in_largest)]
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): case_cobidder_map is a label-funnel
+# artifact. BEC: output/label_funnel/. FED: isolated cache (built by the federal
+# label funnel). If absent federally, degrade to cob_largest=0 (largest-case legs
+# become no-ops) rather than hardcoding the BEC path.
+CCM_PATH <- if (cfg$source == "bec")
+  file.path(REPO,"output","label_funnel","case_cobidder_map.csv") else
+  file.path(dir_cache, "case_cobidder_map.csv")
+if (file.exists(CCM_PATH)) {
+  ccm <- fread(CCM_PATH, colClasses=c(cnpj="character"))
+  ccm[, cnpj := norm14(cnpj)]
+  largest_case <- ccm[cnpj %in% cob_codes, .N, by=proc][order(-N)][1, proc]
+  say("  largest CADE case among cobidders: %s", largest_case)
+  cob_in_largest <- unique(ccm[cnpj %in% cob_codes & proc==largest_case, cnpj])
+  ff[, cob_largest := as.integer(cobidder==1 & firm_code %in% cob_in_largest)]
+} else {
+  say("  [skip] case_cobidder_map absent (%s); cob_largest=0 (largest-case legs no-op).", CCM_PATH)
+  ff[, cob_largest := 0L]
+}
 say("  cobidders mapped to largest case: %d", ff[cob_largest==1,.N])
 
 T_BREAKS <- c(0,1,2,4,7,10,13,20,30,50,100,Inf)
@@ -633,33 +742,39 @@ samples <- list(
 )
 # excluding largest item-group: identify the item_group with most cobidder mass.
 # proxy via top_ig: drop firms whose top item-group is the dominant cobidder group.
-# Compute dominant cobidder item-group cheaply from FTM (cobidder firms only).
-con2 <- dbConnect(duckdb()); dbExecute(con2,"PRAGMA threads=12"); dbExecute(con2,"PRAGMA memory_limit='12GB'")
-dbExecute(con2,"PRAGMA temp_directory='/tmp/duckdb_spill'")
-dbWriteTable(con2,"cobf",data.frame(firm_code=ff[cobidder==1,firm_code]),overwrite=TRUE)
-ig_mass <- as.data.table(dbGetQuery(con2, sprintf("
-  WITH ftm AS (SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-                      SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS ig FROM read_parquet('%s'))
-  SELECT f.ig, COUNT(*) AS n FROM ftm f JOIN cobf c ON f.firm_code=c.firm_code GROUP BY f.ig ORDER BY n DESC LIMIT 5
-", ftm_path)))
-dbDisconnect(con2, shutdown=TRUE); gc()
-top_ig <- ig_mass$ig[1]
-say("  dominant cobidder item-group: %s (n=%d participations)", top_ig, ig_mass$n[1])
-# firms whose participation is concentrated in top_ig -> approximate exclusion:
-# drop cobidders that are largest-ig-anchored. We exclude firms with majority share in top_ig.
-con3 <- dbConnect(duckdb()); dbExecute(con3,"PRAGMA threads=12"); dbExecute(con3,"PRAGMA memory_limit='12GB'")
-dbExecute(con3,"PRAGMA temp_directory='/tmp/duckdb_spill'")
-dbWriteTable(con3,"al_firms",data.frame(firm_code=al_map$firm_code),overwrite=TRUE)
-ig_share <- as.data.table(dbGetQuery(con3, sprintf("
-  WITH ftm AS (SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-                      SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS ig FROM read_parquet('%s')),
-       al AS (SELECT f.* FROM ftm f JOIN al_firms a ON f.firm_code=a.firm_code)
-  SELECT firm_code, SUM(CASE WHEN ig='%s' THEN 1 ELSE 0 END)*1.0/COUNT(*) AS share_top_ig
-  FROM al GROUP BY firm_code
-", ftm_path, top_ig)))
-dbDisconnect(con3, shutdown=TRUE); gc()
-ff <- merge(ff, ig_share, by="firm_code", all.x=TRUE); ff[is.na(share_top_ig), share_top_ig := 0]
-samples$excl_largest_ig <- ff[share_top_ig < 0.5]   # drop firms dominated by top item-group
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group-based exclusion sample
+# only where the item-group is observed (BEC). Federally the SUBSTR prefix is the
+# buyer code (buyer-collinear) -> excl_largest_ig sample dropped (stays NULL, skipped).
+if (HAS_IG) {
+  con2 <- dbConnect(duckdb()); dbExecute(con2,"PRAGMA threads=12"); dbExecute(con2,"PRAGMA memory_limit='12GB'")
+  dbExecute(con2, sprintf("PRAGMA temp_directory='%s'", SPILL))
+  dbWriteTable(con2,"cobf",data.frame(firm_code=ff[cobidder==1,firm_code]),overwrite=TRUE)
+  ig_mass <- as.data.table(dbGetQuery(con2, sprintf("
+    WITH ftm AS (SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+                        %s AS ig FROM read_parquet('%s'))
+    SELECT f.ig, COUNT(*) AS n FROM ftm f JOIN cobf c ON f.firm_code=c.firm_code GROUP BY f.ig ORDER BY n DESC LIMIT 5
+  ", cfg$ig_from_key("CAST(\"códigoitem\" AS VARCHAR)"), ftm_path)))
+  dbDisconnect(con2, shutdown=TRUE); gc()
+  top_ig <- ig_mass$ig[1]
+  say("  dominant cobidder item-group: %s (n=%d participations)", top_ig, ig_mass$n[1])
+  # firms whose participation is concentrated in top_ig -> approximate exclusion:
+  # drop cobidders that are largest-ig-anchored. We exclude firms with majority share in top_ig.
+  con3 <- dbConnect(duckdb()); dbExecute(con3,"PRAGMA threads=12"); dbExecute(con3,"PRAGMA memory_limit='12GB'")
+  dbExecute(con3, sprintf("PRAGMA temp_directory='%s'", SPILL))
+  dbWriteTable(con3,"al_firms",data.frame(firm_code=al_map$firm_code),overwrite=TRUE)
+  ig_share <- as.data.table(dbGetQuery(con3, sprintf("
+    WITH ftm AS (SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+                        %s AS ig FROM read_parquet('%s')),
+         al AS (SELECT f.* FROM ftm f JOIN al_firms a ON f.firm_code=a.firm_code)
+    SELECT firm_code, SUM(CASE WHEN ig='%s' THEN 1 ELSE 0 END)*1.0/COUNT(*) AS share_top_ig
+    FROM al GROUP BY firm_code
+  ", cfg$ig_from_key("CAST(\"códigoitem\" AS VARCHAR)"), ftm_path, top_ig)))
+  dbDisconnect(con3, shutdown=TRUE); gc()
+  ff <- merge(ff, ig_share, by="firm_code", all.x=TRUE); ff[is.na(share_top_ig), share_top_ig := 0]
+  samples$excl_largest_ig <- ff[share_top_ig < 0.5]   # drop firms dominated by top item-group
+} else {
+  say("  [skip] excl_largest_ig sample NOT_OBSERVED for source=%s (item-group buyer-collinear).", cfg$source)
+}
 
 # score forms
 score_form_list <- function(d) {

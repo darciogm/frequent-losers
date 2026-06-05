@@ -148,7 +148,22 @@ suppressWarnings(suppressMessages({
 #'   --- clustering / timing --------------------------------------------------
 #'   $cluster_keys      : c("oc","item") tender-item clustering identity
 #'   $tender_key        : c(buyer, "numerodaoc") for buyer-level ops
-#'   $CONS_DATE         : conservative-case cutoff Date (FED: NA placeholder)
+#'   $CONS_DATE         : conservative-case cutoff Date (the latest case-judgment
+#'                        date used as the conservative observability bound).
+#'   $holdout_train     : integer vector of TRAIN years for the strict timing
+#'                        holdout (script 03). BEC 2009:2016 ; FED 2013:2016.
+#'   $holdout_test      : integer vector of TEST years for the strict timing
+#'                        holdout. SAME test window 2017:2019 for both sources
+#'                        (comparability; PROVISIONAL pending lead review).
+#'   $freeze_year       : label-frozen timing cutoff (BOTH = 2016L). BEC preserves
+#'                        the hard-pinned 2016 in script 12; comprasnet uses an
+#'                        in-window freeze (window 2013-2019) aligned with
+#'                        holdout_train max. LEAD DECISION 2026-06-05. Distinct from
+#'                        CONS_DATE (which serves judgment-date provenance, not freeze).
+#'   $item_panel_item_col : name of the item-code column INSIDE $item_panel
+#'                        (BEC "codigoitem" no accent ; FED "códigoitem" accent).
+#'                        firm_tender_map always uses "códigoitem" (accent) in
+#'                        both sources; only the item PANEL column name differs.
 #'
 #'   --- output isolation -----------------------------------------------------
 #'   $out_root          : root outputs dir for this source
@@ -225,6 +240,30 @@ get_source_config <- function(source = c("bec", "comprasnet")) {
       cluster_keys = c("oc", "item"),
       tender_key   = c("buyer_substr", "numerodaoc"),  # buyer is substr of the key
       CONS_DATE    = as.Date("2020-12-31"),
+
+      # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): strict-timing holdout split
+      # (script 03). BEC unchanged: train 2009-2016, test 2017-2019 (preserves the
+      # hardcoded build_holdout(2009:2016, 2017:2019) behaviour byte-for-byte).
+      holdout_train = 2009:2016,
+      holdout_test  = 2017:2019,
+      # SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): label-frozen timing
+      # cutoff. BEC: preserves the hard-pinned 2016 in script 12; comprasnet: in-window
+      # freeze (window 2013-2019) aligned with holdout_train max -- LEAD DECISION
+      # 2026-06-05. (Distinct from CONS_DATE, which serves judgment-date provenance.)
+      freeze_year = 2016L,
+      # BEC item_value_panel item column is "codigoitem" (NO accent); firm_tender_map
+      # uses "códigoitem" (accent). Only the panel column name differs across sources.
+      item_panel_item_col = "codigoitem",
+
+      # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group + panel cols.
+      # BEC códigoitem is a SHORT bare item code (mostly 5-7 chars; verified
+      # 91 distinct SUBSTR(1,2) groups) -> SUBSTR(1,2) is a genuine product-group
+      # prefix. ig_from_key takes the firm_tender_map códigoitem (accented) SQL expr.
+      has_item_group = TRUE,
+      ig_from_key    = function(varchar_sql) sprintf("SUBSTR(%s,1,2)", varchar_sql),
+      # item_value_panel value / bidder-count column names (BEC recoded panel).
+      item_value_col = "item_value",
+      n_firms_col    = "n_firms",
 
       out_root = out_root,
       dirs     = dirs,
@@ -327,10 +366,60 @@ get_source_config <- function(source = c("bec", "comprasnet")) {
       cluster_keys = c("oc", "item"),
       tender_key   = c("codigo_ug", "numerodaoc"),  # buyer-level ops use UASG + OC number
 
-      # CONS_DATE: BEC uses a conservative pre-2020 case-judgment cutoff. Federal
-      # case-judgment dates are not yet wired in.
-      # TODO Phase-1: derive from federal case judgment dates (script 03 adaptation)
-      CONS_DATE = as.Date(NA),
+      # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): federal CONS_DATE wired.
+      # Gate G3: the 7 NUMBERED federal CADE cases are the SAME processo numbers as
+      # BEC, so federal per-case judgment dates come from the SAME provenance the BEC
+      # pipeline uses -- data/processed/cade_carteis_licitacoes_2009_2019.csv
+      # (numero_processo / data_julgamento), mirrored in output/label_funnel/
+      # case_timing.csv (proc / jdate) and data/processed_comprasnet/cade_link_v3/
+      # cnpjs_enriched.csv (numero_processo / data_julgamento). Per-case dates of the
+      # 7 federal numbered processos (5 dated, 2 national-medicamentos cases undated):
+      #   08700.004617/2013-41 -> 2019-07-08   (trens_metros)
+      #   08012.010022/2008-16 -> 2021-04-14   (merenda_escolar)
+      #   08700.005789/2015-02 -> 2023-09-13   (sacos_de_lixo)
+      #   08012.002222/2011-09 -> 2024-12-11   (medicamentos)
+      #   08700.005876/2019-85 -> 2025-02-26   (transporte_escolar)
+      #   08012.005928/2003-12 -> (no judgment date in CADE source)
+      #   08012.008821/2008-22 -> (no judgment date in CADE source)
+      # The 8th federal defendant group (setor=tecnologia_informacao, uf=DF) has an
+      # EMPTY processo and is EXCLUDED from any case-anchored analysis (gate G3).
+      # CONS_DATE is the conservative single-scalar observability bound = the LATEST
+      # judgment date among the federal numbered cases (so all anchored conduct is
+      # legally observable by then), the federal analogue of BEC's 2020-12-31.
+      # PROVISIONAL pending lead review (the per-case dates above are the precise
+      # objects; scripts that need per-case cutoffs should read them from the CADE
+      # CSV by processo rather than this scalar).
+      CONS_DATE = as.Date("2025-02-26"),
+
+      # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): strict-timing holdout split.
+      # FED window starts 2013 so train = 2013:2016; test = 2017:2019 KEPT IDENTICAL
+      # to BEC so the two strict-timing holdouts are directly comparable.
+      # PROVISIONAL pending lead review.
+      holdout_train = 2013:2016,
+      holdout_test  = 2017:2019,
+      # SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): label-frozen timing
+      # cutoff. comprasnet: in-window freeze (window 2013-2019) aligned with
+      # holdout_train max -- LEAD DECISION 2026-06-05. BEC pins the same 2016 in
+      # script 12. (Distinct from CONS_DATE, which serves judgment-date provenance.)
+      freeze_year = 2016L,
+      # FED item_level_panel item column is "códigoitem" (WITH accent), unlike BEC.
+      item_panel_item_col = "códigoitem",
+
+      # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group + panel cols.
+      # G1 cardinality verification (2026-06-05): federal códigoitem is a 22-char
+      # COMPOSITE key whose first 6 chars ARE codigo_ug (UASG buyer). Confirmed in
+      # item_level_panel: SUBSTR(códigoitem,1,2) == SUBSTR(codigo_ug,1,2) on the
+      # diagonal for EVERY group (15->15, 16->16, 12->12, ...). So the 2-char prefix
+      # is a BUYER-REGION proxy, NOT a product taxonomy; reusing it would make
+      # item-group HHI mechanically collinear with buyer HHI and corrupt the §5
+      # breadth/specialization panels. The federally-meaningful product label is the
+      # free-text descricao_item, not a cheap fixed taxonomy -> item-group is marked
+      # NOT_OBSERVED federally (ig_from_key = NULL; has_item_group = FALSE).
+      has_item_group = FALSE,
+      ig_from_key    = NULL,
+      # FED item_level_panel value / bidder-count columns (NO recoded item_value).
+      item_value_col = "valor_item",
+      n_firms_col    = "n_firms",
 
       out_root = out_root,
       dirs     = dirs,

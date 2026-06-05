@@ -47,51 +47,113 @@ rss_mb <- function() {
 }
 
 # ---- paths ------------------------------------------------------------------
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): source-abstraction layer.
+# --source=bec (default) | comprasnet; all paths/constants/CADE layout from cfg.
+# BEC behaviour byte-identical (cfg$* bec values equal the prior literals).
+args_user <- commandArgs(trailingOnly = TRUE)
+src <- sub("^--source=", "", grep("^--source=", args_user, value = TRUE))
+src <- if (length(src)) src[1L] else "bec"
+
 args0 <- commandArgs(trailingOnly = FALSE)
 sd <- sub("^--file=", "", grep("^--file=", args0, value = TRUE))
 SCRIPT_DIR <- if (length(sd)) dirname(normalizePath(sd)) else getwd()
-# script lives in work/v22-editor/scripts/analysis/ -> repo base is 4 up
-BASE   <- normalizePath(file.path(SCRIPT_DIR, "..", "..", "..", ".."))
-DATA   <- file.path(BASE, "data", "processed")
-S79OUT <- file.path(BASE, "output", "label_funnel")  # reuse script 79 outputs (read-only)
-OUT    <- file.path(BASE, "work", "v22-editor", "outputs")
-D_DIAG <- file.path(OUT, "diagnostics")
-D_TBL  <- file.path(OUT, "tables", "main")
-D_FIG  <- file.path(OUT, "figures", "main")
-D_LOG  <- file.path(OUT, "logs")
-for (d in c(D_DIAG, D_TBL, D_FIG, D_LOG)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
+.script_dir <- SCRIPT_DIR  # used by source_config.R repo resolver
+source(file.path(SCRIPT_DIR, "..", "utils", "source_config.R"))
+cfg <- get_source_config(src)
+cfg$ensure_dirs()
+
+BASE   <- cfg$repo
+DATA   <- cfg$data_dir
+# Legacy script-79 outputs (output/label_funnel/) are a BEC-historical artifact;
+# the federal funnel is built fresh (no legacy reconciliation columns). See the
+# cfg$source=="bec" guard below.
+OUT    <- cfg$out_root
+D_DIAG <- cfg$dirs$diagnostics
+D_TBL  <- cfg$dirs$tables_main
+D_FIG  <- cfg$dirs$figures_main
+D_LOG  <- cfg$dirs$logs
 
 say <- function(...) cat(paste0(..., "\n"))
 say("================ 01_label_funnel_reconciliation.R (JLEO R&R v22 CP-1) ================")
+say("source=", cfg$source, " (", cfg$label, ")")
 say("host=", host, "  start=", format(t0), "  RSS=", rss_mb(), "MB")
 say("BASE=", BASE)
 
-# ---- inputs -----------------------------------------------------------------
-f_ftm   <- file.path(DATA, "firm_tender_map.parquet")
-f_loss  <- file.path(DATA, "firm_loss_stats.parquet")
-f_freq  <- file.path(DATA, "FREQ_PARTICIP_rebuilt.parquet")
-f_cross <- file.path(DATA, "cade_bec_crossmatch.csv")
-f_cart  <- file.path(DATA, "cade_carteis_licitacoes_2009_2019.csv")
-f_cob   <- file.path(DATA, "cade_fl_cobidders.csv")
-stopifnot(all(file.exists(f_ftm, f_loss, f_freq, f_cross, f_cart, f_cob)))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): legacy script-79 reuse is BEC-only.
+if (cfg$source == "bec") {
+  S79OUT <- file.path(BASE, "output", "label_funnel")  # reuse script 79 outputs (read-only)
+} else {
+  S79OUT <- NA_character_
+  say("[legacy] SKIP script-79 output/label_funnel reuse: federal funnel is built ",
+      "fresh without the BEC-historical reconciliation columns.")
+}
 
-FL_CUT    <- 14L
-CONS_DATE <- as.Date("2020-12-31")
-MANU_BEC  <- 41444L  # manuscript all-BEC firms
+# ---- inputs -----------------------------------------------------------------
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): core parquets from cfg.
+f_ftm   <- cfg$firm_tender_map
+f_loss  <- cfg$firm_loss_stats
+f_freq  <- cfg$freq_particip
+stopifnot(all(file.exists(f_ftm, f_loss, f_freq)))
+
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): FL cut / conservative cutoff from cfg
+# (CONS_DATE bec=2020-12-31, fed=2025-02-26). HAVE_CONS is a safety net for a future
+# source with CONS_DATE=NA; both current sources have it, so conservative runs for both.
+FL_CUT    <- cfg$FL_CUT
+CONS_DATE <- cfg$CONS_DATE
+HAVE_CONS <- !is.na(CONS_DATE)
+MANU_BEC  <- 41444L  # manuscript all-BEC firms (BEC reference; federal logs only)
 
 pad14 <- function(x){ x <- gsub("[^0-9]", "", as.character(x)); ifelse(x == "", NA_character_, formatC(x, width = 14, flag = "0")) }
 
-cross <- fread(f_cross, colClasses = "character")
-cart  <- fread(f_cart,  colClasses = "character")
-cob   <- fread(f_cob,   colClasses = "character")
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): CADE input-normalization branch
+# keyed on cfg$cade_layout, mapping either layout into the same internal frames:
+#   cross : data.table(cnpj, proc)  -- defendant CNPJ (14-digit estab) x case
+#   cart  : data.table(proc, jdate, setor) -- case roster + judgment dates
+#   cob   : data.table(cnpj)        -- static/archived comparison set (NOT a label)
+# D-i finding: BEC anchors at the FULL 14-digit ESTAB CNPJ (defend = pad14(fornecedor),
+#   joined on f."códigofornecedor"). Federal mirrors this on direct_defendants_federal$firm_id.
+if (cfg$cade_layout == "bec_csv") {
+  f_cross <- cfg$cade$crossmatch
+  f_cart  <- cfg$cade$carteis
+  f_cob   <- cfg$cade$cobidders
+  stopifnot(all(file.exists(f_cross, f_cart, f_cob)))
 
-cross[, cnpj := pad14(fornecedor)]
-cross[, proc := processo]
-cross <- cross[!is.na(cnpj) & toupper(fornecedor) != "IT_DF" & nchar(cnpj) == 14]
-cart[, proc := numero_processo]
-cart <- cart[!is.na(proc) & trimws(proc) != "" & toupper(proc) != "IT_DF"]
-cart[, jdate := as.Date(data_julgamento)]
-cob[, cnpj := pad14(`códigofornecedor`)]
+  cross <- fread(f_cross, colClasses = "character")
+  cart  <- fread(f_cart,  colClasses = "character")
+  cob   <- fread(f_cob,   colClasses = "character")
+
+  cross[, cnpj := pad14(fornecedor)]
+  cross[, proc := processo]
+  cross <- cross[!is.na(cnpj) & toupper(fornecedor) != "IT_DF" & nchar(cnpj) == 14]
+  cross <- cross[, .(cnpj, proc)]
+  cart[, proc := numero_processo]
+  cart <- cart[!is.na(proc) & trimws(proc) != "" & toupper(proc) != "IT_DF"]
+  cart[, jdate := as.Date(data_julgamento)]
+  cart <- cart[, .(proc, jdate, setor)]
+  cob[, cnpj := pad14(`códigofornecedor`)]
+  cob <- cob[, .(cnpj)]
+
+} else if (cfg$cade_layout == "federal_parquet_v3") {
+  if (!requireNamespace("arrow", quietly = TRUE))
+    stop("federal CADE parquets require the 'arrow' package")
+  dd <- as.data.table(arrow::read_parquet(cfg$cade$direct_defendants))
+  cross <- unique(dd[, .(cnpj = pad14(firm_id), proc = as.character(processo))])
+  cross <- cross[!is.na(proc) & trimws(proc) != ""]  # drop empty-processo group (gate G3)
+  cross <- cross[!is.na(cnpj) & nchar(cnpj) == 14]
+  # Federal per-case judgment dates come from cfg$cade$cnpjs_enriched (same provenance
+  # as BEC: numero_processo / data_julgamento), joined by processo so the conservative
+  # benchmark works under the (real) cfg$CONS_DATE. Undated cases keep jdate = NA.
+  cart <- unique(dd[, .(proc = as.character(processo), setor = as.character(setor))])
+  cart <- cart[!is.na(proc) & trimws(proc) != ""]
+  jd <- fread(cfg$cade$cnpjs_enriched, colClasses = "character")
+  jd <- unique(jd[trimws(numero_processo) != "" & trimws(data_julgamento) != "",
+                  .(proc = numero_processo, jdate = as.Date(data_julgamento))])
+  cart <- merge(cart, jd, by = "proc", all.x = TRUE)
+  if (!"jdate" %in% names(cart)) cart[, jdate := as.Date(NA)]
+  cobF <- as.data.table(arrow::read_parquet(cfg$cade$cobidders))
+  cob  <- unique(cobF[, .(cnpj = pad14(firm_id))])   # set-comparison reference only
+
+} else stop("Unknown cfg$cade_layout: ", cfg$cade_layout)
 
 n_cob_file <- nrow(cob)
 say("[file] cade_fl_cobidders.csv rows (static 193 target) = ", n_cob_file)
@@ -103,7 +165,8 @@ say("[file] cade_carteis distinct processo  = ", uniqueN(cart$proc))
 con <- dbConnect(duckdb())
 invisible(dbExecute(con, "PRAGMA threads=12"))
 invisible(dbExecute(con, "PRAGMA memory_limit='14GB'"))
-invisible(dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'"))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): spill dir from cfg.
+invisible(dbExecute(con, sprintf("PRAGMA temp_directory='%s'", cfg$temp_directory)))
 
 dbWriteTable(con, "defend",  unique(cross[, .(cnpj, proc)]), overwrite = TRUE)
 dbWriteTable(con, "cobfile", unique(cob[, .(cnpj)]),         overwrite = TRUE)
@@ -114,7 +177,8 @@ invisible(dbExecute(con, sprintf("CREATE VIEW freq AS SELECT * FROM read_parquet
 # ---- manuscript firm-stratum counts ----------------------------------------
 n_all_BEC <- dbGetQuery(con, "SELECT COUNT(DISTINCT \"códigofornecedor\") n FROM ftm WHERE \"códigofornecedor\" <> '-1'")$n
 n_AL_univ <- dbGetQuery(con, "SELECT COUNT(*) n FROM loss WHERE always_loser = 1")$n
-n_FL_univ <- dbGetQuery(con, "SELECT COUNT(*) n FROM freq WHERE always_loser = 1 AND tenders_count >= 14")$n
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): FL cut from cfg (bec 14 / fed 32, ">=").
+n_FL_univ <- dbGetQuery(con, sprintf("SELECT COUNT(*) n FROM freq WHERE always_loser = 1 AND tenders_count >= %d", FL_CUT))$n
 say("[firm] all-BEC firms (ftm distinct !=-1) = ", n_all_BEC, "  [manuscript 41,444]")
 say("[firm] always-losers (loss AL==1)        = ", n_AL_univ, "  [manuscript 16,843]")
 say("[firm] frequent-losers (AL & tc>=14)     = ", n_FL_univ, "  [manuscript 2,735]")
@@ -191,26 +255,42 @@ say("[recon] static193 INT broadFL341 = ", overlap_static_broadFL,
     " ; file-only=", fileonly, " ; recon-only=", recononly)
 
 # ---- CONSERVATIVE subset (judged <= 2020-12-31) ----------------------------
-proc_dates <- unique(cart[!is.na(jdate) & !is.na(proc) & trimws(proc) != "", .(proc, jdate)])
-cons_procs <- proc_dates[jdate <= CONS_DATE, unique(proc)]
-n_cons_cases <- length(cons_procs)
-cons_def <- dbGetQuery(con, sprintf(
-  "SELECT DISTINCT cnpj FROM defend WHERE proc IN (%s)",
-  paste(sprintf("'%s'", cons_procs), collapse = ",")))
-n_cons_def <- nrow(cons_def)                      # 19
-cons_cob <- setDT(dbGetQuery(con, sprintf(
-  "SELECT DISTINCT cnpj FROM cobidder_case WHERE proc IN (%s)",
-  paste(sprintf("'%s'", cons_procs), collapse = ","))))
-cons_join <- merge(cons_cob, cob_stat[, .(cnpj, is_AL, is_FL)], by = "cnpj", all.x = TRUE)
-set_consAL <- cons_join[is_AL == 1, cnpj]
-set_consFL <- cons_join[is_FL == 1, cnpj]
-n_cons_AL  <- length(set_consAL)                  # 208
-n_cons_FL  <- length(set_consFL)                  # 107
-# conservative defendant tender-items
-n_cons_def_items <- dbGetQuery(con, sprintf("
-  SELECT COUNT(DISTINCT (numerodaoc||'|'||\"códigoitem\")) ni
-  FROM def_items WHERE proc IN (%s)",
-  paste(sprintf("'%s'", cons_procs), collapse = ",")))$ni
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): CONS_DATE-dependent step degrades
+# gracefully when cfg$CONS_DATE is NA (federal judgment dates not wired in): no
+# conservative subset exists, so all conservative counts/sets are empty/NA + logged.
+if (HAVE_CONS) {
+  proc_dates <- unique(cart[!is.na(jdate) & !is.na(proc) & trimws(proc) != "", .(proc, jdate)])
+  cons_procs <- proc_dates[jdate <= CONS_DATE, unique(proc)]
+  n_cons_cases <- length(cons_procs)
+  cons_def <- dbGetQuery(con, sprintf(
+    "SELECT DISTINCT cnpj FROM defend WHERE proc IN (%s)",
+    paste(sprintf("'%s'", cons_procs), collapse = ",")))
+  n_cons_def <- nrow(cons_def)                      # 19
+  cons_cob <- setDT(dbGetQuery(con, sprintf(
+    "SELECT DISTINCT cnpj FROM cobidder_case WHERE proc IN (%s)",
+    paste(sprintf("'%s'", cons_procs), collapse = ","))))
+  cons_join <- merge(cons_cob, cob_stat[, .(cnpj, is_AL, is_FL)], by = "cnpj", all.x = TRUE)
+  set_consAL <- cons_join[is_AL == 1, cnpj]
+  set_consFL <- cons_join[is_FL == 1, cnpj]
+  n_cons_AL  <- length(set_consAL)                  # 208
+  n_cons_FL  <- length(set_consFL)                  # 107
+  # conservative defendant tender-items
+  n_cons_def_items <- dbGetQuery(con, sprintf("
+    SELECT COUNT(DISTINCT (numerodaoc||'|'||\"códigoitem\")) ni
+    FROM def_items WHERE proc IN (%s)",
+    paste(sprintf("'%s'", cons_procs), collapse = ",")))$ni
+} else {
+  say("[S6] NOTE conservative benchmark SKIPPED: cfg$CONS_DATE is NA (",
+      cfg$source, " has no wired-in judgment dates).")
+  cons_procs   <- character(0)
+  n_cons_cases <- 0L
+  n_cons_def   <- NA_integer_
+  set_consAL   <- character(0)
+  set_consFL   <- character(0)
+  n_cons_AL    <- NA_integer_
+  n_cons_FL    <- NA_integer_
+  n_cons_def_items <- NA_integer_
+}
 say("[S6] conservative cases=", n_cons_cases, " def=", n_cons_def,
     " AL=", n_cons_AL, " FL=", n_cons_FL, " def_items=", n_cons_def_items)
 
@@ -583,13 +663,20 @@ add("A6", "All FL cobidders satisfy AL & tenders_count>=14",
     ifelse(fl_bad == 0, "pass", "fail"), paste0(fl_bad, " FL violating"), "0",
     "FL stratum is a clean subset of AL", ifelse(fl_bad == 0, "none", "fix FL definition"))
 # (7) under COMMON broad def, conservative <= full
-c7a <- n_cons_AL <= n_AL; c7b <- n_cons_FL <= n_FL
-add("A7", "Under COMMON broad def, conservative <= full (subset relation restored)",
-    ifelse(c7a && c7b, "pass", "fail"),
-    paste0("AL ", n_cons_AL, "<=", n_AL, " & FL ", n_cons_FL, "<=", n_FL),
-    "208<=651 AL and 107<=341 FL",
-    "subset relation holds under common def; confirms def-difference explanation",
-    ifelse(c7a && c7b, "none", "investigate"))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): NA-safe when conservative skipped (federal).
+if (!HAVE_CONS) {
+  add("A7", "Under COMMON broad def, conservative <= full (subset relation restored)",
+      "not_applicable", "conservative benchmark skipped (CONS_DATE NA)",
+      "n/a (no judgment dates)", "no conservative subset for this source", "none")
+} else {
+  c7a <- n_cons_AL <= n_AL; c7b <- n_cons_FL <= n_FL
+  add("A7", "Under COMMON broad def, conservative <= full (subset relation restored)",
+      ifelse(c7a && c7b, "pass", "fail"),
+      paste0("AL ", n_cons_AL, "<=", n_AL, " & FL ", n_cons_FL, "<=", n_FL),
+      "208<=651 AL and 107<=341 FL",
+      "subset relation holds under common def; confirms def-difference explanation",
+      ifelse(c7a && c7b, "none", "investigate"))
+}
 # (8) the cited 210-vs-193 inequality is NOT a same-definition comparison
 add("A8", "Cited 210>193 is NOT a same-definition comparison",
     "warning", "210(AL,broad,cons) vs 193(FL,narrow,full)", "definition-driven, not bug",
@@ -680,18 +767,24 @@ writeLines(mac, file.path(D_DIAG, "label_funnel_new_macros.tex"))
 say("[write] label_funnel_new_macros.tex (", length(mac) - 2, " macros)")
 
 # flag deviations vs locked-diagnosis expectations
-expect <- c(broadFL = 341, broadAL = 651, consAL = 208, consFL = 107, consFD = 19,
-            defFTM = 41, defItems = 52013, overlap = 149)
-got    <- c(broadFL = n_FL, broadAL = n_AL, consAL = n_cons_AL, consFL = n_cons_FL,
-            consFD = n_cons_def, defFTM = n_def_ftm, defItems = n_def_item_ti,
-            overlap = overlap_static_broadFL)
-dev <- got != expect
-if (any(dev)) {
-  say("[WARN] deviations vs locked diagnosis: ",
-      paste(sprintf("%s got=%d exp=%d", names(got)[dev], got[dev], expect[dev]), collapse = "; "))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): the locked-diagnosis literals are
+# BEC-specific (341/651/208/...). Skip the comparison federally (different universe).
+if (cfg$source == "bec") {
+  expect <- c(broadFL = 341, broadAL = 651, consAL = 208, consFL = 107, consFD = 19,
+              defFTM = 41, defItems = 52013, overlap = 149)
+  got    <- c(broadFL = n_FL, broadAL = n_AL, consAL = n_cons_AL, consFL = n_cons_FL,
+              consFD = n_cons_def, defFTM = n_def_ftm, defItems = n_def_item_ti,
+              overlap = overlap_static_broadFL)
+  dev <- got != expect
+  if (any(dev)) {
+    say("[WARN] deviations vs locked diagnosis: ",
+        paste(sprintf("%s got=%d exp=%d", names(got)[dev], got[dev], expect[dev]), collapse = "; "))
+  } else {
+    say("[OK] all 8 locked-diagnosis values reproduced exactly: ",
+        paste(sprintf("%s=%d", names(got), got), collapse = " "))
+  }
 } else {
-  say("[OK] all 8 locked-diagnosis values reproduced exactly: ",
-      paste(sprintf("%s=%d", names(got), got), collapse = " "))
+  say("[OK] federal funnel built fresh; BEC locked-diagnosis comparison not applicable.")
 }
 
 dbDisconnect(con, shutdown = TRUE)

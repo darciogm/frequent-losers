@@ -29,17 +29,93 @@ fa <- sub("^--file=", "", commandArgs(FALSE)[grep("^--file=", commandArgs(FALSE)
 SD <- if (length(fa)) dirname(normalizePath(fa[1])) else getwd()
 REPO <- normalizePath(file.path(SD, "..", "..", "..", ".."))
 V22  <- file.path(REPO, "work", "v22-editor")
-OUT  <- file.path(V22, "outputs", "diagnostics", "audit_armor")
+
+# --- SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05) -------------------------
+# Parse --source= (default "bec") and take ALL paths/constants/key lambdas/output
+# dirs/spill from get_source_config(). BEC fields equal the prior literals byte-
+# for-byte (DATA=data/processed, OUT diagnostics=outputs/diagnostics, FL_CUT 14,
+# /tmp/duckdb_spill, window 2009-2019, crossmatch CSV). Federal differs ONLY
+# where the data genuinely differ (see notes at each block). A regression gate
+# diffs BEC outputs, so BEC behaviour is held identical.
+.args <- commandArgs(trailingOnly = TRUE)
+.src  <- sub("^--source=", "", .args[grep("^--source=", .args)])
+SRC   <- if (length(.src)) .src[1L] else "bec"
+source(file.path(V22, "scripts", "utils", "source_config.R"))
+cfg  <- get_source_config(SRC)
+cfg$ensure_dirs()
+IS_BEC <- identical(SRC, "bec")
+DATA   <- cfg$data_dir
+SPILL  <- cfg$temp_directory
+OUT    <- file.path(cfg$dirs$diagnostics, "audit_armor")
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 source(file.path(V22, "scripts", "utils", "metrics_triage.R"))
 
-ftm_path <- file.path(REPO, "data", "processed", "firm_tender_map.parquet")
-frame <- fread(file.path(V22, "outputs", "cache", "firm_opportunity_adjusted_frame.csv"))
-canon <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
-xm    <- fread(file.path(REPO, "data", "processed", "cade_bec_crossmatch.csv"))
-loss  <- as.data.table(arrow::read_parquet(file.path(REPO, "data", "processed", "firm_loss_stats.parquet")))
+# Key-extraction SQL helpers (G1). BEC: buyer/year are substrings of numerodaoc
+# (cfg$*_from_key). FED: numerodaoc is 9-char NNNNNYYYY -> buyer is the separate
+# codigo_ug column (cfg$buyer_col, via item-panel join) and the trailing 4 digits
+# are the NUMBERING year (wrong for 22.8% of rows) so year MUST come from
+# cfg$get_year_map(); the substring lambdas are NULL federally and never called.
+sql_buyer_key <- function(noc_alias) {
+  if (!is.null(cfg$buyer_from_key)) cfg$buyer_from_key(noc_alias)
+  else stop("buyer is not a substring for source ", SRC,
+            " -- join the item panel on (numerodaoc,codigoitem) for cfg$buyer_col.")
+}
+sql_year_key <- function(noc_alias) {
+  if (!is.null(cfg$year_from_key)) cfg$year_from_key(noc_alias)
+  else stop("year must come from cfg$get_year_map() for source ", SRC, " -- never string-extract.")
+}
+# --- SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): item-group axis ---
+# Lead decision #1: item-group is observed ONLY where cfg$has_item_group is TRUE.
+# BEC: codigoitem is a short bare product code -> SUBSTR(1,2) is a genuine product
+#   group prefix (cfg$ig_from_key supplies the SQL). MEDIUM cell = (ig, year, pbu).
+# FED: codigoitem is a 22-char composite whose first 6 chars ARE codigo_ug, so its
+#   2-digit prefix duplicates the UASG's first 2 digits (buyer-collinear). item-group
+#   is NOT_OBSERVED federally (cfg$has_item_group = FALSE, cfg$ig_from_key = NULL):
+#   the federal MEDIUM cell collapses to (year, pbu) and ig-dependent outputs emit
+#   NA with a note. sql_ig_key() is therefore called ONLY when cfg$has_item_group.
+HAS_IG <- isTRUE(cfg$has_item_group)
+CELL_DEF <- if (HAS_IG) {
+  "MEDIUM = (item_group, year, buyer)"
+} else {
+  "MEDIUM = (year, buyer)  [item-group NOT_OBSERVED on this platform (buyer-collinear composite item code)]"
+}
+sql_ig_key <- function(item_alias) {
+  if (!HAS_IG || is.null(cfg$ig_from_key))
+    stop("item-group is NOT_OBSERVED for source ", SRC,
+         " (cfg$has_item_group=FALSE) -- sql_ig_key() must not be called.")
+  cfg$ig_from_key(item_alias)
+}
+say("cell_definition in force: %s", CELL_DEF)
+
+# FLAG accumulator for armor components that degrade under missing cfg/upstream.
+ARMOR_FLAGS <- character(0)
+flag <- function(...) { m <- sprintf(...); ARMOR_FLAGS[[length(ARMOR_FLAGS)+1L]] <<- m; say("FLAG: %s", m) }
+
+ftm_path <- cfg$firm_tender_map
 norm14 <- function(x) sprintf("%014.0f", as.numeric(x))
-direct_codes <- unique(norm14(xm$firm_cnpj))
+
+# --- upstream caches (built by 00_build_canonical_validation_targets.R + 02) --
+frame_path <- file.path(cfg$dirs$cache, "firm_opportunity_adjusted_frame.csv")
+canon_path <- file.path(cfg$dirs$cache, "canonical_cobidders_broad.csv")
+if (!file.exists(frame_path) || !file.exists(canon_path))
+  stop(sprintf(paste0("Required upstream caches missing for source '%s':\n  %s\n  %s\n",
+       "Run 00_build_canonical_validation_targets.R and 02_opportunity_adjusted_validation.R ",
+       "for --source=%s first."), SRC, frame_path, canon_path, SRC))
+frame <- fread(frame_path)
+canon <- fread(canon_path)
+loss  <- as.data.table(arrow::read_parquet(cfg$firm_loss_stats))
+
+# --- direct CADE defendants: cade_layout-aware resolution --------------------
+# BEC : crossmatch CSV, firm_cnpj column -> norm14.
+# FED : direct_defendants_federal.parquet (cade_link_v3), firm_id already 14-char.
+if (cfg$cade_layout == "bec_csv") {
+  xm    <- fread(cfg$cade$crossmatch)
+  direct_codes <- unique(norm14(xm$firm_cnpj))
+} else {
+  dd <- as.data.table(arrow::read_parquet(cfg$cade$direct_defendants))
+  direct_codes <- unique(norm14(dd$firm_id))
+}
+say("source=%s  direct CADE defendants resolved: %d", SRC, length(direct_codes))
 
 auc <- function(y, s) { r <- rank(s); n1 <- sum(y==1); n0 <- sum(y==0)
   if (!n1 || !n0) return(NA_real_); (sum(r[y==1]) - n1*(n1+1)/2)/(n1*n0) }
@@ -63,30 +139,65 @@ say("=== 12_audit_armor.R === host=%s", Sys.info()[["nodename"]])
 al_codes <- canon[direct_cade_defendant==0 & W_i==0, norm14(`códigofornecedor`)]
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))   # SOURCE-CONFIG ADAPTATION
 dbWriteTable(con, "direct", data.frame(firm_code = direct_codes), overwrite = TRUE)
 dbWriteTable(con, "al_firms", data.frame(firm_code = al_codes), overwrite = TRUE)
+# --- SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): MEDIUM-cell keys --
+# MEDIUM cell. BEC: (ig, year, buyer) with ig = cfg$ig_from_key(codigoitem); pbu &
+# year are substrings of numerodaoc. FED: buyer (codigo_ug) and result-year come
+# from the item panel via join on (numerodaoc, codigoitem) -- the substring buyer/
+# year are INVALID federally (G1) -- and item-group is NOT_OBSERVED (Lead decision
+# #1: federal codigoitem's 2-digit prefix duplicates codigo_ug, buyer-collinear).
+# When !HAS_IG the ig axis is dropped (constant NULL ig) so the federal MEDIUM cell
+# collapses to (year, buyer). Multi-UG (numerodaoc,codigoitem) pairs are dropped
+# federally via cfg$drop_multi_ug_pairs() before the buyer join.
+ig_expr_ftm <- if (HAS_IG) sql_ig_key("CAST(\"códigoitem\" AS VARCHAR)")    else "NULL"
+ig_expr_t   <- if (HAS_IG) sql_ig_key("CAST(t.\"códigoitem\" AS VARCHAR)")  else "NULL"
+if (IS_BEC) {
+  ftm_select <- sprintf(
+    "SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+            CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
+            %s AS pbu, %s AS year, %s AS ig
+     FROM read_parquet('%s')",
+    sql_buyer_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+    sql_year_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+    ig_expr_ftm, ftm_path)
+} else {
+  pview <- cfg$drop_multi_ug_pairs(con)   # registers TEMP VIEW panel_single_ug
+  ftm_select <- sprintf(
+    "WITH ymap AS (
+       SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
+              CAST(MAX(%s) AS VARCHAR) AS pbu, CAST(MAX(year) AS VARCHAR) AS year
+       FROM %s GROUP BY 1,2)
+     SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+            CAST(t.\"numerodaoc\" AS VARCHAR) AS oc, CAST(t.\"códigoitem\" AS VARCHAR) AS item,
+            ym.pbu AS pbu, ym.year AS year, %s AS ig
+     FROM read_parquet('%s') t
+     LEFT JOIN ymap ym ON CAST(t.\"numerodaoc\" AS VARCHAR)=ym.oc
+                      AND CAST(t.\"códigoitem\" AS VARCHAR)=ym.item",
+    cfg$buyer_col, pview,
+    ig_expr_t, ftm_path)
+}
 part <- as.data.table(dbGetQuery(con, sprintf("
-  WITH ftm AS (
-    SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-           CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4) AS year,
-           SUBSTR(CAST(\"códigoitem\"  AS VARCHAR),1,2) AS ig
-    FROM read_parquet('%s')
-  ),
+  WITH ftm AS (%s),
   def_items AS (SELECT DISTINCT oc, item FROM ftm WHERE firm_code IN (SELECT firm_code FROM direct)),
   al_part AS (
     SELECT f.firm_code, f.oc, f.item, f.pbu, f.year, f.ig,
            CASE WHEN di.oc IS NOT NULL THEN 1 ELSE 0 END AS touches_defendant
     FROM ftm f JOIN al_firms a ON f.firm_code = a.firm_code
     LEFT JOIN def_items di ON f.oc = di.oc AND f.item = di.item)
-  SELECT * FROM al_part", ftm_path)))
+  SELECT * FROM al_part", ftm_select)))
 say("AL participation rows: %s", format(nrow(part), big.mark=","))
 
 cob_codes <- canon[broad_cobidder==1L, norm14(`códigofornecedor`)]
 part[, is_cob_firm := as.integer(firm_code %in% cob_codes)]
-part[, cell_id := paste(ig, year, pbu, sep="|")]   # MEDIUM cells
+# --- SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): MEDIUM cell id ----
+# When item-group is NOT_OBSERVED (federal), ig is constant -> cell collapses to
+# (year, buyer). Pin the dropped axis to a literal so the cell key is unambiguous.
+if (!HAS_IG) part[, ig := "_NA_IG_"]
+part[, cell_id := paste(ig, year, pbu, sep="|")]   # MEDIUM cells (see CELL_DEF)
+say("part A MEDIUM cell_definition: %s ; distinct cells=%d",
+    CELL_DEF, uniqueN(part$cell_id))
 
 # =============================================================================
 # A. CELL-LEVEL LABEL-BLIND LEAKAGE CHECK
@@ -177,48 +288,94 @@ pow <- rbindlist(lapply(c(0, .02, .05, .10, .15), function(d) {
 fwrite(pow, file.path(OUT, "permutation_power_curve.csv"))
 
 # =============================================================================
-# D. LABEL-FROZEN STRICT TIMING (train 2009-2016)
+# D. LABEL-FROZEN STRICT TIMING (frozen train window vs prospective test window)
 # =============================================================================
+# --- SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): frozen split ------
+# Lead decision #2: the freeze cutoff is cfg$freeze_year (= 2016 BOTH sources),
+# NOT derived from CONS_DATE. CONS_DATE is the federal case-judgment observability
+# bound (2025-02-26, OUT of the 2013-2019 window) and was why a predecessor gated
+# this block; it is the WRONG object for the train/test freeze. We consume
+# cfg$freeze_year directly. BEC: freeze_year=2016 reproduces the prior hard-pinned
+# train<=2016 / test 2017-2019 behaviour byte-for-byte (gate diff must be clean).
+# FED: the block now RUNS (train<=2016, test 2017-2019, window 2013-2019). Year
+# comes from numerodaoc substr for BEC and cfg$get_year_map() federally (G1: never
+# string-extract federal year). GRACEFUL GUARD: if cfg$freeze_year is absent we
+# STOP with a clear message naming the missing field (do NOT silently skip).
 say("\n--- D. label-frozen strict timing ---")
-froz <- as.data.table(dbGetQuery(con, sprintf("
-  WITH ftm AS (
-    SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-           CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
-           CAST(SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4) AS INTEGER) AS yr,
-           won
-    FROM read_parquet('%s') WHERE \"códigofornecedor\" <> '-1'
-  ),
-  train AS (SELECT firm_code, COUNT(*) T_train, SUM(won) W_train
-            FROM ftm WHERE yr <= 2016 GROUP BY firm_code),
-  def_tr AS (SELECT DISTINCT oc,item FROM ftm
-             WHERE yr <= 2016 AND firm_code IN (SELECT firm_code FROM direct)),
-  def_te AS (SELECT DISTINCT oc,item FROM ftm
-             WHERE yr BETWEEN 2017 AND 2019 AND firm_code IN (SELECT firm_code FROM direct)),
-  cob_tr AS (SELECT DISTINCT f.firm_code FROM ftm f JOIN def_tr d ON f.oc=d.oc AND f.item=d.item
-             WHERE f.yr <= 2016 AND f.firm_code NOT IN (SELECT firm_code FROM direct)),
-  cob_te AS (SELECT DISTINCT f.firm_code FROM ftm f JOIN def_te d ON f.oc=d.oc AND f.item=d.item
-             WHERE f.yr BETWEEN 2017 AND 2019 AND f.firm_code NOT IN (SELECT firm_code FROM direct))
-  SELECT t.firm_code, t.T_train, t.W_train,
-         CASE WHEN ctr.firm_code IS NOT NULL THEN 1 ELSE 0 END AS cob_frozen_train,
-         CASE WHEN cte.firm_code IS NOT NULL THEN 1 ELSE 0 END AS cob_testwin
-  FROM train t
-  LEFT JOIN cob_tr ctr ON t.firm_code = ctr.firm_code
-  LEFT JOIN cob_te cte ON t.firm_code = cte.firm_code
-  WHERE t.firm_code NOT IN (SELECT firm_code FROM direct)", ftm_path)))
-alf <- froz[W_train==0 & T_train>0]                       # frozen-AL incumbents (rankable)
-alf[, score := log1p(T_train)]
-d1 <- auc(alf$cob_testwin,      alf$score)   # prospective: future contact
-d2 <- auc(alf$cob_frozen_train, alf$score)   # fully frozen retrospective
-froz_out <- data.table(
-  design = c("d1: frozen score+AL; label = NEW defendant contact 2017-2019 (prospective)",
-             "d2: frozen score+AL; label = defendant contact within 2009-2016 (retrospective, fully frozen)"),
-  pool_n = nrow(alf), npos = c(alf[cob_testwin==1,.N], alf[cob_frozen_train==1,.N]),
-  auc = round(c(d1, d2), 4),
-  note = c("the referee's clean out-of-time test on rankable incumbents",
-           "no cross-window leakage in EITHER label or pool"))
-fwrite(froz_out, file.path(OUT, "frozen_timing.csv"))
-say("D: pool=%s ; d1 prospective AUC=%.4f (npos=%d) ; d2 frozen retrospective AUC=%.4f (npos=%d)",
-    format(nrow(alf), big.mark=","), d1, alf[cob_testwin==1,.N], d2, alf[cob_frozen_train==1,.N])
+if (is.null(cfg$freeze_year))
+  stop("Required config field 'freeze_year' is missing from get_source_config('", SRC,
+       "'). D-block freeze cutoff must come from cfg$freeze_year (= 2016 both sources); ",
+       "it is NOT derivable from cfg$CONS_DATE (the case-judgment observability bound). ",
+       "Add freeze_year to source_config.R before running the label-frozen timing block.")
+.freeze_yr <- as.integer(cfg$freeze_year)
+run_timing <- !is.na(.freeze_yr) && .freeze_yr >= cfg$year_min && .freeze_yr < cfg$year_max
+if (!run_timing) {
+  flag(paste0("D (label-frozen timing) SKIPPED for source '%s': cfg$freeze_year=%s ",
+              "outside usable range [%d, %d). frozen_timing.csv not written, timing ",
+              "macros emitted as NA."),
+       SRC, as.character(.freeze_yr), cfg$year_min, cfg$year_max)
+  alf <- data.table(); d1 <- NA_real_; d2 <- NA_real_
+  d1_n <- NA_integer_; d2_n <- NA_integer_; pool_n <- NA_integer_
+} else {
+  say("D: freeze_year=%d (train<=%d, test %d-%d, window %d-%d)",
+      .freeze_yr, .freeze_yr, .freeze_yr+1L, cfg$year_max, cfg$year_min, cfg$year_max)
+  # year SQL: BEC substr ; federal via get_year_map join on (numerodaoc,codigoitem)
+  if (IS_BEC) {
+    yr_ftm <- sprintf(
+      "SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+              CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
+              CAST(%s AS INTEGER) AS yr, won
+       FROM read_parquet('%s') WHERE \"códigofornecedor\" <> '-1'",
+      sql_year_key("CAST(\"numerodaoc\" AS VARCHAR)"), ftm_path)
+  } else {
+    ymap <- as.data.frame(cfg$get_year_map(con))          # (numerodaoc, codigoitem, year)
+    dbWriteTable(con, "ymap_fed", ymap, overwrite = TRUE)
+    yr_ftm <- sprintf(
+      "SELECT LPAD(CAST(t.\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+              CAST(t.\"numerodaoc\" AS VARCHAR) AS oc, CAST(t.\"códigoitem\" AS VARCHAR) AS item,
+              CAST(ym.year AS INTEGER) AS yr, t.won
+       FROM read_parquet('%s') t
+       JOIN ymap_fed ym ON CAST(t.\"numerodaoc\" AS VARCHAR)=ym.numerodaoc
+                       AND CAST(t.\"códigoitem\" AS VARCHAR)=ym.\"códigoitem\"
+       WHERE t.\"códigofornecedor\" <> '-1'", ftm_path)
+  }
+  froz <- as.data.table(dbGetQuery(con, sprintf("
+    WITH ftm AS (%s),
+    train AS (SELECT firm_code, COUNT(*) T_train, SUM(won) W_train
+              FROM ftm WHERE yr <= %d GROUP BY firm_code),
+    def_tr AS (SELECT DISTINCT oc,item FROM ftm
+               WHERE yr <= %d AND firm_code IN (SELECT firm_code FROM direct)),
+    def_te AS (SELECT DISTINCT oc,item FROM ftm
+               WHERE yr BETWEEN %d AND %d AND firm_code IN (SELECT firm_code FROM direct)),
+    cob_tr AS (SELECT DISTINCT f.firm_code FROM ftm f JOIN def_tr d ON f.oc=d.oc AND f.item=d.item
+               WHERE f.yr <= %d AND f.firm_code NOT IN (SELECT firm_code FROM direct)),
+    cob_te AS (SELECT DISTINCT f.firm_code FROM ftm f JOIN def_te d ON f.oc=d.oc AND f.item=d.item
+               WHERE f.yr BETWEEN %d AND %d AND f.firm_code NOT IN (SELECT firm_code FROM direct))
+    SELECT t.firm_code, t.T_train, t.W_train,
+           CASE WHEN ctr.firm_code IS NOT NULL THEN 1 ELSE 0 END AS cob_frozen_train,
+           CASE WHEN cte.firm_code IS NOT NULL THEN 1 ELSE 0 END AS cob_testwin
+    FROM train t
+    LEFT JOIN cob_tr ctr ON t.firm_code = ctr.firm_code
+    LEFT JOIN cob_te cte ON t.firm_code = cte.firm_code
+    WHERE t.firm_code NOT IN (SELECT firm_code FROM direct)",
+    yr_ftm, .freeze_yr, .freeze_yr, .freeze_yr + 1L, cfg$year_max,
+    .freeze_yr, .freeze_yr + 1L, cfg$year_max)))
+  alf <- froz[W_train==0 & T_train>0]                       # frozen-AL incumbents (rankable)
+  alf[, score := log1p(T_train)]
+  d1 <- auc(alf$cob_testwin,      alf$score)   # prospective: future contact
+  d2 <- auc(alf$cob_frozen_train, alf$score)   # fully frozen retrospective
+  d1_n <- alf[cob_testwin==1,.N]; d2_n <- alf[cob_frozen_train==1,.N]; pool_n <- nrow(alf)
+  froz_out <- data.table(
+    design = c(sprintf("d1: frozen score+AL; label = NEW defendant contact %d-%d (prospective)", .freeze_yr+1L, cfg$year_max),
+               sprintf("d2: frozen score+AL; label = defendant contact within %d-%d (retrospective, fully frozen)", cfg$year_min, .freeze_yr)),
+    pool_n = pool_n, npos = c(d1_n, d2_n),
+    auc = round(c(d1, d2), 4),
+    note = c("the referee's clean out-of-time test on rankable incumbents",
+             "no cross-window leakage in EITHER label or pool"))
+  fwrite(froz_out, file.path(OUT, "frozen_timing.csv"))
+  say("D: pool=%s ; d1 prospective AUC=%.4f (npos=%d) ; d2 frozen retrospective AUC=%.4f (npos=%d)",
+      format(pool_n, big.mark=","), d1, d1_n, d2, d2_n)
+}
 dbDisconnect(con, shutdown = TRUE)
 
 # =============================================================================
@@ -246,12 +403,19 @@ mac <- c("% Auto-generated by 12_audit_armor.R (doc 97 M2 armor pack)",
  sprintf("\\newcommand{\\valArmorOiControlMedium}{%.3f} %% positive control", sweep[granularity=="MEDIUM", within_AUC_Oi_positive_control]),
  sprintf("\\newcommand{\\valArmorPowerTen}{%.2f}    %% rejection rate at injected within-AUC 0.60", pow[abs(injected_within_AUC-0.60)<1e-9, rejection_rate_alpha05]),
  sprintf("\\newcommand{\\valArmorPowerFive}{%.2f}   %% rejection rate at injected within-AUC 0.55", pow[abs(injected_within_AUC-0.55)<1e-9, rejection_rate_alpha05]),
- sprintf("\\newcommand{\\valArmorFrozenProspAUC}{%.3f} %% d1 prospective", d1),
- sprintf("\\newcommand{\\valArmorFrozenProspN}{%d}", alf[cob_testwin==1,.N]),
- sprintf("\\newcommand{\\valArmorFrozenRetroAUC}{%.3f} %% d2 fully frozen", d2),
- sprintf("\\newcommand{\\valArmorFrozenPool}{%s}", format(nrow(alf), big.mark=",")),
+ sprintf("\\newcommand{\\valArmorFrozenProspAUC}{%s} %% d1 prospective", if (is.na(d1)) "NA" else sprintf("%.3f", d1)),
+ sprintf("\\newcommand{\\valArmorFrozenProspN}{%s}", if (is.na(d1_n)) "NA" else as.character(d1_n)),
+ sprintf("\\newcommand{\\valArmorFrozenRetroAUC}{%s} %% d2 fully frozen", if (is.na(d2)) "NA" else sprintf("%.3f", d2)),
+ sprintf("\\newcommand{\\valArmorFrozenPool}{%s}", if (is.na(pool_n)) "NA" else format(pool_n, big.mark=",")),
  sprintf("\\newcommand{\\valDirectShareALnew}{%.1f\\%%} %% src: defendant_roles.csv", 100*mean(defs$always_loser==1)),
  sprintf("\\newcommand{\\valDirectMedWRnew}{%.3f}", median(defs$win_rate)),
  sprintf("\\newcommand{\\valOthersMedWRnew}{%.3f}", median(cobs$win_rate)))
 writeLines(mac, file.path(OUT, "audit_armor_macros.tex"))
-say("\nDONE in %.1f min", as.numeric(difftime(Sys.time(), t0, units="mins")))
+
+# --- SOURCE-CONFIG ADAPTATION (Phase 1): degrade-gracefully FLAG report -------
+if (length(ARMOR_FLAGS)) {
+  fwrite(data.table(source = SRC, flag = unlist(ARMOR_FLAGS)),
+         file.path(OUT, "armor_flags.csv"))
+  say("\n%d armor FLAG(s) written to %s", length(ARMOR_FLAGS), file.path(OUT, "armor_flags.csv"))
+} else say("\nno armor FLAGs (all components ran for source '%s')", SRC)
+say("DONE in %.1f min", as.numeric(difftime(Sys.time(), t0, units="mins")))

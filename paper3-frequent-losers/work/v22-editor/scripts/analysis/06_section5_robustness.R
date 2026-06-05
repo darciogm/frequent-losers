@@ -41,21 +41,30 @@ if (!exists(".script_dir")) {
 REPO <- normalizePath(file.path(.script_dir, "..", "..", "..", ".."), mustWork = FALSE)
 if (!dir.exists(file.path(REPO, "data", "processed")))
   REPO <- normalizePath("/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers")
-DATA <- file.path(REPO, "data", "processed")
 V22  <- file.path(REPO, "work", "v22-editor")
-OUT  <- file.path(V22, "outputs")
 UTIL <- file.path(V22, "scripts", "utils")
+
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): --source= flag (default "bec");
+# ALL data paths / constants / key lambdas / output+cache+spill dirs come from cfg.
+source(file.path(UTIL, "source_config.R"))
+.args <- commandArgs(TRUE)
+.src  <- sub("^--source=", "", .args[grep("^--source=", .args)])
+SRC   <- if (length(.src)) .src[1L] else "bec"
+cfg   <- get_source_config(SRC)
+cfg$ensure_dirs()
+
 source(file.path(UTIL, "metrics_triage.R"))
 
-dir_main_t <- file.path(OUT, "tables", "main")
-dir_app_t  <- file.path(OUT, "tables", "appendix")
-dir_app_f  <- file.path(OUT, "figures", "appendix")
-dir_diag   <- file.path(OUT, "diagnostics")
-dir_cache  <- file.path(OUT, "cache")
-dir_log    <- file.path(OUT, "logs")
+dir_main_t <- cfg$dirs$tables_main
+dir_app_t  <- cfg$dirs$tables_app
+dir_app_f  <- cfg$dirs$figures_app
+dir_diag   <- cfg$dirs$diagnostics
+dir_cache  <- cfg$dirs$cache
+dir_log    <- cfg$dirs$logs
+SPILL      <- cfg$temp_directory
 for (d in c(dir_main_t,dir_app_t,dir_app_f,dir_diag,dir_cache,dir_log))
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
-dir.create("/tmp/duckdb_spill", recursive = TRUE, showWarnings = FALSE)
+dir.create(SPILL, recursive = TRUE, showWarnings = FALSE)
 
 setDTthreads(12L)
 SEED <- 20260603L
@@ -85,27 +94,39 @@ say("\n----- 0. rebuild firm panel + labels + exposure (replay E1 build) -----")
 # POSITIVE LABEL: canonical broad AL cobidder label (651, reproducible, FL never used).
 # `códigofornecedor` is the raw 14-char BEC join key; norm14 is idempotent and keeps
 # this set in the same format as the firm_loss_stats / FREQ_PARTICIP codes.
-cob <- fread(file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv"))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): canonical cobidder set lives in the
+# isolated cache (BEC: outputs/cache ; FED: outputs/comprasnet/cache).
+cob <- fread(file.path(dir_cache, "canonical_cobidders_broad.csv"))
 cob[, firm_code := norm14(`códigofornecedor`)]
 cob_codes <- unique(cob[broad_cobidder == 1L, firm_code])
 say("cobidder positives (canonical broad AL label): %d distinct firm_code", length(cob_codes))
 
-xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
-xm[, firm_code := norm14(firm_cnpj)]
-direct_codes_raw <- unique(xm$firm_code)
-# NEW HOPE explicit exclusion (per brief) + drop any defendant that is itself a cobidder
-NEW_HOPE <- "09474700000192"
-direct_codes <- setdiff(direct_codes_raw, c(cob_codes, NEW_HOPE))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): direct-defendant set is CADE-layout
+# specific. BEC: cade_bec_crossmatch.csv (firm_cnpj). FED: direct_defendants_federal.
+if (cfg$cade_layout == "bec_csv") {
+  xm <- fread(cfg$cade$crossmatch)
+  direct_codes_raw <- unique(norm14(xm$firm_cnpj))
+} else {
+  xm <- as.data.table(read_parquet(cfg$cade$direct_defendants))
+  .dcol <- intersect(c("códigofornecedor","cnpj","firm_cnpj","cnpj14"), names(xm))[1]
+  if (is.na(.dcol)) stop("direct_defendants_federal: no recognizable CNPJ column")
+  direct_codes_raw <- unique(norm14(xm[[.dcol]]))
+}
+# NEW HOPE explicit exclusion (BEC-specific defendant that is itself a cobidder).
+# Federal has its own defendant set; NEW_HOPE only applies to BEC.
+NEW_HOPE <- if (cfg$source == "bec") "09474700000192" else NA_character_
+direct_codes <- setdiff(direct_codes_raw, c(cob_codes, NEW_HOPE[!is.na(NEW_HOPE)]))
 say("direct defendants: raw=%d ; cleaned (winners only, NEW HOPE excluded)=%d",
     length(direct_codes_raw), length(direct_codes))
 
 # always-loser universe (DETERMINISTIC firm_id = sorted on firm_code, .I) -- mirrors E1
-fp <- as.data.table(read_parquet(file.path(DATA, "FREQ_PARTICIP_rebuilt.parquet")))
+fp <- as.data.table(read_parquet(cfg$freq_particip))
 fp[, firm_code := norm14(`códigofornecedor`)]
 al <- fp[always_loser == 1L, .(firm_code, tenders_count)]
 setnames(al, "tenders_count", "T_i")
 al[, cobidder := as.integer(firm_code %in% cob_codes)]
-al[, fl14     := as.integer(T_i >= 14L)]
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): FL cut from cfg (BEC 14 ; FED 32, >=)
+al[, fl14     := as.integer(cfg$fl_predicate(T_i))]
 al[, score_i  := log1p(T_i)]
 setorder(al, firm_code)
 al[, firm_id := .I]
@@ -126,17 +147,27 @@ al <- merge(al, frame[, .(firm_id, O_i, n_opp_items, exposed, log_opp,
                           E_i_MEDIUM, log_E_MEDIUM)], by="firm_id", all.x=TRUE)
 
 # largest-case exclusion set: cobidders linked to the single largest CADE case
-ccm <- fread(file.path(REPO, "output", "label_funnel", "case_cobidder_map.csv"),
-             colClasses = list(character = c("cnpj","proc")))
-ccm[, cnpj := norm14(cnpj)]
-case_sizes <- ccm[is_AL==1 | cnpj %in% al$firm_code, .(n_al = uniqueN(cnpj[cnpj %in% al$firm_code])), by=proc][order(-n_al)]
-say("CADE cases by #always-losers linked:")
-for (i in seq_len(nrow(case_sizes))) say("    proc=%s  n_AL=%d", case_sizes$proc[i], case_sizes$n_al[i])
-largest_case <- case_sizes$proc[1]
-largest_case_codes <- intersect(ccm[proc==largest_case, unique(cnpj)], al$firm_code)
-say("largest case = %s ; AL firms linked = %d (excluded in sensitivity column)",
-    largest_case, length(largest_case_codes))
-al[, in_largest_case := as.integer(firm_code %in% largest_case_codes)]
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): case_cobidder_map is a label-funnel
+# artifact. BEC: output/label_funnel/. FED: isolated cache. If absent federally,
+# degrade to in_largest_case=0 (the largest-case sensitivity column becomes a no-op).
+CCM_PATH <- if (cfg$source == "bec")
+  file.path(REPO, "output", "label_funnel", "case_cobidder_map.csv") else
+  file.path(dir_cache, "case_cobidder_map.csv")
+if (file.exists(CCM_PATH)) {
+  ccm <- fread(CCM_PATH, colClasses = list(character = c("cnpj","proc")))
+  ccm[, cnpj := norm14(cnpj)]
+  case_sizes <- ccm[is_AL==1 | cnpj %in% al$firm_code, .(n_al = uniqueN(cnpj[cnpj %in% al$firm_code])), by=proc][order(-n_al)]
+  say("CADE cases by #always-losers linked:")
+  for (i in seq_len(nrow(case_sizes))) say("    proc=%s  n_AL=%d", case_sizes$proc[i], case_sizes$n_al[i])
+  largest_case <- case_sizes$proc[1]
+  largest_case_codes <- intersect(ccm[proc==largest_case, unique(cnpj)], al$firm_code)
+  say("largest case = %s ; AL firms linked = %d (excluded in sensitivity column)",
+      largest_case, length(largest_case_codes))
+  al[, in_largest_case := as.integer(firm_code %in% largest_case_codes)]
+} else {
+  say("  [skip] case_cobidder_map absent (%s); in_largest_case=0 (largest-case column no-op).", CCM_PATH)
+  al[, in_largest_case := 0L]
+}
 stamp("0_rebuild_panel")
 
 # =============================================================================
@@ -154,11 +185,17 @@ exp_mod <- glm(cobidder ~ log_opp, data = al, family = binomial())
 al[, p_exp := predict(exp_mod, type = "response")]
 
 # threshold grid
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): the fixed-threshold placebo sweep
+# asks "is the canonical FL cut special?". Canonical cut = cfg$FL_CUT (BEC 14 ; FED 32).
+# The BEC grid {5,8,10,12,14,16,20,25,30} is preserved EXACTLY for BEC; federally we
+# build a comparable grid bracketing the federal cut (32) so the same question holds.
+FL_CUT <- cfg$FL_CUT
+fixed_thr <- if (cfg$source == "bec") c(5,8,10,12,14,16,20,25,30) else
+             sort(unique(c(10,16,24,28,FL_CUT,36,44,56,72)))   # brackets FED cut=32
 q_tc   <- quantile(al$T_i, probs = seq(0.1, 0.9, 0.1))
 med_tc <- median(al$T_i); iqr_tc <- IQR(al$T_i)
 thr_specs <- rbindlist(list(
-  data.table(family="fixed",  label=paste0("T>=",c(5,8,10,12,14,16,20,25,30)),
-             thr=c(5,8,10,12,14,16,20,25,30)),
+  data.table(family="fixed",  label=paste0("T>=",fixed_thr), thr=fixed_thr),
   data.table(family="decile", label=paste0("decile_p",seq(10,90,10)), thr=as.numeric(q_tc)),
   data.table(family="iqr",    label=c("median+1.0IQR","median+1.5IQR","median+2.0IQR"),
              thr=med_tc + c(1.0,1.5,2.0)*iqr_tc),
@@ -204,10 +241,12 @@ cont_rocauc <- roc_auc(y_full, al$score_i)
 say("continuous score_i ROC-AUC=%.4f  PR-AUC=%.4f (reference, not a threshold row)", cont_rocauc, cont_prauc)
 fwrite(thr_tab, file.path(dir_app_t, "table_E_placebo_thresholds.csv"))
 say("wrote table_E_placebo_thresholds.csv (%d threshold rows)", nrow(thr_tab))
-# headline: how special is T=14?
-t14 <- thr_tab[label=="T>=14"]
-say("  T>=14: flagged=%d precision=%.4f recall=%.4f lift=%.2f PR-AUC=%.4f excess=%.2f",
-    t14$n_flagged, t14$precision, t14$recall, t14$lift, t14$pr_auc, t14$excess_ratio)
+# headline: how special is the canonical cut (FL_CUT)?
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): canonical-cut row keyed off cfg$FL_CUT.
+CUT_LABEL <- paste0("T>=", FL_CUT)
+t14 <- thr_tab[label==CUT_LABEL]
+say("  %s: flagged=%d precision=%.4f recall=%.4f lift=%.2f PR-AUC=%.4f excess=%.2f",
+    CUT_LABEL, t14$n_flagged, t14$precision, t14$recall, t14$lift, t14$pr_auc, t14$excess_ratio)
 # smoothness: precision/recall/pr_auc across the FIXED family ordered by threshold
 fx <- thr_tab[family=="fixed"][order(thr)]
 say("  fixed-family precision sweep (T-threshold -> precision):")
@@ -218,39 +257,43 @@ say("    %s", paste(sprintf("%d:%.3f", fx$thr, fx$pr_auc), collapse="  "))
 # figure: precision / recall / pr_auc vs threshold (fixed family)
 fxm <- melt(fx[, .(thr, precision, recall, pr_auc)], id.vars="thr",
             variable.name="metric", value.name="value")
+FL_LABEL <- sprintf("FL%d", FL_CUT)
 p1 <- ggplot(fxm, aes(thr, value, colour=metric)) +
   geom_line() + geom_point() +
-  geom_vline(xintercept=14, linetype="dashed", colour="grey40") +
-  annotate("text", x=14, y=max(fxm$value,na.rm=TRUE), label="FL14", hjust=-0.1, size=3) +
+  geom_vline(xintercept=FL_CUT, linetype="dashed", colour="grey40") +
+  annotate("text", x=FL_CUT, y=max(fxm$value,na.rm=TRUE), label=FL_LABEL, hjust=-0.1, size=3) +
   labs(x="Participation-count threshold (T_i >= t)", y="Metric value",
        title="Threshold sensitivity of the loser-side screen",
-       subtitle="Precision / recall / PR-AUC vs cutoff; FL14 is administrative, not special",
+       subtitle=sprintf("Precision / recall / PR-AUC vs cutoff; %s is administrative, not special", FL_LABEL),
        colour=NULL) +
   theme_minimal(base_size=11)
 ggsave(file.path(dir_app_f, "fig_threshold_sensitivity.pdf"), p1, width=7, height=4.5)
 say("wrote fig_threshold_sensitivity.pdf")
 
-# ---- bunching at T=14 -------------------------------------------------------
-bunch <- al[T_i>=5 & T_i<=30, .(
+# ---- bunching at the canonical cut (FL_CUT) ---------------------------------
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): bunching window + neighbors center
+# on cfg$FL_CUT (BEC 14 ; FED 32) so the strategic-bunching test holds on both.
+bw_lo <- max(1L, FL_CUT - 9L); bw_hi <- FL_CUT + 16L
+bunch <- al[T_i>=bw_lo & T_i<=bw_hi, .(
   freq = .N,
   n_cobidder = sum(cobidder),
   cobidder_share = mean(cobidder)
 ), by=T_i][order(T_i)]
-# local smoothness: ratio of freq at 14 to mean(freq at 12,13,15,16)
-f14  <- bunch[T_i==14, freq]
-nbrs <- bunch[T_i %in% c(12,13,15,16), freq]
+# local smoothness: ratio of freq at FL_CUT to mean(freq at the 2 nearest on each side)
+f14  <- bunch[T_i==FL_CUT, freq]
+nbrs <- bunch[T_i %in% c(FL_CUT-2L, FL_CUT-1L, FL_CUT+1L, FL_CUT+2L), freq]
 bunch_ratio <- if (length(nbrs)) f14/mean(nbrs) else NA_real_
-say("bunching @ T=14: freq=%s ; neighbor-mean(12,13,15,16)=%.1f ; ratio=%.3f (≈1 => no bunching)",
-    f14, mean(nbrs), bunch_ratio)
+say("bunching @ T=%d: freq=%s ; neighbor-mean(+-1,+-2)=%.1f ; ratio=%.3f (≈1 => no bunching)",
+    FL_CUT, f14, mean(nbrs), bunch_ratio)
 fwrite(bunch, file.path(dir_diag, "threshold_bunching_T14.csv"))
 say("wrote threshold_bunching_T14.csv")
 p2 <- ggplot(bunch, aes(T_i, freq)) +
   geom_col(fill="grey70") +
-  geom_vline(xintercept=14, linetype="dashed", colour="firebrick") +
-  annotate("text", x=14, y=max(bunch$freq), label="FL14 cut", hjust=-0.1, colour="firebrick", size=3) +
+  geom_vline(xintercept=FL_CUT, linetype="dashed", colour="firebrick") +
+  annotate("text", x=FL_CUT, y=max(bunch$freq), label=sprintf("%s cut", FL_LABEL), hjust=-0.1, colour="firebrick", size=3) +
   labs(x="tenders_count (T_i)", y="# always-loser firms",
-       title="Density of participation counts around the FL14 cutoff",
-       subtitle=sprintf("Bunching ratio at 14 = %.2f (~1: no strategic bunching; threshold never published)", bunch_ratio)) +
+       title=sprintf("Density of participation counts around the %s cutoff", FL_LABEL),
+       subtitle=sprintf("Bunching ratio at %d = %.2f (~1: no strategic bunching; threshold never published)", FL_CUT, bunch_ratio)) +
   theme_minimal(base_size=11)
 ggsave(file.path(dir_app_f, "fig_threshold_bunching_T14.pdf"), p2, width=7, height=4.5)
 say("wrote fig_threshold_bunching_T14.pdf")
@@ -261,74 +304,116 @@ stamp("A_thresholds_bunching")
 # =============================================================================
 say("\n----- B. ordinary-loser alternatives (FL cobidders vs FL non-cobidders) -----")
 # Build firm-level market-structure proxies from firm_tender_map for ALL always-losers.
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): cfg-driven paths/keys.
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))
 dbWriteTable(con, "al_firms", data.frame(firm_code = al$firm_code), overwrite = TRUE)
-ftm_path <- file.path(DATA, "firm_tender_map.parquet")
+ftm_path <- cfg$firm_tender_map
+ivp_path <- cfg$item_panel
+HAS_IG   <- isTRUE(cfg$has_item_group)
+BUYER_FROM_KEY <- !is.null(cfg$buyer_from_key)
+YEAR_FROM_KEY  <- !is.null(cfg$year_from_key)
+P_ITEM   <- sprintf("\"%s\"", cfg$item_panel_item_col)
 
-# per-firm proxies: item-group HHI, top item-group share, buyer HHI/top share,
-# first-year concentration, declining participation, first/last year span.
-prox <- as.data.table(dbGetQuery(con, sprintf("
+# Build the base FTM CTE carrying firm_code, pbu (buyer), yr (RESULT year), ig.
+#  BEC: buyer = SUBSTR(numerodaoc,1,11); year = SUBSTR(numerodaoc,12,4); ig = SUBSTR(codigoitem,1,2).
+#  FED (G1): buyer = codigo_ug from panel; year = result year from panel (numbering
+#       year in the key is INVALID); ig = NOT_OBSERVED (buyer-collinear prefix).
+if (BUYER_FROM_KEY && YEAR_FROM_KEY) {
+  ig_expr  <- if (HAS_IG) sprintf("%s", cfg$ig_from_key("CAST(\"códigoitem\" AS VARCHAR)")) else "NULL"
+  base_cte <- sprintf("
   WITH ftm AS (
     SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
            CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu,
-           CAST(SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4) AS INT) AS yr,
-           SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS ig
+           %s AS pbu,
+           CAST(%s AS INT) AS yr,
+           %s AS ig
+    FROM read_parquet('%s')
+  ),", cfg$buyer_from_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+       cfg$year_from_key("CAST(\"numerodaoc\" AS VARCHAR)"), ig_expr, ftm_path)
+} else {
+  # federal: join FTM to the item panel to bring codigo_ug (buyer) + result year.
+  base_cte <- sprintf("
+  WITH panel AS (
+    SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(%s AS VARCHAR) AS item,
+           codigo_ug AS pbu, CAST(year AS INT) AS yr
     FROM read_parquet('%s')
   ),
+  ftm AS (
+    SELECT LPAD(CAST(f.\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+           CAST(f.\"numerodaoc\" AS VARCHAR) AS oc, CAST(f.\"códigoitem\" AS VARCHAR) AS item,
+           p.pbu AS pbu, p.yr AS yr, NULL AS ig
+    FROM read_parquet('%s') f
+    LEFT JOIN panel p ON CAST(f.\"numerodaoc\" AS VARCHAR)=p.oc AND CAST(f.\"códigoitem\" AS VARCHAR)=p.item
+  ),", P_ITEM, ivp_path, ftm_path)
+}
+ig_cte  <- if (HAS_IG) "
+  ig_cnt AS (SELECT firm_code, ig, COUNT(*) AS n FROM alp WHERE ig IS NOT NULL GROUP BY firm_code, ig),
+  ig_hhi AS (SELECT i.firm_code, SUM(POWER(i.n*1.0/t.n_part,2)) AS ig_hhi, MAX(i.n*1.0/t.n_part) AS top_ig_share
+             FROM ig_cnt i JOIN tot t USING(firm_code) GROUP BY i.firm_code)," else ""
+ig_sel  <- if (HAS_IG) "ig.ig_hhi, ig.top_ig_share" else "NULL AS ig_hhi, NULL AS top_ig_share"
+ig_join <- if (HAS_IG) "LEFT JOIN ig_hhi ig USING(firm_code)" else ""
+prox <- as.data.table(dbGetQuery(con, sprintf("%s
   alp AS (SELECT f.* FROM ftm f JOIN al_firms a ON f.firm_code=a.firm_code),
-  ig_cnt AS (   -- participation per (firm, item_group)
-    SELECT firm_code, ig, COUNT(*) AS n FROM alp GROUP BY firm_code, ig
-  ),
-  bu_cnt AS (   -- participation per (firm, buyer)
-    SELECT firm_code, pbu, COUNT(*) AS n FROM alp GROUP BY firm_code, pbu
-  ),
-  yr_cnt AS (
-    SELECT firm_code, yr, COUNT(*) AS n FROM alp GROUP BY firm_code, yr
-  ),
+  bu_cnt AS (SELECT firm_code, pbu, COUNT(*) AS n FROM alp WHERE pbu IS NOT NULL GROUP BY firm_code, pbu),
+  yr_cnt AS (SELECT firm_code, yr, COUNT(*) AS n FROM alp WHERE yr IS NOT NULL GROUP BY firm_code, yr),
   tot AS (SELECT firm_code, COUNT(*) AS n_part FROM alp GROUP BY firm_code),
-  ig_hhi AS (
-    SELECT i.firm_code, SUM(POWER(i.n*1.0/t.n_part,2)) AS ig_hhi, MAX(i.n*1.0/t.n_part) AS top_ig_share
-    FROM ig_cnt i JOIN tot t USING(firm_code) GROUP BY i.firm_code
-  ),
+  %s
   bu_hhi AS (
     SELECT b.firm_code, SUM(POWER(b.n*1.0/t.n_part,2)) AS buyer_hhi, MAX(b.n*1.0/t.n_part) AS top_buyer_share
     FROM bu_cnt b JOIN tot t USING(firm_code) GROUP BY b.firm_code
   ),
   span AS (
     SELECT firm_code, MIN(yr) AS first_yr, MAX(yr) AS last_yr, COUNT(DISTINCT yr) AS n_years_p
-    FROM alp GROUP BY firm_code
+    FROM alp WHERE yr IS NOT NULL GROUP BY firm_code
   ),
-  firstyr AS (   -- share of participation in the firm's first active year
+  firstyr AS (
     SELECT y.firm_code, MAX(CASE WHEN y.yr=s.first_yr THEN y.n*1.0/t.n_part END) AS first_year_share
     FROM yr_cnt y JOIN span s USING(firm_code) JOIN tot t USING(firm_code)
     GROUP BY y.firm_code
   ),
-  trend AS (    -- early-vs-late participation: share in second half of own span
+  trend AS (
     SELECT y.firm_code,
            SUM(CASE WHEN y.yr > (s.first_yr+s.last_yr)/2.0 THEN y.n ELSE 0 END)*1.0 / t.n_part AS late_half_share
     FROM yr_cnt y JOIN span s USING(firm_code) JOIN tot t USING(firm_code)
     GROUP BY y.firm_code, t.n_part
   )
   SELECT t.firm_code, t.n_part,
-         ig.ig_hhi, ig.top_ig_share, bu.buyer_hhi, bu.top_buyer_share,
+         %s, bu.buyer_hhi, bu.top_buyer_share,
          s.first_yr, s.last_yr, s.n_years_p, fy.first_year_share, tr.late_half_share
   FROM tot t
-  LEFT JOIN ig_hhi ig USING(firm_code)
+  %s
   LEFT JOIN bu_hhi bu USING(firm_code)
   LEFT JOIN span   s  USING(firm_code)
   LEFT JOIN firstyr fy USING(firm_code)
   LEFT JOIN trend  tr USING(firm_code)
-", ftm_path)))
+", base_cte, ig_cte, ig_sel, ig_join)))
+if (!HAS_IG) say("  item-group proxies (ig_hhi/top_ig_share) NOT_OBSERVED federally (buyer-collinear prefix).")
 say("market-structure proxies built for %d always-losers", nrow(prox))
 
 # D-alternative: repeated losing to same buyer / statutory-minimum bidder count.
 # n_bidders per tender-item is derivable from firm_tender_map (count firms per oc|item);
 # repeated-buyer = top_buyer_share already; "min-bidder" needs modality (Convite quorum=3).
-# Bring modality + n_firms from item_value_panel and compute the share of a firm's
+# Bring modality + n_firms from the item panel and compute the share of a firm's
 # participations that occur in tender-items at the statutory-minimum Convite count (3).
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): CONVITE-QUORUM MECHANISM BLOCK.
+# The convite_share / convite_minq_share legs are convite-specific (modality=1,
+# n_firms<=3 quorum). Federal ComprasNet is PURE PREGAO -> these are skipped
+# (logged). The non-convite bidder-count proxy (mean_n_firms, modality_missing)
+# runs on BOTH sources (cfg-driven modality/n_firms column names).
+P_MODq <- cfg$modality_col; P_NFq <- cfg$n_firms_col; P_ITEMq <- sprintf("\"%s\"", cfg$item_panel_item_col)
+if (cfg$has_convite) {
+  CONV <- cfg$modalities$convite
+  conv_sel <- sprintf("
+         AVG(CASE WHEN modality=%d THEN 1.0 ELSE 0.0 END)               AS convite_share,
+         AVG(CASE WHEN modality=%d AND n_firms<=3 THEN 1.0 ELSE 0.0 END) AS convite_minq_share,", CONV, CONV)
+} else {
+  conv_sel <- "
+         CAST(NULL AS DOUBLE) AS convite_share,
+         CAST(NULL AS DOUBLE) AS convite_minq_share,"
+  say("  [skip] convite-quorum mechanism block (convite_share/convite_minq_share): source=%s is pure Pregao (no convite).", cfg$source)
+}
 modshare <- as.data.table(dbGetQuery(con, sprintf("
   WITH ftm AS (
     SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
@@ -337,8 +422,8 @@ modshare <- as.data.table(dbGetQuery(con, sprintf("
   ),
   alp AS (SELECT f.* FROM ftm f JOIN al_firms a ON f.firm_code=a.firm_code),
   ivp AS (
-    SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(codigoitem AS VARCHAR) AS item,
-           modality, n_firms
+    SELECT CAST(numerodaoc AS VARCHAR) AS oc, CAST(%s AS VARCHAR) AS item,
+           %s AS modality, %s AS n_firms
     FROM read_parquet('%s')
   ),
   j AS (
@@ -346,14 +431,13 @@ modshare <- as.data.table(dbGetQuery(con, sprintf("
     FROM alp LEFT JOIN ivp ON alp.oc=ivp.oc AND alp.item=ivp.item
   )
   SELECT firm_code,
-         AVG(CASE WHEN modality=1 THEN 1.0 ELSE 0.0 END)                      AS convite_share,
-         AVG(CASE WHEN modality=1 AND n_firms<=3 THEN 1.0 ELSE 0.0 END)       AS convite_minq_share,
+         %s
          AVG(CASE WHEN modality IS NULL THEN 1.0 ELSE 0.0 END)                AS modality_missing_share,
          AVG(CAST(n_firms AS DOUBLE))                                         AS mean_n_firms
   FROM j GROUP BY firm_code
-", ftm_path, file.path(DATA, "item_value_panel.parquet"))))
+", ftm_path, P_ITEMq, P_MODq, P_NFq, ivp_path, conv_sel)))
 dbDisconnect(con, shutdown=TRUE); gc()
-say("modality/quorum proxies built for %d always-losers (modality from item_value_panel)", nrow(modshare))
+say("modality/quorum proxies built for %d always-losers (modality from item panel)", nrow(modshare))
 
 # assemble firm-level proxy frame for FL firms only, split by cobidder
 alx <- merge(al, prox, by="firm_code", all.x=TRUE)
@@ -407,21 +491,28 @@ tabN <- rbindlist(list(
     limitation="bid_level_full_v14 prices are VARCHAR w/ locale decimals; distance-to-winner not cheaply derivable -> NOT_OBSERVED"),
   data.table(alternative="A. Low capacity (breadth/survival)",
     expected="weak firms bid in fewer buyers/groups, fewer years",
-    proxy="n_buyers; n_item_groups; n_years",
-    observed_FL_cobidder=sprintf("buyers=%.1f groups=%.1f years=%.1f",
-      gp("n_buyers")$mean_FL_cobidder, gp("n_item_groups")$mean_FL_cobidder, gp("n_years")$mean_FL_cobidder),
-    observed_FL_noncobidder=sprintf("buyers=%.1f groups=%.1f years=%.1f",
-      gp("n_buyers")$mean_FL_noncobidder, gp("n_item_groups")$mean_FL_noncobidder, gp("n_years")$mean_FL_noncobidder),
+    proxy=if (HAS_IG) "n_buyers; n_item_groups; n_years" else "n_buyers; n_years (n_item_groups NOT_OBSERVED)",
+    observed_FL_cobidder=if (HAS_IG) sprintf("buyers=%.1f groups=%.1f years=%.1f",
+      gp("n_buyers")$mean_FL_cobidder, gp("n_item_groups")$mean_FL_cobidder, gp("n_years")$mean_FL_cobidder) else
+      sprintf("buyers=%.1f years=%.1f", gp("n_buyers")$mean_FL_cobidder, gp("n_years")$mean_FL_cobidder),
+    observed_FL_noncobidder=if (HAS_IG) sprintf("buyers=%.1f groups=%.1f years=%.1f",
+      gp("n_buyers")$mean_FL_noncobidder, gp("n_item_groups")$mean_FL_noncobidder, gp("n_years")$mean_FL_noncobidder) else
+      sprintf("buyers=%.1f years=%.1f", gp("n_buyers")$mean_FL_noncobidder, gp("n_years")$mean_FL_noncobidder),
     status=verdict(gp("n_buyers")$wilcox_p, gp("n_buyers")$mean_FL_cobidder, gp("n_buyers")$mean_FL_noncobidder, FALSE),
     limitation="FL cobidders are by construction wider/longer-lived (they share more tenders); does not pin the mechanism"),
+  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): Block B item-group HHI is
+  # NOT_OBSERVED federally (buyer-collinear prefix); buyer HHI still runs both ways.
   data.table(alternative="B. Specialization / narrow market",
     expected="persistent losers are hyper-specialized (high HHI, one item group/buyer)",
-    proxy="item-group HHI; top-group share; buyer HHI",
-    observed_FL_cobidder=sprintf("igHHI=%.3f topIG=%.3f buyHHI=%.3f",
-      gp("ig_hhi")$mean_FL_cobidder, gp("top_ig_share")$mean_FL_cobidder, gp("buyer_hhi")$mean_FL_cobidder),
-    observed_FL_noncobidder=sprintf("igHHI=%.3f topIG=%.3f buyHHI=%.3f",
-      gp("ig_hhi")$mean_FL_noncobidder, gp("top_ig_share")$mean_FL_noncobidder, gp("buyer_hhi")$mean_FL_noncobidder),
-    status=verdict(gp("ig_hhi")$wilcox_p, gp("ig_hhi")$mean_FL_cobidder, gp("ig_hhi")$mean_FL_noncobidder, TRUE),
+    proxy=if (HAS_IG) "item-group HHI; top-group share; buyer HHI" else "buyer HHI (item-group NOT_OBSERVED)",
+    observed_FL_cobidder=if (HAS_IG) sprintf("igHHI=%.3f topIG=%.3f buyHHI=%.3f",
+      gp("ig_hhi")$mean_FL_cobidder, gp("top_ig_share")$mean_FL_cobidder, gp("buyer_hhi")$mean_FL_cobidder) else
+      sprintf("igHHI=NOT_OBSERVED buyHHI=%.3f", gp("buyer_hhi")$mean_FL_cobidder),
+    observed_FL_noncobidder=if (HAS_IG) sprintf("igHHI=%.3f topIG=%.3f buyHHI=%.3f",
+      gp("ig_hhi")$mean_FL_noncobidder, gp("top_ig_share")$mean_FL_noncobidder, gp("buyer_hhi")$mean_FL_noncobidder) else
+      sprintf("igHHI=NOT_OBSERVED buyHHI=%.3f", gp("buyer_hhi")$mean_FL_noncobidder),
+    status=if (HAS_IG) verdict(gp("ig_hhi")$wilcox_p, gp("ig_hhi")$mean_FL_cobidder, gp("ig_hhi")$mean_FL_noncobidder, TRUE) else
+      verdict(gp("buyer_hhi")$wilcox_p, gp("buyer_hhi")$mean_FL_cobidder, gp("buyer_hhi")$mean_FL_noncobidder, TRUE),
     limitation="HHI conflates specialization with cartel item-allocation; cannot separate benign specialization"),
   data.table(alternative="C. Market exploration / learning",
     expected="entrants front-load participation early, then exit (declining)",
@@ -431,15 +522,23 @@ tabN <- rbindlist(list(
     observed_FL_noncobidder=sprintf("firstYr=%.3f lateHalf=%.3f laterWins=NOT_OBSERVED",
       gp("first_year_share")$mean_FL_noncobidder, gp("late_half_share")$mean_FL_noncobidder),
     status=verdict(gp("first_year_share")$wilcox_p, gp("first_year_share")$mean_FL_cobidder, gp("first_year_share")$mean_FL_noncobidder, TRUE),
-    limitation="no post-window (2019 right-censored) -> 'later wins' NOT_OBSERVED; learning vs persistent-loss not separable"),
+    limitation=sprintf("no post-window (%d right-censored) -> 'later wins' NOT_OBSERVED; learning vs persistent-loss not separable", cfg$year_max)),
+  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): Block D convite-quorum padding is
+  # the convite-specific mechanism leg; federal pure-Pregao -> NOT_OBSERVED (skipped).
+  # Buyer concentration (top_buyer_share) still reported both ways.
   data.table(alternative="D. Buyer invitation / quorum padding",
     expected="losers exist to satisfy Convite 3-bidder quorum for a repeat buyer",
-    proxy="Convite share; Convite min-quorum (n_firms<=3) share; buyer concentration",
-    observed_FL_cobidder=sprintf("convite=%.3f convMinQ=%.3f topBuyer=%.3f",
-      gp("convite_share")$mean_FL_cobidder, gp("convite_minq_share")$mean_FL_cobidder, gp("top_buyer_share")$mean_FL_cobidder),
-    observed_FL_noncobidder=sprintf("convite=%.3f convMinQ=%.3f topBuyer=%.3f",
-      gp("convite_share")$mean_FL_noncobidder, gp("convite_minq_share")$mean_FL_noncobidder, gp("top_buyer_share")$mean_FL_noncobidder),
-    status=verdict(gp("convite_minq_share")$wilcox_p, gp("convite_minq_share")$mean_FL_cobidder, gp("convite_minq_share")$mean_FL_noncobidder, TRUE),
+    proxy=if (cfg$has_convite) "Convite share; Convite min-quorum (n_firms<=3) share; buyer concentration" else
+      "Convite quorum NOT_OBSERVED (pure Pregao); buyer concentration only",
+    observed_FL_cobidder=if (cfg$has_convite) sprintf("convite=%.3f convMinQ=%.3f topBuyer=%.3f",
+      gp("convite_share")$mean_FL_cobidder, gp("convite_minq_share")$mean_FL_cobidder, gp("top_buyer_share")$mean_FL_cobidder) else
+      sprintf("convite=NOT_OBSERVED topBuyer=%.3f", gp("top_buyer_share")$mean_FL_cobidder),
+    observed_FL_noncobidder=if (cfg$has_convite) sprintf("convite=%.3f convMinQ=%.3f topBuyer=%.3f",
+      gp("convite_share")$mean_FL_noncobidder, gp("convite_minq_share")$mean_FL_noncobidder, gp("top_buyer_share")$mean_FL_noncobidder) else
+      sprintf("convite=NOT_OBSERVED topBuyer=%.3f", gp("top_buyer_share")$mean_FL_noncobidder),
+    status=if (cfg$has_convite)
+      verdict(gp("convite_minq_share")$wilcox_p, gp("convite_minq_share")$mean_FL_cobidder, gp("convite_minq_share")$mean_FL_noncobidder, TRUE) else
+      "NOT_OBSERVED",
     limitation="quorum-padding and cover-bidding are observationally similar at award layer; CADE contact is what distinguishes them"),
   data.table(alternative="E. Geography / logistics",
     expected="losers bid far from home, lose on logistics; regional breadth differs",
@@ -489,7 +588,7 @@ say("\n----- C. market-specific zero-win definitions -----")
 # never won in that home stratum. Score = log1p(participations in home stratum).
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))
 
 # defendant codes to flag inclusion/exclusion
 dbWriteTable(con, "direct", data.frame(firm_code=direct_codes), overwrite=TRUE)
@@ -498,42 +597,76 @@ dbWriteTable(con, "globalAL", data.frame(firm_code=al$firm_code), overwrite=TRUE
 
 # helper that builds a market-specific zero-win candidate set for a given stratum key.
 # Returns a data.table: firm_code, home_part (participations in home stratum), is_zero_win.
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): the ftm CTE carries pbu / ig from the
+# correct source. BEC: substr of the composite key. FED: pbu = codigo_ug + modality
+# (po_phase_code) from the item panel join; ig = NULL (NOT_OBSERVED). item_code = full
+# códigoitem (valid both). modality column name is cfg$modality_col.
+P_ITEMz <- sprintf("\"%s\"", cfg$item_panel_item_col); P_MODz <- cfg$modality_col
 mk_zero_win <- function(stratum_sql, need_modality=FALSE) {
-  ivp_join <- if (need_modality) sprintf("
-    , ivp AS (SELECT CAST(numerodaoc AS VARCHAR) oc, CAST(codigoitem AS VARCHAR) item, modality
-              FROM read_parquet('%s'))", file.path(DATA,"item_value_panel.parquet")) else ""
-  ivp_sel  <- if (need_modality) "LEFT JOIN ivp ON ftm.oc=ivp.oc AND ftm.item=ivp.item" else ""
-  mod_col  <- if (need_modality) "ivp.modality" else "NULL"
-  sql <- sprintf("
+  if (BUYER_FROM_KEY) {
+    pbu_sel <- sprintf("%s AS pbu", cfg$buyer_from_key("CAST(\"numerodaoc\" AS VARCHAR)"))
+    ig_sel  <- if (HAS_IG) sprintf("%s AS ig", cfg$ig_from_key("CAST(\"códigoitem\" AS VARCHAR)")) else "NULL AS ig"
+    panel_join <- ""; panel_cte <- ""
+    if (need_modality) {
+      panel_cte  <- sprintf(", ivp AS (SELECT CAST(numerodaoc AS VARCHAR) oc, CAST(%s AS VARCHAR) item, %s AS modality FROM read_parquet('%s'))",
+                            P_ITEMz, P_MODz, ivp_path)
+      panel_join <- "LEFT JOIN ivp ON ftm.oc=ivp.oc AND ftm.item=ivp.item"
+    }
+    ftm_cte <- sprintf("
     WITH ftm AS (
       SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
              CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
              CAST(\"won\" AS INT) AS won,
-             SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu,
-             SUBSTR(CAST(\"códigoitem\"  AS VARCHAR),1,2) AS ig,
+             %s, %s,
              CAST(\"códigoitem\" AS VARCHAR) AS item_code
       FROM read_parquet('%s')
-    )%s,
+    )%s,", pbu_sel, ig_sel, ftm_path, panel_cte)
+  } else {
+    # federal: bring pbu (codigo_ug) + modality from the panel in one join; ig NULL.
+    ftm_cte <- sprintf("
+    WITH ivp AS (
+      SELECT CAST(numerodaoc AS VARCHAR) oc, CAST(%s AS VARCHAR) item, codigo_ug AS pbu, %s AS modality
+      FROM read_parquet('%s')
+    ),
+    ftm AS (
+      SELECT LPAD(CAST(f.\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+             CAST(f.\"numerodaoc\" AS VARCHAR) AS oc, CAST(f.\"códigoitem\" AS VARCHAR) AS item,
+             CAST(f.\"won\" AS INT) AS won,
+             ivp.pbu AS pbu, NULL AS ig,
+             CAST(f.\"códigoitem\" AS VARCHAR) AS item_code, ivp.modality AS ivp_modality
+      FROM read_parquet('%s') f
+      LEFT JOIN ivp ON CAST(f.\"numerodaoc\" AS VARCHAR)=ivp.oc AND CAST(f.\"códigoitem\" AS VARCHAR)=ivp.item
+    ),", P_ITEMz, P_MODz, ivp_path, ftm_path)
+    panel_join <- ""   # modality already carried on ftm as ivp_modality (federal path)
+  }
+  # federal stratum SQL references modality via ftm.ivp_modality, not ivp.modality
+  stratum_sql_use <- if (BUYER_FROM_KEY) stratum_sql else gsub("ivp.modality", "ftm.ivp_modality", stratum_sql)
+  sql <- sprintf("%s
     base AS (
       SELECT ftm.firm_code, ftm.won, (%s) AS stratum
       FROM ftm %s
     ),
-    fs AS (   -- firm x stratum aggregates
+    fs AS (
       SELECT firm_code, stratum, COUNT(*) AS n_part, SUM(won) AS n_win
       FROM base WHERE stratum IS NOT NULL GROUP BY firm_code, stratum
     ),
-    home AS (  -- firm's home stratum = most participation (ties: arbitrary deterministic)
+    home AS (
       SELECT firm_code, stratum, n_part, n_win,
              ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY n_part DESC, stratum) AS rn
       FROM fs
     )
     SELECT firm_code, stratum AS home_stratum, n_part AS home_part, n_win AS home_win
     FROM home WHERE rn=1
-  ", ftm_path, ivp_join, stratum_sql, ivp_sel)
+  ", ftm_cte, stratum_sql_use, panel_join)
   as.data.table(dbGetQuery(con, sql))
 }
 
-zw_defs <- list(
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): stratum menu is source-aware.
+# Item-group strata (ig_modality, buyer_ig) require an item-group -> BEC only.
+# Federal keeps itemcode_modality (full códigoitem x pregao modality; valid) and the
+# buyer stratum (codigo_ug). modality is single-valued federally (pure Pregao) but the
+# stratum SQL still partitions on it harmlessly.
+zw_defs <- if (HAS_IG) list(
   list(key="ig_modality",     desc="zero-win within item_group x modality",
        sql="ftm.ig || '|' || COALESCE(CAST(ivp.modality AS VARCHAR),'NA')", mod=TRUE),
   list(key="buyer_ig",        desc="zero-win within buyer x item_group",
@@ -542,7 +675,13 @@ zw_defs <- list(
        sql="ftm.item_code || '|' || COALESCE(CAST(ivp.modality AS VARCHAR),'NA')", mod=TRUE),
   list(key="buyer",           desc="zero-win within buyer (rolling/home-market proxy)",
        sql="ftm.pbu", mod=FALSE)
+) else list(
+  list(key="itemcode_modality",desc="zero-win within item_code x modality (pure Pregao)",
+       sql="ftm.item_code || '|' || COALESCE(CAST(ivp.modality AS VARCHAR),'NA')", mod=TRUE),
+  list(key="buyer",           desc="zero-win within buyer/UASG (rolling/home-market proxy)",
+       sql="ftm.pbu", mod=FALSE)
 )
+if (!HAS_IG) say("  [skip] item-group zero-win strata (ig_modality, buyer_ig) NOT_OBSERVED federally.")
 
 zw_rows <- list(); zw_val <- list()
 for (zd in zw_defs) {
@@ -583,37 +722,44 @@ for (zd in zw_defs) {
 
 # leave-one-market-out: drop each item_group in turn from the GLOBAL definition and
 # recompute cobidder ROC-AUC of score_i on the remaining global always-losers.
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group leave-one-out runs only
+# where the item-group is observed (BEC). Federally NOT_OBSERVED (buyer-collinear) ->
+# emit an empty lomo table + logged skip; the GLOBAL benchmark below still runs.
 say("  leave-one-item-group-out (global always-loser, score_i vs cobidder):")
-lomo <- rbindlist(lapply(sort(unique(al$n_item_groups)), function(x) NULL))  # placeholder
-# need firm -> dominant item-group; reuse prox (top item-group via ig HHI not enough);
-# pull firm dominant ig from DuckDB quickly
-dom_ig <- as.data.table(dbGetQuery(con, sprintf("
-  WITH ftm AS (
-    SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-           SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS ig
-    FROM read_parquet('%s')
-  ),
-  alp AS (SELECT f.* FROM ftm f JOIN globalAL a ON f.firm_code=a.firm_code),
-  c AS (SELECT firm_code, ig, COUNT(*) n FROM alp GROUP BY firm_code, ig),
-  r AS (SELECT firm_code, ig, ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY n DESC, ig) rn FROM c)
-  SELECT firm_code, ig AS dom_ig FROM r WHERE rn=1
-", ftm_path)))
-dbDisconnect(con, shutdown=TRUE); gc()
-al_ig <- merge(al[, .(firm_code, cobidder, score_i)], dom_ig, by="firm_code", all.x=TRUE)
-igs <- al_ig[, .N, by=dom_ig][N>=200][order(-N), dom_ig]  # only groups with enough firms
-lomo_rows <- list()
-full_auc <- roc_auc(al_ig$cobidder, al_ig$score_i)
-for (g in igs) {
-  sub <- al_ig[dom_ig != g]
-  if (sum(sub$cobidder)<5) next
-  lomo_rows[[length(lomo_rows)+1]] <- data.table(
-    dropped_item_group=g, n_remaining=nrow(sub), positives=sum(sub$cobidder),
-    roc_auc=roc_auc(sub$cobidder, sub$score_i))
+if (HAS_IG) {
+  dom_ig <- as.data.table(dbGetQuery(con, sprintf("
+    WITH ftm AS (
+      SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+             %s AS ig
+      FROM read_parquet('%s')
+    ),
+    alp AS (SELECT f.* FROM ftm f JOIN globalAL a ON f.firm_code=a.firm_code),
+    c AS (SELECT firm_code, ig, COUNT(*) n FROM alp GROUP BY firm_code, ig),
+    r AS (SELECT firm_code, ig, ROW_NUMBER() OVER (PARTITION BY firm_code ORDER BY n DESC, ig) rn FROM c)
+    SELECT firm_code, ig AS dom_ig FROM r WHERE rn=1
+  ", cfg$ig_from_key("CAST(\"códigoitem\" AS VARCHAR)"), ftm_path)))
+  dbDisconnect(con, shutdown=TRUE); gc()
+  al_ig <- merge(al[, .(firm_code, cobidder, score_i)], dom_ig, by="firm_code", all.x=TRUE)
+  igs <- al_ig[, .N, by=dom_ig][N>=200][order(-N), dom_ig]  # only groups with enough firms
+  lomo_rows <- list()
+  full_auc <- roc_auc(al_ig$cobidder, al_ig$score_i)
+  for (g in igs) {
+    sub <- al_ig[dom_ig != g]
+    if (sum(sub$cobidder)<5) next
+    lomo_rows[[length(lomo_rows)+1]] <- data.table(
+      dropped_item_group=g, n_remaining=nrow(sub), positives=sum(sub$cobidder),
+      roc_auc=roc_auc(sub$cobidder, sub$score_i))
+  }
+  lomo <- rbindlist(lomo_rows, fill=TRUE)
+  lomo[, full_sample_auc := full_auc]
+  say("    full-sample ROC-AUC=%.4f ; leave-one-group-out range=[%.4f, %.4f] over %d groups",
+      full_auc, min(lomo$roc_auc), max(lomo$roc_auc), nrow(lomo))
+} else {
+  dbDisconnect(con, shutdown=TRUE); gc()
+  lomo <- data.table(dropped_item_group=character(0), n_remaining=integer(0),
+                     positives=integer(0), roc_auc=numeric(0), full_sample_auc=numeric(0))
+  say("    [skip] leave-one-item-group-out NOT_OBSERVED federally (item-group buyer-collinear).")
 }
-lomo <- rbindlist(lomo_rows, fill=TRUE)
-lomo[, full_sample_auc := full_auc]
-say("    full-sample ROC-AUC=%.4f ; leave-one-group-out range=[%.4f, %.4f] over %d groups",
-    full_auc, min(lomo$roc_auc), max(lomo$roc_auc), nrow(lomo))
 
 zw_tab <- rbindlist(zw_rows, fill=TRUE)
 zw_valt<- rbindlist(zw_val, fill=TRUE)
@@ -659,23 +805,32 @@ say("REAL: cobidder ROC-AUC=%.4f PR-AUC=%.4f (n_pos=%d)", real_auc, real_prauc, 
 # + market exposure deciles of the REAL defendants. Compute defendant decile profile.
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))
 dbWriteTable(con, "direct", data.frame(firm_code=direct_codes), overwrite=TRUE)
 dbWriteTable(con, "cobid",  data.frame(firm_code=cob_codes),    overwrite=TRUE)
 dbWriteTable(con, "globalAL", data.frame(firm_code=al$firm_code), overwrite=TRUE)
 
-# firm-level participation T + n_opp_items (cells active for a firm's own item-groups)
-# Use simple proxies: T = #participations; market exposure = #distinct (pbu,year,ig) cells.
+# firm-level participation T + market-exposure cell count (for the matched-sampling
+# decile only -- a covariate, not a reported object).
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): BEC keeps the (pbu|year|ig) cell
+# triple EXACTLY (substr of the composite key). Federally those substrings are INVALID
+# (G1: numbering year != result year; ig buyer-collinear), so the federal exposure
+# proxy is COUNT(DISTINCT numerodaoc) -- a key-only market-breadth measure computable
+# from FTM alone, monotone in market exposure, sufficient for the matching decile.
+ncells_expr <- if (cfg$key_is_composite)
+  sprintf("COUNT(DISTINCT (%s||'|'||%s||'|'||%s))",
+          cfg$buyer_from_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+          cfg$year_from_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+          cfg$ig_from_key("CAST(\"códigoitem\" AS VARCHAR)")) else
+  "COUNT(DISTINCT CAST(\"numerodaoc\" AS VARCHAR))"
 firm_profile <- as.data.table(dbGetQuery(con, sprintf("
   SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
          COUNT(*) AS T,
          SUM(CAST(\"won\" AS INT)) AS wins,
-         COUNT(DISTINCT (SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11)||'|'||
-                         SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4)||'|'||
-                         SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2))) AS n_cells
+         %s AS n_cells
   FROM read_parquet('%s')
   GROUP BY firm_code
-", ftm_path)))
+", ncells_expr, ftm_path)))
 firm_profile[, win_rate := wins / T]
 # decile keys on the FULL firm population
 firm_profile[, T_dec := cut(T, breaks=unique(quantile(T, seq(0,1,0.1))), include.lowest=TRUE, labels=FALSE)]
@@ -781,7 +936,7 @@ miss <- setdiff(hv_pool$firm_code, have)
 hv_items <- pool_items[firm_code %in% have]
 if (length(miss)) {
   con <- dbConnect(duckdb()); dbExecute(con,"PRAGMA threads=12"); dbExecute(con,"PRAGMA memory_limit='12GB'")
-  dbExecute(con,"PRAGMA temp_directory='/tmp/duckdb_spill'")
+  dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))
   dbWriteTable(con,"miss",data.frame(firm_code=miss),overwrite=TRUE)
   add <- as.data.table(dbGetQuery(con, sprintf("
     SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,

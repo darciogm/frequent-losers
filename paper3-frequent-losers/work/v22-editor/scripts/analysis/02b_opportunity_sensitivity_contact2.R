@@ -44,10 +44,25 @@ if (!exists(".script_dir")) {
 REPO <- normalizePath(file.path(.script_dir, "..", "..", "..", ".."), mustWork = FALSE)
 if (!dir.exists(file.path(REPO, "data", "processed")))
   REPO <- normalizePath("/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers")
-DATA <- file.path(REPO, "data", "processed")
 V22  <- file.path(REPO, "work", "v22-editor")
-OUT  <- file.path(V22, "outputs", "sensitivity_contact2")  # SENSITIVITY VARIANT: isolated outputs
 UTIL <- file.path(V22, "scripts", "utils")
+
+# --- SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05) -------------------------
+# Parse --source= (default "bec"); pull data paths, key lambdas, spill dir from
+# get_source_config(). SENSITIVITY VARIANT: its isolated output subdir is mirrored
+# under cfg$out_root -> BEC outputs/sensitivity_contact2 ; FED
+# outputs/comprasnet/sensitivity_contact2. The canonical cobidder rebuild + the
+# exposure-axis cache come from the MAIN source cache (cfg$dirs$cache), NOT the
+# sensitivity subdir (that artifact is produced once by script 00 per source).
+.args <- commandArgs(trailingOnly = TRUE)
+.src  <- sub("^--source=", "", .args[grep("^--source=", .args)])
+SRC   <- if (length(.src)) .src[1L] else "bec"
+source(file.path(UTIL, "source_config.R"))
+cfg  <- get_source_config(SRC)
+cfg$ensure_dirs()
+DATA <- cfg$data_dir
+OUT  <- file.path(cfg$out_root, "sensitivity_contact2")  # SENSITIVITY VARIANT: isolated, under cfg out_root
+MAIN_CACHE <- cfg$dirs$cache                              # canonical cobidder + exposure-axis cache
 
 source(file.path(UTIL, "metrics_triage.R"))
 source(file.path(UTIL, "exposure_validation.R"))
@@ -59,9 +74,37 @@ dir_app_f  <- file.path(OUT, "figures", "appendix")
 dir_diag   <- file.path(OUT, "diagnostics")
 dir_cache  <- file.path(OUT, "cache")
 dir_log    <- file.path(OUT, "logs")
+SPILL      <- cfg$temp_directory
 for (d in c(dir_main_t,dir_app_t,dir_main_f,dir_app_f,dir_diag,dir_cache,dir_log))
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
-dir.create("/tmp/duckdb_spill", recursive = TRUE, showWarnings = FALSE)
+dir.create(SPILL, recursive = TRUE, showWarnings = FALSE)
+
+# --- SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): SQL key-expression helpers ---
+# Identical contract to script 02. BEC buyer/year = numerodaoc substrings; FED
+# buyer = codigo_ug via panel join, year = cfg$get_year_map (never substring).
+sql_buyer_key <- function(noc_alias) {
+  if (!is.null(cfg$buyer_from_key)) cfg$buyer_from_key(noc_alias)
+  else stop("buyer is not a substring for source ", SRC, " -- join the item panel for cfg$buyer_col.")
+}
+sql_year_key <- function(noc_alias) {
+  if (!is.null(cfg$year_from_key)) cfg$year_from_key(noc_alias)
+  else stop("year must come from cfg$get_year_map() for source ", SRC, " -- never string-extract.")
+}
+# SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): item-group observability
+# (identical contract to script 02). BEC: cfg$ig_from_key gives SUBSTR(codigoitem,1,2)
+# (genuine product-group prefix, 91 groups). FED: item-group NOT_OBSERVED
+# (buyer-collinear composite code) -> ig is the constant sentinel '__NA__', collapsing
+# the ig axis out of COARSE/MEDIUM cells. Difference made visible in output metadata.
+IG_NA_SENTINEL <- "__NA__"
+HAS_IG <- isTRUE(cfg$has_item_group)
+sql_ig_key <- function(item_alias) {
+  if (HAS_IG && !is.null(cfg$ig_from_key)) cfg$ig_from_key(item_alias)
+  else sprintf("'%s'", IG_NA_SENTINEL)
+}
+ig_note <- if (HAS_IG) "" else
+  "item-group NOT_OBSERVED on this platform (buyer-collinear composite item code)"
+cell_keys_effective <- function(keys) if (HAS_IG) keys else setdiff(keys, "ig")
+IS_BEC <- identical(SRC, "bec")
 
 setDTthreads(12L)
 SEED <- 20260603L
@@ -75,14 +118,69 @@ rss_mb <- function() tryCatch(round(as.numeric(system(sprintf("ps -o rss= -p %d"
 stamp <- function(s) say("  [stage %-26s] elapsed=%6.1fs  RSS=%s MB", s, as.numeric(difftime(Sys.time(),.t0,units="secs")), rss_mb())
 `%||%` <- function(x,y) if (is.null(x)||length(x)==0||is.na(x)) y else x
 
-say("=== 02_opportunity_adjusted_validation.R ===")
+say("=== 02b_opportunity_sensitivity_contact2.R ===")
 say("host=%s  nproc=%s  seed=%d  date=%s  RAM_free=%s",
     Sys.info()[["nodename"]],
     tryCatch(system("nproc", intern=TRUE), error=function(e)"?"), SEED, format(Sys.time()),
     tryCatch(system("free -h | awk 'NR==2{print $7}'", intern=TRUE), error=function(e)"?"))
 say("REPO=%s", REPO)
+say("SOURCE=%s  (%s)  DATA=%s  OUT=%s  SPILL=%s", SRC, cfg$label, DATA, OUT, SPILL)  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
 
 norm14 <- function(x) sprintf("%014.0f", as.numeric(x))
+
+# --- SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): keyed-FTM view builder ---
+# Identical to script 02: emits SQL for a ftm_keyed(firm_code, oc, item, pbu, year,
+# ig, item_code) view. BEC keys = numerodaoc substrings; FED keys = panel-joined
+# codigo_ug buyer + result year via the `keymap` DuckDB table (built once per
+# connection, dropping multi-UASG pairs). Single divergence point for G1.
+ftm_path <- cfg$firm_tender_map
+.keymap_registered <- FALSE
+register_keymap <- function(con) {
+  if (IS_BEC) return(invisible(NULL))
+  view <- cfg$drop_multi_ug_pairs(con)   # registers panel_single_ug
+  ymap <- cfg$get_year_map(con)
+  km <- DBI::dbGetQuery(con, sprintf("
+    SELECT CAST(numerodaoc AS VARCHAR) AS numerodaoc,
+           CAST(\"códigoitem\" AS VARCHAR) AS \"códigoitem\",
+           CAST(MAX(%s) AS VARCHAR) AS buyer
+    FROM %s GROUP BY 1,2", cfg$buyer_col, view))
+  km <- merge(km, ymap, by = c("numerodaoc", "códigoitem"), all = TRUE)
+  DBI::dbWriteTable(con, "keymap", km, overwrite = TRUE)
+  .keymap_registered <<- TRUE
+  invisible(km)
+}
+ftm_keyed_sql <- function() {
+  if (IS_BEC) {
+    sprintf("
+      SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+             CAST(\"numerodaoc\" AS VARCHAR) AS oc,
+             CAST(\"códigoitem\" AS VARCHAR) AS item,
+             %s AS pbu,
+             %s AS year,
+             %s AS ig,
+             CAST(\"códigoitem\" AS VARCHAR) AS item_code
+      FROM read_parquet('%s')",
+      sql_buyer_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+      sql_year_key("CAST(\"numerodaoc\" AS VARCHAR)"),
+      sql_ig_key("CAST(\"códigoitem\" AS VARCHAR)"),
+      ftm_path)
+  } else {
+    sprintf("
+      SELECT f.firm_code, f.oc, f.item,
+             COALESCE(k.buyer, '') AS pbu,
+             COALESCE(CAST(k.year AS VARCHAR), '0000') AS year,
+             %s AS ig,
+             f.item AS item_code
+      FROM (
+        SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
+               CAST(\"numerodaoc\" AS VARCHAR) AS oc,
+               CAST(\"códigoitem\" AS VARCHAR) AS item
+        FROM read_parquet('%s')
+      ) f
+      LEFT JOIN keymap k ON f.oc = k.numerodaoc AND f.item = k.\"códigoitem\"",
+      sql_ig_key("f.item"), ftm_path)
+  }
+}
 
 # pROC AUC + DeLong wrappers (CI); also use metrics_triage roc_auc for triage grid
 auc_ci <- function(label, score, dat) {
@@ -110,14 +208,29 @@ say("\n----- A. candidate set -----")
 # POSITIVE LABEL: canonical broad AL cobidder label (651, reproducible, FL never used).
 # `códigofornecedor` is the raw BEC firm code (14-char zero-padded), the same join key
 # produced by norm14() on FREQ_PARTICIP / firm_loss_stats / firm_tender_map.
-CANON_COB <- file.path(V22, "outputs", "cache", "canonical_cobidders_broad.csv")
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): canonical cobidder rebuild from
+# the MAIN source cache (BEC outputs/cache ; FED outputs/comprasnet/cache), NOT the
+# sensitivity subdir; produced once by script 00 per source.
+CANON_COB <- file.path(MAIN_CACHE, "canonical_cobidders_broad.csv")
 cob <- fread(CANON_COB)
 cob[, firm_code := norm14(`códigofornecedor`)]
 cob_codes <- unique(cob[broad_cobidder == 1L, firm_code])
 say("cobidder positives (canonical broad AL label): %d distinct firm_code", length(cob_codes))
 
-xm <- fread(file.path(DATA, "cade_bec_crossmatch.csv"))
-xm[, firm_code := norm14(firm_cnpj)]
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): direct CADE defendants per layout.
+# BEC: cade_bec_crossmatch.csv. FED: direct_defendants_federal parquet (firm_id,
+# processo, razao_cade, always_loser, win_rate) harmonized to the BEC column set.
+if (cfg$cade_layout == "bec_csv") {
+  xm <- fread(cfg$cade$crossmatch)
+  xm[, firm_code := norm14(firm_cnpj)]
+} else {
+  dd <- as.data.table(read_parquet(cfg$cade$direct_defendants))
+  xm <- dd[, .(firm_cnpj = firm_id, processo,
+               cade_name = razao_cade,
+               is_always_loser = as.integer(always_loser),
+               win_rate = win_rate)]
+  xm[, firm_code := norm14(firm_cnpj)]
+}
 direct_codes_raw <- unique(xm$firm_code)
 say("direct CADE defendants (crossmatch, raw): %d distinct firm_code", length(direct_codes_raw))
 
@@ -145,11 +258,13 @@ say("direct-defendant -> case rows: %d ; distinct cases: %d",
     nrow(def_case_map), uniqueN(def_case_map$processo))
 
 # always-loser panel
-fp <- as.data.table(read_parquet(file.path(DATA, "FREQ_PARTICIP_rebuilt.parquet")))
+fp <- as.data.table(read_parquet(cfg$freq_particip))  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
 fp[, firm_code := norm14(`códigofornecedor`)]
 al <- fp[always_loser == 1L, .(firm_code, tenders_count)]
 al[, cobidder := as.integer(firm_code %in% cob_codes)]
-al[, fl14     := as.integer(tenders_count >= 14L)]
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): FL cut from cfg (BEC 14 ; FED 32).
+# Variable name `fl14` retained as deployable-screen identifier; threshold source-driven.
+al[, fl14     := as.integer(cfg$fl_predicate(tenders_count))]
 al[, W_i      := 0L]                       # always-loser: zero wins by construction
 al[, score_i  := log1p(tenders_count)]     # = log_tc
 setnames(al, "tenders_count", "T_i")
@@ -167,10 +282,12 @@ stamp("A_candidate_set")
 # B. OBSERVED DEFENDANT CONTACT O_i  (DuckDB self-join, the 16.8M-row peak)
 # =============================================================================
 say("\n----- B. observed defendant contact O_i (DuckDB self-join) -----")
-ftm_path <- file.path(DATA, "firm_tender_map.parquet")
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): ftm_path from cfg (above);
+# spill dir from cfg$temp_directory; FED keymap registered before keyed queries.
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))
+register_keymap(con)   # FED-only keymap; no-op for BEC
 dbWriteTable(con, "direct", data.frame(firm_code = direct_codes), overwrite = TRUE)
 
 # defendant-bearing tender-items (oc|item where any direct defendant appears),
@@ -237,15 +354,20 @@ firm_case <- as.data.table(dbGetQuery(con, sprintf("
 ", ftm_path)))
 
 # per-firm total participation (T_i sanity / breadth) from FTM
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): n_buyers/n_years via ftm_keyed
+# (BEC substrings ; FED codigo_ug + result year), NOT raw numerodaoc substrings
+# (INVALID federally). n_item_groups = SUBSTR(codigoitem,1,2) only where item-group is
+# observed (BEC, 91 groups); federally OVERWRITTEN to NA below (buyer-collinear code).
 firm_breadth <- as.data.table(dbGetQuery(con, sprintf("
-  SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-         COUNT(DISTINCT (CAST(\"numerodaoc\" AS VARCHAR)||'|'||CAST(\"códigoitem\" AS VARCHAR))) AS n_items_total,
-         COUNT(DISTINCT SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11)) AS n_buyers,
-         COUNT(DISTINCT SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4)) AS n_years,
-         COUNT(DISTINCT SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2)) AS n_item_groups
-  FROM read_parquet('%s')
+  WITH ftm_keyed AS (%s)
+  SELECT firm_code,
+         COUNT(DISTINCT (oc||'|'||item)) AS n_items_total,
+         COUNT(DISTINCT pbu)             AS n_buyers,
+         COUNT(DISTINCT year)            AS n_years,
+         COUNT(DISTINCT ig)              AS n_item_groups
+  FROM ftm_keyed
   GROUP BY firm_code
-", ftm_path)))
+", ftm_keyed_sql())))
 dbDisconnect(con, shutdown = TRUE); gc()
 stamp("B_contact_join")
 
@@ -256,6 +378,10 @@ dt <- merge(dt, firm_breadth, by="firm_code", all.x=TRUE)
 for (v in c("O_i","n_def_firms","n_contact_pairs","n_cases","contact_items_cased",
             "n_items_total","n_buyers","n_years","n_item_groups"))
   dt[is.na(get(v)), (v) := 0L]
+if (!HAS_IG) {
+  dt[, n_item_groups := NA_integer_]   # ig-specific column -> NA federally
+  say("  n_item_groups := NA  (%s)", ig_note)
+}
 dt[, Y_broad := as.integer(O_i > 0L)]          # broad label = any defendant contact
 dt[, contact_intensity := ifelse(T_i>0, O_i/T_i, 0)]
 
@@ -303,7 +429,8 @@ say("\n----- C. opportunity cells (COARSE/MEDIUM/STRICT) -----")
 # carrying the cell keys + a touches_defendant flag at the tender-item level.
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
+register_keymap(con)   # FED-only keymap; no-op for BEC
 dbWriteTable(con, "direct", data.frame(firm_code = direct_codes), overwrite = TRUE)
 dbWriteTable(con, "al_firms", data.frame(firm_code = al$firm_code), overwrite = TRUE)
 
@@ -313,16 +440,10 @@ dbWriteTable(con, "al_firms", data.frame(firm_code = al$firm_code), overwrite = 
 # touches_defendant for a firm-opportunity row = 1 if that tender-item has a
 # defendant AND the firm is not that defendant (always-losers are never the
 # defendant after cleaning, so simply: item has a defendant).
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): pbu/year via ftm_keyed (BEC
+# substrings ; FED codigo_ug + result year). COARSE/MEDIUM/STRICT identical across sources.
 part <- as.data.table(dbGetQuery(con, sprintf("
-  WITH ftm AS (
-    SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-           CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4) AS year,
-           SUBSTR(CAST(\"códigoitem\"  AS VARCHAR),1,2) AS ig,
-           CAST(\"códigoitem\" AS VARCHAR) AS item_code
-    FROM read_parquet('%s')
-  ),
+  WITH ftm AS (%s),
   def_items AS (
     SELECT DISTINCT oc, item FROM ftm WHERE firm_code IN (SELECT firm_code FROM direct)
   ),
@@ -335,18 +456,30 @@ part <- as.data.table(dbGetQuery(con, sprintf("
   )
   SELECT firm_code, oc, item, pbu, year, ig, item_code, touches_defendant
   FROM al_part
-", ftm_path)))
+", ftm_keyed_sql())))
 dbDisconnect(con, shutdown = TRUE); gc()
 say("always-loser firm-opportunity (tender-item) rows: %s", format(nrow(part), big.mark=","))
 # attach firm_id for anon export & merge keys
 part <- merge(part, al[, .(firm_code, firm_id, cobidder, fl14)], by="firm_code", all.x=TRUE)
 stamp("C_participation_table")
 
-CELL_DEFS <- list(
+# SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): item-group axis (mirror of
+# script 02). CELL_DEFS_NOMINAL = BEC-canonical keys; cell_keys_effective() drops the
+# vacuous ig axis federally, so (ig,year)/(ig,year,pbu) become (year)/(year,pbu).
+CELL_DEFS_NOMINAL <- list(
   COARSE = c("ig","year"),                 # item_group x year  (modality dropped)
   MEDIUM = c("ig","year","pbu"),           # item_group x year x buyer
   STRICT = c("item_code","year","pbu")     # item_code x year x buyer
 )
+CELL_DEFS <- lapply(CELL_DEFS_NOMINAL, cell_keys_effective)  # ig dropped federally
+for (defn in names(CELL_DEFS)) {
+  if (!identical(CELL_DEFS[[defn]], CELL_DEFS_NOMINAL[[defn]]))
+    say("  cell_definition[%s]: nominal {%s} -> effective {%s}  (%s)",
+        defn, paste(CELL_DEFS_NOMINAL[[defn]], collapse=" x "),
+        paste(CELL_DEFS[[defn]], collapse=" x "), ig_note)
+  else
+    say("  cell_definition[%s]: {%s}", defn, paste(CELL_DEFS[[defn]], collapse=" x "))
+}
 say("modality NOTE: firm_tender_map has no modality; cells drop modality. A modality-augmented")
 say("  cell would need a join from item_value_panel by (numerodaoc,codigoitem); documented as")
 say("  sensitivity, not blocking (Subprompt clause). Proceeding with 3 award-layer cell defs.")
@@ -405,7 +538,14 @@ stamp("C_cells_expected")
 # Table D - opportunity cell construction (compact, one row per def)
 tabD_constr <- rbindlist(lapply(names(CELL_DEFS), function(defn) {
   c <- cell_summaries[[defn]]
-  data.table(cell_def = defn, keys = paste(CELL_DEFS[[defn]], collapse=" x "),
+  # SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): expose cell-definition
+  # difference (effective vs nominal keys + note) so the manuscript table can state it.
+  data.table(cell_def = defn,
+             keys = paste(CELL_DEFS[[defn]], collapse=" x "),            # EFFECTIVE keys
+             keys_nominal = paste(CELL_DEFS_NOMINAL[[defn]], collapse=" x "),
+             item_group_observed = HAS_IG,
+             cell_definition_note = if (identical(CELL_DEFS[[defn]], CELL_DEFS_NOMINAL[[defn]])) ""
+                                    else ig_note,
              n_cells = nrow(c),
              total_tender_items = sum(c$n_tender_items),
              total_participation = sum(c$n_participation),
@@ -473,11 +613,20 @@ ff[, log_opportunity := log1p(O_i)]   # NB: keep script-76 semantics below separ
 # over the FULL firm_tender_map (ALL firms, not just always-losers). Our `part`
 # table is AL-restricted, so reconstructing active cells from it UNDERCOUNTS them
 # (it misses cells where a defendant bid but no AL firm shares that exact item).
-# The validated reference script 76 computed n_opp_items over the full FTM and its
-# firm_panel.csv (exposed=6,040) backs every locked number. Reuse it as the
-# canonical exposure axis; fall back to a full-FTM DuckDB recompute if absent.
+# The validated reference script 76 computed n_opp_items over the full FTM; its
+# firm_panel.csv (exposed=6,040) backs every locked BEC number.
+#
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): firm_panel.csv exposure axis.
+#   Columns CONSUMED: firm_code, n_opp_items, n_opp_cells, log_opp (=log1p(n_opp_items);
+#   exposed := n_opp_items>0). Producer = script 76: CADE-active cell = (pbu,year,ig)
+#   over the FULL FTM where any direct defendant bids; n_opp_items = distinct (oc,item)
+#   the firm bid on inside an active cell.
+#   output/exposure_adjusted_audit/firm_panel.csv is a LEGACY BEC-ONLY artifact (no
+#   federal twin). BEC reuses it when present; else (and ALWAYS for FED) recompute via
+#   ftm_keyed and cache the rebuilt panel to cfg cache as the source twin.
 ref_panel_path <- file.path(REPO, "output", "exposure_adjusted_audit", "firm_panel.csv")
-if (file.exists(ref_panel_path)) {
+fed_panel_path <- file.path(MAIN_CACHE, "firm_panel_exposure_axis.csv")  # FED twin / BEC recompute cache (MAIN cache, shared with 02)
+if (IS_BEC && file.exists(ref_panel_path)) {
   refp <- fread(ref_panel_path, colClasses=list(character="firm_code"))
   refp[, firm_code := norm14(firm_code)]
   ff <- merge(ff, refp[, .(firm_code, n_opp_items, n_opp_cells, log_opp)], by="firm_code", all.x=TRUE)
@@ -486,25 +635,30 @@ if (file.exists(ref_panel_path)) {
   ff[, exposed := as.integer(n_opp_items > 0L)]
   say("  exposure axis (n_opp_items) from validated script-76 firm_panel.csv: exposed=%d", ff[exposed==1,.N])
 } else {
-  # full-FTM recompute (mirror script 76 SQL exactly)
-  say("  ref firm_panel.csv absent -> recomputing n_opp_items over FULL firm_tender_map (script-76 SQL)")
+  # full-FTM recompute via ftm_keyed (mirrors script-76; keys cfg-resolved).
+  say("  recomputing n_opp_items over FULL firm_tender_map via ftm_keyed (source=%s)", SRC)
   con2 <- dbConnect(duckdb()); dbExecute(con2,"PRAGMA threads=12"); dbExecute(con2,"PRAGMA memory_limit='12GB'")
-  dbExecute(con2,"PRAGMA temp_directory='/tmp/duckdb_spill'")
+  dbExecute(con2, sprintf("PRAGMA temp_directory='%s'", SPILL))
+  register_keymap(con2)   # FED-only keymap; no-op for BEC
   dbWriteTable(con2,"direct",data.frame(firm_code=direct_codes),overwrite=TRUE)
+  # SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): MEDIUM (pbu,year,ig)
+  # cell; federally ig is the constant sentinel so it collapses to (pbu,year).
   opp76 <- as.data.table(dbGetQuery(con2, sprintf("
-    WITH ftm AS (SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-      CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
-      SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu, SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),12,4) AS yr,
-      SUBSTR(CAST(\"códigoitem\" AS VARCHAR),1,2) AS ig FROM read_parquet('%s')),
-    cade_cells AS (SELECT DISTINCT f.pbu,f.yr,f.ig FROM ftm f JOIN direct d ON f.firm_code=d.firm_code)
-    SELECT f.firm_code, COUNT(DISTINCT CASE WHEN c.pbu IS NOT NULL THEN (f.oc||'|'||f.item) END) AS n_opp_items,
-      COUNT(DISTINCT CASE WHEN c.pbu IS NOT NULL THEN (f.pbu||'|'||f.yr||'|'||f.ig) END) AS n_opp_cells
-    FROM ftm f LEFT JOIN cade_cells c USING (pbu,yr,ig) GROUP BY f.firm_code", ftm_path)))
+    WITH ftm AS (%s),
+    cade_cells AS (SELECT DISTINCT f.pbu, f.year AS yr, f.ig FROM ftm f JOIN direct d ON f.firm_code=d.firm_code)
+    SELECT f.firm_code,
+      COUNT(DISTINCT CASE WHEN c.pbu IS NOT NULL THEN (f.oc||'|'||f.item) END) AS n_opp_items,
+      COUNT(DISTINCT CASE WHEN c.pbu IS NOT NULL THEN (f.pbu||'|'||f.year||'|'||f.ig) END) AS n_opp_cells
+    FROM ftm f LEFT JOIN cade_cells c ON f.pbu=c.pbu AND f.year=c.yr AND f.ig=c.ig
+    GROUP BY f.firm_code", ftm_keyed_sql())))
   dbDisconnect(con2,shutdown=TRUE)
-  ff <- merge(ff, opp76, by="firm_code", all.x=TRUE)
+  opp76[, log_opp := log1p(n_opp_items)]
+  fwrite(opp76, fed_panel_path)
+  say("  cached rebuilt exposure panel -> %s (%d firms)", fed_panel_path, nrow(opp76))
+  ff <- merge(ff, opp76[, .(firm_code, n_opp_items, n_opp_cells, log_opp)], by="firm_code", all.x=TRUE)
   for (v in c("n_opp_items","n_opp_cells")) ff[is.na(get(v)), (v) := 0L]
+  ff[is.na(log_opp), log_opp := 0]
   ff[, exposed := as.integer(n_opp_items > 0L)]
-  ff[, log_opp := log1p(n_opp_items)]
 }
 gc()
 
@@ -988,18 +1142,15 @@ say("\n----- J. case / buyer / item-group contribution -----")
 # Re-run the contact join carrying case + buyer + ig for AL firms.
 con <- dbConnect(duckdb())
 dbExecute(con, "PRAGMA threads=12"); dbExecute(con, "PRAGMA memory_limit='12GB'")
-dbExecute(con, "PRAGMA temp_directory='/tmp/duckdb_spill'")
+dbExecute(con, sprintf("PRAGMA temp_directory='%s'", SPILL))  # SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05)
+register_keymap(con)   # FED-only keymap; no-op for BEC
 dbWriteTable(con, "direct", data.frame(firm_code=direct_codes), overwrite=TRUE)
 dbWriteTable(con, "def_case", as.data.frame(def_case_map[, .(firm_code, processo)]), overwrite=TRUE)
 dbWriteTable(con, "al_firms", data.frame(firm_code=al$firm_code), overwrite=TRUE)
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): buyer(pbu)/ig via ftm_keyed
+# (BEC substrings ; FED codigo_ug + codigoitem prefix).
 contrib <- as.data.table(dbGetQuery(con, sprintf("
-  WITH ftm AS (
-    SELECT LPAD(CAST(\"códigofornecedor\" AS VARCHAR),14,'0') AS firm_code,
-           CAST(\"numerodaoc\" AS VARCHAR) AS oc, CAST(\"códigoitem\" AS VARCHAR) AS item,
-           SUBSTR(CAST(\"numerodaoc\" AS VARCHAR),1,11) AS pbu,
-           SUBSTR(CAST(\"códigoitem\"  AS VARCHAR),1,2) AS ig
-    FROM read_parquet('%s')
-  ),
+  WITH ftm AS (%s),
   def_items AS (
     SELECT DISTINCT f.oc, f.item, f.firm_code AS def_code
     FROM ftm f JOIN direct d ON f.firm_code=d.firm_code
@@ -1013,7 +1164,7 @@ contrib <- as.data.table(dbGetQuery(con, sprintf("
   )
   SELECT firm_code, processo, pbu, ig, COUNT(DISTINCT (oc||'|'||item)) AS n_contact
   FROM contact GROUP BY firm_code, processo, pbu, ig
-", ftm_path)))
+", ftm_keyed_sql())))
 dbDisconnect(con, shutdown=TRUE); gc()
 
 # positives = cobidders; restrict
@@ -1031,24 +1182,30 @@ share_by <- function(d, keyv) {
 }
 by_case  <- share_by(ctr_pos, "processo")
 by_buyer <- share_by(ctr_pos, "pbu")
-by_ig    <- share_by(ctr_pos, "ig")
+# SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): item-group decomposition
+# only where observed (BEC); federally emit NA + note (mirror of script 02).
+by_ig    <- if (HAS_IG) { share_by(ctr_pos, "ig")
+            } else { data.table(ig = NA_character_, n_contact = NA_integer_, share = NA_real_) }
 # TP@500 share by case
 tp_contrib <- contrib[firm_code %in% tp500_set]
 tp_by_case <- if (nrow(tp_contrib)) share_by(tp_contrib, "processo") else data.table(processo=character(), n_contact=integer(), share=numeric())
 
 contribution <- rbindlist(list(
-  cbind(dimension="case",  by_case[,  .(key=processo, n_contact, share)]),
-  cbind(dimension="buyer", by_buyer[, .(key=pbu, n_contact, share)]),
-  cbind(dimension="item_group", by_ig[, .(key=ig, n_contact, share)])
+  cbind(dimension="case",  by_case[,  .(key=processo, n_contact, share)],
+        cell_definition_note = ""),
+  cbind(dimension="buyer", by_buyer[, .(key=pbu, n_contact, share)],
+        cell_definition_note = ""),
+  cbind(dimension="item_group", by_ig[, .(key=ig, n_contact, share)],
+        cell_definition_note = if (HAS_IG) "" else ig_note)
 ), fill=TRUE)
 fwrite(contribution, file.path(dir_diag, "opportunity_case_buyer_contribution.csv"))
 
 flag_case  <- by_case[1, share]  > 0.5
 flag_buyer <- by_buyer[1, share] > 0.5
-flag_ig    <- by_ig[1, share]    > 0.5
+flag_ig    <- HAS_IG && isTRUE(by_ig[1, share] > 0.5)
 say("  top case  %s share of cobidder contacts = %.1f%%  %s", by_case[1,processo], 100*by_case[1,share], ifelse(flag_case," >>>FLAG>50%",""))
 say("  top buyer %s share = %.1f%%  %s", by_buyer[1,pbu], 100*by_buyer[1,share], ifelse(flag_buyer," >>>FLAG>50%",""))
-say("  top item-group %s share = %.1f%%  %s", by_ig[1,ig], 100*by_ig[1,share], ifelse(flag_ig," >>>FLAG>50%",""))
+if (HAS_IG) { say("  top item-group %s share = %.1f%%  %s", by_ig[1,ig], 100*by_ig[1,share], ifelse(flag_ig," >>>FLAG>50%","")) } else { say("  item-group decomposition: NA  (%s)", ig_note) }
 if (nrow(tp_by_case)) say("  TP@500 top case %s share = %.1f%%", tp_by_case[1,processo], 100*tp_by_case[1,share])
 stamp("J_contribution")
 

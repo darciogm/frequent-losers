@@ -67,8 +67,30 @@ ok("FED key NOT composite; buyer_from_key & year_from_key are NULL",
 ok("FED buyer_col == codigo_ug", identical(fed$buyer_col, "codigo_ug"))
 ok("FED multi_ug_pairs_excluded TRUE; BEC FALSE",
    fed$multi_ug_pairs_excluded && !bec$multi_ug_pairs_excluded)
-ok("FED CONS_DATE is NA placeholder; BEC is a Date",
-   is.na(fed$CONS_DATE) && inherits(bec$CONS_DATE, "Date") && !is.na(bec$CONS_DATE))
+# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): federal CONS_DATE is now wired to
+# the conservative federal case-judgment bound (latest numbered-case judgment date),
+# replacing the earlier NA placeholder (per Phase-1 script-03 adaptation, gate G3).
+ok("FED & BEC CONS_DATE are both real Dates (FED wired from federal case judgments)",
+   inherits(fed$CONS_DATE, "Date") && !is.na(fed$CONS_DATE) &&
+   inherits(bec$CONS_DATE, "Date") && !is.na(bec$CONS_DATE))
+ok("holdout split present; BEC test==FED test (comparable); FED train starts 2013",
+   identical(as.integer(range(bec$holdout_test)), as.integer(range(fed$holdout_test))) &&
+   min(bec$holdout_train) == 2009L && min(fed$holdout_train) == 2013L)
+# SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): freeze_year locked to 2016
+# in BOTH sources (lead decision). Distinct from CONS_DATE.
+ok("freeze_year == 2016L in BOTH sources (lead decision)",
+   identical(bec$freeze_year, 2016L) && identical(fed$freeze_year, 2016L))
+ok("freeze_year is distinct from CONS_DATE (freeze is a year int, CONS_DATE a Date)",
+   is.integer(bec$freeze_year) && is.integer(fed$freeze_year) &&
+   inherits(bec$CONS_DATE, "Date") && inherits(fed$CONS_DATE, "Date"))
+# SOURCE-CONFIG ADAPTATION (Phase 1 reconcile, 2026-06-05): item-group observability.
+# BEC has a genuine 2-char product-group prefix (91 groups); federal códigoitem is a
+# buyer-collinear composite -> item-group NOT_OBSERVED federally.
+ok("BEC has_item_group TRUE & ig_from_key gives SUBSTR(...,1,2)",
+   isTRUE(bec$has_item_group) && is.function(bec$ig_from_key) &&
+   grepl("SUBSTR\\(x,1,2\\)", gsub("\\s","", bec$ig_from_key("x"))))
+ok("FED has_item_group FALSE & ig_from_key is NULL (buyer-collinear composite)",
+   identical(fed$has_item_group, FALSE) && is.null(fed$ig_from_key))
 
 # ---- output isolation -------------------------------------------------------
 cat("\n[4] output isolation\n")
