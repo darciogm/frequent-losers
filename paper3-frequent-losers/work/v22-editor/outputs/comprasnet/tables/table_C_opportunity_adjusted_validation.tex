@@ -1,0 +1,21 @@
+\begin{table}[htbp]\centering
+\caption{Opportunity-adjusted validation (control-function designs)}
+\label{tab:opp_adjusted_validation}
+\begin{tabular}{llrrrrr}\hline
+Design & Score & N & Pos. & ROC-AUC & PR-AUC & Prec@500 \\\hline
+S0\_raw\_score & score\_i & 35,943 & 196 & 0.7456 & 0.0145 & 0.0180 \\
+S0\_raw\_fl14 & fl14 & 35,943 & 196 & 0.6529 & 0.0186 & 0.0220 \\
+S2\_exposure\_only\_logit & .exp & 15,134 & 195 & 0.7544 & 0.0341 & 0.0380 \\
+S2\_score+logE\_MEDIUM & .s2 & 35,943 & 196 & 0.8744 & 0.1274 & 0.1460 \\
+S2\_fl14+logE\_MEDIUM & .s2b & 35,943 & 196 & 0.9163 & 0.1397 & 0.1500 \\
+S3\_score+E+breadth & .s3 & 35,943 & 196 & 0.9077 & 0.1334 & 0.1340 \\
+S4\_exposureFE+partFE & .s4 & 15,134 & 195 & 0.7612 & 0.0387 & 0.0600 \\
+S5\_score\_vs\_excessPos & score\_i & 35,943 & 212 & 0.7478 & 0.0155 & 0.0200 \\
+S6\_score+E\_strict & .s6 & 34,761 & 192 & 0.8780 & 0.1178 & 0.1420 \\
+NESTED\_exposure\_only & logit log\_opp & 15,134 & 195 & 0.7544 & -- & -- \\
+NESTED\_exposure+score & logit log\_opp+score & 15,134 & 195 & 0.7596 & -- & -- \\
+WITHIN\_STRATUM\_log\_tc & score\_i|opp-decile & 15,134 & 195 & 0.4624 & -- & -- \\
+WITHIN\_STRATUM\_fl14 & fl14|opp-decile & 15,134 & 195 & 0.4779 & -- & -- \\
+\hline\end{tabular}
+\begin{tablenotes}\footnotesize\item Nested-logit increment of score over exposure-only = +0.0052 (DeLong $p=1.91e-01$); within-opportunity-decile C-statistic: $\log T_i$ = 0.4624, FL14 = 0.4779. Exposure-only AUC = 0.7544 reproduces the mechanical benchmark.\end{tablenotes}
+\end{table}
