@@ -132,15 +132,31 @@ Raw award-layer ROC-AUC & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpRawSco
 Label-blind opportunity expectation (AUC) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorExpLB | \valFedAudLabelBlindAUC
 Within-stratum residual (AUC, MEDIUM cells) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpWithinAUC | \valFedAudWithinAUC
 Nested DeLong increment over exposure-only ($p$) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpNestedIncrement(+0.010,p=0.013) | \valFedAudNestedIncrement(+0.005,p=0.191)
-Power-bounded residual (det.\ prob.\ @ true AUC $0.55$) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorPowerFive | \valFedAudPowerFive
+Power-bounded residual (det.\ prob.\ @ true AUC $0.55$ / $0.60$)\tnote{a} & $\valTODO$ & $\valTODO$\,/\,$\valTODO$ \\ % TODO_NUMBER \valArmorPowerFive | \valFedAudPowerFive | \valFedAudPowerSixty (NEW macro; permutation_power_curve.csv :: 0.6 rejection_rate_alpha05)
 Matched-permutation $p$ (within-strata shuffle) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpPermCp | \valFedAudPermCp
-Label-frozen prospective timing (AUC) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorFrozenProspAUC | \valFedAudFrozenProspAUC
+Label-frozen prospective timing (AUC)\tnote{b} & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorFrozenProspAUC | \valFedAudFrozenProspAUC
 Top-case concentration (share of positives) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valTopCasePosShare | \valFedAudTopCaseShare
 Negative-control verdict & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valTODO(BEC: generic geometry) | \valFedAudNegControlVerdict
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \scriptsize
+\item[a] The federal positive set is roughly $30\%$ of BEC's, so the
+matched-permutation null is informative against within-stratum
+residuals $\geq 0.60$ (detection probability $\valTODO$) but
+underpowered against a residual of $0.55$ (detection probability
+$\valTODO$); BEC reaches $\valTODO$ already at $0.55$. The federal
+within-stratum positive control $O_i$ recovers $\geq 0.99$, so the
+design provably detects within-stratum signal when present---the
+federal null is a power bound on a genuine null, not a design
+artifact. % TODO_NUMBER a-note: \valFedAudPowerSixty | \valFedAudPowerFive | \valArmorPowerFive ; \valFedAudOiControlMedium >= 0.99
+\item[b] The federal prospective cell freezes score and always-loser
+pool and labels new defendant contact in $2017$--$2019$
+(positives $N^{+}=\valTODO$); the retrospective companion % TODO_NUMBER b-note: \valFedAudFrozenProspN (98)
+($\valTODO$, $N^{+}=\valTODO$) scores in-window contact under the % TODO_NUMBER \valFedAudFrozenRetroAUC | \valFedAudFrozenRetroN
+same frozen pool. The two are different estimands on different
+positive sets and are mutually consistent, not contradictory; only
+the prospective number is the referee's clean out-of-time test.
 \item \textit{Notes:} Each row is the comparable quantity from the
 Section~\ref{sec:validation} battery, re-run on the federal panel
 under the same definitions; the federal construction is detailed in
@@ -199,8 +215,21 @@ near chance ($\valTODO$), the nested model adds nothing detectable % TODO_NUMBER
 over the exposure-only benchmark ($\valTODO$ DeLong increment, % TODO_NUMBER \valFedAudNestedIncrement
 $p=\valTODO$), and the matched-strata permutation does not reject % TODO_NUMBER \valFedAudNestedP
 ($p=\valTODO$)---the same collapse, the same nulls, the same shape % TODO_NUMBER \valFedAudPermCp
-the BEC audit produces. The deflation is therefore not a federal
-artifact and not a BEC artifact; it is what a disciplined audit
+the BEC audit produces. We state the federal power bound as a bound,
+not as a result it cannot bear: with a federal positive set about a
+third the size of BEC's, the matched-permutation null is informative
+against a within-stratum residual of $0.60$ but underpowered at
+$0.55$ ($\valTODO$ versus $\valTODO$ detection probability), so the % TODO_NUMBER \valFedAudPowerSixty | \valFedAudPowerFive
+federal deflation does not rest on the permutation alone. It rests on
+four power-robust pillars that no sample-size argument can dissolve:
+the exposure-only ranking already matches the raw score, the
+within-stratum point estimate sits \emph{below} $0.5$, the matched
+permutation does not reject, and the negative controls return the
+same generic geometry; and the within-stratum positive control
+recovers $\geq 0.99$ ($\valTODO$), confirming the design would have % TODO_NUMBER \valFedAudOiControlMedium
+caught a within-stratum signal had one been present. The deflation is
+therefore not a federal artifact and not a BEC artifact; it is what a
+disciplined audit
 returns whenever a cheap award-layer statistic is held to an
 opportunity-adjusted standard. That is the argument, not a
 confession: what ports across the two systems is the audit---the

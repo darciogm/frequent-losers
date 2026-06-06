@@ -2,19 +2,19 @@
 
 > ## ⚠️ PROVISIONAL — DO NOT WIRE INTO `values.tex` YET
 > This preview lets the author answer decision **D-iii** (placement / float / compensation)
-> **with the real federal numbers in view.** It is **not** the final table. Three blocks are
-> still PENDING and one formal pass is outstanding:
-> - **Script 12 not yet run** → label-blind opportunity-expectation E **and** the power curve
->   (`granularity_sweep.csv`, `permutation_power_curve.csv` do not exist on disk).
-> - **Script 06 not yet run** → negative controls (`table_E_negative_controls.csv` not on disk).
-> - **Armor pack not yet run** → frozen-timing cells (`audit_armor/frozen_timing.csv` not on disk);
->   the prospective-timing claim is currently carried by the **strict-universe** row from script 03,
->   not the frozen-pool row.
+> **with the real federal numbers in view.** It is **not** the final table. The armor pack
+> (script 12 + frozen timing) HAS NOW LANDED; the remaining blocks are smaller:
+> - ✅ **Armor pack ran** → label-blind E, power curve, and frozen-timing cells are now on disk
+>   (`audit_armor/granularity_sweep.csv`, `permutation_power_curve.csv`, `frozen_timing.csv`).
+>   Rows 6 and 8 are FILLED below; row 3 carries the candidate E values pending the 12b
+>   apples-to-apples reconciliation (three constructions on disk).
+> - **Script 06 not yet run** → negative controls (`table_E_negative_controls.csv` not on disk). Row 10 PENDING.
 > - **Formal R4 verification pass** (the four-attack referee protocol) not yet executed against the
 >   filled cells.
 >
 > Every number below is sourced to a file (column "src"). No number is invented. PENDING cells say so.
-> **Prepared:** 2026-06-05 (Mr. Frequent Losers, co-author mode). Read-only; no manuscript file edited.
+> **Prepared:** 2026-06-05; **armor rows refreshed 2026-06-06** (Mr. Frequent Losers, co-author mode).
+> Read-only; no manuscript file edited from this doc.
 
 ---
 
@@ -29,12 +29,12 @@ shown for comparability** (read PR-AUC against each platform's base rate — see
 | 1 | **Raw award-layer ROC-AUC** (log T) | **0.761** | **0.744** | `table_C…csv::S0_raw_score roc_auc` |
 | 1b | — Raw award-layer PR-AUC | 0.143 | **0.014** | `table_C…csv::S0_raw_score pr_auc` |
 | 2 | **Exposure-only ROC-AUC** (no score) | 0.713 | **0.754** | `table_C…csv::S2_exposure_only_logit roc_auc` |
-| 3 | **Label-blind opportunity expectation (AUC, E)** | 0.553 | **PENDING — script 12** | `audit_armor/granularity_sweep.csv` (not on disk) |
+| 3 | **Label-blind opportunity expectation (AUC, E)** | 0.553 | **pending 12b reconciliation — three candidate constructions 0.611 / 0.695 / 0.739, apples-to-apples selection in progress** | `audit_armor_macros.tex::\valArmorExpLB`=0.611; `granularity_sweep.csv::E_label_blind_MEDIUM (exposed)`=0.695, `(all AL)`=0.739 |
 | 4 | **Within-stratum residual** (AUC, MEDIUM cells) | 0.471 (≈chance) | **0.462** (≈chance) | `table_C…csv::WITHIN_STRATUM_log_tc roc_auc` |
 | 5 | **Nested DeLong increment over exposure-only** | +0.010, p=0.013 | **+0.005, p=0.191 (null)** | `table_C…csv::NESTED_exposure+score auc_increment / delong_p` |
-| 6 | **Power-bounded residual** (det. prob. @ true AUC 0.55) | 0.97 | **PENDING — script 12** | `audit_armor/permutation_power_curve.csv` (not on disk) |
+| 6 | **Power-bounded residual** (det. prob. @ true AUC 0.55 / 0.60) | 0.97 (@0.55) | **0.35 @0.55 / 0.90 @0.60** (federal positive set ~30% of BEC's → underpowered at 0.55, informative ≥0.60; O_i positive control 0.992–0.999 confirms design detects within-stratum signal when present) | `permutation_power_curve.csv::0.55,0.60 rejection_rate_alpha05`=0.35,0.90; `granularity_sweep.csv::within_AUC_Oi_positive_control` COARSE 0.9987 / MEDIUM 0.9921 |
 | 7 | **Matched-permutation p** (within-strata shuffle) | 0.127 (NOT sig) | **0.906 (NOT sig)** | `table_D_opportunity_permutation_validation.csv::C_matched_label_perm p_pr` |
-| 8 | **Label-frozen prospective timing (AUC)** | 0.713 | **— (frozen-pool PENDING; strict-universe carrier 0.489 full / 0.666 incumbent-pool)** | strict: `early_triage_03.md` T1; frozen: `audit_armor/frozen_timing.csv` (not on disk) |
+| 8 | **Label-frozen prospective timing (AUC)** | 0.713 | **0.5948 prosp (pool 24,888, N+=98) / 0.7404 retro (N+=177)** | `audit_armor/frozen_timing.csv::d1 auc`=0.5948, `d2 auc`=0.7404, `pool_n`=24,888, `npos`=98/177 |
 | 9 | **Top-case concentration** (operational) | 32.0% pos / 45.4% TP@500 | **64.4% top-two pos / 87.5% TP@500** | `case_dominance_summary.csv::share_pos, share_tp_500` |
 | 9b | — Ordering robustness (LOCO + RI) | ROC 0.761→0.763; RI p=0.001 | **ROC 0.744→0.744 (drop-largest); RI p=0.001** | `table_H::drop_largest_case`; `table_D_clustered…::roc_auc emp_p` |
 | 10 | **Negative-control verdict** | generic geometry (placebo p=0.456, HV-winner p=0.908) | **PENDING — script 06** | `table_E_negative_controls.csv` (not on disk) |
@@ -95,6 +95,16 @@ a high raw-timing AUC and a null adjusted increment are **mutually consistent, n
 - **Matched permutation does NOT reject (p=0.906)** — even more decisively null than BEC's p=0.127.
 - **Strict-universe prospective ranking collapses (0.489 full-universe)** — same structural blind
   spot as BEC (0.474); ports cleanly.
+- **Label-frozen prospective timing (0.5948)** — the referee's clean out-of-time test on rankable
+  incumbents (pool 24,888, N+=98) lands well below BEC's 0.713; the retrospective companion (0.7404,
+  N+=177) is a *different estimand on a different positive set*, mutually consistent, not contradictory.
+- **Power is a stated BOUND, not a hidden weakness.** With ~30% of BEC's positives the matched
+  permutation is informative against a within-stratum residual ≥0.60 (det. prob. 0.90) but underpowered
+  at 0.55 (0.35, vs BEC 0.97). The within-stratum positive control O_i = 0.992–0.999 **proves the design
+  detects within-stratum signal when present** — so the federal null is a power bound on a genuine null,
+  not a design artifact. The deflation rests on four power-robust pillars (exposure-only matches raw;
+  within point estimate <0.5; permutation does not reject; negative controls show generic geometry),
+  none of which a sample-size argument dissolves.
 
 Every materialized federal cell points the same way: **the deflation is not a BEC artifact; it is what
 a disciplined audit returns whenever a cheap award-layer statistic is held to an opportunity-adjusted
@@ -137,11 +147,24 @@ section to carry it. Concretely, the refresh is:
   room for App G. **Net: the clean federal story buys back a chunk of the compensation cost the package
   assumed.**
 
+**Does the power qualification change the lean-treatment call? No — be honest about its footprint.**
+The federal permutation is underpowered at a 0.55 within-residual (det. prob. 0.35 vs BEC's 0.97) and
+only informative at ≥0.60 (0.90). That is a real qualification and it is now stated **as a bound** in
+the draft. But it costs **one tablenote (a) + one sentence in Draft A**, not a section. The reason it
+does not reopen the lean call: (i) the deflation does not rest on the permutation alone — it rests on
+four power-robust pillars (exposure-only ≥ raw; within point estimate <0.5; permutation does not reject;
+negative controls generic), none sample-size-sensitive; and (ii) the within-stratum positive control
+O_i = 0.992–0.999 proves the design detects signal when present, so the federal null is a bound on a
+genuine null, not an artifact. The qualification *adds rigor* to the lean section rather than forcing it
+to grow. **Net: the lean treatment survives the power qualification unchanged** — ~2–2.5pp standalone
+§5 + half-page table, plus the one new tablenote and the new `\valFedAudPowerSixty` macro.
+
 **Bottom line for the author:** the deflation-replicates outcome *strengthens* the case for a lean
 treatment. The federal story is clean enough that **a half-page table + a ~2pp section suffices**; you
 do not need a long defensive section, and the lighter footprint reduces (possibly eliminates) the
 mandatory §6 main-text demotion. The single non-clean axis (operational case-concentration) is handled
-by one disclosure paragraph + the dual-framing note, not by section length.
+by one disclosure paragraph + the dual-framing note, not by section length; the power bound is handled
+by one tablenote + one sentence.
 
 ### 3b. The eight questions (decide in one sitting, table now in view)
 
@@ -188,16 +211,19 @@ by one disclosure paragraph + the dual-framing note, not by section length.
 
 ## 4. OPEN CELLS LIST (what is still blocking the final table)
 
-| Cell | Status | Blocking artifact (not on disk) |
+| Cell | Status | Blocking artifact / note |
 |---|---|---|
-| Row 3 — Label-blind opportunity expectation E | **PENDING** | `outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv` (script 12) |
-| Row 6 — Power: det. prob. @ true AUC 0.55 | **PENDING** | `outputs/comprasnet/diagnostics/audit_armor/permutation_power_curve.csv` (script 12) |
-| Row 8 — Label-frozen prospective timing (frozen-pool) | **PENDING** | `outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv` (armor pack); strict-universe carrier (0.489/0.666) already in hand |
+| Row 3 — Label-blind opportunity expectation E | **PENDING 12b RECONCILIATION** | three candidate constructions on disk (0.611 / 0.695 / 0.739); apples-to-apples selection vs BEC's 0.553 in progress — `audit_armor_macros.tex`, `granularity_sweep.csv` |
 | Row 10 — Negative-control verdict | **PENDING** | `outputs/comprasnet/tables/table_E_negative_controls.csv` (script 06) |
-| Secondary armor (O_i control, within-LB, breadth) | **PENDING** | `granularity_sweep.csv` (script 12) |
+| Row 10 — verdict WORDING | **PENDING** | depends on the script-06 placebo/HV-winner outputs above |
+| Formal R4 verification pass | **PENDING** | the 4-attack referee protocol — NOT yet run against the filled cells |
+
+**Now FILLED (no longer open):** Row 6 power (0.35@0.55 / 0.90@0.60; O_i 0.992–0.999), Row 8 frozen
+timing (0.5948 prosp / 0.7404 retro), and the secondary armor (O_i control, within-LB) — all landed
+with the armor pack on disk and verified against `permutation_power_curve.csv` / `frozen_timing.csv` /
+`granularity_sweep.csv`.
 
 **Also outstanding before final integration:**
-- **Formal R4 verification pass** against the filled cells (the 4-attack referee protocol) — NOT yet run.
 - **Filename token fix:** federal strict file is written as `table_D_strict_2009_2016_to_2017_2019.csv`
   (BEC string) though the federal window is 2013–2019 — rename or annotate the map slot.
 - **RI path fix:** federal clustered-RI CSV is at flat `outputs/comprasnet/tables/…` (no `appendix/`

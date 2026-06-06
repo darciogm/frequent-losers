@@ -25,6 +25,13 @@ formerly lived in `sec_app07_comprasnet_submission.tex`, which was DELETED 2026-
 gutted; the two salvageable slivers merged into `sec_appG_federal_DRAFT.tex`). The five `\valFed*`
 universe macros remain and are now referenced only by the comparative + appG drafts.*
 
+**NEW macro added 2026-06-06 (armor pack landed).** `\valFedAudPowerSixty` — federal detection
+probability at injected within-AUC 0.60. **Src spec:**
+`outputs/comprasnet/diagnostics/audit_armor/permutation_power_curve.csv :: 0.6 rejection_rate_alpha05`
+= **0.90**. Carried as the second value of the dual power cell (row 6) in `sec_comparative_DRAFT.tex`,
+alongside `\valFedAudPowerFive` (=0.35 @0.55). Federal armor literal on disk:
+`\valArmorPowerTen`=0.90 in `audit_armor_macros.tex` (rebind into `\valFedAudPowerSixty`).
+
 **Already-built federal targets.** Phase-1 funnel/universe targets are ALREADY materialized in
 `outputs/comprasnet/targets/canonical_target_counts.csv` and `canonical_case_labels.csv`, so the
 label-funnel and universe rows below carry the federal value in brackets `[built: …]`. The
@@ -129,10 +136,22 @@ Federal slot (PENDING): `outputs/comprasnet/diagnostics/audit_armor/permutation_
 
 | Row | BEC value | BEC source (file + macro) | Federal slot (file) | Federal macro |
 |---|---|---|---|---|
-| Detection prob. @ true within-AUC 0.52 | 0.28 | `permutation_power_curve.csv` ; `\valArmorPowerTwo`=0.28 | `outputs/comprasnet/diagnostics/audit_armor/permutation_power_curve.csv` (0.52 row) `[PENDING]` | `\valFedAudPowerTwo` |
-| Detection prob. @ true within-AUC **0.55** | **0.97** | `permutation_power_curve.csv` ; `\valArmorPowerFive`=0.97 | `…/permutation_power_curve.csv` (0.55 row) `[PENDING]` | `\valFedAudPowerFive` |
-| Detection prob. @ true within-AUC 0.60 | 1.00 | `permutation_power_curve.csv` ; `\valArmorPowerTen`=1.00 | `…/permutation_power_curve.csv` (0.60 row) `[PENDING]` | `\valFedAudPowerTen` |
-| Within-stratum positive control (O_i, MEDIUM) | 0.953 | `granularity_sweep.csv` / armor ; `\valArmorOiControlMedium`=0.953 | `outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv` (O_i control) `[PENDING]` | `\valFedAudOiControlMedium` |
+| Detection prob. @ true within-AUC 0.52 | 0.28 | `permutation_power_curve.csv` ; `\valArmorPowerTwo`=0.28 | `audit_armor/permutation_power_curve.csv :: 0.52 rejection_rate_alpha05` `[built: 0.167]` | `\valFedAudPowerTwo` |
+| Detection prob. @ true within-AUC **0.55** | **0.97** | `permutation_power_curve.csv` ; `\valArmorPowerFive`=0.97 | `audit_armor/permutation_power_curve.csv :: 0.55 rejection_rate_alpha05` `[built: 0.35]` | `\valFedAudPowerFive` |
+| Detection prob. @ true within-AUC **0.60** | 1.00 | `permutation_power_curve.csv` ; `\valArmorPowerTen`=1.00 | `audit_armor/permutation_power_curve.csv :: 0.6 rejection_rate_alpha05` `[built: 0.90]` | **`\valFedAudPowerSixty`** (NEW) |
+| Detection prob. @ true within-AUC 0.65 | 1.00 | `permutation_power_curve.csv` (0.65) | `audit_armor/permutation_power_curve.csv :: 0.65 rejection_rate_alpha05` `[built: 1.00]` | `\valFedAudPowerSixtyFive` |
+| Within-stratum positive control (O_i, MEDIUM) | 0.953 | `granularity_sweep.csv` / armor ; `\valArmorOiControlMedium`=0.953 | `audit_armor/granularity_sweep.csv :: E_loo_MEDIUM within_AUC_Oi_positive_control` `[built: 0.9921]` (COARSE 0.9987; STRICT 0.5333 — sparse, ignore) | `\valFedAudOiControlMedium` |
+
+**Power-bound reading (Group 4, federal).** The federal positive set is ~30% of BEC's, so the
+matched-permutation null is *informative against within-stratum residuals ≥0.60* (det. prob.
+**0.90**) but *underpowered at 0.55* (**0.35**, vs BEC **0.97**). The within-stratum positive
+control O_i (0.992–0.999 at MEDIUM/COARSE) confirms the design **detects within-stratum signal when
+present** — the federal null is a power bound on a genuine null, not a design artifact. Federal armor
+file writes these under the `\valArmor*` namespace (`12_audit_armor.R`); the comparative/appG drafts
+rebind into `\valFedAud*`. (Federal armor literals on disk: `\valArmorPowerFive`=0.35,
+`\valArmorPowerTen`=0.90, `\valArmorOiControlMedium`=0.992 in
+`outputs/comprasnet/diagnostics/audit_armor/audit_armor_macros.tex`.) **Source for `\valFedAudPowerSixty`:
+`permutation_power_curve.csv :: 0.6 rejection_rate_alpha05` = 0.90.**
 
 ---
 
@@ -180,9 +199,19 @@ Federal slot (PENDING): `outputs/comprasnet/tables/table_D_strict_2013_2016_to_2
 | Strict full universe prec@500 | 0 | `table_D_strict…csv` ; `\valStrictFullPrec`=0 | `…/table_D_strict_2013…csv` `[PENDING]` | `\valFedAudStrictPrec` |
 | Strict training-AL pool, continuous ROC | 0.684 | `table_D_strict…csv` ; `\valStrictContAUC`=0.684 | `…/table_D_strict_2013…csv` `[PENDING]` | `\valFedAudStrictContAUC` |
 | Strict training-AL pool, FL binary ROC | 0.646 | `table_D_strict…csv` ; `\valStrictFLAUC`=0.646 | `…/table_D_strict_2013…csv` `[PENDING]` | `\valFedAudStrictFLAUC` |
-| Frozen pool size | 13,051 | `frozen_timing.csv` ; `\valArmorFrozenPool`=13,051 | `outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv` (pool) `[PENDING]` | `\valFedAudFrozenPool` |
-| Label-frozen prospective ROC (new contact) | **0.713** | `frozen_timing.csv` ; `\valArmorFrozenProspAUC`=0.713 (N=231 `\valArmorFrozenProspN`) | `…/frozen_timing.csv` (prospective) `[PENDING]` | `\valFedAudFrozenProspAUC` (+`\valFedAudFrozenProspN`) |
-| Label-frozen retrospective ROC (leakage-closed) | 0.718 | `frozen_timing.csv` ; `\valArmorFrozenRetroAUC`=0.718 (N=582) | `…/frozen_timing.csv` (retrospective) `[PENDING]` | `\valFedAudFrozenRetroAUC` |
+| Frozen pool size | 13,051 | `frozen_timing.csv` ; `\valArmorFrozenPool`=13,051 | `audit_armor/frozen_timing.csv :: pool_n` `[built: 24,888]` | `\valFedAudFrozenPool` |
+| Label-frozen prospective ROC (new contact) | **0.713** | `frozen_timing.csv` ; `\valArmorFrozenProspAUC`=0.713 (N=231 `\valArmorFrozenProspN`) | `audit_armor/frozen_timing.csv :: d1 auc` `[built: 0.5948, npos=98]` (label = NEW defendant contact 2017–2019; the referee's clean out-of-time test on rankable incumbents) | `\valFedAudFrozenProspAUC` (+`\valFedAudFrozenProspN`=98) |
+| Label-frozen retrospective ROC (leakage-closed) | 0.718 | `frozen_timing.csv` ; `\valArmorFrozenRetroAUC`=0.718 (N=582) | `audit_armor/frozen_timing.csv :: d2 auc` `[built: 0.7404, npos=177]` (label = defendant contact within 2013–2016, fully frozen; no cross-window leakage in EITHER label or pool) | `\valFedAudFrozenRetroAUC` (+`\valFedAudFrozenRetroN`=177) |
+
+**Frozen-timing reading (Group 7, federal).** Prospective and retrospective are **different estimands
+on different positive sets** (N+=98 vs 177) under the *same* frozen pool (24,888) — they are mutually
+consistent, not contradictory; only the prospective number (0.5948) is the referee's clean out-of-time
+test, and it lands well below BEC's 0.713. The federal armor file writes
+`\valArmorFrozenProspAUC`=0.595 / `\valArmorFrozenRetroAUC`=0.740 / `\valArmorFrozenPool`=24,888 in
+`outputs/comprasnet/diagnostics/audit_armor/audit_armor_macros.tex`; rebind into `\valFedAud*` for the
+comparative table. Estimand-wall note: the frozen prospective (0.5948) and the raw strict-universe
+timing (0.489 full / 0.666 incumbent-pool, Group-8 below) measure different objects on different
+samples — do not collide them.
 | Worst rolling-origin year ROC | 0.446 (below chance) | `table_E_rolling_origin_validation.csv` ; `\valRollWorstAUC`=0.446 | `outputs/comprasnet/tables/table_E_rolling_origin_validation.csv` `[PENDING]` | `\valFedAudRollWorstAUC` |
 
 ---
