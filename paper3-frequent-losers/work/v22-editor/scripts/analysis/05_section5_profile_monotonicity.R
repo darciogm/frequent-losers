@@ -910,8 +910,13 @@ memo <- c(
   "## Numbers (this run)",
   paste0("```\n", paste(capture.output(print(m_tab[, .(sample,score_form,N,positives,roc_auc,pr_auc,prec_500)])), collapse="\n"), "\n```")
 )
-writeLines(memo, file.path(DOCS, "binary_vs_continuous_score_memo.md"))
-say("wrote binary_vs_continuous_score_memo.md")
+# PROVENANCE FIX (2026-06-06): namespace the memo by source. DOCS is a shared
+# (non-source-isolated) dir, so a federal run was overwriting the BEC memo at the
+# hardcoded path. BEC keeps the unchanged path (byte-identity preserved);
+# comprasnet writes a "_comprasnet"-suffixed sibling.
+memo_name <- if (cfg$source == "bec") "binary_vs_continuous_score_memo.md" else sprintf("binary_vs_continuous_score_memo_%s.md", cfg$source)
+writeLines(memo, file.path(DOCS, memo_name))
+say("wrote %s", memo_name)
 stamp("F_memo")
 
 say("\n=== DONE. total elapsed=%.1fs ===", as.numeric(difftime(Sys.time(),.t0,units="secs")))

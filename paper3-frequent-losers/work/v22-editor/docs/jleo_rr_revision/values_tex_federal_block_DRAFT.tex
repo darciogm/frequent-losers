@@ -346,9 +346,62 @@
 % src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: breadth verdict | breadth verdict string (strengthens / reverses) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
 \newcommand{\valFedAudBreadthVerdict}{TODO}
 
+% ----------------------------------------------------------------------------
+% ROW GROUP 11 -- SRP stratification (federal pregao-variant robustness, A7)
+% src base: outputs/comprasnet/tables/table_SRP_stratified.csv (+ _macros.csv)
+% Built by scripts/analysis/13_srp_stratified_validation.R (re-run 2026-06-06, 26s, FULL).
+%
+% SRP-ADJUDICATION (2026-06-06; early_triage_13_srp.md, locked verdict):
+%   The within (year x buyer)-cell C-statistic is a DIFFERENT ESTIMAND from
+%   script 02's exposure-stratum within (admin cell, does NOT purge exposure;
+%   pair-starved: reg 24,543 pairs vs srp 1,207). It is NOT publishable beside the
+%   exposure-adjusted within (\valFedAudWithinAUC, Group 3) and gets NO prose macro.
+%   The value is retained in table_SRP_stratified.csv under the
+%   DO_NOT_PUBLISH_beside_exposure_within flag column ONLY (CSV record, never tex).
+%   A7 rides on the cross-stratum-consistent rows: raw / exposure-only / FL32.
+%   ==> \valFedAudSRP*Within* macros are DELIBERATELY OMITTED. Do not add them.
+% ----------------------------------------------------------------------------
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: pregao_5 n_firms | AL firms active in regular-pregao stratum | FILLED 2026-06-06
+\newcommand{\valFedAudSRPregN}{25{,}190}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: pregao_5 n_pos | broad-AL cobidder positives, regular pregao | FILLED 2026-06-06
+\newcommand{\valFedAudSRPregNpos}{114}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: pregao_5 raw_auc | raw AUC, regular pregao | FILLED 2026-06-06
+\newcommand{\valFedAudSRPregRawAUC}{0.748}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: pregao_5 raw_auc_lo/hi | raw-AUC 95% CI, regular pregao | FILLED 2026-06-06
+\newcommand{\valFedAudSRPregRawAUCCI}{[0.704, 0.792]}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: pregao_5 pr_auc | PR-AUC, regular pregao | FILLED 2026-06-06
+\newcommand{\valFedAudSRPregPRAUC}{0.014}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: pregao_5 exposure_only_auc | exposure-only AUC, regular pregao | FILLED 2026-06-06
+\newcommand{\valFedAudSRPregExpAUC}{0.859}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: pregao_5 fl32_auc | FL32 AUC, regular pregao (cross-stratum-consistent col) | FILLED 2026-06-06
+\newcommand{\valFedAudSRPregFLthirtytwoAUC}{0.656}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: SRP_9999 n_firms | AL firms active in SRP stratum | FILLED 2026-06-06
+\newcommand{\valFedAudSRPsrpN}{20{,}461}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: SRP_9999 n_pos | broad-AL cobidder positives, SRP | FILLED 2026-06-06
+\newcommand{\valFedAudSRPsrpNpos}{165}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: SRP_9999 raw_auc | raw AUC, SRP | FILLED 2026-06-06
+\newcommand{\valFedAudSRPsrpRawAUC}{0.703}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: SRP_9999 raw_auc_lo/hi | raw-AUC 95% CI, SRP | FILLED 2026-06-06
+\newcommand{\valFedAudSRPsrpRawAUCCI}{[0.667, 0.739]}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: SRP_9999 pr_auc | PR-AUC, SRP | FILLED 2026-06-06
+\newcommand{\valFedAudSRPsrpPRAUC}{0.016}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: SRP_9999 exposure_only_auc | exposure-only AUC, SRP | FILLED 2026-06-06
+\newcommand{\valFedAudSRPsrpExpAUC}{0.874}
+% src: outputs/comprasnet/tables/table_SRP_stratified.csv :: SRP_9999 fl32_auc | FL32 AUC, SRP (cross-stratum-consistent col) | FILLED 2026-06-06
+\newcommand{\valFedAudSRPsrpFLthirtytwoAUC}{0.641}
+% src: outputs/comprasnet/tables/table_SRP_stratified_macros.csv :: valFedAudSRPgap | abs raw-AUC difference across pregao variants (consistency gap) | FILLED 2026-06-06
+\newcommand{\valFedAudSRPgap}{0.045}
+% SUPPRESSED (SRP-ADJUDICATION 2026-06-06): within (year x buyer)-cell C-stat is a
+%   DIFFERENT ESTIMAND from \valFedAudWithinAUC (Group 3). CSV-only values for the
+%   record: regular 0.867 [24,543 pairs] / SRP 0.713 [1,207 pairs]
+%   (table_SRP_stratified.csv::within_yearbuyer_cell_cstat, DO_NOT_PUBLISH flag=1).
+%   NO \valFedAudSRPregWithinAUC / \valFedAudSRPsrpWithinAUC macros minted -- by design.
+
 % ============================================================================
-% END federal wiring block. Macro tally: 82 total = 21 FILLED + 61 TODO.
+% END federal wiring block. Macro tally: 97 total = 36 FILLED + 61 TODO.
 %   (2026-06-06: added \valFedAudTopTwoShare, Group 8, link-row 64.4% basis.)
 %   (2026-06-06: armor doc-reconciliation FILLED 7 -- label-blind E 0.611
 %    (LabelBlindAUC+ExpLB), neg-controls 0.729/0.745/verdict, within-LB 0.695/0.739.)
+%   (2026-06-06: SRP-ADJUDICATION -- Group 11 FILLED 15 SRP macros from the 26s
+%    federal re-run of script 13; within-cell C-stat SUPPRESSED, no macro by design.)
 % ============================================================================

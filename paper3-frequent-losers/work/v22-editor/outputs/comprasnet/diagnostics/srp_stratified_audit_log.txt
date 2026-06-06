@@ -1,8 +1,8 @@
-=== 13_srp_stratified_validation.R  (SMOKE) === 
-host=DarcioWork  nproc=14  seed=20260605  date=2026-06-05 18:56:45 
+=== 13_srp_stratified_validation.R  (FULL) === 
+host=DarcioWork  nproc=14  seed=20260605  date=2026-06-06 07:38:49 
 SOURCE=comprasnet  (ComprasNet (federal, 2013-2019, pure Pregao)) 
 DATA=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/data/processed_comprasnet 
-SPILL=/tmp/duckdb_spill_srp13  DUCK_THREADS=2  DUCK_MEM=2GB 
+SPILL=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/comprasnet/cache/duckdb_spill  DUCK_THREADS=12  DUCK_MEM=12GB 
 DESIGN: stratify EVALUATION (sample active in stratum + within-stratum year x buyer cells); 
         keep POOLED score=log1p(tenders_count), FL32 cut (>=32), label=broad_cobidder. 
         FL32 NEVER re-derived per stratum (per-variant IQR thresholds 33.5 vs 64.5 -> different constructs). 
@@ -12,29 +12,44 @@ broad-AL positives (clean canonical, sentinel removed): 195 firm_code
 always-losers (pooled universe): 35943 ; cobidders in universe: 195 ; FL32: 6491 
 ASSERT broad cobidders in AL universe: 195 of 195 (0 not AL -> excluded from npos) 
 direct CADE defendants raw=27 ; cleaned (winners only)=27 
-  [stage A_pooled_construct        ] elapsed=   0.1s  RSS=174 MB 
+  [stage A_pooled_construct        ] elapsed=   0.1s  RSS=180 MB 
 
 ----- B. stratum assignment (item-modality map) ----- 
 ASSERT item modality-uniqueness (sample of <=2M rows): multi-phase items=14 / 253626 (0.0055%) 
-building item->modality map (SMOKE: LIMIT 8M bid rows) ... 
+building item->modality map (FULL) ... 
 item->modality map phase counts: 
-    phase=9999  : 821,766 items 
-    phase=5     : 271,693 items 
+    phase=9999  : 6,156,927 items 
+    phase=5     : 1,257,241 items 
 
 stratum-active firm counts (firm_tender_map JOIN itemmap): 
   phase n_firms_active n_AL_active n_cob_active n_def_active
-1     5          26353        6266           50           13
-2  9999          24433        4386           46           19
-  [stage B_stratum_assignment      ] elapsed=   7.0s  RSS=456 MB 
-AL firm x stratum membership rows: 10,652 
+1     5          70901       25190          114           21
+2  9999          68916       20461          165           23
+  [stage B_stratum_assignment      ] elapsed=   3.7s  RSS=1330 MB 
+AL firm x stratum membership rows: 45,651 
 
------ SMOKE verification: stratum counts vs feasibility scan ----- 
-  [pregao_5] phase=5 : active_firms=26,353  AL_active=6,266  cobidders_active=50 (feas~3546)  defendants_active=13 (feas~21) 
-  [SRP_9999] phase=9999 : active_firms=24,433  AL_active=4,386  cobidders_active=46 (feas~4069)  defendants_active=19 (feas~23) 
+----- C. within-stratum (year x buyer) cells + AL participation ----- 
+AL firm-opportunity rows (all strata): 1,064,212 
+  [stage C_within_stratum_cells    ] elapsed=  22.3s  RSS=945 MB 
 
-  NOTE: SMOKE scans a LIMIT-8M bid sample, so cobidder/defendant counts will be 
-  BELOW the feasibility figures (those are full-window). Rough proportionality + correct 
-  phase codes (5 / 9999) + clean modality-uniqueness assert are the smoke pass criteria. 
-  [stage SMOKE_DONE                ] elapsed=  12.6s  RSS=255 MB 
+----- D. per-stratum evaluation ----- 
 
-SMOKE DONE -- full AUC/permutation NOT run (concurrent chain owns the machine). 
+  [pregao_5] phase=5  N_active_AL=25,190  N+(broad cobidder)=114 
+    raw AUC=0.7481 [0.7045, 0.7916]  PR-AUC=0.0138  within(year|buyer)-cell C-stat=0.8673 [24543 pairs; DO-NOT-PUBLISH beside exposure within]  exposure-only(E) AUC=0.8592  FL32 AUC=0.6557 
+
+  [SRP_9999] phase=9999  N_active_AL=20,461  N+(broad cobidder)=165 
+    raw AUC=0.7029 [0.6673, 0.7386]  PR-AUC=0.0162  within(year|buyer)-cell C-stat=0.7133 [1207 pairs; DO-NOT-PUBLISH beside exposure within]  exposure-only(E) AUC=0.8735  FL32 AUC=0.6409 
+  [stage D_per_stratum_eval        ] elapsed=  25.8s  RSS=1423 MB 
+
+----- E. outputs ----- 
+wrote table_SRP_stratified.csv (2 strata rows) 
+wrote table_SRP_stratified.tex (within column DROPPED -- SRP-ADJUDICATION FIX 2026-06-06) 
+  cross-stratum raw-AUC consistency gap = 0.0451 
+wrote table_SRP_stratified_macros.{tex,csv} (15 macros) 
+
+========== VERDICT ========== 
+regular pregao raw AUC=0.7481  vs  SRP raw AUC=0.7029  (gap=0.0451) 
+VERDICT: CONSISTENT (signal behaves equivalently across pregao variants) 
+
+ALL DONE. 
+  [stage DONE                      ] elapsed=  25.9s  RSS=1423 MB 

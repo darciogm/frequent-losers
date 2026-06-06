@@ -264,6 +264,51 @@ Federal slot (PENDING): `outputs/comprasnet/diagnostics/audit_armor/*.csv`.
 
 ---
 
+## ROW GROUP 11 — SRP stratification (federal pregão-variant robustness, A7)
+
+Federal-only leg (BEC has no SRP/pregão split). Built by
+`scripts/analysis/13_srp_stratified_validation.R` (re-run 2026-06-06, 26s, FULL).
+Source: `outputs/comprasnet/tables/table_SRP_stratified.csv` (+ `_macros.csv`).
+
+**SRP-ADJUDICATION (2026-06-06, locked verdict — see
+`outputs/comprasnet/diagnostics/early_triage_13_srp.md`).** The A7 deliverable rides on the
+**cross-stratum-consistent** rows only: raw / exposure-only / FL32. The script's
+within-cell C-statistic (`within_yearbuyer_cell_cstat`, 0.867 reg / 0.713 srp) is a
+**DIFFERENT ESTIMAND** — a modal year×buyer *administrative*-cell C-stat that does NOT
+purge the exposure confound and is pair-starved (reg 24,543 comparable pairs; **srp only
+1,207**). It MUST NOT appear beside script 02/12's exposure-stratum within and **no
+`\valFedAudSRP*Within*` prose macro is minted** (the value is kept in the CSV for the
+record under a `DO_NOT_PUBLISH_beside_exposure_within` flag column; dropped from the .tex).
+
+| Row | pregão regular (phase 5) | SRP (phase 9999) | gap | Federal slot (file) | Federal `\valFedAud*` macro |
+|---|---|---|---|---|---|
+| N firms (AL active in stratum) | 25,190 | 20,461 | — | `table_SRP_stratified.csv::n_firms` `[built]` | `\valFedAudSRPregN` / `\valFedAudSRPsrpN` |
+| N$^+$ (broad-AL cobidder) | 114 | 165 | — | `…csv::n_pos` `[built]` | `\valFedAudSRPregNpos` / `\valFedAudSRPsrpNpos` |
+| Raw AUC [CI] | **0.748** [0.704, 0.792] | **0.703** [0.667, 0.739] | **0.045** (<0.05) | `…csv::raw_auc (+ raw_auc_lo/hi)` `[built]` | `\valFedAudSRPregRawAUC` (+`…CI`) / `\valFedAudSRPsrpRawAUC` (+`…CI`) |
+| PR-AUC | 0.014 | 0.016 | — | `…csv::pr_auc` `[built]` | `\valFedAudSRPregPRAUC` / `\valFedAudSRPsrpPRAUC` |
+| Exposure-only AUC | 0.859 | 0.874 | 0.015 | `…csv::exposure_only_auc` `[built]` | `\valFedAudSRPregExpAUC` / `\valFedAudSRPsrpExpAUC` |
+| FL32 AUC | 0.656 | 0.641 | 0.015 | `…csv::fl32_auc` `[built]` | `\valFedAudSRPregFLthirtytwoAUC` / `\valFedAudSRPsrpFLthirtytwoAUC` |
+| Cross-stratum raw-AUC consistency gap | — | — | **0.045** | `…_macros.csv::valFedAudSRPgap` `[built]` | `\valFedAudSRPgap` |
+| Within (year×buyer)-cell C-stat — **DO-NOT-PUBLISH** | 0.867 [24,543 pairs] | 0.713 [1,207 pairs] | 0.154 (artifact) | `…csv::within_yearbuyer_cell_cstat` + `DO_NOT_PUBLISH_beside_exposure_within=1` `[built; CSV-only, NOT a macro]` | **(no macro — suppressed)** |
+
+**SRP reading (Group 11, federal).** A7 verdict = the loser-side concentration signal behaves
+**CONSISTENTLY** across the two federal pregão variants: raw discrimination gap = **0.045 (< 0.05)**;
+exposure-only and FL32 gaps ≈ **0.015**. Pooling the two pregão variants does NOT hide heterogeneity
+in the signal. The within-cell C-stat is the ONLY column that diverges wildly (0.867 vs 0.713) — an
+artifact of cell density (top-5 cells carry ~68% of comparable pairs in the pooled check; SRP has only
+1,207 pairs), NOT economics, and a different estimand from the exposure-adjusted within of Group 3
+(`\valFedAudWithinAUC`). Never collide the two.
+
+---
+
+## DATA ASSETS (not result rows — provenance only)
+
+| Asset | Path | Detail | Audit status |
+|---|---|---|---|
+| Federal price panel | `data/processed_comprasnet/federal_price_panel.parquet` | 12,378,012 item-rows; discount median **0.745** vs estimated reference price (`discount` col; on-disk MEDIAN 0.75, ~0.745 ex-outliers, 168,092 ratio-outliers flagged); portal-panel match-rate ~45.8% (`in_portal_panel`); reference-price coverage `valorEstimadoItem`>0 ≈ 99.9% | **asset available — NOT used in audit scope per R4 A10 (price claims omitted).** Built for completeness; no price-based AUC/treatment claim enters the federal extension. |
+
+---
+
 ## VERIFICATION PROTOCOL (when the chain completes)
 
 For EACH federal slot above, in order:

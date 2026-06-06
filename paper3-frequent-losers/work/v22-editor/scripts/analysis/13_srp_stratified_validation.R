@@ -46,10 +46,26 @@
 # -----------------------------------------------------------------------------
 # OUTPUTS (cfg$dirs federal paths, outputs/comprasnet/...):
 #   tables/table_SRP_stratified.csv + .tex
-#     rows: stratum, N firms, N+, raw AUC [CI], PR-AUC, within-stratum AUC,
-#           expected-by-exposure (exposure-only AUC benchmark)
+#     rows: stratum, N firms, N+, raw AUC [CI], PR-AUC, exposure-only AUC, FL32 AUC
+#     csv ALSO keeps within_yearbuyer_cell_cstat for the RECORD (NOT published in .tex)
 #   tables/table_SRP_stratified_macros.csv     (\valFedAudSRPreg* / \valFedAudSRPsrp*)
 #   diagnostics/srp_stratified_audit_log.txt
+#
+# SRP-ADJUDICATION FIX (2026-06-06) -- locked verdict, see
+#   outputs/comprasnet/diagnostics/early_triage_13_srp.md:
+#   The within-cell C-statistic is a DIFFERENT ESTIMAND from script 02's
+#   exposure-stratum within (it stratifies on the modal year x buyer ADMIN cell,
+#   which does NOT purge the exposure confound; it is pair-starved -- top-5 cells
+#   carry 68% of comparable pairs -- and sits near RAW, not near the exposure-
+#   purged residual). It MUST NOT appear beside 02's exposure-stratum within and
+#   must NEVER share a column header with it. Therefore:
+#     (a) the column is RELABELLED within_yearbuyer_cell_cstat (kept in the CSV
+#         for the record, with a DO_NOT_PUBLISH_beside_exposure_within flag column);
+#     (b) NO \valFedAudSRP*Within* prose macro is minted (suppressed in section E);
+#     (c) the .tex table DROPS the within column and carries a tablenote stating
+#         the verdict.
+#   The A7 deliverable rides on the cross-stratum-consistent rows: raw / FL32 /
+#   exposure-only.
 #
 # POWER GUARD: if either stratum's effective N+ < 50 -> emit UNDERPOWERED note
 #   instead of a number (honesty-first).
@@ -407,11 +423,16 @@ eval_one_stratum <- function(nm) {
   dat[is.na(cell_id), cell_id := "__none__"]
 
   if (underpowered) {
+    # SRP-ADJUDICATION FIX (2026-06-06): within column RELABELLED to
+    # within_yearbuyer_cell_cstat + DO_NOT_PUBLISH flag (different estimand; see header).
     return(data.table(
       stratum=nm, label=st$label, phase=phase,
       n_firms=nrow(dat), n_pos=npos,
       raw_auc=NA_real_, raw_auc_lo=NA_real_, raw_auc_hi=NA_real_, pr_auc=NA_real_,
-      within_stratum_auc=NA_real_, exposure_only_auc=NA_real_,
+      within_yearbuyer_cell_cstat=NA_real_,
+      DO_NOT_PUBLISH_beside_exposure_within=1L,
+      within_cell_comparable_pairs=NA_integer_,
+      exposure_only_auc=NA_real_,
       fl32_auc=NA_real_, underpowered=TRUE,
       note=sprintf("UNDERPOWERED (N+=%d<%d): discrimination suppressed", npos, POWER_MIN_NPOS)))
   }
@@ -425,14 +446,22 @@ eval_one_stratum <- function(nm) {
   eo <- auc_ci("cobidder", "log_E", dat)
   # FL32 binary (pooled cut) raw AUC for reference
   fa <- auc_ci("cobidder", "fl32", dat)
-  say("    raw AUC=%.4f [%.4f, %.4f]  PR-AUC=%.4f  within-stratum AUC=%.4f  exposure-only(E) AUC=%.4f  FL32 AUC=%.4f",
-      ar$auc, ar$lo, ar$hi, pra, ws$auc, eo$auc, fa$auc)
+  say("    raw AUC=%.4f [%.4f, %.4f]  PR-AUC=%.4f  within(year|buyer)-cell C-stat=%.4f [%d pairs; DO-NOT-PUBLISH beside exposure within]  exposure-only(E) AUC=%.4f  FL32 AUC=%.4f",
+      ar$auc, ar$lo, ar$hi, pra, ws$auc, ws$comparable_pairs, eo$auc, fa$auc)
 
+  # SRP-ADJUDICATION FIX (2026-06-06): within column RELABELLED to
+  # within_yearbuyer_cell_cstat (modal year x buyer ADMIN-cell C-statistic) +
+  # DO_NOT_PUBLISH flag + comparable_pairs (pair-starvation diagnostic). It is a
+  # DIFFERENT ESTIMAND from script 02's exposure-stratum within and is kept in the
+  # CSV for the record only -- never emitted as a prose macro, never in the .tex.
   data.table(
     stratum=nm, label=st$label, phase=phase,
     n_firms=nrow(dat), n_pos=npos,
     raw_auc=ar$auc, raw_auc_lo=ar$lo, raw_auc_hi=ar$hi, pr_auc=pra,
-    within_stratum_auc=ws$auc, exposure_only_auc=eo$auc,
+    within_yearbuyer_cell_cstat=ws$auc,
+    DO_NOT_PUBLISH_beside_exposure_within=1L,
+    within_cell_comparable_pairs=ws$comparable_pairs,
+    exposure_only_auc=eo$auc,
     fl32_auc=fa$auc, underpowered=FALSE, note="")
 }
 res <- rbindlist(lapply(names(STRATA), eval_one_stratum), fill=TRUE)
@@ -447,24 +476,29 @@ say("wrote table_SRP_stratified.csv (%d strata rows)", nrow(res))
 
 fmt <- function(x, d=3) ifelse(is.na(x), "--", sprintf(paste0("%.",d,"f"), x))
 fmtci <- function(a,lo,hi) ifelse(is.na(a),"--",sprintf("%.3f [%.3f, %.3f]", a, lo, hi))
+# SRP-ADJUDICATION FIX (2026-06-06): .tex DROPS the within column entirely. The
+# published columns are all CROSS-STRATUM CONSISTENT (raw / PR-AUC / exposure-only /
+# FL32); the within (year x buyer)-cell C-stat is a different estimand (see header +
+# diagnostics) and lives in the CSV only. Tablenote states the verdict.
 texrows <- paste0(
   gsub("_","\\\\_", res$stratum), " & ",
   format(res$n_firms, big.mark=","), " & ", res$n_pos, " & ",
   ifelse(res$underpowered, "\\textit{underpowered}", fmtci(res$raw_auc, res$raw_auc_lo, res$raw_auc_hi)), " & ",
-  fmt(res$pr_auc), " & ", fmt(res$within_stratum_auc), " & ", fmt(res$exposure_only_auc), " \\\\")
+  fmt(res$pr_auc), " & ", fmt(res$exposure_only_auc), " & ", fmt(res$fl32_auc), " \\\\")
 texS <- c(
   "\\begin{table}[htbp]\\centering",
   "\\caption{Loser-side concentration signal across federal pregao variants (SRP stratification)}",
   "\\label{tab:srp_stratified}",
   "\\begin{tabular}{lrrlrrr}\\hline",
-  "Stratum & N firms & N$^+$ & Raw AUC [CI] & PR-AUC & Within-stratum AUC & Exposure-only AUC \\\\\\hline",
+  "Stratum & N firms & N$^+$ & Raw AUC [CI] & PR-AUC & Exposure-only AUC & FL32 AUC \\\\\\hline",
   texrows,
   "\\hline\\end{tabular}",
-  paste0("\\begin{tablenotes}\\footnotesize\\item Pooled construct held FIXED across strata: score $=\\log(1+\\text{tenders\\_count})$, FL32 cut ($\\geq 32$), and the broad-AL cobidder label. Only the EVALUATION sample (always-losers active in the stratum) and the within-stratum (year $\\times$ buyer) opportunity cells vary. Item-group NOT\\_OBSERVED federally. Strata with N$^+<",
-         POWER_MIN_NPOS, "$ are reported as underpowered.\\end{tablenotes}"),
+  paste0("\\begin{tablenotes}\\footnotesize\\item Pooled construct held FIXED across strata: score $=\\log(1+\\text{tenders\\_count})$, FL32 cut ($\\geq 32$), and the broad-AL cobidder label. Only the EVALUATION sample (always-losers active in the stratum) varies. Item-group NOT\\_OBSERVED federally. Strata with N$^+<",
+         POWER_MIN_NPOS, "$ are reported as underpowered. The loser-side concentration signal behaves CONSISTENTLY across the two federal pregao variants: raw, exposure-only, and FL32 discrimination all move together (raw-AUC gap $",
+         "0.045 < 0.05$; exposure-only and FL32 gaps $\\approx 0.015$). A within-cell C-statistic was computed for the record but is OMITTED here: it is a year $\\times$ buyer administrative-cell statistic, a DIFFERENT estimand from the exposure-adjusted within of the main opportunity audit (it does not condition on exposure intensity and is pair-starved), and is not comparable to it; see the SRP adjudication in the online diagnostics.\\end{tablenotes}"),
   "\\end{table}")
 writeLines(texS, file.path(dir_tab, "table_SRP_stratified.tex"))
-say("wrote table_SRP_stratified.tex")
+say("wrote table_SRP_stratified.tex (within column DROPPED -- SRP-ADJUDICATION FIX 2026-06-06)")
 
 # macros: \valFedAudSRPreg* / \valFedAudSRPsrp* (mirror script-12 newcommand style)
 macro_lines <- character(0); macro_csv <- list()
@@ -477,16 +511,22 @@ for (nm in names(STRATA)) {
   pref <- paste0("valFedAudSRP", st$macro)
   emit(paste0(pref, "N"),     format(r$n_firms, big.mark=","))
   emit(paste0(pref, "Npos"),  as.character(r$n_pos))
+  # SRP-ADJUDICATION FIX (2026-06-06): NO \valFedAudSRP*Within* prose macro is
+  # minted -- the within (year x buyer)-cell C-stat is a different estimand and is
+  # kept in the CSV only (DO_NOT_PUBLISH flag). We DO emit the FL32 macro instead,
+  # since FL32 is a cross-stratum-consistent published column. Net macro tally is
+  # unchanged (Within dropped, FL32 added).
   if (isTRUE(r$underpowered)) {
     emit(paste0(pref, "RawAUC"),   "underpowered", paste0("N+=", r$n_pos, "<", POWER_MIN_NPOS))
     emit(paste0(pref, "PRAUC"),    "underpowered")
-    emit(paste0(pref, "WithinAUC"),"underpowered")
+    emit(paste0(pref, "FLthirtytwoAUC"), "underpowered")
     emit(paste0(pref, "ExpAUC"),   "underpowered")
   } else {
     emit(paste0(pref, "RawAUC"),    sprintf("%.3f", r$raw_auc))
     emit(paste0(pref, "RawAUCCI"),  sprintf("[%.3f, %.3f]", r$raw_auc_lo, r$raw_auc_hi))
     emit(paste0(pref, "PRAUC"),     sprintf("%.3f", r$pr_auc))
-    emit(paste0(pref, "WithinAUC"), sprintf("%.3f", r$within_stratum_auc))
+    emit(paste0(pref, "FLthirtytwoAUC"), sprintf("%.3f", r$fl32_auc),
+         "FL32 cross-stratum-consistent col; within-cell C-stat SUPPRESSED (different estimand, see diagnostics)")
     emit(paste0(pref, "ExpAUC"),    sprintf("%.3f", r$exposure_only_auc))
   }
 }
