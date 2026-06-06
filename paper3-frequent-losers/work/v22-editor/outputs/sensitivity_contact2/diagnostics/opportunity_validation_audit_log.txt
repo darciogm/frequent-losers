@@ -1,6 +1,7 @@
-=== 02_opportunity_adjusted_validation.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-04 17:10:01  RAM_free=20Gi 
+=== 02b_opportunity_sensitivity_contact2.R === 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-06 05:00:15  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
+SOURCE=bec  (BEC (Sao Paulo state, 2009-2019))  DATA=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/data/processed  OUT=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers/work/v22-editor/outputs/sensitivity_contact2  SPILL=/tmp/duckdb_spill 
 
 ----- A. candidate set ----- 
 cobidder positives (canonical broad AL label): 651 distinct firm_code 
@@ -10,40 +11,43 @@ direct defendants used (cleaned, winners only): 47
 direct-defendant -> case rows: 48 ; distinct cases: 8 
 always-losers: 16843 ; cobidders in universe: 651 ; FL14: 2735 
 ASSERT cobidders in always-loser universe: 651 of 651 in AL (0 cobidder codes not AL -> excluded from npos) 
-  [stage A_candidate_set           ] elapsed=   0.1s  RSS=250 MB 
+  [stage A_candidate_set           ] elapsed=   0.1s  RSS=252 MB 
 
 ----- B. observed defendant contact O_i (DuckDB self-join) ----- 
 firms with O_i>0 (any defendant contact): 4,781 
-  [stage B_contact_join            ] elapsed=   4.9s  RSS=286 MB 
+  [stage B_contact_join            ] elapsed=   5.7s  RSS=284 MB 
 SENSITIVITY contact>=2: positives 651 -> 368 
 
 Broad label Y_i=1[O_i>0]: 770 firms ; cobidder(canonical broad AL label): 368 
   overlap(Y_broad & cobidder)=368 ; cobidder & !Y_broad=0 ; Y_broad & !cobidder=402 
   -> PRIMARY label = cobidder (canonical broad AL cobidder label, reproducible, FL never used); Y_broad=1[O_i>0] reported as robustness 
 wrote observed_defendant_contact_summary.csv 
-  [stage B_observed_contact        ] elapsed=   5.1s  RSS=304 MB 
+  [stage B_observed_contact        ] elapsed=   5.9s  RSS=302 MB 
 
 ----- C. opportunity cells (COARSE/MEDIUM/STRICT) ----- 
 always-loser firm-opportunity (tender-item) rows: 163,515 
-  [stage C_participation_table     ] elapsed=   6.7s  RSS=312 MB 
+  [stage C_participation_table     ] elapsed=   7.1s  RSS=322 MB 
+  cell_definition[COARSE]: {ig x year} 
+  cell_definition[MEDIUM]: {ig x year x pbu} 
+  cell_definition[STRICT]: {item_code x year x pbu} 
 modality NOTE: firm_tender_map has no modality; cells drop modality. A modality-augmented 
   cell would need a join from item_value_panel by (numerodaoc,codigoitem); documented as 
   sensitivity, not blocking (Subprompt clause). Proceeding with 3 award-layer cell defs. 
   [COARSE] cells=980 ; firm-cell exp computed ; mean cells/firm=4.1 ; mean E_i=0.221 
   [MEDIUM] cells=59,000 ; firm-cell exp computed ; mean cells/firm=6.5 ; mean E_i=0.221 
   [STRICT] cells=102,589 ; firm-cell exp computed ; mean cells/firm=9.0 ; mean E_i=0.221 
-  [stage C_cells_expected          ] elapsed=  27.1s  RSS=1652 MB 
+  [stage C_cells_expected          ] elapsed=  24.6s  RSS=1673 MB 
 wrote table_D_opportunity_cell_construction.{csv,tex} + opportunity_cell_sparsity.csv 
 
 ----- D. firm opportunity-adjusted frame ----- 
   exposure axis (n_opp_items) from validated script-76 firm_panel.csv: exposed=6040 
-wrote firm_opportunity_adjusted_frame.csv (16843 firms, 48 cols, anon firm_id, NO raw CNPJ) 
-  [stage D_firm_frame              ] elapsed=  27.4s  RSS=1647 MB 
+wrote firm_opportunity_adjusted_frame_contact2.csv (16843 firms, 48 cols, anon firm_id, NO raw CNPJ) 
+  [stage D_firm_frame              ] elapsed=  24.9s  RSS=1674 MB 
 
 ----- E. common support (3 rules) ----- 
 wrote opportunity_common_support.csv (9 rule x def rows) 
   support retention (MEDIUM): minimal=100.0%  moderate=45.9%  strict=45.6% 
-  [stage E_common_support          ] elapsed=  28.1s  RSS=1656 MB 
+  [stage E_common_support          ] elapsed=  25.5s  RSS=1678 MB 
 
 ----- F. control-function validation ----- 
   unconditional exposure-only AUC (all AL) = 0.9563  (locked 0.946) 
@@ -56,11 +60,11 @@ SEPARATION/non-convergence flags (npos=191 rare-event): none
   exposure-only logit AUC=0.8729 ; +score AUC=0.8754 ; increment=+0.0025 ; DeLong Z=-0.723 p=0.47 
   within-opp-stratum AUC: log_tc=0.5062  fl14=0.4971  (76: 0.7715/0.7709) 
 wrote table_C_opportunity_adjusted_validation.{csv,tex} 
-  [stage F_control_function        ] elapsed=  78.1s  RSS=1659 MB 
+  [stage F_control_function        ] elapsed=  75.6s  RSS=1679 MB 
 
 ----- G. observed vs expected by score bins ----- 
 wrote observed-vs-expected table + 2 figures 
-  [stage G_obs_vs_exp              ] elapsed=  78.5s  RSS=1668 MB 
+  [stage G_obs_vs_exp              ] elapsed=  76.0s  RSS=1688 MB 
 
 ----- H. cell-preserving permutation ----- 
   Approach B done (firm-exposure sim, B=2000) 
@@ -68,18 +72,18 @@ wrote observed-vs-expected table + 2 figures
 wrote permutation table + 2 figures + metrics cache 
   OBS pr_auc=0.1246 roc=0.8539 prec500=0.1720 rec500=0.2337 fl_enrich=4.050 
   null(B) pr_auc mean=0.2637 p=1.0000 ; null(C) pr_auc mean=0.1230 p=0.3898 
-  [stage H_permutation             ] elapsed= 144.6s  RSS=1671 MB 
+  [stage H_permutation             ] elapsed= 141.7s  RSS=1689 MB 
 
 ----- I. matched / stratified validation ----- 
   mean within-stratum dP(cobidder) FL14 vs non = -0.0175 ; within-stratum AUC=0.4393 ; CEM AUC=0.6152 (n=3,305) ; support retained=100.0% 
-  [stage I_matched                 ] elapsed= 144.6s  RSS=1671 MB 
+  [stage I_matched                 ] elapsed= 141.8s  RSS=1690 MB 
 
 ----- J. case / buyer / item-group contribution ----- 
   top case  08700.005789/2015-02 share of cobidder contacts = 24.6%   
   top buyer 09017200001 share = 7.6%   
   top item-group 16 share = 21.8%   
   TP@500 top case 08700.007278/2015-17 share = 31.1% 
-  [stage J_contribution            ] elapsed= 145.9s  RSS=469 MB 
+  [stage J_contribution            ] elapsed= 142.9s  RSS=470 MB 
 
 ========== VERDICT ========== 
 exposure-only AUC: unconditional(all AL)=0.9563 (locked 0.946) ; logit-within-exposed=0.8729 (locked 0.8467) 
@@ -87,4 +91,4 @@ within-stratum log_tc=0.5062 (locked 0.7715) ; nested increment=+0.0025 DeLong p
 VERDICT: C (signal disappears under exposure adjustment) 
 
 ALL DONE. 
-  [stage DONE                      ] elapsed= 145.9s  RSS=469 MB 
+  [stage DONE                      ] elapsed= 142.9s  RSS=470 MB 

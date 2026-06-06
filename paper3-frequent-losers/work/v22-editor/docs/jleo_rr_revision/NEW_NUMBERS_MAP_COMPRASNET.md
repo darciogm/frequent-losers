@@ -121,7 +121,7 @@ and `…/table_D_opportunity_permutation_validation.csv` (chain twins).
 | Exposure-only PR-AUC | 0.300 | `table_C…csv::S2_exposure_only_logit pr_auc` ; `\valExpExpOnlyPRAUC`=0.300 | `…/table_C…csv` `[PENDING]` | `\valFedAudExpOnlyPRAUC` |
 | Within-stratum residual (score \| MEDIUM cells) | **0.471** (≈chance) | `table_C…csv::WITHIN_STRATUM_log_tc` ; `\valExpWithinAUC`=0.471 ; also `table_D_matched_opportunity_validation_summary.csv::within_stratum_auc_score`=0.4476 | `…/table_C…csv::WITHIN_STRATUM_log_tc` `[PENDING]` | `\valFedAudWithinAUC` |
 | Within-stratum FL \| stratum | 0.507 | `table_C…csv::WITHIN_STRATUM_fl14` ; `\valExpWithinFLAUC`=0.507 | `…/table_C…csv::WITHIN_STRATUM_fl14` `[PENDING]` | `\valFedAudWithinFLAUC` |
-| Label-blind opportunity expectation (AUC, E) | **0.553** | `\valArmorExpLB`=0.553 ; `outputs/diagnostics/audit_armor/audit_armor_macros.tex` + `granularity_sweep.csv` | `outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv` (label-blind E row) `[PENDING]` | `\valFedAudLabelBlindAUC` |
+| Label-blind opportunity expectation (AUC, E) | **0.553** | `\valArmorExpLB`=0.553 ; `outputs/diagnostics/audit_armor/audit_armor_macros.tex` + `granularity_sweep.csv` | `outputs/comprasnet/diagnostics/audit_armor/leakage_check_cell_level.csv :: E_i label-blind (cell rate from NON-cobidder rows only)` `[built: 0.6114]` (apples-to-apples; identical cell-level construction to BEC 0.553) | `\valFedAudLabelBlindAUC` |
 | Nested increment (exposure→exposure+score) | **+0.010** | `table_C…csv::NESTED auc_increment` ; `\valExpIncrement`=0.010 | `…/table_C…csv::NESTED auc_increment` `[PENDING]` | `\valFedAudNestedIncrement` |
 | Nested DeLong p | 0.013 | `table_C…csv::NESTED delong_p` ; `\valExpDeLongP`=0.013 | `…/table_C…csv::NESTED delong_p` `[PENDING]` | `\valFedAudNestedP` |
 | Nested exposure+score ROC | 0.723 | `table_C…csv::NESTED exposure+score` (NEW_NUMBERS_MAP) | `…/table_C…csv::NESTED exposure+score` `[PENDING]` | `\valFedAudNestedExpScoreAUC` |
@@ -243,9 +243,9 @@ Federal slot (PENDING): `outputs/comprasnet/tables/appendix/table_E_negative_con
 | Row | BEC value | BEC source (file + macro) | Federal slot (file) | Federal macro |
 |---|---|---|---|---|
 | Real (CADE-anchor) ROC | 0.761 | `table_E_negative_controls.csv::real_auc` ; `\valProfNegCtrlRealAUC`=0.761 | `outputs/comprasnet/tables/table_E_negative_controls.csv::real_auc` `[PENDING]` | (reuse `\valFedAudWithinAUC` / raw) |
-| Placebo-anchor null ROC (matched volume) | 0.755 (p=0.456 NS) | `table_E_negative_controls.csv::placebo_cade_anchors_matched null_auc_mean` ; `\valProfNegCtrlPlaceboAUC`=0.755 | `…/table_E_negative_controls.csv::placebo_cade_anchors_matched null_auc_mean` `[PENDING]` | `\valFedAudPlaceboAUC` |
-| Non-CADE high-volume-winner null ROC | 0.782 (p=0.908) | `table_E_negative_controls.csv::nonCADE_high_volume_winners null_auc_mean` ; **no dedicated BEC macro** (read from CSV) | `…/table_E_negative_controls.csv::nonCADE_high_volume_winners null_auc_mean` `[PENDING]` | `\valFedAudHVWinnerAUC` |
-| Negative-control verdict | generic geometry (not cartel-specific) | derived from placebo NS + HV-winner NS | `…/table_E_negative_controls.csv` (verdict derivation) `[PENDING]` | `\valFedAudNegControlVerdict` |
+| Placebo-anchor null ROC (matched volume) | 0.755 (p=0.456 NS) | `table_E_negative_controls.csv::placebo_cade_anchors_matched null_auc_mean` ; `\valProfNegCtrlPlaceboAUC`=0.755 | `outputs/comprasnet/tables/table_E_negative_controls.csv::placebo_cade_anchors_matched null_auc_mean` `[built: 0.729]` (real_auc=0.744, empirical_p_auc=0.27 NS) | `\valFedAudPlaceboAUC` |
+| Non-CADE high-volume-winner null ROC | 0.782 (p=0.908) | `table_E_negative_controls.csv::nonCADE_high_volume_winners null_auc_mean` ; **no dedicated BEC macro** (read from CSV) | `outputs/comprasnet/tables/table_E_negative_controls.csv::nonCADE_high_volume_winners null_auc_mean` `[built: 0.745]` (real_auc=0.744, empirical_p_auc=0.542 NS) | `\valFedAudHVWinnerAUC` |
+| Negative-control verdict | generic geometry (not cartel-specific) | derived from placebo NS + HV-winner NS | `outputs/comprasnet/tables/table_E_negative_controls.csv` (verdict derivation: placebo p=0.27 NS + HV-winner p=0.542 NS) `[built: generic opportunity/volume geometry — same as BEC]` | `\valFedAudNegControlVerdict` |
 
 ---
 
@@ -257,9 +257,9 @@ Federal slot (PENDING): `outputs/comprasnet/diagnostics/audit_armor/*.csv`.
 | Row | BEC value | BEC source (file + macro) | Federal slot (file) | Federal macro |
 |---|---|---|---|---|
 | Firm-level LOO exposure benchmark E_i | 0.855 | `audit_armor_macros.tex` / `granularity_sweep.csv` ; `\valArmorExpLOO`=0.855 | `outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv` (LOO E) `[PENDING]` | `\valFedAudExpLOO` |
-| Label-blind opportunity ranking (non-cobidder p_g) | 0.553 | `\valArmorExpLB`=0.553 (= label-blind E row) | `…/granularity_sweep.csv` (label-blind) `[PENDING]` | `\valFedAudExpLB` |
-| Within-AUC label-blind (MEDIUM) | 0.665 | `\valArmorWithinLB`=0.665 | `…/granularity_sweep.csv` `[PENDING]` | `\valFedAudWithinLB` |
-| Within-AUC label-blind (all-AL) | 0.722 | `\valArmorWithinLBall`=0.722 | `…/granularity_sweep.csv` `[PENDING]` | `\valFedAudWithinLBall` |
+| Label-blind opportunity ranking (non-cobidder p_g) | 0.553 | `\valArmorExpLB`=0.553 (= label-blind E row) | `outputs/comprasnet/diagnostics/audit_armor/leakage_check_cell_level.csv :: E_i label-blind (cell rate from NON-cobidder rows only)` `[built: 0.6114]` (= Group-3 label-blind E; same object) | `\valFedAudExpLB` |
+| Within-AUC label-blind (MEDIUM) | 0.665 | `\valArmorWithinLB`=0.665 | `outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: E_label_blind_MEDIUM (exposed E_lb>0)` `[built: 0.6952]` (BEC twin 0.665) | `\valFedAudWithinLB` |
+| Within-AUC label-blind (all-AL) | 0.722 | `\valArmorWithinLBall`=0.722 | `outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: E_label_blind_MEDIUM (all AL)` `[built: 0.7389]` (BEC twin 0.722) | `\valFedAudWithinLBall` |
 | Breadth (≥2 shared def items): within-AUC | (BEC armor — stable) | `granularity_sweep.csv` breadth row — **read from CSV; no scalar macro** | `…/granularity_sweep.csv` (breadth) `[PENDING]` | `\valFedAudBreadthWithinAUC` |
 
 ---

@@ -88,7 +88,12 @@
 %   FILLED now (values already known from completed Phase-0/Phase-1 runs): 5
 %   universe macros + 9 funnel counts that exist in
 %   outputs/comprasnet/targets/canonical_target_counts.csv = 14 FILLED.
-%   Remaining 67 stay TODO pending the running chain.
+%   FILLED 2026-06-06 (armor pack on disk, doc-reconciliation pass): 7 more --
+%   \valFedAudLabelBlindAUC=0.611 + \valFedAudExpLB=0.611 (cell-level label-blind,
+%   leakage_check_cell_level.csv); \valFedAudPlaceboAUC=0.729 + \valFedAudHVWinnerAUC=0.745
+%   + \valFedAudNegControlVerdict (table_E_negative_controls.csv);
+%   \valFedAudWithinLB=0.695 + \valFedAudWithinLBall=0.739 (granularity_sweep.csv).
+%   Running total = 21 FILLED. Remaining 61 stay TODO pending the running chain.
 % ============================================================================
 
 
@@ -170,8 +175,8 @@
 \newcommand{\valFedAudWithinAUC}{TODO}
 % src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: WITHIN_STRATUM_fl14 roc_auc | within-stratum FL | stratum AUC | TODO_NUMBER
 \newcommand{\valFedAudWithinFLAUC}{TODO}
-% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: label-blind E (opportunity expectation) | label-blind opportunity-expectation AUC | TODO_NUMBER
-\newcommand{\valFedAudLabelBlindAUC}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/leakage_check_cell_level.csv :: E_i label-blind (cell rate from NON-cobidder rows only) | label-blind opportunity-expectation AUC, cell-level (apples-to-apples w/ BEC \valArmorExpLB=0.553) | FILLED 2026-06-06 (0.6114 rounded to 0.611; reconciliation per early_triage_12.md)
+\newcommand{\valFedAudLabelBlindAUC}{0.611}
 % src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: NESTED_exposure+score auc_increment | nested increment (exposure -> exposure+score) | TODO_NUMBER
 \newcommand{\valFedAudNestedIncrement}{TODO}
 % src: outputs/comprasnet/tables/table_C_opportunity_adjusted_validation.csv :: NESTED_exposure+score delong_p | nested DeLong p | TODO_NUMBER
@@ -311,12 +316,12 @@
 % src base: outputs/comprasnet/tables/table_E_negative_controls.csv
 % NOTE: real (CADE-anchor) ROC reuses \valFedAudWithinAUC / raw -- no new macro.
 % ----------------------------------------------------------------------------
-% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: placebo_cade_anchors_matched null_auc_mean | placebo-anchor null ROC (matched volume) | TODO_NUMBER
-\newcommand{\valFedAudPlaceboAUC}{TODO}
-% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: nonCADE_high_volume_winners null_auc_mean | non-CADE high-volume-winner null ROC | TODO_NUMBER
-\newcommand{\valFedAudHVWinnerAUC}{TODO}
-% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: verdict (derived from placebo NS + HV-winner NS) | negative-control verdict string | TODO_NUMBER
-\newcommand{\valFedAudNegControlVerdict}{TODO}
+% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: placebo_cade_anchors_matched null_auc_mean | placebo-anchor NULL ROC mean (matched volume) | FILLED 2026-06-06  [SEMANTICS: macro = null_auc_mean (the null distribution mean), mirroring BEC twin \valProfNegCtrlPlaceboAUC=0.755 which is also a null mean; the real-vs-null separation is carried by empirical_p_auc=0.27 NS, not by this macro. real_auc=0.744 for context.]
+\newcommand{\valFedAudPlaceboAUC}{0.729}
+% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: nonCADE_high_volume_winners null_auc_mean | non-CADE high-volume-winner NULL ROC mean | FILLED 2026-06-06  [SEMANTICS: macro = null_auc_mean, same convention as placebo above; empirical_p_auc=0.542 NS; real_auc=0.744 for context.]
+\newcommand{\valFedAudHVWinnerAUC}{0.745}
+% src: outputs/comprasnet/tables/table_E_negative_controls.csv :: verdict (derived from placebo p=0.27 NS + HV-winner p=0.542 NS) | negative-control verdict string | FILLED 2026-06-06
+\newcommand{\valFedAudNegControlVerdict}{generic opportunity/volume geometry}
 
 
 % ----------------------------------------------------------------------------
@@ -326,12 +331,12 @@
 % ----------------------------------------------------------------------------
 % src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: LOO E (firm-level exposure benchmark) | firm-level LOO exposure benchmark E_i | TODO_NUMBER
 \newcommand{\valFedAudExpLOO}{TODO}
-% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: label-blind E (non-cobidder p_g) | label-blind opportunity-ranking AUC | TODO_NUMBER
-\newcommand{\valFedAudExpLB}{TODO}
-% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: within-AUC label-blind (MEDIUM) | within-AUC label-blind, MEDIUM | TODO_NUMBER  [map-only; not yet cited in drafts]
-\newcommand{\valFedAudWithinLB}{TODO}
-% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: within-AUC label-blind (all-AL) | within-AUC label-blind, all-AL | TODO_NUMBER  [map-only; not yet cited in drafts]
-\newcommand{\valFedAudWithinLBall}{TODO}
+% src: outputs/comprasnet/diagnostics/audit_armor/leakage_check_cell_level.csv :: E_i label-blind (cell rate from NON-cobidder rows only) | label-blind opportunity-ranking AUC (= Group-3 \valFedAudLabelBlindAUC; same object, cell-level) | FILLED 2026-06-06 (0.6114 rounded to 0.611)
+\newcommand{\valFedAudExpLB}{0.611}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: E_label_blind_MEDIUM (exposed E_lb>0) | within-AUC label-blind, MEDIUM (within-stratum object, NOT the row-3 headline; BEC twin \valArmorWithinLB=0.665) | FILLED 2026-06-06  [map-only; not yet cited in drafts]
+\newcommand{\valFedAudWithinLB}{0.695}
+% src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: E_label_blind_MEDIUM (all AL) | within-AUC label-blind, all-AL (within-stratum object; BEC twin \valArmorWithinLBall=0.722) | FILLED 2026-06-06  [map-only; not yet cited in drafts]
+\newcommand{\valFedAudWithinLBall}{0.739}
 % src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: breadth (>=2 shared def items) within_auc | breadth within-AUC | TODO_NUMBER
 \newcommand{\valFedAudBreadthWithinAUC}{TODO}
 % src: outputs/comprasnet/diagnostics/audit_armor/granularity_sweep.csv :: breadth (>=2 shared def items) auc_increment | breadth increment vs base | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
@@ -342,6 +347,8 @@
 \newcommand{\valFedAudBreadthVerdict}{TODO}
 
 % ============================================================================
-% END federal wiring block. Macro tally: 82 total = 14 FILLED + 68 TODO.
+% END federal wiring block. Macro tally: 82 total = 21 FILLED + 61 TODO.
 %   (2026-06-06: added \valFedAudTopTwoShare, Group 8, link-row 64.4% basis.)
+%   (2026-06-06: armor doc-reconciliation FILLED 7 -- label-blind E 0.611
+%    (LabelBlindAUC+ExpLB), neg-controls 0.729/0.745/verdict, within-LB 0.695/0.739.)
 % ============================================================================

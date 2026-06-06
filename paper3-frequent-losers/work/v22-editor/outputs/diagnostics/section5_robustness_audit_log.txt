@@ -69,3 +69,26 @@ wrote table_E_market_specific_zero_win_definitions.csv + _validation.csv + leave
 REAL: cobidder ROC-AUC=0.7608 PR-AUC=0.1432 (n_pos=651) 
 real defendants matched: 46 of 46 have FTM profile 
 eligible pseudo-defendant pool (winners, non-defendant, non-cobidder): 24561 firms 
+precomputed item-sets: AL rows=163,515 ; pool rows=16,646,470 
+placebo-anchor draws: B=500 ; firms per draw=46 ; seed=20260603 
+    draw 100/500  elapsed=6.1s  mean_pseudo_pos=795 
+    draw 200/500  elapsed=11.0s  mean_pseudo_pos=781 
+    draw 300/500  elapsed=15.9s  mean_pseudo_pos=781 
+    draw 400/500  elapsed=20.6s  mean_pseudo_pos=788 
+    draw 500/500  elapsed=26.1s  mean_pseudo_pos=793 
+PLACEBO ANCHORS: real AUC=0.7608 ; placebo AUC mean=0.7540 sd=0.0251 [0.7011,0.7957] ; empirical p(placebo>=real)=0.4220 
+PLACEBO ANCHORS: real PR-AUC=0.1432 ; placebo PR-AUC mean=0.1517 ; empirical p=0.4980 
+high-volume winner pool (top-decile participation): 2458 firms (T>=1016) 
+HIGH-VOLUME WINNERS: real AUC=0.7608 ; pseudo AUC mean=0.7819 [0.7460,0.8138] ; empirical p=0.8940 
+wrote table_E_negative_controls.csv 
+wrote fig_negative_control_distribution.pdf 
+  [stage D_negative_controls           ] elapsed= 156.9s  RSS=2086 MB 
+
+========================= SECTION 5 ROBUSTNESS SUMMARY ========================= 
+A. Threshold sensitivity: T=14 precision=0.125 recall=0.524 PR-AUC=0.097 ; bunching ratio @14=1.06 
+   precision varies smoothly across fixed thresholds 5..30 -> T=14 NOT special (administrative). 
+B. Ordinary-loser alternatives: 13 proxies compared; NOT_OBSERVED = distance-to-winner, geography, later-wins. 
+C. Market-specific zero-win: GLOBAL ROC-AUC=0.7608 ; alternatives ROC-AUC range [0.4869, 0.5845] -> global NOT dominated 
+D. Negative controls: real AUC=0.7608 vs matched-placebo null mean=0.7540 (p=0.4220) ; high-vol null mean=0.7819 (p=0.8940) 
+  [stage FINAL                         ] elapsed= 156.9s  RSS=2086 MB 
+DONE. 

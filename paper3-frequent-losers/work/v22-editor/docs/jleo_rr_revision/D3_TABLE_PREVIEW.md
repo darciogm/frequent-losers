@@ -5,12 +5,12 @@
 > **with the real federal numbers in view.** It is **not** the final table. The armor pack
 > (script 12 + frozen timing) HAS NOW LANDED; the remaining blocks are smaller:
 > - ✅ **Armor pack ran** → label-blind E, power curve, and frozen-timing cells are now on disk
->   (`audit_armor/granularity_sweep.csv`, `permutation_power_curve.csv`, `frozen_timing.csv`).
->   Rows 6 and 8 are FILLED below; row 3 carries the candidate E values pending the 12b
->   apples-to-apples reconciliation (three constructions on disk).
-> - **Script 06 not yet run** → negative controls (`table_E_negative_controls.csv` not on disk). Row 10 PENDING.
+>   (`audit_armor/granularity_sweep.csv`, `permutation_power_curve.csv`, `frozen_timing.csv`,
+>   `leakage_check_cell_level.csv`). Rows 3, 6, and 8 are now FILLED below; row 3 apples-to-apples
+>   reconciliation RESOLVED 2026-06-06 (see `early_triage_12.md`): cell-level label-blind = **0.6114**.
+> - ✅ **Negative controls on disk** → `table_E_negative_controls.csv` written; row 10 FILLED below.
 > - **Formal R4 verification pass** (the four-attack referee protocol) not yet executed against the
->   filled cells.
+>   filled cells (no `R4_EXECUTED.md` on disk as of 2026-06-06).
 >
 > Every number below is sourced to a file (column "src"). No number is invented. PENDING cells say so.
 > **Prepared:** 2026-06-05; **armor rows refreshed 2026-06-06** (Mr. Frequent Losers, co-author mode).
@@ -29,7 +29,7 @@ shown for comparability** (read PR-AUC against each platform's base rate — see
 | 1 | **Raw award-layer ROC-AUC** (log T) | **0.761** | **0.744** | `table_C…csv::S0_raw_score roc_auc` |
 | 1b | — Raw award-layer PR-AUC | 0.143 | **0.014** | `table_C…csv::S0_raw_score pr_auc` |
 | 2 | **Exposure-only ROC-AUC** (no score) | 0.713 | **0.754** | `table_C…csv::S2_exposure_only_logit roc_auc` |
-| 3 | **Label-blind opportunity expectation (AUC, E)** | 0.553 | **pending 12b reconciliation — three candidate constructions 0.611 / 0.695 / 0.739, apples-to-apples selection in progress** | `audit_armor_macros.tex::\valArmorExpLB`=0.611; `granularity_sweep.csv::E_label_blind_MEDIUM (exposed)`=0.695, `(all AL)`=0.739 |
+| 3 | **Label-blind opportunity expectation (AUC, E)** | 0.553 | **0.611** (apples-to-apples; cell-level label-blind, identical construction to BEC 0.553 — modestly stronger federally; the 0.695/0.739 are within-stratum LB objects, a different estimand, BEC twins 0.665/0.722, demoted to Group-10 extras) | `leakage_check_cell_level.csv::E_i label-blind (cell rate from NON-cobidder rows only)`=0.6114; BEC twin `audit_armor_macros.tex::\valArmorExpLB`=0.553 |
 | 4 | **Within-stratum residual** (AUC, MEDIUM cells) | 0.471 (≈chance) | **0.462** (≈chance) | `table_C…csv::WITHIN_STRATUM_log_tc roc_auc` |
 | 5 | **Nested DeLong increment over exposure-only** | +0.010, p=0.013 | **+0.005, p=0.191 (null)** | `table_C…csv::NESTED_exposure+score auc_increment / delong_p` |
 | 6 | **Power-bounded residual** (det. prob. @ true AUC 0.55 / 0.60) | 0.97 (@0.55) | **0.35 @0.55 / 0.90 @0.60** (federal positive set ~30% of BEC's → underpowered at 0.55, informative ≥0.60; O_i positive control 0.992–0.999 confirms design detects within-stratum signal when present) | `permutation_power_curve.csv::0.55,0.60 rejection_rate_alpha05`=0.35,0.90; `granularity_sweep.csv::within_AUC_Oi_positive_control` COARSE 0.9987 / MEDIUM 0.9921 |
@@ -37,7 +37,7 @@ shown for comparability** (read PR-AUC against each platform's base rate — see
 | 8 | **Label-frozen prospective timing (AUC)** | 0.713 | **0.5948 prosp (pool 24,888, N+=98) / 0.7404 retro (N+=177)** | `audit_armor/frozen_timing.csv::d1 auc`=0.5948, `d2 auc`=0.7404, `pool_n`=24,888, `npos`=98/177 |
 | 9 | **Top-case concentration** (operational) | 32.0% pos / 45.4% TP@500 | **64.4% top-two pos / 87.5% TP@500** | `case_dominance_summary.csv::share_pos, share_tp_500` |
 | 9b | — Ordering robustness (LOCO + RI) | ROC 0.761→0.763; RI p=0.001 | **ROC 0.744→0.744 (drop-largest); RI p=0.001** | `table_H::drop_largest_case`; `table_D_clustered…::roc_auc emp_p` |
-| 10 | **Negative-control verdict** | generic geometry (placebo p=0.456, HV-winner p=0.908) | **PENDING — script 06** | `table_E_negative_controls.csv` (not on disk) |
+| 10 | **Negative-control verdict** | generic geometry (placebo p=0.456, HV-winner p=0.908) | **generic opportunity/volume geometry — same as BEC** (real 0.744 vs placebo-anchor null mean 0.729, p=0.27; vs non-CADE HV-winner null 0.745, p=0.542 — neither rejects) | `table_E_negative_controls.csv::placebo_cade_anchors_matched real_auc`=0.744 / `null_auc_mean`=0.729 / `empirical_p_auc`=0.27; `nonCADE_high_volume_winners null_auc_mean`=0.745 / `empirical_p_auc`=0.542 |
 
 **Universe / label context (already built, for the §5 prose — not a table row):** federal panel
 51.0M participation rows / 92,600 firms; 35,943 always-losers; IQR threshold **32** (vs BEC 14);
@@ -213,15 +213,16 @@ by one tablenote + one sentence.
 
 | Cell | Status | Blocking artifact / note |
 |---|---|---|
-| Row 3 — Label-blind opportunity expectation E | **PENDING 12b RECONCILIATION** | three candidate constructions on disk (0.611 / 0.695 / 0.739); apples-to-apples selection vs BEC's 0.553 in progress — `audit_armor_macros.tex`, `granularity_sweep.csv` |
-| Row 10 — Negative-control verdict | **PENDING** | `outputs/comprasnet/tables/table_E_negative_controls.csv` (script 06) |
-| Row 10 — verdict WORDING | **PENDING** | depends on the script-06 placebo/HV-winner outputs above |
-| Formal R4 verification pass | **PENDING** | the 4-attack referee protocol — NOT yet run against the filled cells |
+| Formal R4 verification pass | **PENDING** | the 4-attack referee protocol — NOT yet run against the filled cells (no `docs/jleo_rr_revision/R4_EXECUTED.md` on disk as of 2026-06-06; this is the only remaining open cell) |
 
-**Now FILLED (no longer open):** Row 6 power (0.35@0.55 / 0.90@0.60; O_i 0.992–0.999), Row 8 frozen
-timing (0.5948 prosp / 0.7404 retro), and the secondary armor (O_i control, within-LB) — all landed
-with the armor pack on disk and verified against `permutation_power_curve.csv` / `frozen_timing.csv` /
-`granularity_sweep.csv`.
+**Now FILLED (no longer open):** Row 3 label-blind E (**0.6114** cell-level, apples-to-apples vs BEC
+0.553 — RESOLVED 2026-06-06 per `early_triage_12.md`/`leakage_check_cell_level.csv`; the 0.695/0.739
+within-stratum LB objects demoted to Group-10 extras), Row 6 power (0.35@0.55 / 0.90@0.60; O_i
+0.992–0.999), Row 8 frozen timing (0.5948 prosp / 0.7404 retro), Row 10 negative controls
+(placebo p=0.27, HV-winner p=0.542 → generic geometry, on disk at `table_E_negative_controls.csv`),
+and the secondary armor (O_i control, within-LB) — all landed with the armor pack on disk and verified
+against `permutation_power_curve.csv` / `frozen_timing.csv` / `granularity_sweep.csv` /
+`leakage_check_cell_level.csv` / `table_E_negative_controls.csv`.
 
 **Also outstanding before final integration:**
 - **Filename token fix:** federal strict file is written as `table_D_strict_2009_2016_to_2017_2019.csv`
