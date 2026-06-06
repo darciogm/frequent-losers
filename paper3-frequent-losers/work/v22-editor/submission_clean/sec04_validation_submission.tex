@@ -5,79 +5,59 @@
 \section{Validating the Loser-Side Ranking}
 \label{sec:validation}
 
-This section validates the award-layer ranking, not the legal
+What follows validates the award-layer ranking, not the legal
 status of ranked firms. The validation target is the one defined
 in Section~\ref{sec:cade_adjacency_labels}: always-loser firms
 observed alongside direct CADE defendants in adjudicated
 procurement-cartel environments. These cobidders carry an
-adjudication-anchored exposure label; they are not legal members of
-a cartel. A useful ranking must do more than report a high AUC. The
-main threat is exposure---firms that participate often, or operate
-in the same environments as defendants, have more opportunities to
-appear near those anchors even under ordinary competition, so a
-screen must concentrate loser-side firms beyond what participation
-volume and opportunity alone imply
+adjudication-anchored exposure label, not cartel membership. A
+useful ranking must clear more than a high AUC. The dominant
+threat is exposure: firms that participate often, or operate in the
+same environments as defendants, have more opportunities to appear
+near those anchors even under ordinary competition, so a screen
+earns credit only by concentrating loser-side firms beyond what
+participation volume and opportunity alone imply
 \citep{porter1993detection,bajari2003deciding,conley2016detecting,kawai2022detecting}.
-Two further threats are timing (the screen should rank before the
-target information is used) and legal overreach (it should not be
-read as a generic cartel-membership detector). The opportunity
-threat is the award-layer counterpart of a problem made precise in
-the bid layer by \citet{kawai2023bidrotation}: winner-and-loser
-allocation patterns can reflect cost differences across firms or
-non-competitive conduct, and separating the two requires
-identifying variation---in their case, auctions in which the
-winning and losing bids are very close. We do not observe bids, so
-we cannot run that close-bid test; the opportunity-versus-conduct
-decomposition in Section~\ref{sec:validation_exposure} is the
-award-layer analogue of their cost-versus-conduct identification,
-asking what the loser-side ranking adds once procurement
-opportunity is held fixed rather than once cost is differenced
-out.
-
-Subsection~\ref{sec:label_funnel} constructs the label and
-reconciles the validation samples.
-Subsection~\ref{sec:validation_exposure} is the central exercise:
-it disciplines the ranking against procurement opportunity and
-asks what, if anything, the score adds net of exposure.
-Subsection~\ref{sec:validation_timing} imposes strict timing and
-case-composition discipline.
-Subsection~\ref{sec:validation_direct} folds the direct-defendant
-scope check into a bounded reading of what the validation
-establishes.
+Timing and legal overreach are the two secondary threats: the
+screen should rank before the target information is used, and it
+should not be read as a generic cartel-membership detector. The
+exposure threat is the award-layer counterpart of a problem
+\citet{kawai2023bidrotation} make precise in the bid layer, where
+winner-and-loser allocation patterns can reflect cost differences
+or conduct and separating the two requires identifying variation.
+We do not observe bids, so the opportunity-versus-conduct
+decomposition that follows is the award-layer analogue of that test,
+asking what the loser-side ranking adds once procurement opportunity
+is held fixed. Around that central exercise, timing and
+case-composition checks and a direct-defendant scope bound complete
+the validation.
 
 \subsection{Label Construction and Sample Reconciliation}
 \label{sec:label_funnel}
 
-The full CADE legal portfolio comprises $12$ adjudicated
-procurement-cartel cases with $65$ legal firm-defendants. We match
-defendants to BEC participant records by exact $14$-digit CNPJ
-equality, with no fuzzy or manual step; $\valDirectCADE$ are active
-in BEC and define the direct-defendant set (these correspond to
-$48$ distinct crossmatch CNPJ, of which $\valFunnelDirectActiveFTM$
-appear in the firm--tender map and so anchor the cobidder-label
-funnel in Table~\ref{tab:label_funnel_submission}). Their defendant
-tender-items ($\valFunnelDefItems$ distinct items) locate the
-adjudicated environments.
-
-The main validation label is constructed from current scripts by
-matching BEC-active direct CADE defendants to tender-items and
-identifying unique always-loser firms that share at least one BEC
-tender-item with those anchors. Direct defendants are excluded.
-The frequent-loser flag is not used to define the label; it is the
-award-layer score evaluated against the label. This yields
-$\valMainCobidders$ always-loser cobidders, of which
-$\valMainCobFL$ are frequent losers and $\valMainCobNonFL$ are
-not---the label spans both sides of the screen's threshold, so the
-validation cannot be circular in the score. The conservative
-benchmark restricts the CADE portfolio to the
-$\valConservativeCases$ cases judged on or before
-$\valConservativeCutoff$ under the \emph{same} definition, yielding
-$\valMainConsCobidders$ cobidders from $\valMainConsFD$ matched
-defendants; it is a strict subset of the main label.
-Table~\ref{tab:label_funnel_submission} reports the funnel.
-Positive counts differ across later tables only because later
-exercises impose common-support, timing, or bid-feature
-restrictions on the candidate pool;
+The CADE legal portfolio comprises $12$ adjudicated
+procurement-cartel cases with $65$ firm-defendants. Matching
+defendants to BEC records by exact $14$-digit CNPJ equality, with
+no fuzzy or manual step, leaves $\valDirectCADE$ active in BEC as
+the direct-defendant set, of which $\valFunnelDirectActiveFTM$
+appear in the firm--tender map and anchor the label funnel; their
+$\valFunnelDefItems$ defendant tender-items locate the adjudicated
+environments. The main label collects unique always-loser firms
+(win rate $=0$ over $2009$--$2019$) that share at least one BEC
+tender-item with those anchors, excluding the defendants
+themselves. Crucially, the frequent-loser flag never enters the
+label: it is the award-layer score being \emph{evaluated} against
+the label. The match yields $\valMainCobidders$ always-loser
+cobidders, $\valMainCobFL$ frequent losers and $\valMainCobNonFL$
+not---the label straddles both sides of the screen's threshold, so
+the validation cannot be circular in the score. A conservative
+benchmark restricts the portfolio to the $\valConservativeCases$
+cases judged on or before $\valConservativeCutoff$ under the same
+definition ($\valMainConsCobidders$ cobidders from
+$\valMainConsFD$ defendants), a strict subset of the main label
+(Table~\ref{tab:label_funnel_submission}). Positive counts differ
+across later tables only because later exercises impose
+common-support, timing, or bid-feature restrictions;
 Table~\ref{tab:positive_count_concordance} in the appendix
 reconciles each denominator.
 
@@ -114,187 +94,152 @@ present in the firm--tender map. Counts are unique firms.
 \end{adjustbox}
 \end{table}
 
-Before adding stricter discipline, a baseline question: do firms
-flagged by the award-layer rule appear disproportionately among
-always-loser firms near adjudicated anchors? They do.
+A baseline question precedes any discipline: do firms flagged by
+the award-layer rule cluster among always-loser firms near
+adjudicated anchors? They do, and markedly.
 % src: arithmetic on outputs/targets/canonical_target_counts.csv
 % P(cobidder|FL14)=341/2735=12.5%; P(cobidder|non-FL AL)=310/14108=2.2%
 A frequent loser is a cobidder with probability $12.5\%$
 ($341/2{,}735$), against $2.2\%$ for non-frequent-loser
-always-losers ($310/14{,}108$)---an enrichment ratio near
-$5.7\times$. On the full always-loser pool the continuous score
-ranks the label at ROC-AUC $\valExpRawScoreAUC$
-(PR-AUC $\valExpRawScorePRAUC$; precision@500 $\valFullPrec$,
-lift $5.6\times$), and the binary flag at $0.688$. Persistent
-zero-win participation is not random with respect to
-adjudication-anchored loser-side exposure---the raw ranking is
-picking up a pattern worth auditing, not noise. Whether that
-pattern reflects anything beyond arithmetic is the open question,
-since participation volume and shared environments mechanically
-manufacture proximity. The next subsection asks how much of the
-ranking survives once opportunity is held comparable, and the
-answer is: very little.
+always-losers ($310/14{,}108$)---an enrichment near $5.7\times$. On
+the full always-loser pool the continuous score ranks the label at
+ROC-AUC $\valExpRawScoreAUC$ (PR-AUC $\valExpRawScorePRAUC$;
+precision@500 $\valFullPrec$, lift $5.6\times$), the binary flag at
+$0.688$. Persistent zero-win participation is plainly not random
+with respect to adjudication-anchored loser-side exposure. But
+participation volume and shared environments mechanically
+manufacture proximity, so whether the pattern reflects anything
+beyond arithmetic is the open question---and, as the next
+subsection shows, very little of it survives once opportunity is
+held comparable.
 
 \subsection{Opportunity-Adjusted Validation}
 \label{sec:validation_exposure}
 \label{sec:validation_exposure_timing}
 
-This is the central validation exercise. The threat is mechanical:
-a firm with high participation $T_i$ co-appears with defendants more
-often by construction, and a firm in the same item, buyer, year,
-and modality cells is more exposed even under ordinary competition.
-We measure opportunity directly. For each always-loser firm we count
-observed contact with direct defendants, $O_i$, and construct
-expected contact under random matching, $E_i=\sum_g n_{ig}\,p_g$,
-where $n_{ig}$ is participation in cell $g$ and $p_g$ its
-defendant-density. We build $E_i$ at three cell granularities and
-restrict to common support; the exposed subsample retains
-$n=\valExpExposedN$ always-loser firms containing all
-$\valExpNpos$ positives (construction in
+The threat here is mechanical: a firm with high participation $T_i$
+co-appears with defendants more often by construction, and a firm
+sharing item, buyer, year, and modality cells is more exposed even
+under ordinary competition. We measure opportunity directly. For
+each always-loser firm we count observed contact with direct
+defendants, $O_i$, and expected contact under random matching,
+$E_i=\sum_g n_{ig}\,p_g$, where $n_{ig}$ is participation in cell
+$g$ and $p_g$ its defendant-density. We build $E_i$ at three cell
+granularities and restrict to common support; the exposed
+subsample retains $n=\valExpExposedN$ always-loser firms containing
+all $\valExpNpos$ positives (construction in
 \ref{app:market_opportunity_submission}). Holding $E_i$ fixed, we
 ask whether the score reproduces the label better than exposure
-alone, whether it adds anything net of exposure, and whether it
-ranks within equal-opportunity strata.
+alone, adds anything net of it, and ranks within equal-opportunity
+strata.
 
-The answer cuts the raw performance down on every margin, and we
-are explicit about which comparisons carry the weight. Exposure-based
-benchmarks must be read in tiers, because contact-derived
-quantities partially encode a contact-defined label. At the
-mechanical extreme, ranking by observed contact $O_i$ reproduces
-the label at ROC-AUC $0.905$ and a plug-in $E_i$ reaches
-$0.985$---these encode the label (a cobidder \emph{is} a firm
-with $O_i>0$) and are reported only to expose the inflation, as
-are the combined exposure-plus-score logits near $0.99$
-(Table~\ref{tab:opportunity_adjusted_validation}). The firm-level
-leave-one-out $E_i$ used as the exposure benchmark reaches
-$\valArmorExpLOO$; an audit of that benchmark shows it, too, is
-partially label-encoding---recomputing each cell's defendant
-density from \emph{non-cobidder} rows only, so that no eventual
-positive contributes to any firm's expected contact, leaves a
-label-blind opportunity ranking at only $\valArmorExpLB$
-(\ref{app:validation_audits_submission}). Genuine opportunity
-structure, purged of the label, therefore explains little on its
-own. What the tiers establish is not that ``opportunity is the
-better model'' but something sharper, and the mechanism is exact.
-The award-layer score is $\log(1+T_i)$, monotone in participation
-volume $T_i$ by construction. The cobidder label is
-contact-defined: a positive is an always-loser that shares at least
-one tender-item with a defendant, so the probability of being
-labelled is itself increasing in $T_i$ (more tender-items, more
-chances to contact a defendant). The score and the label are thus
-\emph{both} monotone transforms of the same volume primitive. A
-firm need not coordinate to be ranked high and labelled positive;
-it need only participate often. Mechanically, this makes the
-positive class the size-biased participation distribution---draws of
-$T$ weighted by the contact probability---so the raw ROC-AUC is just
+The answer cuts the raw performance down on every margin, and the
+exposure benchmarks must be read in tiers because contact-derived
+quantities partially encode a contact-defined label. The
+mechanical-extreme benchmarks---ranking by observed contact $O_i$,
+its plug-in $E_i$, and the combined logits, all near or above
+ROC-AUC $0.9$---encode the label (a cobidder \emph{is} a firm with
+$O_i>0$) and are reported only to expose the inflation
+(Table~\ref{tab:opportunity_adjusted_validation}). The decisive
+read is the label-blind benchmark: recomputing each cell's defendant
+density from \emph{non-cobidder} rows only, so no eventual positive
+contributes to any firm's expected contact, leaves an opportunity
+ranking at just $\valArmorExpLB$ (the unpurged leave-one-out variant
+is $\valArmorExpLOO$; \ref{app:validation_audits_submission}).
+Opportunity structure purged of the label explains little on its own.
+
+What the tiers establish is sharper than ``opportunity is the
+better model,'' and the mechanism is exact. The award-layer score
+is $\log(1+T_i)$, monotone in participation volume $T_i$. The
+cobidder label is contact-defined: a positive is an always-loser
+sharing at least one tender-item with a defendant, so the
+probability of being labelled also rises in $T_i$---more
+tender-items, more chances to contact a defendant. Score and label
+are both monotone transforms of the same volume primitive. A firm
+need not coordinate to be ranked high and labelled positive; it
+need only participate often. This makes the positive class the
+size-biased participation distribution, so the raw ROC-AUC is just
 $\Pr(T_i>T_j)$ with $T_i$ size-biased relative to a random negative
-$T_j$. That ordering exists before any conduct enters, which is why
-raw validation over-credits the screen: it credits volume geometry
-to the score. The over-crediting is therefore not an accident of
-this dataset but a predictable bias, and its magnitude is governed
-by two quantities only---the dispersion of participation volume
-across candidate firms and the adjudicated base rate. The bias
-\emph{grows} with the dispersion of $T$ (with no dispersion there is
-nothing to rank and the raw AUC collapses to chance) and
-\emph{shrinks} as the base rate rises (a rarer target is more
-strongly size-biased); the formal signs are stated and proved in the
-rare-target regime in Proposition~\ref{prop:inflation}. The
-practitioner takeaway is portable. The coefficient of variation of
-$T$ in the candidate pool is a \emph{sufficient statistic} for how
-inflated an uncorrected award-screen AUC is likely to be, computable
-from award data alone---before a single bid file is opened. It is a
-cheap diagnostic for the size of the bias, not a correction that
-rescues the screen.
+$T_j$---an ordering that exists before any conduct enters. Raw
+validation over-credits the screen because it credits volume
+geometry to it. The over-crediting is thus a predictable bias, not
+a quirk of this dataset, and its magnitude turns on only two
+quantities: the dispersion of participation volume and the
+adjudicated base rate. The bias \emph{grows} with the dispersion of
+$T$ (with no dispersion there is nothing to rank and the raw AUC
+collapses to chance) and \emph{shrinks} as the base rate rises (a
+rarer target is more strongly size-biased); the formal signs are
+proved in the rare-target regime in
+Proposition~\ref{prop:inflation}. The takeaway is portable: the
+coefficient of variation of $T$ in the candidate pool is a
+\emph{sufficient statistic} for how inflated an uncorrected
+award-screen AUC is likely to be, computable from award data alone
+before a single bid file is opened. It diagnoses the size of the
+bias; it does not rescue the screen.
 
-Second, conditional on opportunity the residual ordering is
-marginal at best and not robust across designs---and the
-within-stratum design itself survives an audit of its ability to
-detect. The nested model that adds the score to the exposure-only
-model raises AUC by $\valExpIncrement$ (DeLong
-$p=\valExpDeLongP$; \citealp{delong1988comparing})---statistically
-real but operationally negligible: a one-percentage-point AUC gain
-over an exposure-only model is far below any margin that would
-reorder a forensic queue, and it is the only test in the
+Conditional on opportunity, the residual ordering is marginal and
+fragile, though the within-stratum design passes an audit of its
+power to detect. Adding the score to the exposure-only model raises
+AUC by $\valExpIncrement$ (DeLong $p=\valExpDeLongP$;
+\citealp{delong1988comparing}). Read magnitude-first, a
+one-percentage-point gain sits far below any margin that would
+reorder a forensic queue, even though it is the only test in the
 opportunity-adjusted battery that is both positive and
-conventionally significant (under a Benjamini--Hochberg correction
-across that family it is also the only one to survive, while the
-within-stratum and permutation results are non-rejections to begin
-with; \ref{app:validation_audits_submission}). \emph{Within} opportunity strata,
-where firms are compared only against others with comparable
-expected contact, the continuous score ranks the label at AUC
-$\valExpWithinAUC$ and the binary flag at
-$\valExpWithinFLAUC$---both indistinguishable from chance. This
-null is falsifiable, not built in: within the \emph{same} strata
-a positive-control score ($O_i$ itself) ranks the label at
-$\valArmorOiControlMedium$, so the design detects a residual when
-one exists. The headline within-stratum AUC ($\valExpWithinAUC$)
-stratifies on opportunity deciles; rebuilding the strata from the
-discrete expected-contact cells leaves the within-stratum score AUC
-ranging $\valArmorWithinMedium$--$\valArmorWithinStrict$ across
-granularities, dipping at the medium definition
-($\valArmorWithinMedium$) and rising in the strictest cells
-($\valArmorWithinStrict$), where retained support is thin
-($615$ firms) and the $O_i$ positive control itself falls to
-$0.740$---so the strict-cell figure reflects low support rather
-than a recovered residual
-(\ref{app:validation_audits_submission}). Because label-soaked
-strata could in principle flatten a true signal, we also
-stratify on the \emph{label-blind} expected contact: there the
-score retains $\valArmorWithinLBall$---but the negative controls
-in Section~\ref{sec:cobidder_type} show this same ordering arises
-under placebo anchors and under non-CADE high-volume-winner
-anchors, identifying it as generic co-participation geometry
-rather than anything cartel-specific. A coarsened-exact
-opportunity match yields AUC $\valExpCEMmatchedAUC$, and the
-within-stratum gap in cobidder probability between flagged and
-non-flagged always-losers is $\valExpMatchedDelta$---negative.
-The score does rank positive excess contact $O_i-E_i>0$ at AUC
-$\valExpScoreExcessAUC$, but that diagnostic shares the score's
-participation component and cannot carry the residual claim
-alone.
+conventionally significant (and the only one to survive
+Benjamini--Hochberg). \emph{Within} opportunity strata---firms
+compared only against others with comparable expected contact---the
+continuous score ranks the label at AUC $\valExpWithinAUC$ and the
+binary flag at $\valExpWithinFLAUC$, both at chance. The null is
+falsifiable, not built in: in the same strata a positive-control
+score ($O_i$ itself) ranks the label at $\valArmorOiControlMedium$,
+so the design recovers a residual when one exists. Rebuilding strata
+from discrete expected-contact cells leaves the within-stratum score
+AUC ranging $\valArmorWithinMedium$--$\valArmorWithinStrict$, rising
+only in the strictest cells where support is thin and the $O_i$
+control itself drops---low support, not a recovered residual.
+Stratifying on \emph{label-blind} expected contact the score retains
+$\valArmorWithinLBall$, but the negative controls in
+Section~\ref{sec:cobidder_type} reproduce that ordering under placebo
+and non-CADE high-volume-winner anchors, marking it as generic
+co-participation geometry rather than anything cartel-specific. A
+coarsened-exact opportunity match yields AUC $\valExpCEMmatchedAUC$,
+with a within-stratum flagged-versus-non-flagged cobidder-probability
+gap of $\valExpMatchedDelta$---negative; the score does rank positive
+excess contact $O_i-E_i>0$ at AUC $\valExpScoreExcessAUC$, but that
+diagnostic shares the score's participation component and cannot
+carry the residual claim alone (\ref{app:validation_audits_submission}).
 
-The exposure-preserving permutation tests settle the question.
-Under a pure-exposure binomial null the observed PR-AUC
-$\valExpRawScorePRAUC$ does not beat the null (null mean $0.264$;
-empirical $p=\valExpPermBp$): the pure-exposure PR-AUC exceeds
-the raw score's on the rare-target metric. And under the permutation
-that shuffles cobidder labels only within matched
+Exposure-preserving permutation tests settle the question. Under a
+pure-exposure binomial null the observed PR-AUC
+$\valExpRawScorePRAUC$ does not beat the null mean of $0.264$
+($p=\valExpPermBp$); the pure-exposure PR-AUC in fact exceeds the
+raw score's. Shuffling cobidder labels only within matched
 exposure-by-participation strata---the design that isolates any
-residual signal---the observed PR-AUC does \emph{not} reject the
-null either ($p=\valExpPermCp$), and the frequent-loser enrichment
-within matched strata is likewise not significant
-($p=\valExpFLenrichP$). These non-rejections are informative, not
-merely underpowered: a calibration that injects synthetic residual
-signal into the labels shows the permutation test is correctly
-sized under the null and rejects with probability
+residual signal---likewise fails to reject ($p=\valExpPermCp$), as
+does the frequent-loser enrichment within those strata
+($p=\valExpFLenrichP$). These non-rejections are informative rather
+than underpowered: injecting synthetic residual signal shows the
+test is correctly sized and rejects with probability
 $\valArmorPowerFive$ once the true within-stratum AUC reaches
-$0.55$ (probability $\valArmorPowerTen$ at $0.60$), so the
-non-rejection bounds any surviving residual well below the weakest
-ordering that could matter operationally
-(\ref{app:validation_audits_submission}). Both permutation
-distributions are reported there. Nor is this an
-artifact of label breadth: restricting positives to firms sharing
-at least two defendant tender-items strengthens the conclusion
-rather than reversing it---the exposure-only model improves faster
-than the score, the within-stratum AUC stays at chance ($0.506$),
-and the nested increment vanishes ($+0.003$, $p=0.47$;
-\ref{app:validation_audits_submission}).
+$0.55$ ($\valArmorPowerTen$ at $0.60$), bounding any surviving
+residual below the weakest ordering that could matter
+operationally. Nor does label breadth drive the result: restricting
+positives to firms sharing at least two defendant tender-items only
+strengthens it---the exposure-only model improves faster than the
+score, the within-stratum AUC stays at chance ($0.506$), and the
+nested increment vanishes ($+0.003$, $p=0.47$). Both permutation
+distributions and the breadth check are in
+\ref{app:validation_audits_submission}.
 
-The reading we carry forward is therefore stronger than caution.
-Under a reproducible, non-circular label, holding opportunity fixed
-leaves the award-layer score without a residual behavioral ranking;
-once exposure is held comparable, the score no longer supports a
-conduct interpretation, and its value is to reveal that the award
-record was ranking opportunity rather than coordination. The
-apparent reach of the routine record is opportunity arithmetic.
-That is precisely the boundary an agency must learn before opening
-costly proof-producing records: a decomposition run before any bid
-file is recovered shows that loser-side concentration should not be
-used as a stand-alone prioritization device in this setting---and
-the same procedure, run on another platform, would show where (if
-anywhere) a cheap screen retains residual value. The remaining
-threats---timing, leakage, and case composition---sharpen the same
-reading and are taken up next.
+The reading is therefore stronger than caution. Under a
+reproducible, non-circular label, holding opportunity fixed leaves
+the award-layer score without a residual behavioral ranking: the
+apparent reach of the routine record is opportunity arithmetic, so
+loser-side concentration should not stand alone as a prioritization
+device here---while the same decomposition, run on another platform,
+would show where, if anywhere, a cheap screen retains residual
+value. Timing, leakage, and case composition sharpen the same
+reading next.
 
 \begin{table}[htbp]
 \centering
@@ -365,92 +310,75 @@ random matching accounts for most of the observed gradient.}
 \subsection{Timing, Leakage, and Case Composition}
 \label{sec:validation_timing}
 
-Even with no robust residual ordering net of opportunity, an
-agency still needs to know how the raw ranking behaves if used in
-the field---can it, whatever its source, be applied
-prospectively? The answer marks the second boundary an agency must
-learn before relying on the score: the ranking is a retrospective,
-incumbent-pool diagnostic, concentrated in a few adjudicated cases,
-and it does not support prospective, platform-wide deployment.
+Even without a robust residual ordering, an agency still needs to
+know whether the raw ranking can be applied prospectively. It
+cannot: the ranking is a retrospective, incumbent-pool diagnostic
+concentrated in a few adjudicated cases, and it does not support
+platform-wide deployment.
 
-A retrospective rank measures; it does not deploy. Every benchmark
-anchors its labels to CADE adjudications that close years after the
-bidding they describe, so even a high in-sample AUC would certify
-construct validity, not field performance. The strict-timing design
-freezes the score, the always-loser status, and the frequent-loser
-threshold to the $\valYearStart$--$2016$ window and evaluates
-against $2017$--$2019$ labels. On the realistic full candidate
-universe---every firm scorable at the screening date, with entrants
-carried at score zero---discrimination is at or below chance:
-ROC-AUC $\valStrictFullAUC$, PR-AUC $0.014$, and
-\textbf{precision@500 $=0$ and recall@500 $=0$}. A screen that
-returns zero true positives in its top $500$ candidates cannot be
-deployed. Inside the training always-loser pool the frozen score
-retains ROC-AUC $\valStrictContAUC$ (binary flag
-$\valStrictFLAUC$), which is the incumbent-triage residue: a
-retrospective ordering among firms the agency already observes.
-The mechanical cause of the collapse is structural: of the
+Every benchmark anchors its labels to CADE adjudications that close
+years after the bidding they describe, so even a high in-sample AUC
+would certify construct validity, not field performance. The
+strict-timing design freezes the score, always-loser status, and
+frequent-loser threshold to the $\valYearStart$--$2016$ window and
+evaluates against $2017$--$2019$ labels. On the realistic full
+candidate universe---every firm scorable at the screening date,
+entrants carried at score zero---discrimination collapses to chance
+or below: ROC-AUC $\valStrictFullAUC$, PR-AUC $0.014$, and
+\textbf{precision@500 and recall@500 both $0$}. A screen returning
+zero true positives in its top $500$ cannot be deployed. Inside the
+training always-loser pool the frozen score retains ROC-AUC
+$\valStrictContAUC$ (binary flag $\valStrictFLAUC$)---the
+incumbent-triage residue, an ordering among firms the agency
+already observes. The cause is structural: of the
 $\valMainCobidders$ positives, $\valMainEntrantPositives$
 ($\valEntrantPosShare$) are entrants with no pre-window history, so
-the frozen score cannot rank them; only
-$\valMainTimingCobidders$ positives are rankable at all, and
-roughly a quarter of the universe is tied at score zero. A
-loser-side score built from past losing cannot order firms that
-have not yet lost. The rolling-origin design confirms this: on the
-full universe every test year from $2014$ to $2019$ returns
-precision@500 and recall@500 of zero, with ROC-AUC between
-$\valRollWorstAUC$ (2015, below chance) and $0.50$. A fully
-label-frozen variant closes the residual leakage concern in this
-design: freezing the pool, the score, \emph{and} the label
-ingredients to the training window (always-loser status from
-$2009$--$2016$ wins only; defendant contact from $2009$--$2016$
-tender-items only) leaves $\valArmorFrozenPool$ rankable
-incumbents, among whom the frozen score ranks \emph{new}
-defendant contact arising in $2017$--$2019$ at AUC
-$\valArmorFrozenProspAUC$ ($\valArmorFrozenProspN$ positives;
-fully frozen retrospective contact: $\valArmorFrozenRetroAUC$).
-Read against the negative controls of
-Section~\ref{sec:cobidder_type}, this is participation volume
-forecasting generic future contact with active firms---not a
-cartel-specific signal that the stricter designs missed---and the
-full-universe zeros above remain the operative deployment result.
-The rolling-origin curves and the label-frozen construction are in
+the frozen score cannot rank them; only $\valMainTimingCobidders$
+are rankable at all, and roughly a quarter of the universe is tied
+at score zero. A loser-side score built from past losing cannot
+order firms that have not yet lost. The rolling-origin design
+confirms it: on the full universe every test year from $2014$ to
+$2019$ returns precision@500 and recall@500 of zero, with ROC-AUC
+between $\valRollWorstAUC$ and $0.50$. A fully label-frozen variant
+closes the residual leakage concern---freezing the pool, the score,
+\emph{and} the label ingredients (always-loser status and defendant
+contact from $2009$--$2016$ only) leaves $\valArmorFrozenPool$
+rankable incumbents, among whom the frozen score ranks \emph{new}
+$2017$--$2019$ defendant contact at AUC $\valArmorFrozenProspAUC$
+($\valArmorFrozenProspN$ positives; retrospective contact
+$\valArmorFrozenRetroAUC$). Against the
+negative controls of Section~\ref{sec:cobidder_type}, this is
+participation volume forecasting generic future contact with active
+firms, not a cartel-specific signal the stricter designs missed; the
+full-universe zeros remain the operative deployment result.
+Rolling-origin curves and the label-frozen construction are in
 \ref{app:validation_audits_submission}.
 
-Case composition is the second structural fact. The largest case
+Case composition is the second structural fact. One case
 (trens/metros, CADE process $08700.004617/2013\text{-}41$) supplies
 $\valTopCasePosShare$ of all positives and $\valTopCaseTP$ of the
-top-$500$ true positives. Dropping it cuts PR-AUC from
+top-$500$ true positives; dropping it cuts PR-AUC from
 $\valLOCOfullPRAUC$ to $\valLOCOdropLargestPRAUC$ ($-37\%$) and
-precision@500 from $\valFullPrec$ to $\valLOCOdropLargestPrec$;
-dropping the top two cases leaves PR-AUC $0.058$. ROC barely moves
-($0.761\to0.763$), which is precisely why ROC is the wrong lead
-metric here---it is insensitive to the case concentration the
-operational metrics expose. Case-balanced precision@500 is
-$\valCaseBalancedPrec$ against the firm-weighted pooled
-$\valFullPrec$; six linkable cases contribute top-$500$ true
-positives, the largest accounting for $45$--$50\%$ across cutoffs.
-Concentration also appears across environments: the largest
-item-group holds $\valTopItemGroupShare$ of positives and
-$85.4\%$ of positives sit in Pregão. A clustered
+precision@500 from $\valFullPrec$ to $\valLOCOdropLargestPrec$ while
+ROC barely moves---exactly why ROC is the wrong lead metric, being
+insensitive to the concentration the operational metrics expose.
+Equal case re-weighting pulls precision@500 to
+$\valCaseBalancedPrec$, and the signal also concentrates across
+environments ($85.4\%$ of positives sit in Pregão; the largest
+item-group holds $\valTopItemGroupShare$). A clustered
 randomization-inference test (item-group$\times$year cells,
-$B=1{,}000$) shows the pooled ordering is distinguishable from a
-within-cell shuffle ($p=\valClusterRIp$) but case-coverage breadth
-is not ($p=\valClusterRIcovP$): what the raw ranking picks up is
-concentrated exposure, not breadth. The leave-one-case-out
-distribution is reported in
-\ref{app:validation_audits_submission};
+$B=1{,}000$) distinguishes the pooled ordering from a within-cell
+shuffle ($p=\valClusterRIp$) but not case-coverage breadth
+($p=\valClusterRIcovP$): the raw ranking picks up concentrated
+exposure, not breadth. The leave-one-case-out distribution is in
+\ref{app:validation_audits_submission}, and
 Table~\ref{tab:timing_case_holdout} synthesizes the battery.
 
-The most this design supports is incumbent-firm triage under
-retrospective adjudication-anchored validation: an ordering among
-firms the agency already observes, useful as one input to where a
-forensic team looks first, and explicitly not a prospective,
-platform-wide screen. The estimated ranking is not a portable
-cartel score. The transferable object is the decomposition
-framework: label construction, opportunity adjustment, timing
-discipline, case-composition audit, bid-layer comparison, and
-cost-recall accounting.
+At most, then, this design supports incumbent-firm triage under
+retrospective validation---one input to where a forensic team looks
+first, explicitly not a prospective platform-wide screen. The
+estimated ranking is not a portable cartel score; the transferable
+object is the decomposition itself, taken up below.
 
 \begin{table}[htbp]
 \centering
@@ -503,43 +431,37 @@ an exact zero true positives in the top $500$.
 \label{sec:validation_summary}
 
 The direct-defendant exercise aligns the validation target with the
-screen's legal-economic role. Direct CADE defendants are the legal
-anchors that locate adjudicated environments; they need not be
-persistent zero-win firms, since defendants may occupy winner-side,
-allocation, or rotating roles. The award-layer flag ranks the loser
-side by construction, and against direct defendants the binary flag
-is uninformative: AUC $\valAUCdirectStd$, indistinguishable from
-random. Continuous participation volume, by contrast, ranks
-defendants moderately above chance (AUC $0.66$--$0.70$ across
-designs)---defendants are active firms, so volume alone carries
-some defendant-side information even though the loser-side flag
-does not. The role separation in the data is consistent with this:
-$\valDirectShareAL$\% of direct defendants are always-losers, and
-their median win rate is $\valDirectMedWR$, whereas the cobidder
-target sits in the zero-win stratum by construction. The lesson is scope, not
-detection: a loser-side flag is silent about the winner side of
-adjudicated conduct, and nothing in this paper ranks defendants.
-The full scope matrix is in
-\ref{app:validation_audits_submission}.
+screen's legal-economic role. Direct CADE defendants anchor the
+adjudicated environments but need not be persistent zero-win firms,
+since they may occupy winner-side, allocation, or rotating roles.
+The award-layer flag ranks the loser side by construction, and
+against direct defendants the binary flag is uninformative
+(AUC $\valAUCdirectStd$, random). Continuous participation volume
+ranks them moderately above chance (AUC $0.66$--$0.70$): defendants
+are active firms, so volume carries some defendant-side information
+the loser-side flag does not. The data bear this out---only
+$\valDirectShareAL$\% of direct defendants are always-losers and
+their median win rate is $\valDirectMedWR$, while the cobidder
+target sits in the zero-win stratum by construction. The lesson is
+scope, not detection: a loser-side flag is silent about the winner
+side of adjudicated conduct, and nothing here ranks defendants
+(full scope matrix in \ref{app:validation_audits_submission}).
 
 Taken together, the benchmarks draw a boundary rather than certify
-a screen. Each addresses a distinct pre-registered threat---legal
-anchoring, participation volume, market exposure, timing, leakage,
-and scope asymmetry---and the consolidated threat map is in
-\ref{app:validation_audits_submission}. Persistent
-zero-win participation concentrates adjudication-anchored
-loser-side exposure in the raw data, but the decomposition shows
-that this concentration is what procurement opportunity already
-implies: the residual ordering net of opportunity is marginal at
-best and not robust across designs, the prospective ranking fails
-outside incumbent pools, and the raw signal is concentrated in a
-few adjudicated cases. The defensible product is the audit, not
-the screen: a reproducible decomposition that tells an enforcement
-agency how far a cheap award-layer statistic can be trusted before
-costly bid-layer work begins---here, not far---and that transfers
-to other platforms where the answer may differ. Section~\ref{sec:comparative}
-runs the same audit, unchanged, on a second procurement system to
-test whether the decomposition travels; Section~\ref{sec:cobidder_type}
-then asks what the always-loser cobidders look like as firms, which
-disciplines interpretation of what the raw concentration is made
-of.
+a screen, each addressing a distinct pre-registered threat---legal
+anchoring, participation volume, exposure, timing, leakage, scope
+asymmetry (consolidated map in
+\ref{app:validation_audits_submission}). Persistent zero-win
+participation does concentrate adjudication-anchored loser-side
+exposure in the raw data, but the decomposition shows this is what
+procurement opportunity already implies: the residual ordering net
+of opportunity is marginal and fragile, the prospective ranking
+fails outside incumbent pools, and the raw signal sits in a few
+adjudicated cases. The defensible product is the audit, not the
+screen---a reproducible decomposition that tells an agency how far
+a cheap award-layer statistic can be trusted before costly
+bid-layer work begins (here, not far), and that transfers where the
+answer may differ. Section~\ref{sec:comparative} runs the same
+audit unchanged on a second procurement system to test whether it
+travels; Section~\ref{sec:cobidder_type} then asks what the
+always-loser cobidders look like as firms.

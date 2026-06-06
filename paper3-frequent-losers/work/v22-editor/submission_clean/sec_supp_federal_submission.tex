@@ -1,0 +1,234 @@
+% Online Supplement G-source: full ComprasNet federal construction + battery
+% Migrated 2026-06-06 from sec_app10_federal_audit_submission.tex during the
+% JLEO compression pass. This is a STRESS TEST of portability, not an
+% independent validation. Legal anchors are partially overlapping with BEC.
+\section{Federal Stress Test (ComprasNet): Full Construction and Battery}
+\label{supp:federal}
+
+This section deposits the full federal construction---label funnel,
+opportunity-cell construction, and the complete control-function, timing,
+leave-one-case-out, negative-control, and armor batteries---behind the
+compact federal stress-test summary in Appendix~G
+(\ref{app:federal_audit_submission}). The federal panel is a stress test of
+how far forensic priority \emph{ports} across platforms, not an independent
+validation. ``CADE-defendant contact'' is an adjudication-anchored
+\emph{exposure} label---a firm shares a tender-item with a directly
+adjudicated CADE defendant---and never membership or liability. The legal
+anchors are the same numbered CADE cases used on BEC, \emph{partially
+overlapping} with the BEC anchors by construction
+(Section~\ref{sec:comparative}). The federal panel has no sealed-bid
+modality, so no modality stratification is reported.
+
+\subsection{Label-Construction Funnel}
+\label{supp:federal_funnel}
+
+Direct CADE defendants are matched to federal participant records by the
+canonical establishment-anchored CNPJ rule; their defendant tender-items
+locate the adjudicated environments; unique always-loser firms sharing at
+least one federal tender-item with an anchor define the broad cobidder
+label. Direct defendants are excluded and the frequent-loser flag is never
+used to build the label.
+
+\begin{table}[htbp]
+\centering
+\caption{Federal Label-Construction Funnel}
+\label{supp:tab_federal_funnel}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{3.6cm}cccccp{2.6cm}}
+\toprule
+Sample / benchmark & Cases & Legal def. & Fed-active def. & AL cobid. & Broad-AL cobid. & Role \\
+\midrule
+Numbered CADE portfolio & $\valFedAudCases$ & $\valFedAudLegalDef$ & $\valFedAudFedActiveDef$ & $\valFedAudCobiddersAll$ & $\valFedAudCobiddersBroadAL$ & reference \\
+Main federal target & $\valFedAudCases$ & $\valFedAudLegalDef$ & $\valFedAudFedActiveDef$ & $\valFedAudCobiddersAll$ & $\valFedAudCobiddersBroadAL$ & primary \\
+Conservative (pre-cutoff) & $\valFedAudConsCases$ & --- & $\valFedAudConsFedDef$ & $\valFedAudConsCobidders$ & $\valFedAudConsBroadAL$ & early-cases subset \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} A cobidder is an adjudication-anchored exposure
+label, not membership. The main label is a unique always-loser firm
+(federal win rate $=0$ over $2013$--$2019$) sharing at least one federal
+tender-item with a federally active direct CADE defendant; direct
+defendants are excluded; the frequent-loser flag is not used to construct
+the label. One unnumbered summary case is excluded for lack of firm-level
+identification. Counts are unique firms.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Opportunity-Cell Construction and Expected Contact}
+\label{supp:federal_opp_cells}
+
+A firm can appear near a CADE anchor simply because it operates in
+environments where defendants are active; the opportunity cells discipline
+this exposure before any score is credited. We partition the federal award
+layer into procurement-opportunity cells $g$ using three nested
+definitions: \textbf{COARSE} $=$ year (the item-group margin is not
+observed federally---federal item codes are buyer-embedded rather than
+drawn from a shared classification,
+Section~\ref{sec:comparative_observability}); \textbf{MEDIUM} $=$ year
+$\times$ buyer (UASG)---the reference definition for the headline federal
+within-stratum results; and \textbf{STRICT} $=$ item code $\times$ year
+$\times$ buyer. Modality is not a margin (the federal panel is pure
+Preg\~ao). For firm $i$, with $n_{ig}$ the tender-items held in cell $g$
+and $p_g$ the cell defendant-contact rate computed leave-one-out, expected
+contact is $E_i=\sum_g n_{ig}\,p_g$, observed contact is $O_i$, and excess
+is $X_i=O_i-E_i$. The mean cell defendant-contact rate $\bar p_g$ is around
+$\valFedAudPbarRange$ across the three definitions; finer cells gain
+resolution at the cost of support (under STRICT,
+$\valFedAudStrictSparseShare$ of cells hold fewer than five tender-items).
+
+\subsection{Opportunity-Adjusted Validation}
+\label{supp:federal_control_function}
+
+\begin{table}[htbp]
+\centering
+\caption{Federal Control-Function Validation (Selected Specifications)}
+\label{supp:tab_federal_control_function}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{lp{4.0cm}rrrr}
+\toprule
+Spec & Model & $N$ & Pos. & ROC-AUC & PR-AUC \\
+\midrule
+S0 & raw score ($\log T$) & $\valFedAudRawN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudRawAUC$ & $\valFedAudRawPRAUC$ \\
+S0 & raw FL (binary cut) & $\valFedAudRawN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudRawFLAUC$ & $\valFedAudRawFLPRAUC$ \\
+S0 & exposure-only (all AL) & $\valFedAudExposedN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudExpOnlyAUC$ & $\valFedAudExpOnlyPRAUC$ \\
+S2 & score $+\log(1{+}E)$ [MEDIUM] & $\valFedAudExposedN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudCombinedAUC$ & --- \\
+NESTED & exposure-only logit & $\valFedAudExposedN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudNestedExpAUC$ & --- \\
+NESTED & exposure $+$ score & $\valFedAudExposedN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudNestedExpScoreAUC$ & --- \\
+WITHIN & score $\mid$ opportunity stratum & $\valFedAudExposedN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudWithinAUC$ & --- \\
+WITHIN & FL $\mid$ opportunity stratum & $\valFedAudExposedN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudWithinFLAUC$ & --- \\
+LABEL-BLIND & opportunity-only (non-cobidder $p_g$) & $\valFedAudExposedN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudLabelBlindAUC$ & --- \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} Outcome is adjudication-anchored cobidder contact.
+As on BEC, the combined exposure-plus-score logit (S2) is mechanically
+inflated because $E_i$ is built from the same defendant-contact rates that
+define the label; it is \emph{not} score evidence. The score's isolated
+contribution is the nested increment over the exposure-only model and the
+within-stratum AUC. The LABEL-BLIND row recomputes each cell's defendant
+density from non-cobidder rows only, so no eventual positive contributes to
+any firm's expected contact.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+The nested DeLong increment over the exposure-only model is
+$\valFedAudNestedIncrement$ ($p=\valFedAudNestedP$), and the
+within-opportunity-stratum AUC for the score is $\valFedAudWithinAUC$. The
+label-blind opportunity ranking retains $\valFedAudLabelBlindAUC$ on its
+own---so the raw federal concentration is, after adjustment, opportunity
+arithmetic rather than score signal.
+
+\subsection{Power Bounding and Matched Permutation}
+\label{supp:federal_power_permutation}
+
+A positive-control score ($O_i$ itself) ranks the label within the
+\emph{same} strata to confirm the design recovers a residual when one
+exists; a calibration injects synthetic within-stratum signal to size the
+permutation test; and the label is shuffled only within matched
+exposure-by-participation strata. The within-stratum positive control
+reaches $\valFedAudOiControlMedium$, confirming the design has power. The
+permutation test is correctly sized under the null and rejects with
+probability $\valFedAudPowerFive$ once the true within-stratum AUC reaches
+$0.55$ (probability $\valFedAudPowerTen$ at $0.60$). Under the
+matched-strata permutation the observed PR-AUC \valFedAudPermVerdict\
+($p=\valFedAudPermCp$); the within-stratum AUC across cell granularities
+ranges $\valFedAudWithinCoarse$ (coarse) to $\valFedAudWithinStrict$
+(strict).
+
+\subsection{Timing, Leakage, and Label-Frozen Prospective Test}
+\label{supp:federal_timing}
+
+We freeze the score, the always-loser status, and the frequent-loser
+threshold to the $2013$--$2016$ window and evaluate against $2017$--$2019$
+labels, on the realistic full candidate universe (entrants carried at score
+zero). A fully label-frozen variant additionally freezes the label
+ingredients---always-loser status from $2013$--$2016$ wins only and
+defendant contact from $2013$--$2016$ tender-items only---and ranks
+\emph{new} defendant contact arising in $2017$--$2019$.
+
+\begin{table}[htbp]
+\centering
+\caption{Federal Timing and Case-Composition Synthesis}
+\label{supp:tab_federal_timing}
+\scriptsize
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\begin{tabular}{p{2.9cm}p{2.6cm}cccccp{3.0cm}}
+\toprule
+Design & Information set & $N$ & Pos. & ROC-AUC & PR-AUC & Prec@500 & Interpretation \\
+\midrule
+Full-sample retrospective & Full retrospective & $\valFedAudRawN$ & $\valFedAudCobiddersBroadAL$ & $\valFedAudRawAUC$ & $\valFedAudRawPRAUC$ & --- & Construct validity; upper bound \\
+Strict full test universe & Strict; entrants at 0 & $\valFedAudFrozenPool$ & $\valFedAudFrozenProspN$ & $\valFedAudStrictFullAUC$ & --- & $\valFedAudStrictPrec$ & Prospective collapse \\
+Strict training AL pool & Strict; train-window AL & $\valFedAudFrozenPool$ & $\valFedAudFrozenProspN$ & $\valFedAudStrictContAUC$ & --- & --- & Incumbent-triage residue \\
+Label-frozen prospective & Frozen pool+score+label & $\valFedAudFrozenPool$ & $\valFedAudFrozenProspN$ & $\valFedAudFrozenProspAUC$ & --- & --- & New-contact ranking \\
+Label-frozen retrospective & Frozen pool+score+label & $\valFedAudFrozenPool$ & $\valFedAudFrozenRetroN$ & $\valFedAudFrozenRetroAUC$ & --- & --- & Leakage-closed retro \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\scriptsize
+\item \textit{Notes:} In the strict and label-frozen designs the score is
+frozen before the test window; later CADE adjudications are still used as
+labels but were not legally observable at the screening date. Cobidders are
+adjudication-anchored exposure labels, not cartel members. The strict full
+universe carries entrants at score zero; AUC uses the rank-based
+(Mann--Whitney) estimator under the midrank convention.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\subsection{Case Leave-One-Case-Out (LOCO) Concentration}
+\label{supp:federal_loco}
+
+The largest federal case supplies $\valFedAudTopCaseShare$ of all positives
+and $\valFedAudTopCaseTP$ of the top-$500$ true positives. Dropping it cuts
+PR-AUC from $\valFedAudLOCOfullPRAUC$ to $\valFedAudLOCOdropLargestPRAUC$
+($\valFedAudLOCOdropPct$); dropping the top two cases leaves PR-AUC
+$\valFedAudLOCOdropTwoPRAUC$. A clustered randomization-inference test
+(buyer$\times$year cells, $B=1{,}000$) shows the pooled ordering is
+\valFedAudClusterRIverdict\ ($p\valFedAudClusterRIp$) while case-coverage
+breadth is \valFedAudClusterRIcovVerdict\ ($p=\valFedAudClusterRIcovP$).
+
+\subsection{Negative Controls}
+\label{supp:federal_negative_controls}
+
+The same award-layer ordering is re-evaluated against (i) placebo
+anchors---random federal firms matched on participation volume to the CADE
+defendants---and (ii) non-CADE high-volume-winner anchors. If the ordering
+reproduces under these placebos, it is not cartel-specific. Against placebo
+anchors the score retains AUC $\valFedAudPlaceboAUC$, and against non-CADE
+high-volume-winner anchors $\valFedAudHVWinnerAUC$, versus $\valFedAudRawAUC$
+against the CADE anchors---placing the surviving ordering in the realm of
+\valFedAudNegControlVerdict.
+
+\subsection{Armor Pack: Robustness of the Federal Verdict}
+\label{supp:federal_armor}
+
+The breadth leg of the BEC armor (restricting positives to firms sharing at
+least two defendant tender-items) is not produced federally---it rests on a
+single federal run, so it is recorded in the replication notes rather than
+promoted to a verdict. The firm-level leave-one-out $E_i$ benchmark reaches
+$\valFedAudExpLOO$; recomputing each cell's density from non-cobidder rows
+only leaves a label-blind opportunity ranking at $\valFedAudExpLB$. The
+within-stratum AUC is stable across cell granularities
+($\valFedAudWithinCoarse$ coarse to $\valFedAudWithinStrict$ strict).
+
+\subsection{Replication}
+\label{supp:federal_replication}
+
+All federal-audit numbers are regenerable from the canonical federal
+parquets under \texttt{data/processed\_comprasnet/} and the audit outputs
+under \texttt{work/v22-editor/outputs/comprasnet/}; the per-stage scripts
+mirror the BEC audit chain and write JSON and CSV per stage. The
+breadth-sensitivity leg of the BEC armor was executed as a single federal
+run and is recorded here rather than promoted to a verdict.

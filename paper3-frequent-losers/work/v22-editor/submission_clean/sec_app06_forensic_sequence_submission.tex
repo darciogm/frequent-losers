@@ -1,71 +1,56 @@
 % REVISED: canonical-target reframe 2026-06-04
 % REVISED: hostile-review action plan 2026-06-04
-% G-TRIM: granular operating-points and baseline tables in online supplement S-G.
+% REVISED: JLEO compression pass 2026-06-06 — full cost-recall grid, frontier
+% figure, baseline/case-holdout tables, and operating-point figures migrate to
+% Online Supplement E (\ref{supp:bid_cost}); appendix keeps the sequence
+% statement, cost denominators, frontier support, and the algorithm.
+% C-COMPRESS-2 (story pass 2026-06-06): folded to ~1.5pp. Appendix keeps the
+% sequence statement + cost-denominator table (D1--D8) + frontier-support
+% paragraph; the gatekeeping algorithm, baselines/timing/case-holdout detail,
+% and operating-point logic move to Online Supplement E (\ref{supp:bid_cost}).
 \subsection{Sequential Gatekeeping and the Cost-Recall Frontier}
 \label{app:forensic_sequence_submission}
 
-The sequential architecture in the main text separates two tasks that are
-often conflated. The award-layer stage ranks firms using fields available
-before any bid microdata are recovered; the bid-layer stage then
-constructs richer forensic features only for the firms that survive the
-first stage. We state the sequence, measure the recovery footprint each
-stage opens, and trace the resulting cost-recall frontier, so the
-comparison reads as an evidence-allocation design rather than a claim that
-thin records substitute for full bid files. The output is a
-forensic-priority queue, not a liability finding.
-Throughout, ``cost'' denotes a \emph{data-processing footprint} --- the
-firms, tender-items, bid rows, and buyer-item-year cells that must be
-opened to compute the bid-layer features --- and never a monetary agency
-cost, which we do not observe. Discriminating performance is
-adjudication-anchored: positives are the $\valCostNpos$ always-loser
-cobidder firms that link to a CADE-adjudicated case, against the
-complete-Imhof pool of $16{,}772$ firms. Throughout, the operating
-points should be read as retrospective cost-footprint designs
-conditional on the validated incumbent ranking, not as fully
-prospective deployment tests.
+The sequential architecture separates two tasks that are often conflated.
+The award-layer stage ranks firms using fields available before any bid
+microdata are recovered; the bid-layer stage then constructs richer
+forensic features only for the firms that survive the first stage. We
+state the sequence and measure the recovery footprint each stage opens,
+so the comparison reads as an evidence-allocation design rather than a
+claim that thin records substitute for full bid files. The output is a
+forensic-priority queue, not a liability finding. Throughout, ``cost''
+denotes a \emph{data-processing footprint}---the firms, tender-items, bid
+rows, and buyer-item-year cells that must be opened to compute the
+bid-layer features---never a monetary agency cost, which we do not
+observe. Discriminating performance is adjudication-anchored: positives
+are the $\valCostNpos$ always-loser cobidder firms that link to a
+CADE-adjudicated case, against the complete-Imhof pool of $16{,}772$
+firms. The operating points are retrospective cost-footprint designs
+conditional on the validated incumbent ranking, not fully prospective
+deployment tests.
 
-\subsubsection{Candidate Pools and Ranking Rules}
-\label{app:stage1_submission}
-
-The evaluation pool (Pool~A) is the complete-Imhof firm set: $16{,}772$
-firms, of which $\valCostNpos$ are adjudication-anchored positives; under
-full observability it opens $116{,}112$ distinct tender-items and
-$3{,}393{,}915$ within-tender bid rows. (The bid-benchmark
-\emph{evaluation} in Table~5 uses the $16{,}731$-firm subset of this
-pool with all seven Imhof moments non-missing; all
-$\valBidPosRetained$ positives are in both pools, and the award and
-bid scores are compared on the same restricted pool.) Three prediction scores are
-defined over this pool: an \textbf{award score}, the zero-win-stratum
-continuous participation score $s_i = \log(1+T_i)$, computable from
-routine administrative fields with no bid values; a \textbf{bid score}, a
-random forest on within-tender bid-distribution moments requiring the full
-bid record of each opened tender-item; and a \textbf{combined score} on
-the union of the two feature sets. We compare seven ranking rules
-distinguished by which layer they consume and whether they triage before
-opening bid microdata: award-only (cheap, no bid recovery; the main-text
-screen); bid-only and joint full-observability (both require opening every
-tender-item up front; the joint rule is a hypothetical full-observability
-ceiling, never an operating policy --- an upper-bound comparison, not an
-operational baseline); sequential award\,$\to$\,bid and award\,$\to$\,combined
-(rank by award, keep the top-$K_1$ survivor pool, recover bid microdata
-only inside it, then rerank survivors); FL14\,$\to$\,bid (a binary-cutoff
-first-stage triage followed by bid reranking); and a random $K_1$-sized
-survivor pool, the no-information floor. An opportunity-adjusted award
-score cannot serve as a gate --- the exposure adjustment requires the
-same tender-level coverage the bid layer recovers --- so it is reported
-only as an in-sample diagnostic in the main text. For the case-holdout
-exercise firms are grouped by the CADE case they link to, so held-out
-positives share no case with the calibration set.
+Three prediction scores are defined over the pool: an \textbf{award
+score} $s_i = \log(1+T_i)$, computable from routine administrative fields
+with no bid values; a \textbf{bid score}, a random forest on
+within-tender bid-distribution moments requiring the full bid record of
+each opened tender-item; and a \textbf{combined score} on the union. We
+compare seven ranking rules distinguished by which layer they consume and
+whether they triage before opening bid microdata---award-only, bid-only,
+joint full-observability (a hypothetical upper-bound ceiling), sequential
+award\,$\to$\,bid and award\,$\to$\,combined, FL14\,$\to$\,bid, and a
+random survivor-pool floor. The full rule definitions, the bid-feature
+dictionary, the random-forest specification, and the four validation
+designs are in Online Supplement~\ref{supp:bid_cost}.
 
 \subsubsection{Cost Denominators}
 \label{app:joint_scoring_submission}
 
 Bid-layer recovery is costlier at scale because within-tender moments
 require the \emph{full} set of bids in each opened tender-item, not only
-the focal firm's bids: opening a survivor firm means opening every
-tender-item that firm participated in, in full. We therefore measure the
-recovery footprint along several denominators rather than a single
-headline number. Table~\ref{tab:G_denoms} defines them.
+the focal firm's: opening a survivor firm means opening every tender-item
+that firm participated in, in full. We therefore measure the recovery
+footprint along several denominators rather than a single headline
+number. Table~\ref{tab:G_denoms} defines them.
 
 \begin{table}[htbp]\centering
 \begin{adjustbox}{max width=\textwidth,center}
@@ -90,200 +75,72 @@ D8 & Item-groups (2-digit) touched & $90$ \\
 \begin{tablenotes}\scriptsize
 \item \textit{Source:} \texttt{full\_observability\_costs.csv};
 denominator definitions in \texttt{table\_G\_cost\_denominator\_definitions.csv}.
-Values are the full-pool footprint ($K_1=16{,}772$); the grid in
-\ref{app:gatekeeping_algorithm_submission} reports them at each $K_1$.
+Values are the full-pool footprint ($K_1=16{,}772$); the grid in Online
+Supplement~\ref{supp:bid_cost} reports them at each $K_1$.
 \item \textit{D4 is the realistic processing footprint:} within-tender
 Imhof moments require the entire tender record, so D4 counts all bids
 in every opened tender-item, not only the survivors' own bids (D5).
 \item \textit{Not observed (no value computed):} LANCES export units
-(assumed one tender-item $=$ one export, D9); legal or subpoena-style
-access requests (D10); monetary cost in reais.
-\item \textit{Analyst-hours} are reported only as an illustrative
-processing-burden proxy
-($\alpha\cdot\text{tender-items}+\beta\cdot\text{bid-rows}/1000$,
-low/medium/high), never as a measured agency cost (D11).
+(D9); legal or subpoena-style access requests (D10); monetary cost in
+reais. \textit{Analyst-hours} are reported only as an illustrative
+processing-burden proxy (D11), never as a measured agency cost.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
 \end{table}
 
 The firm count (D1) and the bid-row footprint (D4) diverge sharply, and
-the divergence is the central caution of this appendix. Survivors are
-high-participation firms: at the $K_1=2000$ operating point the survivor
-pool is about $12\%$ of the firms ($2{,}000/16{,}772$, an $88\%$ firm
-reduction), yet it opens about $67\%$ of the bid rows
-($2{,}283{,}924/3{,}393{,}915$, only a $33\%$ bid-row reduction). The
-firm-level reduction therefore overstates the saving; the tender-item and
-bid-row denominators are the honest processing-footprint measures.
+the divergence is the central caution. Survivors are high-participation
+firms: at the $K_1=2000$ operating point the survivor pool is about
+$12\%$ of the firms (an $88\%$ firm reduction), yet it opens about $67\%$
+of the bid rows (only a $33\%$ bid-row reduction). The firm-level
+reduction therefore overstates the saving; the tender-item and bid-row
+denominators are the honest processing-footprint measures.
 
-\subsubsection{Cost-Recall Grid and Frontier}
+\subsubsection{Cost-Recall Frontier and Findings}
 \label{app:gatekeeping_algorithm_submission}
 
-Table~\ref{tab:G_frontier} reports a compact slice of the cost-recall grid
-for the sequential award\,$\to$\,bid rule at the $k=500$ forensic-queue
-depth, across the first-stage cut $K_1$. The full grid --- all rules, all
-$K_1$, and $k \in \{100,250,500,1000\}$, with every cost denominator ---
-is in the online supplement.
-
-\begin{table}[htbp]\centering
-\begin{adjustbox}{max width=\textwidth,center}
-\begin{threeparttable}
-\caption{Cost-recall slice, sequential award\,$\to$\,bid, queue depth $k=500$.}
-\label{tab:G_frontier}
-\scriptsize
-\begin{tabular}{rrrrrr}
-\toprule
-$K_1$ & Firms opened & Bid rows opened & Bid-row red.\ & TP & Recall \\
-\midrule
-$500$    & $500$    & $1{,}356{,}346$ & $0.60$ & $108$ & $0.166$ \\
-$1{,}000$ & $1{,}000$ & $1{,}783{,}750$ & $0.47$ & $124$ & $0.190$ \\
-$2{,}000$ & $2{,}000$ & $2{,}283{,}924$ & $0.33$ & $116$ & $0.178$ \\
-$3{,}000$ & $3{,}000$ & $2{,}575{,}274$ & $0.24$ & $115$ & $0.177$ \\
-$5{,}000$ & $5{,}000$ & $2{,}921{,}977$ & $0.14$ & $102$ & $0.157$ \\
-$16{,}772$ & $16{,}772$ & $3{,}393{,}915$ & $0.00$ & $102$ & $0.157$ \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\scriptsize
-\item \textit{Source:} \texttt{table\_6\_cost\_recall\_frontier.csv}
-(sequential award$\to$bid, $k=500$). ``Bid-row red.'' is the
-fraction of the full-pool bid-row footprint avoided,
-$1-\text{(bid rows opened)}/3{,}393{,}915$. TP counts
-adjudication-anchored positives in the top-$k$ queue (pool $=\valCostNpos$).
-\item TP is non-monotone in $K_1$ because the bid rerank reorders
-survivors within a fixed queue depth: $K_1=1{,}000$ recovers more true
-positives ($124$) than $K_1=2{,}000$ ($116$) at $k=500$, one more sign
-that no $K_1$ is optimal. The joint full-observability TP at $k=500$ is
-$133$, which the sequential rule approaches ($124/133 = 93\%$ at
-$K_1=1{,}000$) but does not exceed.
-\end{tablenotes}
-\end{threeparttable}
-\end{adjustbox}
-\end{table}
-
-Figure~\ref{fig:G_cost_recall_ti} plots recall against the tender-item
-footprint for the award-only, sequential, and joint rules, making the
-frontier shape visible: the sequential rule tracks close to the joint
-upper bound while opening fewer tender-items, but never crosses it.
-
-\begin{figure}[htbp]\centering
-\includegraphics[width=0.86\textwidth]{./output/figures/fig_G_cost_recall_tender_items}
-\caption{Recall versus opened tender-items, by ranking rule.}
-\label{fig:G_cost_recall_ti}
-\par\medskip
-{\footnotesize\textit{Alt text:} A cost-recall scatter with opened
-tender-items on the horizontal axis and adjudication-anchored recall on
-the vertical axis. The joint full-observability rule sits at the far
-right (largest footprint) at the top of the recall range; award-only
-points sit at the far left (smallest footprint) at lower recall;
-sequential award\,$\to$\,bid points trace an intermediate frontier that
-approaches but does not exceed the joint recall while opening fewer
-tender-items.}
-\end{figure}
-
-\subsubsection{Baselines, Timing, and Case-Holdout}
-\label{app:baselines_submission}
-
-The sequential rule sits well above a same-size random survivor floor
-across the grid, confirming that it is the award ranking, not the mere act
-of opening $K_1$ firms, that carries the signal. The award-ranked survivor
-pool captures most of the $\valCostNpos$ positives \emph{before} any bid
-rerank, so the cheap first stage alone already gathers the positives into
-the survivor pool, and the bid rerank then reorders that pool into a
-forensic-priority queue rather than recovering positives the award gate
-missed. This is the precise sense in which the bid layer reorders rather
-than discovers: the marginal contribution of the costly bid features is
-ordering, an evidence-allocation gain, not a detection gain.
-
-A timing-disciplined gate must rank on information available before the
-investigation window. Re-scoring the award gate on a strict pre-period
-(2009--2016) and evaluating on later positives, the award gate remains
-informative under this discipline: its strict-timing discrimination is AUC
-$0.684$ on the training-AL pool, against $0.761$ for the full-window score.
-The drop is the honest cost of respecting the timing order. The sequential
-rule cannot be subjected to the same test --- the within-tender moments
-cannot be re-derived on a pre-period basis without re-pipelining the raw
-LANCES bid records --- so we report it as infeasible rather than estimate
-it on contaminated features.
-
-Because adjudicated positives cluster in a handful of CADE cases, apparent
-recall can be carried by a single large case: the largest case supplies
-$32.0\%$ of the positives and $45.4\%$ of the true positives in the
-top-$500$ queue. Grouping firms by case and holding out the largest case
-lowers recall on the remaining smaller cases materially, with several
-individual small cases near zero. Performance is therefore case-fragile and
-generalization to out-of-sample cartels is weaker than the pooled figure
-suggests. The estimated ranking is not a portable cartel score; the
-transferable object is the decomposition framework. (The full random and
-award-only baseline table and the case-holdout grid are in Online
-Supplement~E.)
-% E-COMPRESS: tab:G_holdout, fig:G_cost_per_tp, fig:G_fp -> Online Supplement E.
-
-\subsubsection{Operating-Point Logic}
-\label{app:operating_submission}
-
-No single $(K_1,k)$ pair is preferred for every agency; the right point
-depends on capacity and on whether the priority is recall or precision ---
-the frontier is a menu, not a cutoff. The operating-point grid itself, with
-recall, precision, and recovered-positive counts at each $K_1$, is the main
-text's Table~6 and is not re-narrated here; the construction is the
-gatekeeping procedure of \ref{app:algorithm_submission}, applied across the
-$K_1$ grid at queue depth $k$. The $K_1=2{,}000$ point used in the main text
-for the firm-versus-bid-row divergence is one operating point on this
-frontier, not a universally preferred choice. The full operating-points
-table with use-case labels, and the cost-per-true-positive and
-false-positive frontier figures, are in Online Supplement~E.
-
-\subsubsection{Algorithm}
-\label{app:algorithm_submission}
-
-The full gatekeeping procedure can be stated compactly.
-
-\begin{quote}
-\textbf{Algorithm E.1: Award-Layer Gatekeeping with Cost Measurement}
-\begin{enumerate}
-\item Define the firm universe from award records (participant
-identity, winner identity, item code, negotiated price, procuring
-unit, year, modality).
-\item For each firm $i$, compute the win count $W_i$ and the
-participation count $T_i$ over the calibration window; restrict to the
-zero-win stratum $\{i : W_i = 0\}$.
-\item Compute the award score $s_i = \log(1+T_i)$.
-\item Over a grid of first-stage cuts $K_1$, form the survivor pool
-$\mathcal{S}_{K_1}$ of the top-$K_1$ firms (or apply the
-median-plus-$1.5\times$IQR threshold, or a capacity budget).
-\item Recover bid microdata only for the tender-items touched by
-$\mathcal{S}_{K_1}$, and record the cost denominators D1--D8 at that
-$K_1$.
-\item Compute the bid-layer forensic features inside $\mathcal{S}_{K_1}$.
-\item Rerank survivors by the bid score alone or by the
-award-plus-bid combined score, over a grid of queue depths $k$.
-\item Deliver the top-$k$ queue from that ranking as a
-forensic-priority list for investigative review.
-\item Trace the cost-recall frontier over $(K_1,k)$ and select the
-operating point that fits the agency's capacity and recall/precision
-priority; treat the output as forensic priority, not as a liability
-finding.
-\end{enumerate}
-\end{quote}
-
-Joint scoring requires bid microdata for the full pool before triage;
-sequential gatekeeping requires bid microdata only after the
-award-layer survivor pool is formed. The size of the survivor pool, the
-choice of threshold or top-$K_1$, the queue depth $k$, the bid-versus-
-combined rerank, and the recalibration cadence are all institutional
-choices that the algorithm leaves to the agency.
+The cost-recall grid for the sequential award\,$\to$\,bid rule, sliced at
+queue depth $k=500$ across the first-stage cut $K_1$, traces a frontier
+that tracks close to the joint full-observability upper bound while
+opening fewer tender-items but never crosses it. True positives are
+non-monotone in $K_1$ ($124$ at $K_1=1{,}000$ versus $116$ at
+$K_1=2{,}000$), one sign that no $K_1$ is optimal, and the sequential
+rule approaches but does not exceed the joint ceiling ($124/133 = 93\%$
+at $K_1=1{,}000$). The sequential rule also sits well above a same-size
+random survivor floor, confirming that it is the award ranking, not the
+mere act of opening $K_1$ firms, that carries the signal: the
+award-ranked survivor pool captures most positives \emph{before} any bid
+rerank, so the bid layer \emph{reorders} survivors into a
+forensic-priority queue rather than discovering positives the award gate
+missed. The marginal contribution of the costly bid features is ordering,
+an evidence-allocation gain, not a detection gain. The full grid (all
+rules, all $K_1$, $k\in\{100,250,500,1000\}$ with every cost
+denominator), the recall-versus-tender-item frontier figure, the
+gatekeeping algorithm, the timing-disciplined and case-holdout exercises,
+and the operating-point logic are in Online
+Supplement~\ref{supp:bid_cost}. Two qualifications carry the
+interpretation: a timing-disciplined award gate remains informative
+(strict-timing AUC $0.684$ on the training-AL pool against $0.761$
+full-window), while the sequential rule's within-tender moments cannot be
+re-derived on a pre-period basis and the timing test is therefore
+reported as infeasible; and performance is case-fragile---the largest
+case supplies $32.0\%$ of positives and $45.4\%$ of the top-$500$ true
+positives, so holding it out lowers recall on smaller cases materially.
+No single $(K_1,k)$ pair dominates: the right operating point depends on
+agency capacity and on whether the priority is recall or precision, so
+the frontier is a menu, not a cutoff. The estimated ranking is not a
+portable cartel score; the transferable object is the decomposition
+framework.
 
 \subsubsection{Limitations}
 \label{app:limitations_submission}
 
-Cost is a processing footprint, not money --- we measure firms,
-tender-items, bid rows, and cells opened, not monetary recovery cost,
-legal-request volume, or LANCES export units. Firm reduction overstates
-the saving (an $88\%$ firm reduction at $K_1=2000$ is only a $33\%$
-bid-row reduction); analyst-hours are illustrative only; labels are
-limited and false positives are unlabeled, so precision is a lower bound
-on the queue's triage value; performance is case-fragile, with the largest
-case supplying $32.0\%$ of positives and leave-largest-case-out recall
-falling materially; the operating point is capacity-dependent with no
-dominating choice; and the sequential timing test is blocked, so only the
-award-only gate has a timing-disciplined evaluation.
+Cost is a processing footprint, not money. Firm reduction overstates the
+saving (an $88\%$ firm reduction at $K_1=2000$ is only a $33\%$ bid-row
+reduction); analyst-hours are illustrative only; labels are limited and
+false positives are unlabeled, so precision is a lower bound on the
+queue's triage value; performance is case-fragile; the operating point is
+capacity-dependent with no dominating choice; and the sequential timing
+test is blocked, so only the award-only gate has a timing-disciplined
+evaluation.

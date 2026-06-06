@@ -1,0 +1,85 @@
+% Online Supplement S.D — full grids behind the economic-profile and
+% robustness diagnostics of submitted Appendix D (sec_app08).
+% Threshold sweep, bunching histogram, market-specific zero-win variants,
+% negative-control draws, full score-bin and standardized-difference tables.
+\section{Economic Profile and Robustness: Full Grids}
+\label{supp:profile}
+
+This section holds the full grids behind the economic-profile and
+robustness diagnostics of the submitted Appendix~D. Group definitions,
+the standardized-difference method, and the headline reads are in that
+appendix. ``Cobidder'' is an adjudication-anchored exposure label
+throughout---a firm that co-bid with a firm named in a CADE
+proceeding---and carries no inference of participation in any agreement.
+
+\subsection{Comparison Groups}
+\label{supp:profile_groups}
+
+All groups are drawn from the always-loser universe (firms with zero
+recorded wins over the calibration window, $N=16{,}843$). The
+adjudication-anchored validation target is the broad set of
+$\valMainCobidders$ always-loser cobidders, of which $\valMainCobFL$
+($52.4\%$) satisfy the frequent-loser cut and $\valMainCobNonFL$
+($47.6\%$) do not, so the label is not frequent-loser-conditioned. The
+$\valDirectCADE$ direct CADE defendants are \emph{winners} and are
+excluded from every cobidder group; the $6$ that appear in the
+always-loser universe are excluded from the profile contrasts. The
+profile contrast is run \emph{within} the frequent-loser stratum---group
+D (FL non-cobidders, $N=2{,}394$) versus group E (FL cobidders,
+$N=341$). The complete group register, including the home-market and
+placebo groups used in the robustness families below, follows the same
+construction.
+
+\subsection{Full Standardized-Difference Table}
+\label{supp:profile_smd_full}
+
+The top-ranked standardized differences (Cohen's $d$, E minus D) appear
+in the submitted Appendix~D. The full variable table extends panels
+(A)--(E): participation and survival, breadth and concentration,
+defendant-proximity / opportunity, modality-quorum proxies, and timing.
+The largest gaps are the defendant-proximity variables (panel C:
+$n\_cases$ $d=6.17$, $n\_def\_firms$ $d=4.27$), which are partly
+mechanical because the cobidder label is itself adjudication-anchored;
+holding exposure fixed (regression on $\log E_i^{\mathrm{MED}}$, a binned
+score term, breadth, and active years, and CEM on $E_i^{\mathrm{MED}}$
+deciles) collapses the item-group HHI gap from $d\approx 0.13$ to
+$\approx 0$ and the breadth and persistence gaps toward zero. Only the
+defendant-contact variables survive, and that survival is partly
+mechanical.
+
+\subsection{Robustness: Threshold Sweep, Bunching, Markets, Null Controls}
+\label{supp:profile_robustness}
+
+\paragraph{Monotonicity.} Across participation bins, cobidder prevalence
+rises (Spearman $\rho=\valProfMonoPrevRho$) while mean excess contact
+shows no rising pattern ($\rho=\valProfMonoExcessRho$): the score ranks
+firms by \emph{exposure}, not collusion intensity.
+
+\paragraph{Threshold sweep and bunching.} The FL14 cut $T_i\geq 14$
+equals $\mathrm{median}+1.5\times\mathrm{IQR}$ ($=13.5$, rounded up) of
+the always-loser participation distribution; it is an
+\emph{administrative} construction, computed ex post and \emph{never
+published}. Discrimination changes smoothly across a placebo-threshold
+grid with no discontinuity at $14$, and the participation distribution
+declines smoothly through the cut (local density ratio
+$\valProfBunchRatio$, indistinguishable from $1$), so there is no
+strategic bunching. The full placebo-threshold grid and the bunching
+histogram are reported here.
+
+\paragraph{Market-specific zero-win.} Four home-market loser definitions
+overlap the global set on only $0.33$--$0.55$ of their losers; the
+global definition is not dominated by any of them (global ROC-AUC
+$\valProfNegCtrlRealAUC$ vs.\ the best home-market alternative
+$\valProfMarketZeroWinBest$) and is stable to leave-one-item-group-out
+re-estimation.
+
+\paragraph{Negative controls.} Against matched null targets ($B=500$
+draws, seed \texttt{20260603}), the real-anchor ROC-AUC
+($\valProfNegCtrlRealAUC$) is statistically indistinguishable from the
+matched placebo-anchor distribution (mean $\valProfNegCtrlPlaceboAUC$;
+empirical $p=0.46$), and anchors built from non-CADE high-volume winners
+generate raw discrimination at least as high (null mean $0.78$;
+$p=0.91$). The negative controls corroborate the opportunity
+decomposition rather than rescue the screen: the raw ranking reflects
+generic co-participation arithmetic, not a signature specific to the
+adjudicated defendant network.

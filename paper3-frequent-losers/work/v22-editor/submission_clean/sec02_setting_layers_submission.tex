@@ -4,25 +4,24 @@
 \label{sec:setting_layers}
 
 %
-The paper's empirical object is an institutional sequence, not
-a stand-alone classifier. An enforcement agency first observes a
-thin administrative record, then decides whether to spend
-resources recovering richer bid-level evidence, and only later
-can that evidence contribute to legal proof. BEC procurement
-supplies that sequence cleanly: an award layer and a bid layer,
-together with the adjudication-anchored labels we use to validate
-a loser-side ranking. What fixes the screen's role is the legal
-predicate. Proof of a procurement cartel requires
-evidence of coordinated conduct---communications, allocation
-rules, bid rotation, cover bidding, or tender-level patterns
-inconsistent with independent rivalry. Brazilian competition law
-treats bid rigging as an infraction under Lei~$12.529/2011$;
-comparable frameworks likewise require evidence beyond suspicious
-administrative patterns \citep{hovenkamp2005federal,baker2002case,wils2007leniency,wils2016leniency}.
-A pattern in award records does not contain those legal
-predicates, so an award-layer screen produces \emph{forensic
-priority}, not an accusation: its output orders where costly bid
-recovery should start, and liability stays in the bid layer.
+Our empirical object is an institutional sequence, not a stand-alone
+classifier. An enforcement agency first observes a thin administrative
+record, then decides whether to spend resources recovering richer
+bid-level evidence, and only later can that evidence contribute to
+legal proof. BEC procurement supplies the sequence cleanly: an award
+layer and a bid layer, together with the adjudication-anchored labels
+we use to validate a loser-side ranking. The screen's role is fixed by
+the legal predicate. Proof of a procurement cartel requires evidence
+of coordinated conduct---communications, allocation rules, bid
+rotation, cover bidding, or tender-level patterns inconsistent with
+independent rivalry. Brazilian competition law treats bid rigging as
+an infraction under Lei~$12.529/2011$, and comparable frameworks
+likewise demand evidence beyond suspicious administrative patterns
+\citep{hovenkamp2005federal,baker2002case,wils2007leniency,wils2016leniency}.
+Award records contain none of those predicates, so an award-layer
+screen produces \emph{forensic priority}, not an accusation: it orders
+where costly bid recovery should start, while liability stays in the
+bid layer.
 
 \subsection{Award and Bid Layers in BEC}
 \label{sec:data_layers_bec}
@@ -45,61 +44,54 @@ format, bureaucratic incentives, discretion, and rules can shape
 both bidding behavior and observed outcomes
 \citep{athey2011comparing,decarolis2014awarding,coviello2017tenure,decarolis2020bureaucratic,decarolis2020rules}.
 
-The \emph{award layer} is that routine administrative envelope.
-It records participant identity, winner identity, item code,
-negotiated price, procuring unit, year, and modality. These
-fields show who appeared, who won, what was bought, and where a
-firm repeatedly participated without winning. They do
-not reveal the bids submitted by each participant, the timing of
-offers, bid revisions, or within-tender dispersion. The award
-layer is therefore cheap enough for broad monitoring, but too
-thin to supply legal proof of coordination.
+The \emph{award layer} is that routine administrative envelope. It
+records participant identity, winner identity, item code, negotiated
+price, procuring unit, year, and modality---who appeared, who won,
+what was bought, and where a firm repeatedly participated without
+winning. It does not reveal each participant's bids, the timing of
+offers, bid revisions, or within-tender dispersion. The award layer is
+thus cheap enough for broad monitoring but too thin to supply legal
+proof of coordination.
 
-The \emph{bid layer} is the forensic-recoverable layer. BEC
-preserves per-bidder offers, timestamps, and bid-revision
-sequences in the LANCES export. Those records support
-bid-distribution forensics: within-tender dispersion, skewness,
-spread, distance from the winning bid, and related transparent
-bid-moment features inspired by Imhof--Wallimann-style screens
-\citep{imhof2018screening,imhof2019detecting}, including
-machine-learning variants that combine these bid moments at scale
-\citep{huber2019machine,wallimann2023machine}. But these features
-require the bid file to be recovered, cleaned, linked, and
-inspected; they are not available at the same cost or timing as
-an award-record query. The bid layer is thus available but
-costly---feasible for case work and validation, not the natural
-first object for system-wide triage.
+The \emph{bid layer} is the forensic-recoverable layer. BEC preserves
+per-bidder offers, timestamps, and bid-revision sequences in the
+LANCES export. Those records support bid-distribution forensics:
+within-tender dispersion, skewness, spread, distance from the winning
+bid, and related bid-moment features inspired by Imhof--Wallimann-style
+screens \citep{imhof2018screening,imhof2019detecting}, including
+machine-learning variants that combine these moments at scale
+\citep{huber2019machine,wallimann2023machine}. But they require the
+bid file to be recovered, cleaned, linked, and inspected, at a cost
+and timing no award-record query incurs---feasible for case work and
+validation, not the natural first object for system-wide triage.
 
 The closest antecedent to a loser-side collusion marker also lives
-in the bid layer. \citet{seibel2026collusion} derive, from a model
-of partial cartels under bidder preselection, a theory-grounded
-exclusion marker and show on Slovak procurement microdata that it
-discriminates suspected colluders. Our object is deliberately
-thinner: an atheoretic loser-side participation rank read off the
-award layer, not a structurally derived marker estimated on bids.
-We do not claim to subsume or improve on that marker; the
-comparison sharpens the opposite point. A loser-side signal that
-carries content in richer bid data has a cheap award-layer
-analogue, and the contribution of this paper is to show that the
-award-layer analogue largely reflects procurement opportunity
-rather than conduct (Section~\ref{sec:validation}). That a
-marker which discriminates on bids has an award-layer shadow that
-mostly deflates under opportunity adjustment is informative about
-how far down the information ladder a loser-side construct can be
-pushed before it stops measuring coordination and starts measuring
-exposure.
+in the bid layer. \citet{seibel2026collusion} derive, from a model of
+partial cartels under bidder preselection, a theory-grounded exclusion
+marker and show on Slovak procurement microdata that it discriminates
+suspected colluders. Our object is deliberately thinner: an atheoretic
+loser-side participation rank read off the award layer, not a
+structurally derived marker estimated on bids. We do not claim to
+subsume or improve on their marker; the comparison sharpens the
+opposite point. A loser-side signal that carries content in rich bid
+data has a cheap award-layer analogue, and we show that the analogue
+largely reflects procurement opportunity rather than conduct
+(Section~\ref{sec:validation}). That a marker which discriminates on
+bids has an award-layer shadow that mostly deflates under opportunity
+adjustment tells us how far down the information ladder a loser-side
+construct can be pushed before it stops measuring coordination and
+starts measuring exposure.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.92\textwidth]{./output/figures/fig_data_coarsening}
 \caption[Information layers in procurement-cartel enforcement]{Information
-layers in procurement-cartel enforcement. This is an
-information-cost diagram, not a detector horse race.
-Bid-distribution forensics requires per-bidder bid amounts and
-within-tender bid moments; the award-layer screen uses
-participant identity, winner identity, item code, and negotiated
-price. The bid layer is not absent: it is costly to recover,
-clean, and inspect from the LANCES export. The question is
+layers in procurement-cartel enforcement---an information-cost
+diagram, not a detector horse race. Bid-distribution forensics
+requires per-bidder bid amounts and within-tender bid moments; the
+award-layer screen uses participant identity, winner identity, item
+code, and negotiated price. The bid layer is not absent but costly to
+recover, clean, and inspect from the LANCES export. The question is
 whether the cheap award layer can rank where the costly bid layer
 should be opened first. A pattern in award records does not imply
 legal proof of coordination.}
@@ -108,56 +100,50 @@ legal proof of coordination.}
 \par\noindent\textit{Alt text:} Two vertical columns of stacked boxes represent two information layers. The left column lists costly recovered bid-record features (within-tender bid moments such as dispersion, skewness, spread, and second-low ratio). The right column lists routine award-record fields (winner identity, participant identity, item code, negotiated price). A central gate links them: the thinner award layer is available earlier and more cheaply and is used to rank where the costly bid layer should be recovered first.
 \end{figure}
 
-Figure~\ref{fig:coarsening_submission} summarizes the two layers.
-Bid-distribution methods remain the natural forensic tools once
-bid microdata have been recovered; award-layer triage asks
-whether the thinner routine record can rank where that recovery
-should start.
+Bid-distribution methods remain the natural forensic tools once bid
+microdata have been recovered; award-layer triage asks whether the
+thinner routine record can rank where that recovery should start.
 
 \subsection{CADE Anchors and Adjudication-Anchored Exposure Labels}%
 \label{sec:cade_adjacency_labels}
 
 %
-CADE adjudications supply the legal anchors, not the screen's
-labels mechanically. The linked BEC portfolio contains $12$
-adjudicated procurement-cartel cases with $65$ firm-defendants,
-of which $\valDirectCADE$ are active in BEC during the sample
-window. Final decisions span $2015$--$2025$, with long
-process-to-ruling lags. That timing is central: whatever value a cheap
-ranking has lies in moving investigative
-attention before the completed adjudication record exists---a
-premise this paper audits rather than assumes.
+CADE adjudications supply legal anchors, not the screen's labels. The
+linked BEC portfolio contains $12$ adjudicated procurement-cartel
+cases with $65$ firm-defendants, of which $\valDirectCADE$ are active
+in BEC during the sample window. Final decisions span $2015$--$2025$,
+with long process-to-ruling lags. That timing is central: whatever
+value a cheap ranking has lies in moving investigative attention
+before the completed adjudication record exists---a premise the paper
+audits rather than assumes.
 
-The adjudication record creates two objects with different
-roles. Direct CADE defendants are the legal anchors: firms
-named in adjudicated procurement-cartel cases and matched to BEC
-participant records. They locate environments where legal process
-established cartel conduct, but they are not the natural target of
-a zero-win loser-side statistic---defendants may occupy
-winner-side, allocation, or rotating roles, and a screen built
-from repeated losing should not be judged as if it were a generic
-membership classifier over adjudicated defendants.
+The record creates two objects with different roles. Direct CADE
+defendants are the legal anchors---firms named in adjudicated cases
+and matched to BEC participant records. They locate environments where
+legal process established cartel conduct, but they are not the natural
+target of a zero-win loser-side statistic: defendants may occupy
+winner-side, allocation, or rotating roles, and a screen built from
+repeated losing should not be judged as a generic membership
+classifier over them.
 
-The validation target is narrower. A cobidder is a unique
-always-loser firm that shares at least one BEC tender-item with a
-BEC-active direct CADE defendant, yielding $\valMainCobidders$
-always-loser cobidders. The frequent-loser flag is not used to
-construct the label; of the $\valMainCobidders$ cobidders,
-$\valMainCobFL$ are frequent losers and $\valMainCobNonFL$ are
-not.%
-\ Cobidder status is not legal membership or a latent truth about
-agreement. It is an adjudication-anchored exposure label: the firm
-is observed on the losing side near a legally established cartel
-anchor, appropriate for evaluating forensic priority, not
-liability. Collapsing defendants and cobidders into a single
-cartel class would overstate what award records establish;
-requiring a loser-side screen to recover direct defendants would
-misstate what the statistic is designed to rank. The relevant
-question is whether persistent zero-win participation concentrates
-the loser-side firms most plausibly worth bid-layer follow-up
-around adjudicated cartel environments---a question the validation
-design in Section~4 disciplines against opportunity, timing, and
-case concentration.
+The validation target is narrower. A cobidder is a unique always-loser
+firm that shares at least one BEC tender-item with a BEC-active direct
+CADE defendant, yielding $\valMainCobidders$ always-loser cobidders.
+The frequent-loser flag plays no part in constructing the label; of
+the $\valMainCobidders$ cobidders, $\valMainCobFL$ are frequent losers
+and $\valMainCobNonFL$ are not. Cobidder status is not legal
+membership or a latent truth about agreement. It is an
+adjudication-anchored exposure label: the firm is observed on the
+losing side near a legally established cartel anchor, fit for
+evaluating forensic priority, not liability. Collapsing defendants and
+cobidders into one cartel class would overstate what award records
+establish; requiring a loser-side screen to recover direct defendants
+would misstate what the statistic is designed to rank. The relevant
+question is whether persistent zero-win participation concentrates the
+loser-side firms most plausibly worth bid-layer follow-up around
+adjudicated cartel environments---which the validation design in
+Section~\ref{sec:validation} disciplines against opportunity, timing,
+and case concentration.
 
 Table~\ref{tab:populations_submission} fixes the roles used
 throughout the paper: the outer BEC population, the always-loser
@@ -200,9 +186,8 @@ appear in Table~\ref{tab:label_funnel_submission}.
 \end{table}
 
 The rest of the paper keeps these objects separate: the screen
-operates inside the always-loser stratum, the validation target
-is cobidder adjacency, direct defendants anchor the environments
-without defining the screen's success, and bid-layer forensics
-remains the proof-producing stage. This separation lets the paper
-evaluate a legally limited triage architecture without turning
-suspicion into adjudication.
+operates inside the always-loser stratum, the validation target is
+cobidder adjacency, direct defendants anchor the environments without
+defining the screen's success, and bid-layer forensics remains the
+proof-producing stage---a separation that lets us evaluate a legally
+limited triage rule without turning suspicion into adjudication.

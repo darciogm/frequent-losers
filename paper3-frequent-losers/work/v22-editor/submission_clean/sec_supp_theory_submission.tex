@@ -1,0 +1,241 @@
+% Migrated from Appendix B (framework) during the JLEO compression pass.
+% Long/multi-step derivations and the full platform-survival detail.
+\section{Framework: Full Derivations and Survival Detail}
+\label{supp:theory}
+
+This section collects the longer derivations underlying the
+evidence-allocation framework of the submitted appendix. The appendix
+states each result and gives a short proof; the steps that are routine
+or descriptive are reproduced here. Notation follows the appendix:
+$T_i$ is firm $i$'s participation count, $W_i$ its number of wins, the
+always-loser stratum is $\{i:W_i=0\}$, and the reduced-form types $C$
+(cartel-deployed losing role) and $G$ (ordinary losing) are devices for
+stating the ranking condition rather than observed classes.
+
+\subsection{Monotone posterior under the Poisson ranking}
+\label{supp:theory_monotone}
+
+Conditional on survival and zero wins, take participation counts to
+follow the Poisson approximation
+$T_i\mid\tau_i,q\sim\text{Poisson}(\lambda_q\tau_i)$ for $q\in\{C,G\}$,
+with $\tau_i$ the observed exposure length and $\lambda_C>\lambda_G$ the
+surviving-set ordering derived from the exit margin (appendix
+Equations for $V_G$, $V_C$, and the selection wedge). By Bayes' rule
+the posterior odds of $C$ against $G$ at count $t$ are
+\begin{equation}
+\label{supp:eq_posterior_odds}
+  \frac{\Pr(C\mid T_i=t,W_i=0,\tau_i)}{\Pr(G\mid T_i=t,W_i=0,\tau_i)}
+  \;=\;
+  \frac{\pi}{1-\pi}\;
+  e^{-(\lambda_C-\lambda_G)\tau_i}\,
+  \left(\frac{\lambda_C}{\lambda_G}\right)^{t},
+\end{equation}
+where $\pi$ is the prior on $C$. The first factor and the exponential do
+not depend on $t$; the term $(\lambda_C/\lambda_G)^{t}$ is strictly
+increasing in $t$ whenever $\lambda_C>\lambda_G$. Hence the posterior
+odds, and therefore $\Pr(C\mid T_i=t,W_i=0,\tau_i)$, are non-decreasing
+in $t$. This is the monotone-likelihood-ratio property of the Poisson
+family \citep{karlin1956theory}: the likelihood ratio of two Poisson
+densities is monotone in the count, so any threshold or top-$k$ rule on
+$t$ (equivalently on $\log(1+T_i)$, a monotone transform) is admissible
+for ranking expected investigative value within the stratum. This
+establishes the persistence-ranking proposition of the appendix.
+
+\subsection{Exit margin and the selection wedge}
+\label{supp:theory_exit}
+
+The ordering $\lambda_C>\lambda_G$ on the surviving set is obtained
+endogenously rather than assumed. An ordinary zero-win firm $G$ pays a
+participation cost $c_G>0$ and earns expected gross surplus
+$m_G(H_{it})$, weakly declining in its loss history $H_{it}$ under
+Bayesian updating; it continues while $V_G(H_{it})\ge 0$ and exits
+otherwise. A cartel-deployed losing-role firm $C$ values continuation
+through a role value $a_C(H_{it})$ that derives from the role rather
+than from its own win prospect, so it does not erode with the loss count
+the way $m_G$ does. After sufficiently many zero-win periods
+$a_C(H_{it})-c_C>m_G(H_{it})-c_G$, so $C$ remains in the risk set while
+$G$ is selectively removed. The surviving conditioning set therefore
+over-represents the persistent type, which is exactly the content of
+$\lambda_C>\lambda_G$: the rate gap is a \emph{selection} consequence of
+differential exit, not an exogenous type effect. The role-value
+persistence assumption of the appendix is the minimal condition under
+which the wedge holds for histories beyond a loss-count threshold
+$\bar L$.
+
+\subsection{Optimal stopping: concavity and comparative statics}
+\label{supp:theory_stopping}
+
+The enforcer's evidence-acquisition problem chooses stopping depth $K$
+to maximize net recovery
+$\Pi(K)=V\!\int_0^{K}\rho(k)\,dk-c\,\Phi(K)$ subject to $\Phi(K)\le B$,
+where $\rho(k)$ is the marginal recovery density at rank $k$ (the slope
+of the award-recall curve), $\Phi(K)=\int_0^K\phi(k)\,dk$ is cumulative
+forensic cost in bid rows, $\phi=\Phi'>0$, $c$ is per-firm forensic
+cost, $V$ the recovery payoff per adjudicable case, and $B$ the budget.
+
+The benefit term $V\!\int_0^K\rho$ is concave because $\rho$ is
+non-increasing (inherited from the monotone posterior, which makes the
+recovery density non-increasing in rank), and the cost term $c\,\Phi$ is
+convex because $\phi$ is non-decreasing; their difference $\Pi$ is
+concave. The first-order condition $V\rho(K^{*})=c\,\phi(K^{*})$, i.e.
+$\rho(K^{*})/\phi(K^{*})=c/V$, is therefore necessary and sufficient for
+the interior optimum: the agency descends the ranking until the marginal
+case recovered per unit forensic cost falls to the cost--value ratio.
+Differentiating the optimality condition in $c/V$ gives
+$\mathrm{d}K^{*}/\mathrm{d}(c/V)\le 0$, so cheaper or more valuable
+forensics push the agency deeper. Under a binding budget the optimum is
+the largest $K$ with $\Phi(K)\le B$, and the multiplier $\mu$ on the
+budget plays the role of $c$. Sweeping $c/V$ over $(0,\infty)$ and
+reading off $(\Phi(K^{*}),\,\mathrm{recall}(K^{*}))$ traces the
+cost--recall frontier reported in the main text.
+
+The proposition is anchored to the \emph{award}-recall curve, where
+monotonicity is inherited from the posterior. The two-stage
+award-to-bid rerank need not be monotone in the survivor pool: a larger
+pool can dilute rerank precision at a fixed depth, and the realized
+sequential recall is non-monotone in the data (124 true positives at a
+first-stage cut of $1{,}000$ against $116$ at $2{,}000$ for the top
+$500$). That is a second-order property of the rerank stage, not of the
+award marginal-recovery density, so concavity is claimed for the award
+envelope and its comparative statics in $c/V$, not for the height of any
+single sequential point.
+
+\subsection{Platform-survival audit: full hazard detail}
+\label{supp:theory_survival}
+
+The exit margin predicts who remains on the platform. We examine this
+descriptively on a firm-year panel of the $16{,}843$ always-losers
+($101{,}366$ firm-years, 2009--2019, right-censored at 2019). Because
+the panel uses \emph{full-sample} labels, the exercise is retrospective
+and at most mechanism-supporting; ``survival'' means continued BEC
+\emph{participation}, not legal-entity survival.
+
+The discrete-time hazard model is a complementary-log-log specification
+with duration and calendar-year fixed effects, clustered by firm. Relative
+to non-FL always-losers, the exit-hazard ratios are $0.231$ for FL
+cobidders and $0.365$ for FL non-cobidders---both far below one, so
+exposure to the labels is associated with substantially lower exit
+hazard. The cobidder coefficient is sharply estimated
+($z=-22.2$, $p<10^{-100}$), and the Kaplan--Meier curves are clearly
+separated. The direction is stable across robustness variants:
+alternative exit definitions, excluding late cohorts, and excluding the
+largest CADE case (ratio $0.281$). A timing-disciplined to-date label,
+which restricts the cobidder set to adjudications observable by the
+scoring date, attenuates the cobidder ratio to $0.768$ but leaves it
+below one. A continuous-time Cox specification yields the same ordering.
+Table~\ref{tab:survival_summary_submission} gives the summary moments and
+Figure~\ref{fig:survival_curves_submission} the Kaplan--Meier curves. The
+audit is descriptive and is not a test of cartel membership.
+
+\begin{table}[htbp]\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\caption{Platform survival of always-losers, by full-sample label.}
+\label{tab:survival_summary_submission}\scriptsize
+\begin{tabular}{lrrrrrr}
+\toprule
+Group & $N$ firms & Mean active & Exit share & Median & Right-cens. & Hazard \\
+ & & years & $<2019$ & duration & share & ratio \\
+\midrule
+Non-FL always-loser & $14{,}104$ & $1.61$ & $0.85$ & $1$ & $0.15$ & $1.00$ \\
+FL non-cobidder     & $2{,}391$  & $2.87$ & $0.73$ & $2$ & $0.27$ & $0.365$ \\
+FL cobidder         & $341$      & $3.51$ & $0.63$ & $3$ & $0.37$ & $0.231$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\scriptsize
+\item Firm-year panel of $16{,}843$ always-losers, $101{,}366$
+firm-years, 2009--2019, right-censored at 2019. ``Active years'' counts
+distinct years of platform participation; ``duration'' is years between
+first and last appearance. Hazard ratios are adjusted discrete-time
+(cloglog) estimates relative to the non-FL always-loser baseline. Labels
+are full-sample, so the audit is descriptive and mechanism-supporting at
+most, not a test of cartel membership.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\textwidth]{./output/figures/fig_B_survival_curves_frequent_losers}
+\caption{Kaplan--Meier platform-survival curves for always-losers, by
+full-sample label.}
+\label{fig:survival_curves_submission}
+\par\medskip
+{\footnotesize\textit{Alt text:} Three Kaplan--Meier curves of the share
+of firms still participating on the platform against tenure in years. The
+FL-cobidder curve lies highest and declines most slowly; the
+FL-non-cobidder curve is intermediate; the non-FL always-loser curve
+falls steepest and lies lowest, with most firms gone after one year. \par
+\textit{Note:} Right-censored at 2019. Labels are full-sample, so the
+comparison is descriptive. ``Survival'' is continued BEC platform
+participation, not legal-entity survival.}
+\end{figure}
+
+\section{Data Construction: Matching, Dedup, and Timing Detail}
+\label{supp:data_detail}
+
+This section carries the longer matching and reconciliation detail
+behind the validation labels of the submitted Appendix. The Appendix
+states the matching rule and the headline counts; the bookkeeping that
+makes those counts reproducible is collected here.
+
+\subsection{Defendant-count reconciliation}
+
+The portfolio of $\valDirectCADE$ BEC-active direct defendants and the
+$48$ distinct crossmatch CNPJ are not the same object, and the gap is
+mechanical. The CADE--BEC crossmatch file holds $48$ distinct CNPJ that
+match a BEC participant by exact $14$-digit string equality. Of these,
+$\valFunnelDirectActiveFTM$ are active in the firm-tender-map layer used
+to build cobidder edges---i.e.\ they appear as a bidder on at least one
+tender-item that the participation panel retains---while the remainder
+match a registry record but contribute no usable tender-item edge (they
+appear only in award rows dropped by the panel's item-level filters, or
+only as the unidentified-bidder sentinel). The direct-defendant set of
+$\valDirectCADE$ is the subset that anchors at least one retained
+tender-item. The three numbers therefore nest as
+$\valDirectCADE\to48\to\valFunnelDirectActiveFTM$: the registry match
+($48$), the participation-active subset
+($\valFunnelDirectActiveFTM$), and the defendants that actually anchor a
+loser-side edge ($\valDirectCADE$). No fuzzy or manual step intervenes
+at any stage.
+
+\subsection{Dedup and exclusion rules}
+
+Three exclusions fix the cobidder object and are applied in order.
+First, the direct defendants are removed from the candidate cobidder
+pool, so a firm that is itself an anchor cannot also count as exposure
+to an anchor; this keeps the label a measure of the loser-side
+\emph{around} the defendants. Second, the unidentified-bidder sentinel
+code \texttt{-1}, which BEC writes when a bidder identifier is missing,
+is dropped, since it would otherwise collapse many distinct firms into a
+single spurious cobidder. Third, a firm that bids in more than one
+adjudicated case, or that appears under more than one zero-padded CNPJ
+string for the same legal entity, is counted once: cobidder status is a
+firm-level indicator, not an edge count, so multiplicity across cases or
+CNPJ variants does not inflate the positive count. After these rules the
+full $12$-case portfolio yields $\valMainCobidders$ unique always-loser
+cobidders.
+
+\subsection{Per-case timing and benchmark membership}
+
+The conservative benchmark and the temporal holdout both turn on
+judgment timing, which is observed for $9$ of the $12$ cases; the $3$
+undated cases are placed last in any timing ordering and are therefore
+excluded from the conservative pre-$\valConservativeCutoff$ window by
+construction. Conduct-onset dates, which would be the conceptually
+preferred cut, are not in the case record, so judgment dates are the
+only timing variable available. Applying the
+$\valConservativeCutoff$-12-31 cut to the same cobidder rule leaves
+$\valConservativeCases$ cases, $\valConservativeFD$ crossmatch direct
+defendants, and $\valConservativeCobidders$ cobidders
+($\valConservativeFL$ frequent losers), all strict subsets of the
+full-portfolio counts because a narrower case window can only remove
+anchors and hence cobidders. The temporal-holdout split scores
+participation on $2009$--$2016$ and tests against labels realized in
+$2017$--$2019$; firms with no pre-$2017$ history enter as unrankable
+entrants ($\valMainEntrantPositives$ of the $\valMainCobidders$
+positives), while the $\valStrictRankablePos$ rankable incumbents carry
+a pre-window participation score. Because adjudications routinely
+post-date conduct spanning several years, both exercises are
+retrospective out-of-time discrimination tests rather than real-time
+prediction.

@@ -1,0 +1,298 @@
+% Online Supplement E-source: bid-layer benchmark + cost-recall grid detail
+% Migrated 2026-06-06 from sec_app09_bid_benchmark_submission.tex and
+% sec_app06_forensic_sequence_submission.tex during the JLEO compression pass.
+% Heavy material only; the appendix retains a compact summary + pointer.
+\section{Bid-Layer Benchmark and Cost-Recall Grid: Full Detail}
+\label{supp:bid_cost}
+
+This section deposits the full construction and diagnostics behind the
+full-observability bid-moment benchmark (Appendix~E,
+\ref{app:bid_benchmark_submission}) and the complete cost-recall grid behind
+the sequential gatekeeping frontier (\ref{app:forensic_sequence_submission}).
+``Cobidder'' is an adjudication-anchored exposure label throughout---an
+always-loser firm that shares at least one tender-item with a BEC-active
+direct CADE defendant---and never cartel membership; the benchmark
+\emph{ranks} that exposure target for forensic priority and makes no claim to
+identify cartelists.
+
+%--------------------------------------------------------------------
+\subsection{Bid-Layer Data, Units, and Support}
+\label{supp:bid_data}
+
+The bid layer is built from
+\texttt{v3/data/processed/bid\_level\_with\_prices.parquet}
+(approximately 245~MB), one row per priced bid with columns
+\texttt{c\'odigofornecedor} (firm), \texttt{numerodaoc} (OC sequence),
+\texttt{c\'odigoitem} (item), and \texttt{bid\_price}; a bid is retained
+only if \texttt{bid\_price IS NOT NULL AND bid\_price > 0}. The benchmark
+is produced by script~31 (\texttt{31\_imhof\_full\_pipeline.R},
+\texttt{arrow}\,+\,\texttt{data.table}, seed \texttt{20260430}) and a
+DuckDB twin, script~49 (\texttt{49\_imhof\_incremental\_value.R}, seed
+\texttt{20260501}); a dedicated validation run
+(\texttt{09\_bid\_benchmark\_validation.R}, seed \texttt{20260603})
+generates the audit numbers. The bid layer links to the award layer
+through the tender-item key $(\texttt{numerodaoc},\texttt{c\'odigoitem})$
+and, for firm attachment, through
+$(\texttt{numerodaoc},\texttt{c\'odigoitem},\texttt{c\'odigofornecedor})$;
+the within-tender moments are \emph{not} recoverable from the award layer,
+which records no per-bid prices.
+
+The modeling unit is the \emph{firm}: per-tender moments are shared across
+all firms bidding on a tender-item and then firm-mean aggregated. Of the
+$16{,}843$ always-losers, $64$ are dropped because they have no priced
+bids or fewer than two bids per tender (so the coefficient of variation,
+skewness, and kurtosis are undefined). Excluding the direct CADE
+defendants by upstream label curation leaves an evaluation pool of
+$16{,}731$ firms, of which $\valBidPosRetained$ are always-loser cobidder
+positives. All $\valBidPosRetained$ positive (cobidder) labels are
+non-missing on every Imhof moment: the support loss falls entirely on the
+negatives, so there is no positive attrition.
+
+%--------------------------------------------------------------------
+\subsection{Bid-Feature Dictionary}
+\label{supp:bid_dictionary}
+
+Seven Imhof--Wallimann moments are constructed within each tender-item
+with $\geq 2$ priced bids, then averaged across each firm's priced tenders
+to the firm level. They fall into four families: \emph{dispersion}
+(coefficient of variation \texttt{imhof\_cv\_mean} and its within-firm SD
+\texttt{imhof\_cv\_sd}, undefined for single-tender firms);
+\emph{level/relative spread} (normalized spread and log min--max,
+\texttt{imhof\_spread\_mean}, \texttt{imhof\_minmax\_mean});
+\emph{shape} (skewness \texttt{imhof\_skew\_mean} and excess kurtosis
+\texttt{imhof\_kurt\_mean}); and \emph{rank/order} (the second-low gap
+$\log(b_2/b_1)$, \texttt{imhof\_second\_low\_mean}, the only moment with a
+winning-margin component, of low--moderate leakage risk but still a
+field-level moment shared across firms, not a firm-specific outcome).
+Two auxiliary counts accompany them, \texttt{n\_bids} (gating the $\geq 2$
+filter) and \texttt{n\_tenders\_priced} (a firm exposure count). No
+co-bidding/network or timing, bid-revision, or late-bid features are
+implemented: the parquet read selects only firm, OC, item, and price, and
+no timestamp column is touched.
+
+%--------------------------------------------------------------------
+\subsection{Model Specification and Validation Designs}
+\label{supp:bid_model}
+
+The learner is a random forest (\texttt{ranger}, $500$ trees,
+\texttt{probability = TRUE}, $\texttt{num.threads}=12$)---not a logit,
+despite an earlier script header that mislabeled it. There is no
+hyperparameter tuning (fixed $500$ trees, default \texttt{mtry} and
+\texttt{min.node.size}, no grid search) and no standardization (the forest
+is scale-invariant). Missingness is handled listwise through the pool
+restriction. The outcome is binary \texttt{is\_cade} ($1$ for an
+always-loser cobidder in the candidate pool, not a direct defendant).
+Evaluation is by $5$-fold cross-validation, each firm receiving one
+held-out predicted probability; AUC and DeLong tests are computed on these
+out-of-fold firm-level predictions.
+
+Four validation designs are run, increasing in stringency:
+\textbf{Design~A} (pooled-random $5$-fold) is a diagnostic
+\emph{upper bound}; \textbf{Design~E} (case-grouped / leave-one-case-out)
+holds out an entire CADE case so its clustered positives never co-train;
+\textbf{Design~F} (exclude-label-defining tenders) recomputes the moments
+after dropping defendant-co-appearance tenders to test feature--target
+contamination; and \textbf{Design~G} (environment holdout) holds out an
+item-group. Strict bid-timing validation is \textbf{blocked}: the
+within-tender moments cannot be cleanly time-limited without re-deriving
+them on a per-period bid panel. Because positives cluster by case, random
+folds (Design~A) are optimistic---same-case positives appear in both
+train and test.
+
+%--------------------------------------------------------------------
+\subsection{Bid-Layer Performance by Validation Design}
+\label{supp:bid_perf}
+
+The award score is \emph{clean} (a CADE-label-independent rank on
+\texttt{log1p(tenders\_count)}), as is its strict-timing variant. The bid
+and combined forests under full-period features and random folds are
+\textbf{diagnostic-only}: random folds are optimistic, and the firm-mean
+moments include label-defining tenders. The contamination is small:
+excluding label-defining tenders (Design~F) leaves the bid ROC essentially
+unchanged ($0.717 \to 0.713$), so the fragility is case clustering, not
+feature--target overlap. The case-grouped result (Design~E) and the
+contamination check (Design~F) together establish that the bid layer's
+apparent reach is driven by case clustering rather than by feature--target
+overlap.
+
+\begin{table}[htbp]\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\caption{Bid-layer performance by validation design.}
+\label{supp:tab_bid_perf}\scriptsize
+\begin{tabular}{llrrr}
+\toprule
+Design & Model & ROC-AUC & PR-AUC & Prec@500 \\
+\midrule
+A (random)        & Award (cont.) & 0.760 & 0.143 & 0.216 \\
+A (random)        & Award FL14    & 0.688 & 0.098 & 0.130 \\
+A (random)        & Bid RF        & 0.717 & 0.116 & 0.180 \\
+A (random)        & Combined RF   & 0.756 & 0.188 & 0.274 \\
+E (case-grouped)  & Award (cont.) & 0.760 & 0.143 & 0.216 \\
+E (case-grouped)  & Award FL14    & 0.688 & 0.098 & 0.130 \\
+E (case-grouped)  & Bid RF        & 0.626 & 0.062 & 0.086 \\
+E (case-grouped)  & Combined RF   & 0.689 & 0.103 & 0.190 \\
+F (excl.\ label)  & Award (cont.) & 0.829 & 0.156 & 0.216 \\
+F (excl.\ label)  & Bid RF        & 0.713 & 0.088 & 0.130 \\
+F (excl.\ label)  & Combined RF   & 0.855 & 0.217 & 0.302 \\
+G (env.\ holdout) & Award (cont.) & 0.768 & 0.185 & 0.150 \\
+G (env.\ holdout) & Bid RF        & 0.747 & 0.171 & 0.150 \\
+G (env.\ holdout) & Combined RF   & 0.734 & 0.212 & 0.144 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\scriptsize
+\item $N=16{,}731$ always-losers with $\valBidPosRetained$ always-loser
+cobidder positives (defendant-excluded pool) for Designs~A, E; $N=16{,}665$
+with $569$ positives for Design~F; $N=2{,}377$ with $129$ positives for the
+held-out environment in Design~G. PR-AUC is reported alongside ROC because
+the positive base rate is near one percent. Design~A is a
+full-observability \emph{diagnostic upper bound} with random-CV optimism;
+the case-grouped block (E) is the honest robustness test, where the
+combined model's PR-AUC ($0.103$) falls below award-only ($0.143$). The
+award rank is identical across A and E by construction. Cobidders are
+adjudication-anchored exposure, not cartel membership; false positives are
+unlabeled firms, not ``bad firms.'' Lift omitted; PR-AUC is the
+rare-target metric and carries the comparison.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+%--------------------------------------------------------------------
+\subsection{Full Cost-Recall Grid and Frontier Figure}
+\label{supp:cost_grid}
+
+Table~\ref{supp:tab_G_frontier} reports a slice of the cost-recall grid
+for the sequential award\,$\to$\,bid rule at the $k=500$ forensic-queue
+depth, across the first-stage cut $K_1$; the full machine-readable grid
+spans all rules, all $K_1$, and $k \in \{100,250,500,1000\}$ with every
+cost denominator.
+
+\begin{table}[htbp]\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\begin{threeparttable}
+\caption{Cost-recall slice, sequential award\,$\to$\,bid, queue depth $k=500$.}
+\label{supp:tab_G_frontier}
+\scriptsize
+\begin{tabular}{rrrrrr}
+\toprule
+$K_1$ & Firms opened & Bid rows opened & Bid-row red.\ & TP & Recall \\
+\midrule
+$500$    & $500$    & $1{,}356{,}346$ & $0.60$ & $108$ & $0.166$ \\
+$1{,}000$ & $1{,}000$ & $1{,}783{,}750$ & $0.47$ & $124$ & $0.190$ \\
+$2{,}000$ & $2{,}000$ & $2{,}283{,}924$ & $0.33$ & $116$ & $0.178$ \\
+$3{,}000$ & $3{,}000$ & $2{,}575{,}274$ & $0.24$ & $115$ & $0.177$ \\
+$5{,}000$ & $5{,}000$ & $2{,}921{,}977$ & $0.14$ & $102$ & $0.157$ \\
+$16{,}772$ & $16{,}772$ & $3{,}393{,}915$ & $0.00$ & $102$ & $0.157$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\scriptsize
+\item \textit{Source:} \texttt{table\_6\_cost\_recall\_frontier.csv}
+(sequential award$\to$bid, $k=500$). ``Bid-row red.'' is the
+fraction of the full-pool bid-row footprint avoided,
+$1-\text{(bid rows opened)}/3{,}393{,}915$. TP counts
+adjudication-anchored positives in the top-$k$ queue (pool $=\valCostNpos$).
+\item TP is non-monotone in $K_1$ because the bid rerank reorders
+survivors within a fixed queue depth: $K_1=1{,}000$ recovers more true
+positives ($124$) than $K_1=2{,}000$ ($116$) at $k=500$, one more sign
+that no $K_1$ is optimal. The joint full-observability TP at $k=500$ is
+$133$, which the sequential rule approaches ($124/133 = 93\%$ at
+$K_1=1{,}000$) but does not exceed.
+\end{tablenotes}
+\end{threeparttable}
+\end{adjustbox}
+\end{table}
+
+Figure~\ref{supp:fig_G_cost_recall_ti} plots recall against the tender-item
+footprint for the award-only, sequential, and joint rules, making the
+frontier shape visible: the sequential rule tracks close to the joint
+upper bound while opening fewer tender-items, but never crosses it.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.86\textwidth]{./output/figures/fig_G_cost_recall_tender_items}
+\caption{Recall versus opened tender-items, by ranking rule.}
+\label{supp:fig_G_cost_recall_ti}
+\par\medskip
+{\footnotesize\textit{Alt text:} A cost-recall scatter with opened
+tender-items on the horizontal axis and adjudication-anchored recall on
+the vertical axis. The joint full-observability rule sits at the far
+right (largest footprint) at the top of the recall range; award-only
+points sit at the far left (smallest footprint) at lower recall;
+sequential award\,$\to$\,bid points trace an intermediate frontier that
+approaches but does not exceed the joint recall while opening fewer
+tender-items.}
+\end{figure}
+
+%--------------------------------------------------------------------
+\subsection{Baselines and Case-Holdout Concentration}
+\label{supp:cost_holdout}
+
+The sequential rule sits well above a same-size random survivor floor
+across the grid, confirming that it is the award ranking, not the mere act
+of opening $K_1$ firms, that carries the signal. The award-ranked survivor
+pool captures most of the $\valCostNpos$ positives \emph{before} any bid
+rerank, so the bid rerank reorders that pool into a forensic-priority queue
+rather than recovering positives the award gate missed. Because adjudicated
+positives cluster in a handful of CADE cases, apparent recall can be
+carried by a single large case: the largest case supplies $32.0\%$ of the
+positives and $45.4\%$ of the true positives in the top-$500$ queue.
+Grouping firms by case and holding out the largest case lowers recall on
+the remaining smaller cases materially, with several individual small cases
+near zero. Performance is therefore case-fragile; the transferable object
+is the decomposition framework, not a portable cartel score.
+
+A timing-disciplined gate must rank on information available before the
+investigation window. Re-scoring the award gate on a strict pre-period
+(2009--2016) and evaluating on later positives, its strict-timing
+discrimination is AUC $0.684$ on the training-AL pool against $0.761$ for
+the full-window score---the honest cost of respecting the timing order.
+The sequential rule cannot be subjected to the same test, because the
+within-tender moments cannot be re-derived on a pre-period basis without
+re-pipelining the raw LANCES bid records, so we report it as infeasible
+rather than estimate it on contaminated features.
+
+%--------------------------------------------------------------------
+\subsection{Gatekeeping Algorithm and Operating-Point Logic}
+\label{app:algorithm_submission}
+
+No single $(K_1,k)$ pair is preferred for every agency; the right point
+depends on capacity and on whether the priority is recall or precision,
+so the frontier is a menu, not a cutoff. The operating-point grid with
+recall, precision, and recovered-positive counts at each $K_1$ is the
+main text's Table~6. The full gatekeeping procedure can be stated
+compactly.
+
+\begin{quote}
+\textbf{Algorithm E.1: Award-Layer Gatekeeping with Cost Measurement}
+\begin{enumerate}
+\item Define the firm universe from award records (participant identity,
+winner identity, item code, negotiated price, procuring unit, year,
+modality).
+\item For each firm $i$, compute the win count $W_i$ and the
+participation count $T_i$ over the calibration window; restrict to the
+zero-win stratum $\{i : W_i = 0\}$.
+\item Compute the award score $s_i = \log(1+T_i)$.
+\item Over a grid of first-stage cuts $K_1$, form the survivor pool
+$\mathcal{S}_{K_1}$ of the top-$K_1$ firms (or apply the
+median-plus-$1.5\times$IQR threshold, or a capacity budget).
+\item Recover bid microdata only for the tender-items touched by
+$\mathcal{S}_{K_1}$, and record the cost denominators D1--D8 at that
+$K_1$.
+\item Compute the bid-layer forensic features inside $\mathcal{S}_{K_1}$.
+\item Rerank survivors by the bid score alone or by the award-plus-bid
+combined score, over a grid of queue depths $k$.
+\item Deliver the top-$k$ queue from that ranking as a forensic-priority
+list for investigative review.
+\item Trace the cost-recall frontier over $(K_1,k)$ and select the
+operating point that fits the agency's capacity and recall/precision
+priority; treat the output as forensic priority, not as a liability
+finding.
+\end{enumerate}
+\end{quote}
+
+Joint scoring requires bid microdata for the full pool before triage;
+sequential gatekeeping requires it only after the award-layer survivor
+pool is formed. The survivor-pool size, the threshold or top-$K_1$ choice,
+the queue depth $k$, the bid-versus-combined rerank, and the
+recalibration cadence are institutional choices the algorithm leaves to
+the agency.

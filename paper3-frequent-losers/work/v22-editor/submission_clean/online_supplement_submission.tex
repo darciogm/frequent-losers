@@ -24,7 +24,7 @@
 \usepackage{natbib}
 \usepackage{xr}
 \externaldocument{paper_submission_clean}
-\externaldocument{online_supplement_submission}
+\externaldocument{online_appendix_submission_clean}
 
 \usepackage{silence}
 \WarningFilter{latexfont}{Font shape `U/wasy/b/n'}
@@ -48,53 +48,42 @@
 \input{values.tex}
 \input{values_adversarial.tex}
 
-% Local macros mirrored from the submission main manuscript.
-\newcommand{\valHeadlineRange}{+3.6\%\,\text{--}\,+7.7\%}
-\newcommand{\valSRQfourBroad}{+0.046}
-\newcommand{\valSRQfourATT}{+0.041}
-\newcommand{\valSRQfourATTp}{0.045}
-\newcommand{\valSRQoneBroad}{-0.065}
-\newcommand{\valSRQtwoBroad}{-0.057}
-\newcommand{\valSRQthreeBroad}{-0.040}
-\newcommand{\valSRTrimNone}{-0.097}
-\newcommand{\valSRTrimTen}{-0.118}
-\newcommand{\valSRTrimFifty}{-0.133}
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-
 \begin{document}
 \sloppy
 \hfuzz=300pt
 
 \begin{frontmatter}
-
-\title{Online Appendix to:\\
+\title{Online Supplement to:\\
 Cheap Signals, Costly Proof:\\
 The Reach and Limits of Award-Layer Screening in Cartel Enforcement}
-
 \author{}
-
 \end{frontmatter}
 
-\appendix
-
+% Supplement numbering: S.1, S.2, ... ; tables/figures S\arabic{section}.\arabic
+\renewcommand{\thesection}{S\arabic{section}}
+\setcounter{section}{0}
 \setcounter{table}{0}
 \setcounter{figure}{0}
-\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
-\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{section}.\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{section}.\arabic{figure}}
 \makeatletter
 \@addtoreset{table}{section}
 \@addtoreset{figure}{section}
 \makeatother
 
-\input{sec_app00_referee_map_submission}        % Roadmap (unnumbered)
-\input{sec_app02_data_labels_submission}        % Appendix A — Data, Matching, Labels
-\input{sec_app01_framework_submission}          % Appendix B — Theory, Exit, Survival
-\input{sec_app03_validation_audits_submission}  % Appendix C — Opportunity & Timing
-\input{sec_app08_profile_submission}            % Appendix D — Profile & Score Diagnostics
-\input{sec_app09_bid_benchmark_submission}      % Appendix E — Bid Benchmark + Cost-Recall (section)
-\input{sec_app06_forensic_sequence_submission}  % Appendix E — cost-recall (merged subsection)
-\input{sec_app04_scope_submission}              % Appendix F — Price Scope + Adaptation (section)
-\input{sec_app05_adaptive_deployment_submission}% Appendix F — adaptive deployment (merged subsection)
-\input{sec_app10_federal_audit_submission}      % Appendix G — Federal Audit Battery (ComprasNet)
+\noindent This supplement collects the full robustness grids, permutation
+draws, threshold sweeps, the complete bid-feature dictionary, fold audits,
+the full price grid, and the federal-platform construction detail referenced
+in the main text and the submitted appendix. Numbering is independent
+(\textsf{S\arabic{section}}); cross-references to the paper and the submitted
+appendix resolve through the published versions of those documents.
+
+% Per-section supplement files appended by the compression pass (created as material migrates):
+\input{sec_supp_validation_submission}       % from Appendix C — full permutations, rolling tables, environment grids
+\input{sec_supp_profile_submission}          % from Appendix D — threshold sweeps, negative controls, score bins
+\input{sec_supp_bid_cost_submission}       % from Appendix E — full feature dictionary, fold audits, calibration, full cost grid
+\input{sec_supp_price_submission}          % from Appendix F — full price regression grid, bid-gap plots
+\input{sec_supp_federal_submission}        % from Appendix G — full ComprasNet construction detail
+\input{sec_supp_theory_submission}         % from Appendix B — long proofs
 
 \end{document}
