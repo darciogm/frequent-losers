@@ -165,17 +165,46 @@ validation over-credits the screen because it credits volume
 geometry to it. The over-crediting is thus a predictable bias, not
 a quirk of this dataset, and its magnitude turns on only two
 quantities: the dispersion of participation volume and the
-adjudicated base rate. The bias \emph{grows} with the dispersion of
-$T$ (with no dispersion there is nothing to rank and the raw AUC
-collapses to chance) and \emph{shrinks} as the base rate rises (a
-rarer target is more strongly size-biased); the formal signs are
-proved in the rare-target regime in
-Proposition~\ref{prop:inflation}. The takeaway is portable: the
-coefficient of variation of $T$ in the candidate pool is a
-\emph{sufficient statistic} for how inflated an uncorrected
-award-screen AUC is likely to be, computable from award data alone
-before a single bid file is opened. It diagnoses the size of the
-bias; it does not rescue the screen.
+adjudicated base rate. Writing the over-crediting gap as
+$\Delta = \mathrm{AUC}_{\text{raw}} - \mathrm{AUC}_{\text{opp-adj}}$,
+its signs follow from the size-biasing mechanism alone.
+
+\begin{proposition}[Signs of the over-crediting bias]
+\label{prop:inflation}
+Let $\Delta = \mathrm{AUC}_{\textnormal{raw}} -
+\mathrm{AUC}_{\textnormal{opp-adj}}$, where the raw award-layer area
+is the size-biased ordering $\mathrm{AUC}_{\textnormal{raw}} =
+\Pr(T_i > T_j)$ with the positive $T_i$ size-biased relative to a
+random negative $T_j$, and $\mathrm{AUC}_{\textnormal{opp-adj}}$
+holds the participation-volume channel fixed. In the rare-target
+regime:
+\begin{enumerate}
+\item[(a)] $\Delta$ is increasing in the dispersion of the
+participation-volume distribution $F_T$; for $T$ in a scale family
+it is increasing in the coefficient of variation $\mathrm{CV}(T)$,
+with $\Delta \to 0$ as $\mathrm{CV}(T) \to 0$ (a degenerate $T$
+leaves nothing to rank);
+\item[(b)] $\Delta$ is decreasing in the adjudicated base rate: as
+the base rate rises the positive class ceases to be as strongly
+size-biased and $\mathrm{AUC}_{\textnormal{raw}}$ declines toward
+the genuine-signal floor.
+\end{enumerate}
+\end{proposition}
+
+\noindent Proof in Appendix~\ref{app:validation_audits_submission}.
+The signs are analytic; the magnitude is not closed-form once one
+leaves the rare-target linearization and uses the empirical
+heavy-tailed $F_T$, so we characterize it by a synthetic surface
+(anchored at one empirical point per platform), not an estimated
+curve: Figure~\ref{fig:inflation_surface}
+(Appendix~\ref{app:validation_audits_submission}) maps $\Delta$ over
+a grid in $\mathrm{CV}(T)$ and the base rate, with BEC overlaid at
+its measured coordinate. The takeaway is portable: the coefficient
+of variation of $T$ in the candidate pool is a \emph{leading-order
+sufficient statistic} (within the scale-family approximation) for
+how inflated an uncorrected award-screen AUC is likely to be,
+computable from award data alone before a single bid file is opened.
+It diagnoses the size of the bias; it does not rescue the screen.
 
 Conditional on opportunity, the residual ordering is marginal and
 fragile, though the within-stratum design passes an audit of its
@@ -192,22 +221,20 @@ continuous score ranks the label at AUC $\valExpWithinAUC$ and the
 binary flag at $\valExpWithinFLAUC$, both at chance. The null is
 falsifiable, not built in: in the same strata a positive-control
 score ($O_i$ itself) ranks the label at $\valArmorOiControlMedium$,
-so the design recovers a residual when one exists. Rebuilding strata
-from discrete expected-contact cells leaves the within-stratum score
-AUC ranging $\valArmorWithinMedium$--$\valArmorWithinStrict$, rising
-only in the strictest cells where support is thin and the $O_i$
-control itself drops---low support, not a recovered residual.
-Stratifying on \emph{label-blind} expected contact the score retains
-$\valArmorWithinLBall$, but the negative controls in
-Section~\ref{sec:cobidder_type} reproduce that ordering under placebo
-and non-CADE high-volume-winner anchors, marking it as generic
-co-participation geometry rather than anything cartel-specific. A
-coarsened-exact opportunity match yields AUC $\valExpCEMmatchedAUC$,
-with a within-stratum flagged-versus-non-flagged cobidder-probability
-gap of $\valExpMatchedDelta$---negative; the score does rank positive
-excess contact $O_i-E_i>0$ at AUC $\valExpScoreExcessAUC$, but that
-diagnostic shares the score's participation component and cannot
-carry the residual claim alone (\ref{app:validation_audits_submission}).
+so the design recovers a residual when one exists. Discretizing the
+strata pushes the within-stratum score AUC only to
+$\valArmorWithinMedium$ in medium cells, rising toward
+$\valArmorWithinStrict$ in the strictest cells only where support
+thins and the $O_i$ control itself drops---low support, not a
+recovered residual. The remaining variants line up the same way: a
+coarsened-exact opportunity match leaves a negative
+flagged-versus-non-flagged gap; a label-blind stratification retains
+$\valArmorWithinLBall$, but the placebo and non-CADE high-volume
+anchors of Section~\ref{sec:cobidder_type} reproduce that ordering,
+marking it as generic co-participation geometry, not anything
+cartel-specific (full granularity sweep, CEM match, and the
+excess-contact diagnostic in
+\ref{app:validation_audits_submission}).
 
 Exposure-preserving permutation tests settle the question. Under a
 pure-exposure binomial null the observed PR-AUC
@@ -223,13 +250,12 @@ test is correctly sized and rejects with probability
 $\valArmorPowerFive$ once the true within-stratum AUC reaches
 $0.55$ ($\valArmorPowerTen$ at $0.60$), bounding any surviving
 residual below the weakest ordering that could matter
-operationally. Nor does label breadth drive the result: restricting
-positives to firms sharing at least two defendant tender-items only
-strengthens it---the exposure-only model improves faster than the
-score, the within-stratum AUC stays at chance ($0.506$), and the
-nested increment vanishes ($+0.003$, $p=0.47$). Both permutation
-distributions and the breadth check are in
-\ref{app:validation_audits_submission}.
+operationally. Label breadth does not drive the result either:
+restricting positives to firms sharing at least two defendant
+tender-items leaves the within-stratum AUC at chance and the nested
+increment vanishing (both permutation distributions and the
+intensity-restricted breadth check in
+\ref{app:validation_audits_submission}).
 
 The reading is therefore stronger than caution. Under a
 reproducible, non-circular label, holding opportunity fixed leaves
@@ -336,23 +362,16 @@ $\valMainCobidders$ positives, $\valMainEntrantPositives$
 the frozen score cannot rank them; only $\valMainTimingCobidders$
 are rankable at all, and roughly a quarter of the universe is tied
 at score zero. A loser-side score built from past losing cannot
-order firms that have not yet lost. The rolling-origin design
-confirms it: on the full universe every test year from $2014$ to
-$2019$ returns precision@500 and recall@500 of zero, with ROC-AUC
-between $\valRollWorstAUC$ and $0.50$. A fully label-frozen variant
-closes the residual leakage concern---freezing the pool, the score,
-\emph{and} the label ingredients (always-loser status and defendant
-contact from $2009$--$2016$ only) leaves $\valArmorFrozenPool$
-rankable incumbents, among whom the frozen score ranks \emph{new}
-$2017$--$2019$ defendant contact at AUC $\valArmorFrozenProspAUC$
-($\valArmorFrozenProspN$ positives; retrospective contact
-$\valArmorFrozenRetroAUC$). Against the
-negative controls of Section~\ref{sec:cobidder_type}, this is
-participation volume forecasting generic future contact with active
-firms, not a cartel-specific signal the stricter designs missed; the
-full-universe zeros remain the operative deployment result.
-Rolling-origin curves and the label-frozen construction are in
-\ref{app:validation_audits_submission}.
+order firms that have not yet lost. Two further checks confirm the
+collapse and close the residual leakage concern: a rolling-origin
+design returns zero precision@500 every test year from $2014$ to
+$2019$, and a fully label-frozen variant---freezing the pool, the
+score, \emph{and} the label ingredients to $2009$--$2016$---ranks new
+$2017$--$2019$ defendant contact only as participation volume
+forecasting generic future contact with active firms, not a
+cartel-specific signal the stricter designs missed (both in
+\ref{app:validation_audits_submission}). The full-universe zeros
+remain the operative deployment result.
 
 Case composition is the second structural fact. One case
 (trens/metros, CADE process $08700.004617/2013\text{-}41$) supplies
