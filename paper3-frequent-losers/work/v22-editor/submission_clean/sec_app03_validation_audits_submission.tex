@@ -127,8 +127,10 @@ the same defendant-contact rates that define the label, so a
 model containing $E_i$ partly predicts the label by construction.
 The score's \emph{isolated} contribution is not read off these
 combined AUCs. Holding exposure fixed, the residual ordering is
-marginal at best: the nested DeLong increment is only $+0.010$
-over the exposure-only model ($p=0.013$), and the
+statistically detectable but operationally negligible: the nested
+DeLong increment over the exposure-only model is only $+0.010$ AUC
+($p=0.013$)---a real but tiny residual, well below any AUC gain
+that would change a forensic-prioritization decision---while the
 within-opportunity-stratum AUC for the score is $0.471$ ($\approx$
 chance; FL14 $0.507$). The companion permutation and matched audits
 in Online Supplement~C do not establish a robust residual.
@@ -142,11 +144,23 @@ alone already classifies cobidder contact well (exposure-only AUC
 $0.905$ unconditionally; $0.713$ on the exposed subsample), and the
 combined exposure-plus-score AUCs near $0.98$ overstate the score's
 marginal value because $E_i$ encodes the label. Once exposure is
-held fixed, the residual ordering is \emph{marginal at best and not
+held fixed, the residual ordering is \emph{small and not
 robust across designs}: the nested DeLong increment is only
 $+0.010$ ($p=0.013$), the within-opportunity-stratum AUC for the
 score is $0.471$ ($\approx$ chance), and the FL14 binary is no
-better ($0.507$). The score does rank the binary excess-contact
+better ($0.507$). The $+0.010$ increment is the only point estimate
+in the battery that is both positive and conventionally significant;
+read on its own terms it is statistically real ($p=0.013$) but
+operationally negligible---a one-percentage-point AUC gain over an
+exposure-only model is far below any margin that would reorder a
+forensic queue. We do not lean on its $p$-value, and we note that the
+opportunity-adjusted battery comprises many correlated tests
+(nested increment, within-stratum AUC, CEM-matched AUC, two
+exposure-preserving permutations, and the intensity-restricted
+re-run); under a Benjamini--Hochberg correction over this family the
+$p=0.013$ increment is the only test that survives at the $5\%$
+level, and the headline within-stratum and permutation nulls are
+unaffected because they are non-rejections to begin with. The score does rank the binary excess-contact
 target at AUC $0.764$ within MEDIUM cells, but the three companion
 exercises in Online Supplement~C do not corroborate a robust
 residual signal: a matched-stratum label permutation places the
@@ -155,10 +169,12 @@ simulation yields a higher level PR-AUC than the raw score ($p=1.000$),
 the CEM opportunity-matched comparison gives a within-stratum AUC
 of $0.626$ ($n=6{,}039$, full common support), and the within-stratum
 change in $\Pr(\text{cobidder})$ for FL14 versus non-FL is in fact
-\emph{negative} ($-0.017$). We therefore report no robust residual
-ordering net of opportunity; the only marginally positive quantity
-is the small nested increment, which the permutation tests do not
-support as reliable.
+\emph{negative} ($-0.017$). We therefore report no operationally
+relevant residual ordering net of opportunity; the only positive,
+conventionally significant quantity is the $+0.010$ nested
+increment, which is statistically real ($p=0.013$) but too small to
+move a prioritization decision, and which the permutation tests do
+not corroborate as a robust signal.
 
 \textit{Intensity-restricted label sensitivity.} A natural
 objection is that the broad shared-tender-item label dilutes
@@ -197,11 +213,23 @@ bound on opportunity's role, and we rest no conclusion on
 same opportunity-decile strata that put the score at chance, a
 positive-control score ($O_i$) ranks the label at
 $\valArmorOiControlMedium$: the design detects a residual when
-one exists. The within-stratum AUC for the score is stable across
-cell granularities (coarse $\valArmorWithinCoarse$, medium
-$\valArmorWithinMedium$, strict $\valArmorWithinStrict$; retained
-support shrinks from $15{,}246$ to $615$ firms across that
-range). Stratifying instead on the \emph{label-blind} expected
+one exists. The headline within-stratum AUC ($\valExpWithinAUC$)
+stratifies on opportunity deciles; a robustness check that
+instead rebuilds the strata from the discrete expected-contact
+cells of \ref{app:market_opportunity_submission} leaves the
+within-stratum score AUC in the range
+$\valArmorWithinMedium$--$\valArmorWithinStrict$ across
+granularities (coarse $\valArmorWithinCoarse$, medium
+$\valArmorWithinMedium$, strict $\valArmorWithinStrict$). The
+sequence is non-monotone---it dips at the medium definition and
+rises in the strictest cells---and retained support shrinks from
+$15{,}246$ to $615$ firms across that range. The strict-cell
+$\valArmorWithinStrict$ is not evidence of a residual: it rests on
+only $615$ retained firms (16{,}295 within-cell pairs), where the
+$O_i$ positive control itself falls to $0.740$, signalling that the
+strictest cells are too thin to discriminate reliably; under the
+same coarse and medium cells the score stays at or below chance.
+Stratifying instead on the \emph{label-blind} expected
 contact---strata that cannot mechanically absorb the
 label---leaves the score at $\valArmorWithinLBall$; the negative
 controls in Appendix~D identify that ordering as generic
@@ -238,6 +266,166 @@ full-window label); $\valArmorFrozenProspN$ counts firms whose
 \emph{first} defendant contact arises in $2017$--$2019$, while
 $\valArmorFrozenRetroN$ counts contact within $2009$--$2016$
 only, and the two need not nest the full-window label counts.
+
+\subsection{The Over-Crediting Bias as an Estimable Object}
+\label{app:overcrediting_submission}
+
+\textit{Purpose.} The opportunity audit above shows \emph{that} the
+raw award score over-credits defendant contact. This subsection
+characterizes \emph{why}, and turns the caveat into a diagnostic a
+practitioner can compute before opening a single bid file.
+
+\textit{The size-bias mechanism.} The cobidder label is
+contact-defined: a firm is a positive if it shares at least one
+tender-item with an adjudicated defendant. The probability of such a
+contact is mechanically increasing in a firm's participation volume
+$T_i$,
+\begin{equation}
+\Pr(\text{cobidder}_i = 1 \mid T_i)
+   \;=\; 1 - (1-\pi)^{T_i}
+   \;\approx\; \pi\,T_i \qquad (\pi T_i \text{ small}),
+\label{eq:contact_sizebias}
+\end{equation}
+where $\pi$ is the per-tender-item defendant-contact rate (the cell
+density $p_g$ of \ref{app:expected_contact_submission}). The award
+score is monotone in the same $T_i$ by construction
+($\log(1{+}T_i)$). \emph{Both the score and the label therefore load
+on participation volume.} A ranking by the score orders the label not
+because loss intensity is behaviorally informative, but because each
+is a function of $T$. This is the same fact the within-stratum null
+($\valExpWithinAUC$, $\approx$ chance) and the label-blind exposure
+ranking ($\valArmorExpLB$) establish empirically; here we give its
+analytic shape.
+
+Write $F_T$ for the distribution of $T$ in the candidate pool. Under
+the rare-target linearization in \eqref{eq:contact_sizebias} the
+positive class is $T$ weighted by $\pi T$, i.e.\ the
+\emph{size-biased} distribution of $T$, while the negative class is
+approximately $F_T$ itself. Since the score is monotone in $T$, the
+raw ROC area is the size-bias stochastic gap
+\begin{equation}
+\mathrm{AUC}_{\text{raw}}
+  \;=\; \Pr(T_i > T_j),
+  \qquad T_i \sim \widetilde F_T \ (\text{size-biased}),\;\;
+  T_j \sim F_T .
+\label{eq:auc_sizebias}
+\end{equation}
+The opportunity-adjusted area $\mathrm{AUC}_{\text{opp-adj}}$ holds the
+volume channel fixed (the within-opportunity-stratum / label-blind
+value); it is the genuine-signal floor, which the audits put at
+$\approx$ chance. The over-crediting bias is the gap
+$\Delta = \mathrm{AUC}_{\text{raw}} - \mathrm{AUC}_{\text{opp-adj}}$.
+
+\begin{proposition}[Signs of the over-crediting bias]
+\label{prop:inflation}
+Let $\Delta = \mathrm{AUC}_{\textnormal{raw}} -
+\mathrm{AUC}_{\textnormal{opp-adj}}$ with
+$\mathrm{AUC}_{\textnormal{raw}}$ given by \eqref{eq:auc_sizebias}.
+In the rare-target regime of \eqref{eq:contact_sizebias}:
+\begin{enumerate}
+\item[(a)] $\Delta$ is increasing in the dispersion of $F_T$; for $T$
+in a scale family it is increasing in the coefficient of variation
+$\mathrm{CV}(T)$, with $\Delta \to 0$ as $\mathrm{CV}(T) \to 0$ (a
+degenerate $T$ leaves nothing to rank);
+\item[(b)] $\Delta$ is decreasing in the adjudicated base rate: as the
+base rate rises the contact probability $1-(1-\pi)^{T}$ saturates, the
+positive class ceases to be as strongly size-biased, and
+$\mathrm{AUC}_{\textnormal{raw}}$ declines toward the genuine floor.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) For a positive $i$ size-biased by weight $w(T)=\pi T$ and a
+negative $j\sim F_T$, $\Pr(T_i>T_j)-\tfrac12$ equals the rank
+covariance between $w(T)$ and the indicator that $T$ exceeds an
+independent copy; this covariance is non-negative and increasing in
+the spread of $F_T$, vanishing when $F_T$ is degenerate. For a scale
+family the spread is summarized by $\mathrm{CV}(T)$, and the size-bias
+gap $\mathbb{E}[T^2]/(\mathbb{E}[T])^2-1=\mathrm{CV}^2(T)$ is monotone
+in it. (b)~Differentiating $1-(1-\pi)^T$ in $T$ gives a marginal
+contact response $-(1-\pi)^T\log(1-\pi)$ that flattens in $T$ as $\pi$
+grows; the weight $w(T)$ thus becomes less steeply increasing, the
+positive class less size-biased, and the gap in
+\eqref{eq:auc_sizebias} smaller. Both statements concern the
+\emph{signs} only; the magnitude is not closed-form once one leaves
+the linearization and uses the empirical heavy-tailed $F_T$, and is
+read from the simulation below.
+\end{proof}
+
+We deliberately state \emph{signs}, not a magnitude formula:
+off the rare-target linearization, with the empirical heavy-tailed
+$F_T$ and a multi-cell opportunity adjustment, the magnitude
+$g(\cdot)$ is not closed-form, and a formula would be spurious
+precision. We characterize the magnitude by a transparent simulation
+instead.
+
+\textit{Simulation.} Figure~\ref{fig:inflation_surface} maps $\Delta$
+over a grid in $\mathrm{CV}(T)$ and the base rate. The simulation is
+\emph{synthetic}: it draws $T$ from a Gamma family indexed by
+$\mathrm{CV}(T)$ (the Poisson-mixing family of
+\ref{app:framework_scope}), assigns the contact label by
+\eqref{eq:contact_sizebias} at a target base rate, scores firms by a
+noisy $\log(1{+}T)$ calibrated once so the BEC coordinate reproduces
+its observed raw area, and compares the raw ROC area to the
+within-$T$-stratum area. No confidential microdata enter: the only
+empirical inputs are two published scalars per platform---the
+coefficient of variation of always-loser participation counts and the
+adjudicated base rate. Across the grid the simulated surface confirms
+both signs of Proposition~\ref{prop:inflation}: $\Delta$ rises
+monotonically in $\mathrm{CV}(T)$ (from $\approx 0.03$ at
+$\mathrm{CV}=0.5$ to $\approx 0.34$ at $\mathrm{CV}=5$) and falls in
+the base rate once the target leaves the rare regime.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.86\textwidth]{./output/figures/fig_inflation_surface}
+\caption{Over-crediting bias $\Delta = \mathrm{AUC}_{\text{raw}} -
+\mathrm{AUC}_{\text{opp-adj}}$ over the volume-dispersion $\times$
+base-rate grid (synthetic). The bias increases in $\mathrm{CV}(T)$ and
+decreases in the adjudicated base rate, as
+Proposition~\ref{prop:inflation} predicts. The two real platforms are
+overlaid at their measured $(\mathrm{CV}(T),\text{base rate})$
+coordinates: BEC ($\mathrm{CV}=2.79$, base rate $3.9\%$) and the
+federal ComprasNet platform ($\mathrm{CV}=3.79$, base rate $0.5\%$).
+Federal sits in a higher-$\Delta$ region---higher dispersion and a
+roughly seven-fold lower base rate both push toward more complete
+inflation. Synthetic simulation; only $\mathrm{CV}(T)$ and the base
+rate are taken from data.}
+\label{fig:inflation_surface}
+\end{figure}
+
+\textit{The sufficient statistic.} The practitioner deliverable is
+that $\mathrm{CV}(T)$ of the candidate pool, computable from award
+data alone before any bid file is opened, together with the target
+base rate, bounds how much of any raw area is mechanical. A high
+dispersion of participation volume is a warning that a contact-anchored
+validation will over-credit a volume-loaded score; the correct
+response is the within-stratum / label-blind comparison, not the raw
+area. We emphasize that this is a \emph{diagnostic}, not a fix: the
+correction here reveals the genuine floor to be $\approx$ chance
+(\ref{app:control_function_submission}); it does not rescue the screen.
+
+\textit{BEC and federal as two points on one curve.} The two
+platforms are not ``the same null twice''---they are a second
+coordinate on the inflation surface. BEC has
+$\mathrm{CV}(T)=2.79$ and an always-loser base rate of $3.9\%$
+($651/16{,}843$); its raw area is $0.761$, its within-stratum floor
+$\valExpWithinAUC$, so $\Delta\approx0.29$. The federal platform has a
+higher dispersion ($\mathrm{CV}(T)=3.79$) and a roughly seven-fold
+lower base rate ($0.5\%$, $195/35{,}943$); its raw area is
+$\valFedAudRawAUC$ and its within-stratum floor $\valFedAudWithinAUC$,
+so $\Delta\approx0.28$, comparable to BEC. The lower federal base rate
+is precisely why its exposure-only model \emph{edges past} the raw
+score ($\valFedAudExpOnlyAUC > \valFedAudRawAUC$) where the BEC
+exposure-only model does not: at a rarer target the size-biasing is
+nearly complete, so a pure opportunity ranking captures essentially
+all of what the raw score captures. The within-stratum floor is
+$\approx$ chance on both platforms. This is the generalizing content:
+the inflation \emph{law}---the first-stage deflation and the
+label-blind exposure ranking---replicates at full power across the two
+platforms; only the residual within-stratum floor is power-bounded
+federally (below an AUC of roughly $0.55$ at $N^{+}=195$), and we keep
+the two apart.
 
 \subsection{Timing Information Sets and Strict Holdout}
 \label{app:strict_holdout_submission}

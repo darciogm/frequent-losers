@@ -158,51 +158,76 @@ the current bid-layer features, this is a retrospective cost-footprint
 design conditional on the validated incumbent ranking, not a fully
 prospective deployment test.
 
-The paper makes three contributions. The first is organizational, and
-it carries the law-and-economics payload: the award-to-bid recovery
-decision is a sequential evidence-allocation problem, and the object
-an enforcement designer chooses is the cost--recall frontier the
-screen traces as a gatekeeper, not a cutoff on the screen itself.
-Posed this way, procurement-cartel screening stops being a
-classification exercise---does the flag clear some threshold---and
-becomes a sequencing problem: how a constrained authority orders
+The paper makes three contributions, and the first two are
+analytical objects the screening literature has not written down.
+
+The first is organizational, and it carries the law-and-economics
+payload. We model the award-to-bid recovery decision as the
+enforcer's evidence-acquisition problem: an agency with a per-record
+forensic cost $c$ and a per-case recovery payoff $V$ chooses how far
+to descend a cheap ranking before paying to open bid-level records,
+and the optimum is the depth at which the marginal adjudicable case
+recovered per unit of forensic cost meets the cost--value ratio $c/V$
+(Proposition~\ref{prop:enforcer_trigger}). This turns the
+cost--recall frontier we report into the empirical image of a solved
+optimal-stopping problem rather than a descriptive scatter. ``There
+is no optimal cutoff'' is then a result, not a confession: the
+optimum is budget-dependent, so the object an enforcement designer
+reports is the locus of budget-dependent optima---the frontier---and
+each operating point, including $K_1=2{,}000$, is the tangency for an
+agency at one implied $c/V$. Posed this way, procurement-cartel
+screening stops being a classification exercise---does the flag clear
+some threshold---and becomes a sequencing problem in the
+optimal-enforcement tradition: how a constrained authority orders
 costly evidence acquisition when suspicion is cheap and proof is dear
-\citep{becker1968crime,stigler1970optimum,harrington2008detecting,sanchezgraells2019screening,chassang2022robust}.
+\citep{becker1968crime,polinsky2000economic,townsend1979optimal,mookherjee1989optimal}.
 Bid-distribution screens evaluate suspicious bidding after the
 bid-level data are in hand; we study the prior stage, and show that
 the frontier, not a detector-versus-detector horse race, is the
 margin that matters.
 
-The second contribution is a reproducible audit architecture for
-cheap screens. Its components are individually familiar---a
-non-circular adjudication-anchored label, opportunity-cell adjustment,
-rolling-origin timing, leave-one-case-out tests, a bid-layer
-benchmark, and cost--recall accounting---but their sequencing for the
-award-to-bid decision is, to our knowledge, new. The architecture
-asks not whether a cheap screen attains a high pooled AUC but how much
-of that number is genuine ranking signal as opposed to mechanical
-exposure, retrospective information, or one adjudicated case. What we
-offer as portable is the architecture, not a validated score:
-validating an administrative screen against adjudicated cases without
-adjusting for procurement opportunity systematically over-credits it,
-and the order in which the steps run is part of the method. We put
-that portability to the test directly. Re-running the identical
-battery on a second platform---the federal ComprasNet system
-(Section~\ref{sec:comparative}), with partially overlapping CADE
-anchors and no bid microdata---returns the same verdict, so it is the
-audit that travels.
+The second is that the over-crediting of cheap screens is itself an
+estimable object, not just a caveat. Validating an administrative
+screen against adjudicated cases without adjusting for procurement
+opportunity does not merely risk inflation---it inflates by an amount
+we characterize. Because a contact-defined label and a
+participation-based score both load on the same volume, the positive
+class is the size-biased volume distribution, so the raw area is a
+size-bias gap that grows with the dispersion of participation volume
+and shrinks with the adjudicated base rate
+(Proposition~\ref{prop:inflation}). The signs are analytic; the
+magnitude we read from a transparent simulation overlaid with the two
+platforms. The practitioner deliverable is a sufficient
+statistic---the coefficient of variation of participation counts,
+computable from award data before any bid file is opened---that
+bounds how much of a raw screening number is mechanical. The two
+platforms are then not the same null twice but two points on one
+inflation curve: the federal system's rarer target is exactly why its
+opportunity-only model edges past the raw score there, as the
+characterization predicts.
 
-The third contribution is the cost--recall frontier that links
-suspicion to bid-layer recovery in this setting. Applied to BEC, the
-architecture yields a map of reach and limits: persistent zero-win
-participation concentrates a legally bounded, adjudication-anchored
-exposure target in raw terms, but the residual ordering net of
+The third contribution is the reproducible, non-circular audit
+protocol that produces both objects. Its components are individually
+familiar---an adjudication-anchored label that never uses the flag,
+opportunity-cell adjustment, rolling-origin timing,
+leave-one-case-out tests, a bid-layer benchmark, and cost--recall
+accounting---but their sequencing for the award-to-bid decision is, to
+our knowledge, new. Applied to BEC, the protocol traces a map of
+reach and limits: persistent zero-win participation concentrates a
+legally bounded, adjudication-anchored exposure target in raw terms,
+but the decomposition shows that concentration is what the framework
+correctly catches as over-crediting---the residual ordering net of
 opportunity is marginal, prospective ranking fails outside incumbent
 pools, and the apparent reach concentrates in one case. The estimated
 ranking is therefore not a portable cartel score---that is the object
-the evidence denies---while the audit principle and the cost--recall
-trade-offs it exposes are what carry to other settings. Locating these
-boundaries is itself the enforcement-design product.
+the evidence denies---while the stopping rule, the inflation
+characterization, and the protocol that recovers them are what carry
+to other settings. We put that portability to the test directly:
+re-running the identical battery on the federal ComprasNet platform
+(Section~\ref{sec:comparative}), with partially overlapping CADE
+anchors and no bid microdata, reproduces the first-stage deflation and
+places the second platform where the inflation curve predicts. The
+protocol travels and the deflation travels with it.
 
 Two scope points complete the design. Price evidence enters only as
 scope information, never as a damages exercise. And strategic response
@@ -230,10 +255,12 @@ disciplined enforcement as knowing where it begins.
 \begin{center}
 \fbox{%
 \begin{minipage}{0.97\textwidth}
-\textbf{Box 1. What the audit does.} The architecture decomposes a
-cheap award-layer screen into auditable components before any costly
-bid-layer recovery is triggered. Each row is a question an enforcement
-agency can put to the screen.
+\textbf{Box 1. What the audit does.} The protocol decomposes a cheap
+award-layer screen into auditable components before any costly
+bid-layer recovery is triggered, and in doing so traces two
+analytical objects: an enforcer's stopping rule and an estimable
+over-crediting bias. Each row is a question an enforcement agency can
+put to the screen.
 
 \smallskip
 \renewcommand{\arraystretch}{1.25}
@@ -243,11 +270,11 @@ agency can put to the screen.
 \hline
 Label construction & Is the validation target independent of the screen? & A non-circular, reproducible adjudication-anchored label that never uses the flag. & Comparisons are not mechanically inflated by the screen they test.\\
 Raw ranking & Does the screen concentrate adjudicated cobidders? & Yes, the raw concentration is real. & Worth auditing as exposure, not yet read as conduct.\\
-Opportunity & How much is mechanical co-participation? & Most of the raw reach is opportunity arithmetic. & Do not trust raw AUC or lift; adjust for exposure first.\\
+Opportunity & How much is mechanical co-participation? & Most of the raw reach is a size-bias we characterize; both score and label load on participation volume. & Compute the dispersion of participation volume first; it bounds how much of any raw number is mechanical.\\
 Timing & Can the screen rank prospectively? & It ranks only among incumbents; new entrants cannot be ordered. & No platform-wide prospective deployment.\\
 Case composition & Is reach spread or concentrated? & A single case and one environment dominate. & The method transfers; the score does not.\\
 Bid layer & What is the proof-producing stage? & Full-observability benchmark, comparable but case-fragile. & Reserve the costly, proof-producing layer for the prioritized set.\\
-Cost--recall & When should suspicion trigger recovery? & A frontier across survivor-pool sizes, with no optimal point. & A frontier to design against, not a cutoff to deploy.\\
+Cost--recall & When should suspicion trigger recovery? & The solution locus of a budget-dependent stopping rule; no single cutoff is optimal because the optimum moves with the budget. & Read off the operating point your forensic budget implies, not a fixed threshold.\\
 \hline
 \end{tabular}
 \end{minipage}%

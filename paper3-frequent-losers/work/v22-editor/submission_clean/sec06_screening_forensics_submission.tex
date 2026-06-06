@@ -43,6 +43,67 @@ implication: administrative records rank where proof-producing
 forensics should begin, while bid-level evidence remains the stage
 at which conduct is evaluated.
 
+\subsection{The Evidence-Allocation Problem}
+\label{sec:evidence_allocation}
+
+Before turning to the empirics, it is worth naming the decision the
+agency is actually solving, because it determines what the
+cost-recall frontier reported below \emph{is}. The optimal-enforcement
+tradition treats detection and sanctions as costly instruments chosen
+to maximize net deterrence \citep{becker1968crime,polinsky2000economic},
+and the audit literature studies when a principal pays to verify
+costly soft information \citep{townsend1979optimal,mookherjee1989optimal}.
+We specialize that logic to a sequential evidence-acquisition margin:
+how far an agency should descend a cheap award-layer ranking before
+it pays the costly-state-verification price of opening bid-level
+records. \ref{app:framework_submission} formalizes this as an
+optimal-stopping problem. An agency with a per-record forensic cost
+$c$ and a per-case recovery payoff $V$ chooses a stopping depth $K$ to
+maximize net recovery, descending the ranking while the marginal
+adjudicable cases recovered per unit of forensic cost still exceed the
+cost-value ratio $c/V$. Because the award ranking is informative---the
+recovery density is non-increasing in rank, inherited from the
+ranking result of \ref{app:framework_submission}---the net-recovery
+objective is concave and the optimum is the unique tangency
+$\rho(K^{*})/\phi(K^{*}) = c/V$ stated in
+Proposition~\ref{prop:enforcer_trigger}.
+
+This reframes three features of the frontier that follow. First, the
+cost-recall frontier we report is not a descriptive scatter with the
+optimization stripped out: it is the \emph{empirical image} of this
+stopping rule. Each operating point is the optimum
+$\bigl(\text{cost}(K^{*}),\text{recall}(K^{*})\bigr)$ for an agency at
+one cost-value ratio, and sweeping $c/V$ traces the whole curve.
+Second, there is no single optimal cutoff \emph{because the optimum is
+budget-dependent}. We do not observe any agency's $c/V$, so we report
+the locus of optima---the menu---rather than impose one point; an
+agency reads off its own operating point given its own forensic
+budget. The $K_1=2{,}000$ point is therefore the tangency we would
+recover at one implied $c/V$, not an arbitrary cutoff. Third, the
+firm-versus-bid-row asymmetry documented below is the model's cost-side
+comparative static: because forensic cost is indexed to bid rows and
+the survivors opened first are the highest-participation firms, the
+marginal cost rises fastest exactly where recovery is richest, so the
+firm-count reduction necessarily overstates the forensic-cost
+reduction.
+
+Two boundaries are load-bearing. The stopping rule operates on
+recovery of the adjudication-anchored target, never on conduct: it
+prices the recovery footprint of an exposure-ranking architecture, and
+$\rho$ descends the raw exposure ranking that
+Section~\ref{sec:validation} has shown carries no conduct residual.
+And the proposition's concavity holds on the \emph{award-layer}
+recovery curve.\footnote{The sequential award$\rightarrow$bid rule
+reported below is one layer richer than the object the proposition
+governs: enlarging the survivor pool can dilute the bid rerank's
+precision at a fixed queue depth, so the realized sequential recall
+need not be monotone in $K_1$ (it is not---see
+Section~\ref{sec:sequential_gatekeeper}). The optimal-stopping result
+is stated for the award-layer gate, whose recovery density is the
+monotone primitive; the rerank stage is a second-order refinement, not
+the optimized margin.} What the frontier never claims is that the
+firms opened first are likelier to have coordinated.
+
 \subsection{Bid-Layer Forensics as a Full-Observability Benchmark}
 \label{sec:bid_layer_benchmark}
 
@@ -250,42 +311,60 @@ is certify that the firms opened first are likelier to have
 coordinated, a reading Section~\ref{sec:validation} forecloses.
 
 \paragraph{Why firms are the wrong denominator.}
-The firm count badly understates the forensic burden. Recovering
-the within-tender bid moments requires the full tender-item
-\texttt{LANCES} record for every tender a survivor contested, so
-the relevant cost lives in opened tender-items and opened bid rows,
-not in firms. Table~\ref{tab:cost_recall_frontier} reports all
-three. At the $K_1=2{,}000$ operating point the rule opens only
-$12\%$ of firms (a firm reduction of $\valCostFirmRedTwoK$ relative
-to full observability), yet it recovers just
-$\valCostTenderRedTwoK$ fewer tender-items and
-$\valCostBidRowRedTwoK$ fewer bid rows. Because survivors are the
-highest-participation always-losers, opening $12\%$ of firms still
-opens roughly $67\%$ of the bid rows. We report firms, tender-items,
-and bid rows side by side precisely so this divergence stays
-visible: the real processing-burden cut is about a third at the
-bid-row level, well short of the firm-level figure. That gap
-($\valCostFirmRedTwoK$ versus $\valCostBidRowRedTwoK$) belongs in
-the body, not a footnote.
+The economically meaningful cost of the rule is the volume of
+bid records it forces open, and that is where its value is modest.
+Recovering the within-tender bid moments requires the full
+tender-item \texttt{LANCES} record for every tender a survivor
+contested, so the relevant cost lives in opened tender-items and
+opened bid rows, not in firms. Table~\ref{tab:cost_recall_frontier}
+reports all three. At the $K_1=2{,}000$ operating point the rule cuts
+the bid-row footprint by only $\valCostBidRowRedTwoK$---roughly a
+third---and the tender-item footprint by $\valCostTenderRedTwoK$,
+because the survivors are the highest-participation always-losers and
+opening $12\%$ of firms still opens roughly $67\%$ of the bid rows.
+The headline firm reduction of $\valCostFirmRedTwoK$ is therefore the
+\emph{wrong} number to lead with: it overstates the true
+processing-burden cut by nearly threefold. This divergence is exactly
+the cost-side comparative static of the stopping rule
+(Section~\ref{sec:evidence_allocation}): with cost indexed to bid rows
+and recovery concentrated in high-volume survivors, the marginal
+forensic cost rises fastest where recovery is richest, so the
+firm-count and bid-row frontiers diverge by construction. We report
+firms, tender-items, and bid rows side by side precisely so this gap
+($\valCostBidRowRedTwoK$ at the bid-row level versus
+$\valCostFirmRedTwoK$ at the firm level) stays in the body, not a
+footnote.
 
-\paragraph{A menu of operating points, not a single rule.}
-Varying $K_1$ traces a cost-recall frontier rather than singling
-out one best rule. At $k=500$, the count of positives the
-sequential award$\rightarrow$bid rule recovers moves non-monotonically
-in $K_1$: $108$ true positives at $K_1=500$, $124$ at $1{,}000$,
+\paragraph{A menu of optima, not a single rule.}
+Varying $K_1$ traces the cost-recall frontier, which
+Section~\ref{sec:evidence_allocation} identified as the locus of
+budget-dependent optima of the agency's stopping problem. Each point
+is the tangency $\rho(K^{*})/\phi(K^{*}) = c/V$ for an implied
+cost-value ratio; agencies with cheaper forensics (lower $c/V$) sit
+deeper on the ranking, those with dearer forensics sit shallower.
+On the monotone award-layer recovery curve the optimum is a single
+interior tangency, and the frontier is the menu of those tangencies
+as $c/V$ varies. The realized sequential
+award$\rightarrow$bid counts move \emph{non}-monotonically in $K_1$
+at $k=500$---$108$ true positives at $K_1=500$, $124$ at $1{,}000$,
 $116$ at $2{,}000$, $115$ at $3{,}000$, and $102$ at $5{,}000$
-(Fig.~\ref{fig:cost_recall_frontier}). $K_1=1{,}000$ in fact
+(Fig.~\ref{fig:cost_recall_frontier})---because the bid rerank
+dilutes precision as the survivor pool grows, a second-order effect of
+the rerank layer rather than a property of the award-layer gate the
+proposition governs.\footnote{The optimal-stopping result of
+Section~\ref{sec:evidence_allocation} and
+Proposition~\ref{prop:enforcer_trigger} is stated for the award-layer
+recovery curve, whose density is monotone; it is not a trigger
+condition for the two-stage rerank, where the enlarged survivor pool
+can lower precision at a fixed queue depth.} $K_1=1{,}000$ in fact
 recovers more than $K_1=2{,}000$ at $k=500$ ($124$ versus $116$ true
 positives, reaching $124/133 = 93\%$ of the joint upper bound's
-true positives at a $47\%$ bid-row reduction), which is itself the
-clearest sign that no single $K_1$ is privileged. The sequential
+true positives at a $47\%$ bid-row reduction). The sequential
 rule never exceeds the joint full-observability upper bound ($133$
 true positives at $k=500$, $191$ at $k=1{,}000$). $K_1=2{,}000$ is
-thus \emph{one operating point on the frontier, not a calibrated
-optimum}: agencies with larger forensic capacity sit higher on the
-frontier, those with less sit lower. The contribution is the
-frontier itself---the menu of recall-versus-scope trade-offs---and
-not any one cutoff.
+thus the tangency at \emph{one} implied $c/V$, not a calibrated
+optimum we privilege: the contribution is the frontier itself---the
+menu of recall-versus-scope optima---and not any one cutoff.
 
 \paragraph{What the bid rerank does, and does not, add.}
 At a fixed survivor pool the bid layer contributes little

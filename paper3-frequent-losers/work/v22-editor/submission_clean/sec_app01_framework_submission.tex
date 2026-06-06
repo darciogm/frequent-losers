@@ -278,3 +278,141 @@ monotone under a transparent behavioral assumption, while the bid
 layer and case record do the evidentiary work that liability
 requires. The paper's identification continues to rest on the
 opportunity-adjusted and timing-disciplined tests of \S\S4--6.
+
+\subsection{The evidence-acquisition stopping rule}
+\label{app:framework_stopping}
+
+The ranking of Proposition~\ref{prop:submission_monotone} tells an
+enforcement agency \emph{whom to consider first}; it does not tell it
+\emph{how far down the list to descend} before the forensic cost of
+opening one more record exceeds its expected return. We add that
+decision layer here. The object is the agency's evidence-acquisition
+problem: a minimal optimal-stopping rule that takes the cheap award
+ranking as given and prices the recovery footprint of descending it.
+This is the enforcement-economics counterpart to the ranking result
+above, and it sits squarely in the tradition of public-enforcement
+and costly-audit design (Becker, 1968; Townsend, 1979; Mookherjee and
+Png, 1989; Polinsky and Shavell, 2000). It is deliberately
+reduced-form on payoffs: it does not re-derive the cartel's internal
+organization, and it does not estimate a structural recovery
+technology. Its single job is to make the cost--recall frontier of
+\S\ref{sec:screening_forensics} the empirical image of a solved
+problem.
+
+\paragraph{Primitives.} Six objects, all reduced-form.
+(1) \emph{A ranking.} The award-layer score orders the $N$ always-loser
+candidates by exposure-loaded loss intensity. Write $\rho(k)$ for the
+\emph{marginal recovery density} at depth $k$: the expected number of
+adjudicable cases recovered by opening the $k$-th firm on the ranked
+list, equivalently the slope of the award-recall curve. This is an
+object the data deliver---the discrete derivative of the recall curve
+on the award-only ranking.
+(2) \emph{A per-firm forensic cost} $c>0$: the expected cost of
+recovering, cleaning, and inspecting one survivor's bid-level record.
+In the paper's accounting this is indexed to \emph{bid rows}, not
+firms, so the cumulative cost $\Phi(K)$ below is measured in bid rows.
+(3) \emph{A budget} $B>0$, a hard cap on total forensic cost (or,
+dually, a shadow price $\mu$ on forensic capacity).
+(4) \emph{A recovery payoff} $V>0$ per adjudicable case surfaced---the
+social value of routing one true case to the proof-producing stage.
+Only the ratio $c/V$ will matter, so the model carries one effective
+primitive.
+(5) \emph{A non-increasing marginal-recovery schedule.} Because the
+ranking is informative, high-exposure firms are opened first and each
+successive firm yields weakly fewer expected recoveries: $\rho(k)$ is
+non-increasing in $k$. This is the model's only behavioral
+assumption, and it is \emph{not} re-assumed here---it is inherited
+directly from Proposition~\ref{prop:submission_monotone}, whose
+posterior $\Pr(C\mid T_i=t,W_i=0,\tau_i)$ is non-decreasing in the
+score, so the recovery density is non-increasing in rank.
+(6) \emph{The bid layer as the evaluation stage}, not a primitive
+choice variable: opened records are evaluated by the costly forensic
+stage. The model stops at ``open or not''; what happens after opening
+(liability, damages) is outside the object, consistent with the
+Corollary's legal-scope boundary.
+
+\paragraph{Objective.} The agency chooses stopping depth $K$ to
+maximize net recovery
+\begin{equation}
+\label{eq:enforcer_objective}
+  \max_{K}\;\Pi(K)
+  \;=\; V\!\int_0^{K}\!\rho(k)\,dk \;-\; c\,\Phi(K),
+  \qquad \text{s.t. } \Phi(K)\le B,
+\end{equation}
+where $\Phi(K)=\int_0^{K}\phi(k)\,dk$ is the cumulative forensic cost
+(in bid rows) of opening the top-$K$ firms and $\phi(k)=\Phi'(k)>0$ is
+the marginal cost.
+
+\begin{proposition}[Optimal stopping depth]
+\label{prop:enforcer_trigger}
+Suppose the marginal-recovery density $\rho(k)$ is non-increasing in
+rank (inherited from Proposition~\ref{prop:submission_monotone}) and
+the marginal forensic cost $\phi(k)>0$ is non-decreasing. Then
+$\Pi(K)$ in \eqref{eq:enforcer_objective} is concave, and the
+unconstrained optimum $K^{*}$ is the unique tangency
+\begin{equation}
+\label{eq:enforcer_foc}
+  V\,\rho(K^{*}) \;=\; c\,\phi(K^{*})
+  \qquad\Longleftrightarrow\qquad
+  \frac{\rho(K^{*})}{\phi(K^{*})} \;=\; \frac{c}{V}:
+\end{equation}
+the agency descends the ranking until the marginal case recovered per
+unit forensic cost falls to the cost--value ratio $c/V$. The optimum
+$K^{*}(c/V)$ is non-increasing in $c/V$, and under a binding budget
+the optimum is the largest $K$ with $\Phi(K)\le B$. Sweeping $c/V$
+over $(0,\infty)$ and reading off $(\Phi(K^{*}),\,\mathrm{recall}(K^{*}))$
+traces the cost--recall frontier of \S\ref{sec:screening_forensics}.
+\end{proposition}
+
+\begin{proof}
+$\Pi$ is the difference of a benefit term $V\!\int_0^{K}\rho$ and a
+cost term $c\,\Phi(K)$. The benefit is concave because $\rho$ is
+non-increasing, and the cost is convex because $\phi$ is
+non-decreasing; hence $\Pi$ is concave and the first-order condition
+$V\rho(K)=c\phi(K)$ is necessary and sufficient for the interior
+optimum, giving \eqref{eq:enforcer_foc}. Differentiating the
+optimality condition, $K^{*}$ is non-increasing in $c/V$: cheaper or
+more valuable forensics push the agency deeper down the list. Reading
+$(\Phi(K^{*}(c/V)),\mathrm{recall}(K^{*}(c/V)))$ as $c/V$ varies
+generates the locus of optima; the budget-constrained problem reaches
+the same locus from the constraint side, with the multiplier $\mu$
+playing the role of $c$.
+\end{proof}
+
+Proposition~\ref{prop:enforcer_trigger} is stated on the
+\emph{award-recall} curve---the marginal recovery density $\rho$ of
+the cheap award ranking, where monotonicity is inherited from
+Proposition~\ref{prop:submission_monotone}.%
+\footnote{The two-stage award$\to$bid rerank reported in
+\S\ref{sec:screening_forensics} need not be monotone in the survivor
+pool: a larger pool can dilute the precision of the bid rerank at a
+fixed depth, and the realized sequential recall is in fact
+non-monotone in the data (124 true positives at $K_1{=}1{,}000$
+against 116 at $K_1{=}2{,}000$ for the top $500$). That
+non-monotonicity is a second-order property of the rerank stage, not
+of the underlying award marginal-recovery density. We therefore
+anchor Proposition~\ref{prop:enforcer_trigger} to the award-recall
+curve and do \emph{not} claim concavity for the sequential rerank;
+the proposition's content is the concave shape of the award-ranking
+envelope and its comparative statics in $c/V$, not the exact height
+of any single sequential point.}
+Two consequences organize the empirical reading in
+\S\ref{sec:screening_forensics}. First, the absence of a single
+optimal cutoff is a \emph{result}, not a confession: the optimum is
+budget-dependent, so the right object to report is the locus of
+budget-dependent optima---the frontier---rather than one point. The
+$K_1=2{,}000$ operating point is then the tangency
+\eqref{eq:enforcer_foc} for an agency with cost--value ratio $c/V$ in
+the implied range; we do not calibrate $c/V$ because agency budgets
+are unobserved, which is exactly why we report the whole menu of
+optima. Second, because $\Phi$ is measured in bid rows while
+survivors are the highest-participation firms, $\phi(k)$ rises
+steeply early---marginal forensic cost is highest precisely where
+recovery is richest---so the firm-denominator and bid-row-denominator
+frontiers diverge, the comparative-statics signature of the cost
+technology that the paper already reports. The optimum remains bounded
+above by the joint full-observability ceiling
+($\Pi(K)\le\Pi^{\mathrm{full\text{-}obs}}$), and the rule operates on
+recovery of adjudicable exposure only: it prices the recovery
+footprint of an exposure-ranking architecture and is never evidence
+that the score identifies active conduct.

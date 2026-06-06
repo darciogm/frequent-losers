@@ -20,7 +20,19 @@ volume and opportunity alone imply
 \citep{porter1993detection,bajari2003deciding,conley2016detecting,kawai2022detecting}.
 Two further threats are timing (the screen should rank before the
 target information is used) and legal overreach (it should not be
-read as a generic cartel-membership detector).
+read as a generic cartel-membership detector). The opportunity
+threat is the award-layer counterpart of a problem made precise in
+the bid layer by \citet{kawai2023bidrotation}: winner-and-loser
+allocation patterns can reflect cost differences across firms or
+non-competitive conduct, and separating the two requires
+identifying variation---in their case, auctions in which the
+winning and losing bids are very close. We do not observe bids, so
+we cannot run that close-bid test; the opportunity-versus-conduct
+decomposition in Section~\ref{sec:validation_exposure} is the
+award-layer analogue of their cost-versus-conduct identification,
+asking what the loser-side ranking adds once procurement
+opportunity is held fixed rather than once cost is differenced
+out.
 
 Subsection~\ref{sec:label_funnel} constructs the label and
 reconciles the validation samples.
@@ -40,7 +52,10 @@ The full CADE legal portfolio comprises $12$ adjudicated
 procurement-cartel cases with $65$ legal firm-defendants. We match
 defendants to BEC participant records by exact $14$-digit CNPJ
 equality, with no fuzzy or manual step; $\valDirectCADE$ are active
-in BEC and define the direct-defendant set. Their defendant
+in BEC and define the direct-defendant set (these correspond to
+$48$ distinct crossmatch CNPJ, of which $\valFunnelDirectActiveFTM$
+appear in the firm--tender map and so anchor the cobidder-label
+funnel in Table~\ref{tab:label_funnel_submission}). Their defendant
 tender-items ($\valFunnelDefItems$ distinct items) locate the
 adjudicated environments.
 
@@ -160,18 +175,51 @@ label-blind opportunity ranking at only $\valArmorExpLB$
 (\ref{app:validation_audits_submission}). Genuine opportunity
 structure, purged of the label, therefore explains little on its
 own. What the tiers establish is not that ``opportunity is the
-better model'' but something sharper: \emph{any}
-contact-derived benchmark---and any contact-defined label---is
-mechanically entangled with participation volume, which is
-exactly why raw validation over-credits the screen.
+better model'' but something sharper, and the mechanism is exact.
+The award-layer score is $\log(1+T_i)$, monotone in participation
+volume $T_i$ by construction. The cobidder label is
+contact-defined: a positive is an always-loser that shares at least
+one tender-item with a defendant, so the probability of being
+labelled is itself increasing in $T_i$ (more tender-items, more
+chances to contact a defendant). The score and the label are thus
+\emph{both} monotone transforms of the same volume primitive. A
+firm need not coordinate to be ranked high and labelled positive;
+it need only participate often. Mechanically, this makes the
+positive class the size-biased participation distribution---draws of
+$T$ weighted by the contact probability---so the raw ROC-AUC is just
+$\Pr(T_i>T_j)$ with $T_i$ size-biased relative to a random negative
+$T_j$. That ordering exists before any conduct enters, which is why
+raw validation over-credits the screen: it credits volume geometry
+to the score. The over-crediting is therefore not an accident of
+this dataset but a predictable bias, and its magnitude is governed
+by two quantities only---the dispersion of participation volume
+across candidate firms and the adjudicated base rate. The bias
+\emph{grows} with the dispersion of $T$ (with no dispersion there is
+nothing to rank and the raw AUC collapses to chance) and
+\emph{shrinks} as the base rate rises (a rarer target is more
+strongly size-biased); the formal signs are stated and proved in the
+rare-target regime in Proposition~\ref{prop:inflation}. The
+practitioner takeaway is portable. The coefficient of variation of
+$T$ in the candidate pool is a \emph{sufficient statistic} for how
+inflated an uncorrected award-screen AUC is likely to be, computable
+from award data alone---before a single bid file is opened. It is a
+cheap diagnostic for the size of the bias, not a correction that
+rescues the screen.
 
 Second, conditional on opportunity the residual ordering is
 marginal at best and not robust across designs---and the
 within-stratum design itself survives an audit of its ability to
 detect. The nested model that adds the score to the exposure-only
 model raises AUC by $\valExpIncrement$ (DeLong
-$p=\valExpDeLongP$; \citealp{delong1988comparing})---small and
-only marginally significant. \emph{Within} opportunity strata,
+$p=\valExpDeLongP$; \citealp{delong1988comparing})---statistically
+real but operationally negligible: a one-percentage-point AUC gain
+over an exposure-only model is far below any margin that would
+reorder a forensic queue, and it is the only test in the
+opportunity-adjusted battery that is both positive and
+conventionally significant (under a Benjamini--Hochberg correction
+across that family it is also the only one to survive, while the
+within-stratum and permutation results are non-rejections to begin
+with; \ref{app:validation_audits_submission}). \emph{Within} opportunity strata,
 where firms are compared only against others with comparable
 expected contact, the continuous score ranks the label at AUC
 $\valExpWithinAUC$ and the binary flag at
@@ -179,10 +227,17 @@ $\valExpWithinFLAUC$---both indistinguishable from chance. This
 null is falsifiable, not built in: within the \emph{same} strata
 a positive-control score ($O_i$ itself) ranks the label at
 $\valArmorOiControlMedium$, so the design detects a residual when
-one exists; and the within-stratum AUC is stable across cell
-granularities ($\valArmorWithinCoarse$--$\valArmorWithinStrict$
-from coarse to strict cells;
-\ref{app:validation_audits_submission}). Because label-soaked
+one exists. The headline within-stratum AUC ($\valExpWithinAUC$)
+stratifies on opportunity deciles; rebuilding the strata from the
+discrete expected-contact cells leaves the within-stratum score AUC
+ranging $\valArmorWithinMedium$--$\valArmorWithinStrict$ across
+granularities, dipping at the medium definition
+($\valArmorWithinMedium$) and rising in the strictest cells
+($\valArmorWithinStrict$), where retained support is thin
+($615$ firms) and the $O_i$ positive control itself falls to
+$0.740$---so the strict-cell figure reflects low support rather
+than a recovered residual
+(\ref{app:validation_audits_submission}). Because label-soaked
 strata could in principle flatten a true signal, we also
 stratify on the \emph{label-blind} expected contact: there the
 score retains $\valArmorWithinLBall$---but the negative controls
