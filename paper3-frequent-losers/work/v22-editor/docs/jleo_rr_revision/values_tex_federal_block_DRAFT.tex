@@ -242,14 +242,23 @@
 %           + outputs/comprasnet/tables/table_E_rolling_origin_validation.csv
 %           + outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv
 % NOTE: full-sample retrospective upper bound reuses \valFedAudRawAUC (no new macro).
+% SPEC FIX 2026-06-06: strict filename is cfg-driven (script 03 line 395:
+%   table_D_strict_<min holdout_train>_..._to_<max holdout_test>). FED cfg =
+%   2013:2016 -> 2017:2019, so the NEW name is ..._2013_2016_to_2017_2019 (specced
+%   below). The 19:04 on-disk run wrote the OLD name table_D_strict_2009_2016_to_2017_2019.csv;
+%   the rename to 2013_2016 lands ONLY on the queued 48s 03-federal re-run.
+%   % pending 03-federal re-run (file not yet on disk under the 2013_2016 name).
+%   Row-keys = `sample` column: 1_full_test_candidate, 3_training_always_loser.
+%   FL-binary / continuous AUCs live in the repro_fl_binary_auc / repro_log_tc_auc
+%   columns of the 3_training_always_loser row (the other rows leave them blank).
 % ----------------------------------------------------------------------------
-% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict full test universe roc_auc (entrants@0) | strict full-universe ROC | TODO_NUMBER
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: 1_full_test_candidate roc_auc | strict full-universe ROC (entrants@0) | TODO_NUMBER  [% pending 03-federal re-run: disk currently has _2009_2016_ name]
 \newcommand{\valFedAudStrictFullAUC}{TODO}
-% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict full universe prec@500 | strict full-universe precision@500 | TODO_NUMBER
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: 1_full_test_candidate prec_500 | strict full-universe precision@500 | TODO_NUMBER  [% pending 03-federal re-run: disk currently has _2009_2016_ name]
 \newcommand{\valFedAudStrictPrec}{TODO}
-% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict training-AL pool continuous roc_auc | strict training-AL pool, continuous ROC | TODO_NUMBER
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: 3_training_always_loser repro_log_tc_auc | strict training-AL pool, continuous (log_tc) ROC | TODO_NUMBER  [% pending 03-federal re-run: disk currently has _2009_2016_ name]
 \newcommand{\valFedAudStrictContAUC}{TODO}
-% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: strict training-AL pool FL-binary roc_auc | strict training-AL pool, FL binary ROC | TODO_NUMBER
+% src: outputs/comprasnet/tables/table_D_strict_2013_2016_to_2017_2019.csv :: 3_training_always_loser repro_fl_binary_auc | strict training-AL pool, FL-binary ROC | TODO_NUMBER  [% pending 03-federal re-run: disk currently has _2009_2016_ name]
 \newcommand{\valFedAudStrictFLAUC}{TODO}
 % src: outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv :: frozen_pool_size | frozen pool size | TODO_NUMBER
 \newcommand{\valFedAudFrozenPool}{TODO}
@@ -259,7 +268,7 @@
 \newcommand{\valFedAudFrozenProspN}{TODO}
 % src: outputs/comprasnet/diagnostics/audit_armor/frozen_timing.csv :: retrospective roc_auc (leakage-closed) | label-frozen retrospective ROC | TODO_NUMBER
 \newcommand{\valFedAudFrozenRetroAUC}{TODO}
-% src: outputs/comprasnet/tables/table_E_rolling_origin_validation.csv :: worst-year roc_auc | worst rolling-origin year ROC | TODO_NUMBER  [map-only; not yet cited in drafts]
+% src: outputs/comprasnet/tables/table_E_rolling_origin_validation.csv :: DERIVED min(roc_auc) over origin_test_year rows at sample=train_AL | worst (minimum) rolling-origin-year ROC, training-AL sample | HAND-FILL derived (no worst-year row; take the min roc_auc across the train_AL rows, 2014-2019) | TODO_NUMBER  [map-only; not yet cited in drafts; SPEC FIX 2026-06-06: key col is origin_test_year (per-year rows), there is no 'worst-year' row]
 \newcommand{\valFedAudRollWorstAUC}{TODO}
 
 
@@ -267,27 +276,33 @@
 % ROW GROUP 8 -- Case concentration + leave-one-case-out (LOCO)
 % src base: outputs/comprasnet/tables/table_G_leave_one_case_out_validation.csv
 %           + outputs/comprasnet/tables/table_H_case_dominance_validation.csv
-%           + outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv
+%           + outputs/comprasnet/diagnostics/case_dominance_summary.csv
+%           + outputs/comprasnet/tables/table_D_clustered_randomization_inference.csv
+%           [SPEC FIX 2026-06-06: RI table is on the FLAT tables/ path federally
+%            (no appendix/ subdir exists under comprasnet/tables/; the BEC twin
+%            IS under outputs/tables/appendix/). Repointed 4 RI macros below.]
 % ----------------------------------------------------------------------------
-% src: outputs/comprasnet/tables/table_G_leave_one_case_out_validation.csv :: top_case_pos_share | top-case share of positives | TODO_NUMBER
+% src: outputs/comprasnet/diagnostics/case_dominance_summary.csv :: 08700.004617/2013-41 share_pos | top-case (trens_metros) share of positives = 35.4% | TODO_NUMBER  [SPEC FIX 2026-06-06: table_G has NO top_case_pos_share column; the largest-case share_pos lives in case_dominance_summary.csv (case col = CNPJ row-key, largest = trens_metros 0.3538)]
 \newcommand{\valFedAudTopCaseShare}{TODO}
-% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: top_case_TP@500 | top-case share of top-500 TP | TODO_NUMBER
+% src: outputs/comprasnet/diagnostics/case_dominance_summary.csv :: 08700.004617/2013-41 share_tp_500 | top-case (trens_metros) share of top-500 TP = 87.5% | TODO_NUMBER  [SPEC FIX 2026-06-06: table_H carries full/drop scenarios, NOT a per-case TP share; the 0.875 value lives in case_dominance_summary.csv::share_tp_500 at the largest-case row]
 \newcommand{\valFedAudTopCaseTP}{TODO}
+% src: outputs/comprasnet/diagnostics/case_dominance_summary.csv :: DERIVED top-two share of positives = (n_pos[trens_metros]+n_pos[medicamentos])/sum(n_pos) = (69+63)/205 = 64.4% | top-two case concentration, LINK-ROW basis (protocol-mandated headline disclosure) | HAND-FILL derived (no single cell; sum of two share_pos rows is firm-basis 67.7%, NOT the locked number) | TODO_NUMBER  [SPEC FIX 2026-06-06: DENOMINATOR LOCKED to link-rows (132/205 = 64.4%) per R4 protocol text; firm-basis is 132/195 = 67.7% — 10 firms are multi-case. Do NOT use share_pos sum (=67.7%, /195 denom). new macro, add to comparative + appG drafts at integration]
+\newcommand{\valFedAudTopTwoShare}{TODO}
 % src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: full pr_auc | LOCO full PR-AUC | TODO_NUMBER
 \newcommand{\valFedAudLOCOfullPRAUC}{TODO}
 % src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: drop_largest_case pr_auc | LOCO drop-largest-case PR-AUC | TODO_NUMBER
 \newcommand{\valFedAudLOCOdropLargestPRAUC}{TODO}
-% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: drop_largest_case pct_change | LOCO drop-largest percentage change | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: DERIVED (pr_auc[drop_largest_case]-pr_auc[full])/pr_auc[full] = (0.00788-0.01418)/0.01418 = -44.4% | LOCO drop-largest PR-AUC percentage change | HAND-FILL derived (no pct_change column in table_H; compute from full vs drop_largest_case pr_auc cells) | TODO_NUMBER  [src-INFERRED: tex-but-not-map; SPEC FIX 2026-06-06: table_H has NO pct_change column]
 \newcommand{\valFedAudLOCOdropPct}{TODO}
-% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: drop_two_cases pr_auc | LOCO drop-two-cases PR-AUC | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+% src: outputs/comprasnet/tables/table_H_case_dominance_validation.csv :: drop_top_two_cases pr_auc | LOCO drop-two-cases PR-AUC | TODO_NUMBER  [src-INFERRED: tex-but-not-map; SPEC FIX 2026-06-06: scenario key is drop_top_two_cases, not drop_two_cases]
 \newcommand{\valFedAudLOCOdropTwoPRAUC}{TODO}
-% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: roc_auc emp_p | clustered RI p, pooled ordering | TODO_NUMBER
+% src: outputs/comprasnet/tables/table_D_clustered_randomization_inference.csv :: roc_auc emp_p | clustered RI p, pooled ordering | TODO_NUMBER  [SPEC FIX 2026-06-06: flat tables/ path, no appendix/ subdir federally]
 \newcommand{\valFedAudClusterRIp}{TODO}
-% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: roc_auc verdict | clustered-RI verdict, pooled ordering (distinguishable / not) | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+% src: outputs/comprasnet/tables/table_D_clustered_randomization_inference.csv :: roc_auc verdict | clustered-RI verdict, pooled ordering (distinguishable / not) | derive: emp_p<0.05 => ordering non-random; HAND-FILL string (no verdict column in CSV) | TODO_NUMBER  [src-INFERRED: tex-but-not-map; SPEC FIX 2026-06-06: flat tables/ path]
 \newcommand{\valFedAudClusterRIverdict}{TODO}
-% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: topk500_case_coverage emp_p | clustered RI p, case-coverage breadth | TODO_NUMBER
+% src: outputs/comprasnet/tables/table_D_clustered_randomization_inference.csv :: topk500_case_coverage emp_p | clustered RI p, case-coverage breadth | TODO_NUMBER  [SPEC FIX 2026-06-06: flat tables/ path, no appendix/ subdir federally]
 \newcommand{\valFedAudClusterRIcovP}{TODO}
-% src: outputs/comprasnet/tables/appendix/table_D_clustered_randomization_inference.csv :: topk500_case_coverage verdict | clustered-RI verdict, case-coverage breadth | TODO_NUMBER  [src-INFERRED: tex-but-not-map]
+% src: outputs/comprasnet/tables/table_D_clustered_randomization_inference.csv :: topk500_case_coverage verdict | clustered-RI verdict, case-coverage breadth | derive: emp_p>=0.05 => breadth NOT distinguishable from random; HAND-FILL string (no verdict column in CSV) | TODO_NUMBER  [src-INFERRED: tex-but-not-map; SPEC FIX 2026-06-06: flat tables/ path]
 \newcommand{\valFedAudClusterRIcovVerdict}{TODO}
 
 
@@ -327,5 +342,6 @@
 \newcommand{\valFedAudBreadthVerdict}{TODO}
 
 % ============================================================================
-% END federal wiring block. Macro tally: 81 total = 14 FILLED + 67 TODO.
+% END federal wiring block. Macro tally: 82 total = 14 FILLED + 68 TODO.
+%   (2026-06-06: added \valFedAudTopTwoShare, Group 8, link-row 64.4% basis.)
 % ============================================================================

@@ -126,9 +126,14 @@ say("source=%s  direct CADE defendants resolved: %d", SRC, length(direct_codes))
 auc <- function(y, s) { r <- rank(s); n1 <- sum(y==1); n0 <- sum(y==0)
   if (!n1 || !n0) return(NA_real_); (sum(r[y==1]) - n1*(n1+1)/2)/(n1*n0) }
 strat_auc <- function(dt, score, label, stratum) {
+  # FIX 2026-06-06: materialize stratum vector OUTSIDE the bracket — under
+  # data.table >=1.18 the symbol `stratum` inside i resolves to the COLUMN
+  # named "stratum" (vector), crashing dt[[<vector>]]. Pre-existing latent
+  # bug exposed by data.table upgrade; affects ALL sources incl. BEC.
   num <- 0; den <- 0
-  for (s in unique(dt[[stratum]])) {
-    sub <- dt[dt[[stratum]]==s]
+  sv <- dt[[stratum]]
+  for (s in unique(sv)) {
+    sub <- dt[sv==s]
     p <- sub[[score]][sub[[label]]==1]; n <- sub[[score]][sub[[label]]==0]
     if (!length(p) || !length(n)) next
     cmp <- outer(p, n, function(a,b) (a>b)+0.5*(a==b))
@@ -244,7 +249,9 @@ say("\n--- B. within-stratum AUC granularity sweep + positive control ---")
 sweep <- rbindlist(lapply(c("COARSE","MEDIUM","STRICT"), function(g) {
   ecol <- paste0("E_i_loo_", g)
   d <- fr[get(ecol) > 0]                                   # exposed support under this def
-  d[, stratum := cut(get(ecol), breaks=quantile(get(ecol), probs=seq(0,1,0.1), na.rm=TRUE),
+  # SOURCE-CONFIG ADAPTATION (fix 2026-06-06): unique() on breaks — federal exposure
+  # is lumpy (duplicate decile breaks at MEDIUM/STRICT); no-op on BEC (already unique).
+  d[, stratum := cut(get(ecol), breaks=unique(quantile(get(ecol), probs=seq(0,1,0.1), na.rm=TRUE)),
                      include.lowest=TRUE, labels=FALSE)]
   s_score <- strat_auc(d, "score_i", "y", "stratum")
   s_Oi    <- strat_auc(d, "O_i",     "y", "stratum")       # positive control
