@@ -4,6 +4,9 @@ paper: frequent-losers
 
 # Papers from this Research Program
 
+<!-- REVISED: canonical-target reframe 2026-06-04 -->
+<!-- REVISED: hostile-review armor 2026-06-04 -->
+
 This page lists the paper currently in submission preparation and a
 ranked set of follow-up paper ideas that can be built using the same
 underlying data (BEC-SP procurement panel 2009–2019, CADE adjudication
@@ -27,54 +30,106 @@ manuscript at submission.
 
 ## 1. Current paper (in submission preparation)
 
-### Cheap Signals, Costly Proof: Award-Layer Evidence Triage in Cartel Enforcement
+### Cheap Signals, Costly Proof: The Reach and Limits of Award-Layer Screening in Cartel Enforcement
 
 **Authors:** Darcio Genicolo-Martins & Paulo Furquim de Azevedo (Insper)
 
-**Version:** v20 (May 2026, JLEO submission-clean)
+**Version:** v22 (June 2026, JLEO submission)
 [manuscript PDF](paper.pdf) ·
 [online appendix](online_appendix.pdf)
 
 **Distinctive contributions:**
 
-1. *Triage as evidence allocation* — reframes cartel screening as a
-   resource-allocation problem under costly observability rather than
-   a stand-alone classification problem. Award-layer triage gates
-   costly bid-layer forensics.
-2. *Loser-side cobidder concentration* — among always-loser firms, the
-   FL14 ranking achieves AUC 0.924 against adjudication-anchored
-   cobidders; AUC ≈ 0.49 against direct CADE defendants (the
-   predicted null defining the loser-side scope).
-3. *Sequential architecture* — Sequential award → bid gatekeeping
-   recovers 131 of 193 cobidders (recall 0.679) while opening bid
-   microdata for only 2,000 of 11,676 firms — an 83% footprint
-   reduction at an 8% recall cost relative to full-observability joint
-   scoring; sequential recall is markedly more robust than joint under
-   temporal holdout.
-4. *Selection + mechanism decomposition of price evidence* — the
-   FL-price coefficient sign-reverses between broad sample (+0.064)
-   and overlap-cell ATT (−0.097). The reversal decomposes into a
-   positive selection component (cartels concentrate in high-price
-   cells, ΔQ5−Q1 = +5.58 log-points among non-treated items) and a
-   negative mechanism component (cover-bidders inflate bidder counts
-   by 66% within cell, depressing the winner price relative to
-   reference). The sign-reversal is the empirical signature of
-   cover-bidding theory.
+1. *An organizational result* — recasts procurement-cartel screening as
+   a resource-allocation problem under costly observability rather than a
+   stand-alone classification problem. Award-to-bid recovery is a
+   sequential cost-recall problem in which the **frontier, not any
+   cutoff, is the design object**. Enforcement must spend costly
+   proof-producing effort *before* legal proof exists; cheap award-layer
+   records (who participates, wins, keeps losing) can order forensic
+   priority, not prove conduct.
+2. *A disciplined audit protocol* — separates a screen's genuine ranking
+   signal from three confounds most screening studies leave bundled:
+   mechanical co-participation exposure, retrospective information, and
+   single-case concentration. Applied to the frequent-loser construct
+   against the broad adjudication-anchored cobidder target (651
+   positives; the frequent-loser flag is not used to build the label),
+   raw concentration is modest (continuous-score ROC 0.761, PR-AUC 0.143)
+   and mostly mechanical exposure: genuine label-blind opportunity ranks
+   the label at only ROC 0.553 (ranking by *observed* contact reaches
+   0.905, but that is mechanical label encoding, not a competing model).
+   Holding procurement opportunity fixed, the within-stratum AUC is
+   0.471 — essentially chance — and the only positive is a fragile nested
+   increment of +0.010 (DeLong $p = 0.013$) that is not robust across
+   designs. An anchor-agnostic armor battery confirms the verdict (a
+   planted positive control recovers AUC 0.953; permutation power 0.97 at
+   within-AUC 0.55). The protocol carries a portable principle:
+   *validating an administrative screen against adjudicated cases without
+   adjusting for procurement opportunity systematically over-credits it.*
+3. *A map of reach and limits* — where cheap administrative records
+   can and cannot order forensic priority. The FL-binary flag is at
+   chance (AUC $\approx$ 0.49) against win-heavy direct CADE defendants
+   *by design* (loser-side scope signature; the continuous score ranks
+   them at 0.66–0.70); it orders firms retrospectively among incumbents,
+   not prospectively across the platform (strict timing reaches
+   $\approx 0.68$ inside the training always-loser pool; platform-wide
+   ROC $\approx 0.474$, below chance); and one adjudicated case
+   (rail/metro) supplies $\approx 32\%$ of positives (leave-largest-case-out
+   drops PR-AUC 0.143 → 0.090, $-37\%$); the estimated ranking is
+   case-sensitive, not portable.
+
+**Division of labor with bid-layer forensics.** Against a transparent
+bid-moment random-forest benchmark inspired by Imhof–Wallimann-style
+screens (ROC 0.717, PR 0.116), the award continuous score (ROC 0.760,
+PR 0.143) is comparable, and the combined model is only conditionally
+better — PR 0.188 under random CV but 0.103 (below award-only) under
+case-grouped folds. Complementarity is conditional and case-fragile, not
+dominance. The award layer ranks *where* to look; the bid layer evaluates
+*what* is found. Sequencing the two traces a cost–recall frontier: at one
+operating point (top-2,000 firms) the firm-count footprint falls
+$\approx 88\%$ but the bid-row footprint only $\approx 33\%$, because
+survivors are high-participation firms; and $K_1 = 1000$ beats
+$K_1 = 2000$, so no single cutoff is optimal. The frontier — a
+recovery-footprint design, not measured agency savings — is the design
+object.
+
+**Price as scope, not damages.** The conditional FL-price association
+is descriptive scope evidence: broad +0.064 reflects selection into
+higher-price cells, the overlap-cell ATT (−0.097) blocks a markup
+reading, only the Q4 cell is positive (+0.041), and the direct-CADE
+price effect is null. The cover-bidding "theater" mechanism is **not**
+identified; no overcharge is claimed.
 
 **Target journals:**
 
 | Tier | Journal | R&R prob. | Fit rationale |
 |:-:|---|:-:|---|
-| 1 | **JLEO** (J. of Law, Economics, and Organization) | **65–70%** | Institutional economics core; cost-of-evidence framing is JLEO-resonant; loser-side scope discipline + mechanism decomposition give two distinct contributions. Single-jurisdiction cap is the binding constraint. |
-| 2 | **JLE** (J. of Law and Economics) | **55–60%** | Adjacent home journal. JLE referees tend to want stronger causal identification; the within-cell mechanism (Test 2) is associative not causal, so JLE referees with strong IV preferences may downgrade. |
-| 3 | **AEJ: Applied Economics** | **40–50%** | Strong general-purpose journal. Would value the selection + mechanism decomposition methodologically, but the institutional framing is less natural; AEJ:A referees prefer cleaner identification or larger external validity. |
+| 1 | **JLEO** (J. of Law, Economics, and Organization) | **65–70%** | Institutional economics core; the organizational (sequential cost-recall) framing and the disciplined audit protocol are JLEO-resonant; the reach-and-limits map reads as disciplined rather than overclaimed. Single-jurisdiction cap is the binding constraint. |
+| 2 | **JLE** (J. of Law and Economics) | **50–55%** | Adjacent home journal. JLE referees tend to want stronger causal identification; the theater mechanism is explicitly not identified, so referees with strong IV preferences may downgrade. |
+| 3 | **AEJ: Applied Economics** | **40–50%** | Strong general-purpose journal. Would value the disciplined audit protocol, but the institutional framing is less natural; AEJ:A referees prefer cleaner identification or larger external validity. |
 
 **Current submission gating constraints:**
 
-- *Single-jurisdiction limitation* — every audit lives in BEC × CADE.
-  Cross-jurisdiction replication (ComprasNet federal) would push R&R
-  to 75–80% at JLEO. See
-  [`COMPRASNET_PATH_TO_CONFIRMED.md`](https://github.com/darciogm/bitter-pills/blob/main/paper3-frequent-losers/COMPRASNET_PATH_TO_CONFIRMED.md).
+- *Cross-platform replication — EXECUTED (2026-06-06).* The full audit
+  battery was re-run on the **federal ComprasNet** platform (2013–2019,
+  pure Pregão) against the same family of CADE anchors, integrated as
+  §5 *The Audit on a Second Platform* + Appendix G. **The deflation
+  replicates**: under opportunity adjustment the within-stratum residual
+  falls to chance (federal within-stratum AUC 0.462; nested increment
+  +0.005, $p = 0.191$; negative controls return the order to generic
+  opportunity/volume geometry), and the strict full-universe prospective
+  collapse carries (ROC 0.489 federal / 0.474 BEC). The construct *ports
+  and deflates; it does not break.* This is a **second-platform
+  demonstration of the audit protocol, provisional pending genuinely
+  independent anchors** — the 7 federal CADE cases are the *same cartels*
+  as the BEC portfolio (**partially overlapping legal anchors**,
+  establishment-anchored), so the two legs are correlated, not fully
+  independent. Not a promotion to "Confirmed."
+- *Single-case concentration* — one adjudicated cartel supplies
+  $\approx 32\%$ of positive labels and 45.4% of true positives at the
+  top-500 operating point; the estimated ranking is case-sensitive, and
+  the decomposition discloses this rather than absorbing it.
+  Cross-jurisdiction labels are the natural fix.
 - *CADE selection bias* — cobidder labels reflect CADE's adjudication
   choices; not within-data testable. Same fix path.
 
@@ -158,9 +213,9 @@ because new sectoral analyses required.
 | 3 | **J. of Industrial Economics** | 40–50% | Good secondary fit; smaller journal but solid for sectoral heterogeneity. |
 
 **Differentiator from current paper:** focus on industrial structure,
-not enforcement architecture. The current paper's sequential gatekeeping
-contribution is absent here; the cover-bidding signature decomposition
-is the lead.
+not evidence allocation. The current paper's award→bid sequencing and
+opportunity-decomposition contributions are absent here; the
+cover-bidding signature decomposition is the lead.
 
 ---
 
@@ -173,11 +228,11 @@ analysis) and question (geography, not detection).
 **Central question:** How do procurement cartels organize spatially?
 Are they regional clusters, sectoral networks, or politically
 structured (around state capitals, governing-party alignment)? Maps
-the cartel-adjacency network across municipalities and PBUs.
+the adjudication-anchored exposure network across municipalities and PBUs.
 
 **Empirical strategy:** Build a firm × buyer network from BEC, weight
-by tender shared with CADE-adjudicated cartels. Spatial autocorrelation
-analysis on the cartel-adjacency density. Combine with IBGE municipal
+by tenders shared with CADE-adjudicated cartels. Spatial autocorrelation
+analysis on the adjudication-anchored exposure density. Combine with IBGE municipal
 data (population, political alignment, fiscal capacity) to test
 whether cartel concentration follows institutional weakness. Could
 also use TSE political data.
@@ -195,8 +250,8 @@ weeks of work; requires new GIS / spatial-econ pipeline.
 | 3 | **AEJ: Applied Economics** | 35–40% | Possible if the spatial story has welfare implications + a clean shock; harder sell otherwise. |
 
 **Differentiator:** descriptive spatial-network paper. The
-detection/triage contribution of the current paper is absent; the
-question is "where" not "how to detect".
+evidence-allocation contribution of the current paper is absent; the
+question is "where cartels organize" not "how to order forensic priority".
 
 ---
 
@@ -323,9 +378,10 @@ scaffolding, plus RAIS partner/address linkage for the phoenix test.
 | 2 | **IJIO** (Int'l J. of Industrial Organization) | 40–45% | Empirical-IO home for cartel-dynamics and enforcement-response work; more forgiving on N if the displacement mechanism is clean. |
 | 3 | **Int'l Review of Law and Economics** | 50–55% | Strong topical fit and more reachable; values applied enforcement evaluation over heroic identification. |
 
-**Differentiator:** the current paper *detects*; this paper asks whether
-detection *changes behavior*. No triage-architecture or cost-of-evidence
-content — the contribution is enforcement evaluation. **Binding
+**Differentiator:** the current paper *ranks forensic priority*; this
+paper asks whether adjudication *changes behavior*. No evidence-allocation
+or cost-of-evidence content — the contribution is enforcement evaluation.
+**Binding
 constraint, stated honestly:** the count of distinct adjudicated SP
 cartels is small, so the event-study is power-limited; cross-state CADE
 records would be the natural fix.
@@ -424,7 +480,7 @@ about cartels selecting into high-price cells.
    cells" selection that contaminates naive overcharge regressions.
 3. *Cover-bid exclusion as an identification device* — turns the
    loser-side screen into a structural-estimation input (cleaning the
-   competitive-fit sample), not merely a detector — a reusable move for
+   competitive-fit sample), not merely a priority-ranking screen — a reusable move for
    any structural collusion study with a credible cover-bidder flag.
 
 **Data reuse:** bid_level_full_v14 + CADE anchor + AN-039/040
@@ -486,4 +542,4 @@ competing intellectually with the current paper.
 
 ---
 
-*Last updated: 2026-05-25*
+*Last updated: 2026-06-06*
