@@ -6,6 +6,201 @@ paper: frequent-losers
 
 ---
 
+## v23 — The Audit on a Second Platform (ComprasNet) — June 6, 2026 (Current)
+
+**Headline:** the award-layer evidence-triage protocol is now demonstrated on **two
+independent procurement platforms**. Beyond São Paulo's BEC (2009–2019), we re-run the full
+audit battery on the **federal ComprasNet** platform (2013–2019, pure Pregão) against the same
+family of CADE cartel anchors, integrated into the manuscript as a new Section 5, *The Audit
+on a Second Platform*, with the full federal battery in Appendix G. The federal leg
+**replicates the deflation anatomy**: under opportunity adjustment the within-stratum residual
+ordering (score net of defendant-contact exposure) falls to chance (within-stratum AUC 0.462),
+the matched-stratum permutation does not reject (nested increment +0.005, p = 0.191), and the
+negative controls return the surviving ordering to the realm of generic opportunity/volume
+geometry. The construct **ports and deflates; it does not break.** The strict-temporal carrier
+replicates too: the prospective ranking collapses outside the incumbent pool on both platforms
+(strict full-universe ROC 0.489 federal / 0.474 BEC), while the incumbent-pool continuous score
+deflates in the same direction and magnitude class (0.666 federal vs 0.684 BEC).
+
+**What this adds — and what it does NOT.** This is a *second-platform demonstration of the
+audit protocol*, not a promotion to **Confirmed**. The federal CADE anchors **partially
+overlap** the BEC portfolio (same cartels, different establishments and tender footprints), so
+the two legs are correlated, not fully independent. Federal panel: **51.0M** participation
+rows, **92,600** firms, **35,943** always-losers, FL cut re-estimated at **32** (≥; *not*
+transported from BEC's 14), **6,491** federal frequent losers. Main target: **3,850** broad-rule
+cobidders → **195** broad-AL cobidders (mirrors BEC's 651), of which **94** are FL and **101**
+non-FL, anchored on **7 numbered** CADE cases and **25** platform-active direct-defendant
+establishments.
+
+**The deflation battery (federal, read from the named CSVs):**
+
+- **Opportunity adjustment.** Raw award-layer ROC 0.744; exposure-only model 0.754 (≥ raw);
+  within-stratum residual ordering 0.462 (≈ chance); nested increment +0.005 (DeLong p = 0.191);
+  matched-stratum permutation does not reject. Genuine **label-blind** opportunity structure
+  (cell rate from non-cobidder rows only) ranks the label at **0.611** — the raw concentration
+  is mostly mechanical co-participation exposure.
+- **Negative controls.** Placebo anchors reproduce the order (AUC 0.728, p = 0.258 ns); non-CADE
+  high-volume-winner anchors exceed it (AUC 0.746, p = 0.582 ns). The surviving ordering is
+  generic opportunity/volume geometry, not cartel-specific.
+- **Power.** The matched-strata permutation is correctly sized — rejection probability **0.35**
+  at true within-AUC 0.55 and **0.90** at 0.60 — so the non-rejection genuinely bounds any
+  residual at the federal sample size.
+- **Label-frozen timing.** With pool, score, and label ingredients frozen on 2013–2016, the
+  frozen score ranks *new* 2017–2019 defendant contact at **0.595** among 24,888 incumbents
+  (N = 98) — generic contact forecasting, not a cartel-specific signal.
+
+**Honest caveats (front-paged, not hidden):**
+
+- **Partially overlapping legal anchors.** The 7 federal cases are the *same cartels* as the
+  BEC portfolio, establishment-anchored at the federal level. This is a robustness leg under
+  partially correlated ground truth, not a clean out-of-sample replication on an unrelated
+  cartel set.
+- **Shorter window (2013–2019).** Four training years federally vs eight on BEC. The strict
+  full-universe prospective collapse is robust (ROC 0.489), and the frozen-pool prospective row
+  (0.595, N = 98) is reported as such.
+- **Pure Pregão.** Convite is extinct federally, so the federal leg cannot reproduce the BEC
+  modality stratification. No federal bid microdata exists, so no bid-layer/Imhof forensic
+  benchmark is constructible from the public federal data.
+- **Case concentration is worse than on BEC.** The federal positive base is more
+  cartel-concentrated: top case 35.4% of positives, **top-two 64.4%**, and the realized top-500
+  detections are **87.5% one case**. The clustered-randomization *ordering* test is robust
+  (leaving out the largest case keeps the ordering distinguishable from random, RI p < 0.001),
+  but the operational precision/recall-at-k ranking is one-to-two-cartel-dominated and the
+  case-coverage-breadth test is non-significant (p = 0.487). The federal leg is therefore a
+  **single-system, concentrated-anchor stress test** of the protocol, not a multi-case
+  operational generalization. Both the breadth disclosure and the per-case leave-one-case-out
+  table appear in Appendix G.
+- **Direct defendants null reproduces by design.** Direct-defendant FL-binary AUC is ≈ chance
+  (0.465–0.503), reproducing the loser-side scope boundary.
+
+**New site material (this version):**
+
+- **[AN-043](analyses/an-043-federal-opportunity-adjusted-validation.md) — Federal
+  opportunity-adjusted validation (ComprasNet).** The two-platform audit anatomy with the
+  federal numbers.
+- **Scorecard:** new **cross-platform portability** row, verdict *"deflation replicates — audit
+  protocol ports (two platforms)"* — explicitly NOT a promotion to Confirmed (partially
+  overlapping anchors).
+- Landing page: two-platform extension announced, with the partially-overlapping-anchors caveat
+  stated in the text.
+
+*Manuscript home of these numbers:* §5 *The Audit on a Second Platform* and Appendix G (the
+federal audit battery); the federal column is bound via the `\valFedAud*` macro namespace.
+Paper 45 pp + appendix 40 pp; builds 0 errors / 0 undefined.
+
+---
+
+## v22.2 — June 4, 2026 (hostile-review armor + narrative repair)
+
+**Five-referee hostile pre-submission review executed, and its Action Plan applied.**
+Integrity verdicts were clean (≈190 numbers traced, 0 fatal; 0 fabricated references); the
+substantive critique — "the audit is tilted toward its own deflationary conclusion" — was
+answered with computation, not prose:
+
+- **Exposure-benchmark leakage tiers.** Observed contact ranks the label at 0.905 and
+  plug-in expected contact at 0.985 (mechanical label encoding); the firm-leave-one-out
+  benchmark gives 0.855; recomputing every cell's defendant density from **non-cobidder rows
+  only** leaves genuine label-blind opportunity at **0.553**. The earlier "exposure-only is
+  the better model" framing was itself partially mechanical and is retired; the deflation now
+  rests on the anchor-agnostic battery (negative controls, powered permutation, label-frozen
+  timing).
+- **Falsifiability.** A positive-control score ranks at **0.953** within the same strata that
+  put the screen at chance; the within-stratum null is stable across granularities
+  (0.49–0.60).
+- **Power.** The matched-strata permutation is correctly sized and rejects with probability
+  **0.97** at true within-AUC 0.55 — non-rejections now bound any residual.
+- **Label-frozen timing.** Pool, score, and label ingredients all frozen on 2009–2016:
+  the frozen score ranks new 2017–2019 defendant contact at **0.713** among 13,051
+  incumbents — generic contact forecasting, not cartel-specific signal.
+- **Narrative:** contributions reordered (organizational result first: the award-to-bid
+  frontier is the design object); "transferable framework" → disciplined audit protocol +
+  portable principle; stakes documented via the institutional red-flag lineage
+  (Fazekas–Kocsis 2020 BJPolS; OECD 2022); §5 leads with what adjustment removes; §7 gaming
+  reframed as instability of a published cutoff; §2.1 folded into §1; appendix deduplicated.
+- Abstract 133 words; paper 40 pp + appendix 34 pp (single-spaced); builds 0 errors /
+  0 undefined. Post-repair calibration: P(desk) ≈ 0.25.
+
+---
+
+## v22.1 — June 4, 2026 (superseded by v22.2 — canonical-target re-estimation)
+
+**Credibility repair: reproducible, non-circular validation target.** The
+previous main target (193 cobidders, a static file whose builder was archived
+and whose membership was conditioned on the frequent-loser flag) is retired.
+The new main label is built from current scripts: **651 unique always-loser
+cobidders** — zero-win firms sharing ≥ 1 BEC tender-item with a BEC-active
+adjudicated CADE defendant; defendants excluded; **the frequent-loser flag is
+never used to construct the label** (341 of 651 positives are frequent losers,
+310 are not). All downstream tables, figures, and macros re-estimated.
+
+**Headline numbers under the honest label (supersede every earlier figure):**
+
+- Raw award-layer score: ROC **0.761** (PR 0.143; lift 5.6× at top 500). The
+  earlier 0.946/0.924 figures were inflated by the label's circularity.
+- Opportunity-only model: **0.905** unconditional — outperforms the score.
+- **Within-opportunity AUC ≈ 0.47–0.51 (chance).** Nested increment +0.010
+  (p = 0.013); matched-stratum permutation p = 0.127 (ns); FL-enrichment
+  p = 0.067 (ns). **No robust residual signal net of opportunity.**
+- Intensity-restricted sensitivity (contact ≥ 2, 368 positives): deflationary
+  result strengthens — exposure-only 0.956; within-stratum 0.506; increment
+  +0.003 (p = 0.47).
+- Case concentration: largest case 32% of positives (drop-largest PR −37%).
+  Strict prospective ranking: zero true positives in the top 500, every year.
+- Bid benchmark (16,731 firms / 651 positives): award 0.760 ≈ bid RF 0.717;
+  combined falls below award-only under case-grouped folds.
+- Cost-recall at K1 = 2000/k = 500: TP 116; firm reduction 88% vs bid-row
+  reduction 33%.
+
+**Note on analysis-note (AN) pages:** AN pages dated before June 4, 2026
+document historical runs under the superseded label; where they conflict with
+the paper, **the paper wins**. Main pages (results, robustness, findings,
+hypotheses) are reconciled to the canonical numbers.
+
+Main 39 pp + online appendix 33 pp; builds 0 errors / 0 undefined references;
+claims scan critical = 0.
+
+---
+
+## v22 — June 3, 2026 (superseded by v22.1 — JLEO submission)
+
+**Title:** *Cheap Signals, Costly Proof: The Reach and Limits of Award-Layer
+Screening in Cartel Enforcement.* Canonical source:
+`work/v22-editor/submission_clean/`. JLEO submission-ready
+(GO_WITH_MINOR_REPAIRS); main 38 pp + online appendix 31 pp.
+
+**Substantive reframe — "reach and limits."** The paper is no longer cast as a
+deployable cartel screen. The contribution is now (1) reframing
+procurement-cartel screening as **evidence allocation under costly
+observability**, (2) a transferable **decomposition method** that separates a
+genuine ranking signal from mechanical opportunity exposure and single-case
+concentration, and (3) a **map of reach and limits**.
+
+- **Opportunity decomposition is the headline.** Pooled/exposure-only
+  discrimination AUC **0.946** falls to **0.7715** once procurement opportunity
+  is held fixed; the genuine increment over mechanical exposure is **+0.042**
+  (DeLong p ≈ 2×10⁻⁶). The earlier firm-level 0.924/0.864 figures are now
+  reported as exposure-inflated pooled numbers, not the discrimination headline.
+- **Limits front-paged.** The ranking is **retrospective among incumbents**
+  (full-universe ROC ≈ 0.55; sequential strict-timing infeasible) and leans on
+  one case (**leave-largest-case-out PR-AUC 0.126 → 0.036, −71%**; one case
+  ≈ 55% of positives). AUC ≈ **0.49** against direct CADE defendants is a scope
+  boundary **by design**.
+- **"83% reduction" retired.** The cost-recall frontier reports firm-pool
+  reduction ≈ 88% but **bid-row footprint reduction ≈ 33%** at one operating
+  point (K₁ = 2000); the frontier, not a universal cutoff, is the design object.
+  Combined award+bid AUC **0.962** is a full-observability upper bound.
+- **Price = scope, not damages.** Broad +0.064 → overlap-cell ATT −0.097 → Q4
+  +0.041 (only positive cell); cover-bidding "theater" **mechanism not
+  identified**.
+- **Language disciplined throughout:** "adjudication-anchored exposure" (not
+  cartel-adjacency / membership); "orders forensic priority" (not detects /
+  proves); cobidders are a validation target, not cartel members.
+- **Site:** all sections rewritten to this reframe; the Mind Map was replaced by
+  a **paper DAG** of the argument; one fabricated reference removed after
+  verification.
+
+---
+
 ## v20 submission-clean — May 23, 2026 (Current — JLEO)
 
 **Title:** *Cheap Signals, Costly Proof: Award-Layer Evidence Triage in
