@@ -103,7 +103,7 @@ Comparable on the key dimensions:
 | Period | 2009–2019 | 2008–present, more granular post-2014 |
 | Cartel anchor | CADE (state + federal) | CADE (federal-direct) |
 | Modalities | Convite, Pregão | Pregão, RDC, Concorrência |
-| Bid microdata | Recoverable via LANCES | Recoverable via dataset.ufmg.br/comprasnet or direct portal |
+| Bid microdata | Recoverable via LANCES | SEGES bulk dump (SELECTED ~5% extract, true bid grain) + `FornecedorResultado.asp` route (final per-item proposals, all bidders, no captcha); full lance map via `AtaEletronico.asp` is captcha-gated. See §8.7. (Note: `dataset.ufmg.br/comprasnet`, cited in earlier drafts, NEVER existed — likely a mis-citation of the SEGES repo.) |
 | Award records | Item × OC × firm | Item × UASG × firm |
 | Legal frame | Lei 8.666/93 + Lei 10.520/02 | Same federal frame |
 
@@ -397,16 +397,82 @@ in manuscript.**
 ### 8.6 Stage 2 (bid microdata scrape) — still relevant only for H6
 
 Even with Portal da Transparência bulk, H6 (Imhof) is blocked because
-lance values are not in the public files. The only way to lift H6 is
-Stage 2: scrape per-UASG bid microdata from Portal SISG. Cost
-estimate stands at 4-8 weeks of engineering with non-trivial
-coverage risk pre-2014. **Recommendation (mr-frequent): submit JLEO
-R&R with five 🟢 + one 🟡 from Portal da Transparência; mark H6
-explicitly as BEC-only-by-bid-microdata-gap; do NOT promise Stage 2 in
-the cover letter unless an editor specifically asks for Imhof
-cross-validation.**
+lance values are not in the public files. Lifting H6 requires recovering
+bid-level lance data. **The 2026-06-06 bid-microdata sweep (§8.7) re-ranks
+the old "4-8 weeks of Portal SISG scrape" estimate, which targeted the
+wrong primary route.** Revised route ranking by cost to bid microdata:
 
-### 8.7 Engineering pivot
+1. **SEGES bulk lances dump — DAYS, not weeks** (open data, no captcha).
+   But it is a SELECTED ~5%-of-universe extract → not a drop-in Imhof
+   panel; characterization pending. Best first move.
+2. **`FornecedorResultado.asp` route — 2-4 weeks** polite scrape, no
+   captcha, seeded by our (UASG, numprp) keys. Final per-item proposals
+   of all bidders incl. losers, with CNPJ; no timestamps / no
+   intermediate bids → supports a reduced Imhof feature set, not the full
+   timing-based moments.
+3. **`AtaEletronico.asp` full chronological lance map — only with a
+   captcha pipeline** (5 rotating captcha types; no bulk path). Use
+   `andremenegatti/comprasnet_captcha_breaker` as a PARSER/solver
+   fallback if the full timing moments are demanded.
+
+**Recommendation (mr-frequent): submit JLEO R&R with five 🟢 + one 🟡
+from Portal da Transparência; mark H6 explicitly as
+BEC-only-by-bid-microdata-gap in the public release. If an editor asks
+for Imhof cross-validation, the SEGES dump (route 1, days) is now the
+honest first attempt; characterize its ~5% coverage before promising any
+Imhof transfer.**
+
+### 8.7 Bid-microdata sweep findings (2026-06-06)
+
+Internet sweep of federal bid-microdata sources, all URLs verified live
+on 2026-06-06. This supersedes the §8.1/§8.2 conclusion that bid values
+are unrecoverable from public federal data — they ARE recoverable, via
+routes the earlier API/CGU-only audits never reached.
+
+**1. SEGES bulk lances dump (headline — TRUE bid grain, open data).**
+`https://repositorio.dados.gov.br/seges/lances_pregao/`
+- `tbl_lances.csv.gz` (751 MB, 2.50M lances) +
+  `tbl_lances_encerrados.csv.gz` (366 MB, 1.34M) + header dictionary.
+- True bid grain: `lanValor`, `lanData` timestamps, CNPJ unmasked,
+  `numprp` / `coduasg` join keys. Coverage 2010–2021.
+- **Caveat:** volume ≈ 5% of the ComprasNet universe → a SELECTED
+  extract, not the full population. Characterization in progress
+  (`work/v22-editor/outputs/comprasnet/diagnostics/seges_lances_characterization.md`
+  when ready). Downloaded to `~/projetos/comprasnet/data/raw/seges_lances/`.
+- Open data (LAI / Decreto 8.777), no captcha.
+
+**2. `FornecedorResultado.asp` route (verified, NO captcha).**
+Final per-item proposals of ALL bidders incl. losers, with CNPJ.
+4-GET chain (`ata0` → `ata4` → `ata2` → `FornecedorResultado.asp?prgcod=...`).
+Covers 2009–2019. ~2–4 weeks of polite scraping seeded by our
+(UASG, numprp) keys. No timestamps, no intermediate bids.
+
+**3. `AtaEletronico.asp` (full chronological lance map).**
+Exists but CAPTCHA-gated per hit (5 rotating types) — no bulk path.
+`andremenegatti/comprasnet_captcha_breaker` (GitHub, dormant 2020) is a
+CNN solver + ata parser, usable as a PARSER fallback.
+
+**4. Academic leads (emailable).**
+- Dimitri Szerman (Mannheim; LSE thesis 2012 scraped full bids
+  2001-2010+, https://etheses.lse.ac.uk/681/).
+- Rafael Mourão (IPEA repo, Pregão 2001-2015, "contact for data").
+- Fazekas / Oliveira / Fabregas (World Bank PRWP 8828: 112M item obs
+  with bids 2015-2017, ministry-provided, no public package).
+- Public now: `andremenegatti/coffee_auctions` (ComprasNet + BEC coffee
+  bids with CNPJ + timestamps, GPL-3).
+
+**5. Corrections to earlier memo claims.**
+- (a) `dataset.ufmg.br/comprasnet` (cited in the line-106 table cell of
+  earlier drafts) **NEVER existed** — ECONNREFUSED, zero web footprint;
+  likely a mis-citation of the SEGES repo. Corrected above.
+- (b) API routes re-verified DEAD for lances: legacy
+  `compras.dados.gov.br` never had a lances endpoint (per Wayback); the
+  new `dadosabertos` API exposes winner / homologated records only.
+- (c) The old 4–8 week SISG-scrape estimate targeted the WRONG primary
+  route. Corrected cost ranking: bulk dump = days; FornecedorResultado =
+  2–4 weeks; AtaEletronico = only with a captcha pipeline. See §8.6.
+
+### 8.8 Engineering pivot
 
 The original Stage 1 plan called for the open-data API. The
 acquisition is now better structured as:

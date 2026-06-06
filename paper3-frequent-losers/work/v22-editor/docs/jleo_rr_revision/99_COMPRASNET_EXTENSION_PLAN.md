@@ -141,3 +141,87 @@ v23/“two-platform” landing), commit/push/deploy.
   marginal residual that is neither null nor robust) → report honestly; the comparative
   framing accommodates ("reach varies by institutional environment; the audit is what
   transfers").
+
+---
+
+## POST-SCRIPT (2026-06-06) — bid-microdata sweep upgrades G4's Tier-2 verdict
+
+G4's **ABSENT** verdict (`phase0_readiness.csv`) was *correct for the audited sources*:
+Portal CGU `ParticipantesLicitacao.csv` has zero value fields, and the legacy / new
+open-data APIs expose winner / homologated records only (re-verified dead for lances on
+2026-06-06; the new `dadosabertos` API never had a lances endpoint per Wayback). The
+G4 conclusion "no usable bid VALUES for Imhof moments from the audited public sources"
+stands as written.
+
+**What the sweep found that G4 had not reached** (URLs verified live 2026-06-06):
+
+1. **SEGES bulk lances dump** — `https://repositorio.dados.gov.br/seges/lances_pregao/`
+   (`tbl_lances.csv.gz` 751 MB / 2.50M lances + `tbl_lances_encerrados.csv.gz` 366 MB /
+   1.34M; true bid grain: `lanValor`, `lanData` timestamps, CNPJ unmasked,
+   `numprp`/`coduasg` join keys; coverage 2010–2021; open data, no captcha). Downloaded
+   to `~/projetos/comprasnet/data/raw/seges_lances/`. **BUT volume ≈ 5% of the ComprasNet
+   universe → SELECTED extract**, characterization in progress
+   (`outputs/comprasnet/diagnostics/seges_lances_characterization.md` when ready).
+2. **`FornecedorResultado.asp` route** (no captcha) — final per-item proposals of all
+   bidders incl. losers, with CNPJ; 2009–2019; ~2–4 weeks polite scrape seeded by our
+   (UASG, numprp) keys; no timestamps / no intermediate bids.
+3. **`AtaEletronico.asp`** full chronological lance map — captcha-gated, no bulk path;
+   `andremenegatti/comprasnet_captcha_breaker` as a parser fallback.
+
+**Tier-2 feasibility upgrade:** from **ABSENT** → **SELECTED-SUBSAMPLE PENDING
+CHARACTERIZATION**. The full deflation core (Tier 1) still needs no bid tier, so D-ii's
+default ("Tier 1 only") is unchanged for THIS revision. The change is the door, not the
+plan: an Imhof federal benchmark is no longer structurally impossible — it is gated on
+characterizing the SEGES ~5% extract (is it representative? which years/UASGs/categories?)
+before any moment-based screen can be claimed to transfer. See
+`COMPRASNET_PATH_TO_CONFIRMED.md` §8.7 for the full ranked findings and corrections.
+
+**Manuscript-language audit (FLAG ONLY — manuscript NOT edited; lead decides):**
+
+Grep of `submission_clean/*.tex` for "bid microdata" / "no recoverable bid" returns three
+load-bearing sentences whose strength the SEGES discovery puts in question:
+
+- `sec_comparative_submission.tex` L49–52:
+  *"The public federal data expose participation and the winner flag, but no bid
+  microdata---there is no federal analogue to the BEC `LANCES` bid ladder."*
+- `sec_comparative_submission.tex` L250–252:
+  *"...the full deflation battery re-run on a system with no bid microdata is itself the
+  portability result..."*
+- `sec01_introduction_submission.tex` L204–207:
+  *"...the federal ComprasNet system..., with partially overlapping CADE anchors and no
+  bid microdata, returns the same deflationary verdict..."*
+
+**Verdict on survival:** these sentences DO survive on their *intended* meaning, which is
+about the **public bulk release** the audit consumed (Portal CGU participants file) — that
+release genuinely carries no bid values. But the unqualified absolute "no federal analogue
+to the BEC LANCES bid ladder" and bare "no bid microdata" are now **too strong as written**,
+because the SEGES dump is exactly a (partial) federal LANCES analogue. A hostile referee who
+knows the SEGES repo could call this an overclaim.
+
+**Suggested honest rewording (for the lead's decision, not applied):**
+- L49–52 → "The public *bulk* federal release we audit exposes participation and the winner
+  flag but no bid values; a separate SEGES export carries true lance microdata for a
+  selected ~5% slice of the universe, not a population panel, so it cannot anchor a
+  population-level bid-layer screen here."
+- L250–252 → "...re-run on a *release* with no bid values..." (swap "system" → "release").
+- L204–207 → "...with partially overlapping CADE anchors and no bid values in the public
+  bulk release..." (replace "no bid microdata").
+
+This is a precision fix, not a retraction — the comparative section's logic (cheap
+award-layer audit is the screen one *can* build on the public bulk release) is intact.
+
+### Post-script resolution (2026-06-06, post-characterization)
+The SEGES `lances_pregao` dump was characterized (`outputs/comprasnet/diagnostics/seges_lances_characterization.md`):
+it is the **SP+RJ MUNICIPAL slice** of the ComprasNet family (UGs 925xxx/986xxx; 22,104 pregões; 3.84M lances
+2010–2021), with **zero overlap** with the federal SIASG universe (0/864 UASGs, 0/22,100 pregões, 0/32,148
+anchored tender-items). **G4's ABSENT verdict therefore STANDS for the federal universe**, and the manuscript
+sentences "no bid microdata / no federal analogue to the BEC LANCES ladder" are ACCURATE as written —
+the phrasing flag raised in the earlier post-script is RESOLVED-MOOT; no manuscript edit needed.
+What the sweep actually yielded:
+1. A candidate THIRD SETTING for future work: municipal SP/RJ lance microdata where 15/27 CADE defendants,
+   2,534/4,164 federal cobidders and 60/109 FL-federal cobidders also bid (CNPJ bridge only) — a bid-ladder
+   environment for an Imhof-style third-jurisdiction leg. R&R ammunition / Paper-B-adjacent. NOT this revision.
+2. Federal final-proposals route (FornecedorResultado.asp, no captcha, all bidders incl. losers w/ CNPJ,
+   2009-2019, ~2-4 wks) — proposal-dispersion proxies, not the ladder.
+3. Email leads: Szerman (LSE thesis bids 2001-2010+), Mourão (IPEA 2001-2015), World Bank PRWP 8828 team
+   (112M item obs w/ bids 2015-2017, ministry-provided).
