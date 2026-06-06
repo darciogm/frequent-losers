@@ -1,20 +1,11 @@
-% DRAFT SKELETON — Phase 3 prep, numbers pending federal run chain (Phase 1/2). NOT \input anywhere.
-% CHANGELOG 2026-06-05 (target-quality fix): sentinel CNPJ 000000000000-2 dropped;
-%   federal cobidders all 3,851->3,850, broad-AL 196->195 (comment hints below updated;
-%   live cells remain \valTODO bound to \valFedAud* macros).
 % ============================================================================
-% Standalone draft of the proposed main-text section "The Audit on a Second
-% Platform". Placement is decision D-iii (pending). DO NOT \input. DO NOT edit
-% values.tex; every numeric claim below is a \valTODO placeholder carrying an
-% inline % TODO_NUMBER tag for the lead to wire into values.tex after the
-% federal run chain completes. Voice, macro style, and table conventions mirror
-% sec04_validation_submission.tex and sec05_cobidder_type_submission.tex.
-%
-% Placeholder macro convention used here (defined in DRAFT_MACROS block below
-% only so this file compiles standalone; the lead should REPLACE these with
-% real values.tex bindings and DELETE the block before integration):
-% ----------------------------------------------------------------------------
-\providecommand{\valTODO}{\textbf{[??]}}
+% Main-text section "The Audit on a Second Platform" (new Section 5, placed
+% after sec04_validation_submission). Every numeric claim is bound to a
+% \valFedAud* / \valExp* / \valArmor* macro defined in values.tex (verified
+% cell-by-cell against outputs/comprasnet/...; see
+% docs/jleo_rr_revision/NEW_NUMBERS_MAP_COMPRASNET.md). Voice, macro style, and
+% table conventions mirror sec04_validation_submission.tex and
+% sec05_cobidder_type_submission.tex.
 % ============================================================================
 
 \section{The Audit on a Second Platform}
@@ -70,24 +61,24 @@ trusted is not academic but binding.
 \subsection{Data, Label, and Linkage}
 \label{sec:comparative_data}
 
-The federal panel comprises $\valTODO$ participation rows % TODO_NUMBER \valFedPanelRows (51.0M)
-across $\valTODO$ distinct CNPJ-14 firms, % TODO_NUMBER \valFedFirms (92,600)
+The federal panel comprises $\valFedPanelRows$ participation rows
+across $\valFedFirms$ distinct CNPJ-14 firms,
 built from the Comptroller-General (CGU) open bulk dumps and
 restricted to the Preg\~ao modalities (regular and SRP) under the
 canonical schema used throughout the main text. Of these,
-$\valTODO$ are always-losers---firms with a win rate of zero over % TODO_NUMBER \valFedAlwaysLosers (35,943)
+$\valFedAlwaysLosers$ are always-losers---firms with a win rate of zero over
 the observed window. Applying the \emph{same} IQR rule used for
 BEC---$\textit{median} + 1.5\cdot\textit{IQR}$ on the tenders-count
 distribution of always-losers, not the Tukey upper-quartile
-rule---re-derives a federal frequent-loser threshold of $\valTODO$ % TODO_NUMBER \valFedFLthreshold (32)
+rule---re-derives a federal frequent-loser threshold of $\valFedFLthreshold$
 (against $14$ on BEC), and the canonical federal frequent-loser
-count above that threshold is $\valTODO$ firms. The threshold is % TODO_NUMBER \valFedFLcount (6,491)
+count above that threshold is $\valFedFLcount$ firms. The threshold is
 re-estimated from the federal data, not transported: the construct
 is the rule, not the cutoff value, exactly as the rules of
 engagement in the main text require.
 
 The legal anchors are the \emph{same} CADE cases that anchor the BEC
-validation---$\valTODO$ numbered adjudicated procurement-cartel % TODO_NUMBER \valFedAudCases (7)
+validation---$\valFedAudCases$ numbered adjudicated procurement-cartel
 processes, with one unnumbered summary case excluded for lack of
 firm-level identification. This is the honest statement of what the
 federal exercise is: a second platform with \emph{partially
@@ -97,8 +88,8 @@ loser-side construct \emph{port} across procurement systems; it does
 not assemble an independent ground truth, and we do not read it as
 one. Direct defendants are matched to federal participant records by
 the canonical establishment-anchored CNPJ rule. Expanding the
-anchored tender-items yields $\valTODO$ federal cobidders under the % TODO_NUMBER \valFedAudCobiddersAll (3,850)
-broad rule and $\valTODO$ under the broad always-loser restriction % TODO_NUMBER \valFedAudCobiddersBroadAL (195)
+anchored tender-items yields $\valFedAudCobiddersAll$ federal cobidders under the
+broad rule and $\valFedAudCobiddersBroadAL$ under the broad always-loser restriction
 that mirrors the main-text validation target; the frequent-loser
 flag is never used to build the label, so the federal validation is
 non-circular in the score by the same construction as the BEC
@@ -127,33 +118,34 @@ verdict the way it moves the BEC verdict.
 \toprule
 Audit stage & BEC--SP & ComprasNet \\
 \midrule
-Raw award-layer ROC-AUC & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpRawScoreAUC | \valFedAudRawAUC
-\quad Exposure-only ROC-AUC (no score) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpOnlyAUC | \valFedAudExpOnlyAUC
-Label-blind opportunity expectation (AUC) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorExpLB | \valFedAudLabelBlindAUC
-Within-stratum residual (AUC, MEDIUM cells) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpWithinAUC | \valFedAudWithinAUC
-Nested DeLong increment over exposure-only ($p$) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpNestedIncrement(+0.010,p=0.013) | \valFedAudNestedIncrement(+0.005,p=0.191)
-Power-bounded residual (det.\ prob.\ @ true AUC $0.55$ / $0.60$)\tnote{a} & $\valTODO$ & $\valTODO$\,/\,$\valTODO$ \\ % TODO_NUMBER \valArmorPowerFive | \valFedAudPowerFive | \valFedAudPowerSixty (NEW macro; permutation_power_curve.csv :: 0.6 rejection_rate_alpha05)
-Matched-permutation $p$ (within-strata shuffle) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valExpPermCp | \valFedAudPermCp
-Label-frozen prospective timing (AUC)\tnote{b} & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valArmorFrozenProspAUC | \valFedAudFrozenProspAUC
-Top-case concentration (share of positives) & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valTopCasePosShare | \valFedAudTopCaseShare
-Negative-control verdict & $\valTODO$ & $\valTODO$ \\ % TODO_NUMBER \valTODO(BEC: generic geometry) | \valFedAudNegControlVerdict
+Raw award-layer ROC-AUC & $\valExpRawScoreAUC$ & $\valFedAudRawAUC$ \\
+\quad Exposure-only ROC-AUC (no score) & $\valExpOnlyAUC$ & $\valFedAudExpOnlyAUC$ \\
+Label-blind opportunity expectation (AUC) & $\valArmorExpLB$ & $\valFedAudLabelBlindAUC$ \\
+Within-stratum residual (AUC, MEDIUM cells) & $\valExpWithinAUC$ & $\valFedAudWithinAUC$ \\
+Nested DeLong increment over exposure-only ($p$) & $+\valExpIncrement$ ($p=\valExpDeLongP$) & $\valFedAudNestedIncrement$ ($p=\valFedAudNestedP$) \\
+Power-bounded residual (det.\ prob.\ @ true AUC $0.55$ / $0.60$)\tnote{a} & $\valArmorPowerFive$\,/\,$\valArmorPowerTen$ & $\valFedAudPowerFive$\,/\,$\valFedAudPowerSixty$ \\
+Matched-permutation $p$ (within-strata shuffle) & $\valExpPermCp$ & $\valFedAudPermCp$ \\
+Label-frozen prospective timing (AUC)\tnote{b} & $\valArmorFrozenProspAUC$ & $\valFedAudFrozenProspAUC$ \\
+Top-case concentration (share of positives) & $\valTopCasePosShare$ & $\valFedAudTopCaseShare$ \\
+Negative-control verdict & generic geometry & \valFedAudNegControlVerdict \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \scriptsize
 \item[a] The federal positive set is roughly $30\%$ of BEC's, so the
 matched-permutation null is informative against within-stratum
-residuals $\geq 0.60$ (detection probability $\valTODO$) but
+residuals $\geq 0.60$ (detection probability $\valFedAudPowerSixty$) but
 underpowered against a residual of $0.55$ (detection probability
-$\valTODO$); BEC reaches $\valTODO$ already at $0.55$. The federal
-within-stratum positive control $O_i$ recovers $\geq 0.99$, so the
+$\valFedAudPowerFive$); BEC reaches $\valArmorPowerFive$ already at $0.55$. The federal
+within-stratum positive control $O_i$ recovers $\geq 0.99$
+($\valFedAudOiControlMedium$), so the
 design provably detects within-stratum signal when present---the
 federal null is a power bound on a genuine null, not a design
-artifact. % TODO_NUMBER a-note: \valFedAudPowerSixty | \valFedAudPowerFive | \valArmorPowerFive ; \valFedAudOiControlMedium >= 0.99
+artifact.
 \item[b] The federal prospective cell freezes score and always-loser
 pool and labels new defendant contact in $2017$--$2019$
-(positives $N^{+}=\valTODO$); the retrospective companion % TODO_NUMBER b-note: \valFedAudFrozenProspN (98)
-($\valTODO$, $N^{+}=\valTODO$) scores in-window contact under the % TODO_NUMBER \valFedAudFrozenRetroAUC | \valFedAudFrozenRetroN
+(positives $N^{+}=\valFedAudFrozenProspN$); the retrospective companion
+($\valFedAudFrozenRetroAUC$, $N^{+}=\valFedAudFrozenRetroN$) scores in-window contact under the
 same frozen pool. The two are different estimands on different
 positive sets and are mutually consistent, not contradictory; only
 the prospective number is the referee's clean out-of-time test.
@@ -167,13 +159,15 @@ sealed-bid modality, so no modality stratification is reported.
 The decisive row is the exposure-only line directly beneath raw
 AUC: where the opportunity axis alone matches (or, federally,
 edges out) the raw score, the raw number is measuring procurement
-opportunity, not conduct. PR-AUC is the lead metric for the
-rare-target rows; ROC-AUC is shown for comparability, and PR-AUC
-levels must be read against each platform's base rate---the federal
-positive rate is roughly an order of magnitude lower than BEC's
-($\valTODO$), so federal PR-AUC is bounded below BEC's by the rarer
-target, not by weaker discrimination. Every cell is a placeholder
-pending the federal run chain (\valTODO).
+opportunity, not conduct. The raw-AUC and timing rows measure
+different estimands on different samples---raw award-layer
+discrimination over the full panel versus label-frozen prospective
+ranking on rankable incumbents---and must not be collided. PR-AUC is
+the lead metric for the rare-target rows; ROC-AUC is shown for
+comparability, and PR-AUC levels must be read against each platform's
+base rate---the federal positive rate is roughly an order of
+magnitude lower than BEC's, so federal PR-AUC is bounded below BEC's
+by the rarer target, not by weaker discrimination.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
@@ -182,51 +176,37 @@ pending the federal run chain (\valTODO).
 \subsection{Interpretation}
 \label{sec:comparative_interpretation}
 
-% ----------------------------------------------------------------------------
-% CONDITIONAL DRAFT — two mutually exclusive paragraphs. After the federal run
-% chain resolves the within-stratum / permutation rows of
-% Table~\ref{tab:comparative_audit}, KEEP exactly one and DELETE the other.
-% Both obey the locked language rules: flags / screens / concentrates risk;
-% never detects / proves / outperforms. Neither makes a legal claim.
-% ----------------------------------------------------------------------------
-
-% --- DRAFT A: deflation replicates (federal residual also vanishes) ----------
-% PROVISIONAL LEADER per the 02-federal clean run of 2026-06-05 (exposure-only
-% >= raw federally; within-stratum ~ chance; nested +0.005 p=0.191 null;
-% matched-perm p=0.906). Decision between Draft A and Draft B remains GATED on
-% scripts 12 (power) / 06 (negative controls) / 03 (timing) / 04 (LOCO).
-\paragraph{[Draft A --- deflation replicates.]}
 On the federal panel the audit returns the same verdict it returns
 on BEC, and on the row that matters it returns it more cleanly. On
 both platforms the raw validation over-credits the screen: the raw
-award-layer ROC-AUC ($\valTODO$ federally) looks like discrimination % TODO_NUMBER \valFedAudRawAUC
+award-layer ROC-AUC ($\valFedAudRawAUC$ federally) looks like discrimination
 until one asks what an analyst would have predicted from procurement
 opportunity alone. Federally that question answers itself in a
 single line---the exposure-only ranking, which never sees the score,
-reaches $\valTODO$, matching and if anything edging out the raw % TODO_NUMBER \valFedAudExpOnlyAUC
-score itself ($\valTODO$). This is the cleanest demonstration yet % TODO_NUMBER \valFedAudRawAUC
+reaches $\valFedAudExpOnlyAUC$, matching and if anything edging out the raw
+score itself ($\valFedAudRawAUC$). This is the cleanest demonstration yet
 that the raw number measures who shows up, not who colludes: where on
 BEC the exposure axis only approaches the raw score, federally it
 already equals it, so the screen's apparent reach is opportunity
 arithmetic with no conduct premium left to claim. The rest of the
 battery confirms the reading from below. Once procurement
 opportunity is held fixed the within-stratum residual collapses to
-near chance ($\valTODO$), the nested model adds nothing detectable % TODO_NUMBER \valFedAudWithinAUC
-over the exposure-only benchmark ($\valTODO$ DeLong increment, % TODO_NUMBER \valFedAudNestedIncrement
-$p=\valTODO$), and the matched-strata permutation does not reject % TODO_NUMBER \valFedAudNestedP
-($p=\valTODO$)---the same collapse, the same nulls, the same shape % TODO_NUMBER \valFedAudPermCp
+near chance ($\valFedAudWithinAUC$), the nested model adds nothing detectable
+over the exposure-only benchmark ($\valFedAudNestedIncrement$ DeLong increment,
+$p=\valFedAudNestedP$), and the matched-strata permutation does not reject
+($p=\valFedAudPermCp$)---the same collapse, the same nulls, the same shape
 the BEC audit produces. We state the federal power bound as a bound,
 not as a result it cannot bear: with a federal positive set about a
 third the size of BEC's, the matched-permutation null is informative
 against a within-stratum residual of $0.60$ but underpowered at
-$0.55$ ($\valTODO$ versus $\valTODO$ detection probability), so the % TODO_NUMBER \valFedAudPowerSixty | \valFedAudPowerFive
+$0.55$ ($\valFedAudPowerSixty$ versus $\valFedAudPowerFive$ detection probability), so the
 federal deflation does not rest on the permutation alone. It rests on
 four power-robust pillars that no sample-size argument can dissolve:
 the exposure-only ranking already matches the raw score, the
 within-stratum point estimate sits \emph{below} $0.5$, the matched
 permutation does not reject, and the negative controls return the
 same generic geometry; and the within-stratum positive control
-recovers $\geq 0.99$ ($\valTODO$), confirming the design would have % TODO_NUMBER \valFedAudOiControlMedium
+recovers $\geq 0.99$ ($\valFedAudOiControlMedium$), confirming the design would have
 caught a within-stratum signal had one been present. The deflation is
 therefore not a federal artifact and not a BEC artifact; it is what a
 disciplined audit
@@ -242,35 +222,14 @@ federal platform that lesson binds harder, because the bid-layer step
 that might follow the screen cannot be constructed from public data
 at all.
 
-% --- DRAFT B: residual survives federally (institution-coupled value) --------
-\paragraph{[Draft B --- residual survives.]}
-On the federal panel the audit returns a \emph{different} verdict at
-the margin that matters. The raw concentration is again largely
-opportunity arithmetic---the label-blind opportunity ranking reaches
-$\valTODO$ on its own---but unlike BEC a residual ordering survives % TODO_NUMBER \valFedAudLabelBlindAUC
-the within-stratum restriction ($\valTODO$, above the BEC chance % TODO_NUMBER \valFedAudWithinAUC
-level), the matched-strata permutation rejects ($p=\valTODO$), and % TODO_NUMBER \valFedAudPermCp
-the power calibration places this above the threshold the test can
-detect. We read this as institution-coupled screening value, not as
-detection: where the federal system removes the modality and
-bid-layer information that a richer platform exposes, a cheap
-loser-side screen retains residual concentration that the audit on
-BEC dissolves. The construct flags risk more informatively exactly
-where the cheaper information set binds. The same audit thus does
-double duty---it deflates the screen on one platform and locates
-residual value on another---which is the property a portable
-protocol should have.
-
-% ----------------------------------------------------------------------------
-
 \subsection{Observability as an On-Thesis Finding}
 \label{sec:comparative_observability}
 
 The two platforms differ in what they let an analyst see, and the
 differences are not nuisance---they are the finding. They differ
 first in scale of the target: the federal positive base rate is
-roughly $\valTODO$ that of BEC---about an order of magnitude % TODO_NUMBER \valFedAud PR-AUC base-rate context (~1/7 of BEC positive prevalence)
-lower---so any cross-platform PR-AUC comparison must be read against
+roughly an order of magnitude lower than BEC's,
+so any cross-platform PR-AUC comparison must be read against
 the base rate that bounds it, not as a difference in screen quality:
 a rarer target mechanically depresses precision-recall area, and the
 federal PR-AUC sits below BEC's for that reason before any question
