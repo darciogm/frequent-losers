@@ -103,7 +103,7 @@ Comparable on the key dimensions:
 | Period | 2009–2019 | 2008–present, more granular post-2014 |
 | Cartel anchor | CADE (state + federal) | CADE (federal-direct) |
 | Modalities | Convite, Pregão | Pregão, RDC, Concorrência |
-| Bid microdata | Recoverable via LANCES | SEGES bulk dump (SELECTED ~5% extract, true bid grain) + `FornecedorResultado.asp` route (final per-item proposals, all bidders, no captcha); full lance map via `AtaEletronico.asp` is captcha-gated. See §8.7. (Note: `dataset.ufmg.br/comprasnet`, cited in earlier drafts, NEVER existed — likely a mis-citation of the SEGES repo.) |
+| Bid microdata | Recoverable via LANCES | SEGES bulk dump (SELECTED ~5% extract, true bid grain) covers part of universe. **Public no-captcha layer is WINNER-ONLY** (`FornecedorResultado.asp`/`termojulg.asp`); the all-bidder proposal *distribution* exists only behind the `AtaEletronico.asp` captcha. See §8.7.1 (corrected 2026-06-06). (Note: `dataset.ufmg.br/comprasnet`, cited in earlier drafts, NEVER existed — likely a mis-citation of the SEGES repo.) |
 | Award records | Item × OC × firm | Item × UASG × firm |
 | Legal frame | Lei 8.666/93 + Lei 10.520/02 | Same federal frame |
 
@@ -405,15 +405,18 @@ wrong primary route.** Revised route ranking by cost to bid microdata:
 1. **SEGES bulk lances dump — DAYS, not weeks** (open data, no captcha).
    But it is a SELECTED ~5%-of-universe extract → not a drop-in Imhof
    panel; characterization pending. Best first move.
-2. **`FornecedorResultado.asp` route — 2-4 weeks** polite scrape, no
-   captcha, seeded by our (UASG, numprp) keys. Final per-item proposals
-   of all bidders incl. losers, with CNPJ; no timestamps / no
-   intermediate bids → supports a reduced Imhof feature set, not the full
-   timing-based moments.
-3. **`AtaEletronico.asp` full chronological lance map — only with a
-   captcha pipeline** (5 rotating captcha types; no bulk path). Use
-   `andremenegatti/comprasnet_captcha_breaker` as a PARSER/solver
-   fallback if the full timing moments are demanded.
+2. **`FornecedorResultado.asp` / `termojulg.asp` (no captcha) — WINNER
+   ONLY.** ⚠️ Corrected 2026-06-06 (§8.7.1): these no-captcha endpoints
+   expose only the awarded supplier + winning value + reference price per
+   item, NOT the loser proposals. They do NOT yield the all-bidder
+   distribution and therefore cannot feed any Imhof screen on their own.
+3. **`AtaEletronico.asp` — the ONLY public source of the all-bidder
+   proposal distribution, and it is captcha-gated** (5 rotating text
+   captcha types, regenerated per hit; no bulk path). The full
+   distribution the 7 Imhof screens need lives here and nowhere else in
+   the public layer. `andremenegatti/comprasnet_captcha_breaker` (CNN
+   solver + ata parser) is the candidate pipeline if circumvention is
+   pursued. See §8.7.1 for the cost/legal matrix.
 
 **Recommendation (mr-frequent): submit JLEO R&R with five 🟢 + one 🟡
 from Portal da Transparência; mark H6 explicitly as
@@ -441,16 +444,18 @@ routes the earlier API/CGU-only audits never reached.
   when ready). Downloaded to `~/projetos/comprasnet/data/raw/seges_lances/`.
 - Open data (LAI / Decreto 8.777), no captcha.
 
-**2. `FornecedorResultado.asp` route (verified, NO captcha).**
-Final per-item proposals of ALL bidders incl. losers, with CNPJ.
-4-GET chain (`ata0` → `ata4` → `ata2` → `FornecedorResultado.asp?prgcod=...`).
-Covers 2009–2019. ~2–4 weeks of polite scraping seeded by our
-(UASG, numprp) keys. No timestamps, no intermediate bids.
+**2. `FornecedorResultado.asp` / `termojulg.asp` route (NO captcha) —
+WINNER-ONLY.** ⚠️ The 2026-06-06 first-pass note that this route gives
+"final per-item proposals of ALL bidders incl. losers" is WRONG and is
+corrected in §8.7.1. These no-captcha pages expose only the awarded
+supplier + winning value + reference price per item.
 
-**3. `AtaEletronico.asp` (full chronological lance map).**
-Exists but CAPTCHA-gated per hit (5 rotating types) — no bulk path.
-`andremenegatti/comprasnet_captcha_breaker` (GitHub, dormant 2020) is a
-CNN solver + ata parser, usable as a PARSER fallback.
+**3. `AtaEletronico.asp` (full chronological lance map + all-bidder
+distribution).** CAPTCHA-gated per hit (5 rotating text-captcha types,
+regenerated per hit) — no bulk path. This is the ONLY public source of
+the loser proposals. `andremenegatti/comprasnet_captcha_breaker` (GitHub,
+dormant 2020) is a CNN solver + ata parser, usable as a PARSER/solver
+fallback. See §8.7.1.
 
 **4. Academic leads (emailable).**
 - Dimitri Szerman (Mannheim; LSE thesis 2012 scraped full bids
@@ -469,8 +474,64 @@ CNN solver + ata parser, usable as a PARSER fallback.
   `compras.dados.gov.br` never had a lances endpoint (per Wayback); the
   new `dadosabertos` API exposes winner / homologated records only.
 - (c) The old 4–8 week SISG-scrape estimate targeted the WRONG primary
-  route. Corrected cost ranking: bulk dump = days; FornecedorResultado =
-  2–4 weeks; AtaEletronico = only with a captcha pipeline. See §8.6.
+  route. See §8.7.1 for the corrected route map.
+
+### 8.7.1 CORRECTED bid-microdata finding (verified by 3 concurrent probes, 2026-06-06)
+
+This subsection supersedes any earlier text in §8.6/§8.7 (and earlier loose
+hypotheses) implying that `FornecedorResultado.asp` or any no-captcha route
+yields the all-bidder proposal *distribution*. Three concurrent probes
+confirm the corrected picture below.
+
+**1. The no-captcha public layer is WINNER-ONLY.**
+`FornecedorResultado.asp` and `termojulg.asp` (both verified fetchable, no
+captcha, 2009–2019) expose per item ONLY: the awarded supplier + winning
+value + reference price. Empirical proof: two real CADE-anchored federal
+pregões were parsed end-to-end → 0 items appear under more than one
+supplier, and "melhor lance" appears exactly once per item (the winner).
+NO loser proposals appear on any no-captcha endpoint. The earlier
+"all bidders incl. losers" claim was wrong.
+
+**2. The all-bidder proposal DISTRIBUTION exists only behind the captcha.**
+`AtaEletronico.asp` (5 rotating text-captcha types, regenerated per hit) is
+the only public source of the loser proposals. Legacy 2009–2019 atas remain
+reachable in 2026; the captcha type is unchanged. There is no bulk path.
+
+**3. The 7 Imhof screens are ALL Class A → need values, not the ladder.**
+Verified against `scripts/31_imhof_full_pipeline.R`, `sec_app09`, and the
+canonical Imhof2019 / Huber-Imhof2019 / Wallimann2023 definitions: all 7
+federal Imhof screens are cross-sectional functions of the *distribution of
+final proposals per item* (dispersion, spread, second-low ratio, kurtosis,
+etc.) with NO timestamp / sequence dependency. Consequence: the federal
+Imhof leg needs the ata's multi-bidder VALUES but NOT the chronological
+lance ladder. The captcha-gated ata's final-proposal vector is sufficient;
+the timing moments are not required.
+
+**4. Cost / legal matrix to acquire the multi-bidder distribution via the
+captcha route.**
+
+| Target | Captcha cost | Engineering | Wall-clock | Exposure |
+|---|---|---|---|---|
+| 32K CADE-anchored subset | ~$45 (2captcha/anti-captcha @ $1/1k) | ~1.5–3 wks | 2–4 days | gray zone |
+| Full 236K panel | ~$330 | 4–6 wks | — | 10× exposure — **not recommended** |
+
+**Legal gray zone:** circumventing the captcha defeats an anti-automation
+control against the operator's stated intent. The underlying data are
+public (LAI / Decreto 8.777) and there is no `robots.txt` prohibition, but
+the circumvention itself is the gray-zone act. Do not pursue without
+explicit author sign-off.
+
+**5. Clean alternatives (no circumvention).**
+- Email Szerman (Mannheim), Mourão (IPEA), or the World Bank team — request
+  drafts in `bid_microdata_data_requests_DRAFT.md`.
+- Public `andremenegatti/coffee_auctions` (ComprasNet + BEC coffee bids with
+  CNPJ + timestamps, GPL-3) — a ready, license-clean partial sample.
+
+**Manuscript safety:** the v22 comparative-section claim that the *public*
+federal data expose participation + the winner flag but no bid microdata
+remains ACCURATE — the public no-captcha layer genuinely is winner +
+participation only, and the bid distribution requires captcha
+circumvention, not a public bulk download. (Audit logged, no .tex edited.)
 
 ### 8.8 Engineering pivot
 
