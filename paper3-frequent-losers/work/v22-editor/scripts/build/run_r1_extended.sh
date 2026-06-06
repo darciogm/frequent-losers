@@ -34,7 +34,7 @@
 #   outputs/comprasnet/diagnostics/r1_extended_verdicts.csv
 #     columns: script,file,status,note
 #     status in {identical, benign-metadata, benign-tokenorder, benign-telemetry,
-#                new-expected, DIFF, vanished}
+#                benign-numeric, new-expected, DIFF, vanished}
 #   PASS iff zero DIFF-class (and zero vanished) files.
 #
 # DESIGN NOTE -- git baseline vs snapshot baseline
@@ -100,7 +100,7 @@ fi
 # ============================================================================ MANIFEST
 # Each manifest row:  TAG | SCRIPT_FILE | REL_OUTPUT_PATH | HINT | EXPECT
 #   REL_OUTPUT_PATH : relative to $V22 (BEC paths only -- NEVER outputs/comprasnet/**)
-#   HINT            : plain | pdf | telemetry | tokenorder   (steers the classifier)
+#   HINT            : plain | pdf | telemetry | tokenorder | numeric  (steers the classifier)
 #   EXPECT          : baseline | new-expected | conditional
 #                       baseline     -> must exist pre-run, compared byte/benign.
 #                       new-expected -> known new file from the refactor (no baseline;
@@ -137,7 +137,7 @@ read -r -d '' MANIFEST <<'EOF'
 05|05_section5_profile_monotonicity.R|outputs/tables/appendix/table_E_standardized_profile_differences.csv|plain|baseline
 05|05_section5_profile_monotonicity.R|outputs/tables/appendix/table_E_standardized_profile_differences.tex|plain|baseline
 05|05_section5_profile_monotonicity.R|outputs/figures/main/fig_profile_standardized_differences.pdf|pdf|baseline
-05|05_section5_profile_monotonicity.R|outputs/tables/main/table_K_opportunity_adjusted_profile.csv|plain|baseline
+05|05_section5_profile_monotonicity.R|outputs/tables/main/table_K_opportunity_adjusted_profile.csv|numeric|baseline
 05|05_section5_profile_monotonicity.R|outputs/tables/main/table_K_opportunity_adjusted_profile.tex|plain|baseline
 05|05_section5_profile_monotonicity.R|outputs/tables/main/table_L_monotonicity_bins.csv|plain|baseline
 05|05_section5_profile_monotonicity.R|outputs/diagnostics/monotonicity_score_deciles.csv|plain|baseline
@@ -227,17 +227,26 @@ read -r -d '' MANIFEST <<'EOF'
 # NOTE (TRAP): armor_flags.csv is written ONLY when ARMOR_FLAGS is non-empty
 # (degrade-gracefully). On a clean BEC run all components are present -> no flags
 # -> file absent. Classified new-expected (presence OK, absence OK; not a DIFF).
-# NOTE (SHARED-OWNERSHIP): 12 ALSO writes frozen_timing.csv (5 cols) and
-# defendant_roles.csv (long labels), but 12b OVERWRITES both with a DIFFERENT
-# schema (frozen_timing 4 cols; defendant_roles short labels) and the committed
-# on-disk state is 12b's. They are therefore 12b-OWNED in this manifest and live
-# in the 12b block below; they are intentionally NOT listed here (verifying them
-# against 12's schema would FAIL against the committed 12b state). See the
-# shared-overwrite NOTE on the 12b block.
+# NOTE (SHARED-OWNERSHIP, FIVE FILES -- expanded 2026-06-06 to mirror the S1
+# manifest-ownership fix): 12 writes EARLY versions of FIVE files that 12b then
+# OVERWRITES with a DIFFERENT schema; the COMMITTED on-disk state is 12b's for
+# all five, so all five are 12b-OWNED and listed ONLY in the 12b block below:
+#     frozen_timing.csv             (12: 5 cols w/ note -> 12b: 4 cols  [12b committed])
+#     defendant_roles.csv           (12: long stat names -> 12b: short  [12b committed])
+#     granularity_sweep.csv         (12: 3 rows, cols `granularity`/`comparable_pairs_score`
+#                                      -> 12b: 5 rows incl. label-blind, cols
+#                                      `stratifier`/`pairs` [12b committed])
+#     permutation_power_curve.csv   (12 writes, 12b overwrites; numbers IDENTICAL
+#                                      under the shared seed 20260605L, but 12b owns it)
+#     audit_armor_macros.tex        (12 writes a subset; 12b emits the SUPERSET incl.
+#                                      \valArmorWithinLB/\valArmorWithinLBall/
+#                                      \valArmorFrozenRetroN consumed by the manuscript)
+# Listing any of the five under tag 12 makes the harness snapshot 12's INTERMEDIATE
+# write as the baseline and then false-DIFF the 12b-final state against it (the exact
+# manifest-ownership artifact the S1 review predicted). They are intentionally NOT
+# listed here. 12 still OWNS leakage_check_cell_level.csv (part A; 12b only READS it)
+# and armor_flags.csv (12's degrade-gracefully flag file).
 12|12_audit_armor.R|outputs/diagnostics/audit_armor/leakage_check_cell_level.csv|plain|baseline
-12|12_audit_armor.R|outputs/diagnostics/audit_armor/granularity_sweep.csv|plain|baseline
-12|12_audit_armor.R|outputs/diagnostics/audit_armor/permutation_power_curve.csv|plain|baseline
-12|12_audit_armor.R|outputs/diagnostics/audit_armor/audit_armor_macros.tex|plain|baseline
 12|12_audit_armor.R|outputs/diagnostics/audit_armor/armor_flags.csv|plain|new-expected
 # --- 12b_audit_armor_fixup --------------------------------------------------
 # NOTE (SHARED-OVERWRITE): 12b runs LAST and OVERWRITES FIVE files in the SAME
@@ -481,7 +490,7 @@ while IFS=, read -r r_tag r_file r_status r_note; do
   case "$r_status" in
     DIFF|vanished)
       echo "  LEFT for inspection [$r_status]: $r_file"; left=$((left+1)) ;;
-    benign-metadata|benign-tokenorder|benign-telemetry)
+    benign-metadata|benign-tokenorder|benign-telemetry|benign-numeric)
       if is_tracked "$r_file"; then
         git -C "$REPO" checkout -- "$abs" 2>/dev/null && { echo "  restored (git): $r_file"; restored=$((restored+1)); }
       else

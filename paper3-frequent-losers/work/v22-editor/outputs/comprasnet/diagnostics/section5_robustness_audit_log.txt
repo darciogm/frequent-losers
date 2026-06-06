@@ -1,5 +1,5 @@
 === 06_section5_robustness.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-05 19:54:16  RAM_free=20Gi 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-06 07:18:41  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 
 ----- 0. rebuild firm panel + labels + exposure (replay E1 build) ----- 
@@ -16,7 +16,7 @@ CADE cases by #always-losers linked:
     proc=08012.010022/2008-16  n_AL=8 
     proc=08700.005876/2019-85  n_AL=4 
 largest case = 08700.004617/2013-41 ; AL firms linked = 69 (excluded in sensitivity column) 
-  [stage 0_rebuild_panel               ] elapsed=   0.4s  RSS=275 MB 
+  [stage 0_rebuild_panel               ] elapsed=   0.3s  RSS=274 MB 
 
 ----- A. placebo thresholds + bunching ----- 
 base cobidder rate among always-losers: 0.00543 (195 / 35943) 
@@ -31,7 +31,7 @@ wrote fig_threshold_sensitivity.pdf
 bunching @ T=32: freq=188 ; neighbor-mean(+-1,+-2)=163.2 ; ratio=1.152 (≈1 => no bunching) 
 wrote threshold_bunching_T14.csv 
 wrote fig_threshold_bunching_T14.pdf 
-  [stage A_thresholds_bunching         ] elapsed=   2.0s  RSS=307 MB 
+  [stage A_thresholds_bunching         ] elapsed=   1.6s  RSS=307 MB 
 
 ----- B. ordinary-loser alternatives (FL cobidders vs FL non-cobidders) ----- 
   item-group proxies (ig_hhi/top_ig_share) NOT_OBSERVED federally (buyer-collinear prefix). 
@@ -54,7 +54,7 @@ wrote ordinary_loser_proxy_stats.csv (13 proxies)
     D_convite_min_quorum_share       FLcob=NA  FLnon=NA  wilcox_p=NA 
     D_mean_competitors               FLcob=15.9571  FLnon=16.1015  wilcox_p=0.97 
 wrote table_N_ordinary_loser_alternatives.{csv,tex} 
-  [stage B_ordinary_loser              ] elapsed=   9.0s  RSS=364 MB 
+  [stage B_ordinary_loser              ] elapsed=  11.4s  RSS=374 MB 
 
 ----- C. market-specific zero-win definitions ----- 
   [skip] item-group zero-win strata (ig_modality, buyer_ig) NOT_OBSERVED federally. 
@@ -64,7 +64,7 @@ wrote table_N_ordinary_loser_alternatives.{csv,tex}
     [skip] leave-one-item-group-out NOT_OBSERVED federally (item-group buyer-collinear). 
 wrote table_E_market_specific_zero_win_definitions.csv + _validation.csv + leave_one_item_group_out.csv 
   GLOBAL benchmark: ROC-AUC=0.7443 PR-AUC=0.0142 p@500=0.016 r@500=0.041 lift@500=2.95 
-  [stage C_market_specific             ] elapsed=  32.3s  RSS=433 MB 
+  [stage C_market_specific             ] elapsed=  36.6s  RSS=410 MB 
 
 ----- D. negative controls ----- 
 REAL: cobidder ROC-AUC=0.7443 PR-AUC=0.0142 (n_pos=195) 
@@ -72,24 +72,24 @@ real defendants matched: 27 of 27 have FTM profile
 eligible pseudo-defendant pool (winners, non-defendant, non-cobidder): 56634 firms 
 precomputed item-sets: AL rows=1,064,212 ; pool rows=49,881,686 
 placebo-anchor draws: B=500 ; firms per draw=27 ; seed=20260603 
-    draw 100/500  elapsed=6.9s  mean_pseudo_pos=1121 
-    draw 200/500  elapsed=13.4s  mean_pseudo_pos=1147 
-    draw 300/500  elapsed=19.7s  mean_pseudo_pos=1160 
-    draw 400/500  elapsed=25.8s  mean_pseudo_pos=1161 
-    draw 500/500  elapsed=34.6s  mean_pseudo_pos=1161 
-PLACEBO ANCHORS: real AUC=0.7443 ; placebo AUC mean=0.7290 sd=0.0247 [0.6748,0.7696] ; empirical p(placebo>=real)=0.2700 
-PLACEBO ANCHORS: real PR-AUC=0.0142 ; placebo PR-AUC mean=0.0856 ; empirical p=1.0000 
+    draw 100/500  elapsed=6.7s  mean_pseudo_pos=1095 
+    draw 200/500  elapsed=13.3s  mean_pseudo_pos=1141 
+    draw 300/500  elapsed=19.9s  mean_pseudo_pos=1141 
+    draw 400/500  elapsed=28.2s  mean_pseudo_pos=1158 
+    draw 500/500  elapsed=35.8s  mean_pseudo_pos=1157 
+PLACEBO ANCHORS: real AUC=0.7443 ; placebo AUC mean=0.7283 sd=0.0245 [0.6732,0.7728] ; empirical p(placebo>=real)=0.2580 
+PLACEBO ANCHORS: real PR-AUC=0.0142 ; placebo PR-AUC mean=0.0851 ; empirical p=1.0000 
 high-volume winner pool (top-decile participation): 5665 firms (T>=1715) 
-HIGH-VOLUME WINNERS: real AUC=0.7443 ; pseudo AUC mean=0.7453 [0.7109,0.7747] ; empirical p=0.5420 
+HIGH-VOLUME WINNERS: real AUC=0.7443 ; pseudo AUC mean=0.7461 [0.7085,0.7761] ; empirical p=0.5820 
 wrote table_E_negative_controls.csv 
 wrote fig_negative_control_distribution.pdf 
-  [stage D_negative_controls           ] elapsed=1176.1s  RSS=4577 MB 
+  [stage D_negative_controls           ] elapsed= 264.5s  RSS=4347 MB 
 
 ========================= SECTION 5 ROBUSTNESS SUMMARY ========================= 
 A. Threshold sensitivity: T=14 precision=0.014 recall=0.482 PR-AUC=0.012 ; bunching ratio @14=1.15 
    precision varies smoothly across fixed thresholds 5..30 -> T=14 NOT special (administrative). 
 B. Ordinary-loser alternatives: 13 proxies compared; NOT_OBSERVED = distance-to-winner, geography, later-wins. 
 C. Market-specific zero-win: GLOBAL ROC-AUC=0.7443 ; alternatives ROC-AUC range [0.4985, 0.4985] -> global NOT dominated 
-D. Negative controls: real AUC=0.7443 vs matched-placebo null mean=0.7290 (p=0.2700) ; high-vol null mean=0.7453 (p=0.5420) 
-  [stage FINAL                         ] elapsed=1176.1s  RSS=4577 MB 
+D. Negative controls: real AUC=0.7443 vs matched-placebo null mean=0.7283 (p=0.2580) ; high-vol null mean=0.7461 (p=0.5820) 
+  [stage FINAL                         ] elapsed= 264.5s  RSS=4347 MB 
 DONE. 

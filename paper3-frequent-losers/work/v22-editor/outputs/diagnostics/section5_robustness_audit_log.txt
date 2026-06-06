@@ -1,5 +1,5 @@
 === 06_section5_robustness.R === 
-host=DarcioWork  nproc=14  seed=20260603  date=2026-06-06 04:57:36  RAM_free=20Gi 
+host=DarcioWork  nproc=14  seed=20260603  date=2026-06-06 07:24:34  RAM_free=20Gi 
 REPO=/home/darciogm1/projetos/bitter-pills/paper3-frequent-losers 
 
 ----- 0. rebuild firm panel + labels + exposure (replay E1 build) ----- 
@@ -44,7 +44,7 @@ wrote ordinary_loser_proxy_stats.csv (13 proxies)
     A_volume_n_items                 FLcob=63.3783  FLnon=38.6888  wilcox_p=1.86e-10 
     B_item_group_HHI                 FLcob=0.3113  FLnon=0.2813  wilcox_p=0.000123 
     B_top_item_group_share           FLcob=0.4399  FLnon=0.3932  wilcox_p=1.79e-05 
-    B_buyer_HHI                      FLcob=0.1784  FLnon=0.2531  wilcox_p=5.9e-10 
+    B_buyer_HHI                      FLcob=0.1784  FLnon=0.2531  wilcox_p=5.79e-10 
     B_top_buyer_share                FLcob=0.2760  FLnon=0.3510  wilcox_p=8.03e-08 
     C_first_year_concentration       FLcob=0.5007  FLnon=0.6339  wilcox_p=3.3e-09 
     C_late_half_participation        FLcob=0.3473  FLnon=0.2569  wilcox_p=2.76e-07 
@@ -52,18 +52,18 @@ wrote ordinary_loser_proxy_stats.csv (13 proxies)
     D_convite_min_quorum_share       FLcob=0.0078  FLnon=0.0246  wilcox_p=1.92e-06 
     D_mean_competitors               FLcob=17.2585  FLnon=11.9074  wilcox_p=5.06e-25 
 wrote table_N_ordinary_loser_alternatives.{csv,tex} 
-  [stage B_ordinary_loser              ] elapsed=   1.9s  RSS=322 MB 
+  [stage B_ordinary_loser              ] elapsed=   2.1s  RSS=321 MB 
 
 ----- C. market-specific zero-win definitions ----- 
-  [ig_modality] cand=10666 (excl direct=10659, pos=478) overlapGlobalAL=0.553  ROC-AUC=0.5845 PR-AUC=0.0658 p@500=0.096 
-  [buyer_ig] cand=11448 (excl direct=11435, pos=329) overlapGlobalAL=0.327  ROC-AUC=0.4869 PR-AUC=0.0294 p@500=0.034 
+  [ig_modality] cand=10666 (excl direct=10659, pos=478) overlapGlobalAL=0.553  ROC-AUC=0.5845 PR-AUC=0.0660 p@500=0.096 
+  [buyer_ig] cand=11448 (excl direct=11435, pos=329) overlapGlobalAL=0.327  ROC-AUC=0.4869 PR-AUC=0.0296 p@500=0.034 
   [itemcode_modality] cand=8722 (excl direct=8712, pos=327) overlapGlobalAL=0.361  ROC-AUC=0.5115 PR-AUC=0.0371 p@500=0.024 
-  [buyer] cand=11418 (excl direct=11409, pos=411) overlapGlobalAL=0.493  ROC-AUC=0.5063 PR-AUC=0.0375 p@500=0.042 
+  [buyer] cand=11418 (excl direct=11409, pos=411) overlapGlobalAL=0.493  ROC-AUC=0.5063 PR-AUC=0.0376 p@500=0.042 
   leave-one-item-group-out (global always-loser, score_i vs cobidder): 
     full-sample ROC-AUC=0.7608 ; leave-one-group-out range=[0.7550, 0.7655] over 22 groups 
 wrote table_E_market_specific_zero_win_definitions.csv + _validation.csv + leave_one_item_group_out.csv 
   GLOBAL benchmark: ROC-AUC=0.7608 PR-AUC=0.1432 p@500=0.216 r@500=0.166 lift@500=5.59 
-  [stage C_market_specific             ] elapsed=   7.5s  RSS=420 MB 
+  [stage C_market_specific             ] elapsed=   7.6s  RSS=418 MB 
 
 ----- D. negative controls ----- 
 REAL: cobidder ROC-AUC=0.7608 PR-AUC=0.1432 (n_pos=651) 
@@ -71,24 +71,24 @@ real defendants matched: 46 of 46 have FTM profile
 eligible pseudo-defendant pool (winners, non-defendant, non-cobidder): 24561 firms 
 precomputed item-sets: AL rows=163,515 ; pool rows=16,646,470 
 placebo-anchor draws: B=500 ; firms per draw=46 ; seed=20260603 
-    draw 100/500  elapsed=6.1s  mean_pseudo_pos=795 
-    draw 200/500  elapsed=11.0s  mean_pseudo_pos=781 
-    draw 300/500  elapsed=15.9s  mean_pseudo_pos=781 
-    draw 400/500  elapsed=20.6s  mean_pseudo_pos=788 
-    draw 500/500  elapsed=26.1s  mean_pseudo_pos=793 
-PLACEBO ANCHORS: real AUC=0.7608 ; placebo AUC mean=0.7540 sd=0.0251 [0.7011,0.7957] ; empirical p(placebo>=real)=0.4220 
-PLACEBO ANCHORS: real PR-AUC=0.1432 ; placebo PR-AUC mean=0.1517 ; empirical p=0.4980 
+    draw 100/500  elapsed=4.9s  mean_pseudo_pos=811 
+    draw 200/500  elapsed=10.1s  mean_pseudo_pos=822 
+    draw 300/500  elapsed=14.5s  mean_pseudo_pos=823 
+    draw 400/500  elapsed=19.5s  mean_pseudo_pos=826 
+    draw 500/500  elapsed=24.3s  mean_pseudo_pos=820 
+PLACEBO ANCHORS: real AUC=0.7608 ; placebo AUC mean=0.7549 sd=0.0250 [0.7028,0.7969] ; empirical p(placebo>=real)=0.4580 
+PLACEBO ANCHORS: real PR-AUC=0.1432 ; placebo PR-AUC mean=0.1549 ; empirical p=0.5240 
 high-volume winner pool (top-decile participation): 2458 firms (T>=1016) 
-HIGH-VOLUME WINNERS: real AUC=0.7608 ; pseudo AUC mean=0.7819 [0.7460,0.8138] ; empirical p=0.8940 
+HIGH-VOLUME WINNERS: real AUC=0.7608 ; pseudo AUC mean=0.7814 [0.7405,0.8106] ; empirical p=0.8900 
 wrote table_E_negative_controls.csv 
 wrote fig_negative_control_distribution.pdf 
-  [stage D_negative_controls           ] elapsed= 156.9s  RSS=2086 MB 
+  [stage D_negative_controls           ] elapsed= 161.5s  RSS=2097 MB 
 
 ========================= SECTION 5 ROBUSTNESS SUMMARY ========================= 
 A. Threshold sensitivity: T=14 precision=0.125 recall=0.524 PR-AUC=0.097 ; bunching ratio @14=1.06 
    precision varies smoothly across fixed thresholds 5..30 -> T=14 NOT special (administrative). 
 B. Ordinary-loser alternatives: 13 proxies compared; NOT_OBSERVED = distance-to-winner, geography, later-wins. 
 C. Market-specific zero-win: GLOBAL ROC-AUC=0.7608 ; alternatives ROC-AUC range [0.4869, 0.5845] -> global NOT dominated 
-D. Negative controls: real AUC=0.7608 vs matched-placebo null mean=0.7540 (p=0.4220) ; high-vol null mean=0.7819 (p=0.8940) 
-  [stage FINAL                         ] elapsed= 156.9s  RSS=2086 MB 
+D. Negative controls: real AUC=0.7608 vs matched-placebo null mean=0.7549 (p=0.4580) ; high-vol null mean=0.7814 (p=0.8900) 
+  [stage FINAL                         ] elapsed= 161.5s  RSS=2097 MB 
 DONE. 

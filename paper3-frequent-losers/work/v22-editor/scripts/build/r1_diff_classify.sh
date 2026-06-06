@@ -19,13 +19,19 @@
 #                        case_ids_broad column.
 #   benign-telemetry   : timestamped telemetry log (*_audit_log.txt) whose only
 #                        diffs are run timestamps / RSS / a SOURCE= line.
+#   benign-numeric     : CSV identical except float-reproducibility noise: header
+#                        + shape + all text cells byte-identical, every numeric
+#                        cell within rel tol 1e-12. Sanctioned source: the table_K
+#                        hhi_ig lm() coefficient, ~5e-15 jitter from DuckDB
+#                        parallel-SUM nondeterminism in the per-firm hhi_ig column.
+#                        (R1-EXT 2026-06-06.)
 #   new-expected       : baseline absent AND file is on the known new-file list
 #                        (caller decides; this script only reports `new-baseline`
 #                        when the baseline copy is missing).
 #   DIFF               : genuinely different data -> FAIL.
 #
 # USAGE: r1_diff_classify.sh <current_file> <baseline_file> [hint]
-#   hint in {pdf, telemetry, tokenorder, plain} steers which benign test runs;
+#   hint in {pdf, telemetry, tokenorder, numeric, plain} steers which benign test runs;
 #   default "plain" => only byte-equality and a generic line diff.
 # Prints:  "<status>\t<note>"  on stdout. Exit 0 always (status is in stdout).
 # =============================================================================
@@ -123,6 +129,47 @@ case "$hint" in
       emit "benign-tokenorder" "CSV identical after sorting DISTINCT tokens within case_ids_broad (STRING_AGG nondeterminism); all other columns byte-identical"
     fi
     emit "DIFF" "CSV differs beyond case_ids_broad token order"
+    ;;
+
+  numeric)
+    # R1-EXT (2026-06-06): tolerate floating-point reproducibility noise in CSVs
+    # whose numeric cells are non-deterministic at the last bits of a double. The
+    # ONLY sanctioned source is the per-firm hhi_ig regressor in table_K, which is
+    # built by a multi-threaded DuckDB parallel SUM whose float summation order is
+    # not bit-reproducible; this propagates ~22 ULP (rel ~5e-15) into one lm()
+    # coefficient. We PROVE benignity, not assume it: identical header, identical
+    # row count, every NON-numeric cell byte-identical, and every numeric cell
+    # equal within rel tol 1e-12 (8 orders of magnitude tighter than the observed
+    # ~5e-15 noise, so any genuine data change still trips DIFF).
+    if command -v awk >/dev/null 2>&1; then
+      verdict="$(awk -F',' -v TOL=1e-12 '
+        function isnum(x){ return (x ~ /^-?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][-+]?[0-9]+)?$/) }
+        FNR==NR { a[FNR]=$0; an[FNR]=NF; for(i=1;i<=NF;i++) ac[FNR,i]=$i; na=FNR; next }
+        { if(FNR==1 && $0!=a[1]){ print "HEADER"; exit }
+          if(NF!=an[FNR]){ print "SHAPE"; exit }
+          for(i=1;i<=NF;i++){
+            cb=ac[FNR,i]; cc=$i
+            if(cb==cc) continue
+            if(isnum(cb) && isnum(cc)){
+              d=cb-cc; if(d<0)d=-d; m=(cb<0?-cb:cb); if(cc<0){if(-cc>m)m=-cc}else{if(cc>m)m=cc}
+              rel=(m>0?d/m:d)
+              if(rel>TOL){ printf "VALUE row=%d col=%d base=%s cur=%s rel=%g\n",FNR,i,cb,cc,rel; exit }
+            } else { printf "TEXT row=%d col=%d base=[%s] cur=[%s]\n",FNR,i,cb,cc; exit }
+          }
+        }
+        END { if(FNR!=na){ print "ROWS base="na" cur="FNR } else print "OK" }
+      ' "$base" "$cur")"
+      case "$verdict" in
+        OK) emit "benign-numeric" "CSV identical except float-reproducibility noise: every numeric cell within rel tol 1e-12 (observed ~5e-15 in hhi_ig lm coef; DuckDB parallel-SUM nondeterminism), all text cells byte-identical" ;;
+        HEADER) emit "DIFF" "numeric-hint: header row differs" ;;
+        SHAPE*) emit "DIFF" "numeric-hint: column count differs ($verdict)" ;;
+        ROWS*)  emit "DIFF" "numeric-hint: row count differs ($verdict)" ;;
+        VALUE*) emit "DIFF" "numeric-hint: numeric cell exceeds rel tol 1e-12 -> genuine data change ($verdict)" ;;
+        TEXT*)  emit "DIFF" "numeric-hint: non-numeric cell differs ($verdict)" ;;
+        *)      emit "DIFF" "numeric-hint: unclassified ($verdict)" ;;
+      esac
+    fi
+    emit "DIFF" "numeric hint requested but awk unavailable (cannot prove float-only)"
     ;;
 
   *)

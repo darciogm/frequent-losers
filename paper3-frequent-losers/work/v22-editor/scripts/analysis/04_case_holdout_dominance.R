@@ -767,7 +767,12 @@ for (d in def_grp$def_code) {
     roc_auc=m_rocauc(ev$y, ev$score_i), pr_auc=m_prauc(ev$y, ev$score_i),
     rec_500=m_rec(ev$y, ev$score_i, 500), prec_500=m_prec(ev$y, ev$score_i, 500))
 }
-lodgo <- rbindlist(lodgo_rows)[order(-n_positives)]
+# DETERMINISTIC ROW ORDER (R1-extended adjudication, 2026-06-06): order(-n_positives)
+# alone leaves ties resolved by upstream DuckDB SELECT DISTINCT emission order, which
+# the norm14_safe normalizer change perturbed (values proven byte-identical; only row
+# order drifted). Add `defendant` as a stable secondary key so the CSV reproduces
+# byte-for-byte across runs and across the BEC/federal normalizer branches.
+lodgo <- rbindlist(lodgo_rows)[order(-n_positives, defendant)]
 say("--- leave-one-defendant-group-out (top groups) ---")
 print(head(lodgo[, .(defendant, n_positives, too_sparse, roc_auc=round(roc_auc,3),
                      rec_500=round(rec_500,3))], 12))

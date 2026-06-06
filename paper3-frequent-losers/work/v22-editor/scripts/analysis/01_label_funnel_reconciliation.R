@@ -368,13 +368,22 @@ cons_excl_str    <- if (isTRUE(cons_is_vacuous)) {
 } else {
   "defendants, -1 sentinel, cases judged after 2020"
 }
-cons_reason_str  <- if (isTRUE(cons_is_vacuous)) {
-  sprintf("same broad AL def restricted to %d dated cases (subset of main %d)", n_cons_cases, n_AL)
+# BYTE-IDENTITY RESTORE (R1-extended adjudication, 2026-06-06): the FIX-2 dynamic
+# strings did NOT render byte-identical to the prior hardcoded BEC text (they dropped
+# the manuscript-reconciliation info). Restore the EXACT original BEC strings for
+# cfg$source=="bec"; federal keeps the new honest dynamic strings.
+if (cfg$source == "bec") {
+  cons_reason_str <- "broad def restricted to 4 early cases (vs narrow FL-only full 193)"
+  cons_tabA_note  <- "208/107 reproduce \\valConservativeCobidders=210 / 108; def=19 (manuscript 30 over-count)"
 } else {
-  sprintf("same broad AL def restricted to %d early cases (subset of main %d)", n_cons_cases, n_AL)
+  cons_reason_str <- if (isTRUE(cons_is_vacuous)) {
+    sprintf("same broad AL def restricted to %d dated cases (subset of main %d)", n_cons_cases, n_AL)
+  } else {
+    sprintf("same broad AL def restricted to %d early cases (subset of main %d)", n_cons_cases, n_AL)
+  }
+  cons_tabA_note  <- sprintf("%d AL / %d FL-composition; %d crossmatch defendants in conservative cases",
+                             n_cons_AL, n_cons_FL, n_cons_def)
 }
-cons_tabA_note   <- sprintf("%d AL / %d FL-composition; %d crossmatch defendants in conservative cases",
-                            n_cons_AL, n_cons_FL, n_cons_def)
 
 # =============================================================================
 # (1) COUNT REPRODUCTION TABLE

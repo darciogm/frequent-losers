@@ -396,6 +396,17 @@ prox <- as.data.table(dbGetQuery(con, sprintf("%s
   LEFT JOIN trend  tr USING(firm_code)
 ", base_cte, ig_cte, ig_sel, ig_join)))
 if (!HAS_IG) say("  item-group proxies (ig_hhi/top_ig_share) NOT_OBSERVED federally (buyer-collinear prefix).")
+# R1-EXT FIX (2026-06-06): DuckDB parallel SUM(POWER(.)) (threads=12) combines partial
+# sums in non-deterministic order -> HHI/share columns jitter at ~1 ULP run-to-run
+# (10,475/41,444 firms differ by <=5.6e-16). The reported means are 15-sig-fig stable,
+# but wilcox.test()'s rank() resolves those ULP gaps into different tie orderings,
+# shifting wilcox_p in the ~6th sig-fig. Round FP-derived proxy columns to 12 dp to
+# collapse the sub-numerical-precision jitter without altering any reported value.
+# Value-preserving and source-agnostic (federal recomputes the same rounded columns).
+for (.fpc in intersect(c("ig_hhi","top_ig_share","buyer_hhi","top_buyer_share",
+                         "first_year_share","late_half_share"), names(prox)))
+  set(prox, j = .fpc, value = round(prox[[.fpc]], 12L))
+setorder(prox, firm_code)
 say("market-structure proxies built for %d always-losers", nrow(prox))
 
 # D-alternative: repeated losing to same buyer / statutory-minimum bidder count.
@@ -443,6 +454,11 @@ modshare <- as.data.table(dbGetQuery(con, sprintf("
   FROM j GROUP BY firm_code
 ", ftm_path, P_ITEMq, P_MODq, P_NFq, ivp_path, conv_sel)))
 dbDisconnect(con, shutdown=TRUE); gc()
+# R1-EXT FIX (2026-06-06): same parallel-AVG ULP jitter as the HHI block -> round the
+# FP-derived modality/quorum proxy columns to 12 dp before they feed wilcox.test().
+for (.fpc in setdiff(names(modshare), "firm_code"))
+  if (is.numeric(modshare[[.fpc]])) set(modshare, j = .fpc, value = round(modshare[[.fpc]], 12L))
+setorder(modshare, firm_code)
 say("modality/quorum proxies built for %d always-losers (modality from item panel)", nrow(modshare))
 
 # assemble firm-level proxy frame for FL firms only, split by cobidder
@@ -692,6 +708,13 @@ if (!HAS_IG) say("  [skip] item-group zero-win strata (ig_modality, buyer_ig) NO
 zw_rows <- list(); zw_val <- list()
 for (zd in zw_defs) {
   hm <- mk_zero_win(zd$sql, zd$mod)
+  # R1-EXT FIX (2026-06-06): mk_zero_win's final SELECT has no ORDER BY, so DuckDB
+  # (threads=12) emits home-stratum rows in non-deterministic order. score=log1p(home_part)
+  # is heavily tied (integer counts), and average_precision/precision_at_k break ties by
+  # input position (.mt_order's seq_along) -> pr_auc (and, where the top-500 cut lands in a
+  # tie block, precision/recall/lift) jitter run-to-run. Canonicalize the row order by
+  # firm_code so the tie-break is reproducible. Source-agnostic; values unchanged.
+  setorder(hm, firm_code)
   hm[, is_zero_win := as.integer(home_win==0)]
   cand <- hm[is_zero_win==1 & home_part>=3]   # require >=3 participations in home stratum
   cand[, cobidder := as.integer(firm_code %in% cob_codes)]
@@ -838,6 +861,13 @@ firm_profile <- as.data.table(dbGetQuery(con, sprintf("
   GROUP BY firm_code
 ", ncells_expr, ftm_path)))
 firm_profile[, win_rate := wins / T]
+# R1-EXT FIX (2026-06-06): firm_profile is a DuckDB GROUP BY firm_code with no ORDER BY
+# -> non-deterministic row order at threads=12. That order propagates into def_prof and
+# pool_by_stratum's candidate vectors; the placebo loop's sample.int() then indexes those
+# vectors, so the SAME seed (set.seed(SEED) at line ~895) drew DIFFERENT firms run-to-run
+# -> null AUC/PR distributions (and the figure) shifted while real_auc/real_prauc stayed
+# byte-identical. Canonicalize by firm_code so the seeded draws are reproducible.
+setorder(firm_profile, firm_code)
 # decile keys on the FULL firm population
 firm_profile[, T_dec := cut(T, breaks=unique(quantile(T, seq(0,1,0.1))), include.lowest=TRUE, labels=FALSE)]
 firm_profile[, cell_dec := cut(n_cells, breaks=unique(quantile(n_cells, seq(0,1,0.1))), include.lowest=TRUE, labels=FALSE)]

@@ -425,42 +425,60 @@ ff[, log1p_T := log1p(T_i)]
 ff[, items_per_active_year := ifelse(n_years>0, n_items_total/n_years, n_items_total)]
 
 # variable registry: name -> (column, panel, type [cont|binary])
-profile_vars <- list(
+# R1-EXT FIX (2026-06-06): rebuild profile_vars preserving the ORIGINAL
+# interleaved Panel-B ordering so BEC reproduces the committed table_J/table_K
+# byte-for-byte. The Phase-1 adaptation had appended the source-gated item-group
+# and modality rows at the END of the list, which left every value identical but
+# reordered the rows -> a non-benign byte diff vs the frozen baseline. We instead
+# interleave the item-group vars at their original Panel-B slots (gated by HAS_IG)
+# and re-insert the modality vars via append(after=...) at the original anchor
+# (right after top_buyer_share), so federal (HAS_IG=FALSE / no convite) keeps the
+# NOT_OBSERVED gating while BEC is byte-identical to the pre-refactor output.
+profile_vars <- c(
   # Panel A: participation / persistence
-  list("T_i","A","cont","participation: # tender-items"),
-  list("log1p_T","A","cont","log(1+T_i)"),
-  list("n_years","A","cont","# active years"),
-  list("items_per_active_year","A","cont","items per active year"),
-  # Panel B: breadth / concentration
-  list("n_items_total","B","cont","# distinct tender-items"),
-  list("n_buyers","B","cont","# buyers"),
-  list("hhi_buyer","B","cont","HHI across buyers"),
-  list("top_buyer_share","B","cont","top-buyer share"),
-  # Panel C: CADE proximity (PARTLY MECHANICAL for cobidders)
-  list("O_i","C","cont","observed defendant contacts"),
-  list("E_i_MEDIUM","C","cont","expected contacts (opportunity)"),
-  list("X_i_MEDIUM","C","cont","excess contacts (O-E)"),
-  list("n_cases","C","cont","# CADE cases touched"),
-  list("n_def_firms","C","cont","# distinct defendants contacted"),
-  list("contact_intensity","C","cont","O_i / T_i"),
-  list("share_in_def_cells_MEDIUM","C","cont","share of part. in defendant-bearing cells")
+  list(
+    list("T_i","A","cont","participation: # tender-items"),
+    list("log1p_T","A","cont","log(1+T_i)"),
+    list("n_years","A","cont","# active years"),
+    list("items_per_active_year","A","cont","items per active year"),
+    # Panel B: breadth / concentration
+    list("n_items_total","B","cont","# distinct tender-items")),
+  # item-group breadth var #1 (BEC only; federal NOT_OBSERVED, buyer-collinear)
+  if (HAS_IG) list(list("n_item_groups","B","cont","# item groups")) else list(),
+  list(list("n_buyers","B","cont","# buyers")),
+  if (HAS_IG) list(list("hhi_ig","B","cont","HHI across item groups")) else list(),
+  list(list("hhi_buyer","B","cont","HHI across buyers")),
+  if (HAS_IG) list(list("top_ig_share","B","cont","top-item-group share")) else list(),
+  list(
+    list("top_buyer_share","B","cont","top-buyer share"),
+    # Panel C: CADE proximity (PARTLY MECHANICAL for cobidders)
+    list("O_i","C","cont","observed defendant contacts"),
+    list("E_i_MEDIUM","C","cont","expected contacts (opportunity)"),
+    list("X_i_MEDIUM","C","cont","excess contacts (O-E)"),
+    list("n_cases","C","cont","# CADE cases touched"),
+    list("n_def_firms","C","cont","# distinct defendants contacted"),
+    list("contact_intensity","C","cont","O_i / T_i"),
+    list("share_in_def_cells_MEDIUM","C","cont","share of part. in defendant-bearing cells"))
 )
-# SOURCE-CONFIG ADAPTATION (Phase 1, 2026-06-05): item-group breadth vars only where
-# the item-group is observed (BEC). Federally these are NOT_OBSERVED (buyer-collinear).
-if (HAS_IG) {
-  profile_vars <- c(profile_vars, list(
-    list("n_item_groups","B","cont","# item groups"),
-    list("hhi_ig","B","cont","HHI across item groups"),
-    list("top_ig_share","B","cont","top-item-group share")))
-} else {
+if (!HAS_IG)
   say("  [skip] item-group profile vars (n_item_groups/hhi_ig/top_ig_share) NOT_OBSERVED for source=%s.", cfg$source)
-}
-# modality vars only if observed
+# modality vars only if observed.
 if (MODALITY_OBS) {
-  profile_vars <- c(profile_vars, list(list("pregao_share","B","cont","Pregao share")))
+  mod_vars <- list(list("pregao_share","B","cont","Pregao share"))
   # convite share only where convite exists (BEC); federal pure-Pregao -> skip.
   if (cfg$has_convite)
-    profile_vars <- c(profile_vars, list(list("convite_share","B","cont","Convite share")))
+    mod_vars <- c(mod_vars, list(list("convite_share","B","cont","Convite share")))
+  # R1-EXT FIX (2026-06-06): for the source carrying the frozen baseline (BEC,
+  # HAS_IG=TRUE) re-insert the modality vars at the ORIGINAL anchor (immediately
+  # after top_buyer_share) so Panel-B row order is byte-identical to the committed
+  # table_J. For federal (HAS_IG=FALSE) preserve the pre-fix append-at-end order,
+  # so the fresh federal outputs remain byte-identical to the pre-fix federal run.
+  if (HAS_IG) {
+    anchor <- which(vapply(profile_vars, function(p) p[[1]] == "top_buyer_share", logical(1)))
+    profile_vars <- append(profile_vars, mod_vars, after=anchor)
+  } else {
+    profile_vars <- c(profile_vars, mod_vars)
+  }
 }
 # environment vars only if observed
 if (VALUE_OBS)  profile_vars <- c(profile_vars, list(list("mean_tender_value","D","cont","mean tender value (R$)")))
