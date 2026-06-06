@@ -13,16 +13,15 @@
 \section{Validation Audits}
 \label{app:validation_audits_submission}
 
-The validation design addresses three mechanical channels. Frequent
+The validation design addresses three mechanical channels: frequent
 participants have more chances to appear near any defendant, so raw
-co-bidding rates are not enough; firms may operate in the same
-procurement environments as CADE anchors, giving them more opportunities
-to meet those anchors even under ordinary competition; and item-level
-labels can mechanically reuse the same participation history that
-constructs the score. This appendix states the logic of each audit and
-the interpretation it licenses, reports the headline numbers, and points
-to Online Supplement~\ref{supp:validation}, which holds the full grids
-behind every audit summarized here.
+co-bidding rates are not enough; firms operating in the same procurement
+environments as CADE anchors meet those anchors more often even under
+ordinary competition; and item-level labels can reuse the same
+participation history that constructs the score. We state the logic of
+each audit and the interpretation it licenses, report the headline
+numbers, and point to Online Supplement~\ref{supp:validation} for the
+full grids behind every audit summarized here.
 
 Throughout, ``CADE-defendant contact'' is an
 \emph{adjudication-anchored exposure} label: a firm shares a
@@ -43,18 +42,16 @@ award layer into procurement-opportunity cells $g$ and benchmark each
 firm against others facing the same cells, using three nested
 definitions: \textbf{COARSE} $=$ item group (two-digit item-code prefix)
 $\times$ year; \textbf{MEDIUM} $=$ item group $\times$ year $\times$
-buyer (the reference definition for the headline within-stratum
-results); and \textbf{STRICT} $=$ item code $\times$ year $\times$
-buyer. For firm $i$, with $n_{ig}$ the tender-items held in cell $g$ and
-$p_g$ the leave-one-out cell defendant-contact rate, \emph{expected}
-contact under ordinary opportunity is $E_i = \sum_g n_{ig}\, p_g$, the
-\emph{observed} contact $O_i$ is the firm's actual count of
-defendant-sharing tender-items, and the \emph{excess} is
-$X_i = O_i - E_i$ with standardized form
-$Z_i = (O_i - E_i)/\sqrt{\sum_g n_{ig}\, p_g(1-p_g)}$. The mean cell
-contact rate is $0.017$--$0.019$ across definitions; most of the level
-of $O_i$ is explained by $E_i$, so exposure does the heavy lifting and
-excess is the residual the score must rank. The cell-construction,
+buyer (the reference for the headline within-stratum results); and
+\textbf{STRICT} $=$ item code $\times$ year $\times$ buyer. For firm $i$,
+with $n_{ig}$ the tender-items held in cell $g$ and $p_g$ the
+leave-one-out cell defendant-contact rate, \emph{expected} contact is
+$E_i = \sum_g n_{ig}\, p_g$, \emph{observed} contact $O_i$ is the firm's
+count of defendant-sharing tender-items, and \emph{excess} is
+$X_i = O_i - E_i$ (standardized $Z_i = X_i/\sqrt{\sum_g n_{ig}\,
+p_g(1-p_g)}$). The mean cell contact rate is $0.017$--$0.019$; most of the
+level of $O_i$ is explained by $E_i$, so exposure does the heavy lifting
+and excess is the residual the score must rank. The cell-construction,
 support-retention, and excess-by-tier grids are in Online
 Supplement~\ref{supp:opp_cells}.
 
@@ -125,13 +122,13 @@ exposed subsample), and the combined AUCs near $0.98$ overstate the
 score's marginal value because $E_i$ encodes the label. Once exposure is
 held fixed the residual ordering is small and not robust: the nested
 DeLong increment is $+0.010$ ($p=0.013$)---statistically real but a
-one-percentage-point gain that would not reorder a forensic queue, and
-the only test in the family that survives a Benjamini--Hochberg
-correction---while the within-stratum AUC is $0.471$ for the score and
-$0.507$ for FL14, both at chance. The three companion exercises in
-Online Supplement~\ref{supp:perm_matched}---a matched-stratum
-permutation ($p=0.127$), a firm-exposure simulation ($p=1.000$), and a
-CEM opportunity-matched comparison (within-stratum AUC $0.626$)---do not
+one-percentage-point gain that would not reorder a forensic queue, and the
+only test in the family that survives a Benjamini--Hochberg correction---
+while the within-stratum AUC is at chance ($0.471$ for the score, $0.507$
+for FL14). The three companion exercises in Online
+Supplement~\ref{supp:perm_matched}---a matched-stratum permutation
+($p=0.127$), a firm-exposure simulation ($p=1.000$), and a CEM
+opportunity-matched comparison (within-stratum AUC $0.626$)---do not
 corroborate a robust residual, and the within-stratum change in
 $\Pr(\text{cobidder})$ for FL14 versus non-FL is in fact \emph{negative}
 ($-0.017$). We therefore report no operationally relevant residual
@@ -157,13 +154,11 @@ channel.
 \label{app:overcrediting_submission}
 
 The opportunity audit shows \emph{that} the raw award score over-credits
-defendant contact. This subsection characterizes \emph{why}, and turns
-the caveat into a diagnostic a practitioner can compute before opening a
-single bid file.
-
-The cobidder label is contact-defined: a firm is a positive if it shares
-at least one tender-item with an adjudicated defendant. The probability
-of such a contact is mechanically increasing in a firm's participation
+defendant contact; this subsection characterizes \emph{why} and turns the
+caveat into a diagnostic a practitioner can compute before opening a single
+bid file. The cobidder label is contact-defined---a firm is a positive if
+it shares at least one tender-item with an adjudicated defendant---and the
+probability of such a contact is mechanically increasing in participation
 volume $T_i$,
 \begin{equation}
 \Pr(\text{cobidder}_i = 1 \mid T_i)
@@ -173,19 +168,18 @@ volume $T_i$,
 \end{equation}
 where $\pi$ is the per-tender-item defendant-contact rate (the cell
 density $p_g$ of \ref{app:expected_contact_submission}). The award score
-is monotone in the same $T_i$ by construction ($\log(1{+}T_i)$), so
-\emph{both the score and the label load on participation volume}. A
-ranking by the score orders the label not because loss intensity is
-behaviorally informative but because each is a function of $T$; this is
-the analytic shape of the within-stratum null ($\valExpWithinAUC$,
-$\approx$ chance) and the label-blind exposure ranking
-($\valArmorExpLB$).
+is monotone in the same $T_i$ ($\log(1{+}T_i)$), so \emph{both the score
+and the label load on participation volume}: the score orders the label
+not because loss intensity is behaviorally informative but because each is
+a function of $T$---the analytic shape of the within-stratum null
+($\valExpWithinAUC$, $\approx$ chance) and the label-blind exposure
+ranking ($\valArmorExpLB$).
 
 Write $F_T$ for the distribution of $T$ in the candidate pool. Under the
-rare-target linearization the positive class is $T$ weighted by $\pi T$,
-the \emph{size-biased} distribution of $T$, while the negative class is
-approximately $F_T$. Since the score is monotone in $T$, the raw ROC
-area is the size-bias stochastic gap
+rare-target linearization the positive class is the \emph{size-biased}
+$T$ (weighted by $\pi T$) and the negative class is approximately $F_T$;
+since the score is monotone in $T$, the raw ROC area is the size-bias
+stochastic gap
 \begin{equation}
 \mathrm{AUC}_{\text{raw}}
   \;=\; \Pr(T_i > T_j),
@@ -215,25 +209,22 @@ positive class less size-biased, and the gap in
 the linearization and uses the empirical heavy-tailed $F_T$, and is
 read from the simulation below. \qed
 
-We deliberately state \emph{signs}, not a magnitude formula: off the
-rare-target linearization, with the empirical heavy-tailed $F_T$ and a
-multi-cell opportunity adjustment, the magnitude is not closed-form and
-a formula would be spurious precision. We characterize it by a
+We state \emph{signs}, not a magnitude: off the linearization a closed-form
+formula would be spurious precision, so we characterize the gap by a
 transparent simulation. Figure~\ref{fig:inflation_surface} displays a
-\emph{synthetic surface anchored at one empirical point per platform},
-sweeping $\Delta$ over a grid in $\mathrm{CV}(T)$ and the base rate.
-The surface is \emph{synthetic}, not estimated: it draws $T$ from a
-Gamma family indexed by $\mathrm{CV}(T)$, assigns the contact label by
-\eqref{eq:contact_sizebias} at a target base rate, scores firms by a
-noisy $\log(1{+}T)$ calibrated once so the BEC coordinate reproduces its
-observed raw area, and compares the raw ROC area to the
-within-$T$-stratum area. No confidential microdata enter: the only
-empirical inputs are two published scalars per platform---the
-coefficient of variation of always-loser participation counts and the
-adjudicated base rate---which fix the single calibration anchor and the
-two overlaid platform points; everything else on the surface is
-synthetic backbone. Across the grid the surface confirms both signs
-of Proposition~\ref{prop:inflation}: $\Delta$ rises monotonically in
+\emph{synthetic surface anchored at one empirical point per platform}, not
+an estimated
+inflation curve: it draws $T$ from a Gamma family indexed by
+$\mathrm{CV}(T)$, assigns the contact label by \eqref{eq:contact_sizebias}
+at a target base rate, scores firms by a noisy $\log(1{+}T)$ calibrated
+once so the BEC coordinate reproduces its observed raw area, and compares
+the raw ROC area to the within-$T$-stratum area. No confidential microdata
+enter: the only empirical inputs are two published scalars per
+platform---the coefficient of variation of always-loser participation
+counts and the adjudicated base rate---which fix the calibration anchor
+and the two overlaid platform points; everything else is synthetic
+backbone. Across the grid the surface confirms both signs of
+Proposition~\ref{prop:inflation}: $\Delta$ rises monotonically in
 $\mathrm{CV}(T)$ (from $\approx 0.03$ at $\mathrm{CV}=0.5$ to
 $\approx 0.34$ at $\mathrm{CV}=5$) and falls in the base rate once the
 target leaves the rare regime.
@@ -247,40 +238,35 @@ base-rate grid. This is a \emph{synthetic surface anchored at one
 empirical point per platform}, not an estimated inflation curve: the
 backbone is simulated from a Gamma family, calibrated once so the BEC
 coordinate reproduces its observed raw area, and the two real platform
-points are then \emph{overlaid} on that backbone at their measured
-$(\mathrm{CV}(T),\text{base rate})$ coordinates---BEC
-($\mathrm{CV}=2.79$, base rate $3.9\%$) and the federal ComprasNet
-platform ($\mathrm{CV}=3.79$, base rate $0.5\%$). The surface increases
-in $\mathrm{CV}(T)$ and decreases in the adjudicated base rate, as
-Proposition~\ref{prop:inflation} predicts. Federal sits in a
-higher-$\Delta$ region---higher dispersion and a roughly seven-fold
-lower base rate both push toward more complete inflation. Only
-$\mathrm{CV}(T)$ and the base rate are taken from data; the rest of the
-surface is synthetic.}
+points are then \emph{overlaid} at their measured
+$(\mathrm{CV}(T),\text{base rate})$ coordinates---BEC ($\mathrm{CV}=2.79$,
+base rate $3.9\%$) and federal ComprasNet ($\mathrm{CV}=3.79$, base rate
+$0.5\%$). The surface increases in $\mathrm{CV}(T)$ and decreases in the
+adjudicated base rate, as Proposition~\ref{prop:inflation} predicts;
+federal sits in a higher-$\Delta$ region because higher dispersion and a
+roughly seven-fold lower base rate both push toward more complete
+inflation. Only $\mathrm{CV}(T)$ and the base rate are taken from data.}
 \label{fig:inflation_surface}
 \end{figure}
 
-\paragraph{The leading-order sufficient statistic.} The practitioner deliverable is
-that $\mathrm{CV}(T)$ of the candidate pool, computable from award data
-alone before any bid file is opened, together with the target base rate,
-bounds how much of any raw area is mechanical. A high dispersion of
-participation volume warns that a contact-anchored validation will
-over-credit a volume-loaded score; the correct response is the
-within-stratum / label-blind comparison, not the raw area. This is a
-\emph{diagnostic}, not a fix: the correction reveals the genuine floor
-to be $\approx$ chance (\ref{app:control_function_submission}); it does
-not rescue the screen. The two platforms are a second coordinate on the
-same surface: BEC has $\mathrm{CV}(T)=2.79$, base rate $3.9\%$, raw area
-$0.761$, within-stratum floor $\valExpWithinAUC$, so $\Delta\approx0.29$;
-the federal platform has $\mathrm{CV}(T)=3.79$, base rate $0.5\%$, raw
-area $\valFedAudRawAUC$, within-stratum floor $\valFedAudWithinAUC$, so
-$\Delta\approx0.28$. The rarer federal target is precisely why its
-exposure-only model \emph{edges past} the raw score
-($\valFedAudExpOnlyAUC > \valFedAudRawAUC$): at a rarer target the
-size-biasing is nearly complete. The inflation \emph{law} replicates at
-full power across both platforms; only the residual within-stratum floor
-is power-bounded federally (below an AUC of roughly $0.55$ at
-$N^{+}=195$).
+\paragraph{The leading-order sufficient statistic.} The practitioner
+deliverable is that $\mathrm{CV}(T)$ of the candidate pool---computable
+from award data alone before any bid file is opened---together with the
+target base rate bounds how much of any raw area is mechanical. High
+dispersion of participation volume warns that a contact-anchored
+validation will over-credit a volume-loaded score; the correct response is
+the within-stratum / label-blind comparison, not the raw area. This is a
+\emph{diagnostic}, not a fix: the correction reveals the genuine floor to
+be $\approx$ chance (\ref{app:control_function_submission}); it does not
+rescue the screen. The two platforms are a second coordinate on the same
+surface: BEC ($\mathrm{CV}(T)=2.79$, base rate $3.9\%$, $\Delta\approx0.29$)
+and the federal platform ($\mathrm{CV}(T)=3.79$, base rate $0.5\%$,
+$\Delta\approx0.28$). The rarer federal target is why its exposure-only
+model \emph{edges past} the raw score ($\valFedAudExpOnlyAUC >
+\valFedAudRawAUC$): at a rarer target the size-biasing is nearly complete.
+The inflation \emph{law} replicates at full power across both platforms;
+only the residual within-stratum floor is power-bounded federally (below
+an AUC of roughly $0.55$ at $N^{+}=195$).
 
 \subsection{Timing Information Sets and Strict Holdout}
 \label{app:strict_holdout_submission}
@@ -344,19 +330,17 @@ is the share of the candidate set carrying score zero. Source:
 \end{adjustbox}
 \end{table}
 
-The reading is deliberately cautious. Only a limited within-pool
-residual ordering remains (sample 3, AUC
-$\valStrictContAUC$--$\valStrictFLAUC$), but on the full firm universe
-the strict screen has no operational traction
+The reading is deliberately cautious. Only a limited within-pool residual
+ordering remains (sample 3, AUC $\valStrictContAUC$--$\valStrictFLAUC$),
+but on the full firm universe the strict screen has no operational traction
 (precision@$500=\valStrictFullPrec$): the entrant coverage hole and the
-mass of score-zero ties are the proximate causes. Two companion
-exercises in Online Supplement~\ref{supp:timing_sets} confirm the
-pattern---a rolling-origin validation that posts precision@$500=0$ on
-the full universe in every origin year, and a leakage decomposition that
-leaves the surviving structural component in the
-$\valLeakStructLow$--$\valLeakStructHigh$ range under cobidder-firm
-holdout (out-of-fold AUC $\valLeakCVAUC$) and temporal holdout (AUC
-$\valAUCFLfirmTemp$).
+mass of score-zero ties are the proximate causes. Two companion exercises
+in Online Supplement~\ref{supp:timing_sets} confirm the pattern---a
+rolling-origin validation posting precision@$500=0$ on the full universe in
+every origin year, and a leakage decomposition leaving the surviving
+structural component in the $\valLeakStructLow$--$\valLeakStructHigh$ range
+under cobidder-firm holdout (out-of-fold AUC $\valLeakCVAUC$) and temporal
+holdout (AUC $\valAUCFLfirmTemp$).
 
 \subsection{Case Composition, Scope, and Limitations}
 \label{app:loco_submission}
@@ -382,31 +366,30 @@ informative), so the clustered $p$-values are directionally informative
 rather than exactly size-controlled.
 
 The asymmetry against direct defendants is the design, not an escape
-hatch. If the statistic were a generic cartel-membership detector it
-should classify direct CADE defendants as well as cobidders; it does
-not. The FL-binary score ranks direct defendants at ROC
-$\approx \valDirectStrictAUC$ under both full and strict timing
-($0.491$, $0.492$), i.e.\ at chance, with precision@$500=0$; continuous
-volume carries some information (ROC $0.66$--$0.70$) but with
-precision@$500\le0.004$, so it does not operationally retrieve them
-either (full grid in Online Supplement~\ref{supp:direct_defendant_timing}).
-The loser-side \emph{binary} flag is uninformative about defendants, who
-typically sit on the winner side of the arrangement.
+hatch. A generic cartel-membership detector would classify direct CADE
+defendants as well as cobidders; this one does not. The FL-binary score
+ranks direct defendants at ROC $\approx \valDirectStrictAUC$ under both
+full and strict timing ($0.491$, $0.492$)---chance---with
+precision@$500=0$; continuous volume carries some information (ROC
+$0.66$--$0.70$) but with precision@$500\le0.004$, so it does not
+operationally retrieve them either (full grid in Online
+Supplement~\ref{supp:direct_defendant_timing}). The loser-side
+\emph{binary} flag is uninformative about defendants, who typically sit on
+the winner side of the arrangement.
 
-Several limitations bound the appendix. The opportunity cells are
+Several limitations bound this evidence. The opportunity cells are
 \emph{award-layer proxies} built from item, year, and procuring-unit
-identifiers, and procurement modality is dropped because it is absent
-from that layer. All timing is \emph{year-level}: the CADE files carry
-no conduct dates, so the adjudication-observable design is infeasible
-rather than estimated. There is an \emph{entrant coverage hole}
-($\valMainEntrantPositives/\valMainCobidders$, $\valEntrantPosShare$, of
-positives carry score zero) and the signal is \emph{concentrated} by
-case, item group, and year. ROC is a red herring at sub-$1\%$
-prevalence; precision and recall are the operational metrics, and they
-stay low under the pooled diagnostic and collapse to zero on the full
-strict-timing universe. Net of opportunity and timing the residual
-ordering is \emph{marginal at best and not robust across designs}; what
-the award layer reliably delivers is a coarse, retrospective basis for
-prioritizing scrutiny, and it is \textbf{not legal proof, not
-identification of cartel members, and not an estimate of damages or
-causal effect}.
+identifiers, with modality dropped because it is absent from that layer.
+All timing is \emph{year-level}: the CADE files carry no conduct dates, so
+the adjudication-observable design is infeasible rather than estimated.
+There is an \emph{entrant coverage hole}
+($\valMainEntrantPositives/\valMainCobidders$, $\valEntrantPosShare$ of
+positives carry score zero) and the signal is \emph{concentrated} by case,
+item group, and year. ROC is a red herring at sub-$1\%$ prevalence;
+precision and recall are the operational metrics, and they stay low under
+the pooled diagnostic and collapse to zero on the full strict-timing
+universe. Net of opportunity and timing the residual ordering is
+\emph{marginal at best and not robust across designs}; what the award
+layer reliably delivers is a coarse, retrospective basis for prioritizing
+scrutiny, and it is \textbf{not legal proof, not identification of cartel
+members, and not an estimate of damages or causal effect}.
