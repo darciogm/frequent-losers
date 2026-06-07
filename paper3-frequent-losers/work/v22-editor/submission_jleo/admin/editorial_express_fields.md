@@ -14,26 +14,25 @@ submission time.
 - **Running title (likely):** Award-Layer Screening in Cartel Enforcement
 - **Manuscript type (likely):** Article / original research
 
-## Abstract (≤150 words; measured **142 words**)
+## Abstract (≤150 words; measured **146 words**)
 
 > Cartel enforcement must allocate costly proof-producing effort before legal
-> proof exists, drawing first on administrative records that are cheap but
-> legally thin. How far can such records screen? Using São Paulo's BEC
-> procurement platform (2009–2019) and CADE adjudications, we build a minimal
-> award-layer construct—persistent zero-win participation among always-loser
-> firms, the *frequent losers*—and subject it to a decomposition that most
-> screening studies omit. The construct concentrates adjudication-anchored
-> exposure to adjudicated cartel environments; the decomposition then draws a
-> sharp boundary. Much of its apparent power reflects procurement opportunity
-> and a single adjudicated case, and it orders firms retrospectively among
-> incumbents rather than prospectively across the platform. Our contribution is
-> a transferable method for separating genuine screening signal from exposure
-> arithmetic and case concentration, and a map of where cheap administrative
-> records can, and cannot, order forensic priority. Liability remains in the
-> richer bid-level record.
+> proof exists. This paper asks how agencies should govern cheap administrative
+> screens before opening bid-level records. Using São Paulo's BEC procurement
+> platform and CADE adjudications, we audit a minimal award-layer construct—
+> persistent zero-win participation—against a reproducible adjudication-anchored
+> cobidder label that never uses the screen itself. The audit identifies an
+> over-crediting problem: when both the screen and a contact-defined label load
+> on participation volume, raw screening metrics overstate evidentiary value. In
+> BEC, much of the raw reach is exposure rather than conduct, and strict
+> prospective ranking fails outside incumbent pools. We then organize follow-up
+> as a cost–recall frontier: one operating point opens only 12% of firms but
+> roughly 67% of bid rows, showing why firm-count savings overstate forensic-cost
+> savings. A second-platform stress test shows that the audit logic travels; the
+> score does not. Liability remains in the richer record.
 
 (Source: `work/v22-editor/submission_clean/sec_frontmatter_submission.tex`.
-Word count measured on the de-LaTeX'd text = **142 words**, within the JLEO
+Word count measured on the de-LaTeX'd text = **146 words**, within the JLEO
 150-word cap.)
 
 ## Keywords (from frontmatter)
