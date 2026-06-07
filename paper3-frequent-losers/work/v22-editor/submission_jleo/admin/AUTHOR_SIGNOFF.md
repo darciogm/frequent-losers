@@ -28,7 +28,7 @@ choices only you can make.
 
 ## C. Mechanical re-check at upload
 - [ ] Abstract word count: measured **144** (≤150) — reconfirm in the submission tool's counter.
-- [ ] Upload the **double-spaced** manuscript PDF (`manuscript/...JLEO_Manuscript.pdf`, 61pp), the appendix (39pp), and the cover letter.
+- [ ] Upload the **double-spaced** manuscript PDF (`manuscript/...JLEO_Manuscript.pdf`, 59pp), the appendix (39pp), and the cover letter.
 - [ ] JEL codes present: D44, D73, H57, K21, K42, L41. Keywords present.
 
 ---
