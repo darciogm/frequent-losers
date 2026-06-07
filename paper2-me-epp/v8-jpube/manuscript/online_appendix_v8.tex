@@ -44,6 +44,8 @@
   \PackageError{online_appendix_v8}{Missing participation event-study macros}{Run scripts/62_event_study_participation.R before compiling.}}
 \InputIfFileExists{../output/values_ipv_slack.tex}{}{%
   \PackageError{online_appendix_v8}{Missing IPV-slack macros}{Run scripts/64_ipv_slack_bounds.R before compiling.}}
+\InputIfFileExists{../output/values_entry_bound.tex}{}{%
+  \PackageError{online_appendix_v8}{Missing entry-bound macros}{Run scripts/65_entry_response_bound.R before compiling.}}
 
 \begin{document}
 
@@ -1094,6 +1096,60 @@ generated value registry) so it matches the main text and the $\lambda$ grid.
 preference benchmark. The non-pharmaceutical ranking is stable across the
 \(\lambda\) grid. In pharmaceuticals, the ranking depends on how the post-policy
 SME pool is modeled, not mainly on the marginal cost of public funds.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Entry-response bound on the welfare ranking}\label{oa:entry_bound}
+
+The welfare comparison holds entry at observed rates. Because the legal shock
+does not identify entry costs, a fully endogenous free-entry counterfactual is
+not available; I bound the ranking instead. Under the preference $V_3$,
+non-SMEs remain eligible but face an SME handicap and could enter at a lower
+rate. I scale non-SME participation under $V_3$ to $\phi$ times its
+open-auction rate, $\phi\in[0,1]$, with $\phi=1$ the no-response case used in
+the main text, and recompute the $V_3$ welfare loss at each $\phi$. SME entry
+is held at its pre-policy rate, which is conservative: a preference raises the
+return to SME entry, and letting SME participation respond lowers the $V_3$
+loss further at every $\phi$.
+
+Table~\ref{oa:tab_entry_bound} reports the worst-case line. In
+non-pharmaceuticals the preference keeps its welfare advantage over the full
+set-aside until $\phi$ falls to about $0.10$---non-SME participation collapsing
+from \bneNnsPreNp{} to roughly a quarter of a bidder per auction, a
+\entryFlipDiscNp{} percent reduction. In pharmaceuticals the set-aside is so
+costly that the preference wins even when non-SME entry is removed entirely.
+Allowing SME entry to rise toward its post-policy level widens the
+preference's margin throughout.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Entry-response bound: $V_3$ welfare loss as non-SME participation falls}
+\label{oa:tab_entry_bound}
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcc}
+\toprule
+ & Non-pharma & Pharma \\
+\midrule
+Full set-aside $V_0$ loss (\% of $p_{S_1}$) & 27 & 47 \\
+\addlinespace
+$V_3$ loss, non-SME retention $\phi=1.00$ & $\approx 0$ & $\approx 0$ \\
+$V_3$ loss, $\phi=0.50$ & 14 & 11 \\
+$V_3$ loss, $\phi=0.15$ & 26 & 25 \\
+\addlinespace
+Non-SME discouragement to flip $V_3\succ V_0$ & \entryFlipDiscNp{}\% & \entryFlipDiscPh{}\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Worst-case line: SME entry held at the pre-policy rate; non-SME
+participation under $V_3$ scaled to $\phi$ times its open-auction rate.
+$V_3$ welfare loss $=\mathrm{DWL}_{\mathrm{alloc}}+\lambda\,\Delta_{\mathrm{gov}}$
+as a percent of $p_{S_1}$, $\lambda=\lambdaMain$, preference rate
+\prefMainPct{} percent. The ``discouragement to flip'' row is the non-SME
+participation reduction $(1-\phi^\star)$ at which the $V_3$ loss first reaches
+the $V_0$ loss. Produced by \texttt{scripts/65\_entry\_response\_bound.R}.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
