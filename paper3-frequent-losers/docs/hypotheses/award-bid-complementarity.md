@@ -2,57 +2,53 @@
 paper: frequent-losers
 id: h6
 slug: award-bid-complementarity
-title: "Award-layer and bid-layer information are complementary"
+title: "Award and bid layers are complementary (division of labor, not dominance)"
 cluster: D
 paper_section: "§6.1 + §6.2"
-status: "partial (strongly supported)"
-last_updated: 2026-05-22
+status: "mixed (conditional, case-fragile)"
+last_updated: 2026-06-04
 ---
 
-# H:award-bid-complementarity — Award-layer and bid-layer information are complementary
+<!-- REVISED: canonical-target reframe 2026-06-04 -->
 
-Sequencing matters under costly observability. The hypothesis is that
-award-layer triage adds information to bid-distribution screens on the same
-adjudication-anchored target — not because awards dominate bids, but
-because the two layers operate at different evidentiary stages. A joint
-classifier should outperform each layer individually.
+# H:award-bid-complementarity — Award and bid layers are complementary (division of labor, not dominance)
+
+Sequencing matters under costly observability. The hypothesis is that the
+cheap award layer and the expensive bid-distribution layer carry
+**complementary** information on the same adjudication-anchored target — a
+division of labor, not a contest. The award layer ranks *where to look*; the
+bid layer evaluates *what is found*. Combining the two beats either alone, but
+the point is the division of labor, not that one dominates.
 
 !!! abstract "Intuition (plain-language)"
-    There are two layers of procurement data: cheap administrative award records (who participated, who won) and expensive bid-level microdata (every bid amount in every tender). The hypothesis: they carry complementary, non-redundant information for cartel detection. The data strongly support this — joint scoring (using both layers) gains +0.10 AUC over either layer alone with p = 10⁻²⁶. The two layers are not measuring the same thing, and this matters for the architecture of enforcement.
+    There are two layers of procurement data: cheap administrative award records (who participated, who won) and expensive bid-level microdata (every bid amount in every tender). The hypothesis: they carry complementary, non-redundant information. The data support this only *conditionally*. On the pooled diagnostic the two layers are comparable (award ≈ bid: 0.760 vs 0.717). The combined model beats award on precision–recall under a random cross-validation split (PR 0.188 vs 0.143), but **falls below award-only once folds are grouped by case** (PR 0.103 vs 0.143). So the complementarity is conditional on this implemented benchmark and case-fragile — a division of labor, not a dominance or a robust gain. The combined number is leakage-sensitive and is not an operational claim.
 
 
-> **Evidence strength: Partial (strongly supported).**
-> The complementarity claim is established at the same-sample level
-> with formal statistical significance and an operational deployment
-> envelope:
-> (i) **AUC bands** ([AN-010](../analyses/an-010-imhof-full-pipeline.md)):
-> Imhof full 0.888 [0.865, 0.911]; FL14 alone 0.921 [0.914, 0.928];
-> joint 0.955 [0.943, 0.967].
-> (ii) **Formal DeLong incremental tests** ([AN-033](../analyses/an-033-imhof-incremental-delong.md)):
-> Imhof + FL14 vs Imhof full Δ = +0.096, **p = 1.2 × 10⁻²⁶**; FL14 vs
-> Imhof Δ = +0.035, **p = 0.014** (the award-layer signal alone is at
-> least as discriminating as the full Imhof pipeline, at lower
-> information cost — a complementarity diagnostic, not an outperformance
-> claim).
-> (iii) **Feature decomposition** ([AN-033](../analyses/an-033-imhof-incremental-delong.md)):
-> Imhof-base AUC 0.785 → +participation features +0.154 → +FL binary
-> +0.003. Continuous participation is the load-bearing complement to
-> Imhof; FL14 binary is the auditable simplification of that signal.
+> **Evidence strength: Mixed (conditional, case-fragile).**
+> The complementarity claim on the 651-cobidder target:
+> (i) **Award ≈ bid pooled** ([AN-010](../analyses/an-010-imhof-full-pipeline.md)):
+> the transparent bid-moment random forest reaches ROC 0.717 / PR 0.116; the
+> award continuous score 0.760 / PR 0.143; FL14 0.688. Comparable, not a clean
+> ceiling above both (same-sample gatekeeping pool: bid 0.665, award 0.665,
+> combined 0.727).
+> (ii) **Combined gain is fold-dependent** ([AN-033](../analyses/an-033-imhof-incremental-delong.md)):
+> the combined model beats award on PR under random CV (0.188 vs 0.143) but
+> **falls below award-only under case-grouped folds** (0.103 vs 0.143).
+> The increment is conditional on the implemented benchmark and case-fragile.
+> (iii) **Division of labor, not dominance** ([AN-033](../analyses/an-033-imhof-incremental-delong.md)):
+> the award layer cheaply ranks *where to look*; the bid layer evaluates
+> *what is found*. The gain from combining is a complementarity diagnostic,
+> not an outperformance claim (Spearman award–bid 0.544).
 > (iv) **Same-sample horse race** ([AN-011](../analyses/an-011-horse-race-continuous.md), [AN-015](../analyses/an-015-gate-d1.md)):
-> continuous AUC 0.939 dominates the binary FL14 flag (0.924); the
-> gap is 0.015 under the corrected FL14 ≥ 14 definition (DeLong
-> Z = −4.38, p = 1.2 × 10⁻⁵).
-> (v) **Operational sequential envelope** ([AN-034](../analyses/an-034-sequential-gatekeeping-envelope.md)):
-> sequential award → bid gatekeeping at Stage-1 K=2,000 recovers 131
-> of 193 cobidders (recall 0.679) using 17% of the bid-microdata
-> footprint (2,000 of 11,676 firms). The architecture
-> approximates the full-observability upper bound at much lower
-> forensic cost.
-> Imhof CV-only is chance-level (0.585) — the bid-distribution pipeline
-> needs award-side features to reach its headline AUC.
-> Promotion to 🟢 (**Confirmed**) requires non-BEC replication of the
-> within-data complementarity pattern — see the H6 page section on why
-> within-data DeLong significance does not satisfy the bar.
+> continuous loss intensity carries the award-layer signal slightly better
+> than the FL14 cut.
+> (v) **Leakage / case sensitivity** ([AN-014](../analyses/an-014-leakage-audit-d3.md),
+> [AN-034](../analyses/an-034-sequential-gatekeeping-envelope.md)): the
+> combined number attenuates out of sample and under case-grouped folds; it
+> is a division-of-labor diagnostic, not an operational deployment guarantee.
+> The verdict is **Mixed**: complementarity holds conditionally (random CV)
+> but is case-fragile (case-grouped folds). Non-BEC replication is the path to
+> any generalizable claim.
 
 ## Theory
 
@@ -65,18 +61,20 @@ This is the cost-of-evidence framing in
 
 ## Prediction
 
-On the cobidder target:
+On the 651-cobidder target:
 
-- AUC(award ∪ bid) > AUC(bid only);
-- AUC(award ∪ bid) > AUC(award only);
-- the increment over each is positive at the relevant operating points.
+- award ≈ bid on the pooled diagnostic (0.760 vs 0.717);
+- combined beats award on PR under random CV (0.188 vs 0.143);
+- but the combined increment is **not robust to case-grouped folds**
+  (combined PR 0.103 falls below award-only 0.143) — the gain is conditional.
 
 ## Competing prediction
 
-**Award is redundant.** If the bid layer already encodes the loser-side
-information, the increment from adding the award layer would be
-statistically zero. The hypothesis predicts a positive increment; the null
-predicts none.
+**Award is redundant / combination is fragile.** If the bid layer already
+encodes the loser-side information, or if the combined gain disappears once
+folds respect case structure, the complementarity carries no robust value. The
+data land in between: a random-CV gain that **does not survive case-grouped
+folds** — hence the Mixed verdict.
 
 ## Case evidence
 
@@ -110,11 +108,11 @@ therefore supports — but does not require — the gatekeeping deployment of
 
 | Analysis | Bearing | Status | Key takeaway |
 |---|---|---|---|
-| [AN-010](../analyses/an-010-imhof-full-pipeline.md) (Imhof benchmark) | Direct | done | Imhof 0.888 vs FL14 0.921 vs joint 0.955 |
-| [AN-011](../analyses/an-011-horse-race-continuous.md) (horse race) | Direct | done | Continuous dominates binary, DeLong p = 2e-5 |
+| [AN-010](../analyses/an-010-imhof-full-pipeline.md) (bid-moment benchmark) | Mixed | done | Bid RF 0.717 / award continuous 0.760 / FL14 0.688 / combined 0.756 (random CV) — comparable; combined PR falls below award-only under case-grouped folds |
+| [AN-011](../analyses/an-011-horse-race-continuous.md) (horse race) | Supports | done | Continuous loss intensity carries the award signal slightly better than the FL14 cut |
 | [AN-015](../analyses/an-015-gate-d1.md) (D1 harmonized) | Supports | done | D1 passes; price coefficients align in single-score specs |
-| [AN-033](../analyses/an-033-imhof-incremental-delong.md) (formal DeLong incremental) | Direct | done | Imhof + FL Δ = +0.096, p = 1.2e-26; FL alone vs Imhof Δ = +0.035, p = 0.014; FL binary marginal beyond TC = +0.003 |
-| [AN-034](../analyses/an-034-sequential-gatekeeping-envelope.md) (sequential envelope) | Direct | done | Sequential K=2,000: 74% of joint recall at 17% microdata footprint |
+| [AN-033](../analyses/an-033-imhof-incremental-delong.md) (incremental decomposition) | Mixed | done | Combined beats award on PR under random CV (+0.045) but falls below award-only under case-grouped folds; complementarity conditional and case-fragile (Spearman 0.544) |
+| [AN-034](../analyses/an-034-sequential-gatekeeping-envelope.md) (sequential envelope) | Direct | done | Award ranks where to look, bid evaluates what is found; combined number is leakage- and case-sensitive, not an operational guarantee |
 
 ## Open tests
 
@@ -125,22 +123,20 @@ therefore supports — but does not require — the gatekeeping deployment of
 - Cross-jurisdiction replication of the same incremental DeLong tests
   on ComprasNet federal or a non-BR procurement panel.
 
-## Why not 🟢 Confirmed?
+## Why not confirmed?
 
-H6's within-data evidence is uniquely strong:
+Under the non-circular label H6's within-data evidence is **mixed**, not clean:
 
-- DeLong p = 1.2 × 10⁻²⁶ on the joint complementarity gain (Imhof + FL
-  vs Imhof) is at the level where statistical artifact essentially
-  cannot explain the result. The two feature sets carry independent
-  signal in an information-theoretic sense.
-- The sequential envelope demonstrates the complementarity at the
-  operational level: 74% of joint recall at 17% bid-microdata cost.
-- The Shapley-like decomposition pinpoints that continuous participation
-  is the load-bearing complement (+0.154 over Imhof base), while
-  FL14 binary's marginal beyond continuous is only +0.003.
+- On the pooled diagnostic the two layers are comparable (award 0.760 ≈ bid
+  0.717); there is no clear ceiling above both.
+- Combining the layers beats award on PR under random CV (0.188 vs 0.143) but
+  **falls below award-only once folds are grouped by case** (0.103 vs 0.143) —
+  the combined gain does not survive case-grouped folds.
+- The combined number is an in-sample full-observability diagnostic and is
+  leakage- and case-sensitive, so it is read as conditional complementarity,
+  not as an operational guarantee or a dominance claim.
 
-Two artifact families nonetheless remain untested by the within-data
-evidence:
+Two artifact families further remain untested by the within-data evidence:
 
 1. **BEC-specific bid-data structure.** The Imhof features
    (cv_mean, cv_sd, skew_mean, kurt_mean, spread_mean, minmax_mean,
@@ -151,16 +147,16 @@ evidence:
    artifact. Imhof's original work uses Swiss data with different bid
    conventions; the complementarity might look different there.
 
-2. **Same-sample CADE label structure.** Both Imhof and FL are
-   evaluated against the same 193-cobidder positive class. If CADE
-   adjudications systematically select cartels where loser-side
-   participation differs from bid distribution (e.g., cases driven
-   by tip-offs about bid patterns rather than participation
-   patterns), the complementarity could be specific to CADE's
+2. **Same-sample CADE label structure.** Both the bid-moment benchmark
+   and the award layer are evaluated against the same 651-cobidder
+   positive class. If CADE adjudications systematically select cartels
+   where loser-side participation differs from bid distribution (e.g.,
+   cases driven by tip-offs about bid patterns rather than participation
+   patterns), the conditional complementarity could be specific to CADE's
    adjudication selection.
 
-Both can only be ruled out by replicating the incremental DeLong tests
-on a non-BEC panel with an independent cartel anchor. Until that
-exists, H6 stays at **Partial (strongly supported)**, consistent with
+Both can only be assessed by replicating the incremental tests on a
+non-BEC panel with an independent cartel anchor. Under the current
+evidence H6 is **Mixed (conditional, case-fragile)**, consistent with
 the project-wide rule documented in
 [findings/index.md](../findings/index.md).

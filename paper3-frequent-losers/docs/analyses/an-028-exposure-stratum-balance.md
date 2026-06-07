@@ -18,6 +18,13 @@ design:
   notes: "Crucial cross-cut for H3: within the FL stratum, cobidders are still distinct from non-cobidder FLs (d 0.19–0.66) — so the FL14 cutoff alone is not what concentrates the signal. The within-FL discrimination has economic content."
 ---
 
+!!! warning "Superseded numbers — canonical-target re-estimation (June 4, 2026)"
+    This analysis note documents a historical run under the earlier validation label.
+    On June 4, 2026 the paper adopted a reproducible, non-circular target (651
+    always-loser cobidders; frequent-loser flag never used in the label) and
+    re-estimated every result. Where this page conflicts with the
+    [paper](../paper.pdf) or the [changelog](../changelog.md), **the paper wins**.
+
 # AN-028: Exposure-stratum balance — cobidders vs reference classes
 
 !!! abstract "Intuition (plain-language)"
@@ -105,8 +112,8 @@ being a frequent loser):
 2. Cobidders have **more focal portfolios** (HHI d 0.39, n_item_groups
    d −0.32) — qualitative difference in operations.
 3. Cobidders are **8× more likely to face direct CADE defendants in a
-   tender** (d 0.46) — a structural feature of cartel exposure, not a
-   volume artifact.
+   tender** (d 0.46) — a structural feature of adjudication-anchored
+   exposure, not a volume artifact.
 4. Cobidders have **lower repeat-buyer shares** (d −0.38) — they do
    not display the "stable supplier" profile of non-cobidder FLs.
 
@@ -118,7 +125,9 @@ volume conditioning.
 
 For [H:cobidder-profile-distinct](../hypotheses/cobidder-profile-distinct.md),
 this is the formal balance table that supports the §5 economic profile
-of cartel-adjacent losers. AN-008 and AN-009 quote selected numbers
+of the adjudication-anchored exposure stratum (cobidders are firms with
+adjudication-anchored exposure to direct CADE defendants, not confirmed
+cartel members). AN-008 and AN-009 quote selected numbers
 from this table; this AN documents the full battery.
 
 ## Follow-ups

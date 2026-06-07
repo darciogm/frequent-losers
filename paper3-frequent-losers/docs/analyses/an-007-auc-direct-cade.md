@@ -18,6 +18,13 @@ design:
   notes: "The null is the predicted finding under loser-side scope. A non-null result would undermine the scope reading and convert the screen into an overclaim."
 ---
 
+!!! warning "Superseded numbers — canonical-target re-estimation (June 4, 2026)"
+    This analysis note documents a historical run under the earlier validation label.
+    On June 4, 2026 the paper adopted a reproducible, non-circular target (651
+    always-loser cobidders; frequent-loser flag never used in the label) and
+    re-estimated every result. Where this page conflicts with the
+    [paper](../paper.pdf) or the [changelog](../changelog.md), **the paper wins**.
+
 # AN-007: AUC against direct CADE defendants
 
 !!! abstract "Intuition (plain-language)"
@@ -65,9 +72,10 @@ under temporal holdout (0.511). All within sampling distance of 0.5
 
 The result is exactly what the loser-side scope predicts. Direct
 defendants are winner-heavy by construction — the rank cannot cover
-them, and it shouldn't. This is the **anti-claim** that disciplines the
-rest of the paper: it rules out the generic-cartel-detector reading and
-pins the interpretation to loser-side adjacency. The 95% CI includes
+them, and it shouldn't. This is the **scope boundary by design** that
+disciplines the rest of the paper: it rules out any reading of the screen
+as a cartel detector and pins the interpretation to adjudication-anchored
+exposure on the loser side. The 95% CI includes
 0.5; the null survives every audit variant
 ([AN-014](an-014-leakage-audit-d3.md): 0.506 raw, 0.511 temporal).
 

@@ -2,50 +2,65 @@
 paper: frequent-losers
 id: h1
 slug: cobidder-concentration
-title: "The frequent-loser ranking concentrates CADE-adjacent cobidders"
+title: "The ranking concentrates adjudication-anchored exposure above mechanical opportunity"
 cluster: A
 paper_section: "§3 + §4"
-status: "partial (strongly supported)"
-last_updated: 2026-05-22
+status: "not confirmed (opportunity explains it)"
+last_updated: 2026-06-04
 ---
 
-# H:cobidder-concentration — The frequent-loser ranking concentrates CADE-adjacent cobidders
+<!-- REVISED: canonical-target reframe 2026-06-04 -->
+<!-- REVISED: hostile-review armor 2026-06-04 -->
 
-If the award-layer signal is informative for enforcement triage, then firms
+# H:cobidder-concentration — The ranking concentrates adjudication-anchored exposure above mechanical opportunity
+
+If the award-layer score orders forensic priority informatively, then firms
 that always lose but bid alongside direct CADE defendants in adjudicated
-cartel environments should appear disproportionately in the upper-loser
-stratum identified by persistent zero-win participation. The hypothesis is
-about *loser-side adjacency*, not about cartel membership: the ranking
-should concentrate cobidders, not direct defendants.
+cartel environments (their **adjudication-anchored exposure**, captured by the
+cobidder label) should rank higher in the always-loser stratum **by more than
+participation opportunity alone would predict**. The hypothesis is about
+*loser-side exposure to legal anchors*, not cartel membership: the ranking
+should order cobidders, not direct defendants — and the genuine question is
+how much of that ordering survives once mechanical opportunity is netted out.
 
 !!! abstract "Intuition (plain-language)"
-    Among always-loser firms in Brazilian procurement, the ones that bid most often (frequent losers) concentrate disproportionately near cartels formally adjudicated by Brazil's antitrust authority. The hypothesis is the paper's headline empirical claim. Using only award records — no expensive bid-level data — the screen recovers 131 of 193 adjudicated cobidders. The economic logic: cartels need cover bidders to manufacture the appearance of competition, and those cover bidders leave a persistent footprint of zero-win participation.
+    Among always-loser firms in Brazilian procurement, the ones that bid most often (frequent losers) sit disproportionately near cartels formally adjudicated by Brazil's antitrust authority. But almost all of that raw proximity is *opportunity*: firms that bid a lot mechanically end up near anyone, including CADE defendants. The honest question is what is left after you net opportunity out. The answer under the reproducible non-circular label: a raw concentration that looks high (ROC 0.761, lift 5.6×) is mechanical, anchor-agnostic co-participation exposure — genuine label-blind opportunity ranks the label at only 0.553 (ranking by *observed* contact reaches 0.90, but that is mechanical label encoding, not a competing model); the signal *inside* a fixed opportunity stratum is 0.471 — at chance — and the marginal nested increment (+0.010, p = 0.013) does not survive the permutation tests. Cheap award records concentrate *where to look first*; they do not prove cover-bidding, and net of opportunity they carry no robust residual.
 
 
-> **Evidence strength: Partial (strongly supported).**
-> Eight converging lines of evidence on the BEC 2009–2019 panel:
-> (i) headline AUC 0.924 [0.921, 0.926] for FL14, 0.939 [0.932, 0.946]
-> for continuous log_tc, recovering 131/193 adjudicated cobidders
+> **Evidence strength: Not confirmed (opportunity explains it).**
+> The honest decomposition on the BEC 2009–2019 panel under the
+> non-circular 651-cobidder label:
+> (i) raw concentration is mostly **opportunity exposure** — an
+> exposure-only model reaches ROC ≈ 0.90 unconditionally (0.713 on the
+> exposed subset), so the raw numbers are exposure-inflated, not
+> discriminating power
 > ([AN-004](../analyses/an-004-cobidder-baseline.md));
-> (ii) cutoff sweep across 19 thresholds with a clean inverted-U
-> peaking at FL13 (0.924) and FL10-FL15 plateau ≥ 0.90
-> ([AN-025](../analyses/an-025-cutoff-sweep-robustness.md));
-> (iii) subsample robustness: AUC 0.89–0.96 across full / data-rich /
-> low-bid-count / high-bid-count subsamples
-> ([AN-026](../analyses/an-026-subsample-robustness.md));
-> (iv) continuous dominance: DeLong Z = −4.38, p = 1.2 × 10⁻⁵
-> ([AN-011](../analyses/an-011-horse-race-continuous.md));
-> (v) volume placebo: permutation AUC 0.713–0.783 ≪ 0.924
+> (ii) the **within-stratum signal is at chance** — ROC 0.471
+> (FL14 0.507); the nested increment over exposure is only **+0.010**
+> (DeLong p = 0.013), marginal at best
+> ([AN-004](../analyses/an-004-cobidder-baseline.md));
+> (iii) the marginal increment **does not survive permutation**: matched-
+> stratum label permutation p = 0.127 (ns), FL-enrichment within matched
+> strata p = 0.067 (ns)
 > ([AN-005](../analyses/an-005-sham-fl-permutation.md));
-> (vi) leakage audit: raw 0.995 → OOF 0.891 → temporal-holdout 0.864
+> (iv) cutoff sweep and subsample robustness describe the raw concentration,
+> not a residual signal
+> ([AN-025](../analyses/an-025-cutoff-sweep-robustness.md),
+> [AN-026](../analyses/an-026-subsample-robustness.md));
+> (v) negative controls corroborate the opportunity account: real ≈ placebo
+> (p = 0.46), high-volume-winner null *above* real (p = 0.91)
+> ([AN-005](../analyses/an-005-sham-fl-permutation.md));
+> (vi) leakage audit: in-sample item-level numbers attenuate sharply under
+> out-of-fold and temporal holdout
 > ([AN-014](../analyses/an-014-leakage-audit-d3.md));
-> (vii) strict ex ante (train 09-16 → test 17-19): firm AUC 0.767
-> ([AN-006](../analyses/an-006-strict-prospective-holdout.md));
-> (viii) continuous-only thesis without FL14 (gate D3 passes,
+> (vii) strict ex ante (train 09-16 → test 17-19): the ranking **fails on
+> the full universe** (ROC 0.474), surviving only as an incumbent-pool
+> residue (ROC 0.684)
+> ([AN-006](../analyses/an-006-strict-prospective-holdout.md),
 > [AN-017](../analyses/an-017-gate-d3.md)).
-> Promotion to 🟢 (**Confirmed**) requires independent replication on a
-> non-BEC procurement panel — not satisfied by any of the above, all of
-> which share the BEC × CADE data lake.
+> The hypothesis is **not confirmed** under the non-circular label: net of
+> opportunity there is no robust residual ordering. The deflationary
+> decomposition is itself the contribution.
 
 ## Theory
 
@@ -61,16 +76,22 @@ membership.
 ## Prediction
 
 The frequent-loser stratum (binary `FL14` rule, top-loss-intensity quantile
-of the continuous score) should contain a disproportionate share of CADE
-cobidders relative to the baseline rate in the always-loser population.
+of the continuous score) should, under the hypothesis, rank cobidders above
+other always-losers **by more than mechanical opportunity predicts**. The
+honest claim is the within-stratum increment over an exposure-only benchmark —
+which, under the non-circular label, is at chance (within-stratum ROC 0.471;
+nested increment +0.010, ns across permutation designs).
 
 ## Competing prediction
 
-**Volume-only explanation.** Firms that bid in many tenders mechanically have
-more chances of co-bidding alongside any subset of firms, including CADE
-defendants. The cobidder concentration could reflect raw participation
-volume rather than a signal-carrying loser-side footprint. Adjudication
-disciplines this in [H:exposure-discipline](exposure-discipline.md).
+**Opportunity-only explanation.** Firms that bid in many tenders mechanically
+have more chances of co-bidding alongside any subset of firms, including CADE
+defendants. Almost all of the raw concentration is exactly this — an
+exposure-only model reaches ROC ≈ 0.90 unconditionally. The threat the ranking
+must survive is that *nothing* is left after opportunity is netted out. The
+discipline in [H:exposure-discipline](exposure-discipline.md) shows that, under
+the non-circular label, **the opportunity-only explanation prevails**: no
+robust residual ordering survives.
 
 ## Case evidence
 
@@ -85,10 +106,13 @@ the [manuscript](../paper.md).
 - *Outcome*: cobidder indicator (1 if firm co-bid with a direct CADE
   defendant in an adjudicated environment).
 - *Variation*: position in the FL stratum vs other always-loser firms.
-- *Specification*: AUC of `FL14` (binary) and `log(1+tenders_count)`
-  (continuous) over always-losers, with cobidders as the positive class.
+- *Specification*: AUC of the score `s = log(1+T)` (and the administrative
+  `FL14 = T ≥ 14` cut) over always-losers, with cobidders as the positive
+  class — reported both raw and **net of an opportunity-exposure benchmark**,
+  so the genuine within-stratum increment is isolated.
 - *Identification*: scope of the loser-side ranking is restricted to
-  zero-win firms; baseline benchmark before any audit discipline.
+  zero-win firms; the headline object is the exposure-adjusted increment, not
+  the exposure-inflated raw concentration.
 
 ## Data requirements and limitations
 
@@ -101,15 +125,15 @@ to CADE-adjudicated environments in São Paulo.
 
 | Analysis | Bearing | Status | Key takeaway |
 |---|---|---|---|
-| [AN-001](../analyses/an-001-zero-win-rank.md) (construction) | Setup | done | 16,843 always-losers; FL14 cutoff = 14 (median+1.5×IQR=13.5); 2,735 FL firms (16.2%) |
-| [AN-004](../analyses/an-004-cobidder-baseline.md) (baseline concentration) | Supports | done | FL14 AUC 0.924; continuous 0.939; 131/193 cobidder recovery |
-| [AN-005](../analyses/an-005-sham-fl-permutation.md) (volume placebo) | Supports | done | Permutation AUC 0.713–0.783 ≪ 0.924 observed |
-| [AN-006](../analyses/an-006-strict-prospective-holdout.md) (timing discipline) | Supports | done | Strict ex ante firm AUC 0.767 [0.734, 0.800] |
-| [AN-011](../analyses/an-011-horse-race-continuous.md) (continuous vs binary) | Supports | done | Continuous dominates FL14, DeLong p = 2e-5 |
-| [AN-014](../analyses/an-014-leakage-audit-d3.md) (leakage audit) | Supports | done | Raw 0.995 → OOF 0.891 → temporal 0.864; attenuation honest |
+| [AN-001](../analyses/an-001-zero-win-rank.md) (construction) | Setup | done | 16,843 always-losers; FL14 = T ≥ 14 (median+1.5×IQR, administrative cut); 2,735 FL firms; canonical label = 651 cobidders (341 FL / 310 non-FL), not FL-conditioned |
+| [AN-004](../analyses/an-004-cobidder-baseline.md) (exposure decomposition) | Against | done | Raw concentration is opportunity (exposure-only ROC ≈ 0.90); within-stratum signal 0.471 (≈chance), nested increment +0.010 (DeLong p = 0.013) |
+| [AN-005](../analyses/an-005-sham-fl-permutation.md) (permutation + neg. controls) | Against | done | Matched permutation p = 0.127 (ns), FL-enrichment p = 0.067 (ns); real ≈ placebo (p = 0.46) — opportunity explains the concentration |
+| [AN-006](../analyses/an-006-strict-prospective-holdout.md) (timing discipline) | Against | done | Strict ranking fails at the full universe (ROC 0.474); incumbent-pool residue only (ROC 0.684) |
+| [AN-011](../analyses/an-011-horse-race-continuous.md) (continuous vs binary) | Mixed | done | Continuous edges FL14 within stratum but both are at chance net of opportunity |
+| [AN-014](../analyses/an-014-leakage-audit-d3.md) (leakage audit) | Supports | done | In-sample item-level numbers attenuate sharply under OOF / temporal holdout |
 | [AN-017](../analyses/an-017-gate-d3.md) (continuous-only thesis) | Supports | done | Thesis holds without FL14 |
 | [AN-023](../analyses/an-023-theory-operationalization-audit.md) (operationalization audit) | Supports | done | FL14 not ontologically privileged; continuous is the primitive |
-| [AN-025](../analyses/an-025-cutoff-sweep-robustness.md) (cutoff sweep) | Supports | done | 19-threshold inverted-U; FL10-FL15 plateau ≥ 0.90; peak FL13 = 0.924 |
+| [AN-025](../analyses/an-025-cutoff-sweep-robustness.md) (cutoff sweep) | Supports | done | The raw concentration is not an artifact of one administrative cut (inverted-U across thresholds); but the raw lift is opportunity, not a residual signal |
 | [AN-026](../analyses/an-026-subsample-robustness.md) (subsample robustness) | Supports | done | AUC 0.89–0.96 across full / data-rich / low-bid / high-bid subsamples |
 
 ## Open tests

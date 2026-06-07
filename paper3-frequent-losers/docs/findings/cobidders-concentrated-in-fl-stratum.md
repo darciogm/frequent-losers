@@ -2,42 +2,68 @@
 paper: frequent-losers
 ---
 
-# CADE-adjacent cobidders concentrate in the FL14 stratum
+# Raw ranking concentrates adjudication-anchored cobidders — but the lift is opportunity
+
+<!-- REVISED: canonical-target reframe 2026-06-04 -->
+<!-- REVISED: hostile-review armor 2026-06-04 -->
 
 !!! abstract "Intuition (plain-language)"
-    A bid-rigging ring needs losers: someone has to submit losing bids on purpose so the auction looks competitive while the pre-chosen firm wins. Those cover bidders leave a footprint — they show up over and over and never win. So when we rank firms purely by how persistently they lose, the firms that bid next to convicted cartelists rise to the top of the list (AUC ≈ 0.92). The signal is strong precisely because losing-on-purpose is the cover bidder's job description.
+    A bid-rigging ring needs losers: someone has to submit losing bids so the auction looks competitive while the pre-chosen firm wins. Those firms leave a footprint — they show up over and over and never win. So when we rank firms purely by how persistently they lose, the firms that bid next to convicted cartelists rise toward the top. But almost all of that lift is simply *opportunity*: firms that bid a lot have more chances to sit next to anyone. Once you hold opportunity fixed and ask whether *losing intensity* adds anything beyond raw exposure, essentially nothing survives — the within-comparison ordering is at chance. The honest finding is that the raw concentration is mechanical, anchor-agnostic co-participation exposure, not a residual cartel signal.
 
-🟢 In São Paulo's BEC procurement platform (2009–2019), always-loser
-firms that bid alongside direct CADE defendants in adjudicated cartel
-environments concentrate disproportionately inside the **FL14 stratum**
-identified by persistent zero-win participation. The award-layer
-ranking achieves **AUC = 0.924 [0.921, 0.926]** against the cobidder
-target with the binary FL14 indicator, and **AUC = 0.939 [0.932, 0.946]**
-with the continuous log(1 + tenders_count) score
-([AN-004](../analyses/an-004-cobidder-baseline.md),
-[AN-011](../analyses/an-011-horse-race-continuous.md)).
+🟡 In São Paulo's BEC procurement platform (2009–2019), the
+frequent-loser ranking concentrates **adjudication-anchored cobidders**
+inside the always-loser stratum. The canonical validation label is the
+**651 always-loser cobidders** — unique always-loser firms that share at
+least one BEC tender-item with a BEC-active direct CADE defendant; direct
+defendants are excluded and the frequent-loser flag is **never used to
+construct the label** (composition: 341 FL14 / 310 non-FL). "Cobidder"
+denotes adjudication-anchored exposure, never membership. The raw ranking
+separates them (ROC 0.761, lift@500 ≈ 5.6×), but that separation is
+almost entirely *opportunity*.
 
-Under the gatekeeping deployment, FL14 recovers **131 of 193 adjudicated
-cobidders (68%)** while cutting the bid-microdata pool by **83%** — the
-cost-of-evidence headline of §6 of the
-[manuscript](../paper.md).
+**The decomposition is the finding.** Ranking firms by *observed* contact
+reaches **ROC ≈ 0.90**, but that figure is **mechanical label encoding** —
+a cobidder *is*, by construction, a firm with positive contact — reported
+only to expose inflation, not a competing model. The honest, genuinely
+**label-blind opportunity benchmark is ROC ≈ 0.553**
+([AN-004](../analyses/an-004-cobidder-baseline.md); armor pack). Once we
+condition on opportunity (a within-stratum comparison that holds
+participation fixed),
+the loss-intensity score retains only **ROC = 0.471 — indistinguishable
+from chance** (FL14 within-stratum 0.507), and the nested increment of
+the score over exposure alone is **+0.010** (DeLong p = 0.013;
+[AN-011](../analyses/an-011-horse-race-continuous.md)). That marginal
+positive does not survive the permutation designs: matched-stratum label
+permutation gives p = 0.127 (ns), and FL-enrichment within matched strata
+gives p = 0.067 (ns). **There is no robust residual signal net of
+opportunity.**
 
-The concentration is the **loser-side adjacency** result that motivates
-the sequential architecture: the award layer prioritizes where the
-forensic stage should start, without claiming to identify cartelists.
+FL14 *enrichment* is descriptive and real at the unconditional level —
+P(cobidder | FL14) = 12.5% vs 2.2% for non-FL always-losers (≈5.7×) — but
+this enrichment is mechanical, anchor-agnostic co-participation exposure
+and is **not significant within matched opportunity strata** (p = 0.067). The
+concentration is what motivates the sequential architecture: the cheap
+award layer **concentrates forensic priority** for where to start the
+costly bid-recovery stage — it does not identify cartelists.
 
-**Caveat.** The cobidder set (193 firms) is defined relative to CADE-
-adjudicated cartel environments in 2009–2019; the loser-side scope is
-therefore tied to adjudication coverage rather than to a universal
-cartel population. The reading is 🟢 because the result survives every
-audit ([AN-005](../analyses/an-005-sham-fl-permutation.md),
+**Caveat.** The cobidder set (651 firms) is defined relative to
+CADE-adjudicated cartel environments in 2009–2019; the scope is tied to
+adjudication coverage rather than to a universal cartel population. The
+reading is 🟡 because the within-stratum residual is at chance, the
+permutation and enrichment tests are non-significant, and the result is
+single-source on BEC. An anchor-agnostic armor battery confirms the
+verdict is not an artifact: a planted positive control ($O_i$) recovers
+within-stratum AUC 0.953 (so the test is not dead by construction) and the
+permutation test has power 0.97 at within-AUC 0.55, bounding any residual
+below ≈ 0.55. Negative controls corroborate the opportunity
+account (real ≈ placebo, p = 0.46; high-volume-winner null *above* real,
+p = 0.91;
+[AN-005](../analyses/an-005-sham-fl-permutation.md),
 [AN-006](../analyses/an-006-strict-prospective-holdout.md),
 [AN-013](../analyses/an-013-precision-at-k-audit.md),
-[AN-014](../analyses/an-014-leakage-audit-d3.md)) and the disconfirming
-null against direct defendants
-([AN-007](../analyses/an-007-auc-direct-cade.md)) is the predicted
-finding. Promotion to a generalizable claim would require independent
-replication on a non-BEC procurement panel.
+[AN-014](../analyses/an-014-leakage-audit-d3.md)). The null against direct
+defendants ([AN-007](../analyses/an-007-auc-direct-cade.md)) is the
+predicted scope boundary.
 
 **Sources.**
 
@@ -58,8 +84,14 @@ replication on a non-BEC procurement panel.
 - *Cross-refs*:
   [H:cobidder-concentration](../hypotheses/cobidder-concentration.md);
   [docs/results.md](../results.md).
-- *Macros*: `\valAUCFLfirm` (0.924), `\valAUClogtc` (0.939),
-  `\valCobidders` (193), `\valFL` (2,735), `\valCobidShareFL` (7.1%).
+- *Macros*: `\valExpOnlyAUC` (0.713 exposed / 0.9045 ranking by *observed*
+  contact — **mechanical label encoding, not a competing model**),
+  `\valArmorLabelBlind` (0.553 genuine label-blind opportunity),
+  `\valArmorPosControl` (0.953 positive control), `\valExpWithinAUC`
+  (0.471 within-stratum, ≈chance), `\valExpIncrement` (+0.010 nested
+  increment, p = 0.013), `\valMainCobidders` (651), `\valMainCobFL` (341),
+  `\valMainCobNonFL` (310), `\valFL` (2,735).
 - *Validation*: backing scripts `scripts/02_analysis.R`,
-  `scripts/12_build_item_value.R`, `scripts/33_auc_direct_cade.R`,
+  `scripts/12_build_item_value.R`, `scripts/12_audit_armor.R`,
+  `scripts/12b_audit_armor_fixup.R`, `scripts/33_auc_direct_cade.R`,
   `scripts/34_horse_race_fl_continuous.R`.
