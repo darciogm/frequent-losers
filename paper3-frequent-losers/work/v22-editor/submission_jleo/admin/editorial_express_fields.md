@@ -115,5 +115,5 @@ D44, D73, H57, K21, L41
   only to OUP developing-nations lists A/B; **Brazil is likely NOT exempt** →
   **[AUTHOR INPUT REQUIRED]**: confirm fee/waiver eligibility before payment.
 - **Accepted file formats:** PDF / Word / RTF.
-- **Style:** abstract ≤150 words (satisfied, 142); JEL required (provided);
+- **Style:** abstract ≤150 words (satisfied, 146; reconfirm in submission tool); JEL required (provided);
   double-spaced, 1.25in margins; Chicago 15th edition references.

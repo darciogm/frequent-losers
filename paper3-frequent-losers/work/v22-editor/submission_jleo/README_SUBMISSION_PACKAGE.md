@@ -10,9 +10,9 @@
 
 | Folder | File | Notes |
 |---|---|---|
-| `manuscript/` | `..._Manuscript.pdf` | **Upload this** — double-spaced, 1.25″ margins, 52 pp |
-| `manuscript/` | `..._Manuscript_compact_backup.pdf` | Reviewer-friendly 1.48-spacing, 39 pp (backup only) |
-| `appendix/` | `..._Appendix.pdf` | Online appendix, double-spaced, 1.25″, 43 pp (31 pp compact) |
+| `manuscript/` | `..._Manuscript.pdf` | **Upload this** — double-spaced, 1.25″ margins, 61 pp |
+| `manuscript/` | `..._Manuscript_compact_backup.pdf` | Reviewer-friendly 1.48-spacing, 45 pp (backup only) |
+| `appendix/` | `..._Appendix.pdf` | Online appendix, double-spaced, 1.25″, 39 pp (28 pp compact) |
 | `cover_letter/` | `..._CoverLetter.pdf` + `.md` | One page; `_short.md` = Editorial Express text field |
 | `online_supplement/` | `MANIFEST.csv`, `APPENDIX_MOVED_MANIFEST.csv`, `README.md` | Full diagnostic grids/figures relocated during compression |
 | `replication/` | `README.md`, `SCRIPT_ORDER.md`, `DATA_CONFIDENTIALITY.md`, `OUTPUTS_MAP.csv`, `MANIFEST.csv` | Code/data mapping; BEC microdata not redistributable |
