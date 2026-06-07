@@ -22,7 +22,7 @@ That response matters because it works against the price increase. If the
 SME pool were held fixed at its pre-policy size and composition, the
 set-aside would look more expensive than the realized post-policy
 environment. The issue is not whether SMEs appear, but whether the
-resulting protected pool can replace the non-SME bidders that disciplined
+resulting pool can replace the non-SME bidders that disciplined
 the open-auction price.
 
 \subsection{Exclusion dominates}
@@ -66,34 +66,48 @@ In pharmaceutical markets, the exclusion component is larger in levels:
 \label{tab:price_decomp_v8}
 \scriptsize
 \setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lcccccccc}
+\begin{tabular}{lccccccc}
 \toprule
- & \multicolumn{3}{c}{Simulated price} & \multicolumn{5}{c}{Decomposition} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-9}
+ & \multicolumn{3}{c}{Simulated price} & \multicolumn{4}{c}{Decomposition} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-8}
 Class & $S_1$ & $S_2$ & $S_3$ &
-$S_2-S_1$ & $S_3-S_2$ & $S_3-S_1$ & Excl./net & Abs. excl. share \\
+$S_2-S_1$ & $S_3-S_2$ & $S_3-S_1$ & Abs. excl. share \\
 \midrule
-\multicolumn{9}{l}{\textit{Main result}} \\
+\multicolumn{8}{l}{\textit{Main result}} \\
 Non-pharma
 & \bneMeanSoneNp{} & \bneMeanStwoNp{} & \bneMeanSthreeNp{}
 & +\bneEffectIntensNp{} & \bneEffectEntryNp{}
-& +\bneEffectTotalNp{} & \bneIntensRelNetNp{}\% & \bneShareIntensNp{}\% \\
+& +\bneEffectTotalNp{} & \bneShareIntensNp{}\% \\
+ & & & & [\bneCiExclLoNp{}, \bneCiExclHiNp{}]
+& [\bneCiPoolLoNp{}, \bneCiPoolHiNp{}]
+& [\bneCiTotalLoNp{}, \bneCiTotalHiNp{}]
+& [\bneCiShareLoNp{}, \bneCiShareHiNp{}] \\
 \addlinespace
-\multicolumn{9}{l}{\textit{Boundary case (\S\ref{sec:pharma_scope})}} \\
+\multicolumn{8}{l}{\textit{Boundary case (\S\ref{sec:pharma_scope})}} \\
 Pharma
 & \bneMeanSonePh{} & \bneMeanStwoPh{} & \bneMeanSthreePh{}
 & +\bneEffectIntensPh{} & \bneEffectEntryPh{}
-& +\bneEffectTotalPh{} & \bneIntensRelNetPh{}\% & \bneShareIntensPh{}\% \\
+& +\bneEffectTotalPh{} & \bneShareIntensPh{}\% \\
+ & & & & [\bneCiExclLoPh{}, \bneCiExclHiPh{}]
+& [\bneCiPoolLoPh{}, \bneCiPoolHiPh{}]
+& [\bneCiTotalLoPh{}, \bneCiTotalHiPh{}]
+& [\bneCiShareLoPh{}, \bneCiShareHiPh{}] \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
 \item $S_1$ is the open auction with the pre-policy bidder pool. $S_2$ is the
 SME-only auction holding the pre-policy SME pool fixed. $S_3$ is the SME-only
 auction using the observed post-policy SME pool. Prices are simulated
-$E[c_{(2)}]$ values normalized by the buyer reference price. ``Excl./net''
-reports $(S_2-S_1)/(S_3-S_1)$. ``Abs. excl. share'' reports
-$|S_2-S_1|/(|S_2-S_1|+|S_3-S_2|)$, where $S_3-S_2$ is the
-protected-pool offset.
+$E[c_{(2)}]$ values normalized by the buyer reference price. ``Abs. excl.
+share'' reports $|S_2-S_1|/(|S_2-S_1|+|S_3-S_2|)$, where $S_3-S_2$ is the
+protected-pool offset; the exclusion-to-net ratio $(S_2-S_1)/(S_3-S_1)$
+discussed in the text exceeds one because the two components offset. Brackets report 95~percent cluster-bootstrap
+intervals (B$=$500, auctions resampled with replacement within
+period\,$\times$\,class strata, recovered primitives refit on each
+replicate); endpoints are the 2.5 and 97.5 percentiles. Across replicates
+the offset is negative in 99.8~percent, the net effect positive in
+100~percent, and the exclusion share above one-half in 100~percent, in both
+classes.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -102,11 +116,15 @@ Because the protected-pool offset works in the opposite direction, I
 summarize dominance using both the exclusion-to-net ratio and the exclusion
 share of absolute component magnitudes. In non-pharmaceutical markets, the
 exclusion component is \bneIntensRelNetNp{} percent of the net effect and
-\bneShareIntensNp{} percent of the sum of absolute component magnitudes.
+\bneShareIntensNp{} percent of the sum of absolute component magnitudes,
+with a 95~percent bootstrap interval on that share of
+[\bneCiShareLoNp{}, \bneCiShareHiNp{}].
 Pharmaceutical procurement shows the same qualitative pattern at higher
 magnitudes (\bneIntensRelNetPh{} and \bneShareIntensPh{} percent), under
-the scope conditions of Section~\ref{sec:pharma_scope}. The dominant force
-is therefore the loss of the non-SME price-forming pool, not a failure of
+the scope conditions of Section~\ref{sec:pharma_scope}. The intervals keep
+the exclusion component above one-half of the absolute magnitude and the
+offset strictly negative in essentially every replicate, so the dominant
+force is the loss of the non-SME price-forming pool, not a failure of
 protected firms to respond.
 
 \subsection{The protected-pool offset combines entry and composition}
@@ -167,8 +185,8 @@ willingness to supply, interpreted as cost under the maintained model. The
 mechanism is that the set-aside changes which order statistic forms the
 price. In the open auction, non-SMEs remain in the pool and discipline the
 second-lowest willingness-to-supply draw. In the SME-only auction, that
-discipline is removed. The post-policy protected pool pushes back against
-the loss, but it does not recreate the full-pool benchmark.
+discipline is removed. The post-policy pool pushes back against
+the loss, but does not recreate the full-pool benchmark.
 
 This price-formation result carries directly into welfare. A policy that
 supports SMEs by excluding non-SMEs buys redistribution by weakening the

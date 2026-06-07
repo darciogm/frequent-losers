@@ -128,10 +128,10 @@ change in the bidder pool, not universal exclusion.
 \toprule
  & Non-pharma & Pharma \\
 \midrule
-Pre: SME bidders per auction & \bneNsmePreNp{} & \bneNsmePrePh{} \\
-Pre: non-SME bidders per auction & \bneNnsPreNp{} & \bneNnsPrePh{} \\
-Post: SME bidders per auction & \bneNsmePostNp{} & \bneNsmePostPh{} \\
-Post: non-SME bidders per auction & \nonSmePostNp{} & \nonSmePostPh{} \\
+Pre: SME bidders per auction & \bneNsmePreNp{} (\bneNsmePreSdNp{}) & \bneNsmePrePh{} (\bneNsmePreSdPh{}) \\
+Pre: non-SME bidders per auction & \bneNnsPreNp{} (\bneNnsPreSdNp{}) & \bneNnsPrePh{} (\bneNnsPreSdPh{}) \\
+Post: SME bidders per auction & \bneNsmePostNp{} (\bneNsmePostSdNp{}) & \bneNsmePostPh{} (\bneNsmePostSdPh{}) \\
+Post: non-SME bidders per auction & \nonSmePostNp{} (\bneNnsPostSdNp{}) & \nonSmePostPh{} (\bneNnsPostSdPh{}) \\
 \addlinespace
 Change in SME bidders & \bneNsmeDeltaNp{} & \bneNsmeDeltaPh{} \\
 Change in non-SME bidders & \bneNnsDeltaNp{} & \bneNnsDeltaPh{} \\
@@ -141,12 +141,42 @@ Change in non-SME bidders & \bneNnsDeltaNp{} & \bneNnsDeltaPh{} \\
 \item Sample: Group~65 Preg\~ao auctions in the \structuralWindowM-month window
 on each side of the \policyCutoffMonth{} cutoff, after the structural filters
 $c_\epsilon\in(0,\filterCepsUpper]$ and at least \filterMinBidders{} active
-firms. Counts are average distinct bidders per auction by type and class.
+firms. Counts are average distinct bidders per auction by type and class,
+with cross-auction standard deviations in parentheses.
 Post-period non-SME counts remain positive because the empirical SME-only
 take-up rate is \adherenceGsixtyfivePost{} percent, not 100 percent.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
+
+Figure~\ref{fig:participation_es_v8} shows the timing. It plots
+event-study coefficients on Group~65 around the cutoff for the two
+participation margins in the headline non-pharmaceutical class. Non-SME
+participation is flat through the year before the cutoff and then drops
+sharply at \policyCutoffMonth{} and stays down, a clean visible exit of
+non-SME bidders from eligible auctions. SME participation climbs after the
+cutoff rather than at it, consistent with the incomplete, phased take-up
+documented above: adherence builds toward \adherenceGsixtyfivePost{}
+percent over the post-period rather than switching on at once. Some
+pre-cutoff drift remains---the joint pre-trend test rejects flatness, and
+the platform-enablement months in late 2017 fall inside this window
+(Online Appendix~OA-B excludes them as a sensitivity)---so the figure is
+read for timing and direction, the role the reduced form plays throughout,
+not as a clean-trend causal estimate.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{event_study_participation.pdf}
+\caption[First-stage participation around the cutoff.]{\textit{First-stage
+participation around the cutoff.} Event-study coefficients
+$\hat\beta_k$ on Group~65 interacted with event month, for SME bidders per
+auction (top) and non-SME bidders per auction (bottom) in the
+non-pharmaceutical class, relative to \controlGroupCount{} never-treated
+groups, with item and month fixed effects and item-clustered 95~percent
+intervals. Reference month $k=-1$. The vertical line marks the
+\policyCutoffMonth{} cutoff.}
+\label{fig:participation_es_v8}
+\end{figure}
 
 The price-forming order statistic moves in the same direction. The DiD
 specification applied to $\log b^{(2)}$, the second-lowest bid in the
