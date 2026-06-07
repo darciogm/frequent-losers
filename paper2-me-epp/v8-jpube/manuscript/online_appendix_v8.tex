@@ -13,6 +13,8 @@
 \usepackage[hyphens]{url}
 \usepackage{xurl}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\graphicspath{{figures/}{../output/figures/}}
 
 \geometry{left=28mm,right=30mm,top=28mm,bottom=28mm}
 \onehalfspacing
@@ -23,6 +25,7 @@
 \renewcommand{\thesection}{OA-\Alph{section}}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand{\thetable}{OA-\arabic{table}}
+\renewcommand{\thefigure}{OA-\arabic{figure}}
 \renewcommand{\theequation}{OA-\arabic{equation}}
 \renewcommand{\refname}{References for the Online Appendix}
 \hypersetup{
@@ -37,6 +40,8 @@
 
 \InputIfFileExists{../output/values.tex}{}{%
   \PackageError{online_appendix_v8}{Missing generated macro registry}{Run the analysis pipeline before compiling the appendix.}}
+\InputIfFileExists{../output/values_es_participation.tex}{}{%
+  \PackageError{online_appendix_v8}{Missing participation event-study macros}{Run scripts/62_event_study_participation.R before compiling.}}
 
 \begin{document}
 
@@ -289,6 +294,34 @@ is \didAltCsEst, compared with a panel-aggregated TWFE estimate of
 price magnitude or a reduced-form welfare calculation. The decomposition uses
 the auction model and treats the DiD as external validation for timing and
 sign.
+
+Figure~\ref{fig:participation_es_oab} shows the participation first stage as
+an event study. Non-SME participation in the non-pharmaceutical class is
+roughly flat through the year before the cutoff and then falls sharply at
+\policyCutoffMonth{} and stays down; SME participation rises after the cutoff
+rather than at it, consistent with the phased take-up that reaches only
+\adherenceGsixtyfivePost{} percent. The joint pre-trend test rejects flatness
+for both margins (SME $F=\esPartSmePreFNp$, non-SME $F=\esPartNsPreFNp$),
+partly reflecting the platform-enablement months in late 2017 that fall inside
+the pre-window; the figure is read for timing and direction, the role the
+reduced form plays throughout, not as a clean-trend causal estimate. The
+non-SME exit is the sharpest single piece of timing evidence behind the
+exclusion channel.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{event_study_participation.pdf}
+\caption[First-stage participation around the cutoff.]{\textit{First-stage
+participation around the cutoff.} Event-study coefficients $\hat\beta_k$ on
+Group~65 interacted with event month, for SME bidders per auction (top) and
+non-SME bidders per auction (bottom) in the non-pharmaceutical class, relative
+to \controlGroupCount{} never-treated groups, with item and month fixed
+effects and item-clustered 95~percent intervals. Reference month $k=-1$; the
+vertical line marks the \policyCutoffMonth{} cutoff. Joint pre-trend tests:
+SME $F=\esPartSmePreFNp$ ($p=\esPartSmePrePNp$), non-SME $F=\esPartNsPreFNp$
+($p=\esPartNsPrePNp$).}
+\label{fig:participation_es_oab}
+\end{figure}
 
 \subsection{Within-Group-65 falsification: medications versus other supplies}\label{oa:within_g65}
 
