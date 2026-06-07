@@ -160,25 +160,6 @@ component dominate the price decomposition; it matters most for the
 pharmaceutical welfare ranking, which Section~\ref{sec:pharma_scope} treats
 explicitly as a boundary case.
 
-\subsection{Coordination}
-
-Coordination is the conduct threat that would most directly contaminate the
-drop-out interpretation: if repeated bidder pairs coordinate exits, drop-out
-prices may reflect conduct rather than willingness to supply
-\citep{kawainakabayashi2022}. The screens detect baseline clustering; the
-identifying question is narrower---does clustering intensify after non-SMEs
-are removed? It does not. The Conley-style close-pair screen
-\citep{conley2016} is stable in non-pharmaceuticals: realized shares are
-\collConleyRealPreNp{} percent before and \collConleyRealPostNp{} percent
-after the cutoff, against null means of \collConleyNullPreNp{} and
-\collConleyNullPostNp{}; in pharmaceuticals the realized share falls from
-\collConleyRealPrePh{} to \collConleyRealPostPh{} percent. Bajari--Ye-style
-ratios \citep{bajariye2003} show the same pattern: the non-pharmaceutical
-ratio falls from \collBYRatioPreNp{} to \collBYRatioPostNp{}, and the
-pharmaceutical ratio from \collBYRatioPrePh{} to \collBYRatioPostPh{}.
-Residual baseline clustering remains a limitation. Online Appendix~OA-D
-reports the coordination-screen table.
-
 \subsection{Static policy benchmark}
 
 The price-preference comparison is a static design benchmark, not an
@@ -209,49 +190,29 @@ Vickrey equivalence: a Maskin--Riley first-price upper-bound adjustment
 reference price, while the simulated $V_0$--$V_3$ price gap is
 \vZeroVThreeGapLo--\vZeroVThreeGapHi{} percent.}
 
-\subsection{Reference-price evolution}\label{sec:pref_endog}
+\subsection{Conduct, reference prices, and threshold gaming}\label{sec:pref_endog}\label{sec:threshold}
 
-Because the structural objects are normalized by buyer reference prices,
-endogenous reference-price evolution at the cutoff could contaminate
-reduced-form interpretation and structural levels. A direct TWFE DiD on
-$\log p^{\mathrm{ref}}$ moves by only \pRefDidEstNp{} (SE \pRefDidSeNp{})
-in non-pharmaceuticals and \pRefDidEstPh{} (SE \pRefDidSePh{}) in
-pharmaceuticals---small relative to the corresponding DiD on
-$\log p^{\mathrm{final}}$ in each class (\pRefSanityFinalEstNp{} and
-\pRefSanityFinalEstPh{}). The residual price effect after subtracting the
-$p^{\mathrm{ref}}$ component is about \pRefResidPctNp{} percent in
-non-pharma and \pRefResidPctPh{} percent in pharma. Modern estimators (BJS
-imputation, Callaway--Sant'Anna) are consistent in sign; Online
-Appendix~OA-D.4 reports the full estimator comparison and event study.
-
-An internal placebo by quartile of $|\Delta \log p^{\mathrm{ref}}|$ tightens
-the argument. Items in the lowest quartile, where the reference price was
-effectively stable across the cutoff, still show a price effect of
-\pRefHetQOneNp{} in non-pharmaceuticals and \pRefHetQOnePh{} in
-pharmaceuticals---about two-thirds of the class-specific DiD coefficient. A
-uniform $p^{\mathrm{ref}}$ shift cannot mechanically generate the
-decomposition, since the structural objects are built in
-$p^{\mathrm{ref}}$-normalized units; the relevant concern is heterogeneous
-reference-price movement correlated with the reform, which the quartile
-placebo addresses directly. Threshold manipulation, the canonical buyer-side
-channel through which reference-price gaming would operate, is examined in
-Section~\ref{sec:threshold}.
-
-\subsection{Threshold manipulation}\label{sec:threshold}
-
-The canonical buyer-side manipulation threat is threshold gaming: buyers
-could split or restructure purchases around the
-R\$\,\setAsideThreshBRL{} item-eligibility threshold. A McCrary density
-test at the threshold shows no detectable bunching of items (post:
-$T=\bunchingDensityTPost{}$, $p=\bunchingDensityPPost{}$; pre:
-$T=\bunchingDensityTPre{}$, $p=\bunchingDensityPPre{}$), and Group~65 items
-sit well below the R\$\,\setAsideThreshBRL{} threshold in mass (Online
-Appendix~OA-B), so systematic manipulation should be visible if present.
-This does not rule out all buyer-side adaptation, but it rules against the
-canonical threshold-gaming channel of the type \citet{coviello2026} document
-where manipulation is empirically active, and is consistent with the mild
-$p^{\mathrm{ref}}$ movement in Section~\ref{sec:pref_endog} not being aligned
-with threshold gaming.
+Three remaining threats are buyer- or conduct-side rather than
+recovery-side; Table~\ref{tab:threat_assessment_v8} records each, and the
+detail is in the appendix. Coordination would contaminate the drop-out
+interpretation if repeated bidder pairs colluded on exits
+\citep{kawainakabayashi2022}, but Conley-style close-pair screens
+\citep{conley2016} and Bajari--Ye ratios \citep{bajariye2003} show no
+post-policy intensification of clustering in either class; residual baseline
+clustering remains a limitation (Online Appendix~OA-D). Endogenous
+reference-price movement could contaminate the normalized objects, yet a
+direct DiD on $\log p^{\mathrm{ref}}$ is small relative to the effect on
+$\log p^{\mathrm{final}}$, leaving a residual price effect of about
+\pRefResidPctNp{} percent in non-pharmaceuticals and \pRefResidPctPh{}
+percent in pharmaceuticals; an internal placebo confirms the effect survives
+among items whose reference price was stable across the cutoff, so the
+decomposition is not an artifact of reference-price drift (Online
+Appendix~OA-D.4). Finally, buyers could game the
+R\$\,\setAsideThreshBRL{} item-eligibility threshold by splitting notices,
+but a McCrary density test shows no detectable bunching---ruling against the
+channel \citet{coviello2026} document where manipulation is empirically
+active---and Group~65 items sit well below the threshold in mass (Online
+Appendix~OA-B).
 
 Table~\ref{tab:threat_assessment_v8} summarizes the threat assessment.
 
@@ -307,10 +268,10 @@ diagnostic that disciplines it. The findings column reports the
 direction of the diagnostic, not a proof of the maintained auction model
 or the welfare ranking. Cross-references are
 Section~\ref{sec:robustness}.1 (reduced-form), \ref{sec:robustness}.2
-(winner censoring), \ref{sec:robustness}.3 (protected-pool composition),
-\ref{sec:robustness}.4 (coordination), \ref{sec:robustness}.5 (policy
-benchmark), \ref{sec:robustness}.6 (reference-price evolution), and
-\ref{sec:robustness}.7 (threshold manipulation).
+(winner censoring and exit-at-cost), \ref{sec:robustness}.3
+(protected-pool composition), \ref{sec:robustness}.4 (policy benchmark),
+and \ref{sec:robustness}.5 (coordination, reference-price evolution, and
+threshold manipulation).
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
