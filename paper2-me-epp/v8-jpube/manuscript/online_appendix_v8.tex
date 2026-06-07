@@ -42,6 +42,8 @@
   \PackageError{online_appendix_v8}{Missing generated macro registry}{Run the analysis pipeline before compiling the appendix.}}
 \InputIfFileExists{../output/values_es_participation.tex}{}{%
   \PackageError{online_appendix_v8}{Missing participation event-study macros}{Run scripts/62_event_study_participation.R before compiling.}}
+\InputIfFileExists{../output/values_ipv_slack.tex}{}{%
+  \PackageError{online_appendix_v8}{Missing IPV-slack macros}{Run scripts/64_ipv_slack_bounds.R before compiling.}}
 
 \begin{document}
 
@@ -617,6 +619,68 @@ discipline the willingness-to-supply recovery step. The goal is not to prove pri
 invariance in every cell; the pharmaceutical Preg\~ao cells visibly reject that
 strong restriction. The point is to locate where the recovery is most credible
 and where the paper must treat policy rankings as conditional.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Robustness to departures from exit-at-cost}\label{oa:ipv_slack}
+
+The exit-at-cost interpretation is the single load-bearing assumption behind
+the cost primitives. \citet{haile2003} show that in clock auctions one need
+not assume bidders exit exactly at their valuation; observed exits bound the
+underlying distribution. Two channels are relevant here. The mechanical
+Haile--Tamer bound has width equal to the bid increment, and BEC's electronic
+Preg\~ao runs a near-continuous price clock, so that increment is small and
+the mechanical bound is tight. The behavioral channel---firms quitting the
+clock while still profitable---does not vanish with the increment, and is the
+one I bound directly.
+
+Because the decomposition compares order statistics across pools, a markup
+common to all bidders cancels in $S_2-S_1$ and $S_3-S_2$. The binding
+departure is a type-differential markup. I replace each exit by
+$c=\text{exit}\times(1-m_k)$ for bidder type $k\in\{\mathrm{SME},
+\neg\mathrm{SME}\}$, recover the cost primitives and re-run the
+decomposition at each point of a grid in $(m_{\mathrm{SME}},
+m_{\neg\mathrm{SME}})$, holding entry at observed rates. The point IPV case
+is the origin. The worst case for the conclusion sets
+$m_{\neg\mathrm{SME}}=0$ and raises $m_{\mathrm{SME}}$, pushing the protected
+pool's costs below its exits and shrinking the SME--non-SME gap that the
+exclusion channel exploits.
+
+Table~\ref{oa:tab_ipv_slack} reports the worst-case line. The
+exclusion-dominant ordering---a positive net effect and an absolute exclusion
+share above one half---holds continuously until the differential markup
+reaches \ipvSlackBreakNp{} of the exit price in non-pharmaceuticals, and across
+the entire $[0,0.30]$ grid in pharmaceuticals. The ordering is robust because
+the two components shrink together as SME costs fall: a cheaper protected pool
+weakens the offset at the same time it weakens the exclusion effect, so their
+ratio moves slowly. A reversal would require SMEs to leave nearly thirty
+percent more of their surplus unbid than non-SMEs in every auction, in the
+direction that already works against the finding.
+
+\begin{table}[!htbp]
+\centering
+\begin{threeparttable}
+\caption{Exit-at-cost departures: worst-case type-differential markup}
+\label{oa:tab_ipv_slack}
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcc}
+\toprule
+ & Non-pharma & Pharma \\
+\midrule
+Differential markup survived & up to \ipvSlackLastOkNp{} & through \ipvSlackLastOkPh{} (grid max) \\
+Breakdown markup $m_{\mathrm{SME}}^\star$ & \ipvSlackBreakNp{} & \ipvSlackBreakPh{} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Worst-case line $m_{\neg\mathrm{SME}}=0$, sweeping $m_{\mathrm{SME}}$ over
+$[0,0.30]$ in steps of $0.01$. ``Survived'' is the largest markup at which the
+net effect is positive and the absolute exclusion share exceeds one half;
+$m_{\mathrm{SME}}^\star$ is the first markup at which it fails. Entry is held at
+observed class-period rates; only the cost primitives are transformed. The
+$m=0$ row reproduces the canonical decomposition. Produced by
+\texttt{scripts/64\_ipv\_slack\_bounds.R}.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
