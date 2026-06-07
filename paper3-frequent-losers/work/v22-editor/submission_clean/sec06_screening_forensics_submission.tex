@@ -318,7 +318,7 @@ bid-layer comparison, and cost-recall accounting.
 
 \begin{table}[htbp]
 \centering
-\caption{Cost-Recall Frontier for Sequential Award$\rightarrow$Bid Gatekeeping}
+\caption{Cost-Recall Frontier for Sequential Award$\rightarrow$Bid Gatekeeping (Forensic Queue $k=500$)}
 \label{tab:cost_recall_frontier}
 \begin{adjustbox}{max width=\textwidth,center}
 \begin{threeparttable}
@@ -328,7 +328,6 @@ bid-layer comparison, and cost-recall accounting.
 Rule & $K_1$ & Firms & Tender & Bid & TP & FP & Recall & Prec. & $\Delta$Firm & $\Delta$Bid & RLoss \\
  & & open & items & rows & & & & & red. & red. & vs joint \\
 \midrule
-\multicolumn{12}{l}{\textit{Panel A: forensic queue $k=500$}} \\
 Award-only (no bid) & --- & $500$ & $41{,}704$ & $1{,}356{,}346$ & $108$ & $392$ & $0.166$ & $0.216$ & $0.97$ & $0.60$ & $0.038$ \\
 Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $102$ & $398$ & $0.157$ & $0.204$ & --- & --- & $0.048$ \\
 Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $133$ & $367$ & $0.204$ & $0.266$ & --- & --- & $0.00$ \\
@@ -337,15 +336,6 @@ Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $124$ & $376
 Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $116$ & $384$ & $0.178$ & $0.232$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.026$ \\
 Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $115$ & $385$ & $0.177$ & $0.230$ & $0.82$ & $0.24$ & $0.028$ \\
 Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $102$ & $398$ & $0.157$ & $0.204$ & $0.70$ & $0.14$ & $0.048$ \\
-\midrule
-\multicolumn{12}{l}{\textit{Panel B: forensic queue $k=1{,}000$}} \\
-Award-only (no bid) & --- & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $177$ & $823$ & $0.272$ & $0.177$ & $0.94$ & $0.47$ & $0.022$ \\
-Bid-only (full obs) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $157$ & $843$ & $0.241$ & $0.157$ & --- & --- & $0.052$ \\
-Joint (full obs, U.B.) & --- & $\valCostPoolN$ & $116{,}112$ & $3{,}393{,}915$ & $191$ & $809$ & $0.293$ & $0.191$ & --- & --- & $0.00$ \\
-Sequential & $1{,}000$ & $1{,}000$ & $58{,}408$ & $1{,}783{,}750$ & $177$ & $823$ & $0.272$ & $0.177$ & $0.94$ & $0.47$ & $0.022$ \\
-Sequential & $2{,}000$ & $2{,}000$ & $77{,}097$ & $2{,}283{,}924$ & $185$ & $815$ & $0.284$ & $0.185$ & $\valCostFirmRedTwoK$ & $\valCostBidRowRedTwoK$ & $0.009$ \\
-Sequential & $3{,}000$ & $3{,}000$ & $87{,}714$ & $2{,}575{,}274$ & $184$ & $816$ & $0.283$ & $0.184$ & $0.82$ & $0.24$ & $0.011$ \\
-Sequential & $5{,}000$ & $5{,}000$ & $99{,}977$ & $2{,}921{,}977$ & $176$ & $824$ & $0.270$ & $0.176$ & $0.70$ & $0.14$ & $0.023$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -372,7 +362,9 @@ observability. ``RLoss vs joint'' is recall lost relative to the
 joint upper bound at the same $k$. False positives (FP) are
 non-labeled firms, \emph{not} exonerated. ROC is not the decision
 metric here; recall against the adjudication-anchored target at a
-fixed forensic queue size is.
+fixed forensic queue size is. The deeper queue ($k=1{,}000$) and the
+full grid (all rules, all $K_1$, $k\in\{100,250,500,1000\}$) are in the
+Online Supplement; the $k=1{,}000$ ordering is the same.
 \end{tablenotes}
 \end{threeparttable}
 \end{adjustbox}
