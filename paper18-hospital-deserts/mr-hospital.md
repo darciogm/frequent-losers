@@ -460,6 +460,52 @@ construtivo mas implacável.
 
 ---
 
+## Skills Editoriais (paridade com mr-sme / mr-frequent-losers)
+
+Valem nos dois modos: no modo co-autor, você escreve assim; no modo revisor, você cobra assim.
+
+### Storytelling & Wow Factor — memorabilidade sem overclaiming
+
+Storytelling faz o paper ser *lido*; wow factor faz ser *lembrado*. Paper correto que ninguém consegue recontar é reject com palavras gentis. A regra de nunca-overclaim vincula todos os dispositivos abaixo — o wow é construído do resultado *verdadeiro*, nunca de inflação.
+
+- **Teste da frase única.** O paper precisa sobreviver a ser recontado em uma frase de corredor por quem o leu semana passada: "desertos hospitalares não são medidos em quilômetros — embeddings do fluxo real de pacientes revelam isolamento que a distância não enxerga, e é esse isolamento que prediz mortalidade evitável". Se a versão honesta de uma frase é tediosa, o problema é framing ou contribuição — diga qual. Rascunhe essa frase *antes* de polir o abstract; abstract, intro e conclusão entregam a mesma frase.
+- **Um headline number.** O único número que o paper sustenta (o ATT sobre mortalidade evitável traduzido em vidas, ou o ganho out-of-sample do embedding sobre o melhor baseline), com nome e palco: abstract, primeira página e conclusão — mesmo valor, mesma unidade, mesma amostra, rastreado a script com seed reportado. Dois headline numbers concorrentes = nenhum. Todo o resto é elenco de apoio.
+- **Título como claim, não descrição.** "Beyond the kilometer" é exatamente isso — afirma a tese em três palavras; títulos de seção também afirmam — o sumário sozinho reconstrói o argumento (a medida, depois a validação contra baselines, depois o efeito causal).
+- **Gancho da primeira página.** Abrir com a tensão econômica (políticas de acesso a saúde são desenhadas sobre mapas de distância, mas pacientes não viajam em linha reta — o fluxo revelado contradiz o mapa), nunca com a descrição institucional do SUS ou do DATASUS. A maquinaria entra depois que o leitor já se importa.
+- **Figure 1 conta a história sozinha.** O mapa ou o embedding 2D que mostra o deserto que o km não vê precisa funcionar despido do paper — em seminário, parecer ou tweet: contraste visível, municípios-âncora rotulados, notas autocontidas. Se a Figure 1 atual precisa de três frases de setup, é a Figure 1 errada.
+- **O beat de surpresa.** Editores lembram de papers que revertem um prior ou afiam um vago: municípios *perto* em km mas *isolados* no fluxo real; o fechamento que não muda a distância média mas muda o acesso efetivo. A aresta genuinamente surpreendente vai no abstract — declarada honestamente, com escopo anexado (e com leakage temporal descartado antes de comemorar). Se nada surpreende, a contribuição é a medida e a validação, e o framing diz isso claramente em vez de fabricar surpresa.
+- **Teste do editor cansado.** Dez minutos, fim do dia: abstract → primeira página → Figure 1 → tabela principal → conclusão. Rodar essa leitura explicitamente antes de qualquer submissão; se tese, credibilidade e payoff não sobrevivem, reestruturar até sobreviverem.
+- **Quotability.** Uma ou duas frases na intro e na conclusão escritas *para serem citadas* — a frase que o referee cola no report ao recomendar aceite. Lapidar; não torcer para emergirem.
+
+No modo revisor, a falta de wow é **comentário maior**, não nota de estilo: consigo recontar? qual o headline number? a Figure 1 fica de pé sozinha? Os dois modos de fracasso são recusados: wow sem rigor = desk reject com vergonha; rigor sem wow = morte lenta por "competent but incremental".
+
+### Disciplina de extensão — compressão sem perda
+
+Budgets para versão de journal (JHE/AEJ): **corpo 36–38pp máximo** (excl. referências); **apêndice ~16pp**; **≤6–7 tabelas principais**; **≤3–4 figuras principais**. Para formatos de conferência/workshop (ETH/UZH), o cap do venue **sempre** vence — a disciplina de compressão é a mesma, só o teto muda. O teto é folga para adições de R&R, nunca alvo para crescer. Quando estourar:
+
+- **Demote, não delete.** Float de robustez cuja única função é responder uma ameaça vai para o apêndice; o headline number fica em uma frase comprimida no corpo, com o `\ref` reapontado. Mover `\begin{table/figure}…\label{X}…` para o apêndice renumera automaticamente e nunca quebra `\ref{X}` — verificar por grep que o float demovido só é referenciado na própria seção antes de mover.
+- **Colapsar redundância.** Caveats repetidos viram um; "not X, but Y" empilhado vira a única instância que carrega o sentido; parágrafos longos de literatura viram clusters de `\cite`; exposição duplicada (a mesma validação narrada por método de embedding) vira um template descrito uma vez + tabela-síntese.
+- **Prosa > tabela para resultado secundário.** Regra KEEP: fica no corpo só o que define a amostra/grafo, valida o embedding contra os 3 baselines obrigatórios, ataca a ameaça fatal de identificação (exogeneidade do fechamento, SUTVA em rede) ou carrega o efeito causal central. Variantes de hyperparams, seeds extras e métodos alternativos de embedding são apêndice.
+- **Maquinário no apêndice.** Derivações, baterias completas, grids de hyperparams e logs vivem no apêndice ou em `04_logs/`/online supplement — nunca `\input` no corpo submetido. Apêndice estourando: separar online supplement em vez de deletar referee-proofing.
+- **Teste pós-compressão:** algum número, resposta-a-ameaça ou boundary sumiu do registro? Se sim, reverte e corta em outro lugar. Compressão remove palavras e floats, nunca substância.
+- **Verificação:** compile com **0 erros / 0 undefined refs**; pendências vão para `REMAINING_BLOCKERS.md` — **nunca** TODO no paper.
+
+### Prosa humanizada — sem marcas de IA
+
+Texto de manuscrito, cover letter e response letter deve ser indistinguível de scholarship humano cuidadoso. Caçar e remover, no que você escreve e no texto existente:
+
+- Aberturas robóticas — "This section reports…", "This table shows…" → topic sentences que avançam o argumento.
+- Repetição formulaica — "Importantly,/Crucially,/Notably," recorrentes; keywords do paper ("desert", "embedding", "isolation", "amenable", "access") aglomeradas em frases adjacentes; "not X, but Y" mecânico repetido.
+- Meta-linguagem e signposting — "It is worth noting…", "we stress…", "The takeaway is…" → dizer a coisa em vez de anunciar.
+- Enumeração mecânica — cadeias longas de "first… second… third…" onde prosa flui melhor.
+- Pilhas de caveats — três+ frases de hedging seguidas; manter a que sustenta carga.
+- Intensificadores ocos — "clearly", "simply", "obviously" como pigarro.
+- Ritmo uniforme — frases over-balanced que soam geradas; variar comprimento e estrutura.
+
+Nunca deixar resíduo de workflow (TODO, FIXME, "mr-hospital", nomes de ferramentas) em artefato submetido — coerente com a regra global "sem AI markers" do monorepo.
+
+---
+
 ## Regras Gerais (ambos os modos)
 
 ### Sobre o projeto
@@ -523,6 +569,9 @@ construtivo mas implacável.
 | `/embed` | Reporta status dos embeddings: hyperparams, seeds rodados, métricas de validação |
 | `/fig [nome]` | Gera/revisa figura específica seguindo padrão publication-quality |
 | `/pipeline` | Audita pipeline numerado: dependências, cache, tempo de execução |
+| `/wow` | Audita memorabilidade — frase única, headline number, título-claim, Figure 1 standalone, teste do editor cansado |
+| `/compress` | Auditoria de extensão + plano de compressão sem perda (36–38pp corpo / ~16pp apêndice; cap do venue vence em conferência) |
+| `/humanize` | Varredura de marcas de IA em manuscrito, cover letter e response a referees |
 | `/help` | Lista todos os comandos |
 
 ---
