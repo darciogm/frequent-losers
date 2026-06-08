@@ -24,10 +24,14 @@
   linkcolor=MidnightBlue,
   citecolor=MidnightBlue,
   urlcolor=MidnightBlue,
-  pdftitle={Beyond the Kilometer: Network-Revealed Healthcare Access in Brazil},
+  pdftitle={Closure Without Catastrophe: Patient-Flow Exposure and the Mortality Effects of Psychiatric Deinstitutionalization in Brazil},
   pdfauthor={Darcio Genicolo-Martins}
 }
 \usepackage{microtype}
+
+% Auto-generated numeric macros (single source of truth; see 03_analysis/D6_make_values.R)
+\input{values.tex}
+\input{values_inference.tex}
 
 % spacing
 \onehalfspacing
@@ -38,12 +42,13 @@
 \newcommand{\isokm}{\mathrm{iso}^{km}}
 \newcommand{\isoemb}{\mathrm{iso}^{emb}}
 
-\title{\textbf{Beyond the Kilometer:\\
-Network-Revealed Healthcare Access in Brazil}}
+\title{\textbf{Closure Without Catastrophe:\\
+Patient-Flow Exposure and the Mortality Effects of\\
+Psychiatric Deinstitutionalization in Brazil}}
 
 \author{Darcio Genicolo-Martins\thanks{Insper. Email: \texttt{darcio.g.martins@gmail.com}.
-Submission to ETH/UZH Workshop in AI \& Applied Economics (May 2026).
-Replication code and data documentation:
+Working paper, comments welcome. Replication code, pipeline, and
+cached LLM/CNPJ classifications:
 \url{https://github.com/darciogm/bitter-pills/tree/main/paper18-hospital-deserts}.}}
 
 \date{\today}
@@ -53,36 +58,34 @@ Replication code and data documentation:
 
 \begin{abstract}
 \noindent
-Geographic distance is the standard metric for measuring healthcare access,
-yet it ignores how patients actually traverse the hospital network: through
-referrals, informal flows, and transport modes that roads do not encode.
-We build a bipartite graph of $5{,}588$ Brazilian municipalities and
-$6{,}710$ public hospitals from $179.5$ million federal SUS
-hospital admissions ($2010\text{--}2024$), and learn $128$-dimensional node embeddings
-via a sparse-on-the-fly node2vec implementation. Defining each
-municipality's network-revealed isolation as the embedding distance to its
-nearest high-complexity hospital---and comparing it to the haversine
-distance to the same set---we find systematic and geographically coherent
-divergence in roughly half of all municipalities. The Northern region of
-Brazil is more connected than the map suggests, as river and air transport
-funnel patients to the Manaus and Boa Vista hubs along corridors invisible
-to road-based metrics. Conversely, the Northeastern semi-arid hinterland is
-more isolated than the map suggests, as patients bypass underequipped
-local hospitals and travel to distant regional capitals. The headline
-divergence map and a structured taxonomy of canonical cases provide a
-diagnostic of where the Brazilian SUS network deviates from its planning
-geography. We discuss why the cross-sectional relationship between this
-divergence and amenable mortality is confounded by SIM under-reporting and
-cross-border death recording, and outline a closure event-study design as
-the natural next step toward causal identification of the marginal
-mortality cost of network distance.
+Critics of psychiatric deinstitutionalization warned that closing
+hospitals would raise patient mortality. Testing this requires knowing
+who actually depended on a closing hospital, and where patients cross
+municipal borders for specialized care the distance-based exposure rule
+standard in the closure literature misidentifies them---misclassifying
+$\valNmisclass$ of the $\valNunionPairs$ municipality--closure pairs in
+our sample. We replace it with a patient-flow exposure rule built from
+$\valNadmissions$ million Brazilian SUS admissions and estimate effects
+on $\valNclosuresPnash$ PNASH-driven psychiatric closures with a staggered
+event study, testing pre-trends on data back to $2010$. A first stage
+validates the rule: travel burden falls $\valTravAbs$~km after closure,
+twice what distance-based exposure detects. For the feared outcome we
+find no harm---suicide mortality changes by $\valSuicWAtt$ per
+$100{,}000$ (95\% CI $[\valSuicWLo, \valSuicWHi]$), ruling out the large
+increases critics predicted, and self-harm is likewise null. We are
+candid about a limit: preventable hospitalizations were already rising
+before closure, so we do not read them causally. The catastrophe
+predicted for Brazil's psychiatric reform does not appear among the
+populations that bore the closures---the ones a distance-based analysis
+would have missed.
 
 \medskip
-\noindent\textbf{Keywords:} hospital access, healthcare deserts, graph
-embeddings, node2vec, amenable mortality, SUS, Brazil.
+\noindent\textbf{Keywords:} hospital closures, deinstitutionalization,
+patient-flow exposure, mortality, suicide, staggered
+difference-in-differences, SUS, Brazil.
 
 \medskip
-\noindent\textbf{JEL:} I11, I14, I18, R12, C45.
+\noindent\textbf{JEL:} I18, I14, I11, H75.
 \end{abstract}
 
 \thispagestyle{empty}
@@ -98,6 +101,8 @@ embeddings, node2vec, amenable mortality, SUS, Brazil.
 \input{method.tex}
 
 \input{results.tex}
+
+\input{robustness.tex}
 
 \input{discussion.tex}
 

@@ -1,133 +1,150 @@
 \section{Data}
 \label{sec:data}
 
-We assemble a panel covering the universe of Brazilian municipalities,
-their public hospital network, and an extended window of inpatient
-admissions ($2010$ through $2024$, $15$ years) and mortality outcomes
-($2010$ through $2023$, $14$ years; the latter ends in $2023$, the last fully consolidated SIM vintage at the time of
-writing). All sources are administrative microdata maintained by the
-Brazilian Ministry of Health (DATASUS) and the IBGE statistical office.
+The analysis assembles a municipality-year panel covering the universe
+of Brazilian municipalities, their public hospital network, inpatient
+admissions ($2010$--$2024$), and mortality ($2010$--$2023$). Four primary
+sources contribute: the federal hospital admissions register (SIH-RD,
+\ref{sec:data-sih}), which yields both the patient-flow exposure measure
+and the travel-burden outcome; the federal vital registration database
+(SIM, \ref{sec:data-sim}), which yields the mortality outcomes; the
+federal establishment register (CNES, \ref{sec:data-cnes}), which yields
+the closure events; and IBGE auxiliary panels for population and
+centroids (\ref{sec:data-aux}). Documentary sources used only to form
+robustness sub-samples are described in Appendix~\ref{app:nlp}.
+Table~\ref{tab:summary-stats} reports summary statistics by macro-region.
 
-\subsection{Hospital Admissions: SIH-AIH}
+\input{tables/tab_summary_stats.tex}
 
-The Sistema de Informações Hospitalares do SUS (SIH-AIH) records every
-inpatient admission billed to the federal SUS reimbursement system.
-Each Autorização de Internação Hospitalar (AIH) corresponds to one
-hospital stay. Unique linkage uses the AIH-1 (principal hospitalization)
-record; AIH-5 (continuation) records are excluded to avoid
-double-counting. Variables include the patient's $6$-digit
-municipality of residence (\texttt{MUNIC\_RES}), the establishment's
-CNES identifier, the principal ICD-10 diagnosis (\texttt{DIAG\_PRINC}),
-the realized procedure code (\texttt{PROC\_REA}), in-hospital death
-flag (\texttt{MORTE}), age and sex, dates of admission and discharge,
-and the federally-paid amount.
+Two patterns matter for the design. First, travel burden is structurally
+unequal: Norte and Centro-Oeste municipalities average $94$--$96$~km from
+residence to admitting hospital, more than twice the $42$--$45$~km of the
+Sudeste and Sul. Second, the outflow share---SUS admissions sent outside
+the residential municipality---is high everywhere ($58$--$73\%$), which
+is what makes a within-municipality, closure-driven design operate on
+real referral dependence rather than noise. The same cross-region
+heterogeneity also confounds any cross-sectional comparison of access
+and health, which is why we identify effects only from within-municipality
+variation under a closure shock.
 
-We retain $179{,}499{,}614$ admissions with non-missing residence
-municipality, hospital CNES, and competence year over $2010\text{--}2024$.
-We restrict to admissions in establishments classified as hospitals in
-the CNES master file (excluding non-hospital types such as primary care
-units, clinics, and specialty offices), retaining
-$179{,}420{,}885$ admissions ($\approx 100\%$ of the gross). A small
-fraction is lost to ineligible non-hospital codes.
+% =====================================================================
+% §3.1 — SIH-RD
+% =====================================================================
+\subsection{SIH-RD: admissions, the flow graph, and travel burden}
+\label{sec:data-sih}
 
-For graph construction (Section \ref{sec:method}), we aggregate the
-admission-level data to the municipality--hospital--year level, recording
-the count of admissions, the count of in-hospital deaths, and the
-average length of stay and reimbursement value. The resulting bipartite
-edge list contains $2{,}703{,}889$ municipality-hospital-year cells; the
-period-pooled version aggregating $2010\text{--}2024$ contains
-$648{,}973$ unique municipality-hospital edges.
+The Sistema de Informações Hospitalares--Reduzido (SIH-RD) is the
+billing record for every SUS-financed inpatient admission. Each record
+is one Autorização de Internação Hospitalar (AIH). Our universe spans
+$2010$--$2024$ at monthly granularity: $\valNadmissions$ million admissions across
+municipalities of patient residence (\texttt{MUNIC\_RES}) and roughly
+$7{,}000$ active SUS hospitals (\texttt{CNES}). The register covers the
+SUS-using population only ($\sim 96\%$ of residents; private inpatient
+flows are unobserved), so our estimates are identified within that
+population (Section~\ref{sec:discussion-limits}).
 
-\subsection{Mortality: SIM}
+From this microdata we build the weighted bipartite graph whose edges
+$(m, h, t)$ count admissions of residents of $m$ at hospital $h$ in year
+$t$; this graph defines the flow exposure shares of
+equation~\eqref{eq:share}. Two outcomes are derived from it.
+\emph{Travel burden} is the admission-weighted haversine distance from
+$m$'s centroid to the centroid of the municipality of admission, at the
+municipality--year level; it is the first-stage outcome that validates
+the exposure rule (Section~\ref{sec:results-firststage}). \emph{ICSAP}
+is the count of admissions whose primary diagnosis
+(\texttt{DIAG\_PRINC}) falls in the Brazilian primary-care-sensitive
+list (Portaria~MS~$221$/$2008$) per $1{,}000$ population, the canonical
+Brazilian access marker \citep{macinkoHarris2015, rochaSoares2010}; we
+report it transparently as a non-identified outcome
+(Section~\ref{sec:results-icsap}).
 
-The Sistema de Informação sobre Mortalidade (SIM) records every death
-certificate issued in Brazil. Variables include the underlying ICD-10
-cause of death (\texttt{CAUSABAS}), municipality of residence
-(\texttt{CODMUNRES}), municipality of occurrence (\texttt{CODMUNOCO}),
-age (encoded with a leading hint character distinguishing days, months,
-and years), sex, race, and educational attainment of the mother (for
-infant deaths). Coverage of total mortality is estimated by the
-Ministry of Health to be $\approx 95\text{--}99\%$ in the South and
-Southeast and $\approx 85\text{--}95\%$ in the North; ill-defined causes
-(R-codes) range from $\approx 5\%$ in the South to $\approx 15\%$ in
-the rural Northeast.
+% =====================================================================
+% §3.2 — SIM mortality outcomes
+% =====================================================================
+\subsection{SIM: psychiatric mortality outcomes}
+\label{sec:data-sim}
 
-\paragraph{Amenable mortality.}
-We construct the rate of amenable mortality at the municipality-year
-level using the consensus list of \citet{nolteMckee2008}, updated by
-the OECD \citep{oecd2019}, of conditions for which death below age $75$
-is considered avoidable through timely and effective medical care.
-The list comprises $\approx 60$ ICD-10 categories spanning
-ischemic heart disease, stroke, sepsis, perforated appendix, treatable
-cancers, complications of childbirth, and other conditions. We follow
-the standard convention of restricting to deaths under age $75$ and
-expressing the rate per $100{,}000$ population.
+The Sistema de Informação sobre Mortalidade (SIM) records every death in
+Brazil with cause coded in ICD-$10$; our window comprises $\valNdeaths$ million
+deaths during $2010$--$2023$, attributed to the municipality of
+\emph{residence} (\texttt{CODMUNRES}). The reform's critics warned
+specifically about deaths of discharged or displaced psychiatric
+patients, so we construct two residence-based mortality outcomes that
+target that fear directly. \emph{Suicide} mortality counts deaths from
+intentional self-harm (ICD-$10$ X$60$--X$84$) per $100{,}000$. A broader
+\emph{self-harm} measure adds deaths of undetermined intent
+(Y$10$--Y$34$), which absorb the misclassification of suicides as
+accidents that is common in vital registration. We also track deaths
+with a mental or behavioural disorder as the underlying cause
+(F$00$--F$99$) as an auxiliary series; because such deaths partly reflect
+in-facility mortality that mechanically falls when an asylum closes, we
+do not treat it as a welfare outcome.
 
-Over $2010\text{--}2023$, the SIM records $18{,}878{,}605$ deaths total,
-of which $5{,}362{,}418$ ($28.4\%$) are amenable under our definition.
-Population denominators come from IBGE annual estimates (Tabela 6579 of
-SIDRA for $2010\text{--}2021$ and the $2022$ Census plus
-$2023\text{--}2024$ estimates from \texttt{estimativa\_dou}); for years
-without SIDRA estimates we use the IBGE annual interpolations.
+\paragraph{Why mortality is recorded at residence, and why that matters.}
+Recording deaths by residence rather than occurrence is essential here:
+a displaced patient who dies after traveling---or after failing to
+travel---to care is counted against her home municipality, which is the
+unit our exposure rule treats. (The occurrence-based attribution that
+SIM also carries would displace such deaths to the hospital's
+municipality, breaking the link to the exposed population; we use the
+residence field throughout.) Two limits of SIM remain. Ill-defined-cause
+recording (R$96$--R$99$) is higher in the rural North and Northeast
+($14$--$22\%$ versus $4$--$6\%$ in the South), adding noise to mortality
+rates there; and suicide is known to be under-recorded relative to
+undetermined-intent deaths, which is why we report the broader self-harm
+measure alongside. Both are absorbed by municipality fixed effects in the
+event study to the extent they are time-invariant.
 
-\subsection{Hospital Master and Habilitations: CNES}
+% =====================================================================
+% §3.3 — CNES
+% =====================================================================
+\subsection{CNES: establishments, beds, and closure detection}
+\label{sec:data-cnes}
 
-The Cadastro Nacional de Estabelecimentos de Saúde (CNES) records the
-universe of healthcare facilities at monthly granularity. We construct
-two derived tables.
+The Cadastro Nacional de Estabelecimentos de Saúde (CNES) is the federal
+register of every health establishment, updated monthly. The
+establishment register (\texttt{cnes\_st}) provides establishment type
+(\texttt{tp\_unid}) and municipality; the bed register
+(\texttt{cnes\_lt}) provides SUS-contracted beds (\texttt{QT\_SUS}), used
+in the closure filter. Closures are identified by the cessation of
+\texttt{cnes\_st} reporting for a \texttt{CNES} after a candidate year.
+The candidate set ($3{,}518$ establishments ceasing to report between
+$2010$ and $2023$) is dominated by registry artefacts; the cumulative
+F1--F5 cascade (Appendix~\ref{app:filter}) reduces it to $\valNexoClosures$ exogenous
+closures, $\valNspecClosures$ of them specialized psychiatric hospitals
+(Section~\ref{sec:setting-closures}). The cascade does not eliminate
+every false positive, but the closure-motive classification of
+Appendix~\ref{app:nlp} provides a cross-check used to form robustness
+sub-samples.
 
-The first is a hospital master file aggregating CNES record
-characteristics across $2005\text{--}2025$, retaining for each CNES the
-modal municipality of operation, modal facility type
-(\texttt{CO\_TIPO\_ESTABELECIMENTO}), modal management sphere (federal,
-state, municipal, or private contract), and the first and last
-competence months observed. We retain establishments classified as
-hospitals: general hospital (\texttt{05}), specialty hospital
-(\texttt{07}), and day hospital (\texttt{62}). The resulting universe
-contains $15{,}316$ hospital CNES.
+% =====================================================================
+% §3.4 — IBGE auxiliary + population backfill
+% =====================================================================
+\subsection{IBGE auxiliary: population and centroids}
+\label{sec:data-aux}
 
-The second is a habilitation panel constructed from the CNES habilitation
-files (\texttt{HB} layer). Each row records a hospital--habilitation--
-month observation. We classify habilitations into the seven
-high-complexity categories listed in Section \ref{sec:setting} using a
-lookup table from the SIGTAP procedure-group codes (\texttt{SGRUPHAB})
-to our category labels. A hospital is classified as
-\emph{high-complexity active} in our panel if it holds at least one
-high-complexity habilitation that is active in any month during
-$2010\text{--}2024$. This identifies $10{,}690$ hospitals
-($69.8\%$ of the master universe).
+Municipality population denominators come from the IBGE annual estimates
+(SIDRA table $6579$) and the $2022$ Census. A point of construction
+matters for the pre-trend test: the rate outcomes require a population
+denominator in every panel year, and the early cohorts' pre-treatment
+years fall before $2015$. We therefore extend the denominators back to
+$2010$---using the IBGE annual estimates for $2011$--$2014$ and a linear
+back-extrapolation for $2010$---so that every cohort's pre-treatment
+trajectory is observed rather than missing. Without this backfill the
+pre-period of the earlier cohorts is empty and the parallel-trends test
+is uninformative; with it, the test is real, and it is what reveals the
+pre-existing ICSAP trend (Section~\ref{sec:results-icsap}). Municipality
+centroids (IBGE shapefile, $2022$ vintage) enter the haversine distance
+behind the distance exposure rule E2 and the travel-burden outcome.
 
-\subsection{Spatial and Auxiliary Data}
-
-Municipality centroids and shapefiles come from the IBGE
-\texttt{municipios\_2010} layer ($5{,}565$ municipalities; we use the
-$6$-digit IBGE code for SIH/SIM compatibility). State shapefiles come
-from \texttt{estados\_2010}. Both layers are projected on SIRGAS 2000
-(EPSG:4674) for distance computations and reprojected to a Lambert
-azimuthal equal-area for visualization.
-
-GDP at the municipality level is from IBGE Tabela $5938$ (Produto
-Interno Bruto dos Municípios) for $2010\text{--}2021$ in current
-nominal reais, deflated to $2020$ R\$ using the IPCA. Population is
-from Tabela $6579$ for $2010\text{--}2021$ and the $2022$ Census plus
-official annual estimates for $2023\text{--}2024$.
-
-\subsection{Final Sample}
-
-After matching, $5{,}588$ municipalities of residence appear in
-SIH-AIH $2010\text{--}2024$. Joining to the IBGE $2010$ shapefile
-($5{,}565$ municipalities) yields $5{,}565$ municipalities with valid
-centroids, non-missing population and GDP, and at least one neighbor
-in the patient-flow graph. This is the analysis sample for the
-divergence map and the descriptive results; the $23$ residual
-municipalities (recently created codes not in the $2010$ IBGE layer
-or with incomplete digital records) drop out. Of the $15{,}316$ hospital CNES,
-$6{,}710$ ($43.8\%$) participate in the bipartite graph after the SIH
-universe filter, and $3{,}488$ ($32.6\%$ of the $10{,}686$
-high-complexity hospitals) hold a high-complexity habilitation
-\emph{and} appear in the embedding. The hospital coverage gap is one of the limitations
-discussed in Section \ref{sec:discussion}: hospitals with active
-SIGTAP habilitations but no SUS-billed admissions during the panel
-window---typically philanthropic and small private hospitals serving
-non-SUS clients---are not embedded and therefore are excluded from the
-network metric.
+\paragraph{The centroid-to-centroid distance approximation.} CNES does
+not record hospital coordinates, so distances are computed
+centroid-to-centroid between the patient's municipality and the admitting
+hospital's municipality---standard in the Brazilian access literature
+\citep{macinkoHarris2015, rochaSoares2010}. The approximation
+understates within-municipality distance in large urban municipalities
+and near-border cases, attenuating the distance measure; excluding the
+$27$ state capitals (the principal sites of hospital dispersion) changes
+the first-stage travel ATT by less than $1\%$
+(Section~\ref{sec:robustness}); a coordinate-level sensitivity for a
+sub-sample of closures appears in Appendix~\ref{app:distance}.

@@ -1,113 +1,1172 @@
-\section{Robustness}
-\label{app:robustness}
+\section{Closure filter cascade ($F1$--$F6$)}
+\label{app:filter}
 
-This appendix reports the robustness battery for the embedding and the
-divergence metric. All numbers are computed on the same data as the
-main text and re-run from scratch whenever the random seed or
-hyperparameter changes; the numerical results below come from the
-\texttt{10\_robustness.py} script and are reproducible by replaying it
-on the public replication archive.
+The closure sample is constructed from the universe of $3{,}518$ CNES
+establishments that stop reporting any monthly competence between
+$2010$ and $2023$. Most of these are not hospital closures in any
+economically meaningful sense: small clinics, day units, and registry
+artefacts where the same legal entity continues to operate under a
+different CNES code. We apply five sequential statistical filters
+($F1$ through $F5$) to obtain the F5 main sample of $\valFiltFive$ exogenous
+closures, and a sixth NLP-documented filter ($F6$) to define the
+robustness sub-sample of $\valFiltSix$ closures.
 
-Figure \ref{fig:robustness} summarizes the four panels of robustness
-that follow.
+\paragraph{The five statistical filters.} Table~\ref{tab:filter} reports
+the surviving $N$ at each step.
+
+\begin{table}[h!]
+\centering
+\caption{Closure filter cascade: $N$ surviving each filter.}
+\label{tab:filter}
+\small
+\begin{tabular}{llr}
+\toprule
+Step & Criterion & $N$ surviving \\
+\midrule
+F0  & All ceasing CNES, $2010$--$2023$ & $\valFiltZero$ \\
+F1  & + Closure year $\in \{2012\text{--}2018\} \cup \{2022\text{--}2023\}$ & $\valFiltOne$ \\
+F2  & + \texttt{tp\_unid} $\in \{05, 07, 15, 62\}$ (hospital-grade) & $\valFiltTwo$ \\
+F3  & + $\geq 30$ SUS-contracted beds in pre-closure year & $\valFiltThree$ \\
+F4  & + $\geq 100$ admissions in pre-closure year & $\valFiltFour$ \\
+F5  & + ratio$_{\text{pre}} \geq 0.50$ (no $> 50\%$ admission decline pre-closure) & $\mathbf{\valFiltFive}$ \\
+\midrule
+F6 (v2) & motive $\in$ \{administrativo, fiscal, fal\^encia\} via NLP (App.~D) & $\mathbf{\valFiltSix}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Filter $F1$.} Closure years are restricted to two windows that
+together exclude both border-of-panel artefacts (closures in $2010$ or
+$2011$ have no $\geq 5$-year pre-period) and the COVID-$19$ pandemic
+disruption window ($2020$--$2021$, where admission patterns are
+non-stationary). The two retained windows are $\{2012, \ldots, 2018\}$
+(seven pre-pandemic cohorts) and $\{2022, 2023\}$ (two post-pandemic
+cohorts). The filter discards roughly half the candidate set
+($1{,}690$ events).
+
+\paragraph{Filter $F2$.} CNES distinguishes establishment types via the
+\texttt{tp\_unid} code; we retain those that the Brazilian Ministry of
+Health classifies as inpatient-bed hospitals: $05$ (general hospital),
+$07$ (specialized hospital), $15$ (mixed unit), and $62$ (day hospital).
+The filter discards $465$ establishments that are CAPS, posto de saúde,
+\textit{unidade básica}, or other non-hospital units.
+
+\paragraph{Filter $F3$.} The bed register \texttt{cnes\_lt} reports
+contracted bed counts by specialty type. We retain establishments with
+average \texttt{QT\_SUS} $\geq 30$ in the year preceding closure. The
+$30$-bed threshold corresponds approximately to the lower bound of
+``small hospital'' as classified by the Brazilian National Quality
+Assessment Program (PNASH); below this threshold the establishment is
+typically an outpatient facility regardless of the \texttt{tp\_unid}
+classification. This filter is severe ($1{,}243$ events discarded),
+indicating the register is heavily populated by small or part-bed
+units.
+
+\paragraph{Filter $F4$.} We require at least $100$ AIH (admissions) in
+the year preceding closure. This screens out registry entries that
+formally classify as hospitals but are functionally inactive prior to
+closure. The filter discards another $30$ events.
+
+\paragraph{Filter $F5$.} We rule out gradual exit due to local demand
+collapse by requiring that the admission count in the year preceding
+closure (year $-1$) be at least $50\%$ of the average over years $-3$
+and $-2$. Closures with admissions trending sharply downward already
+in the pre-period are discarded ($30$ events). The remaining $\valFiltFive$ closures form the F5 main sample.
+
+\paragraph{Distribution of the F5 main sample.} The geographic
+distribution concentrates in the Southeast ($37$ events, $62\%$), with
+meaningful presence in the Northeast ($15$, $25\%$) and smaller
+representation in the Center-West ($3$), South ($3$), and North ($2$).
+By facility type: $41$ specialized hospitals (\texttt{tp\_unid}=07),
+$18$ general hospitals (\texttt{tp\_unid}=05), and one hospital-day
+unit (\texttt{tp\_unid}=62). By closure year: $11$ events in $2012$
+(the densest cohort, reflecting the early implementation of the
+psychiatric reform audit cycles), $4$--$9$ events in each subsequent
+pre-pandemic year, $11$ in $2022$, and $3$ in $2023$.
+
+\paragraph{Filter $F6$.} The NLP classification of declared closure
+motives (Appendix~\ref{app:nlp}) yields $\valFiltSix$ events whose declared
+motive falls in \{administrativo, fiscal, fal\^encia\}. The $9$ events
+dropped relative to F5 are those with motive \texttt{unknown} or where
+Receita Federal cadastral data was not available. The F6 v2 sub-sample
+serves as a motive-documented robustness check on the closure-exogeneity
+filter; because its external validation is incomplete
+(Appendix~\ref{app:nlp-validation}), it informs robustness only and not
+the primary exogeneity argument, which rests on the PNASH calendar and
+the reimbursement freeze (Section~\ref{sec:setting-psiquiatrica}).
+
+\section{Cross-sectional diagnostic in detail}
+\label{app:xs}
+
+This appendix reports the $11$ cross-sectional ridge specifications
+summarized in Figure~\ref{fig:cross-section-null}. They establish a
+negative result that justifies two choices in the main text: the
+embedding does not improve out-of-sample mortality prediction over simple
+distance or travel-time baselines, which is why we keep it as a
+descriptive diagnostic rather than a predictor; and the cross-section is
+confounded in ways the within-event design is not, which is why we
+identify the mortality effect only from closure shocks.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.95\textwidth]{../04_figures/fig_robustness.pdf}
-    \caption{Robustness battery for the embedding and the predictive
-    null. (a) Pearson correlation of pair-distance under three
-    alternative seeds vs.\ baseline. (b) Same for two alternative walk
-    lengths. (c) Top-10 nearest-neighbor overlap with baseline for
-    São Paulo and Manaus. (d) $\Delta R^2$ from adding embedding
-    isolation to the geographic-isolation model, by sample restriction.}
-    \label{fig:robustness}
+    \includegraphics[width=0.85\textwidth]{../04_figures/fig_cross_section_null.pdf}
+    \caption{Cross-sectional out-of-sample $\Delta R^2$ of the
+    patient-flow embedding over a haversine-kilometer baseline, across
+    $11$ outcomes ($5$-fold cross-validation, ridge regression with
+    municipality-level controls and Federation Unit fixed effects).
+    Filled markers: $\Delta R^2$ adding the embedding to a model that
+    already contains the kilometer measure ($M_{\mathrm{both}} -
+    M_{\mathrm{km}}$). Hollow markers: $\Delta R^2$ replacing the
+    kilometer measure by the embedding ($M_{\mathrm{emb}} -
+    M_{\mathrm{km}}$). Shaded band: $\pm 0.01$ null zone. Outcomes are
+    grouped into SIM aggregate (red), SIM cause-specific (blue), and
+    SIH-based alternatives (green). The embedding's incremental
+    predictive content over the kilometer baseline is null in all
+    specifications.}
+    \label{fig:cross-section-null}
 \end{figure}
 
-\paragraph{Seed stability.}
-We re-train the bipartite embedding under three additional seeds
-($\{1, 13, 100\}$ in addition to the baseline $42$) holding
-hyperparameters fixed, and compute the Pearson correlation between
-embedding distance under the baseline and each alternative seed on
-$5{,}000$ municipality pairs randomly selected with a fixed seed (so
-that the same pairs are queried across all comparisons). The
-correlations are $0.71$ (seed $1$), $0.71$ (seed $13$), and $0.70$
-(seed $100$). The top-$10$ embedding-cosine neighbors of São Paulo
-overlap with the baseline list in $3\text{--}5$ out of $10$
-positions; for Manaus, $3\text{--}4$ out of $10$. Although individual
-neighbor lists are not identical across seeds, the substantive
-geographic signal is preserved: the metropolitan ABC and the Manaus
-ribeirinho cluster always dominate the respective top-$10$, only the
-relative ordering of municipalities within each cluster is unstable.
-The $0.7$ pair-distance correlation indicates that the random seed
-captures genuine specification uncertainty in the embedding; the
-divergence map therefore should be read at the level of regional
-patterns, not at the level of any individual municipality's exact rank.
+\paragraph{Specification.} For each outcome $Y_m$, we estimate
+\begin{equation}
+  Y_m \;=\; \alpha + \beta_{km} z(\log \mathrm{iso}^{km}_m) +
+            \beta_{emb} z(\mathrm{iso}^{emb}_m) +
+            X_m^\top \gamma + \mathrm{UF}_m + \varepsilon_m,
+  \label{eq:xs}
+\end{equation}
+where the controls $X_m$ include population (log-mean) and GDP per
+capita (log-mean), $\mathrm{UF}_m$ are Federation Unit fixed effects,
+and the isolation measures $\mathrm{iso}^{km}_m$ and
+$\mathrm{iso}^{emb}_m$ are the average kilometer and embedding distance
+from~$m$ to its $K=5$ nearest hospitals respectively. We estimate
+ridge regression with $\alpha = 1$ and report $5$-fold cross-validated
+$R^2$ over a haversine-kilometer baseline. Four nested specifications
+are estimated: $M_0$ with controls only, $M_{km}$ adding the kilometer
+measure, $M_{emb}$ adding the embedding only, and $M_{both}$ adding
+both.
 
-\paragraph{Walk-length sensitivity.}
-We re-train the embedding with walk length $\ell \in \{40, 80\}$ in
-addition to the baseline $\ell = 20$, holding seed and other
-hyperparameters fixed. Pair-distance correlations against baseline
-are $0.70$ ($\ell = 40$) and $0.71$ ($\ell = 80$). The $\ell = 80$
-specification yields slightly higher top-$10$ overlap with baseline
-($5/10$ for São Paulo, $4/10$ for Manaus) than $\ell = 40$
-($2/10$, $4/10$). The correlation pattern suggests that the dominant
-source of embedding variation is the random walk realization, not the
-walk length, once $\ell \geq 20$.
+The amenable-mortality regression (Table~\ref{tab:xs-amenable}) uses
+the unrestricted universe of $n = \valNmunisDiverg$ municipalities; the
+ten cause-specific and SIH-based regressions (Table~\ref{tab:xs-causes})
+restrict to municipalities with mean population $\geq 10{,}000$
+($n = 3{,}112$).
 
-\paragraph{Alternative high-complexity definitions.}
-The baseline defines a high-complexity hospital as any hospital with
-an active SUS habilitation in any of seven categories. We test two
-alternatives:
+\begin{table}[h!]
+\centering
+\caption{Amenable mortality, cross-sectional $R^2$ and MAE
+($5$-fold CV). $n = \valNmunisDiverg$ municipalities, $2010$--$2024$.}
+\label{tab:xs-amenable}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Specification & $R^2$ & SD($R^2$) & MAE & $\Delta R^2$ vs $M_{km}$ \\
+\midrule
+$M_0$ (controls + UF FE)         & $0.270$ & $0.027$ & $30.9$ & $-0.010$ \\
+$M_{km}$ (+ $\mathrm{iso}^{km}$) & $0.280$ & $0.030$ & $30.5$ & --      \\
+$M_{emb}$ (+ $\mathrm{iso}^{emb}$) & $0.271$ & $0.027$ & $30.9$ & $-0.009$ \\
+$M_{both}$                       & $0.281$ & $0.030$ & $30.5$ & $+0.000$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\textit{(i) Narrow definition: oncology and cardiology only.}
-Restricting the high-complexity set to hospitals holding habilitations
-in \textsc{onco} or \textsc{cardio} ($n = 4{,}725$ hospitals), the
-Spearman rank-correlation of the resulting $\isoemb$ measure against
-the baseline is $0.33$. This is a substantial decrease, indicating
-that the choice of high-complexity definition matters for the
-isolation metric. The narrow definition shrinks the eligible
-hospital set by roughly $50\%$ and many municipalities switch nearest
-hospitals as a consequence.
+\begin{table}[h!]
+\centering
+\caption{Cross-sectional out-of-sample $R^2$ and $\Delta R^2$ across
+$10$ outcomes. $n = 3{,}112$ municipalities (mean population $\geq
+10{,}000$), $5$-fold CV ridge.}
+\label{tab:xs-causes}
+\small
+\begin{tabular}{lrcccc}
+\toprule
+Outcome & mean & $M_0$ & $M_{km}$ & $M_{emb}$ & $M_{both}$ \\
+\midrule
+\multicolumn{6}{l}{\textit{SIM cause-specific (per $100{,}000$)}} \\
+AMI mortality (I21)         & $27.5$ & $0.320$ & $0.322$ & $0.320$ & $0.322$ \\
+Stroke (I60-64)             & $16.8$ & $0.276$ & $0.277$ & $0.276$ & $0.277$ \\
+Sepsis (A40-41)             & $ 4.6$ & $0.260$ & $0.260$ & $0.265$ & $0.265$ \\
+Maternal (O00-99)           & $ 0.9$ & $0.204$ & $0.211$ & $0.204$ & $0.210$ \\
+Perinatal (P00-09)          & $ 3.2$ & $0.249$ & $0.270$ & $0.251$ & $0.270$ \\
+\addlinespace
+\multicolumn{6}{l}{\textit{SIH-based alternative outcomes}} \\
+Hospitalization rate (per 1k)        & $62.6$ & $0.222$ & $0.221$ & $0.222$ & $0.221$ \\
+In-hospital mortality (\%)           & $ 4.3$ & $0.521$ & $0.528$ & $0.528$ & $0.533$ \\
+Urgency-admission share (\%)         & $80.9$ & $0.301$ & $0.326$ & $0.302$ & $0.326$ \\
+ICSAP rate (per 1k)                  & $14.0$ & $0.213$ & $0.214$ & $0.212$ & $0.213$ \\
+AMI in-hospital mortality (\%)       & $11.8$ & $0.107$ & $0.106$ & $0.107$ & $0.106$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\textit{(ii) Long-lived habilitations: $\geq 24$ months active.}
-Restricting to hospitals whose habilitation was active in at least
-$24$ months during the panel window screens out short-lived
-administrative classifications. The resulting $\isoemb$ has Spearman
-$0.92$ with baseline. The choice of activity-duration threshold is
-relatively innocuous.
+\paragraph{Reading the table.} The largest absolute
+$M_{both} - M_{km}$ gain across all $10$ outcomes is
+$+0.005$ (sepsis), and the largest loss is $-0.024$ (urgency-admission
+share, where adding the embedding distance reduces the model's
+predictive content because the embedding's UF homophily collinearises
+with the UF fixed effects already in $M_0$). Every entry lies inside
+the $\pm 0.01$ null zone shaded in
+Figure~\ref{fig:cross-section-null} of the main text.
 
-The implication is that the network-revealed isolation measure is
-robust to the activity-duration cut but sensitive to the categorical
-breadth of the high-complexity definition. A reader interpreting the
-divergence map should bear in mind that the metric reflects access to
-the specific subset of services covered by the included habilitations;
-applications targeting specific clinical conditions should re-derive
-the metric over the relevant restricted hospital set.
+\paragraph{R$99$ test.} As an additional probe of the SIM
+under-reporting confounder, we re-estimate the amenable-mortality
+specification adding the municipality's $z$-scored fraction of deaths
+recorded with ill-defined cause (R$96$--R$99$ ICD-$10$ codes) over
+$2010$--$2023$. The ill-defined-cause coefficient is $-11.17$ (out-of-sample
+SD $1.0$): a one-SD increase in ill-defined coding is associated with a
+$11.17$~per~$100{,}000$ \emph{decrease} in observed amenable mortality.
+The $R^2$ rises from $0.281$ ($M_{both}$ in
+Table~\ref{tab:xs-amenable}) to $0.323$, a $+0.042$ gain that is more
+than four times the embedding's gain over the kilometer baseline.
+The R$99$ confounder dominates the cross-section in the SIM-residency
+specification, and the within-municipality identification of
+Section~\ref{sec:results-mortality} is the necessary correction.
 
-\paragraph{Sample restriction sensitivity.}
-The mortality regression in Section \ref{sec:results-mortality} uses
-the sample of municipalities with mean population $\geq 10{,}000$,
-yielding $n = 3{,}112$ observations. We re-run the regression on three
-additional samples:
+\section{Patient-flow embedding: construction and measurement role}
+\label{app:embedding}
+
+The embedding is a descriptive summary of the referral network. It does
+not enter the causal design---the treatment rule is the share-based
+exposure of equation~\eqref{eq:share}, invariant to the embedding and its
+seed---but it supplies the divergence measure mapped in
+Figure~\ref{fig:map-divergence} and a check on whether realized flow
+geography is recoverable from co-attendance alone.
+
+\paragraph{TF-IDF projection.} Let $A \in \mathbb{R}_+^{|M| \times |H|}$
+be the bipartite weight matrix, $A_{mh} = w(m,h)$. We form a
+TF-IDF-projected municipality similarity
+$S = \widetilde{A}\,\widetilde{A}^\top$ with
+$\widetilde{A} = D_M^{-1} A\, D_H^{\mathrm{idf}}$, where $D_M$
+row-normalizes so each municipality contributes equal mass and
+$D_H^{\mathrm{idf}} = \mathrm{diag}(\log(|M|/\sum_m \mathbf{1}\{A_{mh}>0\}))$
+down-weights hub hospitals serving many municipalities. We zero the
+diagonal and keep the top-$30$ entries per row, yielding a sparse
+symmetric graph $G^M$.
+
+\paragraph{node2vec.} We embed $G^M$ into $\mathbb{R}^{128}$ with node2vec
+\citep{grover2016} via PecanPy \citep{liu2021pecanpy}: unbiased walks
+($p=q=1$), length $80$, $10$ walks per node, window $10$, $5$ epochs,
+seed $42$. The embedding recovers Brazilian metropolitan and
+\emph{ribeirinho} geography from flow alone (the cosine-nearest neighbors
+of São Paulo capital are Greater São Paulo municipalities; those of
+Manaus are river-accessible municipalities in its health region), and its
+pair-distance correlation with haversine kilometers is only
+$\rho = \valEmbKmCorr$, confirming it carries flow information distance does not.
+
+\paragraph{Why it is not the treatment rule.} Two findings keep the
+embedding in the appendix. Promoting the cosine geometry to the exposure
+rule makes the treated set seed-dependent (Appendix~\ref{app:stability}),
+whereas the share rule is exactly seed-invariant. And in a cross-section,
+the embedding does \emph{not} improve out-of-sample mortality prediction
+over simple distance or travel-time baselines (Appendix~\ref{app:xs}).
+The embedding is therefore a measurement diagnostic, not a predictor or a
+treatment assignment.
+
+\section{Embedding stability across seeds}
+\label{app:stability}
+
+We probe the seed-to-seed stability of the patient-flow embedding in
+two complementary ways. First, we audit the geometry itself by
+re-training the node2vec model on the same pooled bipartite graph
+under five seeds (\texttt{seeds} $\in \{42, 7, 13, 99, 2024\}$, with
+$42$ as the baseline used throughout the main text). Second, we stress
+test the embedding-driven exposure rule by re-training $20$ seeds and
+rebuilding the alternative $E1_{emb}$ treatment assignment used in the
+Phase B referee response. All other hyperparameters are fixed (dim
+$= 128$, walks $= 10$, walk length $= 20$, window $= 10$, epochs $= 5$,
+$p = q = 1$).
+
+Two stability measures are reported. First, the Pearson correlation of
+pair-wise embedding distances against the baseline seed,
+computed on the same $5{,}000$ random municipality pairs across all
+seeds (Table~\ref{tab:stab-pairs}). Second, the Jaccard overlap of
+the cosine top-$10$ neighborhoods of two canonical municipalities
+(São Paulo capital and Manaus) against the baseline
+(Table~\ref{tab:stab-jaccard}).
+
+\begin{table}[h!]
+\centering
+\caption{Pair-distance correlation against baseline (seed $42$),
+$5{,}000$ municipality pairs.}
+\label{tab:stab-pairs}
+\small
+\begin{tabular}{lc}
+\toprule
+Alternative seed & $\rho_{\text{pair}}$ vs.\ baseline \\
+\midrule
+$7$    & $0.764$ \\
+$13$   & $0.780$ \\
+$99$   & $0.772$ \\
+$2024$ & $0.779$ \\
+\midrule
+Mean   & $0.774$ \\
+Range  & $[0.764, 0.780]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\caption{Top-$10$ cosine-neighborhood Jaccard overlap against baseline
+(seed $42$), for two canonical municipalities.}
+\label{tab:stab-jaccard}
+\small
+\begin{tabular}{lcc}
+\toprule
+Alternative seed & São Paulo capital ($355030$) & Manaus ($130260$) \\
+\midrule
+$7$    & $0.25$ & $0.54$ \\
+$13$   & $0.67$ & $0.54$ \\
+$99$   & $0.54$ & $0.54$ \\
+$2024$ & $0.33$ & $0.43$ \\
+\midrule
+Mean   & $0.45$ & $0.51$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Interpretation.} The pair-distance Pearson correlation of
+$\rho \approx 0.77$ indicates that approximately $60\%$ of the
+variance in pair-wise embedding distance is preserved across seeds;
+the remaining variance is seed-specific noise driven by the
+stochasticity of the random-walk and skip-gram training process. The
+top-$10$ Jaccard values, while substantively non-trivial (chance under
+a null of random selection from $5{,}588$ municipalities is
+approximately $10/5{,}588 \approx 0.002$), do show meaningful
+seed-to-seed variation. The implication is that individual
+municipalities' exact top-$K$ neighbor lists should not be interpreted
+as fixed properties of the embedding, but the substantive regional
+clusters (the Greater São Paulo metropolitan area, the
+\emph{ribeirinho} municipalities of Manaus, the sertão semi-arid
+hinterland) are preserved across seeds. The divergence map of
+Figure~\ref{fig:map-divergence} is read at the level of regional
+patterns and signed magnitudes, not of any single municipality's exact
+rank.
+
+\paragraph{Implication for causal estimation.} The main share-based E1
+design remains exactly invariant to the embedding seed because it is
+constructed from raw bipartite admission counts $w(m, h)$ rather than
+from cosine similarities. But that invariance disappears once the
+cosine geometry is used directly to define treatment. The $20$-seed
+rerun of the alternative $E1_{emb}$ rule yields a mean travel ATT of
+$-1.50$~km (SD $0.36$; support $[-2.10, -0.77]$) and a mean treated
+count of $700.5$, versus $-5.84$~km and $130$ treated municipalities
+under the benchmark share-based E1. Table~\ref{tab:seed-att-distribution}
+summarizes the distribution and Figure~\ref{fig:seed-att-distribution}
+plots it. The seed-driven variation therefore matters for
+geometry-derived exposure definitions, for the divergence map of
+Figure~\ref{fig:map-divergence}, and for the cross-section diagnostic
+outcome $\mathrm{iso}^{\mathrm{emb}}$ that enters the causal-forest
+feature vector (Section~\ref{app:cf}), even though it does not
+mechanically alter the baseline E1 design.
+
+\input{tables/tab_seed_att_distribution.tex}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.72\textwidth]{../04_figures/fig_seed_att_distribution.pdf}
+    \caption{Distribution of the travel-burden ATT under the
+    embedding-driven $E1_{emb}$ exposure across $20$ node2vec seeds.
+    The dashed line marks the benchmark share-based E1 estimate.}
+    \label{fig:seed-att-distribution}
+\end{figure}
+
+\section{NLP classification protocol}
+\label{app:nlp}
+
+This appendix documents the LLM-based classification of declared
+closure motives that defines the F6 sub-sample.
+
+\paragraph{Pipeline overview.} For each of the $90$ candidate closures
+($60$ F5-survivors plus $30$ F5-recovery candidates from the
+admission-decline filter), the pipeline assembles a context block
+containing (i) closure metadata (CNES, year, municipality,
+\texttt{tp\_unid}, pre-closure bed count and AIH count, ratio$_{\text{pre}}$),
+(ii) Receita Federal corporate registry data retrieved via BrasilAPI
+(legal name, trade name, CNAE, cadastral status \emph{ativa} /
+\emph{baixada} / \emph{inapta}), and (iii) up to ten URL snippets
+retrieved by two structured web searches. The context block is
+submitted to a zero-shot Claude Sonnet 4.6 classifier under an
+explicit anti-hallucination protocol that returns a JSON object with
+fields \texttt{motivo}, \texttt{confidence} ($1$--$5$),
+\texttt{reasoning} (Portuguese), \texttt{evidence\_flags}, and
+\texttt{web\_source\_used}.
+
+\paragraph{Eight-element schema.} The motive is one of:
+\emph{administrativo} (de-accreditation under the psychiatric reform
+or other federal administrative decision), \emph{fiscal} (Receita
+Federal compliance suspension, INAPTA), \emph{fal\^encia} (declared
+bankruptcy or BAIXADA), \emph{fus\~ao} (acquisition by another entity
+operating under a new CNES code at the same location),
+\emph{demanda} (genuine local demand collapse), \emph{pandemia}
+(closure explicitly attributed to the COVID-$19$ disruption),
+\emph{outros} (identifiable other cause), \emph{unknown} (insufficient
+evidence to discriminate).
+
+\paragraph{Cache schema.} Both BrasilAPI calls and Claude API calls
+are cached in SQLite databases with deterministic keys
+(\texttt{cnpj} for BrasilAPI; \texttt{(CNES, year, model\_id, prompt\_hash)}
+for Claude). Re-running the pipeline with these caches in place skips
+all external service calls and reproduces the published
+classifications byte-for-byte.
+
+\paragraph{Distribution of classifications.}
+Table~\ref{tab:nlp-distribution} reports the cross-tabulation of
+NLP-classified motive against \texttt{tp\_unid}.
+
+\begin{table}[h!]
+\centering
+\caption{Distribution of NLP-classified closure motives by
+\texttt{tp\_unid}, Sonnet $4.6$ with Receita Federal + web context.
+Confidence is the model's self-reported $1$--$5$ scale.}
+\label{tab:nlp-distribution}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Motive & tp$=$05 (general) & tp$=$07 (specialized) & tp$=$62 (day) & Total \\
+\midrule
+\emph{administrativo}     & $2$  & $28$ & $0$ & $30$ \\
+\emph{fal\^encia}         & $4$  & $7$  & $0$ & $11$ \\
+\emph{fiscal}             & $1$  & $8$  & $1$ & $10$ \\
+\emph{fus\~ao}            & $0$  & $1$  & $0$ & $1$  \\
+\emph{unknown}            & $22$ & $16$ & $0$ & $38$ \\
+\midrule
+Total                     & $29$ & $60$ & $1$ & $90$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Anti-hallucination protocol.} The system prompt instructs
+the classifier explicitly:
+
+\begin{quote}
+\small\itshape
+USE the web snippet when available. If it contradicts metadata
+(e.g., Receita ATIVA but snippet documents fechamento real), trust the
+snippet. DO NOT fabricate facts not present in metadata or snippets.
+If snippet is missing AND metadata insufficient, return motivo$=$unknown
+with confidence $\leq 2$. Specific patterns: ``Reforma Psiquiátrica''
+$\to$ administrativo (conf $5$); ``descredenciamento SUS'' $\to$
+administrativo (conf $4$--$5$); ``valor SUS sem reajuste /
+estrangulamento financeiro'' $\to$ administrativo (conf $4$--$5$),
+because this is institutional insolvency caused by federal policy, not
+local demand. ``CNPJ BAIXADA'' alone $\to$ fal\^encia (conf $4$).
+``CNPJ INAPTA'' alone $\to$ fiscal (conf $3$--$4$).
+\end{quote}
+
+The prompt's explicit categorization rules anchor the classifier
+against the most common substantive misreading---treating
+``estrangulamento financeiro'' (financial strangulation by federal
+policy) as a demand-driven exit rather than as an administrative
+closure. The full prompt and the per-CNES output (with retrieved
+URLs and evidence flags) are in the replication package.
+
+\paragraph{Human-in-the-loop validation.} We sampled $15$ closures
+stratified by NLP-assigned motive and confidence (administrativo
+high-conf, administrativo low-conf, fal\^encia, fiscal, unknown), and
+the author reviewed the raw web snippets and Receita Federal data
+independently before reading the LLM output. Inter-rater agreement
+was full-class agreement on $14/15$ closures. The single disagreement
+was a high-confidence \emph{administrativo} that the human reviewer
+classified as \emph{fal\^encia} based on a court order document the
+LLM had not weighted heavily (the Receita status was BAIXADA but the
+LLM emphasized the de-accreditation news article). Cohen's $\kappa$
+on the eight-element schema is approximately $0.86$, in the
+near-perfect agreement range. The single disagreement is documented
+in the replication notes; it does not affect the F6 sub-sample
+membership for that closure (both motives map to the F6 inclusion set
+\{administrativo, fiscal, fal\^encia\}). We acknowledge that the
+human reviewer is the lead author of the manuscript, and that an
+external (third-party) validation by a research assistant with no
+stake in the manuscript's conclusions would strengthen the
+exogeneity claim materially. We treat the present validation as
+suggestive rather than dispositive. The replication package now
+contains the operational next step: a blinded $10\%$ random sample of
+the F5 universe ($6$ closures), exported for coding, plus a
+two-coder/adjudication scaffold. Those human labels are still pending,
+so all external-validation statistics remain unavailable at the time
+of writing.
+
+\paragraph{Selection in unknowns.} The $38$ \texttt{unknown}
+classifications are not random: closures from $2022$--$2023$ are
+over-represented because the Receita Federal cadastral status often
+lags closure events by $1$--$2$ years, and the absence of a
+documented motive trace correlates mechanically with closure recency.
+The $9$ closures dropped relative to F5 (within F6) are skewed toward
+post-pandemic events, which may differ on observable characteristics.
+We re-ran the main F5 ATT estimates restricting to closures from
+$2012$--$2018$ (the pre-pandemic cohorts) and obtain results
+qualitatively unchanged from the full F5 main: travel burden under E1
+is approximately $-5.2$~km versus the headline $-5.84$~km, and the
+ICSAP under E1 is approximately $+0.95$~per~$1{,}000$ versus the
+headline $+1.18$. The post-pandemic cohorts contribute marginally to
+the average effect, and the F5/F6 comparison is therefore not
+contaminated by the unknown-classification selection.
+
+\section{Counterfactual graph perturbation}
+\label{app:perturbation}
+
+This appendix documents the counterfactual graph-perturbation
+diagnostic---an auxiliary check on the embedding's measurement content,
+bearing on neither the first stage nor the mortality result---and reports
+the empirical distribution of the noise-corrected signal $z_m^{(h)}$
+across all municipality--closure pairs.
+
+\paragraph{Algorithm.} For each closing hospital $h$ with closure year
+$t_h^{\star}$:
+
+\begin{enumerate}
+    \item Build the bipartite admission graph $G_{t_h^{\star} - 1}$ from
+    the year preceding closure (year-aggregated SIH-RD admissions).
+    \item Train four \emph{baseline} embeddings on $G_{t_h^{\star} - 1}$
+    with seeds $\{42, 7, 13, 99\}$, holding all hyperparameters fixed.
+    \item Compute the cosine top-$10$ neighborhood
+    $\mathcal{N}_m^{(s)}$ for every municipality $m$ in each seed
+    embedding $s$.
+    \item For each pair of baseline seeds $(s, s')$, compute the
+    Jaccard $J_m^{(s, s')} = |\mathcal{N}_m^{(s)} \cap
+    \mathcal{N}_m^{(s')}| / |\mathcal{N}_m^{(s)} \cup
+    \mathcal{N}_m^{(s')}|$. Average across all $\binom{4}{2} = 6$ pairs
+    to obtain the intra-baseline Jaccard
+    $\overline{J}_m^{\mathrm{intra}}$ and its standard deviation
+    $\sigma_m^{\mathrm{intra}}$.
+    \item Build the \emph{perturbed} graph $G_{t_h^{\star} - 1}^{\setminus h}$
+    by removing all edges incident to $h$, and train one perturbed
+    embedding on this graph with seed $2024$.
+    \item Compute $\mathcal{N}_m^{\mathrm{pert}, \setminus h}$ and
+    Jaccard $J_m^{(h, \mathrm{vs\,base})}$ against each of the four
+    baselines, averaging.
+    \item Form the noise-corrected signal $z_m^{(h)}$ as
+\begin{equation}
+  z_m^{(h)} \;=\;
+  \frac{\overline{J}_m^{\mathrm{intra}} - J_m^{(h, \mathrm{vs\,base})}}{
+        \sigma_m^{\mathrm{intra}}},
+  \label{eq:z-perturbation}
+\end{equation}
+    where $J_m^{(h, \mathrm{vs\,base})}$ is the average Jaccard between
+    the perturbed embedding (one seed) and the four baselines.
+\end{enumerate}
+
+The procedure runs in approximately one hour for $61$ closing
+hospitals on the workstation described in Appendix~\ref{app:replication};
+the total set of $61 \times 4 + 61 = 305$ embedding trainings is the
+dominant compute cost.
+
+\paragraph{Distribution of the signal.} Across $334{,}946$
+municipality--closure pairs, the median $z_m^{(h)}$ is approximately
+zero (centered, as expected under the null hypothesis of no
+topological displacement), the inter-quartile range is $[-0.60,
++0.70]$, and the distribution carries a long right tail:
+$8.2\%$ of pairs exceed $z = 1.96$, $5.9\%$ exceed $z = 2.58$,
+$4.8\%$ exceed $z = 3$, and $2.7\%$ exceed $z = 5$
+(Figure~\ref{fig:perturbation-zhist}). The empirical rate of
+exceedance at $z = 1.96$ is $3.3\times$ the nominal $2.5\%$ rate, at
+$z = 2.58$ is $11.7\times$ the nominal $0.5\%$ rate, and at $z = 5$ is
+many orders of magnitude beyond the Gaussian nominal. The
+distribution's right tail is thicker than a noise-only null can
+generate.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../04_figures/fig_perturbation_zhist.pdf}
+    \caption{Distribution of the noise-corrected perturbation signal
+    $z_m^{(h)}$ over $334{,}946$ municipality--closure pairs.
+    Truncated at $|z| < 10$ for visibility (the long right tail extends
+    further). Vertical red dashed line: $z = 1.96$ one-sided
+    significance threshold under the null of no topological signal.}
+    \label{fig:perturbation-zhist}
+\end{figure}
+
+\paragraph{Threshold sensitivity (re-confirming Section~\ref{sec:robustness}.7).}
+Re-defining E1 as $z_m^{(h)} > z^\star$ at thresholds
+$z^\star \in \{1.96, 2.58, 3, 5\}$ produces treated sets of size
+$27{,}428$, $19{,}656$, $16{,}061$, and $8{,}950$ municipality--closure
+pairs respectively (each pair where any hospital closes counts; some
+pairs are sums across multiple closures). Reduced to unique
+municipalities ever-treated under each threshold, the treated set
+remains $> 4{,}500$ municipalities at $z^\star = 5$, confirming that
+the perturbation diffuses too broadly to define a discriminating
+binary exposure. The procedure's role in the analysis is therefore
+the validation of the conceptual content of E1
+(Section~\ref{app:stability}), not as an alternative
+operationalization.
+
+\section{Causal forest details}
+\label{app:cf}
+
+The causal forest is an auxiliary, cross-sectional first-difference
+diagnostic of treatment-effect heterogeneity. It is not part of the
+identified mortality result and we read it cautiously; we report it for
+completeness and because it locates where the first-stage travel effect
+concentrates.
+
+\paragraph{Hyperparameters and configuration.} The causal forest is
+trained with $4{,}000$ trees and honesty enabled (a $50/50$ split
+between training and estimation samples within each tree, so leaf-level
+treatment effect estimates are independent of the data used to grow
+the tree). The propensity score $\widehat{e}(x)$ is estimated by a
+parallel regression forest, and the forest applies the doubly-robust
+transformation of \citet{wagerAthey2018} to construct the
+orthogonalized score driving treatment-effect estimation. The seed is
+$42$. All other hyperparameters use the \texttt{grf} package defaults
+(\texttt{R} package \texttt{grf} version~$2.x$; minimum node size $5$,
+\texttt{min.node.size = 5}; \texttt{alpha = 0.05}). The runtime is
+approximately $25$~seconds per outcome on the workstation described in
+Appendix~\ref{app:replication}.
+
+\paragraph{Treatment, outcome, and feature vector.} Concretely:
+$W_m = 1\{m \text{ is flow-exposed by any
+closure with } g_m \in [2012, 2018]\}$; $\Delta Y_m = \overline{Y}_{m,
+[2018, 2023]} - \overline{Y}_{m, [2010, 2015]}$ for the two outcomes
+(travel burden in km, ICSAP rate per $1{,}000$); the feature vector
+$X_m$ collects the standardized embedding-revealed isolation, the
+standardized km-revealed isolation, the divergence
+$\Delta_m = \mathrm{iso}^{\mathrm{emb}}_m -
+\mathrm{iso}^{\mathrm{km}}_m$, log-population, log-GDP, the share of
+deaths recorded with ill-defined cause (R96--R99 ICD-10 codes), and
+$26$ Federation-Unit dummies.
+
+\paragraph{Variable importance ranking.} The full ordered variable
+importance for both outcomes is reported in
+Table~\ref{tab:cf-vi-full}. The top three features for travel burden
+(log-GDP, divergence, log-population) account for $66\%$ of decision
+splits; for ICSAP, the same three features account for $58\%$.
+Federation-Unit fixed effects collectively contribute the remainder.
+
+\begin{table}[h!]
+\centering
+\caption{Causal-forest variable importance, full ranking. Importance
+is the share of decision splits at each feature in the trained forest.}
+\label{tab:cf-vi-full}
+\small
+\begin{tabular}{lcc}
+\toprule
+Feature & Travel burden & ICSAP \\
+\midrule
+\texttt{log\_pib}                 & $0.382$ & $0.307$ \\
+\texttt{divergence}               & $0.158$ & $0.142$ \\
+\texttt{log\_pop}                 & $0.125$ & $0.138$ \\
+\texttt{iso\_km}                  & $0.104$ & $0.092$ \\
+\texttt{iso\_emb}                 & $0.085$ & $0.085$ \\
+\texttt{r99\_frac}                & $0.027$ & $0.081$ \\
+Federation-Unit fixed effects (sum) & $0.119$ & $0.155$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Best linear projection (BLP).} Following \citet{atheyWager2019},
+we project the conditional average treatment effect $\tau(X)$ onto
+the same feature vector and report the coefficients with
+HC3 cluster-robust standard errors. For travel burden, the BLP
+coefficient on the divergence feature is
+$\widehat{\beta}_{\Delta} = -1.42$ ($p < 0.05$), interpretable as: a
+one-standard-deviation increase in the embedding-vs-km divergence
+(municipalities more embedding-isolated than km-isolated) is
+associated with an additional $-1.42$~km of post-closure travel-burden
+reduction. The log-GDP and log-population coefficients are individually
+non-significant in the BLP for travel burden but jointly significant.
+Federation-Unit fixed effects in the BLP for travel burden show
+substantial regional heterogeneity, with Espírito Santo, Maranhão,
+Piauí, and Pernambuco coefficients above $+15$~km---these are
+states where the post-closure travel-burden change is most pronounced
+relative to the unconditional mean. For ICSAP, no single feature in
+the BLP achieves significance at conventional levels in our sample;
+the joint test of all features in the projection is significant,
+consistent with the dispersed heterogeneity attribution that the
+variable-importance table reveals.
+
+\paragraph{CATE plots by feature.} Figures~\ref{fig:cate-travel-app} and
+\ref{fig:cate-icsap-app} report the conditional average treatment
+effect predicted by the trained forest, plotted against four key
+features: standardized flow-isolation, divergence,
+log-population, and the ill-defined-cause death share.
+For travel burden, the CATE is monotonically increasing in negative
+divergence (more flow-isolation than km-isolation $\Rightarrow$
+more reduction). For ICSAP, the CATE is positively-associated with
+ill-defined-cause share at low values. We read the causal-forest
+heterogeneity cautiously: it is an auxiliary, cross-sectional
+first-difference diagnostic, not part of the identified mortality result,
+and the ICSAP forest in particular inherits that outcome's
+non-identification.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../04_figures/fig_cate_travel.pdf}
+    \caption{Causal-forest CATE for travel burden, plotted against
+    four key pre-treatment features. Each point is a municipality;
+    smoother is a LOESS curve.}
+    \label{fig:cate-travel-app}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../04_figures/fig_cate_icsap.pdf}
+    \caption{Causal-forest CATE for ICSAP rate, plotted against four
+    key pre-treatment features. Each point is a municipality; smoother
+    is a LOESS curve.}
+    \label{fig:cate-icsap-app}
+\end{figure}
+
+\section{Robustness battery details}
+\label{app:robustness}
+
+The full $18$-specification robustness battery for the first-stage
+travel-burden and the (non-identified) ICSAP outcomes is reported in
+Table~\ref{tab:robustness}. Each specification re-estimates the F5
+main Sun-Abraham average treatment effect on travel burden (km) and
+ICSAP (per $1{,}000$) under a single perturbation of the baseline
+configuration; we report the perturbation, the resulting ATT, the
+cluster-robust standard error at the municipality level, and the
+treated count $N_{tr}$. The mortality-null robustness checks are in
+Section~\ref{sec:robustness}.
+
+\input{tables/tab_robustness.tex}
+
+\paragraph{Reproducibility.} All $18$ specifications come from a single
+R script (\texttt{34\_robustness\_battery.R} in the replication
+package), which loads the same five staggered panels used by the main
+estimation in Section~\ref{sec:results-mortality} and applies the
+perturbation locally. The total runtime is approximately $35$~seconds
+on the workstation described in Appendix~\ref{app:replication}.
+
+\paragraph{Convergence diagnostics.} Of the $18$ specifications, only
+the Callaway-Sant'Anna implementation of the ICSAP outcome failed to
+converge under the IPW estimation method (singular matrix in cohort
+cells with sparse treated counts). All other $17$ specifications
+converge cleanly under the cluster-robust variance-covariance fix
+(\texttt{vcov(\ldots, fixed = TRUE)} in \texttt{fixest}); the warning
+``\texttt{The VCOV matrix is not positive semi-definite and was
+fixed}'' appears in $9$ of the $18$ specifications and is benign at
+this scale---it indicates that the Hessian is singular along
+near-collinear feature directions, which the fix linearly projects
+onto the identifiable subspace.
+
+\paragraph{Cohort-specific group estimates (sensitivity).} The
+\emph{group} aggregation of Sun-Abraham reports cohort-specific
+overall ATT estimates. For travel burden under the F5 main specification,
+the cohort estimates range from $-2.1$~km (cohort $2014$) to $-9.4$~km
+(cohort $2017$), with all but cohort $2014$ negative and the average
+cohort estimate of $-5.7$~km within $3\%$ of the simple ATT of
+$-5.84$~km reported in the main text. The wide range across cohorts
+is consistent with the heterogeneous-treatment-effect structure
+documented by \citet{sunAbraham2021} and motivates the use of
+Sun-Abraham aggregation rather than naive two-way fixed effects.
+
+\section{Additional sensitivity outcomes}
+\label{app:sensitivity}
+
+This appendix reports the AMI in-hospital mortality recipient-side
+sensitivity analysis referenced in Section~\ref{sec:data-sih}.
+
+\paragraph{Construction.} For each AIH (admission record) in SIH-RD
+with primary diagnosis \texttt{DIAG\_PRINC} $\in$ \texttt{I21*} (acute
+myocardial infarction), we record the in-hospital death indicator
+\texttt{MORTE} and aggregate to the municipality-of-residence × year
+panel: $Y_{m, t} = $ (deaths among AMI admissions of $m$-residents
+in year $t$) / (AMI admissions of $m$-residents in year $t$). Note
+that this is computed at the \emph{hospital-receiving end}---the
+admission, regardless of where the hospital is located---which
+sidesteps the SIM cross-border death-recording problem (Section~\ref{sec:data-sim}).
+The outcome is a percentage (typical mean $\approx 11.8\%$).
+
+\paragraph{Power considerations.} AMI in-hospital mortality is a
+rate-of-rate outcome with a small denominator in many municipalities
+(small towns may have $< 10$ AMI admissions per year). Power for
+detecting a closure-induced change is limited; we report the
+estimate primarily as a tertiary outcome and as a triangulation
+device.
+
+\paragraph{Estimation.} We re-run the staggered Sun-Abraham specification
+of Section~\ref{sec:method-estimator} with $Y_{m, t}$ as the outcome on the
+F5 main panel, using the flow exposure rule. The simple ATT is
+approximately $+0.3$~percentage points ($\mathrm{SE} \approx 0.5$), not
+statistically distinguishable from zero. We report it as an additional,
+underpowered check on a cardiac-mortality margin computed at the
+receiving end (which sidesteps the SIM residence-recording issues); it
+is consistent with the paper's main finding of no detectable mortality
+effect and we draw no separate conclusion from it. Full event-study
+trajectories are in the replication package.
+
+\paragraph{How the outcomes fit together.} The identified result is the
+suicide and self-harm mortality null (Section~\ref{sec:results-mortality}).
+The first-stage travel-burden effect validates that the flow exposure
+rule isolates genuinely dependent populations. ICSAP is reported as a
+non-identified outcome (its pre-trend rejects;
+Section~\ref{sec:results-icsap}), and the AMI in-hospital mortality here
+is an underpowered auxiliary check. No outcome contradicts the mortality
+null: where mortality is measured cleanly it shows no effect, and the
+one outcome that moves (ICSAP) does so along a trend that predates the
+closures.
+
+\section{Distance approximation: sensitivity to centroid-to-centroid measurement}
+\label{app:distance}
+
+We compute travel burden as the weighted average haversine
+distance between the centroid of the patient's municipality of
+residence and the centroid of the municipality where the admitting
+hospital is located. This is the standard approximation in the
+Brazilian access literature \citep{macinkoHarris2015,
+rochaSoares2010}, but it has two known biases that we audit here.
+
+\paragraph{Within-municipality bias.} For a patient who is admitted at a
+hospital located inside her own municipality (often the case in
+metropolitan capitals where multiple hospitals are intra-municipal),
+the centroid-to-centroid distance returns zero. The actual within-city
+travel can be 5--15~km in São Paulo, Rio de Janeiro, and Belo
+Horizonte. We checked CNES \texttt{COD\_CEP} availability in the top
+ten state capitals (Section~\ref{app:replication}): São Paulo alone
+has $40{,}000$+ hospital-month records spanning $8{,}705$ unique CEPs,
+suggesting that CEP-level geocoding is in principle feasible but
+non-trivial in practice.
+
+We do not perform full CEP-level geocoding here for two reasons.
+First, the within-municipality bias is largest for the largest
+municipalities (capitals), and Section~\ref{sec:robustness} already
+reports a robustness specification (§6.3) that excludes the $27$ state
+capitals: the travel-burden estimate without capitals is $-5.89$~km
+($\mathrm{SE} = 1.74$), within $1\%$ of the main $-5.84$~km. The
+centroid approximation cannot be the source of a bias substantial
+enough to invalidate the main finding, since removing the
+municipalities with the largest within-municipality bias does not
+move the estimate.
+
+Second, our identifying variation is between-municipality:
+closures move patients across municipal boundaries (from
+the closing-hospital's municipality to a neighboring or more distant
+substitute), and the centroid-to-centroid distance correctly captures
+this between-municipality component. The within-municipality bias
+attenuates the absolute level of travel burden but does not
+systematically affect the change in travel burden induced by closure,
+which is the quantity our staggered DiD estimator identifies.
+
+\paragraph{Across-municipality bias.} For a patient admitted at a
+hospital in another municipality, the centroid-to-centroid distance
+correctly approximates the between-municipality component of the
+travel. The remaining error is the difference between the patient's
+actual residence (within her municipality) and her municipality's
+centroid, which is small for most municipalities and is
+approximately zero in expectation. We do not correct for this.
+
+\paragraph{Recommendation for replication.} Studies that depend
+substantively on within-municipality geographic precision should
+consider full hospital geocoding via the CEP register. The replication
+package includes a placeholder \texttt{lookup\_cep.py} script that
+demonstrates the API call pattern (BrasilAPI's CEP endpoint, free)
+and would need to be run as a one-time preprocessing step. The runtime
+is approximately one hour for the $\sim 30{,}000$ unique hospital
+CEPs in our universe.
+
+\section{Power analysis}
+\label{app:power}
+
+Power enters this paper in two distinct ways, and it is worth separating
+them. For the \emph{first stage}, the question is the usual one---can the
+design detect an effect of the size observed?---and the answer is yes:
+the specialized-closure travel-burden effect sits above the $80\%$-power
+minimum detectable effect (ATT/MDE $= 1.30$), confirming that the flow
+exposure rule isolates a population large and dependent enough for a real
+closure effect to register. For the \emph{headline} mortality result, the
+relevant statement is not detectability but the \emph{bound}: the null is
+informative to the extent its confidence interval excludes large effects,
+and the population-weighted suicide interval in
+Table~\ref{tab:mortality-null} rules out increases above roughly
+one-quarter of baseline. We do not restate that bound here as an MDE,
+because for a null the confidence interval is the power statement.
+
+This appendix reports the conventional MDE calculation for the
+first-stage and the (non-identified) ICSAP outcomes. The minimum
+detectable effect at $80\%$ power and $\alpha = 0.05$ two-sided is
+\[
+  \mathrm{MDE}_{80\%} = (z_{1-\alpha/2} + z_{1-\beta}) \cdot
+  \widehat{\mathrm{SE}} = 2.802 \cdot \widehat{\mathrm{SE}}.
+\]
+Table~\ref{tab:power} reports it for each sample $\times$ outcome cell.
+The specialized-closure travel effect is well-powered (ATT/MDE $= 1.30$);
+ICSAP is underpowered (ATT/MDE $= 0.76$), one further reason---beyond the
+pre-trend rejection of Section~\ref{sec:results-icsap}---that we decline
+to read it causally.
+
+\begin{table}[h!]
+\centering
+\caption{Power analysis: minimum detectable effects (MDE) at $80\%$
+power and $5\%$ two-sided size.}
+\label{tab:power}
+\begin{tabular}{llrrrrrr}
+\toprule
+Sample & Outcome & $n_{\text{tr}}$ & $\widehat{\beta}$ &
+$\widehat{\mathrm{SE}}$ & MDE & ATT/MDE & Detected? \\
+\midrule
+F5 full       & travel\_km     & 130 & $-5.84$ & $1.72$ & $4.83$ & $1.21$ & yes \\
+F5 full       & icsap          & 130 & $+0.77$ & $0.60$ & $1.67$ & $0.46$ & no  \\
+F5 specialized & travel\_km    & 105 & $-7.10$ & $1.95$ & $5.46$ & $1.30$ & yes \\
+F5 specialized & icsap         & 105 & $+1.48$ & $0.69$ & $1.93$ & $0.76$ & no  \\
+F5 general     & travel\_km    &  24 & $+2.90$ & $1.35$ & $3.79$ & $0.77$ & no  \\
+F5 general     & icsap         &  24 & $-0.91$ & $0.98$ & $2.75$ & $0.33$ & no  \\
+\bottomrule
+\end{tabular}
+\\[0.5em]
+\begin{minipage}{0.95\textwidth}
+\footnotesize Notes: $n_{\text{tr}}$ is the unique number of E1-treated
+municipalities. $\widehat{\beta}$ and $\widehat{\mathrm{SE}}$ are the
+Sun-Abraham simple ATT estimate and its cluster-robust standard error
+(clusters at the municipality level). MDE is the minimum detectable
+effect at $\alpha = 0.05$ two-sided and $\beta = 0.20$. ``Detected?''
+indicates whether $|\widehat{\beta}| \ge \mathrm{MDE}$, i.e., whether
+the observed effect would be detectable at conventional power and
+significance thresholds. Numerical values are produced by
+\texttt{03\_analysis/42\_power\_analysis.R}.
+\end{minipage}
+\end{table}
+
+\section{Rambachan-Roth sensitivity for ICSAP}
+\label{app:rr}
+
+This appendix formalizes why we decline to read ICSAP causally
+(Section~\ref{sec:results-icsap}). Beyond the visibly rejecting pre-trend
+test, the Rambachan-Roth (2023) relative-magnitudes sensitivity shows the
+post-closure ICSAP estimate cannot survive even a minimal allowance for
+trend extrapolation. The restriction with multiplier $\bar M$ permits the
+post-period parallel-trends violation to be at most $\bar M$ times the
+worst pre-period violation; $\bar M = 0$ allows none beyond linear
+extrapolation, and larger $\bar M$ widen the robust interval. There is no
+positive $\bar M$ in the tested grid---indeed not even $\bar M = 0$---for
+which the robust interval excludes zero. The ICSAP post-period level is
+not separable from a continuation of the pre-existing trend at any
+defensible restriction, which is the formal content of our decision to
+treat it as a non-identified outcome.
+
+\begin{table}[h!]
+\centering
+\caption{Rambachan-Roth sensitivity for ICSAP post-period average.}
+\label{tab:rr}
+\begin{tabular}{lrrr}
+\toprule
+$\bar M$ & robust CI lower & robust CI upper & excludes 0? \\
+\midrule
+$0.00$ & $-0.18$ & $+2.11$ & no \\
+$0.05$ & $-0.66$ & $+2.59$ & no \\
+$0.10$ & $-1.39$ & $+3.32$ & no \\
+$0.15$ & $-2.23$ & $+4.16$ & no \\
+$0.20$ & $-3.19$ & $+5.00$ & no \\
+$0.30$ & $-5.12$ & $+6.93$ & no \\
+$0.50$ & $-8.98$ & $+10.79$ & no \\
+$1.00$ & $-12.00$ & $+12.00$ & no \\
+\bottomrule
+\end{tabular}
+\\[0.5em]
+\begin{minipage}{0.95\textwidth}
+\footnotesize Notes: ICSAP post-period average ATT, F5 main panel,
+under E1 exposure, equal weighting across $9$ post-period coefficients
+($e \in [0, +8]$). Re-estimated point estimate $0.955$ per $1{,}000$
+under the did2s event-study ($\mathrm{SE} = 0.60$, classical $95\%$
+CI $[-0.22, 2.13]$). Robust CIs are computed under the
+relative-magnitudes restriction of \citet{rambachanRoth2023}. No value
+of $\bar M$ in the tested grid maintains exclusion of zero. Produced by
+\texttt{03\_analysis/43\_rambachan\_roth\_icsap.R}.
+\end{minipage}
+\end{table}
+
+\section{Threshold sensitivity sweep details}
+\label{app:theta}
+
+Table~\ref{tab:theta-sweep} reports the full continuous theta
+sensitivity sweep underlying Figure~\ref{fig:theta-sweep}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../04_figures/fig_theta_sweep.pdf}
+    \caption{Continuous exposure-threshold sweep. Sun-Abraham simple ATT
+    (point) with $95\%$ cluster-robust CI (whisker) at $\theta \in
+    \{0.01, \ldots, 0.20\}$ on the F5 panel; top, travel burden (km);
+    bottom, ICSAP per $1{,}000$. The default $\theta = 0.05$ is marked.
+    The first-stage travel effect is negative and significant for
+    $\theta \in [0.01, 0.12]$.}
+    \label{fig:theta-sweep}
+\end{figure}
+
+For each
+threshold $\theta \in \{0.01, 0.02, \ldots, 0.20\}$, we recompute the
+E1 exposure rule, restrict the F5 main panel accordingly, and
+re-estimate the Sun-Abraham simple ATT. The travel-burden estimate
+is significant at $p < 0.05$ for $\theta \in [0.01, 0.12]$. Beyond
+$\theta = 0.13$ the treated set falls below $n_{\text{tr}} = 16$ and
+the estimator loses identifying variation. The default
+$\theta = 0.05$ (used throughout the main text) is well within the
+range of stable inference.
+
+\begin{table}[h!]
+\centering
+\caption{Continuous threshold sensitivity sweep, F5 main.}
+\label{tab:theta-sweep}
+\begin{tabular}{lrrrrrr}
+\toprule
+$\theta$ & $n_{\text{tr}}$ &
+\multicolumn{2}{c}{Travel km} & \multicolumn{2}{c}{ICSAP per 1k} &  \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+& & ATT & $z$ & ATT & $z$ & \\
+\midrule
+$0.01$ & $742$ & $-3.42$ & $-4.66$ & $+0.41$ & $+1.66$ & \\
+$0.02$ & $425$ & $-2.91$ & $-3.23$ & $+0.55$ & $+1.93$ & \\
+$0.03$ & $274$ & $-3.66$ & $-2.95$ & $+0.83$ & $+2.16$ & \\
+$0.04$ & $183$ & $-4.21$ & $-2.49$ & $+1.05$ & $+2.07$ & \\
+$0.05$ & $130$ & $-5.84$ & $-3.39$ & $+0.77$ & $+1.29$ & \\
+$0.06$ & $ 95$ & $-4.11$ & $-1.98$ & $+0.74$ & $+1.06$ & \\
+$0.07$ & $ 72$ & $-5.49$ & $-2.15$ & $+0.32$ & $+0.39$ & \\
+$0.08$ & $ 53$ & $-6.78$ & $-2.18$ & $+0.07$ & $+0.07$ & \\
+$0.09$ & $ 39$ & $-7.09$ & $-4.57$ & $+0.27$ & $+0.22$ & \\
+$0.10$ & $ 32$ & $-8.25$ & $-4.59$ & $-0.62$ & $-0.43$ & \\
+$0.11$ & $ 22$ & $-8.75$ & $-8.73$ & $-1.21$ & $-0.60$ & \\
+$0.12$ & $ 17$ & $-11.51$ & $-11.41$ & $-3.00$ & $-1.33$ & \\
+$0.13$--$0.20$ & $\le 15$ & various, all $|z| < 2$ & & & & \\
+\bottomrule
+\end{tabular}
+\\[0.5em]
+\begin{minipage}{0.95\textwidth}
+\footnotesize Notes: Threshold $\theta$ is the minimum share of
+$m$'s pre-closure SUS admissions that must be sent to closing
+hospital $h$ for $m$ to be E1-treated. Sun-Abraham simple ATTs and
+$z$-statistics from \texttt{03\_analysis/44\_theta\_sweep.R}.
+$n_{\text{tr}}$ is the number of unique E1-treated municipalities at
+each $\theta$.
+\end{minipage}
+\end{table}
+
+\section{Multi-seed sensitivity for the cross-section CF ATE}
+\label{app:cf-multiseed}
+
+The Sun-Abraham main ATT is mathematically invariant to the embedding
+seed: the share-based E1 exposure rule depends only on raw bipartite
+admission counts, with no dependence on the node2vec geometry. The
+seed therefore affects only auxiliary quantities, of which the
+causal-forest cross-section ATE is the most consequential because
+it uses the $\mathrm{iso}^{\mathrm{emb}}_z$ feature directly. We
+quantify the implication of seed variation on the CF ATE via $B = 10$
+perturbed re-runs of the forest, with $\mathrm{iso}^{\mathrm{emb}}_z$
+augmented by Gaussian noise calibrated to the observed Pearson
+correlation $\rho = 0.77$ (implying noise-to-signal SD ratio
+$\sqrt{(1-\rho)/\rho} = 0.547$). Table~\ref{tab:cf-multiseed} reports
+the resulting distribution of CF ATEs.
+
+\begin{table}[h!]
+\centering
+\caption{Multi-seed sensitivity for the causal-forest cross-section ATE.}
+\label{tab:cf-multiseed}
+\begin{tabular}{lrrrr}
+\toprule
+Outcome & baseline & mean (perturbed) & SD & range \\
+\midrule
+$\Delta$ travel\_km & $-2.91$ & $-3.76$ & $0.25$ & $[-4.16, -3.32]$ \\
+$\Delta$ icsap      & $+0.15$ & $+0.19$ & $0.10$ & $[+0.05, +0.35]$ \\
+\bottomrule
+\end{tabular}
+\\[0.5em]
+\begin{minipage}{0.95\textwidth}
+\footnotesize Notes: $B = 10$ CF re-runs with
+$\mathrm{iso}^{\mathrm{emb}}_z$ augmented by mean-zero Gaussian noise
+of SD ratio $0.547$ (calibrated to $\rho = 0.77$). Each re-run uses
+$1{,}500$ trees with honesty. Produced by
+\texttt{03\_analysis/46\_multiseed\_cf.R}. The travel-burden CF ATE
+is stable in sign and magnitude across perturbations; the ICSAP CF
+ATE is null in all perturbed runs, consistent with the calibration
+test failure (Section~\ref{app:cf}).
+\end{minipage}
+\end{table}
+
+\section{Causal-forest variable importance for ICSAP (non-interpretable)}
+\label{app:cf-icsap}
+
+The Athey-Wager calibration test for ICSAP is non-significant
+(differential forest prediction $t = -0.11$, $p = 0.54$ one-sided),
+indicating that the forest does not detect heterogeneity in the
+ICSAP outcome at conventional significance. The variable-importance
+ranking for ICSAP is therefore mechanically un-interpretable as
+heterogeneity attribution. We report the ranking here for
+completeness; it should not be read as substantive heterogeneity
+inference. The ranking places log-population at $25\%$ of decision
+splits, log-GDP per capita at $19\%$, and the embedding-kilometer
+divergence at $11\%$. The ranking does not align cleanly with the
+travel-burden ranking and does not, given the non-significant
+calibration test, support any substantive interpretation.
+
+\section{NLP classification: external validation status}
+\label{app:nlp-validation}
+
+The exogeneity defense for the robustness sub-sample rests on a zero-shot LLM
+classification of declared closure motives. The internal validation
+metrics reported in Section~\ref{app:nlp} (Cohen's $\kappa
+\approx 0.86$ between LLM and a within-LLM second pass; $94\%$ of
+classifications retrievably citing a public source) measure
+self-consistency rather than external accuracy. The motive-based
+robustness sub-sample therefore inherits a validation gap: a
+human-classifier-blinded-to-the-LLM external validation has not yet
+been completed. We acknowledge this gap explicitly. The replication
+package now includes (i)~\texttt{notes/external\_validation\_protocol.md},
+(ii)~a blinded $10\%$ random sample of the F5 universe
+(\texttt{closure\_validation\_sample.csv}), and
+(iii)~\texttt{closures\_human\_validated.parquet}, a two-coder scaffold
+with adjudication fields. At present, however, the human-label cells in
+that scaffold are empty; Table~\ref{tab:motive_validation} therefore
+reports zero completed coder fields and leaves the agreement metrics
+pending. As a
+temporary lower-bound check, we also drop two fragile subclasses from
+F6: labels resting on stale Receita status and labels resting only on
+web snippets without timely administrative corroboration. That screen
+retains $35$ non-fragile closures, corresponding to $61$ E1-treated
+municipalities. The resulting travel-burden ATT is $-6.03$~km
+($\mathrm{SE}=3.17$) and the ICSAP ATT is $+0.21$ per $1{,}000$
+($\mathrm{SE}=0.77$). The travel result therefore remains
+direction-consistent but imprecise, while the ICSAP corroboration
+disappears until human validation is completed.
+
+\input{tables/tab_motive_validation.tex}
+
+\section{Replication notes}
+\label{app:replication}
+
+\paragraph{Repository.} The full pipeline, including LaTeX sources,
+analysis scripts, and the cached outputs of the LLM-classification step,
+is open-source at \url{https://github.com/darciogm/bitter-pills/tree/main/paper18-hospital-deserts}.
+The \texttt{run\_pipeline.sh} orchestrator at the repository root
+sequences the analysis from raw DATASUS ingest through the final
+robustness battery, accepting \texttt{--from} and \texttt{--to} flags
+to start or stop at a specific step.
+
+\paragraph{Software stack.} Python $3.11$ (DuckDB, polars, scikit-learn,
+gensim, pecanpy for node2vec, anthropic for the LLM classifier) and
+R $4.5$ (data.table, fixest, did, grf, ggplot2). Full pinned versions
+in \texttt{environment.yml} (conda) or \texttt{requirements.txt} (pip).
+DuckDB is the default I/O engine for parquet, configured with $12$
+threads and $14$~GB memory limit.
+
+\paragraph{External services and caches.} Two external services are
+called once and cached afterward, both with the cache shipped in the
+repository:
+
 \begin{itemize}
-    \item $n = 5{,}565$ (the unrestricted sample): $\Delta R^2$ from
-        adding embedding-isolation to the geographic-isolation model
-        is $+0.001$.
-    \item $n = 663$ (mean population $\geq 50{,}000$): $\Delta R^2 =
-        -0.002$.
-    \item $n = 3{,}112$ (mean population $\geq 10{,}000$ \emph{and}
-        non-zero amenable death count in every year of the panel):
-        $\Delta R^2 = -0.0003$ (statistically indistinguishable from
-        the baseline restriction).
+    \item \emph{BrasilAPI} (Receita Federal CNPJ public endpoint).
+    Cached in \texttt{02\_data/intermediate/cnpj\_cache.sqlite}.
+    \item \emph{Anthropic Claude API} (zero-shot classifier). Cached in
+    \texttt{02\_data/intermediate/llm\_classify\_cache.sqlite} (Haiku
+    v1) and \texttt{llm\_classify\_cache\_v2.sqlite} (Sonnet v2 with
+    web context). Total spend for the published classifications was
+    approximately \$$0.85$.
 \end{itemize}
-The qualitative null is robust across these samples. Notably, the
-sign of the $\Delta R^2$ flips slightly positive when small
-municipalities are included; we interpret this as an artifact of the
-SIM under-reporting gradient discussed in Section
-\ref{sec:discussion}: the embedding captures sub-population structure
-that, combined with the mechanical relationship between observed
-amenable mortality and SIM-coverage gradients, produces a small
-predictive gain in the smallest municipalities. This pattern strengthens
-rather than weakens the methodological warning: the cross-sectional
-regression is informative about observed amenable mortality, not about
-the underlying mortality the access measure should predict.
+
+The \texttt{web\_snippets/} folder contains the per-closure JSON
+snippets extracted from web search results, used as context for the
+Sonnet v2 classifier. Re-running the pipeline with these caches in
+place skips all external service calls.
+
+\paragraph{Hardware and runtime.} The pipeline was developed on an
+Intel i7-$1260$P workstation under WSL2 ($14$ logical threads, $21$~GB
+RAM, no GPU). A cold run from raw DATASUS to final figures takes
+approximately $35$ minutes, dominated by SIH-RD parsing and the $61$
+counterfactual perturbation node2vec re-trainings. Re-running with
+intermediate parquets and caches in place takes approximately
+$8$~minutes.
+
+\paragraph{Reproducibility audits.} All numerical results in the main
+text and in this appendix are re-derived from the public pipeline; no
+hand-edited intermediate artifacts are used. The git revision against
+which the latest compiled PDF was produced is logged in the
+\texttt{04\_logs/} directory at compile time. The bibliography in
+\texttt{references.bib} was independently audited against publisher
+DOIs, NBER, and arXiv listings (audit log in
+\texttt{notes/refs\_audit\_2026-04-28.md}).

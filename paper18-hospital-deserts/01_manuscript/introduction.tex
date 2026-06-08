@@ -1,152 +1,138 @@
 \section{Introduction}
-\label{sec:intro}
+\label{sec:introduction}
 
-Distance to the nearest hospital is one of the most widely used
-measures of healthcare access in applied economics. It motivates the
-literature on hospital closures \citep{avdic2016, gujralBasu2019, carroll2019},
-on rural healthcare deserts \citep{germack2019, lindrooth2018}, and
-on the spatial allocation of health resources \citep{gaynorTown2011}. Empirical work uses haversine kilometers, road
-travel time \citep{doyle2011}, or driving time over OpenStreetMap as
-inputs to demand systems, instrumental variables for utilization, or
-exposure measures in event studies of facility entry and exit. Yet
-geographic distance is, at best, a noisy proxy for the medically
-meaningful concept of \emph{network access}---the actual ease with which
-patients reach the appropriate level of care.
+% =====================================================================
+% Movement 1 — the policy stakes + the measurement problem
+% =====================================================================
+Deinstitutionalization---the closing of psychiatric hospitals in favor
+of community-based care---is among the most contested health reforms of
+the past half-century. Its critics have long warned that removing
+inpatient capacity faster than communities can absorb the displaced
+patients raises mortality, and suicide in particular, among those who
+relied on the closing facilities
+\citep{yoonBruckner2009, bastiampillai2016, pirkola2009}.
+Brazil ran this experiment at scale: the Reforma Psiquiátrica
+(Lei~$10.216$/$2001$), enforced through federal PNASH inspection
+cycles and a chronic real-value erosion of SUS reimbursement, closed
+specialized psychiatric hospitals across the country during the
+$2010$s. Whether those closures harmed the patients who depended on
+them is a first-order policy question---and answering it credibly turns
+on a measurement problem that the closure literature has not confronted.
 
-This gap between geography and access is particularly stark in Brazil,
-where the public Sistema Único de Saúde (SUS) covers $\approx 75\%$ of
-the population through a hub-and-spoke regionalization built atop a
-$5{,}570$-municipality administrative grid. Many patients in Amazonian
-municipalities reach high-complexity care exclusively by river boat or
-chartered plane; many in the semi-arid Northeast bypass nominally
-nearest hospitals because those facilities lack qualified specialists,
-ICU beds, or suitable equipment. In both cases, the metric ``kilometers
-to the nearest hospital'' fundamentally misses the structure of
-realized access. The error is not random: it is concentrated in the
-poorest and most epidemiologically vulnerable regions of the country.
+The problem is who counts as exposed. The canonical closure literature
+defines exposure by geographic proximity: a population is treated by a
+closure if the closing hospital was among its nearest providers
+\citep{avdic2016, carroll2019, joynt2015, gujralBasu2019, lindrooth2018}.
+But specialized care has thin local substitutes, and in a single-payer
+system patients routinely cross municipal borders to reach it---so
+proximity mismeasures dependence. Consider one closure in our sample: a
+specialized psychiatric facility in São Paulo state closed in $2016$
+had redirected $\valEgAdm$ pre-closure SUS admissions drawn from
+$\valEgMunis$ municipalities, $\valEgFar$ of which lay between $36$ and $\valEgKmHi$~km from
+the facility and would not have been treated under any standard
+top-$3$-nearest distance rule.\footnote{CNES $2082683$, IBGE
+municipality of closure $350280$; total pre-closure SUS admissions
+from exposed municipalities $= \valEgAdm$; median distance from the closing hospital to an
+exposed municipality $= \valEgKmMed$~km. Reproducible from
+\texttt{02\_data/intermediate/exposure\_panel.parquet} in the
+replication package.} The choice of exposure measure is not a
+technicality: it determines whether the population the policy actually
+touched enters the estimate at all.
 
-\paragraph{This paper.}
-We provide a graph-based, data-driven measure of healthcare access for
-the universe of Brazilian municipalities, and use it to map where the
-geographic and the network-revealed views of access agree and where
-they sharply diverge. Our object of analysis is the bipartite patient
-flow graph linking $5{,}588$ municipalities of residence to $5{,}828$
-public hospitals through $\approx 100$ million federal hospital
-admissions (AIH) over $2010\text{--}2024$, the entire universe of SUS
-inpatient activity in the period. We learn a $128$-dimensional
-representation of each node using a sparse implementation of node2vec
-\citep{grover2016} that encodes second-order random walks with
-edge-weight bias. Two embeddings are produced: a bipartite embedding
-in which municipalities and hospitals share a common space (allowing
-direct municipality-to-hospital cosine distance), and a TF--IDF-weighted
-co-patiency projection of the bipartite graph onto the
-municipality-only space.
+% =====================================================================
+% Movement 2 — the flow exposure rule, validated by a first stage
+% =====================================================================
+We replace proximity with a \emph{patient-flow} exposure rule.
+Municipality $m$ is exposed to the closure of hospital $h$ if, in the
+year before closure, admissions from $m$ to $h$ exceeded a $5\%$ share
+of $m$'s total SUS admissions---dependence revealed by where patients
+actually went, not by how near $h$ happened to be. The rule is built
+from the bipartite municipality--hospital graph of $\valNadmissions$ million SUS
+hospital admissions. Across the $\valNexoClosures$ exogenous closures, the flow rule
+and the distance rule disagree on $\valNmisclass$ of the $\valNunionPairs$ municipality--closure
+pairs that either rule flags: distance \emph{misses} $\valNmissed$ pairs whose
+patients depended on the closing hospital through specialized referral,
+and \emph{falsely flags} $\valNfalse$ whose patients never used it. The
+disagreement is not random---it concentrates in the river-corridor
+North, where patient flow reaches regional hubs by routes road distance
+ignores, and the semi-arid Northeast, where the geographically near
+hospital is bypassed for a more distant referral center
+(Figure~\ref{fig:map-divergence}).
 
-For each municipality, we compute two scalar measures of isolation
-relative to the set of high-complexity hospitals---those with active
-SUS habilitation in cardiology, oncology, neurology, nephrology,
-perinatology, trauma-orthopedics, or transplantation:
-\[
-\isokm_i = \text{haversine km to nearest high-complexity hospital},\qquad
-\isoemb_i = 1 - \cos(\mathbf{e}_i, \mathbf{e}_{h^*(i)}),
-\]
-Standardizing each to a $z$-score and taking the difference yields the
-\emph{divergence}
-\(
-\divz_i = z(\isoemb_i) - z(\isokm_i).
-\)
-A positive divergence indicates that the embedding sees a municipality
-as \emph{more} isolated than the map does---patients leapfrog the
-nominally nearest hospital because it is inadequate. A negative
-divergence indicates the opposite: the geography overstates isolation
-because patients reach a distant hub via channels (river, air, informal
-referral pathways across state lines) that road geography ignores.
+A first stage confirms the flow rule captures genuine dependence rather
+than noise. Travel burden---the distance the typical patient travels for
+inpatient care---falls by $\valTravAbs$~km after closure in the exposed
+municipalities, where a distance-based exposure rule applied to the same
+closures recovers only about half as much. The fall is direct evidence
+that exposed patients had been traveling far for care with no local
+substitute: when the facility closes, their realized travel drops
+because the long trips it generated cease. (We summarize the broader
+referral network with a node2vec embedding of the flow graph; it serves
+as a measurement diagnostic in Appendix~\ref{app:embedding} and plays no
+role in the causal design.)
 
-\paragraph{Findings.}
-Three patterns emerge.
+% =====================================================================
+% Movement 3 — identification
+% =====================================================================
+We estimate effects on the psychiatric closures with a staggered
+Sun-Abraham event study \citep{sunAbraham2021}, with
+\citet{cs2021} and \citet{borusyak2024} as alternative estimators. The
+identifying variation is the \emph{timing} of closure, which we anchor
+to the federal PNASH inspection cycles and the national SUS
+reimbursement freeze---institution-level forces that operate on a
+recurring federal calendar rather than on municipality-specific demand
+or supply shocks (Section~\ref{sec:setting}). Our primary sample is the
+$\valNclosuresPnash$ PNASH-anchored psychiatric closures, exposing $\valNtrPnash$ municipalities.
+Mortality is recorded at the municipality of residence. Crucially, the
+parallel-trends assumption is tested on full pre-periods: we extend the
+population denominators back to $2010$, so the pre-treatment trajectory
+of every cohort is observed rather than missing---a data gap that, left
+unfilled, would make the pre-trend test uninformative for the earlier
+cohorts.
 
-First, the divergence is large. The cross-sectional standard deviation
-of $\divz$ is $0.91$, with $9\%$ of municipalities exhibiting
-$|\divz| > 1.5$. Roughly $56.7\%$ of municipalities have a different
-nearest high-complexity hospital under the embedding metric than under
-the geographic metric.
+% =====================================================================
+% Movement 4 — the result: no catastrophe
+% =====================================================================
+We find no evidence of the feared harm. Among the exposed population,
+population-weighted suicide mortality changes by $\valSuicWAtt$ per $100{,}000$
+after closure (95\% CI $[\valSuicWLo, \valSuicWHi]$), with parallel pre-trends that do
+not reject ($p = \valSuicWPpre$); self-harm mortality is likewise
+indistinguishable from zero. The confidence interval rules out the
+increases above one-quarter of baseline that deinstitutionalization's
+critics predicted. We are careful about what this null does and does not
+say: it excludes a mortality \emph{catastrophe}, not small effects,
+which the data cannot resolve. The null is robust across exposure
+samples, across population- and municipality-weighting, across modern
+staggered estimators, and across the exposure-share threshold.
 
-Second, the divergence is geographically organized into recognizable
-macro-regional patterns. Northern (Amazonian) Brazil is dominantly
-\emph{negatively} divergent: $\bar{\divz}_{\text{N}} = -0.22$, with
-median geographic distance to the nearest high-complexity hospital of
-$30$\,km but embedding-revealed connections that pull these municipalities
-toward Manaus, Boa Vista, and Belém despite distances often exceeding
-$200$\,km by air or river. Northeastern semi-arid municipalities show
-the opposite signature in pockets of Piauí, Maranhão, and Bahia interior:
-nominal hospital proximity (medians $\approx 19$\,km) coexists with high
-embedding-isolation, as patients route around inadequate local
-facilities to reach state-capital tertiary care. The Southeast and
-Center-West show positively-skewed but moderate divergence, consistent
-with metropolitan saturation effects in Greater São Paulo and the
-Brasília corridor. The South emerges as the most well-calibrated region:
-geographic and network-revealed access are closely aligned, with
-$\bar{\divz}_{\text{S}} = -0.10$ and the lowest cross-sectional dispersion.
+% =====================================================================
+% Movement 5 — honesty, contribution, roadmap
+% =====================================================================
+One outcome we decline to read causally. Preventable hospitalizations
+(ICSAP), the canonical Brazilian access-to-care marker
+\citep{macinkoHarris2015, rochaSoares2010}, do rise in exposed
+municipalities after closure---but they were \emph{already} rising
+before it. On the full pre-periods, the parallel-trends test rejects
+sharply: the post-closure increase is the continuation of a
+pre-existing trend, not a treatment effect. We report the trajectory in
+full and treat ICSAP as a non-identified outcome rather than launder a
+pre-trend into a causal claim. This discipline is part of the
+contribution: a credible null requires being equally honest about the
+outcomes that are identified and the ones that are not.
 
-Third, despite the strong descriptive signal, we cannot detect a
-robust cross-sectional association between divergence and amenable
-mortality once standard controls (state fixed effects, log population,
-log GDP) are included. Adding our network isolation measure to a
-ridge regression already containing $\isokm$ produces a $\Delta R^2$
-of $-0.0002$, statistically indistinguishable from zero. We argue this
-\emph{null} reflects two well-documented confounders of vital
-registration in Brazil: (i) under-reporting of deaths due to
-ill-defined causes (R-codes) in the Northern and rural Northeastern
-SIM strata exactly where divergence is largest, and (ii) cross-border
-death recording, in which patients referred from semi-arid municipalities
-die at the receiving capital and have their death registered in the
-hospital's municipality rather than the residential one. Both biases
-attenuate the mechanical link between access deficit and observed
-mortality at the residential-municipality level. We treat the null as
-a methodological warning---one that, to our knowledge, the existing
-hospital-access literature using SIM aggregates has not articulated---
-rather than as evidence that network access does not matter for
-mortality, and outline in the discussion a closure event-study design
-that sidesteps the confounders by relying on within-municipality
-variation.
-
-\paragraph{Contributions and related literature.}
-We contribute to three strands of literature.
-
-First, on \emph{hospital closures and outcomes}, the existing literature
-\citep{avdic2016, gujralBasu2019, carroll2019, joynt2015} estimates
-the average effect of facility loss on local mortality, typically using
-distance-to-nearest as the treatment intensity. Our embedding offers a
-more granular treatment metric---revealed exposure---that we will exploit
-in a companion event-study (Pivot B in our research roadmap, beyond the
-scope of the current draft).
-
-Second, on \emph{healthcare deserts and access measurement}
-\citep{germack2019, gaynorVogt2003}, we provide the
-first nationwide application of patient-flow embeddings to define
-hospital deserts, and propose the divergence metric as a falsification
-device for any access measure based purely on physical distance. The
-$56.7\%$ disagreement rate between geographic and network-revealed
-nearest hospital is, to our knowledge, the largest such estimate documented.
-
-Third, on \emph{representation learning for economic networks}
-\citep{kelly2021, acemoglu2024, bonhomme2019}, we show that node2vec
-applied to a tractable, mid-sized bipartite graph ($\approx 11{,}000$
-nodes, $\approx 500{,}000$ edges) yields embeddings that pass strong
-sanity checks (top-10 nearest neighbors of São Paulo recover the entire
-metropolitan ABC; top-10 of Manaus recover its peri-urban ribeirinho
-catchment) while retaining a useful $0.30$ Pearson correlation with
-geographic distance---enough to track real spatial structure without
-collapsing into a redundant geography.
-
-\paragraph{Roadmap.}
-Section \ref{sec:setting} describes the Brazilian institutional
-setting. Section \ref{sec:data} introduces the data: SIH-AIH for hospital
-flows, SIM for mortality, CNES habilitations for hospital quality, and
-IBGE for spatial overlays. Section \ref{sec:method} formalizes the
-graph construction, the node2vec specification, and the divergence
-metric. Section \ref{sec:results} presents the headline divergence map,
-the regional decomposition, the canonical-case taxonomy, and the
-mortality null with its diagnosis. Section \ref{sec:discussion}
-discusses policy implications and the planned causal extension.
-Section \ref{sec:conclusion} concludes.
+The paper makes two contributions. \emph{Methodological}: a portable
+patient-flow exposure measure for hospital-closure studies in
+single-payer systems with origin--destination claims data, validated
+against a mechanical first stage and contrasted with the distance rule
+it corrects. \emph{Substantive}: a credibly identified mortality null on
+a globally contested reform, estimated on the population that a
+distance-based analysis would not have found.
+Section~\ref{sec:setting} situates the analysis in the SUS and the
+Reforma Psiquiátrica. Section~\ref{sec:data} documents the data.
+Section~\ref{sec:method} develops the flow exposure measure and the
+identification strategy. Section~\ref{sec:results} reports the first
+stage, the mortality null, and the ICSAP non-result.
+Section~\ref{sec:robustness} reports the robustness battery.
+Section~\ref{sec:discussion} discusses what the null means for
+deinstitutionalization policy and the measurement lesson for closure
+studies.

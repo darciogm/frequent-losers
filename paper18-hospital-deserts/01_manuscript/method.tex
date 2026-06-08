@@ -1,139 +1,193 @@
-\section{Method}
+\section{Measuring exposure and identifying closure effects}
 \label{sec:method}
 
-\subsection{Bipartite Patient Flow Graph}
+The analysis rests on a single measurement choice---who counts as
+exposed to a hospital closure---and a single source of identifying
+variation---the timing of closure. Section~\ref{sec:method-exposure}
+defines the patient-flow exposure rule and contrasts it with the
+distance rule it replaces. Section~\ref{sec:method-identification}
+states the exogeneity argument and the three identification assumptions.
+Section~\ref{sec:method-estimator} gives the estimator. Throughout, the
+object is the effect of a closure on the populations that depended on
+the closing hospital; the methodological contribution is getting that
+population right.
 
-We construct a weighted bipartite graph $G = (M \cup H, E, w)$ in which
-$M$ is the set of $|M| = 5{,}588$ Brazilian municipalities of residence,
-$H$ is the set of $|H| = 6{,}710$ public hospital CNES participating in
-the SIH inpatient flow during $2010\text{--}2024$, and $E \subseteq M
-\times H$ contains a weighted edge $(m, h)$ whenever municipality $m$
-sends at least one SUS-billed admission to hospital $h$ in the panel
-window. The edge weight $w_{mh}$ is the cumulative number of admissions
-$n_{mh}^{\text{int}}$ over the period.
+% =====================================================================
+% §4.1 — Patient-flow exposure
+% =====================================================================
+\subsection{Patient-flow exposure}
+\label{sec:method-exposure}
 
-The pooled graph contains $|E| = 648{,}973$ edges out of a possible
-$|M| \times |H| = 37.5\,\text{million}$, for a density of $1.7\%$. The
-mean weighted degree of a municipality is $32{,}108$ admissions over
-15 years; the median is $1{,}960$. Hospital weighted degrees are far
-more right-skewed: the top-$10$ hospitals each receive admissions from
-hundreds of distinct municipalities of residence, reflecting the hub
-structure of metropolitan tertiary care (Table \ref{tab:tophosp}).
-\input{tables/tab_tophosp} We retain the bipartite structure rather than collapsing
-to a directed flow because random walks across the bipartition naturally
-encode second-order proximity (two municipalities are similar if they
-share many hospitals; two hospitals are similar if they share many
-referring municipalities).
-
-\subsection{Bipartite Embedding via node2vec}
-
-We compute a $128$-dimensional vector representation $\mathbf{e}_v \in
-\mathbb{R}^{128}$ for every node $v \in M \cup H$ using a sparse,
-on-the-fly implementation of node2vec \citep{grover2016} from the
-\texttt{pecanpy} library \citep{liu2021pecanpy}, which runs the
-biased random walks in compiled \texttt{numba} code with no Python-level
-materialization of walk sequences. This was a non-trivial implementation
-choice: the canonical Python \texttt{node2vec} package
-\citep{eliorc2017} pre-computes alias tables for every node-neighbor
-pair, materializes the entire walk corpus in RAM, and exhausted our
-$16$\,GB memory budget within $10$ minutes of execution on a graph of
-this size. The \texttt{pecanpy SparseOTF} variant peaks at $0.55$\,GB
-RSS for the full embedding step.
-
-The hyperparameter configuration follows defaults known to perform well
-on bipartite graphs of similar density:
-\begin{itemize}
-    \item Walk length $\ell = 20$, walks per node $r = 10$, yielding
-        a corpus of $r |V| = 122{,}980$ walks.
-    \item Return parameter $p = 1$, in-out parameter $q = 1$ (unbiased
-        walks); both calibrated against neighborhood-recovery sanity
-        checks (Section \ref{sec:results-sanity}).
-    \item Window size $w = 10$, embedding dimension $d = 128$,
-        skip-gram with negative sampling ($k = 10$ negatives), $5$
-        training epochs.
-    \item Edge weights $w_{mh}$ control transition probabilities
-        proportionally; we apply no log-transform of weights, after
-        verifying that the alternative does not change top-$k$
-        neighborhood structure for the canonical sanity cases.
-    \item Random seed fixed at $42$ for reproducibility; we report
-        seed-stability robustness in Appendix \ref{app:robustness}.
-\end{itemize}
-Training takes $17.2$ seconds on a $12$-thread CPU; we forgo GPU
-acceleration as it is unnecessary at this scale.
-
-\subsection{Municipality-Only Projection}
-
-The bipartite embedding places municipalities and hospitals in a
-common space, but the structure of node2vec random walks ensures that
-walks alternate between the two partitions. As a consequence, in
-the bipartite embedding a municipality's nearest neighbors tend to be
-its directly-connected hospitals, with municipality-to-municipality
-cosine similarity attenuated by walk parity. To obtain a clean
-municipality-to-municipality similarity space, we additionally
-construct a TF--IDF-weighted projection.
-
-Let $A \in \mathbb{R}^{|M| \times |H|}$ denote the patient-flow matrix,
-with $A_{mh} = w_{mh}$. We row-normalize ($\widetilde{A}_{mh} = A_{mh} /
-\sum_{h'} A_{mh'}$, so each row is a probability simplex over hospitals)
-and apply IDF weights to columns ($\mathrm{idf}_h = \log(|M| / df_h)$,
-where $df_h$ is the number of municipalities with $A_{mh} > 0$). The
-resulting weighted matrix is $\widetilde{A}_w = \widetilde{A} \cdot
-\mathrm{diag}(\mathrm{idf})$. Co-patiency similarity between
-municipalities is given by the symmetric matrix
-\(
-\widetilde{A}_w \widetilde{A}_w^\top.
-\)
-We threshold each row to its top-$30$ largest values, symmetrize
-($\max(s_{ij}, s_{ji})$), and obtain a sparse municipality-only graph
-$G_M$ with $|V| = 5{,}588$ nodes, $\approx 207{,}000$ edges,
-average degree $37.3$, on which we run a second node2vec instance with
-identical hyperparameters. The TF--IDF step is essential to suppress
-the spurious similarity that hub hospitals (HC-USP, INCOR, etc.) would
-otherwise induce between distant municipalities that send a small
-share of patients to the same national center.
-
-\subsection{Isolation Metrics}
-
-For each municipality $m$ and the set $H^* \subseteq H$ of $3{,}488$
-high-complexity hospitals embedded in our bipartite space (Section
-\ref{sec:setting}), we define two scalar isolation measures:
-\begin{align}
-\isokm_m  &= \min_{h \in H^*} \mathrm{km}(m, h),
-    \label{eq:iso-km}\\
-\isoemb_m &= \min_{h \in H^*}\,\bigl[\,1 - \cos(\mathbf{e}_m, \mathbf{e}_h)\,\bigr],
-    \label{eq:iso-emb}
-\end{align}
-where $\mathrm{km}(m, h)$ is the centroid-to-centroid haversine
-distance and $\cos(\cdot, \cdot)$ is cosine similarity. We log-transform
-$\isokm$ to handle right-skewness (median $16$\,km, $p_{99} \approx 200$\,km)
-and standardize both to $z$-scores. The \emph{divergence} is then
+\paragraph{The flow rule (E1).} For each closing hospital $h$ with
+closure year $t_h^{\star}$, let
 \begin{equation}
-\divz_m = z\bigl(\isoemb_m\bigr) - z\bigl(\log(1 + \isokm_m)\bigr).
-\label{eq:divz}
+  s_{m, h} \;=\;
+  \frac{w_{t_h^{\star} - 1}(m, h)}{\sum_{h' \in H_{t_h^{\star} - 1}}
+  w_{t_h^{\star} - 1}(m, h')}
+  \label{eq:share}
 \end{equation}
+denote the share of municipality $m$'s SUS admissions in the year
+preceding closure that were sent to $h$, where $w_t(m,h)$ counts
+admissions from residents of $m$ to hospital $h$ in year $t$, drawn from
+the bipartite municipality--hospital graph of $\valNadmissions$ million SUS
+admissions (Section~\ref{sec:data}). Municipality $m$ is
+\emph{flow-exposed} to the closure of $h$ if $s_{m,h} \geq \theta$, with
+default $\theta = 0.05$. The rule encodes dependence as revealed by
+care-seeking: a municipality whose residents systematically traveled to
+$h$ is exposed even when $h$ is distant, and a geographically near
+hospital that residents never used is correctly excluded. Robustness to
+a continuous sweep $\theta \in [0.01, 0.20]$ is reported in
+Section~\ref{sec:robustness}.
 
-Equation \eqref{eq:divz} is the central object of Section
-\ref{sec:results}. Its sign indicates the direction of disagreement
-between the network-revealed and geographic views; its magnitude
-indicates how strongly they disagree.
+\paragraph{The distance rule (E2).} The comparison is the exposure rule
+standard in the closure literature: $m$ is \emph{distance-exposed} to
+$h$ if $h$ is among the three kilometer-nearest hospitals to the
+centroid of $m$ in the pre-closure year,
+\begin{equation}
+  m \in \mathrm{E2}(h) \iff
+  h \in \mathrm{argmin}^{(3)}_{h' \in H_{t_h^{\star} - 1}} \;
+  \mathrm{km}(m, h'),
+  \label{eq:e2}
+\end{equation}
+with top-$3$ chosen as a generous catchment so the comparison set is not
+artificially small.
 
-\subsection{Outcome and Predictive Specifications}
+\paragraph{Where the two rules disagree.} The rules are not nested.
+Across the $\valNexoClosures$ exogenous closures, of the $\valNunionPairs$ municipality--closure
+pairs that either rule flags, only $\valNboth$ are flagged by both: $\valNmissed$ are
+flow-only (the patients depended on $h$ but it was not among their
+nearest hospitals) and $\valNfalse$ are distance-only (the nearest-hospital
+catchment, but the residents never used $h$). Distance thus misclassifies
+$\valNmisclass$ of the $\valNunionPairs$ pairs. The disagreement is geographically systematic
+(Figure~\ref{fig:map-divergence}): in the river-corridor North, flow
+reaches regional hubs by routes road distance ignores; in the semi-arid
+Northeast, the near hospital is bypassed for a more distant referral
+center; the South, with mature SUS regionalization, shows the smallest
+divergence. The first-stage travel-burden result
+(Section~\ref{sec:results-firststage}) confirms which rule is right: the
+flow-exposed municipalities are the ones whose travel actually falls
+when $h$ closes.
 
-To probe whether the divergence is informative about realized health
-outcomes, we estimate ridge regressions of the period-pooled amenable
-mortality rate on combinations of $\isokm$, $\isoemb$, $\divz$, and
-controls. The dependent variable is the average annual amenable
-mortality rate per $100{,}000$ residents over $2010\text{--}2023$,
-winsorized at the $1\%$ and $99\%$ tails. Controls are log mean
-population, log mean GDP, and a vector of $26$ state fixed effects.
-Out-of-sample $R^2$ and mean absolute error are computed with $5$-fold
-cross-validation, $80/20$ split per fold, ridge penalty $\alpha = 1$,
-random seed $42$. We restrict the predictive sample to municipalities
-with mean population $\geq 10{,}000$ to dampen the Poisson noise that
-dominates small-$N$ amenable death counts. The resulting estimation
-sample is $n = 3{,}112$ municipalities.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.82\textwidth]{../04_figures/fig_map_divergence.png}
+    \caption{Where flow and distance disagree. Standardized divergence
+    $\Delta_m = z(\mathrm{iso}^{\mathrm{flow}}_m) -
+    z(\mathrm{iso}^{\mathrm{km}}_m)$ across $\valNmunisDiverg$ Brazilian
+    municipalities. Red: the flow measure identifies $m$ as more isolated
+    than distance suggests (patients bypass the near hospital). Blue:
+    less isolated than distance suggests (river/air access not captured
+    by road km). Color bar truncated at $\pm$ the $95$th absolute
+    percentile.}
+    \label{fig:map-divergence}
+\end{figure}
 
-This specification is intentionally simple: our primary result is
-descriptive (the divergence map, Section \ref{sec:results-divergence}),
-and the predictive regression serves to falsify a causal interpretation
-of the divergence in cross-section, rather than to estimate one.
+\paragraph{The embedding as a measurement diagnostic.} We also summarize
+the referral network with a node2vec embedding of the patient-flow
+graph, which recovers Brazilian metropolitan and \emph{ribeirinho}
+geography from co-attendance alone and supplies the divergence measure
+mapped in Figure~\ref{fig:map-divergence}. The embedding is a
+descriptive diagnostic, not the treatment assignment: the causal rule is
+the share-based E1 of equation~\eqref{eq:share}, which is invariant to
+the embedding and to its random seed. Construction, stability across
+seeds, and the cross-sectional finding that the embedding does
+\emph{not} outperform simple distance or travel-time baselines for
+pooled mortality prediction are reported in
+Appendix~\ref{app:embedding}; none of it bears on the within-event
+estimates below.
+
+% =====================================================================
+% §4.2 — Identification
+% =====================================================================
+\subsection{Identification: closure exogeneity and the three assumptions}
+\label{sec:method-identification}
+
+\paragraph{The exogenous shock.} The flow share $s_{m,h}$ is not
+randomly assigned---it is the equilibrium of a referral network shaped
+by past policy and patient sorting---and we do not treat it as such. The
+identifying variation is the \emph{closure event} $h \to \emptyset$ at
+year $t_h^{\star}$, and its exogeneity to local healthcare demand rests
+on institutional timing. The psychiatric closures in our sample were
+driven by the federal PNASH inspection cycles and the chronic
+real-value erosion of SUS reimbursement schedules
+(Section~\ref{sec:setting})---forces operating on a recurring national
+calendar rather than on municipality-specific demand or capacity shocks.
+Our primary sample restricts to the $48$ closures falling within
+$\pm 1$ year of a PNASH cycle, where the institutional timing component
+is sharpest; the full set of exogenous psychiatric closures
+(\texttt{tp\_unid}~$= 07$, $n = 41$ under the statistical filter, $n=60$
+relaxing it) appears as robustness in Section~\ref{sec:robustness}.
+
+\paragraph{Three assumptions.} \emph{(i)~Parallel pre-trends}: in the
+absence of closure, exposed and never-treated municipalities would have
+followed the same average trajectory. We test this on pre-period
+event-study coefficients observed back to $2010$ (the population
+denominators are backfilled to give the early cohorts real pre-periods;
+Section~\ref{sec:data}). The assumption holds for the mortality outcomes
+and the first stage, and fails for ICSAP---which we therefore decline to
+identify (Section~\ref{sec:results-icsap}). \emph{(ii)~No anticipation}:
+closures are quasi-public events with weeks-to-months of notice, not
+years; we set the anticipation horizon to zero, with pre-period
+coefficients as the implicit test. \emph{(iii)~No spillover}: a closure
+may redirect patients to a hospital also serving an untreated
+municipality, biasing its outcome. We bound this by excluding state
+capitals---the principal referral hubs---in Section~\ref{sec:robustness};
+the mortality null is unaffected.
+
+\paragraph{Pre-treatment balance.} Table~\ref{tab:balance} reports
+balance between flow-exposed and never-treated municipalities.
+Population and GDP are statistically indistinguishable (standardized
+differences $\le 0.03$, $p > 0.79$); exposed municipalities have somewhat
+\emph{lower} pre-treatment travel burden and ICSAP, ruling out selection
+on bad baseline health; the share of admissions sent outside the
+residential municipality is mechanically higher in the exposed set, by
+construction of the flow rule.
+
+\input{tables/tab_balance.tex}
+
+% =====================================================================
+% §4.3 — Estimator
+% =====================================================================
+\subsection{Estimator}
+\label{sec:method-estimator}
+
+We estimate effects with the staggered event study of
+\citet{sunAbraham2021}, which is robust to the heterogeneous
+treatment effects across cohorts that a closure sample spanning
+$2012$--$2023$ invites. Let $i$ index municipalities (flow-exposed and
+never-treated controls), $t$ index years in $[2010, 2024]$, and $g_i$
+the year of the earliest closure to which $i$ is exposed
+($g_i = \infty$ for never-treated). With $\mathrm{rel}_{i,t} = t - g_i$,
+\begin{equation}
+  Y_{i, t} \;=\; \sum_{e \neq -1} \,
+  \sum_{g} \delta_{g, e} \, \mathbf{1}\{g_i = g\} \,
+  \mathbf{1}\{\mathrm{rel}_{i, t} = e\}
+  \;+\; \alpha_i \;+\; \gamma_t \;+\; \varepsilon_{i, t},
+  \label{eq:sa-estimating}
+\end{equation}
+with municipality fixed effects $\alpha_i$, year fixed effects
+$\gamma_t$, and reference period $e = -1$. We aggregate the
+cohort-specific $\widehat{\delta}_{g,e}$ into the dynamic trajectory
+(plotted in the event studies) and the simple post-period average (the
+ATT reported in tables), following \citet{sunAbraham2021}. Standard
+errors are clustered at the municipality level.
+
+\paragraph{Weighting.} For the rate outcomes we report
+population-weighted estimates as primary: the policy-relevant quantity is
+the effect on the average exposed \emph{person}, and population weights
+also stabilize the per-capita rates of small municipalities. The
+unweighted (municipality-weighted) estimate is reported alongside; both
+deliver the same null (Section~\ref{sec:results-mortality}).
+
+\paragraph{Alternative estimators and machinery.} The mortality null is
+reproduced under \citet{cs2021} and \citet{borusyak2024} in
+Section~\ref{sec:robustness}. A causal-forest attribution of
+heterogeneity \citep{atheyWager2019} and a counterfactual
+graph-perturbation diagnostic, both auxiliary to the main design, are
+reported in Appendices~\ref{app:cf} and~\ref{app:perturbation}.
+A natural-language classification of declared closure motives, used to
+cross-check the exogeneity filter, is described in
+Appendix~\ref{app:nlp}; its external validation is incomplete, so it
+informs robustness only. An auxiliary in-hospital cardiac-mortality
+outcome, computed at the receiving hospital to sidestep the SIM
+residence-recording issues, is reported in Appendix~\ref{app:sensitivity}.

@@ -1,9 +1,8 @@
 name: paper18
 channels:
   - conda-forge
-  - pyg
-  - pytorch
 dependencies:
+  # ---- Python core ----
   - python=3.11
   - pip
   - duckdb
@@ -15,31 +14,29 @@ dependencies:
   - scikit-learn
   - matplotlib
   - seaborn
-  - networkx
+  - tqdm
+  - psutil
+  # ---- geospatial ----
   - geopandas
   - shapely
   - fiona
-  - rasterio
   - pyproj
-  - tqdm
-  - psutil
-  - pytorch
-  - pytorch-cluster
-  - pytorch-scatter
-  - pytorch-sparse
-  - pyg
+  # ---- ML used in framework ----
   - gensim
-  - jupyterlab
+  # ---- R and packages used by 24b/25/30/31/34/35 ----
   - r-base=4.4
+  - r-arrow
   - r-data.table
   - r-fixest
   - r-did
-  - r-kableextra
-  - r-sf
-  - r-arrow
-  - r-duckdb
+  - r-grf
+  - r-ggplot2
+  - r-jsonlite
+  - r-patchwork
+  # ---- pip-only ----
   - pip:
-      - node2vec
-      - python-dotenv
-      - pyreaddbc
+      - pecanpy==2.0.9     # verified in local .venv on 2026-05-01
+      # osmnx pin blocked offline in this workspace; see 04_logs/phaseB_install_summary.md
+      - anthropic          # LLM classifier (R1 / 28 / 28d)
+      - pyreaddbc          # DATASUS .dbc → parquet (raw ingest)
       - dbfread

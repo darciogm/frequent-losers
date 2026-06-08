@@ -1,10 +1,21 @@
 # Python virtualenv (1.3 GB)
 .venv/
+.venv-gnn/
 
-# DATASUS raw + derivados grandes (gigabytes)
+# DATASUS raw + derivados grandes (gigabytes) ficam fora do git
 02_data/raw/**
 02_data/intermediate/**
 02_data/final/**
+
+# Mas as caches do NLP (BrasilAPI + Anthropic) vão junto com o repo
+# para reproduzir as classificações sem re-bater os endpoints.
+!02_data/intermediate/cnpj_cache.sqlite
+!02_data/intermediate/llm_classify_cache.sqlite
+!02_data/intermediate/llm_classify_cache_v2.sqlite
+
+# E os snippets do WebSearch (R1) idem — pequenos JSONs por CNES
+!02_data/intermediate/web_snippets/
+!02_data/intermediate/web_snippets/*.json
 
 # logs e scratch
 04_logs/**
@@ -35,3 +46,5 @@ __pycache__/
 
 # main.pdf é build artifact mas comitamos para reviewers acessarem o PDF
 !01_manuscript/main.pdf
+.venv/
+data/cache_osm/

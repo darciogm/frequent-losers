@@ -1,93 +1,183 @@
-# Hospital Deserts
+# Who Is Exposed?
 
-**Beyond the Kilometer: Network-Revealed Access to Healthcare and Avoidable Mortality in Brazil**
+**Flow-Based Exposure to Hospital Closures and the Care-Substitution Channel**
 
-Genicolo-Martins (Insper) · 2026
+Darcio Genicolo-Martins (Insper) · 2026
 
-Submission target: **ETH/UZH Workshop in AI & Applied Economics** (Sept 11–12, 2026).
-Submission deadline: **May 8, 2026**.
+[`01_manuscript/main.pdf`](01_manuscript/main.pdf) · 37 pages · 8 sections + 8 appendix placeholders
 
-## One-liner
+---
 
-Aprendemos embeddings densos de municípios brasileiros a partir do grafo
-bipartido paciente→hospital do SIH/DATASUS (2015–2022, ~50M internações).
-Mostramos que **distância topológica** no espaço de embeddings — capturando
-para onde pacientes *de fato* viajam — prevê mortalidade evitável melhor que
-distância geográfica em km, e identifica desertos médicos invisíveis a métricas
-tradicionais. Aplicação causal: choques de fechamento hospitalar via SIH/CNES
-geram aumento dessa distância topológica e elevação de mortalidade Nolte–McKee
-nos municípios afetados.
+## What this paper does
 
-## Pergunta de pesquisa
+We propose a methodological framework that uses realized patient-flow
+shares to identify exposure to hospital closures, instead of relying on
+geographic proximity alone. Applied to $60$ exogenous closures in Brazil
+(SUS, $2010$--$2024$), the implemented share-based exposure rule recovers
+a **care-substitution effect** in specialized-hospital closures
+(predominantly psychiatric, under the Lei~$10.216$/$2001$ reform):
+travel burden falls after closure because patients no longer commute for
+specialized care, and preventable hospitalizations (ICSAP) rise with a
+lag. The stronger claim that the embedding itself outperforms kilometer
+or travel-time baselines in cross-sectional prediction does not survive
+the current horse races.
 
-A topologia da rede de fluxo de pacientes captura "isolamento médico" melhor
-que distância geográfica? Municípios topologicamente isolados — depois de
-condicionar em distância km, renda, oferta CNES, demografia — apresentam
-mortalidade evitável maior?
+The framework integrates four components: (i) a node2vec embedding of
+the bipartite municipality--hospital graph; (ii) a share-based exposure
+rule (E1) with a kilometer-based alternative exposure rule (E2); (iii) a structured
+NLP classification of declared closure motives (Receita Federal CNPJ
+status + retrieved web sources, processed by a zero-shot LLM); and
+(iv) staggered Sun-Abraham event-study estimation paired with Athey-Wager
+causal-forest heterogeneity attribution.
 
-## Contribuição
+---
 
-1. **Mensuração**. Primeiro índice de acesso à saúde *revelado* (não potencial)
-   para os 5570 municípios brasileiros, com painel anual 2015–2022.
-2. **Causal**. Choque de fechamento hospitalar como variação plausivelmente
-   exógena para o indicador de embedding-distance, ligando explicitamente a
-   piora de access à mortalidade evitável.
-3. **Generalizável**. Receita replicável em qualquer país com dado
-   administrativo de internações (claims, hospital discharge records).
+## Quick start
 
-## Linhagem econométrica
+```bash
+# 1. Create the analysis environment
+conda env create -f environment.yml
+conda activate paper18
 
-- **Currie & MacLeod (QJE 2008)**, **Chandra & Staiger (JPE 2007, 2020)**:
-  acesso e qualidade hospitalar com distância como medida de access.
-- **Allen & Atkin (Ec'a 2022)**, **Donaldson (AER 2018)**: redes de transporte
-  e access economic.
-- **Card et al. (RES 2009)**: access ao Medicare e mortality.
-- **Nolte & McKee (BMJ 2003+)**: lista canônica de causas de morte evitáveis
-  por intervenção médica oportuna.
-- **Grover & Leskovec (KDD 2016)**, **Hamilton et al. (NeurIPS 2017)**:
-  node2vec e GraphSAGE.
-- **Sorkin (QJE 2018)**, **Card-Heining-Kline (QJE 2013)**: precedente em econ
-  de usar mobilidade revealed para identificar estrutura latente — aqui
-  pacientes em vez de trabalhadores.
+# 2. (Pip alternative if you prefer venv)
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 
-## Repository structure
+# 3. (Optional) Set your Anthropic API key for the NLP step
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# 4. Run the full pipeline (skips outputs that already exist)
+./run_pipeline.sh
+
+# 5. Re-compile the manuscript
+cd 01_manuscript
+pdflatex main && bibtex main && pdflatex main && pdflatex main
+```
+
+`run_pipeline.sh` accepts `--from <id>` and `--to <id>` flags to start
+or stop at a specific step. Each script in `03_analysis/` accepts
+`--force` to bypass output-detection caching.
+
+---
+
+## Repository layout
 
 ```
 paper18-hospital-deserts/
-├── 01_manuscript/        # paper.tex, paper.pdf
+├── 01_manuscript/                 LaTeX sources
+│   ├── main.tex                   Master file
+│   ├── introduction.tex           §1 (5 movements)
+│   ├── setting.tex                §2 (SUS + Reforma Psiq)
+│   ├── data.tex                   §3 (5 sub-sections)
+│   ├── method.tex                 §4 (6 sub-sections, framework)
+│   ├── results.tex                §5 (6 sub-sections, hybrid)
+│   ├── robustness.tex             §6 (7 specs + summary)
+│   ├── discussion.tex             §7 (5 sub-sections)
+│   ├── conclusion.tex             §8
+│   ├── appendix.tex               Apêndice A-H placeholders
+│   ├── references.bib             31 refs verified
+│   └── tables/                    .tex tables (auto-generated)
 ├── 02_data/
-│   ├── raw/              # SIH/SIM/SINASC/CNES (DATASUS FTP), shapefiles IBGE
-│   ├── intermediate/     # graph edge lists, embeddings (.npy/.parquet)
-│   └── final/            # painel município-ano de outcomes + features
-├── 03_analysis/          # scripts numerados 01_..→ NN_..
-├── 04_figures/           # figs finais (mapas, ROC, t-SNE)
-├── 04_logs/              # logs por script
-├── 05_references/        # PDFs por bibkey
-├── 06_scratch/           # exploração descartável
-└── notes/                # research notes, decisions, todo
+│   ├── raw/                       DATASUS (.dbc → .parquet) + IBGE
+│   ├── intermediate/              Pipeline outputs (parquet, sqlite)
+│   └── final/                     (reserved)
+├── 03_analysis/                   Numbered scripts (00 → 36)
+├── 04_figures/                    PDFs ready for inclusion
+├── 04_logs/                       Per-script execution logs + JSON metrics
+├── 05_references/                 Reference PDFs (offline copies)
+├── 06_scratch/                    Throwaway exploration
+├── notes/                         Decision logs, audits, outline
+├── environment.yml                conda env (Python + R)
+├── requirements.txt               pip-only alternative
+├── run_pipeline.sh                Pipeline orchestrator (00 → 36)
+├── README.md                      (this file)
+└── CLAUDE.md                      Project conventions for AI-assisted work
 ```
 
-## Dados (todos públicos)
+---
 
-- **DATASUS SIH** (AIH-RD, 2015–2022): internações por procedimento, hospital
-  de tratamento, município de residência. Edges do grafo bipartido.
-- **DATASUS SIM** (2015–2022): óbitos com CID-10 → causas Nolte–McKee
-  ("amenable mortality"). Outcome principal.
-- **DATASUS SINASC**: nascimentos para mortalidade neonatal.
-- **DATASUS CNES**: cadastro de hospitais — leitos, especialidades, eventos
-  de abertura/fechamento. Choque de identificação.
-- **IBGE**: shapefiles município, população, PIB per capita, urbanização.
-- **TabNet/SUS-IPS**: cobertura ESF, IDSC.
+## Pipeline order
 
-## Build / run
+The `03_analysis/` scripts are numbered to reflect dependency order; the
+orchestrator `run_pipeline.sh` runs them in this sequence. Major
+conceptual blocks:
 
-```bash
-mamba env create -f environment.yml
-mamba activate paper18
+| Block | Scripts | Purpose |
+|---|---|---|
+| **Ingest** | `00*`, `01-05` | DATASUS .dbc parse, IBGE pop/GDP, CNES habilitation, hospital universe, centroids |
+| **Embedding** | `06`, `06b` | node2vec on bipartite + projected M-M graph |
+| **Cross-section diagnostic** | `07`, `07b`, `09`, `15` | $\Delta R^2$ over km baseline (11 nulls) |
+| **Visualization (legacy)** | `08`, `11-14`, `16` | Divergence map, t-SNE, regional tables |
+| **Cause-specific & alt outcomes** | `17`, `17b`, `17c`, `17d` | $\Delta R^2$ across 11 outcomes |
+| **Closure identification** | `20`, `21`, `22`, `23`, `24a` | F5 filter, E1/E2 exposures, travel burden, ICSAP, staggered panel |
+| **Event-study (pilot)** | `24b`, `25` | First-pass Sun-Abraham + heterogeneity |
+| **NLP exogeneity (R1)** | `26`, `27`, `28`, `28b`, `28d` | Metadata, CNPJ lookup, Haiku v1, Sonnet v2 with web |
+| **Final estimation** | `29`, `30`, `31` | Build 5 panels (F5/F6/admin/falência/fiscal), Sun-Abraham hybrid, causal forest |
+| **Counterfactual perturbation** | `32b`, `33` | Re-train embedding without each closing hospital |
+| **Robustness battery** | `34` | 18 specs (alt thresholds/estimators/samples) |
+| **Final figures** | `35`, `36` | SA vs BJS comparison, cross-section null forest |
 
-bash run_pipeline.sh   # roda 01..NN em ordem, log em 04_logs/
-```
+Outputs in `02_data/intermediate/`, `04_figures/`, `04_logs/`, and
+`01_manuscript/tables/` are all under git for replication; raw DATASUS
+in `02_data/raw/` is git-ignored (re-downloadable via the `00*` scripts).
 
-## Estado atual
+---
 
-Setup inicial. Ver `notes/research_plan.md` para roteiro de 11 dias até deadline.
+## Caches and external services
+
+The pipeline calls two external services in the NLP block; both are
+cached so re-runs do not re-query.
+
+* **BrasilAPI** (Receita Federal CNPJ lookup, public free endpoint).
+  Cached in `02_data/intermediate/cnpj_cache.sqlite` (~$\sim 65$ entries
+  for our $90$ closures, plus valid-CNPJ misses).
+* **Anthropic Claude API** (LLM classifier). Cached in
+  `02_data/intermediate/llm_classify_cache.sqlite` (Haiku v1) and
+  `llm_classify_cache_v2.sqlite` (Sonnet v2 with web snippets). Total
+  spend for the published classifications was ~\$0.85.
+
+To replicate the paper's classifications without re-querying the
+services, ship these caches with the repository (they are small,
+$\le 2$~MB total) and skip steps `27`, `28`, `28d` if the caches are
+already populated.
+
+---
+
+## Hardware
+
+The pipeline was developed on:
+
+* WSL2 Ubuntu, kernel `6.6.87.2-microsoft-standard`, on Intel i7-1260P
+  ($14$ logical cores in WSL, $21$~GB RAM, no GPU).
+* Total wall-clock for a cold run from `00` to `36`: **$\sim 35$ min**
+  on this machine, dominated by SIH-RD ingest (~$30$~min for the raw
+  parse) and node2vec training (~$60$~s per closure for the $32$b
+  perturbation step, $61$ closures).
+* Re-run with caches populated: $\sim 8$~min.
+
+DuckDB is the default engine for parquet I/O across the pipeline,
+configured with `PRAGMA threads=12 memory_limit='14GB'
+temp_directory='/tmp/duckdb_paper18'` (set in each script).
+
+---
+
+## Citing this work
+
+The working paper is the canonical citation:
+
+> Genicolo-Martins, D. (2026). Who Is Exposed? Patient-Flow Embeddings,
+> Hospital Closures, and the Care-Substitution Channel. Working paper,
+> Insper.
+
+`https://github.com/darciogm/bitter-pills/tree/main/paper18-hospital-deserts`
+
+---
+
+## Authorship and policy
+
+Sole-authored. Comments welcome to `darcio.g.martins@gmail.com`.
+
+This repository follows the conventions in `CLAUDE.md` (Brazilian
+Portuguese in code comments, no AI-co-author markers in commits, DuckDB
+defaults for parquet, $16$~GB RAM budget per workload, $12$ internal
+threads).

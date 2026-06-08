@@ -27,6 +27,7 @@ Random walks ponderadas pelo peso da aresta (n_internacoes).
 from __future__ import annotations
 
 import gc
+import argparse
 import logging
 import os
 import sys
@@ -86,12 +87,17 @@ def stage(label: str, t_prev: float) -> float:
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--seed", type=int, default=SEED)
+    ap.add_argument("--output", type=str, default=str(OUT))
+    args = ap.parse_args()
+
     global T0
     T0 = time.perf_counter()
     vm = psutil.virtual_memory()
     log.info("==== begin node2vec (pecanpy SparseOTF) ====")
     log.info("host=%s ram_total=%.1fGB ram_avail=%.1fGB workers=%d seed=%d",
-             os.uname().nodename, vm.total / 1e9, vm.available / 1e9, WORKERS, SEED)
+             os.uname().nodename, vm.total / 1e9, vm.available / 1e9, WORKERS, args.seed)
     log.info("hyperparams: dim=%d walk_len=%d num_walks=%d p=%.2f q=%.2f window=%d epochs=%d",
              DIM, WALK_LENGTH, NUM_WALKS, P, Q, WINDOW, EPOCHS)
 
@@ -125,7 +131,7 @@ def main():
     # ---- pecanpy SparseOTF -------------------------------------------
     # SparseOTF computa probs de transição on-the-fly, RSS linear em |E|.
     # read_edg aceita TSV ponderado e indexa nós conforme aparecem.
-    g = pn.SparseOTF(p=P, q=Q, workers=WORKERS, verbose=False, random_state=SEED)
+    g = pn.SparseOTF(p=P, q=Q, workers=WORKERS, verbose=False, random_state=args.seed)
     g.read_edg(edge_path, weighted=True, directed=False, delimiter="\t")
     node_ids = list(g.nodes)
     n_nodes = len(node_ids)
@@ -161,9 +167,10 @@ def main():
     for d in range(DIM):
         cols_out[f"dim_{d}"] = emb[:, d]
     out_df = pl.DataFrame(cols_out)
-    out_df.write_parquet(OUT, compression="snappy")
+    out_path = Path(args.output)
+    out_df.write_parquet(out_path, compression="snappy")
     log.info("wrote %s (rows=%d, cols=%d, file=%.1fMB)",
-             OUT, len(out_df), len(out_df.columns), OUT.stat().st_size / 1e6)
+             out_path, len(out_df), len(out_df.columns), out_path.stat().st_size / 1e6)
     t = stage("write_parquet", t)
 
     # ---- sanity: vizinhos top-10 de São Paulo município --------------

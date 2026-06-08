@@ -17,15 +17,14 @@ Métrica de "isolamento" para um município i (ano-pooled 2015-2022):
 Ambas medem "quão longe está o tecido conectado mais próximo". Embedding
 diverge porque os top-5 vizinhos não são os mesmos.
 
-Modelos (LightGBM por simplicidade — captura não-linearidades sem feature
-engineering):
+Modelos (ridge linear, para manter comparação parsimoniosa e estável):
   M0: rate ~ pop_log + pib_log + UF_FE                       (controles)
   M_km:  M0 + iso_km
   M_emb: M0 + iso_emb
   M_both: M0 + iso_km + iso_emb
 
-5-fold CV estratificado por UF. Reporta R² OOS, MAE, e a importância de
-cada feature. Plot scatter density emb_dist × km na amostra.
+5-fold CV com KFold embaralhado (não estratificado por UF). Reporta R²
+OOS e MAE. Plot scatter density emb_dist × km na amostra.
 
 Inputs:
 - 02_data/intermediate/embeddings_munmun_proj.parquet
