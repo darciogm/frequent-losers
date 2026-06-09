@@ -124,6 +124,43 @@ the first stage implies.
 \input{tables_appendix/table_distance_benchmark_full.tex}
 \input{tables_appendix/table_exposure_variant_mortality.tex}
 
+\subsection{Exposure-validation placebo: the disagreement set}
+\label{app:disagreement-placebo}
+
+The flow and distance rules disagree on most flagged pairs. That disagreement is
+itself a test: if the flow rule captures revealed reliance, the first stage should
+appear among municipalities flows flag, not among those distance flags but flows
+miss. I split each municipality's earliest flagged closure into flow-only,
+both-rules, and distance-only cohorts and estimate the headline event study for each
+against never-flagged controls (Table~\ref{tab:disagreement-placebo},
+Figure~\ref{fig:disagreement-first-stage}). The discriminating outcome is inpatient
+psychiatric admissions: flow-flagged municipalities lose about $3.7$ per $1{,}000$
+with flat pre-trends, roughly four times the movement among distance-only false
+positives, whose smaller change also fails the pre-trend test. Travel burden, by
+contrast, falls for any municipality near a closing hospital and does not separate
+the groups. Read together, the first stage loads primarily on revealed use rather
+than proximity, though distance-only municipalities are not pure controls: they sit
+on differential pre-trends, the contamination the flow rule avoids. This corroborates
+the exposure rule; it does not replace the travel-burden and utilization first stages
+in the main text.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{../04_figures/fig_disagreement_first_stage.pdf}
+    \caption{Exposure-validation placebo, PNASH psychiatric sample.
+    Population-weighted Sun-Abraham ATTs for the flow-only, both-rules, and
+    distance-only cohorts against never-flagged controls. Panel A (travel burden):
+    all three groups shift, because measured travel falls for any municipality near a
+    closing hospital---this outcome does not discriminate. Panel B (psychiatric
+    admissions): flow-flagged municipalities lose far more inpatient volume than
+    distance-only false positives, whose smaller change also fails the pre-trend test.
+    Pre-trend $p$-values are annotated; bars are $95\%$ cluster-robust confidence
+    intervals.}
+    \label{fig:disagreement-first-stage}
+\end{figure}
+
+\input{tables_appendix/table_disagreement_placebo_full.tex}
+
 \section{First-Stage Decomposition}
 
 \input{tables_appendix/table_first_stage_decomposition_full.tex}
