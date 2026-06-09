@@ -139,6 +139,7 @@ declare -a STEPS=(
   "88|python|03_analysis/88_psych_displacement_decomposition.py|Mechanism: psychiatric displacement decomposition (where inpatient use goes)"
   "90|python|03_analysis/90_build_other_hosp_psych_panel.py|Mechanism: build other-hospital psychiatric admissions panel"
   "91|R|03_analysis/91_other_hosp_event_study.R|Mechanism: causal event study of non-absorption by other hospitals"
+  "94|R|03_analysis/94_network_spillover_sutva.R|Mechanism: network co-patiency spillover/SUTVA robustness of the suicide null"
   "63|python|03_analysis/63_closure_sample_architecture.py|Closure-sample architecture: F5 measurement, PNASH causal, contrast and diagnostics"
   "64|R|03_analysis/64_estimate_first_stage_by_sample.R|First-stage travel burden by closure sample"
   "65|python|03_analysis/check_sample_consistency.py|Sample consistency audit"

@@ -257,6 +257,27 @@ no bounded extrapolation can rescue the effect.
 \section{Robustness, Spillovers, and Influence}
 
 \input{tables_appendix/table_spillover_sensitivity.tex}
+
+\subsection{Network-spillover contamination of controls}
+\label{app:network-spillover}
+
+A closure reroutes its catchment's patients onto substitute hospitals. If a
+never-treated control municipality uses those same hospitals, the closure changes
+its access as well, contaminating the control and biasing the estimate toward zero.
+The main robustness battery drops controls that share a referral hub, a substitute
+hospital, or a high flow-similarity link with treated catchments.
+Table~\ref{tab:network-spillover} adds a single, transparent network definition.
+Using the projected municipality co-patiency network---an edge joins two
+municipalities in proportion to how much they co-use the same hospitals---I flag as
+contaminated any never-treated municipality joined to an exposed catchment by a
+co-patiency edge of weight at least $\theta$, and re-estimate the suicide event
+study after dropping them. Because spillover attenuates a true effect toward zero,
+removing contaminated controls would \emph{raise} the estimate if an effect were
+hidden. Dropping up to $1{,}173$ network-linked controls leaves the suicide ATT a
+bounded null ($+0.28$ to $+0.36$ per $100{,}000$, every interval covering zero), so
+the null is not an artifact of spillover-polluted controls.
+
+\input{tables_appendix/table_network_spillover.tex}
 \input{tables_appendix/table_caps_heterogeneity.tex}
 \input{tables_appendix/table_closure_influence.tex}
 
