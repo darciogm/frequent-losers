@@ -1,7 +1,7 @@
 """
 08_map_divergence.py
 
-Headline figure do paper (Pivô A "Map of Revealed Access").
+Main map for the exposure-measurement result (Pivô A "Map of Revealed Access").
 
 Para cada município, compara duas medidas de isolamento ao hospital de
 alta complexidade mais próximo:

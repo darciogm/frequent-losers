@@ -1,138 +1,172 @@
 \section{Introduction}
 \label{sec:introduction}
 
-% =====================================================================
-% Movement 1 — the policy stakes + the measurement problem
-% =====================================================================
-Deinstitutionalization---the closing of psychiatric hospitals in favor
-of community-based care---is among the most contested health reforms of
-the past half-century. Its critics have long warned that removing
-inpatient capacity faster than communities can absorb the displaced
-patients raises mortality, and suicide in particular, among those who
-relied on the closing facilities
-\citep{yoonBruckner2009, bastiampillai2016, pirkola2009}.
-Brazil ran this experiment at scale: the Reforma Psiquiátrica
-(Lei~$10.216$/$2001$), enforced through federal PNASH inspection
-cycles and a chronic real-value erosion of SUS reimbursement, closed
-specialized psychiatric hospitals across the country during the
-$2010$s. Whether those closures harmed the patients who depended on
-them is a first-order policy question---and answering it credibly turns
-on a measurement problem that the closure literature has not confronted.
-
-The problem is who counts as exposed. The canonical closure literature
-defines exposure by geographic proximity: a population is treated by a
-closure if the closing hospital was among its nearest providers
+When a hospital closes, which towns lose access? Every closure study has
+to answer, and the standard answer is distance: residents near the
+closing facility are treated, those farther away are controls
 \citep{avdic2016, carroll2019, joynt2015, gujralBasu2019, lindrooth2018}.
-But specialized care has thin local substitutes, and in a single-payer
-system patients routinely cross municipal borders to reach it---so
-proximity mismeasures dependence. Consider one closure in our sample: a
-specialized psychiatric facility in São Paulo state closed in $2016$
-had redirected $\valEgAdm$ pre-closure SUS admissions drawn from
-$\valEgMunis$ municipalities, $\valEgFar$ of which lay between $36$ and $\valEgKmHi$~km from
-the facility and would not have been treated under any standard
-top-$3$-nearest distance rule.\footnote{CNES $2082683$, IBGE
-municipality of closure $350280$; total pre-closure SUS admissions
-from exposed municipalities $= \valEgAdm$; median distance from the closing hospital to an
-exposed municipality $= \valEgKmMed$~km. Reproducible from
-\texttt{02\_data/intermediate/exposure\_panel.parquet} in the
-replication package.} The choice of exposure measure is not a
-technicality: it determines whether the population the policy actually
-touched enters the estimate at all.
+The rule is close enough where patients use the nearest facility. It
+breaks where care runs through referral. In Brazil's Sistema Único de
+Saúde (SUS), $\valCrossBorderPct\%$ of the $\valNadmissions$~million
+inpatient admissions between $2010$ and $2024$ are billed by a hospital
+outside the patient's home municipality, and the typical municipality
+sends seven in ten of its admitted residents elsewhere. When patients
+cross borders this routinely to reach scarce providers, the towns a
+closure harms are not the ones nearest the building. They are the ones
+whose residents were going there.
 
-% =====================================================================
-% Movement 2 — the flow exposure rule, validated by a first stage
-% =====================================================================
-We replace proximity with a \emph{patient-flow} exposure rule.
-Municipality $m$ is exposed to the closure of hospital $h$ if, in the
-year before closure, admissions from $m$ to $h$ exceeded a $5\%$ share
-of $m$'s total SUS admissions---dependence revealed by where patients
-actually went, not by how near $h$ happened to be. The rule is built
-from the bipartite municipality--hospital graph of $\valNadmissions$ million SUS
-hospital admissions. Across the $\valNexoClosures$ exogenous closures, the flow rule
-and the distance rule disagree on $\valNmisclass$ of the $\valNunionPairs$ municipality--closure
-pairs that either rule flags: distance \emph{misses} $\valNmissed$ pairs whose
-patients depended on the closing hospital through specialized referral,
-and \emph{falsely flags} $\valNfalse$ whose patients never used it. The
-disagreement is not random---it concentrates in the river-corridor
-North, where patient flow reaches regional hubs by routes road distance
-ignores, and the semi-arid Northeast, where the geographically near
-hospital is bypassed for a more distant referral center
-(Figure~\ref{fig:map-divergence}).
+The gap between the two rules is not a rounding error. One psychiatric
+hospital in the sample drew $\valEgAdm$ admissions from $\valEgMunis$
+municipalities before it closed; $\valEgFar$ of them sat between $36$ and
+$\valEgKmHi$~kilometers away, a median of $\valEgKmMed$~km. Any distance
+cutoff tight enough to be credible would have called those towns
+unexposed, though they were precisely the ones that lost their provider. A
+distance rule and a flow rule do not estimate noisier versions of the same
+effect; they estimate provider loss for different populations, and if the
+exposed set is wrong every downstream coefficient inherits the error.
+Figure~\ref{fig:flow-divergence-map} shows the mismatch is national: the
+municipalities whose residents travel farthest beyond their nearest
+hospital cluster in the river-corridor North and the semi-arid Northeast.
 
-A first stage confirms the flow rule captures genuine dependence rather
-than noise. Travel burden---the distance the typical patient travels for
-inpatient care---falls by $\valTravAbs$~km after closure in the exposed
-municipalities, where a distance-based exposure rule applied to the same
-closures recovers only about half as much. The fall is direct evidence
-that exposed patients had been traveling far for care with no local
-substitute: when the facility closes, their realized travel drops
-because the long trips it generated cease. (We summarize the broader
-referral network with a node2vec embedding of the flow graph; it serves
-as a measurement diagnostic in Appendix~\ref{app:embedding} and plays no
-role in the causal design.)
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.62\textwidth]{../04_figures/fig_map_flow_divergence.pdf}
+    \caption{\textbf{Where the hospital people use is farther than the
+    hospital next door.} Each municipality is shaded by the difference
+    between two standardized isolation measures: flow isolation (the
+    admission-weighted distance to the hospitals its residents actually
+    used, averaged over the sample period) minus distance isolation (the
+    kilometers to the nearest municipality hosting a SUS hospital). Red
+    municipalities are more isolated by realized patient flow than by
+    geography---residents bypass the nearest facility for distant
+    referral---and concentrate in the river-corridor North and the
+    semi-arid Northeast. Blue municipalities are the reverse, where dense
+    local capacity in the Southeast and South keeps realized travel short.
+    Grey municipalities have no recorded SUS admissions. The map uses
+    admission flows and geography only; it does not use the network
+    embedding. $N = 4{,}429$ municipalities.}
+    \label{fig:flow-divergence-map}
+\end{figure}
 
-% =====================================================================
-% Movement 3 — identification
-% =====================================================================
-We estimate effects on the psychiatric closures with a staggered
-Sun-Abraham event study \citep{sunAbraham2021}, with
-\citet{cs2021} and \citet{borusyak2024} as alternative estimators. The
-identifying variation is the \emph{timing} of closure, which we anchor
-to the federal PNASH inspection cycles and the national SUS
-reimbursement freeze---institution-level forces that operate on a
-recurring federal calendar rather than on municipality-specific demand
-or supply shocks (Section~\ref{sec:setting}). Our primary sample is the
-$\valNclosuresPnash$ PNASH-anchored psychiatric closures, exposing $\valNtrPnash$ municipalities.
-Mortality is recorded at the municipality of residence. Crucially, the
-parallel-trends assumption is tested on full pre-periods: we extend the
-population denominators back to $2010$, so the pre-treatment trajectory
-of every cohort is observed rather than missing---a data gap that, left
-unfilled, would make the pre-trend test uninformative for the earlier
-cohorts.
+The paper's contribution is a portable way to measure who a closure
+exposes; the mortality study is where I take that measure to show the
+stakes are real. For each closure I rebuild origin--destination patient
+flows from the pre-closure years and define the exposed catchment as the
+municipalities that sent at least $5\%$ of their SUS admissions to the
+closing hospital---a rule any single-payer or claims-rich system can build
+from records it already keeps. The measurement question, whether reading
+exposure off flows rather than distance changes who is treated, uses all
+$\valNexoClosures$ economically meaningful closures ($2012$--$2018$ and
+$2022$--$2023$). The application takes the rule to the setting where flow
+and distance pull apart most---the $\valNclosuresPnash$ psychiatric
+closures anchored to federal PNASH inspection cycles, where care is
+concentrated in distant referral hubs and the welfare concern, suicide and
+self-harm after the loss of inpatient psychiatric care, matches the
+shock---and asks whether the provider loss raised mortality, in a staggered
+event study \citep{sunAbraham2021} with timing plausibly orthogonal to
+local mortality shocks and pre-periods observed back to $2010$.
 
-% =====================================================================
-% Movement 4 — the result: no catastrophe
-% =====================================================================
-We find no evidence of the feared harm. Among the exposed population,
-population-weighted suicide mortality changes by $\valSuicWAtt$ per $100{,}000$
-after closure (95\% CI $[\valSuicWLo, \valSuicWHi]$), with parallel pre-trends that do
-not reject ($p = \valSuicWPpre$); self-harm mortality is likewise
-indistinguishable from zero. The confidence interval rules out the
-increases above one-quarter of baseline that deinstitutionalization's
-critics predicted. We are careful about what this null does and does not
-say: it excludes a mortality \emph{catastrophe}, not small effects,
-which the data cannot resolve. The null is robust across exposure
-samples, across population- and municipality-weighting, across modern
-staggered estimators, and across the exposure-share threshold.
+The two rules disagree sharply. Across the $\valNexoClosures$ closures,
+flow and distance part ways on $\valNmisclass$ of the $\valNunionPairs$
+municipality--closure pairs that either flags; only $\valNboth$ are caught
+by both. Distance misses $\valNmissed$ pairs that depended on the closing
+hospital through long-distance referral and falsely flags $\valNfalse$
+that never used it. The errors are not random across space; they
+concentrate where referral travel is longest
+(Figure~\ref{fig:flow-distance-disagreement-f5}). A first stage confirms
+the flow rule catches real ties rather than noise: in the psychiatric
+sample, inpatient travel falls by $\valTravAbs$~km after closure among
+flow-exposed municipalities, with no pre-trend ($p = \valTravPpre$), as
+the long trips to the closing hospital disappear.
 
-% =====================================================================
-% Movement 5 — honesty, contribution, roadmap
-% =====================================================================
-One outcome we decline to read causally. Preventable hospitalizations
-(ICSAP), the canonical Brazilian access-to-care marker
-\citep{macinkoHarris2015, rochaSoares2010}, do rise in exposed
-municipalities after closure---but they were \emph{already} rising
-before it. On the full pre-periods, the parallel-trends test rejects
-sharply: the post-closure increase is the continuation of a
-pre-existing trend, not a treatment effect. We report the trajectory in
-full and treat ICSAP as a non-identified outcome rather than launder a
-pre-trend into a causal claim. This discipline is part of the
-contribution: a credible null requires being equally honest about the
-outcomes that are identified and the ones that are not.
+The closures bite. Inpatient psychiatric admissions among exposed
+municipalities fall by $\valPsychAdmPct\%$ ($\valPsychAdmAtt$ per
+$1{,}000$, 95\% CI $[\valPsychAdmLo, \valPsychAdmHi]$). To confirm this
+is a net loss rather than a reallocation, I trace where the closing
+hospital's inpatient volume goes: admissions to other hospitals in the
+catchment do not rise to replace it---a staggered event study puts the
+change at $\valOtherHospATT$ per $1{,}000$ (95\% CI
+$[\valOtherHospLo, \valOtherHospHi]$), an unchanged null, against the
+$\valPsychAdmPct\%$ fall in total admissions---so the headline decline is
+a net loss of inpatient psychiatric care, not a redistribution across
+providers. Against a shock that large,
+the mortality estimates remain close to zero and imprecise. The population-weighted suicide estimate is
+$\valSuicWAtt$ per $100{,}000$ (95\% CI $[\valSuicWLo, \valSuicWHi]$),
+against a treated-group baseline of $\valSuicBaseline$, with flat
+pre-trends ($p = \valSuicWPpre$); self-harm mortality is likewise
+imprecise around zero. The interval rules out increases above roughly a
+quarter of baseline suicide, on the order of $\valSuicDeathsYr$ additional
+deaths a year across the exposed catchments, but it cannot resolve smaller
+harms or non-fatal welfare losses. This is a bounded null, not a precise
+zero, and at $\valNclosuresPnash$ closures I do not pretend otherwise. It
+is not, however, an artifact of one specification: the null holds across
+$\valNspecCurve$ analytic choices, in a stricter exact $\pm 1$-year
+PNASH-window sample, and under a synthetic difference-in-differences design
+that does not rest on never-treated parallel trends
+(Figure~\ref{fig:spec-curve}). Read narrowly, the closure
+side of Brazil's psychiatric reform did not produce the acute mortality
+spike its critics feared, on the suicide margin and at the precision these
+data allow.
 
-The paper makes two contributions. \emph{Methodological}: a portable
-patient-flow exposure measure for hospital-closure studies in
-single-payer systems with origin--destination claims data, validated
-against a mechanical first stage and contrasted with the distance rule
-it corrects. \emph{Substantive}: a credibly identified mortality null on
-a globally contested reform, estimated on the population that a
-distance-based analysis would not have found.
-Section~\ref{sec:setting} situates the analysis in the SUS and the
-Reforma Psiquiátrica. Section~\ref{sec:data} documents the data.
-Section~\ref{sec:method} develops the flow exposure measure and the
-identification strategy. Section~\ref{sec:results} reports the first
-stage, the mortality null, and the ICSAP non-result.
-Section~\ref{sec:robustness} reports the robustness battery.
-Section~\ref{sec:discussion} discusses what the null means for
-deinstitutionalization policy and the measurement lesson for closure
-studies.
+One outcome runs the other way, and I decline to read it causally.
+Preventable hospitalizations (ICSAP), the canonical Brazilian
+access-to-care marker \citep{macinkoHarris2015, rochaSoares2010}, rise by
+$\valIcsapAtt$ per $1{,}000$ after closure. At face value that looks like
+access deterioration. It is not identified: ICSAP was already climbing
+steeply in the exposed municipalities for years before any hospital
+closed, the parallel-trends test rejects decisively ($p < 0.001$), and a
+Rambachan--Roth sensitivity confirms that no bounded extrapolation of the
+pre-trend rescues an effect. I report the trajectory in full and treat it
+as a description of where these towns were already heading, not as a
+result.
+
+The paper speaks first to the JHE literature that reads hospital closures
+as access shocks. \citet{buchmueller2006} ask how closures move access and
+mortality through distance to the nearest hospital, and \citet{avdic2016}
+traces the mortality consequences of the longer trips that emergency-hospital
+consolidation forces; related work follows closures across the United States
+\citep{carroll2019, joynt2015, gujralBasu2019, lindrooth2018} and hospital
+entry and exit as swings in local capacity \citep{petek2022}. These designs
+read exposure off geographic proximity, which holds where local capacity is
+thick. I move the access margin upstream---before asking whether distance to
+care affects outcomes, I ask whether distance identifies the exposed
+population at all when patients cross borders for referral. The object can
+even flip sign from the standard case: shutting a specialized referral
+provider may \emph{reduce} measured travel, because the long inpatient trip
+to it disappears, so what marks exposure is revealed reliance on the closing
+provider, not proximity to the nearest one.
+
+A second, health-services literature uses patient flows to delineate
+hospital service areas and referral regions, from \citet{wennberg1973},
+whose small-area flow analysis seeded the Hospital Referral Regions the
+Dartmouth Atlas has mapped since, to recent evidence that even U.S. Medicare flows
+drift from those lines \citep{wang2020hrr}; Brazil's
+$\valCrossBorderPct\%$ cross-border share is larger still. I put the
+revealed-utilization logic to a different use. Rather than ask what the
+natural hospital market is, I use pre-closure flows to assign treatment in a
+provider-loss design---the exposed population is the set of municipalities
+whose residents actually used the provider before it closed---and
+post-closure flows to ask whether that inpatient use reappears elsewhere.
+My point is not that distance is always wrong, but to show, across
+$\valNexoClosures$ real closures, how wrong it can be, where, and in which
+direction, with a flow-based correction built from records these systems
+already keep.
+
+It complements, too, the economics of deinstitutionalization. The context
+paper here is \citet{diasFontes2024}, who study the reform's other half,
+the rollout of community CAPS centers, and find that the expansion enlarged
+outpatient care and cut psychiatric hospitalizations without lowering
+mental-health mortality. That is the demand side. This paper takes the
+supply side: the closures that removed inpatient capacity, among the towns
+revealed to depend on it. In a rollout design treatment falls on the
+municipality that receives the new facility; in a closure design the
+affected population is not the host municipality, nor its neighbors, but the
+set of places that relied on the provider before it shut. Read together, the
+two papers separate two margins of the reform---the expansion of community
+care and the loss of inpatient providers; both pull psychiatric inpatient
+use down, and neither shows large mental-health mortality effects at the
+margins studied. The design also ports beyond psychiatry: any provider-loss
+setting with administrative utilization data (rural obstetric units,
+emergency departments, specialty clinics) can be analyzed the same way,
+and the general-hospital closures show the exposure problem is not unique
+to psychiatric reform.

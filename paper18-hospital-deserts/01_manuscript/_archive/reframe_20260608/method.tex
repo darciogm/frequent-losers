@@ -1,0 +1,196 @@
+\section{Measuring exposure and identifying closure effects}
+\label{sec:method}
+
+The analysis rests on a single measurement choice---who counts as
+exposed to a hospital closure---and a single source of identifying
+variation---the timing of closure. Section~\ref{sec:method-exposure}
+defines the patient-flow exposure rule and contrasts it with the
+distance rule it replaces. Section~\ref{sec:method-identification}
+states the institutional timing argument and the three identification assumptions.
+Section~\ref{sec:method-estimator} gives the estimator. Throughout, the
+object is the effect of a closure on the populations that depended on
+the closing hospital; the methodological contribution is getting that
+population right.
+
+% =====================================================================
+% §4.1 — Patient-flow exposure
+% =====================================================================
+\subsection{Patient-flow exposure}
+\label{sec:method-exposure}
+
+\paragraph{The flow rule (E1).} For each closing hospital $h$ with
+closure year $t_h^{\star}$, let
+\begin{equation}
+  s_{m, h} \;=\;
+  \frac{w_{t_h^{\star} - 1}(m, h)}{\sum_{h' \in H_{t_h^{\star} - 1}}
+  w_{t_h^{\star} - 1}(m, h')}
+  \label{eq:share}
+\end{equation}
+denote the share of municipality $m$'s SUS admissions in the year
+preceding closure that were sent to $h$, where $w_t(m,h)$ counts
+admissions from residents of $m$ to hospital $h$ in year $t$, drawn from
+the bipartite municipality--hospital graph of $\valNadmissions$ million SUS
+admissions (Section~\ref{sec:data}). Municipality $m$ is
+\emph{flow-exposed} to the closure of $h$ if $s_{m,h} \geq \theta$, with
+default $\theta = 0.05$. The rule encodes dependence as revealed by
+care-seeking: a municipality whose residents systematically traveled to
+$h$ is exposed even when $h$ is distant, and a geographically near
+hospital that residents never used is correctly excluded. Robustness to
+a continuous sweep $\theta \in [0.01, 0.20]$ is reported in
+Section~\ref{sec:robustness}.
+
+\paragraph{The distance rule (E2).} The comparison is the exposure rule
+standard in the closure literature: $m$ is \emph{distance-exposed} to
+$h$ if $h$ is among the three kilometer-nearest hospitals to the
+centroid of $m$ in the pre-closure year,
+\begin{equation}
+  m \in \mathrm{E2}(h) \iff
+  h \in \mathrm{argmin}^{(3)}_{h' \in H_{t_h^{\star} - 1}} \;
+  \mathrm{km}(m, h'),
+  \label{eq:e2}
+\end{equation}
+with top-$3$ chosen as a generous catchment so the comparison set is not
+artificially small.
+
+\paragraph{Where the two rules disagree.} The rules are not nested.
+Across the $\valNexoClosures$ analyzed closures, of the $\valNunionPairs$ municipality--closure
+pairs that either rule flags, only $\valNboth$ are flagged by both: $\valNmissed$ are
+flow-only (the patients depended on $h$ but it was not among their
+nearest hospitals) and $\valNfalse$ are distance-only (the nearest-hospital
+catchment, but the residents never used $h$). Distance thus misclassifies
+$\valNmisclass$ of the $\valNunionPairs$ pairs. The disagreement is geographically systematic
+(Figure~\ref{fig:map-divergence}): in the river-corridor North, flow
+reaches regional hubs by routes road distance ignores; in the semi-arid
+Northeast, the near hospital is bypassed for a more distant referral
+center; the South, with mature SUS regionalization, shows the smallest
+divergence. The first-stage travel-burden result
+(Section~\ref{sec:results-firststage}) favors the flow rule for this
+setting: the flow-exposed municipalities are the ones whose realized
+travel changes when $h$ closes.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.82\textwidth]{../04_figures/fig_map_divergence.png}
+    \caption{Where flow and distance disagree. Standardized divergence
+    $\Delta_m = z(\mathrm{iso}^{\mathrm{flow}}_m) -
+    z(\mathrm{iso}^{\mathrm{km}}_m)$ across $\valNmunisDiverg$ Brazilian
+    municipalities. Red: the flow measure identifies $m$ as more isolated
+    than distance suggests (patients bypass the near hospital). Blue:
+    less isolated than distance suggests (river/air access not captured
+    by road km). Color bar truncated at $\pm$ the $95$th absolute
+    percentile.}
+    \label{fig:map-divergence}
+\end{figure}
+
+\paragraph{The embedding as a measurement diagnostic.} We also summarize
+the referral network with a node2vec embedding of the patient-flow
+graph, which recovers Brazilian metropolitan and \emph{ribeirinho}
+geography from co-attendance alone and supplies the divergence measure
+mapped in Figure~\ref{fig:map-divergence}. The embedding is a
+descriptive diagnostic, not the treatment assignment: the causal rule is
+the share-based E1 of equation~\eqref{eq:share}, which is invariant to
+the embedding and to its random seed. Construction, stability across
+seeds, and the cross-sectional finding that the embedding does
+\emph{not} outperform simple distance or travel-time baselines for
+pooled mortality prediction are reported in
+Appendix~\ref{app:embedding}; none of it bears on the within-event
+estimates below.
+
+% =====================================================================
+% §4.2 — Identification
+% =====================================================================
+\subsection{Identification: institutional timing and the three assumptions}
+\label{sec:method-identification}
+
+\paragraph{The timing shock.} The flow share $s_{m,h}$ is not
+randomly assigned---it is the equilibrium of a referral network shaped
+by past policy and patient sorting---and we do not treat it as such. The
+identifying variation is the \emph{closure event} $h \to \emptyset$ at
+year $t_h^{\star}$. The psychiatric closures in our sample were shaped
+by the federal PNASH inspection cycles and the chronic real-value
+erosion of SUS reimbursement schedules
+(Section~\ref{sec:setting})---forces operating on a recurring national
+calendar rather than a calendar chosen by each municipality. The design
+therefore relies on closure timing being plausibly orthogonal to local
+municipality shocks after conditioning on this institutional setting and
+on the pre-trend evidence below; it does not assume randomized closure
+assignment.
+Our primary sample restricts to the $48$ closures falling within
+$\pm 1$ year of a PNASH cycle, where the institutional timing component
+is sharpest; the broader psychiatric closure sets
+(\texttt{tp\_unid}~$= 07$, $n = 41$ under the statistical filter, $n=60$
+relaxing it) appears as robustness in Section~\ref{sec:robustness}.
+
+\paragraph{Three assumptions.} \emph{(i)~Parallel pre-trends}: in the
+absence of closure, exposed and never-treated municipalities would have
+followed the same average trajectory. We test this on pre-period
+event-study coefficients observed back to $2010$ (the population
+denominators are backfilled to give the early cohorts real pre-periods;
+Section~\ref{sec:data}). The assumption holds for the mortality outcomes
+and the first stage, and fails for ICSAP---which we therefore decline to
+identify (Section~\ref{sec:results-icsap}). \emph{(ii)~No anticipation}:
+closures are quasi-public events with weeks-to-months of notice, not
+years; we set the anticipation horizon to zero, with pre-period
+coefficients as the implicit test. \emph{(iii)~No spillover}: a closure
+may redirect patients to a hospital also serving an untreated
+municipality, biasing its outcome. We bound this by excluding state
+capitals---the principal referral hubs---in Section~\ref{sec:robustness};
+the mortality null is unaffected.
+
+\paragraph{Pre-treatment balance.} Table~\ref{tab:balance} reports
+balance between flow-exposed and never-treated municipalities.
+Population and GDP are statistically indistinguishable (standardized
+differences $\le 0.03$, $p > 0.79$); exposed municipalities have somewhat
+\emph{lower} pre-treatment travel burden and ICSAP, which is inconsistent
+with simple selection on worse baseline health; the share of admissions sent outside the
+residential municipality is mechanically higher in the exposed set, by
+construction of the flow rule.
+
+\input{tables/tab_balance.tex}
+
+% =====================================================================
+% §4.3 — Estimator
+% =====================================================================
+\subsection{Estimator}
+\label{sec:method-estimator}
+
+We estimate effects with the staggered event study of
+\citet{sunAbraham2021}, which is robust to the heterogeneous
+treatment effects across cohorts that a closure sample spanning
+$2012$--$2023$ invites. Let $i$ index municipalities (flow-exposed and
+never-treated controls), $t$ index years in $[2010, 2024]$, and $g_i$
+the year of the earliest closure to which $i$ is exposed
+($g_i = \infty$ for never-treated). With $\mathrm{rel}_{i,t} = t - g_i$,
+\begin{equation}
+  Y_{i, t} \;=\; \sum_{e \neq -1} \,
+  \sum_{g} \delta_{g, e} \, \mathbf{1}\{g_i = g\} \,
+  \mathbf{1}\{\mathrm{rel}_{i, t} = e\}
+  \;+\; \alpha_i \;+\; \gamma_t \;+\; \varepsilon_{i, t},
+  \label{eq:sa-estimating}
+\end{equation}
+with municipality fixed effects $\alpha_i$, year fixed effects
+$\gamma_t$, and reference period $e = -1$. We aggregate the
+cohort-specific $\widehat{\delta}_{g,e}$ into the dynamic trajectory
+(plotted in the event studies) and the simple post-period average (the
+ATT reported in tables), following \citet{sunAbraham2021}. Standard
+errors are clustered at the municipality level.
+
+\paragraph{Weighting.} For the rate outcomes we report
+population-weighted estimates as primary: the policy-relevant quantity is
+the effect on the average exposed \emph{person}, and population weights
+also stabilize the per-capita rates of small municipalities. The
+unweighted (municipality-weighted) estimate is reported alongside; both
+deliver the same null (Section~\ref{sec:results-mortality}).
+
+\paragraph{Alternative estimators and machinery.} The mortality null is
+reproduced under \citet{cs2021} and \citet{borusyak2024} in
+Section~\ref{sec:robustness}. A causal-forest attribution of
+heterogeneity \citep{atheyWager2019} and a counterfactual
+graph-perturbation diagnostic, both auxiliary to the main design, are
+reported in Appendices~\ref{app:cf} and~\ref{app:perturbation}.
+A natural-language classification of declared closure motives, used to
+form documentary robustness samples, is described in
+Appendix~\ref{app:nlp}; its external validation is incomplete, so it
+informs robustness only. An auxiliary in-hospital cardiac-mortality
+outcome, computed at the receiving hospital to sidestep the SIM
+residence-recording issues, is reported in Appendix~\ref{app:sensitivity}.

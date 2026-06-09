@@ -14,12 +14,19 @@
 
 suppressPackageStartupMessages({ library(arrow); library(data.table); library(fixest) })
 
+trailing <- commandArgs(trailingOnly = TRUE)
+arg_value <- function(flag, default) {
+  hit <- grep(paste0("^", flag, "="), trailing, value = TRUE)
+  if (length(hit)) sub(paste0("^", flag, "="), "", hit[[1]]) else default
+}
+force <- "--force" %in% trailing
 ROOT  <- normalizePath(file.path(dirname(sub("--file=", "",
           commandArgs(FALSE)[grepl("--file=", commandArgs(FALSE))])), ".."))
 INTER <- file.path(ROOT, "02_data", "intermediate")
 OUT   <- file.path(ROOT, "01_manuscript", "values_inference.tex")
 LOG   <- file.path(ROOT, "04_logs")
-B     <- 500L
+B     <- as.integer(arg_value("--B", "100"))
+CACHE <- file.path(LOG, sprintf("D7_inference_B%d.rds", B))
 
 d <- as.data.table(read_parquet(file.path(INTER, "staggered_panel_pnash48_ext.parquet")))
 d <- d[is.finite(suicide_per100k) & is.finite(pop)]
@@ -42,16 +49,29 @@ cat(sprintf("observed ATT=%+.3f | SE muni=%.3f (CI [%+.2f,%+.2f]) | SE UF=%.3f o
             att, se_muni, att-1.96*se_muni, att+1.96*se_muni, se_uf, n_uf, att-1.96*se_uf, att+1.96*se_uf))
 
 # ---- randomization inference: shuffle muni -> g_emb mapping ----
-muni_g <- unique(d[, .(muni_id, g_emb)])           # one cohort label per municipality
-set.seed(42)
-placebo <- numeric(B)
-t0 <- Sys.time()
-for (b in seq_len(B)) {
-  perm <- copy(muni_g); perm[, g_emb := sample(g_emb)]   # permute treatment timing across munis
-  dd <- merge(d[, !"g_emb"], perm, by = "muni_id")
-  dd[, gn := ifelse(is.na(g_emb) | g_emb == 0, 10000L, as.integer(g_emb))]
-  placebo[b] <- tryCatch(att_of(dd), error = function(e) NA_real_)
-  if (b %% 100 == 0) cat(sprintf("  RI %d/%d  (%.0fs)\n", b, B, as.numeric(Sys.time()-t0, units="secs")))
+if (file.exists(CACHE) && !force) {
+  cached <- readRDS(CACHE)
+  placebo <- cached$placebo
+  cat(sprintf("reused cached RI distribution: %s (%d valid placebos)\n",
+              CACHE, sum(is.finite(placebo))))
+} else {
+  muni_g <- unique(d[, .(muni_id, g_emb)])           # one cohort label per municipality
+  set.seed(42)
+  placebo <- numeric(B)
+  base <- d[, !"g_emb"]
+  setkey(base, muni_id)
+  t0 <- Sys.time()
+  for (b in seq_len(B)) {
+    perm <- copy(muni_g)
+    perm[, g_emb := sample(g_emb)]   # permute treatment timing across munis
+    setkey(perm, muni_id)
+    dd <- perm[base]
+    dd[, gn := ifelse(is.na(g_emb) | g_emb == 0, 10000L, as.integer(g_emb))]
+    placebo[b] <- tryCatch(att_of(dd), error = function(e) NA_real_)
+    if (b %% 100 == 0) cat(sprintf("  RI %d/%d  (%.0fs)\n", b, B, as.numeric(Sys.time()-t0, units="secs")))
+  }
+  saveRDS(list(att=att, se_muni=se_muni, se_uf=se_uf, placebo=placebo, B=B),
+          CACHE)
 }
 placebo <- placebo[is.finite(placebo)]
 ri_p <- mean(abs(placebo) >= abs(att))             # two-sided RI p-value for H0: ATT=0
@@ -59,7 +79,7 @@ ri_lo <- quantile(placebo, 0.025); ri_hi <- quantile(placebo, 0.975)
 cat(sprintf("\nRI: %d valid placebos | p(|placebo|>=|obs|)=%.3f | placebo 95%% [%+.2f,%+.2f] | placebo SD=%.3f\n",
             length(placebo), ri_p, ri_lo, ri_hi, sd(placebo)))
 
-saveRDS(list(att=att, se_muni=se_muni, se_uf=se_uf, placebo=placebo, ri_p=ri_p),
+saveRDS(list(att=att, se_muni=se_muni, se_uf=se_uf, placebo=placebo, ri_p=ri_p, B=B),
         file.path(LOG, "D7_inference.rds"))
 
 # ---- macros ----

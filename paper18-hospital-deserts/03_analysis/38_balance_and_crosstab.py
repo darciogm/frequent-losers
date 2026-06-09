@@ -162,7 +162,7 @@ def main():
     tab2 = [
         "\\begin{table}[h!]",
         "\\centering",
-        f"\\caption{{Cross-tabulation of NLP-classified closure motive (Section~\\ref{{sec:method-nlp}}) by establishment type, F5 main sample ($n = 60$ closures).}}",
+        f"\\caption{{Cross-tabulation of NLP-classified closure motive (Section~\\ref{{sec:method-nlp}}) by establishment type, F5 measurement sample ($n = 60$ closures).}}",
         "\\label{tab:crosstab-motive}",
         "\\small",
         "\\begin{tabular}{l" + "r" * len(motives) + "r}",

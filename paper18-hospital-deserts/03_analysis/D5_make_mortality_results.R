@@ -65,14 +65,15 @@ tab <- c(
 "\\begin{table}[h!]\\centering",
 "\\caption{Mortality effects of psychiatric hospital closures. Staggered Sun-Abraham ATT on patient-flow--exposed municipalities, pre-periods observed back to 2010. Population-weighted rows give the effect on the average exposed person (the policy-relevant quantity); municipality-weighted rows are the unweighted complement. ``Upper bound'' is the 95\\% CI upper limit as a share of the pre-treatment treated-group baseline. Cluster-robust SE at the municipality level.}",
 "\\label{tab:mortality-null}\\small",
+"\\resizebox{\\textwidth}{!}{%",
 "\\begin{tabular}{llccccc}",
 "\\toprule",
 " & Weighting & ATT & 95\\% CI & Upper bound & Pre-trend $p$ & $N_{\\text{tr}}$ \\\\",
 "\\midrule",
-"\\multicolumn{7}{l}{\\textit{First stage --- the flow rule captures real dependence}}\\\\",
+"\\multicolumn{7}{l}{\\textit{First stage --- realized utilization links}}\\\\",
 sprintf("Travel burden (km) & --- & %s \\\\", fmt(trav)),
 "\\addlinespace",
-"\\multicolumn{7}{l}{\\textit{Headline --- the feared outcome}}\\\\",
+"\\multicolumn{7}{l}{\\textit{Mortality among flow-exposed municipalities}}\\\\",
 sprintf("Suicide (per 100k) & Population & %s \\\\", fmt(suic_w)),
 sprintf(" & Municipality & %s \\\\", fmt(suic_o)),
 sprintf("Self-harm (per 100k) & Population & %s \\\\", fmt(self_w)),
@@ -83,7 +84,9 @@ sprintf("Specialized exogenous ($n{=}41$) & Population & %s \\\\", fmt(rob$spec0
 sprintf("All psychiatric ($n{=}60$) & Population & %s \\\\", fmt(rob$psymax60)),
 "\\bottomrule",
 "\\multicolumn{7}{l}{\\footnotesize Primary sample: 48 PNASH-anchored psychiatric closures, 104 exposed municipalities, 2010--2024.}\\\\",
-"\\end{tabular}\\end{table}")
+"\\end{tabular}",
+"}%",
+"\\end{table}")
 writeLines(tab, file.path(TAB, "tab_mortality_null.tex"))
 cat("wrote tab_mortality_null.tex\n")
 

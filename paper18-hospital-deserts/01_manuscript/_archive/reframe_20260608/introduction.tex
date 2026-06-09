@@ -1,0 +1,130 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Deinstitutionalization---the closing of psychiatric hospitals in favor
+of community-based care---is among the most contested health reforms of
+the past half-century. Its critics have long warned that removing
+inpatient capacity faster than communities can absorb the displaced
+patients raises mortality, and suicide in particular, among those who
+relied on the closing facilities
+\citep{yoonBruckner2009, bastiampillai2016, pirkola2009}.
+Brazil ran this experiment at scale: the Reforma Psiquiátrica
+(Lei~$10.216$/$2001$), enforced through federal PNASH inspection
+cycles and a chronic real-value erosion of SUS reimbursement, closed
+specialized psychiatric hospitals across the country during the
+$2010$s. Whether those closures harmed the patients who depended on
+them is a first-order policy question---and answering it credibly turns
+on a measurement problem that the closure literature has not confronted.
+
+The problem is who counts as exposed. The canonical closure literature
+defines exposure by geographic proximity: a population is treated by a
+closure if the closing hospital was among its nearest providers
+\citep{avdic2016, carroll2019, joynt2015, gujralBasu2019, lindrooth2018}.
+But specialized care has thin local substitutes, and in a single-payer
+system patients routinely cross municipal borders to reach it---so
+proximity mismeasures dependence. Consider one closure in our sample: a
+specialized psychiatric facility in São Paulo state closed in $2016$
+had redirected $\valEgAdm$ pre-closure SUS admissions drawn from
+$\valEgMunis$ municipalities, $\valEgFar$ of which lay between $36$ and $\valEgKmHi$~km from
+the facility and would not have been treated under any standard
+top-$3$-nearest distance rule.\footnote{CNES $2082683$, IBGE
+municipality of closure $350280$; total pre-closure SUS admissions
+from exposed municipalities $= \valEgAdm$; median distance from the closing hospital to an
+exposed municipality $= \valEgKmMed$~km. Reproducible from
+\texttt{02\_data/intermediate/exposure\_panel.parquet} in the
+replication package.} The choice of exposure measure is not a
+technicality: it determines whether the population the policy actually
+touched enters the estimate at all.
+
+We replace proximity with a \emph{patient-flow} exposure rule.
+Municipality $m$ is exposed to the closure of hospital $h$ if, in the
+year before closure, admissions from $m$ to $h$ exceeded a $5\%$ share
+of $m$'s total SUS admissions---dependence revealed by where patients
+actually went, not by how near $h$ happened to be. The rule is built
+from the bipartite municipality--hospital graph of $\valNadmissions$ million SUS
+hospital admissions. Across the $\valNexoClosures$ analyzed closures, the flow rule
+and the distance rule disagree on $\valNmisclass$ of the $\valNunionPairs$ municipality--closure
+pairs that either rule flags: distance \emph{misses} $\valNmissed$ pairs whose
+patients depended on the closing hospital through specialized referral,
+and \emph{falsely flags} $\valNfalse$ whose patients never used it. The
+disagreement is not random---it concentrates in the river-corridor
+North, where patient flow reaches regional hubs by routes road distance
+ignores, and the semi-arid Northeast, where the geographically near
+hospital is bypassed for a more distant referral center
+(Figure~\ref{fig:map-divergence}).
+
+A first stage shows that the flow rule captures realized utilization
+dependence rather than geographic proximity alone. Travel burden---the
+distance the typical patient travels for inpatient care---falls by
+$\valTravAbs$~km after closure in the exposed municipalities, where a
+distance-based exposure rule applied to the same closures recovers only
+about half as much. The fall means the exposed municipalities had been
+sending patients on long trips to the closing hospital; after closure,
+those trips disappear or are replaced by different utilization patterns.
+This is a dependence check, not evidence by itself that access improved.
+(We summarize the broader referral network with a node2vec embedding of
+the flow graph; it serves as a measurement diagnostic in
+Appendix~\ref{app:embedding} and plays no role in the causal design.)
+
+We estimate effects on the psychiatric closures with a staggered
+Sun-Abraham event study \citep{sunAbraham2021}, with
+\citet{cs2021} and \citet{borusyak2024} as alternative estimators. The
+identifying variation is the \emph{timing} of closure, which we anchor
+to the federal PNASH inspection cycles and the national SUS
+reimbursement freeze. These institution-level forces operate on a
+recurring federal calendar, making closure timing plausibly orthogonal
+to local municipality shocks conditional on the event-study checks and
+sample restrictions described below (Section~\ref{sec:setting}). Our primary sample is the
+$\valNclosuresPnash$ PNASH-anchored psychiatric closures, exposing $\valNtrPnash$ municipalities.
+Mortality is recorded at the municipality of residence. The
+parallel-trends assumption is tested on full pre-periods: extending the
+population denominators back to $2010$ lets us observe the
+pre-treatment trajectory of every cohort, including the early closures.
+
+We find no evidence of a large acute mortality increase. Among the
+exposed population, the population-weighted suicide estimate is
+$\valSuicWAtt$ per $100{,}000$ after closure. The 95\% confidence
+interval is $[\valSuicWLo, \valSuicWHi]$, with parallel pre-trends that
+do not reject ($p = \valSuicWPpre$); self-harm mortality is likewise
+indistinguishable from zero. The interval rules out increases above
+one-quarter of baseline. This null excludes large acute increases, not
+small effects or non-mortality harms. It is stable across exposure
+samples, weighting, modern staggered estimators, and the exposure-share
+threshold.
+
+One outcome we decline to read causally. Preventable hospitalizations
+(ICSAP), the canonical Brazilian access-to-care marker
+\citep{macinkoHarris2015, rochaSoares2010}, do rise in exposed
+municipalities after closure---but they were \emph{already} rising
+before it. On the full pre-periods, the parallel-trends test rejects
+sharply: the post-closure increase is the continuation of a
+pre-existing trend, not a treatment effect. We report the trajectory in
+full and treat ICSAP as a non-identified outcome rather than a causal
+effect of closure. This discipline is part of the
+contribution: a credible null requires being equally honest about the
+outcomes that are identified and the ones that are not.
+
+The paper makes two contributions. \emph{Methodological}: a portable
+patient-flow exposure measure for hospital-closure studies in
+single-payer systems with origin--destination claims data, checked
+against a mechanical first stage and contrasted with the distance rule
+it complements. \emph{Substantive}: a bounded mortality result on
+a globally contested reform, estimated on the population that a
+distance-based analysis would not have found.
+The closest Brazilian evidence is \citet{diasFontes2024}, who study the
+municipal rollout of CAPS, the community-based arm of the Reforma
+Psiquiátrica. They show that CAPS increased outpatient mental-health
+production, reduced psychiatric hospitalizations, did not reduce
+mental-health mortality, and increased violent crime. Our design asks a
+different question inside the same reform: what happened when specific
+psychiatric hospitals closed, and which municipalities were exposed to
+those closures through realized patient flows rather than proximity.
+Section~\ref{sec:setting} situates the analysis in the SUS and the
+Reforma Psiquiátrica. Section~\ref{sec:data} documents the data.
+Section~\ref{sec:method} develops the flow exposure measure and the
+identification strategy. Section~\ref{sec:results} reports the first
+stage, the mortality null, and the ICSAP non-result.
+Section~\ref{sec:robustness} reports the robustness battery.
+Section~\ref{sec:discussion} discusses what the null means for
+deinstitutionalization policy and the measurement lesson for closure
+studies.

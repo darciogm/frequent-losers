@@ -86,9 +86,10 @@ write(toJSON(out, auto_unbox=TRUE, pretty=TRUE),
 # Tabela
 tex <- c(
   "\\begin{table}[h!]\\centering",
-  "\\caption{Closure-motive sensitivity: estimators on the full F5 main panel vs the F6 subset that drops the 25 fechamentos flagged as fragile (stale Receita status or only-web-snippet evidence). Standard errors clustered at municipality.}",
+  "\\caption{Closure-motive sensitivity: estimators on the full F5 measurement panel vs the F6 subset that drops the 25 fechamentos flagged as fragile (stale Receita status or only-web-snippet evidence). Standard errors clustered at municipality.}",
   "\\label{tab:motive_validation}",
   "\\small",
+  "\\resizebox{\\textwidth}{!}{%",
   "\\begin{tabular}{llcccc}",
   "\\toprule",
   "Sample & Outcome & SA & CS & did2s & did\\_imputation \\\\",
@@ -104,7 +105,7 @@ for (r in out) {
                         fmt(r$results$did2s$att, r$results$did2s$se),
                         fmt(r$results$didimp$att, r$results$didimp$se)))
 }
-tex <- c(tex, "\\bottomrule\\end{tabular}\\end{table}")
+tex <- c(tex, "\\bottomrule\\end{tabular}", "}%", "\\end{table}")
 writeLines(tex, file.path(TAB, "tab_motive_validation.tex"))
 
 cat("done\n")

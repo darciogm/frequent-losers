@@ -1,0 +1,30 @@
+\begin{table}[!htbp]\centering
+\begin{threeparttable}
+\caption{Mortality sensitivity to network-contaminated controls (distinct SUTVA flags)}
+\label{tab:spillover-sensitivity}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrcccc c}
+\toprule
+ & & & \multicolumn{2}{c}{Suicide} & \multicolumn{2}{c}{Self-harm} & Pre-trend \\
+\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Specification & Removed & Kept & ATT & 95\% CI & ATT & 95\% CI & $p$ \\
+\midrule
+Baseline (all controls) & 0 & 5461 & +0.28 & [-0.72, +1.29] & +0.61 & [-0.90, +2.12] & 0.57 \\
+Exclude same health-region (CIR) & 2172 & 3289 & +0.45 & [-0.63, +1.53] & +0.52 & [-1.05, +2.08] & 0.58 \\
+Exclude shared top referral hub & 238 & 5223 & +0.30 & [-0.71, +1.31] & +0.63 & [-0.89, +2.14] & 0.57 \\
+Exclude shared substitute hospital (recipient flow) & 1424 & 4037 & -0.04 & [-0.98, +0.90] & +1.28 & [-0.20, +2.76] & 0.54 \\
+Exclude high flow-similarity & 547 & 4914 & +0.31 & [-0.71, +1.33] & +0.59 & [-0.93, +2.11] & 0.57 \\
+Exclude any network-contaminated & 3050 & 2411 & +0.01 & [-0.93, +0.95] & +1.30 & [-0.20, +2.81] & 0.54 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \textit{Notes.} Population-weighted Sun--Abraham ATT estimates on the PNASH-48 staggered panel (104 treated municipalities, 5{,}461 never-treated controls), with municipality and year fixed effects and municipality-clustered standard errors. Each row drops never-treated controls flagged by one network-contamination rule and re-estimates. ``Removed'' / ``Kept'' count control municipalities. ``Pre-trend $p$'' is the joint Wald test that all pre-period event-study leads ($e\in[-7,-2]$) are zero, for the suicide outcome. The four contamination rules are constructed to be genuinely distinct:
+\item \textbf{(a) Same health region (CIR):} control whose modal health region (\texttt{regsaude\_modal}) equals that of any treated catchment in the year before closure --- a purely administrative/geographic proxy (removes 2172 controls).
+\item \textbf{(b) Shared top referral hub:} control whose modal 2010--2014 referral destination (top-1 hospital by admissions) is also the top hub of a treated municipality --- network-revealed but using only the single strongest edge (removes 238 controls).
+\item \textbf{(c) Shared substitute hospital:} control revealed by \emph{post}-closure admission flows to be a recipient of volume redirected to the substitute hospitals that absorbed displaced patients (share-rise threshold $>0.01$; the recipient-control construction of script~69) --- the genuine redirection channel, distinct from any pre-closure hub (removes 1424 controls).
+\item \textbf{(d) High flow similarity:} control whose full pre-closure municipality$\to$hospital flow-share vector has cosine similarity in the top decile (within controls) to any treated catchment's flow vector. By construction a top-hub match implies high cosine, so rule~(d) nests rule~(b); the additional 309 controls flagged here share a similar \emph{whole} referral distribution without sharing the single top hub, so the row is not a duplicate of~(b) (removes 547 controls in total).
+\item \textbf{Any:} union of (a)--(d) (removes 3050 controls). Flags built in \texttt{87a\_build\_distinct\_spillover\_flags.py}; estimates in \texttt{87\_spillover\_distinct\_flags.R}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

@@ -115,10 +115,11 @@ v("valNmunisTenk", comma(n10$n), "D6: municipalities with mean pop >= 10k (cross
 dbDisconnect(con, shutdown = TRUE)
 
 # ============================ ESTIMATES (fixest) ============================
-est <- function(panel, yn, wt = FALSE, caps_excl = FALSE, drop_pand = FALSE, twfe = FALSE) {
+est <- function(panel, yn, wt = FALSE, caps_excl = FALSE, drop_pand = FALSE, twfe = FALSE,
+                cohort = "g_emb") {
   d <- as.data.table(read_parquet(file.path(INTER, panel)))
   d <- d[is.finite(get(yn)) & (!wt | is.finite(pop))]
-  d[, gn := ifelse(is.na(g_emb) | g_emb == 0, 10000L, as.integer(g_emb))]
+  d[, gn := ifelse(is.na(get(cohort)) | get(cohort) == 0, 10000L, as.integer(get(cohort)))]
   if (drop_pand) d <- d[!(year %in% c(2020, 2021))]
   if (caps_excl) {
     caps <- c("120040","270430","160030","130260","292740","230440","530010","320530",
@@ -160,6 +161,23 @@ su_o <- est(P, "suicide_per100k", FALSE); emit("valSuicO", su_o, "D6: pnash48_ex
 se_w <- est(P, "selfharm_per100k", TRUE); emit("valSelfW", se_w, "D6: pnash48_ext self-harm WLS")
 tr   <- est(P, "travel_burden_km", FALSE); emit("valTrav", tr, "D6: pnash48_ext travel first stage", bound = FALSE)
 v("valTravAbs", num(abs(tr$att), 1), "D6: |travel ATT| for 'falls X km' phrasing")
+
+# ---- F5 first-stage travel burden: flow (g_emb) vs distance (g_km) (Results 5.2) ----
+trFf <- est("staggered_panel_F5_main.parquet", "travel_burden_km", FALSE, cohort = "g_emb")
+trFd <- est("staggered_panel_F5_main.parquet", "travel_burden_km", FALSE, cohort = "g_km")
+v("valTravFFiveFlow", num(trFf$att, 2), "D6: F5 travel first stage, flow exposure (g_emb)")
+v("valTravFFiveDist", num(trFd$att, 2), "D6: F5 travel first stage, distance exposure (g_km)")
+
+# ---- suicide upper-CI scaled to deaths/year (matches tab:main-mortality-scaled-bounds) ----
+dP <- as.data.table(read_parquet(file.path(INTER, P)))
+bb <- dP[!is.na(g_emb) & g_emb != 0 & year < g_emb & is.finite(suicide_per100k) & is.finite(pop) & pop > 0]
+popyr <- bb[, .(mp = mean(pop, na.rm = TRUE)), by = muni_id][, sum(mp)]
+v("valSuicDeathsYr", num(su_w$hi / 1e5 * popyr, 0),
+  "D6: suicide upper-CI (95%) scaled to deaths/year across exposed catchments")
+v("valSelfBaseline", num(se_w$base),
+  "D6: pnash48_ext self-harm pre-period treated baseline (pop-wtd)")
+v("valSelfDeathsYr", num(se_w$hi / 1e5 * popyr, 0),
+  "D6: self-harm upper-CI (95%) scaled to deaths/year across exposed catchments")
 ic   <- est(P, "icsap_per1k", FALSE);      emit("valIcsap", ic, "D6: pnash48_ext ICSAP (non-identified)", bound = FALSE)
 icpre <- ic$es[order(e)]
 v("valIcsapPreFive",  sgn(icpre[e == -5]$cf), "D6: ICSAP pre-coef e=-5")
@@ -179,6 +197,98 @@ v("valSuicNoCapAtt", sgn(nc$att), "D6: suicide WLS excl. 27 capitals"); v("valSu
 tw <- est(P, "suicide_per100k", TRUE, twfe = TRUE)
 v("valSuicTwfeAtt", sgn(tw$att), "D6: suicide WLS naive TWFE"); v("valSuicTwfeSe", num(tw$se), "D6")
 
+# ---- leave-one-closure-out suicide ATT range (Robustness; from script 60 output) ----
+loo <- fread(file.path(ROOT, "02_data", "processed", "leave_one_closure_out_revision.csv"))
+loos <- loo[outcome == "suicide_per100k" & closure_id != "baseline" & is.finite(att)]
+v("valLooLo", sgn(min(loos$att)), "D6: leave-one-closure-out suicide ATT min")
+v("valLooHi", sgn(max(loos$att)), "D6: leave-one-closure-out suicide ATT max")
+
+# ---- identification-hardening batch (scripts 61-65) ----
+PROC <- file.path(ROOT, "02_data", "processed")
+
+ar <- fread(file.path(PROC, "anticipation_renorm.csv"))
+v("valSuicReNormThree", sgn(ar[outcome == "suicide_per100k" & refp == -3 & weighted == TRUE]$att),
+  "D6: suicide WLS ATT re-normalized to e=-3 (script 61, anticipation)")
+
+rc <- fread(file.path(PROC, "recipient_control_spillover.csv"))
+rcs <- rc[outcome == "suicide_per100k" & spec == "drop_recipient_controls"]
+v("valSuicRecipAtt", sgn(rcs$att), "D6: suicide WLS ATT dropping revealed-recipient controls (script 64)")
+v("valSuicRecipLo", sgn(rcs$ci_lo), "D6: script 64")
+v("valSuicRecipHi", sgn(rcs$ci_hi), "D6: script 64")
+v("valNrecipDropped", comma(rcs$n_recip_ctrl_dropped), "D6: revealed-recipient controls dropped (script 64)")
+v("valNcleanCtrl",    comma(rcs$n_clean_ctrl), "D6: clean never-treated controls retained (script 64)")
+
+lc <- fread(file.path(PROC, "lococor_displacement.csv"))
+lco <- lc[outcome == "suicide_outhosp"]
+v("valSuicOutHospAtt", sgn(lco$att), "D6: out-of-hospital suicide WLS ATT (script 65, displacement)")
+v("valSuicOutHospLo", sgn(lco$ci_lo), "D6: script 65")
+v("valSuicOutHospHi", sgn(lco$ci_hi), "D6: script 65")
+v("valInHospShare", num(lco$baseline_inhosp_share_pct, 0), "D6: in-hospital share of pre-period suicide deaths, pct (script 65)")
+
+gb <- fread(file.path(PROC, "goodman_bacon_suicide.csv"))
+v("valBaconNeverPct",  num(100 * gb[comparison_group == "Treated vs Untreated"]$weight, 1),
+  "D6: Goodman-Bacon weight on never-treated comparisons, pct (script 63)")
+v("valBaconForbidPct", num(100 * gb[comparison_group == "Later vs Earlier Treated"]$weight, 1),
+  "D6: Goodman-Bacon weight on forbidden already-treated comparisons, pct (script 63)")
+
+ip <- fread(file.path(PROC, "illdefined_placebo.csv"))
+ipr <- ip[grepl("R96", outcome)]
+v("valIllDefAtt",  sgn(ipr$att), "D6: R96-R99 ill-defined-cause placebo ATT (script 62)")
+v("valIllDefBase", num(ipr$base, 0), "D6: R96-R99 pre-period base rate per 100k (script 62)")
+
+# ---- specification curve summary (script 80) ----
+spc <- fread(file.path(PROC, "spec_curve_suicide.csv"))
+v("valNspecCurve", as.character(nrow(spc)), "D6: number of specifications in the suicide spec curve (script 80)")
+pref <- spc[group != "Weighting" & !grepl("Naive", label)]
+v("valSpecBandLo", sgn(min(pref$att)), "D6: spec-curve suicide ATT min, design-based family (script 80)")
+v("valSpecBandHi", sgn(max(pref$att)), "D6: spec-curve suicide ATT max, design-based family (script 80)")
+
+# ---- PNASH de-accreditation cross (Portaria SAS 1727/2016; setting 2.2) ----
+p17   <- fread(file.path(ROOT, "02_data", "raw", "pnash", "pnash1727_cnes.csv"))
+clo48 <- as.data.table(read_parquet(file.path(ROOT, "02_data", "processed", "pnash_event_level_dataset.parquet")))
+clo48[, cnes7 := trimws(as.character(CNES))]
+p17[, cnes7 := trimws(as.character(cnes))]
+v("valPnashDescred",    as.character(clo48[cnes7 %in% p17[anexo == "II", cnes7], uniqueN(cnes7)]),
+  "D6: PNASH closures in Anexo II de-accreditation list (Portaria SAS 1727/2016)")
+v("valPnashClassified", as.character(clo48[cnes7 %in% p17[anexo == "I", cnes7], uniqueN(cnes7)]),
+  "D6: PNASH closures classified in Anexo I yet closed (Portaria SAS 1727/2016)")
+
+# ---- identification: synthetic-DiD second leg (auditable, script 85) + doubly-robust/selection (script 77) ----
+# Source the SDID macros from the fully-documented script 85 (sdid_results.csv) so the
+# in-text one-liner and the appendix table_sdid_results.tex report identical bounds.
+sdr   <- fread(file.path(PROC, "sdid_results.csv"))
+sdsui <- sdr[outcome == "suicide_per100k"]
+sdslf <- sdr[outcome == "selfharm_per100k"]
+v("valSdidAtt", sgn(sdsui$att), "D6: synthetic-DiD aggregate suicide ATT (script 85)")
+v("valSdidLo",  sgn(sdsui$ci_lo), "D6: script 85 sdid_results.csv")
+v("valSdidHi",  sgn(sdsui$ci_hi), "D6: script 85 sdid_results.csv")
+v("valSdidSelfAtt", sgn(sdslf$att), "D6: synthetic-DiD aggregate self-harm ATT (script 85)")
+v("valSdidSelfLo",  sgn(sdslf$ci_lo), "D6: script 85 sdid_results.csv")
+v("valSdidSelfHi",  sgn(sdslf$ci_hi), "D6: script 85 sdid_results.csv")
+v("valSdidDonors",  comma(as.integer(sdsui$n_donors)), "D6: SDID never-treated donor pool (script 85)")
+v("valSdidCohorts", as.character(as.integer(sdsui$n_cohorts)), "D6: SDID usable closure cohorts (script 85)")
+v("valSdidPreRmse", num(sdsui$pre_rmse, 2), "D6: SDID suicide pre-fit RMSE (script 85)")
+v("valSdidPreRmseLevel", num(sdsui$pre_rmse_over_level, 2), "D6: SDID suicide pre-fit RMSE/baseline level (script 85)")
+
+dr <- fread(file.path(PROC, "doubly_robust_selection.csv"))
+nyt <- dr[step == "2_cs_dr" & control == "not-yet-treated" & covariates == "none"]
+cov <- dr[step == "2_cs_dr" & control == "never-treated" & covariates == "log_pop"]
+v("valCsNotYetAtt", sgn(as.numeric(nyt$att)), "D6: CS doubly-robust, not-yet-treated controls (script 77)")
+v("valCsDrCovAtt",  sgn(as.numeric(cov$att)), "D6: CS doubly-robust, covariate-adjusted (script 77)")
+tim <- dr[step == "3a_timing_OLS"]
+mm <- regmatches(tim$note, regexec("F\\(([0-9,]+)\\)=([0-9.]+) p=([0-9.]+)", tim$note))[[1]]
+v("valSelTimingF", num(as.numeric(mm[3]), 2), "D6: selection-into-timing joint F (script 77)")
+v("valSelTimingP", num(as.numeric(mm[4]), 2), "D6: selection-into-timing joint-test p (script 77)")
+
+# ---- featured mechanism result: inpatient psychiatric admissions (script 75) ----
+pa <- fread(file.path(PROC, "psych_admissions_result.csv"))
+v("valPsychAdmAtt",  sgn(pa$att), "D6: psychiatric-admission ATT per 1,000 (script 75)")
+v("valPsychAdmLo",   sgn(pa$ci_lo), "D6: script 75")
+v("valPsychAdmHi",   sgn(pa$ci_hi), "D6: script 75")
+v("valPsychAdmPpre", num(pa$pretrend_p), "D6: psych-admission pre-trend p (script 75)")
+v("valPsychAdmBase", num(pa$base, 1), "D6: psych-admission pre-period treated base per 1,000 (script 75)")
+v("valPsychAdmPct",  num(abs(pa$pct_of_base), 0), "D6: psych-admission ATT as pct of base, abs (script 75)")
+
 # ---- embedding vs km pair-distance correlation (App. embedding) ----
 emb <- as.data.table(read_parquet(file.path(INTER, "embeddings_munmun_proj.parquet")))
 cen <- as.data.table(read_parquet(file.path(INTER, "municipios_centroids.parquet")))[, .(cod_mun_6, lat, lon)]
@@ -196,6 +306,33 @@ hav <- function(la1, lo1, la2, lo2) {
 }
 d_km <- hav(emb$lat[i], emb$lon[i], emb$lat[j], emb$lon[j])
 v("valEmbKmCorr", num(cor(d_emb, d_km), 2), "D6: Pearson corr embedding-dist vs km, 5000 pairs, seed 42")
+
+# ============================ IDENTIFICATION UPGRADE (scripts 81, 83, 86) ============================
+# Strict PNASH exact-window robustness (script 81 -> pnash_strict_window_results.csv)
+sw <- fread(file.path(PROC, "pnash_strict_window_results.csv"))
+swr <- function(samp, out) sw[sample == samp & outcome == out]
+strictN <- swr("PNASH_strict", "suicide_per100k")
+v("valNclosuresPnashStrict", as.character(as.integer(strictN$n_closures)), "D6: closures within exact +/-1yr of nearest PNASH cycle (script 81)")
+v("valNexposedPnashStrict",  as.character(as.integer(strictN$n_exposed)), "D6: flow-exposed munis, strict PNASH sample (script 81)")
+ss <- swr("PNASH_strict", "suicide_per100k")
+v("valSuicStrictAtt", sgn(ss$att), "D6: suicide ATT, strict PNASH exact-window sample (script 81)")
+v("valSuicStrictLo",  sgn(ss$ci_lo), "D6: script 81")
+v("valSuicStrictHi",  sgn(ss$ci_hi), "D6: script 81")
+sf <- swr("PNASH_strict", "selfharm_per100k")
+v("valSelfStrictAtt", sgn(sf$att), "D6: self-harm ATT, strict PNASH exact-window sample (script 81)")
+v("valSelfStrictLo",  sgn(sf$ci_lo), "D6: script 81")
+v("valSelfStrictHi",  sgn(sf$ci_hi), "D6: script 81")
+
+# Pre-closure timing predictor tests (script 83 -> preclosure_timing_tests.csv)
+tt <- fread(file.path(PROC, "preclosure_timing_tests.csv"))
+v("valTimingJointP",  num(tt[model == "joint_Ftest", as.numeric(p)], 2), "D6: closure-year joint baseline-covariate F-test p, N=48 (script 83)")
+v("valTimingTrendP",  num(tt[model == "joint_trends_Ftest", as.numeric(p)], 2), "D6: closure-year joint pre-trend F-test p, N=34 (script 83)")
+v("valTimingEarlyP",  num(tt[model == "joint_logit_LRtest", as.numeric(p)], 2), "D6: early-closure logit joint LR-test p (script 83)")
+
+# CAPS baseline heterogeneity (script 86 -> caps_heterogeneity.csv)
+ch <- fread(file.path(PROC, "caps_heterogeneity.csv"))
+v("valCapsHetHighN", as.character(ch[outcome == "suicide_per100k" & subgroup %like% "High", as.integer(n_treated)]), "D6: treated munis with any baseline CAPS (script 86)")
+v("valCapsHetLowN",  as.character(ch[outcome == "suicide_per100k" & subgroup %like% "Low",  as.integer(n_treated)]), "D6: treated munis with no baseline CAPS (script 86)")
 
 writeLines(c("% Auto-generated by 03_analysis/D6_make_values.R — do not hand-edit.",
              "% Every manuscript number resolves here; rerun D6 to refresh.", "", LINES), OUT)

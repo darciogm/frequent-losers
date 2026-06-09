@@ -2,91 +2,105 @@
 \label{sec:discussion}
 
 % =====================================================================
-% §7.1 — What the null means for policy
+% §7.1 — The measurement lesson
 % =====================================================================
-\subsection{What the null means for deinstitutionalization}
-\label{sec:discussion-policy}
-
-Deinstitutionalization has been litigated for decades on a prediction:
-that closing psychiatric hospitals faster than communities can absorb
-the displaced patients raises mortality, and suicide in particular,
-among the most vulnerable. Brazil ran the experiment at national scale,
-and on the populations that actually depended on the closing
-hospitals---identified by realized patient flow rather than by
-proximity---we find no evidence the prediction held. Population-weighted
-suicide mortality among the exposed changed by $\valSuicWAtt$ per $100{,}000$
-(95\% CI $[\valSuicWLo, \valSuicWHi]$); self-harm was likewise null; parallel trends
-hold on the backfilled data.
-
-The policy reading must respect the bound. What the evidence excludes is
-a mortality \emph{catastrophe}: an increase larger than about a quarter
-of baseline suicide among the exposed would lie outside the confidence
-interval. What it cannot exclude is a smaller effect, which $\valNclosuresPnash$ closures
-do not resolve. So the finding is not ``deinstitutionalization is
-harmless''---it is that, in the Brazilian case, the large mortality harm
-its critics feared did not appear in the populations that bore the
-closures. For a reform implemented worldwide largely without
-population-scale mortality evidence, an identified null of that
-magnitude, on the right population, is informative on its own terms. It
-also shifts where the policy debate should look: if acute mortality did
-not spike, the welfare question turns to the slower-moving margins of
-chronic disease management, family burden, and quality of life, which
-our mortality outcomes do not capture.
-
-% =====================================================================
-% §7.2 — The measurement lesson
-% =====================================================================
-\subsection{The measurement lesson for closure studies}
+\subsection{The measurement lesson from the full F5 closure sample}
 \label{sec:discussion-generalize}
 
-The null is only as credible as the population it is estimated on, and
-that is where the paper's portable contribution lies. The closure
-literature defines exposure by geographic proximity
-\citep{avdic2016, carroll2019, joynt2015, lindrooth2018}; in our setting
-that rule misclassifies $\valNmisclass$ of the $\valNunionPairs$ municipality--closure pairs,
-missing the patients who crossed borders for specialized care and
-flagging neighbors who never used the facility. A distance-based
-analysis of the same closures would have estimated effects on a
-substantially different, partly disjoint population---and would have
-diluted the genuinely exposed with the merely nearby. The patient-flow
-exposure rule, validated by a mechanical first stage (travel burden
-falls only where patients truly depended on the hospital), corrects
-this.
+The portable contribution is the measurement result. The closure
+literature reads exposure off geographic proximity \citep{buchmueller2006,
+avdic2016, carroll2019, joynt2015, lindrooth2018}. In the full F5 sample that rule
+misclassifies $\valNmisclass$ of the $\valNunionPairs$
+municipality--closure pairs, missing the patients who crossed borders for
+specialized care and flagging neighbors who never set foot in the
+facility. Run on the same closures, a distance-based design would have
+estimated effects on a substantially different, partly disjoint
+population, diluting the flow-dependent municipalities with the merely
+nearby. The patient-flow rule, checked against the travel-burden first
+stage and the utilization decomposition, instead picks out the
+municipalities whose realized use was tied to the closing hospital.
 
-The correction is not specific to Brazil or to psychiatry. It requires
-three conditions: specialized care concentrated in regional hubs so that
-proximity and dependence diverge; origin--destination claims data from a
-single or near-universal payer; and a setting where patients cross
-administrative borders at scale. These hold across many single-payer and
-single-payer-like systems. Where they hold, closure-impact studies that
-define exposure by distance are estimating effects on the wrong
-population, and the size of the error is measurable ex ante from the
-flow data, as our divergence map shows.
+The correction is not particular to Brazil or to psychiatry. It needs
+three things: specialized care concentrated in regional hubs, so that
+proximity and dependence pull apart; origin--destination claims from a
+single or near-universal payer; and patients who cross administrative
+borders at scale. Those conditions hold across many single-payer and
+single-payer-like systems, and where they hold, a closure study that
+defines exposure by generic distance risks estimating effects on a
+population other than the one that used the hospital. How far off, and in
+which direction, is knowable in advance from the flow data, as the
+divergence map of Figure~\ref{fig:flow-divergence-map} shows.
+
+The general-hospital contrast and the failed-F5 diagnostic mark the edges
+of the lesson. Nonpsychiatric F5 closures show the exposure problem is not
+a psychiatric-reform artifact. Failed-F5 closures show that not every
+formal closure date is an equally clean shock: when volume has already
+drained away before exit, the event blends provider loss with slow
+institutional decline. The F5 filter is part of the design, not a tidying
+step.
+
+% =====================================================================
+% §7.2 — Mortality bounds
+% =====================================================================
+\subsection{Mortality bounds among flow-exposed municipalities}
+\label{sec:discussion-policy}
+
+The mortality estimates speak to municipalities with revealed pre-closure
+reliance on the closing psychiatric hospitals, and nowhere else. The null
+is not a non-event dressed up as a finding: in the same population
+inpatient psychiatric admissions fall by $\valPsychAdmPct\%$, so the
+design captures a large, real disruption to inpatient psychiatric care---and still no sign of a
+large acute mortality increase follows it. Population-weighted suicide mortality changed by $\valSuicWAtt$
+per $100{,}000$ (95\% CI $[\valSuicWLo, \valSuicWHi]$), self-harm is
+similarly imprecise around zero, and parallel trends hold on the
+backfilled data.
+
+The policy reading has to honor the bound. The estimates rule out
+increases above about a quarter of baseline suicide among exposed
+municipalities; they do not rule out smaller mortality effects, nor any
+of the welfare losses that do not end in a death certificate. The design
+sees acute municipality-level mortality in the SUS-using population. It
+does not see quality of life, caregiver burden, untreated morbidity, or
+the mortality of individual former patients, which would take record
+linkage the data do not support.
+
+The two papers examine the same reform from opposite sides of the market.
+\citet{diasFontes2024} estimate the demand side: the CAPS rollout that
+added community outpatient capacity, which pulled psychiatric
+hospitalizations down, left mental-health mortality unchanged, and raised
+violent crime. This paper estimates the supply side: the removal of
+inpatient capacity through closure, among the municipalities revealed to
+depend on it. Read together, the papers separate two margins of the reform: expansion
+of community care and loss of inpatient providers; both reduce
+psychiatric inpatient use, and neither shows large mental-health
+mortality effects at the margins studied.
+Table~\ref{tab:dias-fontes-comparison} sets the treatments, exposure
+units, and estimands side by side.
+
+\input{tables/table_dias_fontes_comparison.tex}
 
 % =====================================================================
 % §7.3 — Why the cross-section was uninformative
 % =====================================================================
-\subsection{Why we identify only from within-event variation}
+\subsection{Why identification uses only within-event variation}
 \label{sec:discussion-crosssection}
 
-A natural alternative would compare mortality across municipalities by
-their flow isolation, without a closure shock. That cross-sectional
-comparison is uninformative here, for reasons that also explain why the
-within-event design is necessary. Vital-registration coverage is
-systematically worse in the rural North and Northeast---precisely the
-regions with the largest flow-versus-distance access gaps---so any
-cross-sectional access--mortality gradient is attenuated by measurement
-quality that correlates with the regressor. And cross-municipal
-comparisons confound flow isolation with the entire regional
-health-system architecture. Both problems are absorbed by municipality
-fixed effects under a closure shock; neither is in a cross-section. We
-accordingly rely only on within-event variation, and we note (consistent
-with the broader access-measurement literature, e.g.\
-\citealp{doyle2011}) that cross-sectional spending- or
-access-on-mortality regressions can fail for exactly these reasons. The
-eleven cross-sectional specifications, which confirm the embedding adds
-no out-of-sample predictive content over distance, are in
-Appendix~\ref{app:xs}.
+A tempting alternative is to compare mortality across municipalities by
+their flow isolation, with no closure shock at all. That cross-section is
+uninformative here, and the reasons it fails are the reasons the
+within-event design is needed. Vital-registration coverage is worse in the
+rural North and Northeast, exactly the regions with the widest
+flow-versus-distance access gaps, so any cross-sectional access--mortality
+gradient is pulled toward zero by measurement quality that moves with the
+regressor. Cross-municipal comparisons also tangle flow isolation up with
+the whole regional health-system architecture. A closure shock with
+municipality fixed effects absorbs both; a cross-section absorbs neither.
+I therefore lean only on within-event variation, in keeping with a broader
+access-measurement literature \citep{doyle2011} where cross-sectional
+expenditure- or access-on-mortality regressions fail for the same reasons.
+The eleven cross-sectional specifications, which show that the auxiliary
+network diagnostics add no out-of-sample predictive content over distance,
+are in the replication notes.
 
 % =====================================================================
 % §7.4 — Limitations
@@ -94,22 +108,31 @@ Appendix~\ref{app:xs}.
 \subsection{Limitations}
 \label{sec:discussion-limits}
 
-Four limitations bound the claims. First, the closure sample is modest
-($\valNclosuresPnash$ primary, $\valNclosuresPsymax$ at the widest), so the null rules out large effects
-but not small ones, and fine heterogeneity is underpowered; the result
-does, though, survive Federation-Unit clustering and randomization
-inference (Section~\ref{sec:robustness}), so the modest sample does not
-manufacture the null through understated standard errors. Second, the
-analysis observes the SUS-using population only; private inpatient flows
-are unrecorded, and whether the flow-versus-distance misalignment is
-similar in high-private-penetration regions is open. Third, mortality
-captures the acute margin; the slower welfare consequences of
-deinstitutionalization---chronic disease trajectories, caregiver burden,
-quality of life---lie outside it. Fourth, the closure-exogeneity argument
-rests on the PNASH inspection calendar and the reimbursement freeze,
-which are institution-level and plausibly orthogonal to local demand but
-are not randomized; the natural-language motive classification that
-would document each closure individually has internal but not yet
-external validation (Appendix~\ref{app:nlp}), so we use it only for
-robustness sub-samples. None of these overturns the identified result;
-each marks where it stops.
+Five limitations bound the claims. The closure sample is modest
+($\valNclosuresPnash$ primary, $\valNclosuresPsymax$ at its widest), so
+the null rules out large effects but not small ones, and fine-grained
+heterogeneity is underpowered; it does, though, survive Federation-Unit
+clustering and randomization inference (Section~\ref{sec:robustness}), so
+the modest sample is not manufacturing the null through understated
+standard errors. The analysis sees the SUS-using population only: private
+inpatient flows go unrecorded, and whether the flow-versus-distance gap
+looks the same in high-private-penetration regions is open. Mortality is
+the acute margin, which leaves the slower consequences of
+deinstitutionalization---chronic disease paths, caregiver burden, quality
+of life---outside the frame. The design observes inpatient care and
+mortality but not whether outpatient care absorbed the displaced volume:
+the only community-capacity measure available is the count of CAPS
+facilities per municipality-year, a coarse presence proxy that does not
+capture beds, residential capacity, or service production and whose
+national coverage ends in $2016$. Splitting exposed catchments by whether
+they had any CAPS at baseline ($\valCapsHetHighN$ versus $\valCapsHetLowN$
+municipalities) shows no detectable differential in the suicide effect
+(online appendix), which is consistent with, but does not establish,
+outpatient substitution; I cannot test the mediation channel directly.
+Finally, the timing argument rests on the PNASH calendar and the
+reimbursement freeze, institution-level forces that are plausibly
+orthogonal to local demand conditional on the design checks but are not
+randomized; the natural-language motive classification that documents the
+closure narratives has internal but not yet external validation, so it does
+only robustness work. None of the five overturns the identified result.
+Each marks where it stops.

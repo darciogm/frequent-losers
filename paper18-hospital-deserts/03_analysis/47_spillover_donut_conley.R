@@ -117,7 +117,7 @@ ggsave(file.path(FIG_DIR, "fig_spillover_eventstudy.pdf"), fig, width = 7, heigh
 tab <- c(
   "\\begin{table}[h!]",
   "\\centering",
-  "\\caption{Spillover diagnostics for the F5 main sample. Donut specifications keep all treated municipalities and exclude controls within the stated radius of any treated municipality. The near-control specification retains all municipalities but allows controls inside the radius to follow a separate year-specific path. Conley standard errors use centroid coordinates and the same radius as the donut cutoff.}",
+  "\\caption{Spillover diagnostics for the F5 measurement sample. Donut specifications keep all treated municipalities and exclude controls within the stated radius of any treated municipality. The near-control specification retains all municipalities but allows controls inside the radius to follow a separate year-specific path. Conley standard errors use centroid coordinates and the same radius as the donut cutoff.}",
   "\\label{tab:donut-spillover}",
   "\\small",
   "\\begin{tabular}{llrrrrrr}",

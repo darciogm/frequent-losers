@@ -46,7 +46,7 @@ write(toJSON(payload, auto_unbox = TRUE, pretty = TRUE), file.path(LOG_DIR, "48_
 tab <- c(
   "\\begin{table}[h!]",
   "\\centering",
-  "\\caption{Per-closure policy magnitudes implied by the F5 main E1 estimates. The ICSAP translation uses the mean affected population among E1-exposed municipalities for each closure. No lives-lost translation is reported because the paper does not identify a causal mortality effect.}",
+  "\\caption{Per-closure policy magnitudes implied by the F5 measurement-sample E1 estimates. The ICSAP translation uses the mean affected population among E1-exposed municipalities for each closure. No lives-lost translation is reported because the paper does not identify a causal mortality effect.}",
   "\\label{tab:welfare-per-closure}",
   "\\small",
   "\\begin{tabular}{lr}",

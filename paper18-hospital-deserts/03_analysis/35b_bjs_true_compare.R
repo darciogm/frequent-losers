@@ -269,7 +269,7 @@ write(toJSON(payload, auto_unbox = TRUE, pretty = TRUE, na = "null"), file.path(
 tab <- c(
   "\\begin{table}[h!]",
   "\\centering",
-  "\\caption{Comparison of staggered DiD estimators on the F5 main sample. Callaway--Sant'Anna uses the simple aggregation and reports a covariance-respecting post-period joint Wald test from the dynamic aggregation influence function. The BJS slot reports both the true did2s and did_imputation implementations. Rambachan--Roth is re-run on the did2s event-study for ICSAP.}",
+  "\\caption{Comparison of staggered DiD estimators on the F5 measurement sample. Callaway--Sant'Anna uses the simple aggregation and reports a covariance-respecting post-period joint Wald test from the dynamic aggregation influence function. The BJS slot reports both the true did2s and did_imputation implementations. Rambachan--Roth is re-run on the did2s event-study for ICSAP.}",
   "\\label{tab:staggered-did-compare}",
   "\\small",
   "\\begin{tabular}{lccccc}",

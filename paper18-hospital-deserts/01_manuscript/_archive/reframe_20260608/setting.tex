@@ -1,0 +1,152 @@
+\section{Institutional setting}
+\label{sec:setting}
+
+The policy question---did closing psychiatric hospitals harm the
+patients who depended on them?---and the measurement problem at its
+heart both arise from three features of the Brazilian healthcare system.
+First, SUS regionalization sends patients across municipal and regional
+boundaries at scale, so geographic proximity can be a poor proxy for who
+depends on a given hospital (\ref{sec:setting-sus}). Second, the Reforma
+Psiquiátrica (Lei~$10.216$/$2001$), combined with a chronic real-value
+erosion of SUS reimbursements, closed specialized psychiatric hospitals
+on a federally-driven timeline that supplies plausibly as-good-as-random
+timing variation after conditioning on design checks
+(\ref{sec:setting-psiquiatrica}). Third, the closure events themselves,
+recovered from the federal establishment register, form the sample we
+analyze (\ref{sec:setting-closures}).
+
+% =====================================================================
+% §2.1 — SUS regionalization and cross-border patient flow
+% =====================================================================
+\subsection{SUS regionalization and cross-border patient flow}
+\label{sec:setting-sus}
+
+Brazil's Sistema Único de Saúde, established by the $1988$ Constitution
+and operationalized by Laws~$8.080$ and $8.142$~($1990$), is a publicly
+financed, universal system covering the entire resident population in
+principle. Approximately $71\%$ of Brazilians rely on it exclusively and
+a further $25\%$ use it as a complement to private insurance
+\citep{macinkoHarris2015}. Inpatient care is delivered through a mix of
+municipal, state, philanthropic, and private contracted providers. The
+spatial architecture is nested: each of Brazil's $5{,}570$
+municipalities is a management unit; municipalities aggregate into $438$
+Regiões de Saúde (CIRs) meant to articulate flows across levels of care;
+and the $27$ Federation Units operate or contract the referral hospitals
+at the apex.
+
+\paragraph{Cross-border flow at scale.} The architecture prescribes a
+regional flow hierarchy; it does not enforce one. Patients cross
+municipal and CIR boundaries routinely, particularly for specialized
+care. Across the $\valNadmissions$ million SUS hospital admissions in our pooled
+bipartite graph ($2010$--$2024$), $\valCrossBorderPct\%$ are recorded against a
+hospital outside the patient's municipality of residence
+(volume-weighted); the unweighted municipality-mean outflow share is
+$70\%$, reflecting that smaller municipalities depend far more on
+elsewhere than the national volume average suggests. Cross-border rates
+exceed $55\%$ in Sergipe, Pernambuco, and the Distrito Federal. These
+flows are not residual---they are how a large share of the SUS
+population reaches inpatient care. The consequence for closure analysis
+is direct: a patient whose routine referral hospital sits across a CIR
+boundary is recorded as ``unexposed'' to its closure under a
+nearest-hospital distance rule, even though that hospital was her actual
+destination. The distance proxy standard in the closure literature
+\citep{avdic2016, carroll2019, joynt2015, lindrooth2018} silently
+assumes flow aligns with road geography---defensible in systems with
+thick local capacity (Sweden, much of the NHS), questionable even in the
+U.S. Medicare context, where \citet{wang2020hrr} document drift between
+patient flows and the Hospital Referral Region boundaries the Dartmouth
+Atlas has used since the early $1990$s. Brazil's $\valCrossBorderPct\%$ cross-border
+share is larger still, and is precisely where a flow-based exposure
+correction is most likely to matter.
+
+% =====================================================================
+% §2.2 — Reforma Psiquiátrica as federal closure shock
+% =====================================================================
+\subsection{The Reforma Psiquiátrica and the source of closure timing}
+\label{sec:setting-psiquiatrica}
+
+Our closure sample is dominated by an ongoing structural reform of
+mental-health care, and the reform's architecture is both the source of
+our identifying variation and the reason the mortality question is
+politically charged. Lei~$10.216$/$2001$ prescribes deinstitutionalization:
+the progressive replacement of asylum-style psychiatric hospitals
+(\emph{hospitais psiquiátricos}) by community outpatient networks
+(Centros de Atenção Psicossocial, CAPS) and supported residences
+(Serviços Residenciais Terapêuticos). \citet{diasFontes2024} estimate
+the effects of the CAPS rollout itself and find that these centers
+expanded outpatient mental-health care and reduced psychiatric
+hospitalizations, without reducing mental-health mortality. Critics of
+the reform have warned throughout its implementation that closing
+inpatient beds faster than communities build substitutes would leave the
+most vulnerable patients without care, raising suicide and crisis mortality
+\citep{bastiampillai2016, yoonBruckner2009}.
+Whether that fear was realized is the question this paper answers.
+Implementation proceeded along two reinforcing federal tracks.
+
+\paragraph{Track 1: PNASH inspection cycles.} The Programa Nacional de
+Avaliação dos Serviços Hospitalares (PNASH) audited every accredited
+psychiatric hospital on cycles in $2002$--$2003$, $2007$--$2008$,
+$2011$--$2012$, and $2015$--$2016$, scoring infrastructure, staffing,
+and care processes; facilities below roughly $61\%$ on the composite
+index were issued an indication for de-accreditation under Portaria
+SAS/MS~$501$/$2007$. The recurring inspection schedule is the critical
+feature for identification: closure timing is structured by a federal
+calendar rather than chosen by municipalities in response to local
+demand or supply shocks.
+Our primary sample anchors to it (closures within $\pm 1$ year of a
+cycle; Section~\ref{sec:method-identification}).
+
+\paragraph{Track 2: chronic real-value erosion of reimbursement.} The
+SUS daily reimbursement for psychiatric inpatient care was nominally
+near R\$$30$ per patient-day from the early $2000$s, unadjusted for
+inflation; over the panel window real per-diem reimbursement fell by
+roughly half. The squeeze produced institution-level insolvency at scale
+on a timeline driven by federal reimbursement policy, not by local
+fiscal capacity or local demand.
+
+Both pressures apply identical federal thresholds and reimbursement
+schedules across all $5{,}570$ municipalities and generate closure
+decisions at the institution rather than the municipality level. This
+does not make closure timing randomized, but it makes municipality-level
+health shocks a less direct explanation for the timing of psychiatric
+closures than PNASH cycles and reimbursement erosion. The empirical
+design therefore treats timing as plausibly orthogonal to local shocks
+conditional on the PNASH-anchored sample, pre-trend checks, and
+robustness exercises. An event-by-event natural-language classification
+of declared motives (Appendix~\ref{app:nlp}) organizes documentary
+evidence and defines robustness sub-samples; because its external
+validation is incomplete, it is not an identifying assumption.
+
+% =====================================================================
+% §2.3 — Closure events 2010–2024
+% =====================================================================
+\subsection{\texorpdfstring{Closure events, $2010$--$2024$}{Closure events, 2010--2024}}
+\label{sec:setting-closures}
+
+Closure events are identified from the Cadastro Nacional de
+Estabelecimentos de Saúde (CNES), the federal establishment register. We
+flag establishments whose reporting ceases before the end of the window;
+the raw count is dominated by registry artefacts (small clinics, day
+units, code changes). A multi-stage filter
+(F1--F5; Appendix~\ref{app:filter}) reduces the set to $\valNexoClosures$ closures
+meeting five cumulative criteria: closure in the non-pandemic windows
+$2012$--$2018$ or $2022$--$2023$; hospital-grade establishment type
+(\texttt{tp\_unid} $\in \{05, 07, 15, 62\}$); $\geq 30$ SUS-contracted
+beds and $\geq 100$ admissions in the pre-closure year; and no $> 50\%$
+admission decline in the pre-closure year (ruling out gradual
+demand-driven exit). Of the $\valNexoClosures$, $\valNspecClosures$ are specialized hospitals
+(\texttt{tp\_unid} $= 07$, predominantly psychiatric), $\valNgenClosures$ general
+(\texttt{tp\_unid} $= 05$), and $1$ a day unit. The Southeast holds
+$62\%$ and the Northeast $25\%$; the densest year is $2012$ ($11$
+events), reflecting the early psychiatric-audit cycles.
+
+\paragraph{The analysis sample.} The mortality analysis restricts to the
+psychiatric closures, where the PNASH--reimbursement timing argument
+is strongest and the deinstitutionalization question is posed. Our
+primary sample is the $48$ psychiatric closures within $\pm 1$ year of a
+PNASH cycle; the $\valNspecClosures$ statistically-filtered specialized closures and a
+broader $\valNclosuresPsymax$-closure psychiatric set serve as robustness
+(Section~\ref{sec:robustness}). Closure-motive classifications are used
+only for additional robustness sub-samples and are cross-tabulated
+against facility type in Appendix~\ref{app:nlp}; they are descriptive
+documentation, not evidence that assigns causal status to an event.

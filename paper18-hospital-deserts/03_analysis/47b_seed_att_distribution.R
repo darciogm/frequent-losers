@@ -259,7 +259,7 @@ ggsave(OUT_FIG, fig, width = 6.5, height = 4.0)
 tab <- c(
   "\\begin{table}[h!]",
   "\\centering",
-  "\\caption{Twenty-seed sensitivity of the embedding-driven treatment rule $E1_{emb}$. For each closure, $E1_{emb}$ marks the closest tercile of pre-closure user municipalities by municipality-hospital embedding distance. The benchmark line is the original share-based E1 estimate from the F5 main panel.}",
+  "\\caption{Twenty-seed sensitivity of a discarded embedding-based exposure rule $E1_{emb}$. For each closure, $E1_{emb}$ marks the closest tercile of pre-closure user municipalities by municipality-hospital embedding distance. The benchmark line is the original share-based E1 estimate from the F5 measurement panel.}",
   "\\label{tab:seed-att-distribution}",
   "\\small",
   "\\begin{tabular}{lrr}",

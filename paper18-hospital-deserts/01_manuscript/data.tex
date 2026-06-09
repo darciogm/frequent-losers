@@ -1,31 +1,30 @@
 \section{Data}
 \label{sec:data}
 
-The analysis assembles a municipality-year panel covering the universe
-of Brazilian municipalities, their public hospital network, inpatient
-admissions ($2010$--$2024$), and mortality ($2010$--$2023$). Four primary
-sources contribute: the federal hospital admissions register (SIH-RD,
-\ref{sec:data-sih}), which yields both the patient-flow exposure measure
-and the travel-burden outcome; the federal vital registration database
-(SIM, \ref{sec:data-sim}), which yields the mortality outcomes; the
-federal establishment register (CNES, \ref{sec:data-cnes}), which yields
-the closure events; and IBGE auxiliary panels for population and
-centroids (\ref{sec:data-aux}). Documentary sources used only to form
-robustness sub-samples are described in Appendix~\ref{app:nlp}.
+The unit of analysis is the municipality-year, and the panel covers the
+universe of Brazilian municipalities, their public hospital network,
+inpatient admissions ($2010$--$2024$), and mortality ($2010$--$2023$).
+Four federal sources supply the data. The hospital admissions register
+(SIH-RD, \ref{sec:data-sih}) yields both the patient-flow exposure
+measure and the travel-burden outcome. The vital registration database
+(SIM, \ref{sec:data-sim}) yields the mortality outcomes. The
+establishment register (CNES, \ref{sec:data-cnes}) yields the closure
+events. IBGE auxiliary panels (\ref{sec:data-aux}) supply population
+denominators and municipality centroids. The documentary sources behind
+the robustness sub-samples are described in the replication notes.
 Table~\ref{tab:summary-stats} reports summary statistics by macro-region.
 
-\input{tables/tab_summary_stats.tex}
-
-Two patterns matter for the design. First, travel burden is structurally
-unequal: Norte and Centro-Oeste municipalities average $94$--$96$~km from
-residence to admitting hospital, more than twice the $42$--$45$~km of the
-Sudeste and Sul. Second, the outflow share---SUS admissions sent outside
-the residential municipality---is high everywhere ($58$--$73\%$), which
-is what makes a within-municipality, closure-driven design operate on
-real referral dependence rather than noise. The same cross-region
-heterogeneity also confounds any cross-sectional comparison of access
-and health, which is why we identify effects only from within-municipality
-variation under a closure shock.
+Two regional patterns shape the design from the outset. Travel burden is
+structurally unequal: a resident of the Norte or Centro-Oeste averages
+$94$--$96$~km from home to the admitting hospital, more than double the
+$42$--$45$~km of the Sudeste and Sul. And the outflow share---the fraction
+of a municipality's SUS admissions sent outside its own borders---is high
+everywhere, between $58$ and $73\%$. The second pattern is what lets a
+closure-driven design operate on real referral dependence rather than
+noise. The first is why it must: the same cross-region heterogeneity
+confounds any cross-sectional comparison of access and health, so the
+paper identifies effects only from within-municipality variation under a
+closure shock.
 
 % =====================================================================
 % §3.1 — SIH-RD
@@ -33,30 +32,31 @@ variation under a closure shock.
 \subsection{SIH-RD: admissions, the flow graph, and travel burden}
 \label{sec:data-sih}
 
-The Sistema de Informações Hospitalares--Reduzido (SIH-RD) is the
-billing record for every SUS-financed inpatient admission. Each record
-is one Autorização de Internação Hospitalar (AIH). Our universe spans
-$2010$--$2024$ at monthly granularity: $\valNadmissions$ million admissions across
-municipalities of patient residence (\texttt{MUNIC\_RES}) and roughly
-$7{,}000$ active SUS hospitals (\texttt{CNES}). The register covers the
-SUS-using population only ($\sim 96\%$ of residents; private inpatient
-flows are unobserved), so our estimates are identified within that
-population (Section~\ref{sec:discussion-limits}).
+The Sistema de Informações Hospitalares--Reduzido (SIH-RD) is the billing
+record for every SUS-financed inpatient admission, one record per
+Autorização de Internação Hospitalar (AIH). The window runs
+$2010$--$2024$ at monthly granularity and holds $\valNadmissions$~million
+admissions, linking municipalities of patient residence
+(\texttt{MUNIC\_RES}) to roughly $7{,}000$ active SUS hospitals
+(\texttt{CNES}). It sees the SUS-using population only---about $96\%$ of
+residents---and not the private inpatient flows of the rest, so the
+estimates are identified within that population
+(Section~\ref{sec:discussion-limits}).
 
-From this microdata we build the weighted bipartite graph whose edges
+From this microdata I build the weighted bipartite graph whose edges
 $(m, h, t)$ count admissions of residents of $m$ at hospital $h$ in year
-$t$; this graph defines the flow exposure shares of
-equation~\eqref{eq:share}. Two outcomes are derived from it.
-\emph{Travel burden} is the admission-weighted haversine distance from
-$m$'s centroid to the centroid of the municipality of admission, at the
-municipality--year level; it is the first-stage outcome that validates
-the exposure rule (Section~\ref{sec:results-firststage}). \emph{ICSAP}
-is the count of admissions whose primary diagnosis
-(\texttt{DIAG\_PRINC}) falls in the Brazilian primary-care-sensitive
-list (Portaria~MS~$221$/$2008$) per $1{,}000$ population, the canonical
-Brazilian access marker \citep{macinkoHarris2015, rochaSoares2010}; we
-report it transparently as a non-identified outcome
-(Section~\ref{sec:results-icsap}).
+$t$. That graph defines the flow exposure shares of
+equation~\eqref{eq:share}, and two outcomes derive from it. \emph{Travel
+burden} is the admission-weighted haversine distance from $m$'s centroid
+to the centroid of the municipality of admission, measured at the
+municipality-year level; it is the first-stage outcome that tests whether
+exposure is picking up realized utilization dependence rather than mere
+proximity (Section~\ref{sec:results-firststage}). \emph{ICSAP} counts
+admissions whose primary diagnosis (\texttt{DIAG\_PRINC}) falls in the
+Brazilian primary-care-sensitive list (Portaria~MS~$221$/$2008$) per
+$1{,}000$ population. It is the canonical Brazilian access marker
+\citep{macinkoHarris2015, rochaSoares2010}, and I carry it openly as a
+non-identified outcome (Section~\ref{sec:results-icsap}).
 
 % =====================================================================
 % §3.2 — SIM mortality outcomes
@@ -65,35 +65,34 @@ report it transparently as a non-identified outcome
 \label{sec:data-sim}
 
 The Sistema de Informação sobre Mortalidade (SIM) records every death in
-Brazil with cause coded in ICD-$10$; our window comprises $\valNdeaths$ million
-deaths during $2010$--$2023$, attributed to the municipality of
-\emph{residence} (\texttt{CODMUNRES}). The reform's critics warned
-specifically about deaths of discharged or displaced psychiatric
-patients, so we construct two residence-based mortality outcomes that
-target that fear directly. \emph{Suicide} mortality counts deaths from
-intentional self-harm (ICD-$10$ X$60$--X$84$) per $100{,}000$. A broader
-\emph{self-harm} measure adds deaths of undetermined intent
-(Y$10$--Y$34$), which absorb the misclassification of suicides as
-accidents that is common in vital registration. We also track deaths
-with a mental or behavioural disorder as the underlying cause
-(F$00$--F$99$) as an auxiliary series; because such deaths partly reflect
-in-facility mortality that mechanically falls when an asylum closes, we
-do not treat it as a welfare outcome.
+Brazil with cause coded in ICD-$10$; the window holds $\valNdeaths$~million
+deaths over $2010$--$2023$, each attributed to the municipality of
+\emph{residence} (\texttt{CODMUNRES}). The reform's critics warned about
+one thing in particular: deaths among discharged or displaced psychiatric
+patients. I build two residence-based outcomes aimed straight at that
+fear. \emph{Suicide} mortality counts deaths from intentional self-harm
+(ICD-$10$ X$60$--X$84$) per $100{,}000$. A broader \emph{self-harm}
+measure adds deaths of undetermined intent (Y$10$--Y$34$), which soak up
+the routine misclassification of suicides as accidents in vital
+registration. I also follow deaths with a mental or behavioural disorder
+as the underlying cause (F$00$--F$99$) as an auxiliary series, but I do
+not read it as a welfare outcome: such deaths partly reflect in-facility
+mortality, which falls mechanically when an asylum shuts its doors.
 
-\paragraph{Why mortality is recorded at residence, and why that matters.}
-Recording deaths by residence rather than occurrence is essential here:
-a displaced patient who dies after traveling---or after failing to
-travel---to care is counted against her home municipality, which is the
-unit our exposure rule treats. (The occurrence-based attribution that
-SIM also carries would displace such deaths to the hospital's
-municipality, breaking the link to the exposed population; we use the
-residence field throughout.) Two limits of SIM remain. Ill-defined-cause
-recording (R$96$--R$99$) is higher in the rural North and Northeast
-($14$--$22\%$ versus $4$--$6\%$ in the South), adding noise to mortality
-rates there; and suicide is known to be under-recorded relative to
-undetermined-intent deaths, which is why we report the broader self-harm
-measure alongside. Both are absorbed by municipality fixed effects in the
-event study to the extent they are time-invariant.
+\paragraph{Why residence-based recording is the right choice here.}
+Attributing deaths to residence rather than to place of occurrence is not
+a detail. A displaced patient who dies after traveling for care---or after
+failing to travel---is counted against her home municipality, which is the
+unit the exposure rule treats. The occurrence-based attribution that SIM
+also carries would instead assign such a death to the hospital's
+municipality, severing the link to the exposed population, so I use the
+residence field throughout. Two limits of SIM survive that choice.
+Ill-defined-cause recording (R$96$--R$99$) is heavier in the rural North
+and Northeast ($14$--$22\%$, against $4$--$6\%$ in the South), which adds
+noise to mortality rates there; and suicide is under-recorded relative to
+undetermined-intent deaths, which is the reason the broader self-harm
+measure travels alongside it. Municipality fixed effects in the event
+study absorb both to the extent they hold steady over time.
 
 % =====================================================================
 % §3.3 — CNES
@@ -101,21 +100,21 @@ event study to the extent they are time-invariant.
 \subsection{CNES: establishments, beds, and closure detection}
 \label{sec:data-cnes}
 
-The Cadastro Nacional de Estabelecimentos de Saúde (CNES) is the federal
-register of every health establishment, updated monthly. The
-establishment register (\texttt{cnes\_st}) provides establishment type
-(\texttt{tp\_unid}) and municipality; the bed register
-(\texttt{cnes\_lt}) provides SUS-contracted beds (\texttt{QT\_SUS}), used
-in the closure filter. Closures are identified by the cessation of
-\texttt{cnes\_st} reporting for a \texttt{CNES} after a candidate year.
-The candidate set ($3{,}518$ establishments ceasing to report between
-$2010$ and $2023$) is dominated by registry artefacts; the cumulative
-F1--F5 cascade (Appendix~\ref{app:filter}) reduces it to $\valNexoClosures$ exogenous
-closures, $\valNspecClosures$ of them specialized psychiatric hospitals
-(Section~\ref{sec:setting-closures}). The cascade does not eliminate
-every false positive, but the closure-motive classification of
-Appendix~\ref{app:nlp} provides a cross-check used to form robustness
-sub-samples.
+The Cadastro Nacional de Estabelecimentos de Saúde (CNES) is the monthly
+federal register of every health establishment. Its establishment file
+(\texttt{cnes\_st}) gives establishment type (\texttt{tp\_unid}) and
+municipality; its bed file (\texttt{cnes\_lt}) gives SUS-contracted beds
+(\texttt{QT\_SUS}), which feed the closure filter. I detect a closure when
+a \texttt{CNES} stops reporting to \texttt{cnes\_st} after a candidate
+year. The candidate set---$\valFiltZero$ establishments that cease reporting between
+$2010$ and $2023$---is dominated by registry artefacts, so the cumulative
+F1--F5 cascade (online appendix) trims it to the $\valNexoClosures$ F5
+measurement-sample closures: $\valNspecClosures$ specialized hospitals,
+$\valNgenClosures$ general hospitals, and one hospital-day unit
+(Section~\ref{sec:setting-closures}). The cascade does not catch every
+false positive. The hand-coded closure-motive classification in the
+replication notes documents the events that survive and defines the
+robustness sub-samples.
 
 % =====================================================================
 % §3.4 — IBGE auxiliary + population backfill
@@ -123,28 +122,30 @@ sub-samples.
 \subsection{IBGE auxiliary: population and centroids}
 \label{sec:data-aux}
 
-Municipality population denominators come from the IBGE annual estimates
-(SIDRA table $6579$) and the $2022$ Census. A point of construction
-matters for the pre-trend test: the rate outcomes require a population
-denominator in every panel year, and the early cohorts' pre-treatment
-years fall before $2015$. We therefore extend the denominators back to
-$2010$---using the IBGE annual estimates for $2011$--$2014$ and a linear
-back-extrapolation for $2010$---so that every cohort's pre-treatment
-trajectory is observed rather than missing. Without this backfill the
-pre-period of the earlier cohorts is empty and the parallel-trends test
-is uninformative; with it, the test is real, and it is what reveals the
-pre-existing ICSAP trend (Section~\ref{sec:results-icsap}). Municipality
-centroids (IBGE shapefile, $2022$ vintage) enter the haversine distance
-behind the distance exposure rule E2 and the travel-burden outcome.
+Population denominators come from the IBGE annual estimates (SIDRA table
+$6579$) and the $2022$ Census. One construction choice carries weight for
+the pre-trend test. The rate outcomes need a denominator in every panel
+year, but the early cohorts' pre-treatment years fall before $2015$. I
+therefore extend the denominators back to $2010$, using the IBGE annual
+estimates for $2011$--$2014$ and a linear back-extrapolation for $2010$,
+so that every cohort's pre-treatment trajectory is observed rather than
+missing. The stakes are concrete: without the backfill the early cohorts'
+pre-period is empty and the parallel-trends test says nothing; with it,
+the test has content, and it is precisely what exposes the pre-existing
+ICSAP trend (Section~\ref{sec:results-icsap}). Municipality centroids
+(IBGE shapefile, $2022$ vintage) enter the haversine distance behind the
+distance exposure rule E2 and the travel-burden outcome.
 
 \paragraph{The centroid-to-centroid distance approximation.} CNES does
-not record hospital coordinates, so distances are computed
-centroid-to-centroid between the patient's municipality and the admitting
-hospital's municipality---standard in the Brazilian access literature
-\citep{macinkoHarris2015, rochaSoares2010}. The approximation
-understates within-municipality distance in large urban municipalities
-and near-border cases, attenuating the distance measure; excluding the
-$27$ state capitals (the principal sites of hospital dispersion) changes
-the first-stage travel ATT by less than $1\%$
-(Section~\ref{sec:robustness}); a coordinate-level sensitivity for a
-sub-sample of closures appears in Appendix~\ref{app:distance}.
+not record hospital coordinates, so I compute distances centroid to
+centroid between the patient's municipality and the admitting hospital's
+municipality, as the Brazilian access literature does
+\citep{macinkoHarris2015, rochaSoares2010}. The approximation understates
+within-municipality distance in large urban municipalities and in
+near-border cases, which attenuates the distance measure. Dropping the
+$27$ state capitals, where hospital dispersion is greatest, moves the
+first-stage travel ATT by less than $1\%$
+(Section~\ref{sec:robustness}), and a coordinate-level sensitivity for a
+sub-sample of closures appears in the online appendix.
+
+\input{tables/tab_summary_stats.tex}

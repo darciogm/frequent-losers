@@ -1,0 +1,300 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{rotating}
+\usepackage{threeparttable}
+\usepackage{setspace}
+\usepackage[round, semicolon, authoryear]{natbib}
+\bibliographystyle{plainnat}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MidnightBlue,
+  citecolor=MidnightBlue,
+  urlcolor=MidnightBlue,
+  pdftitle={Online Appendix: Where Patients Go When a Hospital Closes},
+  pdfauthor={Darcio Genicolo-Martins}
+}
+\usepackage{microtype}
+
+\input{values.tex}
+\input{values_inference.tex}
+\input{values_displacement.tex}
+
+\onehalfspacing
+\setlength{\parskip}{0.35em}
+
+\title{\textbf{Online Appendix}\\
+Where Patients Go When a Hospital Closes: Evidence from Brazil}
+\author{Darcio Genicolo-Martins}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Closure Samples}
+
+This appendix reports the diagnostics needed to audit the submitted
+paper's sample definitions, PNASH timing, exposure measurement, first
+stage, and mortality robustness. Auxiliary embedding, causal-forest,
+graph-perturbation, and document-classification details are retained in
+the replication notes and do not enter treatment assignment or the
+headline estimates.
+
+\input{tables/table_master_closure_samples.tex}
+
+\section{PNASH Timing and Pre-Treatment Diagnostics}
+
+The event-level table below documents every one of the
+$\valNclosuresPnash$ PNASH psychiatric closures so a reader can audit its
+timing and baseline characteristics. The cycle-window sample
+(\texttt{PNASH\_cycle\_window}, $n = \valNclosuresPnash$) keeps closures
+within $\pm 1$ year of either year of a two-year PNASH cycle; the strict
+sample (\texttt{PNASH\_exact\_pm1}, $n = \valNclosuresPnashStrict$) keeps
+only those within $\pm 1$ calendar year of the nearest single cycle year.
+Fields recorded as NA are genuinely unavailable in the public replication
+data and are inventoried in the data-caveats section; no value is imputed.
+
+\input{tables_appendix/table_pnash_event_level.tex}
+
+Table~\ref{tab:pnash-strict-window} re-estimates the headline outcomes on
+the strict exact $\pm 1$-year sample. The mortality bounds and the
+psychiatric-admissions dose are similar to the cycle-window sample, so the
+eleven distance-two closures do not drive the result.
+
+\input{tables_appendix/table_pnash_strict_window_robustness.tex}
+
+Table~\ref{tab:preclosure-timing-tests} reports closure-level tests of
+whether closure timing is predicted by pre-closure local conditions, and
+Table~\ref{tab:balance-pnash-true-preperiod} reports pre-treatment balance on
+cohort-specific true pre-periods.
+
+\input{tables_appendix/table_preclosure_timing_tests.tex}
+\input{tables_appendix/table_balance_pnash_true_preperiod.tex}
+
+\paragraph{Raw pre-trend trajectories.} Figure~\ref{fig:raw-pretrends}
+plots raw, population-weighted treated-versus-never-treated trajectories
+for the four outcomes around closure. These complement the event-study
+coefficients: they show no visible differential pre-closure mortality
+trend, while psychiatric admissions and travel burden move at closure as
+the first stage implies.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.49\textwidth}\centering
+        \includegraphics[width=\textwidth]{../04_figures/fig_raw_means_suicide_revision.pdf}
+        \caption{Suicide mortality}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.49\textwidth}\centering
+        \includegraphics[width=\textwidth]{../04_figures/fig_raw_means_selfharm_revision.pdf}
+        \caption{Self-harm mortality}
+    \end{subfigure}
+
+    \medskip
+    \begin{subfigure}{0.49\textwidth}\centering
+        \includegraphics[width=\textwidth]{../04_figures/fig_raw_means_psych_admissions_revision.pdf}
+        \caption{Psychiatric admissions}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.49\textwidth}\centering
+        \includegraphics[width=\textwidth]{../04_figures/fig_raw_means_travel_revision.pdf}
+        \caption{Travel burden}
+    \end{subfigure}
+    \caption{Raw treated-versus-control trajectories. Population-weighted
+    means for flow-exposed (treated) and never-treated municipalities
+    around PNASH psychiatric closures. Mortality trajectories show no
+    visible differential pre-closure trend; psychiatric admissions and
+    travel burden move at closure.}
+    \label{fig:raw-pretrends}
+\end{figure}
+
+\section{Exposure and Distance Benchmarks}
+
+\input{tables_appendix/table_distance_benchmark_full.tex}
+\input{tables_appendix/table_exposure_variant_mortality.tex}
+
+\section{First-Stage Decomposition}
+
+\input{tables_appendix/table_first_stage_decomposition_full.tex}
+\input{tables_appendix/table_top_substitute_hospitals.tex}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{../04_figures/fig_first_stage_decomposition_eventstudy.pdf}
+    \caption{First-stage decomposition by event time. The figure separates
+    admissions to the closing hospital, admissions to other hospitals, and
+    total admissions from exposed catchments around PNASH psychiatric
+    closures. It shows realized utilization changed after provider loss; it
+    does not by itself establish whether welfare improved or deteriorated.
+    The main-text displacement figure reports the psychiatric-only series.}
+    \label{fig:firststage-decomposition}
+\end{figure}
+
+\subsection{Psychiatric displacement decomposition}
+
+The main-text displacement table restricts the decomposition to inpatient
+psychiatric admissions (ICD-10 F00--F99), built from a dedicated SIH edge
+re-aggregation
+(\texttt{03\_analysis/88\_psych\_displacement\_decomposition.py}).
+Table~\ref{tab:displacement-full} reports the same quantities by event time.
+Table~\ref{tab:psych-intensity} addresses where the lost volume went: the
+admissions that disappeared were full-intensity inpatient care (length of stay
+no shorter than at surviving hospitals, bed-days falling as steeply as admission
+counts), so the contraction removed real capacity rather than residual custodial
+volume.
+
+\input{tables_appendix/table_displacement_full.tex}
+\input{tables_appendix/table_psych_intensity.tex}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.62\textwidth]{../04_figures/fig_es_psych_adm.pdf}
+    \caption{Inpatient psychiatric admissions fall after closure.
+    Population-weighted staggered Sun-Abraham event study for psychiatric
+    inpatient admissions (ICD-10 F00--F99, residence municipality, any
+    hospital) per $1{,}000$, on the $\valNclosuresPnash$ PNASH-anchored
+    psychiatric closures. Pre-periods are flat; admissions drop sharply at
+    closure and stay down. Bars are $95\%$ cluster-robust confidence
+    intervals.}
+    \label{fig:es-psych-adm}
+\end{figure}
+
+\subsection{Causal test of non-absorption}
+
+The decomposition is descriptive. To net out trends, I re-estimate the headline
+staggered Sun-Abraham specification with the outcome redefined as inpatient
+psychiatric admissions at hospitals \emph{other} than the focal closing hospital,
+per $1{,}000$ residents. The same specification applied to total admissions
+reproduces the $69\%$ decline; admissions at other hospitals are statistically
+unchanged (Table~\ref{tab:other-hosp-es}, Figure~\ref{fig:es-other-hosp}), so the
+non-absorption is causal, not an artifact of pre-existing trends.
+
+\input{tables_appendix/table_other_hosp_es.tex}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.62\textwidth]{../04_figures/fig_es_other_hosp_psych.pdf}
+    \caption{Other hospitals do not measurably absorb the lost inpatient
+    psychiatric volume.
+    Staggered Sun-Abraham event-study coefficients for total inpatient
+    psychiatric admissions (any hospital) and for admissions at hospitals other
+    than the focal closing hospital, per $1{,}000$ residents, on the PNASH
+    psychiatric closures. Total admissions fall sharply; other-hospital
+    admissions stay flat through the closure. Bars are $95\%$ cluster-robust
+    confidence intervals.}
+    \label{fig:es-other-hosp}
+\end{figure}
+
+\section{Synthetic Difference-in-Differences}
+
+Synthetic difference-in-differences \citep{arkhangelsky2021} provides a
+second design that is valid if \emph{either} parallel trends \emph{or} the
+synthetic weights hold. Table~\ref{tab:sdid_results} reports the
+size-weighted aggregate over closure cohorts, with the donor pool, pre-fit,
+weighting, and inference documented; Figure~\ref{fig:sdid-prefit} shows the
+observed-versus-synthetic suicide trajectory. The suicide estimate sits
+inside the event-study interval with a credible pre-treatment fit.
+
+\input{tables_appendix/table_sdid_results.tex}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.62\textwidth]{../04_figures_appendix/fig_sdid_suicide_prefit.pdf}
+    \caption{Synthetic difference-in-differences pre-fit. Observed (treated)
+    versus synthetic-control suicide trajectory per $100{,}000$ in event
+    time, aggregated over closure cohorts. The synthetic series tracks the
+    treated pre-period closely; the post-period gap is small and
+    mean-zero.}
+    \label{fig:sdid-prefit}
+\end{figure}
+
+\section{Sensitivity to Pre-Trend Violations}
+
+Table~\ref{tab:honestdid-sensitivity} and Figure~\ref{fig:honestdid} report
+HonestDiD relative-magnitude sensitivity \citep{rambachanRoth2023} for the
+mortality outcomes and for ICSAP. At the per-$100{,}000$ scale of small
+municipalities the mortality series is noisy, so the robust set widens
+rapidly once any pre-trend extrapolation is allowed: relative-magnitude
+restrictions are uninformative for the mortality null, which therefore
+rests on the classical interval and the synthetic design rather than on
+trend extrapolation. The same machinery is informative against ICSAP, where
+no bounded extrapolation can rescue the effect.
+
+\input{tables_appendix/table_honestdid_sensitivity.tex}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.32\textwidth}\centering
+        \includegraphics[width=\textwidth]{../04_figures_appendix/fig_honestdid_suicide.pdf}
+        \caption{Suicide}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.32\textwidth}\centering
+        \includegraphics[width=\textwidth]{../04_figures_appendix/fig_honestdid_selfharm.pdf}
+        \caption{Self-harm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.32\textwidth}\centering
+        \includegraphics[width=\textwidth]{../04_figures_appendix/fig_honestdid_icsap.pdf}
+        \caption{ICSAP (placebo)}
+    \end{subfigure}
+    \caption{HonestDiD robust confidence sets by relative-magnitude
+    parameter $\bar{M}$. For the mortality outcomes the set widens quickly,
+    so the restriction is uninformative; for ICSAP no $\bar{M}$ rescues the
+    effect.}
+    \label{fig:honestdid}
+\end{figure}
+
+\section{Robustness, Spillovers, and Influence}
+
+\input{tables_appendix/table_spillover_sensitivity.tex}
+\input{tables_appendix/table_caps_heterogeneity.tex}
+\input{tables_appendix/table_closure_influence.tex}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.62\textwidth]{../04_figures/fig_es_recipient_suicide.pdf}
+    \caption{Spillover-robust controls. Population-weighted Sun-Abraham
+    suicide event studies on the $48$ PNASH psychiatric closures, comparing
+    the headline specification (all never-treated controls) against one that
+    drops the $1{,}424$ never-treated municipalities whose own admissions to
+    the substitute hospitals rose after closure---the revealed recipients of
+    redirected patient flow. Network spillover would attenuate a true effect
+    toward zero, so dropping the spillover-exposed controls should raise the
+    estimate if an effect were hidden. The two trajectories nearly coincide;
+    the post-period aggregate ATT moves from $+0.28$ to $-0.04$ per
+    $100{,}000$. Bars are $95\%$ cluster-robust confidence intervals.}
+    \label{fig:es-recipient-suicide}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.62\textwidth]{../04_figures/fig_es_displacement_suicide.pdf}
+    \caption{Mechanical death displacement. Population-weighted Sun-Abraham
+    suicide event studies on the $48$ PNASH psychiatric closures, comparing
+    all suicide deaths against out-of-hospital deaths only (place of
+    occurrence, SIM \texttt{LOCOCOR} $\neq$ in-hospital). In-facility deaths
+    mechanically leave the catchment's records when a hospital closes and
+    could offset a true positive effect; out-of-hospital deaths cannot. The
+    null survives---the out-of-hospital aggregate ATT is $-0.01$ per
+    $100{,}000$---so the headline null is not a displacement artifact. Bars
+    are $95\%$ cluster-robust confidence intervals.}
+    \label{fig:es-displacement-suicide}
+\end{figure}
+
+\section{Remaining Data Caveats}
+
+\input{tables_appendix/table_remaining_data_caveats.tex}
+
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,114 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{rotating}
+\usepackage{setspace}
+\usepackage[round, semicolon, authoryear]{natbib}
+\bibliographystyle{plainnat}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MidnightBlue,
+  citecolor=MidnightBlue,
+  urlcolor=MidnightBlue,
+  pdftitle={Patient-Flow Exposure and the Mortality Effects of Psychiatric Hospital Closures in Brazil},
+  pdfauthor={Darcio Genicolo-Martins}
+}
+\usepackage{microtype}
+
+% Auto-generated numeric macros (single source of truth; see 03_analysis/D6_make_values.R)
+\input{values.tex}
+\input{values_inference.tex}
+
+% spacing
+\onehalfspacing
+\setlength{\parskip}{0.4em}
+
+% commands
+\newcommand{\divz}{\widetilde{\Delta}}
+\newcommand{\isokm}{\mathrm{iso}^{km}}
+\newcommand{\isoemb}{\mathrm{iso}^{emb}}
+
+\title{\textbf{Patient-Flow Exposure and the Mortality Effects of\\
+Psychiatric Hospital Closures in Brazil}}
+
+\author{Darcio Genicolo-Martins\thanks{Insper. Email: \texttt{darcio.g.martins@gmail.com}.
+Working paper, comments welcome. Replication code and pipeline:
+\url{https://github.com/darciogm/bitter-pills/tree/main/paper18-hospital-deserts}.}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Critics of psychiatric deinstitutionalization warned that closing
+hospitals would raise patient mortality. Testing this requires knowing
+who depended on a closing hospital, and distance-based catchments can be
+misleading where patients cross municipal borders for specialized care.
+Using $\valNadmissions$ million Brazilian SUS admissions, I define
+exposure from pre-closure patient flows and study $\valNclosuresPnash$
+PNASH-anchored psychiatric closures with a staggered event study. The
+flow rule identifies municipality--closure pairs that generic distance
+rules often miss: the two rules disagree on $\valNmisclass$ of
+$\valNunionPairs$ flagged pairs. A first stage shows that exposed
+municipalities had realized utilization ties to the closing hospitals:
+average travel burden falls by $\valTravAbs$~km after closure. For
+mortality, the estimates rule out large acute increases but not smaller
+effects. Suicide mortality changes by $\valSuicWAtt$ per $100{,}000$
+(95\% CI $[\valSuicWLo, \valSuicWHi]$), and self-harm mortality is
+similarly imprecise around zero. Preventable hospitalizations were
+already rising before closure, so I report them as non-identified rather
+than causal. The evidence supports a bounded conclusion: in this setting
+and population, the data do not show a large acute mortality increase
+after psychiatric hospital closures.
+
+\medskip
+\noindent\textbf{Keywords:} hospital closures, deinstitutionalization,
+patient-flow exposure, mortality, suicide, staggered
+difference-in-differences, SUS, Brazil.
+
+\medskip
+\noindent\textbf{JEL:} I18, I14, I11, H75.
+\end{abstract}
+
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+
+\input{introduction.tex}
+
+\input{setting.tex}
+
+\input{data.tex}
+
+\input{method.tex}
+
+\input{results.tex}
+
+\input{robustness.tex}
+
+\input{discussion.tex}
+
+\input{conclusion.tex}
+
+\bibliography{references}
+
+\appendix
+\input{appendix.tex}
+
+\end{document}

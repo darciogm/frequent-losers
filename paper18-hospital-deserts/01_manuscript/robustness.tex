@@ -1,88 +1,113 @@
-\section{Robustness}
+\section{Robustness and diagnostics}
 \label{sec:robustness}
 
-The mortality null is the paper's identified result, so we stress it from
-every direction we can. It survives variation in the closure sample, the
-weighting, the estimator, the pandemic window, and the exposure
-threshold. We report the checks in turn; the headline---no detectable
-increase in suicide or self-harm mortality---does not move.
+Figure~\ref{fig:spec-curve} puts the robustness battery in one picture. It
+plots the population-weighted suicide ATT across $\valNspecCurve$
+specifications that vary the sample, the estimator, the controls, the
+inference, and the leading threats to the design. The point estimates fall
+in a narrow band---$\valSpecBandLo$ to $\valSpecBandHi$ per $100{,}000$
+across the design-based specifications---and every $95\%$ confidence
+interval includes zero, with a single exception: the naive two-way
+fixed-effects benchmark, the one estimator known to be biased under
+staggered timing. The null is a feature of the data, not of a chosen
+specification. The rest of this section walks through the individual checks
+behind the curve; the full battery is in the online appendix.
 
-\paragraph{§6.1 — Closure sample.} The primary sample is the $\valNclosuresPnash$
-PNASH-anchored psychiatric closures. Table~\ref{tab:mortality-null}
-(bottom panel) re-estimates the population-weighted suicide effect on two
-alternative closure sets: the $\valNspecClosures$ specialized closures surviving the
-full statistical filter ($\valSuicSpecAtt$, 95\% CI $[\valSuicSpecLo, \valSuicSpecHi]$) and the
-broader set of $\valNclosuresPsymax$ psychiatric closures formed by relaxing the
-demand-decline filter ($\valSuicPsymaxAtt$, $[\valSuicPsymaxLo, \valSuicPsymaxHi]$). Both are null and
-both rule out increases above roughly one-quarter of baseline. The null
-is not an artifact of how the closure sample is drawn.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.86\textwidth]{../04_figures/fig_spec_curve_suicide.pdf}
+    \caption{Specification curve for the suicide effect. Each row is one
+    analytic specification; the point is its population-weighted ATT and
+    the bar its $95\%$ confidence interval, colored by the choice being
+    varied (sample, weighting, estimator, robustness screen, identification
+    threat, or inference). The dashed line marks zero and the dotted line
+    the primary Sun-Abraham estimate. Every interval covers zero except the
+    naive two-way fixed-effects benchmark (top), which is biased upward
+    under staggered adoption and is shown only for contrast.}
+    \label{fig:spec-curve}
+\end{figure}
 
-\paragraph{§6.2 — Weighting.} Population- and municipality-weighted
-estimates appear side by side in Table~\ref{tab:mortality-null}. The
-population-weighted suicide effect is $\valSuicWAtt$; the municipality-weighted
-estimate is $\valSuicOAtt$. They differ in sign in their (statistically
-indistinguishable from zero) point estimates because the effect, to the
-extent there is one, differs between small and large municipalities, but
-both confidence intervals exclude large increases. We lead with the
-population-weighted estimate because it is the policy-relevant quantity
-(harm per person), and report the unweighted estimate so the null is
-visibly not a weighting artifact.
+\paragraph{Alternative psychiatric samples.} The headline does not hang on
+the F5 pre-decline screen. The stricter sample of dedicated psychiatric
+hospitals ($\valNtrSpec$ exposed municipalities) gives a
+population-weighted suicide ATT of $\valSuicSpecAtt$ per $100{,}000$ (95\%
+CI $[\valSuicSpecLo, \valSuicSpecHi]$); the broader psychiatric sample
+that relaxes F5 ($\valNtrPsymax$ exposed) gives $\valSuicPsymaxAtt$
+($[\valSuicPsymaxLo, \valSuicPsymaxHi]$). Both sit beside the primary
+$\valSuicWAtt$ and exclude increases above roughly a quarter of baseline.
 
-\paragraph{§6.3 — Estimator.} Under the heterogeneity-robust
-Sun-Abraham estimator the suicide effect is $\valSuicWAtt$ (SE $\valSuicWSe$). The
-naive two-way fixed-effects estimator returns a larger $\valSuicTwfeAtt$ (SE
-$\valSuicTwfeSe$)---but two-way fixed effects is biased under treatment-effect
-heterogeneity across cohorts \citep{deChaisemartin2020, sunAbraham2021},
-exactly the contamination the modern estimators correct, and the
-heterogeneity-robust estimators shrink it to zero. Even the contaminated
-estimator yields only a modest effect that the credible estimators
-null out; there is no large mortality response hiding under any
-specification. The first stage and the mortality null are likewise
-reproduced under \citet{cs2021} and \citet{borusyak2024}.
+\paragraph{Alternative estimators.} The null reproduces under
+\citet{cs2021} and \citet{borusyak2024}. The one estimate that drifts is
+the naive two-way fixed-effects specification, $\valSuicTwfeAtt$ per
+$100{,}000$---the upward pull expected when staggered treatment-effect
+heterogeneity contaminates the TWFE comparison, and the reason the design
+leans on \citet{sunAbraham2021} to begin with. A Goodman-Bacon
+decomposition confirms the diagnosis \citep{goodmanBacon2021}:
+$\valBaconNeverPct\%$ of the TWFE weight falls on clean never-treated
+comparisons and only $\valBaconForbidPct\%$ on the forbidden
+already-treated ones, so the drift is heterogeneity weighting, not
+contaminated comparison groups. The null also holds under doubly-robust
+Callaway--Sant'Anna estimation with a not-yet-treated control group
+($\valCsNotYetAtt$ per $100{,}000$) and under covariate adjustment
+($\valCsDrCovAtt$).
 
-\paragraph{§6.4 — Pandemic window.} The COVID-$19$ years $2020$--$2021$
-disrupted admissions, mobility, and cause-of-death coding. Dropping them
-leaves the suicide effect at $\valSuicDropPandAtt$ (SE $\valSuicDropPandSe$), within a tenth of the
-main estimate. The pandemic is not driving the null.
+\paragraph{Pandemic years and capitals.} Dropping $2020$--$21$ leaves the
+suicide ATT at $\valSuicDropPandAtt$ per $100{,}000$; the closures
+themselves sit outside the pandemic window by construction, and removing
+the pandemic from the control years does not move the estimate. Excluding
+the $27$ state capitals---the main sites of within-municipality hospital
+dispersion, where the centroid distance approximation is weakest---gives
+$\valSuicNoCapAtt$ and shifts the first-stage travel ATT by less than
+$1\%$.
 
-\paragraph{§6.5 — Exposure threshold.} The flow exposure rule sets the
-share cutoff at $\theta = 0.05$. The first-stage travel-burden result is
-negative and significant across the continuous sweep
-$\theta \in [0.01, 0.12]$, confirming that the exposed set is not an
-artifact of the default cutoff; the mortality null holds across the same
-range, since a null estimated on a larger or smaller exposed set remains
-null. Full sweep diagnostics are in Appendix~\ref{app:theta}.
+\paragraph{Exposure-rule sensitivity.} The flow cutoff is not driving the
+null. Sweeping $\theta$ across $[0.01, 0.20]$ keeps the negative
+travel-burden first stage intact and never produces a positive mortality
+response. Psychiatric-specific denominators flag many more municipalities,
+since psychiatric admissions are sparse in the all-SUS denominator; these
+broader rules are stress tests, not a substitute for the main
+all-SUS reliance rule. The full set of exposure-variant estimates and an
+alternative $z$-score threshold variant are in the online appendix.
 
-\paragraph{§6.6 — Spillover and state capitals.} If a closure redirects
-patients to a hospital also serving an untreated municipality, the
-control could be contaminated. Excluding the $27$ state capitals---the
-principal referral hubs and the main sites of such congestion---leaves
-the suicide effect at $\valSuicNoCapAtt$ (SE $\valSuicNoCapSe$), if anything a tighter null,
-and changes the first-stage travel ATT by less than $1\%$. The result is
-not driven by the largest referral destinations.
+\paragraph{Network contamination and influential closures.} A closure can
+push patients onto a hospital that also serves a control municipality,
+contaminating that control. Dropping controls that share a health-region
+proxy, a referral hub, a substitute hospital, or a high flow-similarity
+link with treated catchments leaves the suicide ATT close to the primary estimate.
+Removing one closure catchment at a time yields suicide ATTs between
+$\valLooLo$ and $\valLooHi$ per $100{,}000$, so no single event carries
+the result. A sharper spillover test drops the $\valNrecipDropped$
+never-treated municipalities whose own admissions to the substitute
+hospitals rose after closure---the revealed recipients of redirected
+flow---and re-estimates on the $\valNcleanCtrl$ clean controls. Because
+spillover attenuates a true effect toward zero, dropping the
+spillover-exposed controls should raise the estimate if an effect were
+hidden; instead the suicide ATT is $\valSuicRecipAtt$ (95\% CI
+$[\valSuicRecipLo, \valSuicRecipHi]$), if anything slightly below the
+headline, and the two event-study trajectories nearly coincide (online
+appendix). The self-harm point estimate does rise under this control set
+but stays insignificant.
 
-\paragraph{§6.7 — Inference with few effective clusters.} The panel holds
-thousands of municipalities, but identification rests on
-$\valNclosuresPnash$ closures, so municipality-clustered standard errors
-could overstate precision if shocks are correlated within a closure's
-catchment. Two checks address this. Clustering at the Federation Unit
-level ($\valNUFclusters$ clusters) widens the suicide standard error from
-$\valSuicWSe$ to $\valSuicSeUF$ and the confidence interval to
-$[\valSuicUFLo, \valSuicUFHi]$---still centered near zero and still
-excluding the large increases critics predicted. Randomization inference
-is more conservative still: permuting the cohort treatment assignment
-across municipalities yields a placebo distribution against which the
-observed effect sits at a two-sided $p = \valSuicRIp$, well inside the
-placebo range $[\valSuicRILo, \valSuicRIHi]$. Neither check overturns the
-null, and the design-based placebo spread still rules out increases above
-roughly a quarter of baseline---evidence that the result reflects an
-absence of large effects, not understated uncertainty.
+\paragraph{Mechanical displacement and outcome recording.} Two threats
+specific to a mortality null get direct tests. When a psychiatric
+hospital closes, in-facility deaths mechanically leave the catchment's
+records, which could offset a true positive effect. Splitting deaths by
+place of occurrence and re-estimating on out-of-hospital deaths
+alone---the ones a closing hospital cannot mechanically absorb---leaves
+the suicide ATT at $\valSuicOutHospAtt$ per $100{,}000$ (95\% CI
+$[\valSuicOutHospLo, \valSuicOutHospHi]$), with the in-hospital component
+only $\valInHospShare\%$ of pre-closure suicide deaths (online appendix). Differential
+death-recording is the other threat: the ill-defined-cause rate (ICD-10
+R$96$--R$99$) does not jump at closure ($\valIllDefAtt$ per $100{,}000$ on
+a base of $\valIllDefBase$), so cause-coding error is a level the fixed
+effects absorb rather than something closure manufactures.
 
-\paragraph{Summary.} Across closure samples, weightings, estimators, the
-pandemic window, the exposure threshold, spillover controls, and the
-inference procedure, the mortality null is stable. The one place the data move---the naive TWFE
-estimator---is the place heterogeneity-robust methods are designed to
-correct, and they do. We read the pattern as evidence that the null
-reflects the absence of a large mortality response, not a fragile
-specification. The parallel first-stage and ICSAP robustness battery
-(eighteen specifications) is reported in Appendix~\ref{app:robustness}.
+\paragraph{Inference.} The null is not an artifact of understated standard
+errors. Clustering at the Federation Unit ($\valNUFclusters$ clusters)
+widens the suicide interval to $[\valSuicUFLo, \valSuicUFHi]$;
+randomization inference over $500$ placebo reassignments returns a
+two-sided $p$ of $\valSuicRIp$ and a placebo interval of
+$[\valSuicRILo, \valSuicRIHi]$. Both widen the uncertainty and both stay
+centered near zero. The data rule out large acute mortality increases of
+the magnitude in Table~\ref{tab:main-mortality-scaled-bounds}; they do
+not rule out smaller harms or non-mortality welfare losses.

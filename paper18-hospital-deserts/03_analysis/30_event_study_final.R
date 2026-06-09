@@ -224,7 +224,7 @@ panel_label <- function(p) {
 tab <- c(
   "\\begin{table}[h!]",
   "\\centering",
-  "\\caption{Final event-study ATT estimates (Sun-Abraham): hybrid F5 main + F6 NLP-documented robustness + heterogeneity by closure motive. Outcomes: travel burden (km) and ICSAP rate (per 1{,}000 hab). Share-based flow exposure (E1) primary; km-based exposure (E2) as an alternative exposure rule for F5 main only. Cluster-robust SE at municipality level. Panel 2010--2024 with pandemic gap 2020--2021 included.}",
+  "\\caption{F5 measurement-sample event-study ATT estimates (Sun-Abraham): F5 statistical filter, F6 NLP-documented robustness, and heterogeneity by closure motive. Outcomes: travel burden (km) and ICSAP rate (per 1{,}000 hab). Share-based flow exposure (E1) primary; km-based exposure (E2) as an alternative exposure rule for F5 measurement only. Cluster-robust SE at municipality level. Panel 2010--2024 with pandemic gap 2020--2021 included.}",
   "\\label{tab:es-final}",
   "\\small",
   "\\begin{tabular}{llrrr}",

@@ -1,104 +1,209 @@
 \section{Results}
 \label{sec:results}
 
-We report three results in sequence. First, a validation: the
-patient-flow exposure rule captures populations that genuinely depended
-on the closing hospital, evidenced by a sharp fall in travel burden
-(\ref{sec:results-firststage}). Second, the headline: among those
-exposed populations, the mortality the reform's critics feared did not
-materialize (\ref{sec:results-mortality}). Third, a result we decline to
-read causally: preventable hospitalizations rise after closure, but they
-were already rising before it (\ref{sec:results-icsap}). The full
-robustness battery is in Section~\ref{sec:robustness}.
+The results come in four steps. The full F5 sample shows that flow and
+distance pick out different exposed catchments. Travel-burden first stages
+then show that the flow-exposed municipalities had real utilization links
+to the closing providers, separately for the F5 sample and the PNASH
+psychiatric subset. The mortality estimates follow, on the PNASH closures
+alone. Nonpsychiatric F5 closures and failed-F5 predecline closures close
+the section as contrast and diagnostic cases. The full robustness battery
+is in Section~\ref{sec:robustness}.
 
 % =====================================================================
-% §5.1 — First stage
+% §5.1 — Measurement result
 % =====================================================================
-\subsection{First stage: the flow rule captures real dependence}
+\subsection{Flow versus distance in the full F5 closure sample}
+\label{sec:results-f5-measurement}
+
+Start with measurement, on the full F5 sample of $\valNexoClosures$
+economically meaningful closures. Table~\ref{tab:measurement-compact}
+shows the two rules pick out sharply different catchments. Of the
+$\valNunionPairs$ municipality--closure pairs either rule flags,
+$\valNmissed$ are flow-only and $\valNfalse$ are distance-only; just
+$\valNboth$ are flagged by both. The disagreement, $\valNmisclass$ of
+$\valNunionPairs$ pairs, is the paper's central evidence that geographic
+proximity is an incomplete proxy for exposure to provider loss in a
+referral network. The same table carries the specialty-aware distance
+benchmarks and flags the comparisons whose support is too thin to trust.
+
+% =====================================================================
+% §5.2 — First stage
+% =====================================================================
+\subsection{Pre-closure flows identify the exposed catchments}
 \label{sec:results-firststage}
 
-Before asking what happened to the exposed populations, we verify that
-the flow exposure rule identifies municipalities that actually relied on
-the closing hospital rather than ones merely near it. The test is
-mechanical and sharp: if exposed patients had been traveling far for
-care that the closing facility uniquely provided, then closure should
-cut the distance they travel for inpatient care, because the long trips
-the facility generated cease.
+Before asking what happened to the exposed populations, I check that the
+flow rule is selecting municipalities with real admission links to the
+closing hospital, not ones that merely sit near it. Travel burden is the
+diagnostic. A post-closure change in travel distance can come from
+redirection to nearer providers, from the disappearance of long-distance
+admissions, or from a shift in admission composition; its sign and size
+speak to realized utilization, not to welfare.
 
-Figure~\ref{fig:firststage-travel} reports the staggered event study for
-travel burden. The pre-period coefficients are flat---the joint
-Wald-style test does not reject parallel trends ($p = \valTravPpre$)---and travel
-burden falls by $\valTravAbs$~km in the post-period (95\% CI $[\valTravLo, \valTravHi]$;
-Table~\ref{tab:mortality-null}, first row). A distance-based exposure
-rule applied to the same closures recovers only about half this
-magnitude, because it dilutes the genuinely dependent municipalities
-with geographically near ones whose residents never used the closing
-hospital. The fall confirms that flow-exposed municipalities were
-sending patients on long trips to the facility that closed: these are
-the populations a closure plausibly affects, and the ones a distance
-rule misclassifies.
+In the full F5 sample, flow exposure gives a $\valTravFFiveFlow$~km
+post-closure travel-burden ATT, against $\valTravFFiveDist$~km under the
+generic distance rule. In
+the PNASH psychiatric causal sample the flow first stage is larger,
+$\valTravAtt$~km, while the distance-exposed series carries a strong pre-trend.
+Both patterns support the measurement claim and the choice to run the causal
+mortality design on the PNASH psychiatric sample. First-stage estimates
+for every sample are in the online appendix.
+
+The sign of the first stage matters for how to read the mortality null.
+Travel \emph{falls} after closure, because the long-distance admissions
+to the closing psychiatric hospital disappear or shift to nearer
+providers. The mechanical channel through which closures are usually
+feared to raise mortality---patients facing longer trips to care---does
+not operate here. Any acute mortality effect would have to run through the
+loss of the specialized inpatient option itself, not through added
+distance, which makes the absence of a mortality response easier to
+credit rather than harder.
+
+% =====================================================================
+% §5.3 — The dose: inpatient psychiatric utilization
+% =====================================================================
+\subsection{Where inpatient psychiatric use goes after closure}
+\label{sec:results-utilization}
+
+Before turning to mortality, it helps to know how large the shock to inpatient
+psychiatric care actually is, and where the admissions go. Inpatient
+psychiatric admissions---admissions with a mental or behavioural primary
+diagnosis (ICD-10 F$00$--F$99$), counted at the municipality of residence
+across \emph{all} hospitals---fall by $\valPsychAdmAtt$ per $1{,}000$ after
+closure (95\% CI $[\valPsychAdmLo, \valPsychAdmHi]$), against a treated-group
+baseline of $\valPsychAdmBase$---a reduction of about $\valPsychAdmPct\%$,
+with no pre-trend ($p = \valPsychAdmPpre$; event-study figure in the online appendix).
+
+The decomposition explains where the admissions go.
+Across the \valPsychDispNClosures{} closures with adequate flow support, exposed
+catchments averaged \valPsychClosingPre{} psychiatric admissions per year to the
+closing hospital before closure; admissions to other hospitals do not rise to
+replace them, so total inpatient psychiatric admissions fall
+(Figure~\ref{fig:where-inpatient-use-goes} and
+Table~\ref{tab:displacement-compact}). The non-absorption is causal, not a trend
+artifact. Re-estimating the staggered event study with the outcome redefined as
+admissions at hospitals \emph{other} than the closing one leaves them
+statistically unchanged (ATT $\valOtherHospATT$ per $1{,}000$, 95\% CI
+$[\valOtherHospLo, \valOtherHospHi]$, against a pre-closure base of
+$\valOtherHospBase$ and flat pre-trends), while the same specification on total
+admissions reproduces the $\valPsychAdmPct\%$ decline (online appendix). Other
+hospitals do not measurably absorb what the closing hospital removed; the loss
+is a net contraction of inpatient psychiatric capacity, not a
+hospital-to-hospital reallocation.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.6\textwidth]{../04_figures/fig_firststage_travel.pdf}
-    \caption{First stage. Staggered Sun-Abraham event study for travel
-    burden (km) on the $\valNclosuresPnash$ PNASH-anchored psychiatric closures and
-    their $\valNtrPnash$ flow-exposed municipalities. Pre-period coefficients
-    test parallel trends; the dotted line marks the pre/post boundary.
-    Bars are $95\%$ cluster-robust confidence intervals. Travel burden
-    falls after closure, confirming that exposed patients had been
-    traveling far for care with no local substitute.}
-    \label{fig:firststage-travel}
+    \includegraphics[width=0.72\textwidth]{../04_figures/fig_where_inpatient_use_goes.pdf}
+    \caption{Where inpatient psychiatric use goes after closure.
+    Catchment-level mean inpatient psychiatric admissions (ICD-10
+    F$00$--F$99$) by event time, across the $\valPsychDispNClosures$ PNASH
+    closures with flow support (municipalities sending $\geq 5\%$ of their
+    pre-closure inpatient flow to the closing hospital). Admissions to the
+    closing hospital collapse to zero at closure; admissions to other
+    hospitals do not rise to compensate, so total inpatient psychiatric
+    admissions fall and stay down. The design observes inpatient admissions
+    only: ``loss'' means volume not observed in inpatient psychiatric care,
+    not that residents receive no care.}
+    \label{fig:where-inpatient-use-goes}
 \end{figure}
 
+\input{tables/table_displacement_compact.tex}
+
+The decline is a net loss of inpatient psychiatric \emph{admissions}, not
+necessarily of all mental-health care. What disappeared was real capacity, not
+low-intensity custodial volume: admissions at the closing hospitals were no
+shorter in length of stay than at the hospitals that survived, and bed-days fell
+as steeply as admissions (\valPsychBeddaysDropPct\% against \valPsychAdmPct\%, in
+the online appendix). Where that volume went is only partly
+identifiable from inpatient records. The plausible destination is the community
+and outpatient care the reform was building---the CAPS rollout that
+\citet{diasFontes2024} study, where hospitalizations also fall but outpatient
+care substitutes by design---yet the SIH does not observe CAPS production, except
+through the coarse baseline capacity controls in the appendix, and a residual of
+unmet need cannot be ruled out. What the data do establish is the negative: the
+volume did not move to other hospitals. Its role here is to size the shock that
+follows: a contraction this large is what makes the mortality null informative
+rather than a quiet non-event.
+
 % =====================================================================
-% §5.2 — The mortality null (headline)
+% §5.4 — Mortality effects
 % =====================================================================
-\subsection{The feared outcome: no mortality catastrophe}
+\subsection{Mortality after a large inpatient shock}
 \label{sec:results-mortality}
 
-We now ask the policy question directly: did closing the psychiatric
-hospitals raise mortality among the populations that depended on them?
-We estimate effects on two outcomes recorded at the municipality of
-residence---suicide (ICD-10 X$60$--X$84$) and a broader self-harm
-measure that adds deaths of undetermined intent (Y$10$--Y$34$)---both
-expressed per $100{,}000$ inhabitants. We report population-weighted
-estimates as primary, because the policy-relevant quantity is the effect
-on the average exposed \emph{person}, not the average exposed
-municipality; the municipality-weighted estimate is the unweighted
-complement.
+Here I leave the measurement sample and restrict the causal analysis to
+the $\valNclosuresPnash$ PNASH-anchored psychiatric closures. The
+utilization result gives the mortality test its bite: the null that follows
+is not a quiet non-event after a weak first stage, but a bounded mortality
+response after a large loss of inpatient psychiatric care---the exact
+setting in which acute mortality should move, if it moves at all. The
+question is whether these psychiatric provider losses raised suicide or
+self-harm mortality in the municipalities that had relied on the closing
+hospitals. I measure two outcomes at the municipality of residence,
+suicide (ICD-$10$ X$60$--X$84$) and a broader self-harm measure that adds
+deaths of undetermined intent (Y$10$--Y$34$), each per $100{,}000$
+inhabitants. Population-weighted estimates are primary, because the
+policy-relevant quantity is the effect on the average exposed
+\emph{person}, not the average exposed municipality; the
+municipality-weighted estimate is its unweighted complement.
 
-The answer is no. Figure~\ref{fig:es-mortality} reports the event-study
-trajectories and Table~\ref{tab:mortality-null} the summary estimates.
-Population-weighted suicide mortality changes by $\valSuicWAtt$ per $100{,}000$
-after closure (95\% CI $[\valSuicWLo, \valSuicWHi]$), with pre-period coefficients
-that are flat and a parallel-trends test that does not reject
-($p = \valSuicWPpre$). Self-harm mortality is likewise indistinguishable from
-zero ($\valSelfWAtt$, 95\% CI $[\valSelfWLo, \valSelfWHi]$, $p_{\text{pre}} = \valSelfWPpre$). The
-municipality-weighted estimates are, if anything, negative and remain
-statistically null. Across every specification the post-period
-trajectory hovers around zero with no upward drift of the kind a
-mortality shock would produce.
+Figure~\ref{fig:es-mortality} plots the event-study trajectories and
+Table~\ref{tab:main-mortality-scaled-bounds} reports the summary
+estimates. Population-weighted suicide mortality changes by
+$\valSuicWAtt$ per $100{,}000$ after closure (95\% CI $[\valSuicWLo,
+\valSuicWHi]$), against a treated-group baseline of $\valSuicBaseline$,
+with flat pre-period coefficients and a parallel-trends test that does
+not reject ($p = \valSuicWPpre$). Self-harm is likewise indistinguishable
+from zero ($\valSelfWAtt$, 95\% CI $[\valSelfWLo, \valSelfWHi]$, $p =
+\valSelfWPpre$). The municipality-weighted estimates are, if anything,
+negative, and stay statistically null. Across every specification the
+post-period trajectory sits near zero, with no upward drift large enough
+to show up in these data.
 
-What this null does and does not establish deserves precision. The
-upper bound of the suicide confidence interval is $\valSuicWHi$ per
-$100{,}000$, roughly one-quarter of the treated-group baseline. The
-estimate therefore \emph{rules out} the large mortality increases that
-deinstitutionalization's critics predicted---a one-quarter rise in
-suicide among the exposed would lie outside the interval---but it does
-\emph{not} establish a precise zero: effects smaller than that bound the
-data cannot resolve at $N = \valNclosuresPnash$ closures (formal
-minimum detectable effects are in Appendix~\ref{app:power}). The policy reading is
-correspondingly bounded. The catastrophe did not happen to the
-populations that bore the closures; we cannot speak to subtle harms, and
-do not.
+A non-rejecting pre-test can simply be underpowered, so I do not rest the
+null on it. Two things carry the weight instead. First, a synthetic
+difference-in-differences design that reweights controls to match each
+cohort's pre-closure path---and so does not require never-treated parallel
+trends---returns a suicide ATT of $\valSdidAtt$ per $100{,}000$ (95\% CI
+$[\valSdidLo, \valSdidHi]$), inside this interval
+(Section~\ref{sec:method-identification}, online appendix). Second, the null
+survives every network-contamination exclusion of potentially spilled-over
+controls (Section~\ref{sec:robustness}). I also report a HonestDiD
+relative-magnitude sensitivity \citep{rambachanRoth2023}, but state plainly
+what it can and cannot do here: at the per-$100{,}000$ scale of small
+municipalities the mortality series is too noisy for relative-magnitude
+restrictions to be informative---the robust set widens quickly once any
+pre-trend extrapolation is allowed---so the bounded-null reading rests on
+the classical interval and the synthetic design, not on trend
+extrapolation. The same sensitivity is informative against ICSAP, where it
+confirms no bounded extrapolation can rescue the effect.
 
-\input{tables/tab_mortality_null.tex}
+The null is bounded, not a precise zero. The upper end of the suicide
+interval, $\valSuicWHi$ per $100{,}000$, is about a quarter of the
+treated-group baseline. The estimate rules out large acute
+increases---a one-quarter rise in exposed suicide would fall outside the
+interval---but it does not pin down a precise zero: effects smaller than
+that bound are beyond what $\valNclosuresPnash$ closures can resolve. The
+policy reading follows the same line. The data do not show the large
+acute mortality spike that would be visible at this precision; they
+cannot speak to subtle harms or to non-mortality welfare margins.
+Suicide and self-harm form a small, pre-specified outcome family, so
+multiple testing works in the null's favor rather than against it: any
+family-wise or false-discovery adjustment only widens these intervals,
+and wider intervals around estimates this close to zero cannot
+manufacture a significant effect where the unadjusted tests find none.
+The null is not specification-dependent: across $\valNspecCurve$
+specifications spanning samples, estimators, threats, and inference, the
+suicide estimate stays a tight null
+(Section~\ref{sec:robustness}, Figure~\ref{fig:spec-curve}).
+
+\input{tables/table_main_mortality_scaled_bounds.tex}
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.95\textwidth]{../04_figures/fig_es_mortality.pdf}
-    \caption{The feared outcome. Population-weighted staggered
+    \caption{Mortality event studies. Population-weighted staggered
     Sun-Abraham event studies for (a) suicide and (b) self-harm
     mortality per $100{,}000$, on the $\valNclosuresPnash$ PNASH-anchored psychiatric
     closures. Pre-periods are observed back to $2010$. Both trajectories
@@ -107,64 +212,80 @@ do not.
     \label{fig:es-mortality}
 \end{figure}
 
-\paragraph{Population versus municipality weighting.} The point
-estimates differ in sign between the two weightings---population-weighted
-slightly positive, municipality-weighted slightly negative---which
-reflects that the effect, to the extent there is one, differs between
-small and large exposed municipalities, not that the result is fragile.
-Both weightings deliver a statistically null effect with confidence
-intervals that exclude large increases; the disagreement is in the
-second decimal, not in the conclusion. We lead with the
-population-weighted estimate because it answers the policy question
-(harm to people, not to places), and report the municipality-weighted
-estimate so that the reader can see the null is not an artifact of
-down-weighting small areas.
+\paragraph{Population versus municipality weighting.} The point estimates
+differ in sign across the two weightings: population-weighted slightly
+positive, municipality-weighted slightly negative. That reflects an
+effect that, if present, differs between small and large exposed
+municipalities, not a fragile result. Both weightings give
+imprecise estimates around zero with intervals that exclude large
+increases; they differ in magnitude, not in the qualitative conclusion. I
+lead with the population-weighted estimate because it answers the policy
+question---harm to people, not to places---and report the
+municipality-weighted one so the reader can see the null is not an
+artifact of down-weighting small areas.
 
 % =====================================================================
-% §5.3 — The declined non-result (ICSAP)
+% §5.4 — Contrast and diagnostic samples
 % =====================================================================
-\subsection{A result we decline to read causally}
+\subsection{Contrast and endogeneity diagnostics}
+\label{sec:results-contrast-diagnostics}
+
+General-hospital closures play no part in estimating the psychiatric
+mortality effect. They do a different job: testing whether the
+exposure-measurement problem is particular to psychiatric closures or
+shows up in hospital closures more broadly. The nonpsychiatric F5 sample
+holds $\valNgenClosures$ general-hospital closures and one hospital-day
+closure. Flow-defined and distance-defined catchments part ways here too
+(online appendix), which says that realized reliance and geographic
+proximity are distinct objects outside psychiatric reform as well. The
+travel-burden first stage is not read causally in this small,
+heterogeneous contrast sample.
+
+General-hospital closures can also move measured travel in the opposite
+direction from psychiatric ones. A general closure may push patients
+toward farther substitutes, while a psychiatric closure can cut measured
+travel when long-distance specialized admissions vanish or shift to
+nearer providers. For that reason the nonpsychiatric rows are contrast
+evidence about exposure measurement, not a pooled mortality estimate.
+
+The failed-F5 closures show why the F5 filter matters. These events clear
+the bed and volume screens but had already shed much of their patient
+volume before the formal closure date. Pooling them would blend abrupt
+provider loss with gradual institutional decline. The online appendix
+documents the pre-decline pattern and shows their travel-burden event
+studies failing pre-trend checks too, so I hold them out of the main
+design and use them only as a diagnostic.
+
+% =====================================================================
+% §5.5 — The declined non-result (ICSAP)
+% =====================================================================
+\subsection{A result I decline to read causally}
 \label{sec:results-icsap}
 
-A credible null requires being as honest about the outcomes we cannot
-identify as about the one we can. Preventable hospitalizations
-(ICSAP)---the canonical Brazilian access-to-care marker
-\citep{macinkoHarris2015, rochaSoares2010}---do rise after closure in
-the exposed municipalities, by $\valIcsapAtt$ per $1{,}000$ in the post-period.
-Read naively, this looks like the access deterioration one would expect
-if closures pushed unmet need into preventable hospitalizations. It is
-not identified.
+A credible null has to be as honest about the outcomes the design cannot
+identify as about the one it can. Preventable hospitalizations (ICSAP),
+the canonical Brazilian access-to-care marker \citep{macinkoHarris2015,
+rochaSoares2010}, do rise after closure in the exposed municipalities, by
+$\valIcsapAtt$ per $1{,}000$ in the post-period. Read naively, that looks
+like the access deterioration one would expect if closures pushed unmet
+need into preventable admissions. It is not identified.
 
-Figure~\ref{fig:es-icsap-pretrend} shows why. With the pre-periods
-observed back to $2010$, the pre-treatment coefficients are large and
-significantly positive---$\valIcsapPreThree$, $\valIcsapPreFour$, and $\valIcsapPreFive$ per $1{,}000$ at
-three, four, and five years before closure---and the parallel-trends
-test rejects decisively ($p < 0.001$); a Rambachan-Roth sensitivity
-confirms that no bounded extrapolation of the pre-trend rescues the
-estimate (Appendix~\ref{app:rr}). ICSAP was already climbing in the
-exposed municipalities well before any hospital closed; the post-closure
-level is the continuation of a pre-existing trend, not a treatment
-effect. We had earlier mistaken this for a clean result when the
-pre-2015 data were missing and the pre-period appeared empty; with the
-population denominators backfilled to $2010$, the trend is visible and
-the apparent effect dissolves.
+The online appendix plots the trajectory. With pre-periods observed back
+to $2010$, the pre-treatment coefficients are large and significantly
+positive---$\valIcsapPreThree$, $\valIcsapPreFour$, and
+$\valIcsapPreFive$ per $1{,}000$ at three, four, and five years before
+closure---and the parallel-trends test rejects decisively ($p < 0.001$);
+a Rambachan-Roth sensitivity confirms that no bounded extrapolation of
+the pre-trend rescues the estimate. ICSAP was already climbing in the
+exposed municipalities well before any hospital closed, so the
+post-closure level is the continuation of a pre-existing trend, not a
+treatment effect. I had earlier mistaken this for a clean result when the
+pre-$2015$ data were missing and the pre-period looked empty; with the
+denominators backfilled to $2010$, the trend is visible and the apparent
+effect dissolves.
 
-We therefore report the ICSAP trajectory in full and treat it as a
-non-identified outcome. We do not bound it, do not interpret it
-causally, and do not let it carry weight in the paper's conclusions.
-The identified result is the mortality null; the ICSAP series is
-informative only as a description of where the exposed municipalities
-were already heading.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.62\textwidth]{../04_figures/fig_es_icsap_pretrend.pdf}
-    \caption{A pre-existing trend, not an effect. Staggered event study
-    for preventable hospitalizations (ICSAP) per $1{,}000$, pre-periods
-    observed back to $2010$. Pre-treatment coefficients (highlighted)
-    are large and significantly positive: ICSAP was already rising in
-    the exposed municipalities before closure. The parallel-trends test
-    rejects ($p < 0.001$), so we decline to read the post-closure level
-    as a treatment effect.}
-    \label{fig:es-icsap-pretrend}
-\end{figure}
+I therefore report the ICSAP trajectory in full and treat it as
+non-identified. I do not bound it, do not read it causally, and do not
+let it carry weight in the paper's conclusions. The identified result is
+the mortality null; the ICSAP series is informative only as a description
+of where the exposed municipalities were already heading.

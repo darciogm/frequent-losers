@@ -39,7 +39,7 @@ TAB_DIR <- file.path(ROOT, "01_manuscript", "tables")
 cat("==== begin causal forest (R3) ====\n")
 t0 <- Sys.time()
 
-# ---- carregar painel staggered F5 main ----
+# ---- carregar painel staggered F5 measurement ----
 panel <- as.data.table(read_parquet(file.path(INTER, "staggered_panel_F5_main.parquet")))
 cat("painel rows:", nrow(panel), "\n")
 

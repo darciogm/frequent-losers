@@ -2,7 +2,7 @@
 # 34_robustness_battery.R
 #
 # S6 — bateria completa de robustness sobre o resultado main do S5
-# (F5 main, 60 closures, Sun-Abraham, travel_burden + ICSAP × E1).
+# (F5 measurement, 60 closures, Sun-Abraham, travel_burden + ICSAP × E1).
 #
 # Specs:
 #   §6.1  alt thresholds θ_emb ∈ {0.01, 0.05, 0.10, 0.25}
@@ -247,7 +247,7 @@ make_row <- function(r) {
 tab <- c(
   "\\begin{table}[h!]",
   "\\centering",
-  "\\caption{Robustness battery (S6): event-study ATT estimates under alternative thresholds, estimators, sample restrictions, and exposure definitions. All specifications use Sun-Abraham unless otherwise noted; cluster-robust SE at municipality level. Reference (main): F5 panel, 60 closures, $\\theta_{\\text{emb}}=0.05$.}",
+  "\\caption{Robustness battery for the F5 measurement sample: event-study ATT estimates under alternative thresholds, estimators, sample restrictions, and exposure definitions. All specifications use Sun-Abraham unless otherwise noted; cluster-robust SE at municipality level. Reference: F5 measurement panel, 60 closures, $\\theta_{\\text{emb}}=0.05$.}",
   "\\label{tab:robustness}",
   "\\small",
   "\\begin{tabular}{llrrr}",

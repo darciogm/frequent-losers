@@ -101,9 +101,55 @@ declare -a STEPS=(
   "D2|R|03_analysis/D2_psych_gate.R|Pre-trend gate on psychiatric outcomes (diagnostic)"
   "D3|python|03_analysis/D3_pnash_power.py|PNASH power: pnash48 + psymax60 closure panels"
   "D4|python|03_analysis/D4_extend_pop_rebuild.py|Backfill pop 2010-14, rebuild *_ext panels"
+  "49|python|03_analysis/49_audit_project_state.py|Revision audit: repo/manuscript/data/output map"
+  "50|python|03_analysis/50_build_master_sample_table.py|Revision audit: master samples + PNASH event diagnostics"
+  "51|python|03_analysis/51_build_exposure_variants.py|Revision audit: exposure variants and diagnostics"
+  "61|python|03_analysis/61_resolve_remaining_data_caveats.py|Revision audit: resolve local data caveats"
+  "52|python|03_analysis/52_revision_measurement_diagnostics.py|Revision audit: distance, decomposition, spillover, LLM diagnostics"
+  "53|R|03_analysis/53_raw_means_revision.R|Revision robustness: raw means"
+  "54|R|03_analysis/54_fe_sensitivity_revision.R|Revision robustness: FE sensitivity"
+  "55|R|03_analysis/55_mortality_scaling_mde_revision.R|Revision robustness: mortality scaling and MDE"
+  "56|R|03_analysis/56_heterogeneity_dependence_revision.R|Revision robustness: dependence heterogeneity"
+  "57|R|03_analysis/57_postpandemic_exclusion_revision.R|Revision robustness: post-pandemic closure exclusion"
+  "58|R|03_analysis/58_honestdid_mortality_revision.R|Revision robustness: HonestDiD mortality sensitivity"
+  "59|R|03_analysis/59_exposure_distance_variant_eventstudies.R|Revision robustness: exposure/distance variant event studies"
+  "60|R|03_analysis/60_leave_one_closure_out_revision.R|Revision robustness: leave-one-closure-out inference"
+  "66|R|03_analysis/66_anticipation_renorm.R|ID hardening: anticipation re-normalization (e=-2,-3)"
+  "67|R|03_analysis/67_illdefined_placebo.R|ID hardening: R96-R99 ill-defined-cause placebo"
+  "68|R|03_analysis/68_goodman_bacon.R|ID hardening: Goodman-Bacon decomposition of TWFE"
+  "69a|python|03_analysis/69_recipient_control_spillover.py|ID hardening: recipient-control flow construction (DuckDB)"
+  "69|R|03_analysis/69_recipient_control_spillover.R|ID hardening: recipient-control spillover bound"
+  "70a|python|03_analysis/70a_build_lococor.py|ID hardening: build LOCOCOR place-of-occurrence counts"
+  "70|R|03_analysis/70_lococor_displacement.R|ID hardening: mechanical death-displacement check"
+  "71|R|03_analysis/71_id_hardening_figures.R|ID hardening: appendix event-study figures (spillover, displacement)"
+  "75|R|03_analysis/75_psych_admissions_result.R|Featured result: inpatient psychiatric admissions event study + figure"
+  "76|R|03_analysis/76_synthetic_control_leg.R|ID design: synthetic-DiD second identification leg (suicide null)"
+  "77|R|03_analysis/77_doubly_robust_selection.R|ID design: doubly-robust CS + selection-into-timing test"
+  "78|R|03_analysis/78_triple_difference_placebo.R|ID check (negative): triple-difference vs placebo cause (inconclusive)"
+  "79|R|03_analysis/79_reimbursement_bartik.R|ID check (negative): reimbursement-exposure Bartik first stage (weak, dropped)"
+  "80|R|03_analysis/80_spec_curve.R|Presentation: specification curve for the suicide ATT (consolidates robustness)"
+  "81|R|03_analysis/81_pnash_strict_window.R|ID upgrade: strict exact +/-1yr PNASH-window robustness (37 closures)"
+  "82|python|03_analysis/82_enrich_pnash_event_level.py|ID upgrade: closure-level PNASH event table (audit all 48 events)"
+  "83|R|03_analysis/83_preclosure_timing_tests.R|ID upgrade: pre-closure timing-predictor tests"
+  "84|R|03_analysis/84_honestdid_sensitivity.R|ID upgrade: HonestDiD reconciled to headline + ICSAP placebo"
+  "85|R|03_analysis/85_sdid_full.R|ID upgrade: fully-documented synthetic DiD (suicide + self-harm + diagnostics)"
+  "86|R|03_analysis/86_caps_heterogeneity.R|ID upgrade: baseline-CAPS heterogeneity / outpatient-substitution limit"
+  "87a|python|03_analysis/87a_build_distinct_spillover_flags.py|ID upgrade: build genuinely distinct contamination flags"
+  "87|R|03_analysis/87_spillover_distinct_flags.R|ID upgrade: de-aliased spillover sensitivity table"
+  "88|python|03_analysis/88_psych_displacement_decomposition.py|Mechanism: psychiatric displacement decomposition (where inpatient use goes)"
+  "90|python|03_analysis/90_build_other_hosp_psych_panel.py|Mechanism: build other-hospital psychiatric admissions panel"
+  "91|R|03_analysis/91_other_hosp_event_study.R|Mechanism: causal event study of non-absorption by other hospitals"
+  "63|python|03_analysis/63_closure_sample_architecture.py|Closure-sample architecture: F5 measurement, PNASH causal, contrast and diagnostics"
+  "64|R|03_analysis/64_estimate_first_stage_by_sample.R|First-stage travel burden by closure sample"
+  "65|python|03_analysis/check_sample_consistency.py|Sample consistency audit"
   "D5|R|03_analysis/D5_make_mortality_results.R|Mortality-null table + event-study figures"
+  "62|python|03_analysis/62_format_legacy_tables.py|Format legacy LaTeX tables"
   "D6|R|03_analysis/D6_make_values.R|Generate values.tex (single source of truth)"
   "D7|R|03_analysis/D7_inference.R|UF-cluster + randomization inference on suicide null"
+  "72|python|03_analysis/72_jhe_submission_tables.py|JHE package: balance, PNASH timing, variants, bounds, influence"
+  "73|R|03_analysis/73_jhe_spillover_sensitivity.R|JHE package: network spillover mortality sensitivity"
+  "74|python|03_analysis/74_jhe_compression_package.py|JHE final compression tables and online appendix support"
+  "65b|python|03_analysis/check_sample_consistency.py|Final sample consistency audit"
 )
 
 # ---- run ----
@@ -125,7 +171,12 @@ for entry in "${STEPS[@]}"; do
   echo "============================================================"
   T0=$SECONDS
   case "$INTERP" in
-    python) python "$SCRIPT" ;;
+    python)
+      if command -v python >/dev/null 2>&1; then
+        python "$SCRIPT"
+      else
+        python3 "$SCRIPT"
+      fi ;;
     R)      Rscript "$SCRIPT" ;;
     *)      echo "unknown interpreter $INTERP for $ID"; exit 1 ;;
   esac

@@ -1,4 +1,4 @@
-\section{Closure filter cascade ($F1$--$F6$)}
+\section{\texorpdfstring{Closure filter cascade ($F1$--$F6$)}{Closure filter cascade (F1--F6)}}
 \label{app:filter}
 
 The closure sample is constructed from the universe of $3{,}518$ CNES
@@ -7,7 +7,7 @@ $2010$ and $2023$. Most of these are not hospital closures in any
 economically meaningful sense: small clinics, day units, and registry
 artefacts where the same legal entity continues to operate under a
 different CNES code. We apply five sequential statistical filters
-($F1$ through $F5$) to obtain the F5 main sample of $\valFiltFive$ exogenous
+($F1$ through $F5$) to obtain the F5 measurement sample of $\valFiltFive$ analyzed
 closures, and a sixth NLP-documented filter ($F6$) to define the
 robustness sub-sample of $\valFiltSix$ closures.
 
@@ -30,7 +30,7 @@ F3  & + $\geq 30$ SUS-contracted beds in pre-closure year & $\valFiltThree$ \\
 F4  & + $\geq 100$ admissions in pre-closure year & $\valFiltFour$ \\
 F5  & + ratio$_{\text{pre}} \geq 0.50$ (no $> 50\%$ admission decline pre-closure) & $\mathbf{\valFiltFive}$ \\
 \midrule
-F6 (v2) & motive $\in$ \{administrativo, fiscal, fal\^encia\} via NLP (App.~D) & $\mathbf{\valFiltSix}$ \\
+F6 (v2) & motive $\in$ \{administrativo, fiscal, fal\^encia\} (App.~D) & $\mathbf{\valFiltSix}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -71,9 +71,9 @@ closure. The filter discards another $30$ events.
 collapse by requiring that the admission count in the year preceding
 closure (year $-1$) be at least $50\%$ of the average over years $-3$
 and $-2$. Closures with admissions trending sharply downward already
-in the pre-period are discarded ($30$ events). The remaining $\valFiltFive$ closures form the F5 main sample.
+in the pre-period are discarded ($30$ events). The remaining $\valFiltFive$ closures form the F5 measurement sample.
 
-\paragraph{Distribution of the F5 main sample.} The geographic
+\paragraph{Distribution of the F5 measurement sample.} The geographic
 distribution concentrates in the Southeast ($37$ events, $62\%$), with
 meaningful presence in the Northeast ($15$, $25\%$) and smaller
 representation in the Center-West ($3$), South ($3$), and North ($2$).
@@ -84,16 +84,16 @@ unit (\texttt{tp\_unid}=62). By closure year: $11$ events in $2012$
 psychiatric reform audit cycles), $4$--$9$ events in each subsequent
 pre-pandemic year, $11$ in $2022$, and $3$ in $2023$.
 
-\paragraph{Filter $F6$.} The NLP classification of declared closure
+\paragraph{Filter $F6$.} The motive classification of declared closure
 motives (Appendix~\ref{app:nlp}) yields $\valFiltSix$ events whose declared
 motive falls in \{administrativo, fiscal, fal\^encia\}. The $9$ events
 dropped relative to F5 are those with motive \texttt{unknown} or where
 Receita Federal cadastral data was not available. The F6 v2 sub-sample
-serves as a motive-documented robustness check on the closure-exogeneity
-filter; because its external validation is incomplete
-(Appendix~\ref{app:nlp-validation}), it informs robustness only and not
-the primary exogeneity argument, which rests on the PNASH calendar and
-the reimbursement freeze (Section~\ref{sec:setting-psiquiatrica}).
+serves as a motive-documented robustness sample; because its external
+validation is incomplete (Appendix~\ref{app:nlp-validation}), it informs
+robustness only and not the primary timing argument, which rests on the
+PNASH calendar and the reimbursement freeze
+(Section~\ref{sec:setting-psiquiatrica}).
 
 \section{Cross-sectional diagnostic in detail}
 \label{app:xs}
@@ -268,8 +268,8 @@ re-training the node2vec model on the same pooled bipartite graph
 under five seeds (\texttt{seeds} $\in \{42, 7, 13, 99, 2024\}$, with
 $42$ as the baseline used throughout the main text). Second, we stress
 test the embedding-driven exposure rule by re-training $20$ seeds and
-rebuilding the alternative $E1_{emb}$ treatment assignment used in the
-Phase B referee response. All other hyperparameters are fixed (dim
+rebuilding the alternative $E1_{emb}$ treatment assignment used only as
+a diagnostic sensitivity exercise. All other hyperparameters are fixed (dim
 $= 128$, walks $= 10$, walk length $= 20$, window $= 10$, epochs $= 5$,
 $p = q = 1$).
 
@@ -368,11 +368,12 @@ mechanically alter the baseline E1 design.
     \label{fig:seed-att-distribution}
 \end{figure}
 
-\section{NLP classification protocol}
+\section{Documentary motive-classification protocol}
 \label{app:nlp}
 
-This appendix documents the LLM-based classification of declared
-closure motives that defines the F6 sub-sample.
+This appendix documents the classification of declared closure motives
+from documentary sources. The labels define the F6 robustness
+sub-sample; they are not an identifying assumption in the main design.
 
 \paragraph{Pipeline overview.} For each of the $90$ candidate closures
 ($60$ F5-survivors plus $30$ F5-recovery candidates from the
@@ -409,11 +410,11 @@ classifications byte-for-byte.
 
 \paragraph{Distribution of classifications.}
 Table~\ref{tab:nlp-distribution} reports the cross-tabulation of
-NLP-classified motive against \texttt{tp\_unid}.
+classified motive against \texttt{tp\_unid}.
 
 \begin{table}[h!]
 \centering
-\caption{Distribution of NLP-classified closure motives by
+\caption{Distribution of classified closure motives by
 \texttt{tp\_unid}, Sonnet $4.6$ with Receita Federal + web context.
 Confidence is the model's self-reported $1$--$5$ scale.}
 \label{tab:nlp-distribution}
@@ -437,15 +438,15 @@ Total                     & $29$ & $60$ & $1$ & $90$ \\
 the classifier explicitly:
 
 \begin{quote}
+\sloppy
 \small\itshape
 USE the web snippet when available. If it contradicts metadata
 (e.g., Receita ATIVA but snippet documents fechamento real), trust the
 snippet. DO NOT fabricate facts not present in metadata or snippets.
 If snippet is missing AND metadata insufficient, return motivo$=$unknown
 with confidence $\leq 2$. Specific patterns: ``Reforma Psiquiátrica''
-$\to$ administrativo (conf $5$); ``descredenciamento SUS'' $\to$
-administrativo (conf $4$--$5$); ``valor SUS sem reajuste /
-estrangulamento financeiro'' $\to$ administrativo (conf $4$--$5$),
+$\to$ administrativo; ``descredenciamento SUS'' $\to$ administrativo;
+``valor SUS sem reajuste / estrangulamento financeiro'' $\to$ administrativo,
 because this is institutional insolvency caused by federal policy, not
 local demand. ``CNPJ BAIXADA'' alone $\to$ fal\^encia (conf $4$).
 ``CNPJ INAPTA'' alone $\to$ fiscal (conf $3$--$4$).
@@ -458,31 +459,15 @@ policy) as a demand-driven exit rather than as an administrative
 closure. The full prompt and the per-CNES output (with retrieved
 URLs and evidence flags) are in the replication package.
 
-\paragraph{Human-in-the-loop validation.} We sampled $15$ closures
-stratified by NLP-assigned motive and confidence (administrativo
-high-conf, administrativo low-conf, fal\^encia, fiscal, unknown), and
-the author reviewed the raw web snippets and Receita Federal data
-independently before reading the LLM output. Inter-rater agreement
-was full-class agreement on $14/15$ closures. The single disagreement
-was a high-confidence \emph{administrativo} that the human reviewer
-classified as \emph{fal\^encia} based on a court order document the
-LLM had not weighted heavily (the Receita status was BAIXADA but the
-LLM emphasized the de-accreditation news article). Cohen's $\kappa$
-on the eight-element schema is approximately $0.86$, in the
-near-perfect agreement range. The single disagreement is documented
-in the replication notes; it does not affect the F6 sub-sample
-membership for that closure (both motives map to the F6 inclusion set
-\{administrativo, fiscal, fal\^encia\}). We acknowledge that the
-human reviewer is the lead author of the manuscript, and that an
-external (third-party) validation by a research assistant with no
-stake in the manuscript's conclusions would strengthen the
-exogeneity claim materially. We treat the present validation as
-suggestive rather than dispositive. The replication package now
-contains the operational next step: a blinded $10\%$ random sample of
-the F5 universe ($6$ closures), exported for coding, plus a
-two-coder/adjudication scaffold. Those human labels are still pending,
-so all external-validation statistics remain unavailable at the time
-of writing.
+\paragraph{Validation status.} The classification has internal
+consistency checks and cached source traces, but completed external
+human validation is not yet available. The replication package contains
+a blinded $10\%$ random sample of the F5 universe ($6$ closures),
+exported for coding, plus a two-coder/adjudication scaffold. Those human
+labels are not yet available, so all external-validation agreement
+statistics remain unavailable at the time of writing. For that reason,
+the motive labels organize documentary evidence and define robustness
+sub-samples only; they do not support the main identification claim.
 
 \paragraph{Selection in unknowns.} The $38$ \texttt{unknown}
 classifications are not random: closures from $2022$--$2023$ are
@@ -493,7 +478,7 @@ The $9$ closures dropped relative to F5 (within F6) are skewed toward
 post-pandemic events, which may differ on observable characteristics.
 We re-ran the main F5 ATT estimates restricting to closures from
 $2012$--$2018$ (the pre-pandemic cohorts) and obtain results
-qualitatively unchanged from the full F5 main: travel burden under E1
+qualitatively unchanged from the full F5 measurement sample: travel burden under E1
 is approximately $-5.2$~km versus the headline $-5.84$~km, and the
 ICSAP under E1 is approximately $+0.95$~per~$1{,}000$ versus the
 headline $+1.18$. The post-pandemic cohorts contribute marginally to
@@ -574,7 +559,7 @@ generate.
     \label{fig:perturbation-zhist}
 \end{figure}
 
-\paragraph{Threshold sensitivity (re-confirming Section~\ref{sec:robustness}.7).}
+\paragraph{Threshold sensitivity (re-confirming the exposure-rule sensitivity of Section~\ref{sec:robustness}).}
 Re-defining E1 as $z_m^{(h)} > z^\star$ at thresholds
 $z^\star \in \{1.96, 2.58, 3, 5\}$ produces treated sets of size
 $27{,}428$, $19{,}656$, $16{,}061$, and $8{,}950$ municipality--closure
@@ -584,7 +569,7 @@ municipalities ever-treated under each threshold, the treated set
 remains $> 4{,}500$ municipalities at $z^\star = 5$, confirming that
 the perturbation diffuses too broadly to define a discriminating
 binary exposure. The procedure's role in the analysis is therefore
-the validation of the conceptual content of E1
+diagnostic support for the conceptual content of E1
 (Section~\ref{app:stability}), not as an alternative
 operationalization.
 
@@ -611,17 +596,13 @@ $42$. All other hyperparameters use the \texttt{grf} package defaults
 approximately $25$~seconds per outcome on the workstation described in
 Appendix~\ref{app:replication}.
 
-\paragraph{Treatment, outcome, and feature vector.} Concretely:
-$W_m = 1\{m \text{ is flow-exposed by any
-closure with } g_m \in [2012, 2018]\}$; $\Delta Y_m = \overline{Y}_{m,
-[2018, 2023]} - \overline{Y}_{m, [2010, 2015]}$ for the two outcomes
-(travel burden in km, ICSAP rate per $1{,}000$); the feature vector
-$X_m$ collects the standardized embedding-revealed isolation, the
-standardized km-revealed isolation, the divergence
-$\Delta_m = \mathrm{iso}^{\mathrm{emb}}_m -
-\mathrm{iso}^{\mathrm{km}}_m$, log-population, log-GDP, the share of
-deaths recorded with ill-defined cause (R96--R99 ICD-10 codes), and
-$26$ Federation-Unit dummies.
+\paragraph{Treatment, outcome, and feature vector.} The treatment is
+$W_m = 1$ when municipality $m$ is flow-exposed to any closure with
+$g_m \in [2012, 2018]$. The outcome is the post-minus-pre difference
+$\Delta Y_m$ for travel burden and ICSAP. The feature vector $X_m$
+contains embedding-revealed isolation, km-revealed isolation, their
+difference, log-population, log-GDP, the ill-defined-death share
+(ICD-10 R96--R99), and $26$ Federation-Unit dummies.
 
 \paragraph{Variable importance ranking.} The full ordered variable
 importance for both outcomes is reported in
@@ -740,7 +721,7 @@ onto the identifiable subspace.
 
 \paragraph{Cohort-specific group estimates (sensitivity).} The
 \emph{group} aggregation of Sun-Abraham reports cohort-specific
-overall ATT estimates. For travel burden under the F5 main specification,
+overall ATT estimates. For travel burden under the F5 measurement specification,
 the cohort estimates range from $-2.1$~km (cohort $2014$) to $-9.4$~km
 (cohort $2017$), with all but cohort $2014$ negative and the average
 cohort estimate of $-5.7$~km within $3\%$ of the simple ATT of
@@ -775,7 +756,7 @@ device.
 
 \paragraph{Estimation.} We re-run the staggered Sun-Abraham specification
 of Section~\ref{sec:method-estimator} with $Y_{m, t}$ as the outcome on the
-F5 main panel, using the flow exposure rule. The simple ATT is
+F5 measurement panel, using the flow exposure rule. The simple ATT is
 approximately $+0.3$~percentage points ($\mathrm{SE} \approx 0.5$), not
 statistically distinguishable from zero. We report it as an additional,
 underpowered check on a cardiac-mortality margin computed at the
@@ -786,8 +767,9 @@ trajectories are in the replication package.
 
 \paragraph{How the outcomes fit together.} The identified result is the
 suicide and self-harm mortality null (Section~\ref{sec:results-mortality}).
-The first-stage travel-burden effect validates that the flow exposure
-rule isolates genuinely dependent populations. ICSAP is reported as a
+The first-stage travel-burden effect shows that the flow exposure rule
+isolates populations with realized utilization ties to the closing
+hospital. ICSAP is reported as a
 non-identified outcome (its pre-trend rejects;
 Section~\ref{sec:results-icsap}), and the AMI in-hospital mortality here
 is an underpowered auxiliary check. No outcome contradicts the mortality
@@ -847,7 +829,7 @@ approximately zero in expectation. We do not correct for this.
 \paragraph{Recommendation for replication.} Studies that depend
 substantively on within-municipality geographic precision should
 consider full hospital geocoding via the CEP register. The replication
-package includes a placeholder \texttt{lookup\_cep.py} script that
+package includes a \texttt{lookup\_cep.py} helper script that
 demonstrates the API call pattern (BrasilAPI's CEP endpoint, free)
 and would need to be run as a one-time preprocessing step. The runtime
 is approximately one hour for the $\sim 30{,}000$ unique hospital
@@ -952,7 +934,7 @@ $1.00$ & $-12.00$ & $+12.00$ & no \\
 \end{tabular}
 \\[0.5em]
 \begin{minipage}{0.95\textwidth}
-\footnotesize Notes: ICSAP post-period average ATT, F5 main panel,
+\footnotesize Notes: ICSAP post-period average ATT, F5 measurement panel,
 under E1 exposure, equal weighting across $9$ post-period coefficients
 ($e \in [0, +8]$). Re-estimated point estimate $0.955$ per $1{,}000$
 under the did2s event-study ($\mathrm{SE} = 0.60$, classical $95\%$
@@ -974,7 +956,7 @@ sensitivity sweep underlying Figure~\ref{fig:theta-sweep}.
     \includegraphics[width=0.8\textwidth]{../04_figures/fig_theta_sweep.pdf}
     \caption{Continuous exposure-threshold sweep. Sun-Abraham simple ATT
     (point) with $95\%$ cluster-robust CI (whisker) at $\theta \in
-    \{0.01, \ldots, 0.20\}$ on the F5 panel; top, travel burden (km);
+    \{0.01, \ldots, 0.20\}$ on the F5 measurement panel; top, travel burden (km);
     bottom, ICSAP per $1{,}000$. The default $\theta = 0.05$ is marked.
     The first-stage travel effect is negative and significant for
     $\theta \in [0.01, 0.12]$.}
@@ -983,7 +965,7 @@ sensitivity sweep underlying Figure~\ref{fig:theta-sweep}.
 
 For each
 threshold $\theta \in \{0.01, 0.02, \ldots, 0.20\}$, we recompute the
-E1 exposure rule, restrict the F5 main panel accordingly, and
+E1 exposure rule, restrict the F5 measurement panel accordingly, and
 re-estimate the Sun-Abraham simple ATT. The travel-burden estimate
 is significant at $p < 0.05$ for $\theta \in [0.01, 0.12]$. Beyond
 $\theta = 0.13$ the treated set falls below $n_{\text{tr}} = 16$ and
@@ -993,7 +975,7 @@ range of stable inference.
 
 \begin{table}[h!]
 \centering
-\caption{Continuous threshold sensitivity sweep, F5 main.}
+\caption{Continuous threshold sensitivity sweep, F5 measurement sample.}
 \label{tab:theta-sweep}
 \begin{tabular}{lrrrrrr}
 \toprule
@@ -1085,11 +1067,12 @@ divergence at $11\%$. The ranking does not align cleanly with the
 travel-burden ranking and does not, given the non-significant
 calibration test, support any substantive interpretation.
 
-\section{NLP classification: external validation status}
+\section{Motive classification: external validation status}
 \label{app:nlp-validation}
 
-The exogeneity defense for the robustness sub-sample rests on a zero-shot LLM
-classification of declared closure motives. The internal validation
+The motive labels organize documentary evidence and define robustness
+sub-samples; they are not an identifying assumption. The internal
+consistency
 metrics reported in Section~\ref{app:nlp} (Cohen's $\kappa
 \approx 0.86$ between LLM and a within-LLM second pass; $94\%$ of
 classifications retrievably citing a public source) measure
@@ -1103,19 +1086,79 @@ package now includes (i)~\texttt{notes/external\_validation\_protocol.md},
 (iii)~\texttt{closures\_human\_validated.parquet}, a two-coder scaffold
 with adjudication fields. At present, however, the human-label cells in
 that scaffold are empty; Table~\ref{tab:motive_validation} therefore
-reports zero completed coder fields and leaves the agreement metrics
-pending. As a
-temporary lower-bound check, we also drop two fragile subclasses from
+reports zero completed coder fields and does not report agreement
+metrics. As a
+conservative lower-bound check, we also drop two fragile subclasses from
 F6: labels resting on stale Receita status and labels resting only on
 web snippets without timely administrative corroboration. That screen
 retains $35$ non-fragile closures, corresponding to $61$ E1-treated
 municipalities. The resulting travel-burden ATT is $-6.03$~km
 ($\mathrm{SE}=3.17$) and the ICSAP ATT is $+0.21$ per $1{,}000$
 ($\mathrm{SE}=0.77$). The travel result therefore remains
-direction-consistent but imprecise, while the ICSAP corroboration
-disappears until human validation is completed.
+direction-consistent but imprecise, while the ICSAP pattern is not
+stable enough to interpret.
 
 \input{tables/tab_motive_validation.tex}
+
+\section{Revision diagnostics: samples, exposure, and sensitivity}
+\label{app:revision-diagnostics}
+
+This appendix collects additional diagnostics used to assess the design.
+The tables are generated by numbered revision scripts in
+\texttt{03\_analysis/}; they document sample
+construction, pre-treatment checks, exposure measurement, distance
+benchmarks, first-stage decomposition, spillover flags, mortality
+scaling, sensitivity to parallel-trend violations, and dependence
+heterogeneity.
+
+\input{tables/table_event_level_pnash.tex}
+\input{tables/table_preclosure_sih_covariates.tex}
+\input{tables/table_preclosure_predictors.tex}
+\input{tables/table_balance_true_preperiod.tex}
+\input{tables/table_exposure_definition_diagnostics.tex}
+\input{tables/table_top_substitute_hospitals.tex}
+\input{tables/table_llm_validation_status.tex}
+\input{tables/tab_fe_sensitivity_revision.tex}
+\input{tables/tab_mortality_scaling_mde_revision.tex}
+\input{tables/tab_heterogeneity_dependence_revision.tex}
+\input{tables/tab_postpandemic_exclusion_revision.tex}
+\input{tables/table_honestdid_mortality.tex}
+The HonestDiD results are computed from the installed
+\texttt{HonestDiD} package and the event-study covariance matrix. They
+are a sensitivity check: the $\bar M=1$ intervals are intentionally wide
+and should be read as showing how little precision remains under large
+relative deviations from parallel trends.
+\input{tables/table_exposure_distance_variant_eventstudies.tex}
+\input{tables/table_closure_level_inference.tex}
+\input{tables/table_remaining_data_caveats.tex}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../04_figures/fig_honestdid_suicide.pdf}
+    \caption{HonestDiD relative-magnitude sensitivity for suicide mortality.}
+    \label{fig:honestdid-suicide}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../04_figures/fig_honestdid_selfharm.pdf}
+    \caption{HonestDiD relative-magnitude sensitivity for self-harm mortality.}
+    \label{fig:honestdid-selfharm}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../04_figures/fig_leave_one_closure_out_suicide.pdf}
+    \caption{Leave-one-closure-catchment-out estimates for suicide mortality.}
+    \label{fig:leave-one-closure-suicide}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../04_figures/fig_leave_one_closure_out_selfharm.pdf}
+    \caption{Leave-one-closure-catchment-out estimates for self-harm mortality.}
+    \label{fig:leave-one-closure-selfharm}
+\end{figure}
 
 \section{Replication notes}
 \label{app:replication}
@@ -1140,13 +1183,11 @@ called once and cached afterward, both with the cache shipped in the
 repository:
 
 \begin{itemize}
-    \item \emph{BrasilAPI} (Receita Federal CNPJ public endpoint).
-    Cached in \texttt{02\_data/intermediate/cnpj\_cache.sqlite}.
-    \item \emph{Anthropic Claude API} (zero-shot classifier). Cached in
-    \texttt{02\_data/intermediate/llm\_classify\_cache.sqlite} (Haiku
-    v1) and \texttt{llm\_classify\_cache\_v2.sqlite} (Sonnet v2 with
-    web context). Total spend for the published classifications was
-    approximately \$$0.85$.
+    \item \emph{BrasilAPI} (Receita Federal CNPJ public endpoint);
+    cached in \path{02_data/intermediate/cnpj_cache.sqlite}.
+    \item \emph{Anthropic Claude API} (zero-shot classifier); cached in
+    two SQLite files under \path{02_data/intermediate/}. Total spend for
+    the published classifications was approximately \$$0.85$.
 \end{itemize}
 
 The \texttt{web\_snippets/} folder contains the per-closure JSON

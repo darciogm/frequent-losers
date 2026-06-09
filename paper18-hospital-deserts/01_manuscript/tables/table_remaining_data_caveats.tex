@@ -1,0 +1,22 @@
+\begin{table}[!htbp]\centering
+\caption{Resolution status of remaining data caveats}
+\label{tab:remaining-data-caveats}
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{0.25\textwidth}p{0.2\textwidth}p{0.5\textwidth}}
+\toprule
+Item & Status & Resolution \\
+\midrule
+Closing-CNES psychiatric admissions and bed-days & resolved & `03\_analysis/61\_resolve\_remaining\_data\_caveats.py` rebuilds them from SIH `DIAG\_PRINC`, `DIAS\_PERM`, and `VAL\_TOT`. \\
+Mental-health exposure denominator & resolved & `03\_analysis/51\_build\_exposure\_variants.py` now adds ICD-10 F plus X60--X84/Y87.0 admissions. \\
+Unique psychiatric patients & not observable in public SIH & The public SIH files expose AIH episodes, not stable person identifiers; the paper reports episode-scaled bounds. \\
+CAPS coverage & resolved as CNES-ST facility proxy & `02\_data/processed/cnes\_caps\_cir\_municipality\_year.parquet` counts CNES-ST `TP\_UNID=70` facilities by municipality-year using December files. \\
+FHS/primary-care coverage & requires external e-Gestor/SISAB source & CNES-PF local files exist (724 files) but are partial from 2015 onward and do not provide a national 2010--2017 coverage series. \\
+Private insurance penetration & requires external ANS source & No ANS municipal beneficiary panel is present locally. \\
+Fiscal capacity / SICONFI & requires external SICONFI source & IBGE municipal GDP is present and used; municipal revenue/expenditure series are not local. \\
+CIR / health-region mapping & resolved as CNES-ST modal proxy & `02\_data/processed/cnes\_caps\_cir\_municipality\_year.parquet` reports modal CNES-ST `REGSAUDE` by municipality-year; an official relationship table remains preferable. \\
+Routed road travel time & not resolved locally & `02\_data/intermediate/osrm\_travel\_time\_panel.metadata.json` documents a fallback proxy rather than a routed OSRM matrix. \\
+\bottomrule
+\end{tabular}
+}%
+\end{table}

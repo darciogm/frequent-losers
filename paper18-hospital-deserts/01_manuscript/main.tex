@@ -24,7 +24,7 @@
   linkcolor=MidnightBlue,
   citecolor=MidnightBlue,
   urlcolor=MidnightBlue,
-  pdftitle={Closure Without Catastrophe: Patient-Flow Exposure and the Mortality Effects of Psychiatric Deinstitutionalization in Brazil},
+  pdftitle={Where Patients Go When a Hospital Closes: Evidence from Brazil},
   pdfauthor={Darcio Genicolo-Martins}
 }
 \usepackage{microtype}
@@ -32,6 +32,7 @@
 % Auto-generated numeric macros (single source of truth; see 03_analysis/D6_make_values.R)
 \input{values.tex}
 \input{values_inference.tex}
+\input{values_displacement.tex}
 
 % spacing
 \onehalfspacing
@@ -42,13 +43,11 @@
 \newcommand{\isokm}{\mathrm{iso}^{km}}
 \newcommand{\isoemb}{\mathrm{iso}^{emb}}
 
-\title{\textbf{Closure Without Catastrophe:\\
-Patient-Flow Exposure and the Mortality Effects of\\
-Psychiatric Deinstitutionalization in Brazil}}
+\title{\textbf{Where Patients Go When a Hospital Closes:\\
+Evidence from Brazil}}
 
 \author{Darcio Genicolo-Martins\thanks{Insper. Email: \texttt{darcio.g.martins@gmail.com}.
-Working paper, comments welcome. Replication code, pipeline, and
-cached LLM/CNPJ classifications:
+Working paper, comments welcome. Replication code and pipeline:
 \url{https://github.com/darciogm/bitter-pills/tree/main/paper18-hospital-deserts}.}}
 
 \date{\today}
@@ -58,31 +57,29 @@ cached LLM/CNPJ classifications:
 
 \begin{abstract}
 \noindent
-Critics of psychiatric deinstitutionalization warned that closing
-hospitals would raise patient mortality. Testing this requires knowing
-who actually depended on a closing hospital, and where patients cross
-municipal borders for specialized care the distance-based exposure rule
-standard in the closure literature misidentifies them---misclassifying
-$\valNmisclass$ of the $\valNunionPairs$ municipality--closure pairs in
-our sample. We replace it with a patient-flow exposure rule built from
-$\valNadmissions$ million Brazilian SUS admissions and estimate effects
-on $\valNclosuresPnash$ PNASH-driven psychiatric closures with a staggered
-event study, testing pre-trends on data back to $2010$. A first stage
-validates the rule: travel burden falls $\valTravAbs$~km after closure,
-twice what distance-based exposure detects. For the feared outcome we
-find no harm---suicide mortality changes by $\valSuicWAtt$ per
-$100{,}000$ (95\% CI $[\valSuicWLo, \valSuicWHi]$), ruling out the large
-increases critics predicted, and self-harm is likewise null. We are
-candid about a limit: preventable hospitalizations were already rising
-before closure, so we do not read them causally. The catastrophe
-predicted for Brazil's psychiatric reform does not appear among the
-populations that bore the closures---the ones a distance-based analysis
-would have missed.
+When a hospital closes, the towns that lose access are usually defined by
+distance: the residents nearest the facility. In public referral networks,
+where patients cross borders for care, that rule names the wrong towns.
+Using Brazilian SUS inpatient records, I define each closure's exposed
+population from revealed pre-closure patient flows. Across
+$\valNexoClosures$ closures, the flow and distance rules disagree on
+$\valNmisclass$ of $\valNunionPairs$ municipality--closure pairs: distance
+misses the towns that traveled to the hospital and flags nearer ones that
+never used it. Applying the flow design to $\valNclosuresPnash$ psychiatric
+closures in a staggered event study, the referral link breaks: inpatient
+psychiatric admissions fall by $\valPsychAdmPct\%$, a net loss of inpatient
+psychiatric care rather than a reallocation to other hospitals, which do not
+measurably absorb the lost inpatient volume; I find no evidence of large
+acute increases in suicide or self-harm mortality, with the suicide bound
+excluding increases above roughly one-quarter of baseline---a bounded null
+that holds across specifications and under a synthetic
+difference-in-differences design. The design ports to
+provider-loss settings with administrative data.
 
 \medskip
 \noindent\textbf{Keywords:} hospital closures, deinstitutionalization,
 patient-flow exposure, mortality, suicide, staggered
-difference-in-differences, SUS, Brazil.
+difference-in-differences, Brazil.
 
 \medskip
 \noindent\textbf{JEL:} I18, I14, I11, H75.
@@ -108,9 +105,38 @@ difference-in-differences, SUS, Brazil.
 
 \input{conclusion.tex}
 
-\bibliography{references}
+% =====================================================================
+% Submission declarations (JHE / Elsevier)
+% =====================================================================
+\section*{Declarations}
 
-\appendix
-\input{appendix.tex}
+\paragraph{Declaration of competing interest.} The author declares no
+competing financial or personal interests that could have influenced the
+work reported in this paper.
+
+\paragraph{Funding.} % TODO[author]: state the actual funding source, or keep the no-funding wording below.
+This research received no specific grant from any funding agency in the
+public, commercial, or not-for-profit sectors.
+
+\paragraph{Data availability.} All data are public secondary administrative
+records. Inpatient admissions (SIH-RD), mortality (SIM), and establishment
+(CNES) microdata are distributed by DATASUS
+(\url{https://datasus.saude.gov.br}); municipal population, GDP, and
+boundary files are from IBGE (\url{https://www.ibge.gov.br}). No individual
+can be identified from these aggregated records. The code that downloads
+the raw files and reproduces every table and figure, with a numbered
+pipeline and environment specification, is available at
+\url{https://github.com/darciogm/bitter-pills/tree/main/paper18-hospital-deserts}.
+
+\paragraph{CRediT author statement.} \textbf{Darcio Genicolo-Martins:}
+Conceptualization, Data curation, Formal analysis, Methodology, Software,
+Visualization, Writing -- original draft, Writing -- review \& editing.
+
+\paragraph{Generative AI disclosure.} % TODO[author]: confirm or revise wording per Elsevier policy before submission.
+During the preparation of this work the author used AI-assisted tools for
+code scaffolding and language editing. The author reviewed and edited all
+content and takes full responsibility for the contents of the publication.
+
+\bibliography{references}
 
 \end{document}
