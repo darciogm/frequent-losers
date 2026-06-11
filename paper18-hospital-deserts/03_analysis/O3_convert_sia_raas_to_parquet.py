@@ -133,22 +133,39 @@ def _sanitize_record(rec: dict) -> dict:
     return out
 
 
-def read_dbc_records(dbc_path: Path) -> list[dict]:
+# chunk de streaming: 250k dicts ≈ 0.5-1 GB transitório. Materializar o DBF
+# inteiro como lista de dicts estourava 15 GB nas partes multi-part de SP.
+STREAM_CHUNK = 250_000
+
+
+def read_dbc_frames(dbc_path: Path) -> list[pl.DataFrame]:
     """
-    Lê 1 .dbc -> lista de dicts. Primário: dbfread latin1. Fallback em QUALQUER
-    exceção: raw=True + saneamento manual de bytes.
+    Lê 1 .dbc -> lista de DataFrames (1 por chunk de STREAM_CHUNK registros).
+    Primário: dbfread latin1. Fallback em QUALQUER exceção (mesmo no meio do
+    stream): recomeça o arquivo inteiro com raw=True + saneamento de bytes —
+    mesma semântica do caminho antigo, que relia tudo no fallback.
     """
     dbf_path = dbc_path.with_suffix(".dbf")
     dbc2dbf(str(dbc_path).encode("utf-8"), str(dbf_path).encode("utf-8"))
+
+    def stream(raw: bool) -> list[pl.DataFrame]:
+        frames, buf = [], []
+        for r in dbfread.DBF(str(dbf_path), encoding="latin1", raw=raw):
+            buf.append(_sanitize_record(dict(r)) if raw else dict(r))
+            if len(buf) >= STREAM_CHUNK:
+                frames.append(pl.DataFrame(buf, infer_schema_length=None))
+                buf.clear()
+        if buf:
+            frames.append(pl.DataFrame(buf, infer_schema_length=None))
+        return frames
+
     try:
         try:
-            recs = [dict(r) for r in dbfread.DBF(str(dbf_path), encoding="latin1")]
+            return stream(raw=False)
         except Exception as e:
             log.warning("DBF latin1 falhou em %s (%s); fallback raw=True",
                         dbc_path.name, e)
-            recs = [_sanitize_record(dict(r))
-                    for r in dbfread.DBF(str(dbf_path), encoding="latin1", raw=True)]
-        return recs
+            return stream(raw=True)
     finally:
         try:
             if dbf_path.exists():
@@ -205,18 +222,30 @@ def convert_one(dbc_path: Path, force: bool) -> tuple[str, int]:
     out.parent.mkdir(parents=True, exist_ok=True)
 
     df = None
+    tmp = out.with_name(out.name + ".tmp")
     try:
-        recs = read_dbc_records(dbc_path)
-        if not recs:
+        frames = read_dbc_frames(dbc_path)
+        if not frames:
             return ("empty", 0)
-        df = pl.DataFrame(recs, infer_schema_length=None)
+        # diagonal_relaxed: reconcilia schema entre chunks (coluna toda-None
+        # num chunk, tipos promovidos noutro)
+        df = frames[0] if len(frames) == 1 else pl.concat(frames, how="diagonal_relaxed")
+        del frames
         df = cast_columns(df)
         df = add_provenance(df, meta, dbc_path.name)
         n = df.height
-        df.write_parquet(out, compression="snappy")
+        # escrita atômica: um kill no meio do write não pode deixar parquet
+        # parcial que o check de skip (size>100) aceitaria como pronto
+        df.write_parquet(tmp, compression="snappy")
+        tmp.replace(out)
         return ("ok", n)
     except Exception as e:
         log.warning("erro convertendo %s: %s", dbc_path.name, e)
+        try:
+            if tmp.exists():
+                tmp.unlink()
+        except Exception:
+            pass
         return ("error", 0)
     finally:
         # memory-safe: largar o frame e forçar GC entre arquivos
