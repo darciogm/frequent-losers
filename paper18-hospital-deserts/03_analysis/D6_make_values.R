@@ -174,6 +174,12 @@ bb <- dP[!is.na(g_emb) & g_emb != 0 & year < g_emb & is.finite(suicide_per100k) 
 popyr <- bb[, .(mp = mean(pop, na.rm = TRUE)), by = muni_id][, sum(mp)]
 v("valSuicDeathsYr", num(su_w$hi / 1e5 * popyr, 0),
   "D6: suicide upper-CI (95%) scaled to deaths/year across exposed catchments")
+v("valSuicBaseDeathsYr", num(su_w$base / 1e5 * popyr, 0),
+  "D6: baseline suicide deaths/year across exposed catchments (rate x pop)")
+v("valSuicAttDeathsYr", num(su_w$att / 1e5 * popyr, 0),
+  "D6: point-estimate suicide deaths/year (ATT scaled across exposed catchments)")
+v("valExposedPopM", num(popyr / 1e6, 1),
+  "D6: exposed-catchment population, millions (pop-weighted mean over treated munis)")
 v("valSelfBaseline", num(se_w$base),
   "D6: pnash48_ext self-harm pre-period treated baseline (pop-wtd)")
 v("valSelfDeathsYr", num(se_w$hi / 1e5 * popyr, 0),
