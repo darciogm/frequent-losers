@@ -198,38 +198,50 @@ volume.
     \centering
     \includegraphics[width=0.62\textwidth]{../04_figures/fig_es_psych_adm.pdf}
     \caption{Inpatient psychiatric admissions fall after closure.
-    Population-weighted staggered Sun-Abraham event study for psychiatric
-    inpatient admissions (ICD-10 F00--F99, residence municipality, any
-    hospital) per $1{,}000$, on the $\valNclosuresPnash$ PNASH-anchored
-    psychiatric closures. Pre-periods are flat; admissions drop sharply at
-    closure and stay down. Bars are $95\%$ cluster-robust confidence
+    Staggered Sun-Abraham Poisson event study for psychiatric inpatient
+    admission counts (ICD-10 F00--F99, residence municipality, any hospital),
+    plotted as percent changes, on the $\valNclosuresPnash$ PNASH-anchored
+    psychiatric closures. The pre-period is economically flat; admissions drop
+    sharply at closure and stay down. Bars are $95\%$ cluster-robust confidence
     intervals.}
     \label{fig:es-psych-adm}
 \end{figure}
 
-\subsection{Causal test of non-absorption}
+\paragraph{The exposure rule changes the estimated dose.}
+Table~\ref{tab:flow-vs-distance-firststage} re-runs the same Poisson first stage
+under the distance rule, on the same closures and municipality universe. The
+distance rule treats more municipalities but lower-use ones---towns near the
+building rather than the towns that used it---so it both mismeasures who is
+exposed and dilutes the estimated decline.
 
-The decomposition is descriptive. To net out trends, I re-estimate the headline
-staggered Sun-Abraham specification with the outcome redefined as inpatient
-psychiatric admissions at hospitals \emph{other} than the focal closing hospital,
-per $1{,}000$ residents. The same specification applied to total admissions
-reproduces the $69\%$ decline; admissions at other hospitals are statistically
-unchanged (Table~\ref{tab:other-hosp-es}, Figure~\ref{fig:es-other-hosp}), so the
-non-absorption is causal, not an artifact of pre-existing trends.
+\input{tables_appendix/table_flow_vs_distance_firststage.tex}
+
+\subsection{Causal test of absorption}
+
+The decomposition is descriptive and carries the secular national decline in
+psychiatric admissions. To net it out, I re-estimate the headline staggered
+Poisson event study with the outcome redefined as inpatient psychiatric
+admission counts at hospitals \emph{other} than the focal closing hospital. The
+same specification on total admissions reproduces the $\valPsychAdmPct\%$
+decline; admissions at other hospitals rise modestly after closure
+(Table~\ref{tab:other-hosp-es}, Figure~\ref{fig:es-other-hosp}), recovering only
+about $\valAbsorbFrac\%$ of the closing hospital's volume---partial absorption,
+net of trends, not the zero the raw means suggest, and far from enough to offset
+the closure.
 
 \input{tables_appendix/table_other_hosp_es.tex}
 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.62\textwidth]{../04_figures/fig_es_other_hosp_psych.pdf}
-    \caption{Other hospitals do not measurably absorb the lost inpatient
+    \caption{Other hospitals absorb only a small share of the lost inpatient
     psychiatric volume.
-    Staggered Sun-Abraham event-study coefficients for total inpatient
-    psychiatric admissions (any hospital) and for admissions at hospitals other
-    than the focal closing hospital, per $1{,}000$ residents, on the PNASH
+    Staggered Sun-Abraham Poisson event-study coefficients (percent changes) for
+    total inpatient psychiatric admission counts (any hospital) and for
+    admissions at hospitals other than the focal closing hospital, on the PNASH
     psychiatric closures. Total admissions fall sharply; other-hospital
-    admissions stay flat through the closure. Bars are $95\%$ cluster-robust
-    confidence intervals.}
+    admissions rise modestly in the first years after closure. Bars are $95\%$
+    cluster-robust confidence intervals.}
     \label{fig:es-other-hosp}
 \end{figure}
 
