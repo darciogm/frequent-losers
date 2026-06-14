@@ -14,16 +14,20 @@ Outcomes (residence municipality, MUNIC_RES / CODMUNRES):
   SIH (DIAG_PRINC):
     psych_adm_per1k    : F00-F99 admissions    (psychiatric inpatient utilization)
 
-Denominator = pop_municipal_2015_2025.parquet (2015+ only -> rates NULL pre-2015,
-mirroring the existing ICSAP/amenable panels; the SunAb pre-period is therefore
-identified off recent cohorts exactly as in the paper).
+Denominator = pop_municipal_2015_2025.parquet (canonical, 2015+) extended back to
+2010-2014 with the SIDRA t6579 estimate (2011-2014 real, 2010 back-extrapolated),
+the same pop_ext D4 applies to the mortality/ICSAP panels. The counts (n_psych_adm,
+SIM deaths) were always computed from 2010; only the pre-2015 denominator was
+missing, which is why psych_adm_per1k used to be NULL pre-2015 and the first-stage
+SunAb pre-period collapsed to a single point. With the extended denominator the
+psychiatric-admission event study carries the same deep pre-periods as mortality.
 
 Outputs:
   02_data/intermediate/psych_outcomes_panel.parquet   (codmun_6, year, 4 rates + counts)
   02_data/intermediate/staggered_panel_spec07.parquet (tp_unid=07 treatment + psych outcomes)
 """
 from __future__ import annotations
-import logging, sys, time
+import argparse, json, logging, sys, time
 from pathlib import Path
 import duckdb
 import polars as pl
@@ -31,6 +35,7 @@ import polars as pl
 ROOT = Path(__file__).resolve().parents[1]
 RAW_SIM = ROOT / "02_data" / "raw" / "sim"
 RAW_SIH = ROOT / "02_data" / "raw" / "sih_rd"
+RAW_IBGE = ROOT / "02_data" / "raw" / "ibge"
 INTER = ROOT / "02_data" / "intermediate"
 LOG = ROOT / "04_logs"
 
@@ -40,6 +45,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger("psych_gate")
 
 POP = INTER / "pop_municipal_2015_2025.parquet"
+SIDRA = RAW_IBGE / "populacao_estimada_6579_2010_2021.json"
 EXP = INTER / "exposure_panel.parquet"
 CLO = INTER / "hospital_closures_exogenous.parquet"
 CENT = INTER / "municipios_centroids.parquet"
@@ -50,6 +56,23 @@ OUT_PANEL = INTER / "staggered_panel_spec07.parquet"
 
 YR_LO, YR_HI = 2010, 2024
 PANDEMIC = {2020, 2021}
+
+
+def build_pop_ext() -> pl.DataFrame:
+    """Pre-2015 municipal pop, identical to D4: SIDRA t6579 2011-2014 (real) +
+    2010 linear back-extrapolation. Keeps the first-stage denominator consistent
+    with the mortality/ICSAP denominator used in the *_ext panels."""
+    raw = json.loads(Path(SIDRA).resolve().read_text())
+    df = pl.DataFrame([{"codmun_6": r["D1C"][:6], "year": int(r["D3C"]),
+                        "pop": int(r["V"]) if r["V"] not in ("...", "-", "X", "") else None}
+                       for r in raw[1:]])
+    df = df.filter(pl.col("year").is_between(2011, 2014))
+    w = df.filter(pl.col("year").is_in([2011, 2012])).pivot(values="pop", index="codmun_6", on="year")
+    w = w.with_columns(
+        pop=pl.max_horizontal(2 * pl.col("2011") - pl.col("2012"), pl.lit(1)).cast(pl.Int64),
+        year=pl.lit(2010, dtype=pl.Int64)).select(["codmun_6", "year", "pop"]).drop_nulls("pop")
+    return pl.concat([df, w]).filter(pl.col("pop").is_not_null()) \
+        .with_columns(pl.col("year").cast(pl.Int64), pl.col("pop").cast(pl.Int64))
 
 
 def build_outcomes(con):
@@ -99,12 +122,18 @@ def build_outcomes(con):
         GROUP BY codmun_6, year
     """)
 
-    log.info("[3/3] join pop + rates...")
+    log.info("[3/3] join pop + rates (canonical 2015+ extended with SIDRA pre-2015)...")
+    pop_ext = build_pop_ext()
+    con.register("pop_ext_df", pop_ext.to_arrow())
     con.execute(f"""
         CREATE OR REPLACE TEMP TABLE pop AS
         SELECT SUBSTR(cod_mun,1,6) AS codmun_6, ano AS year, pop
-        FROM read_parquet('{POP}')
+        FROM read_parquet('{POP}') WHERE ano >= 2015
+        UNION ALL
+        SELECT codmun_6, year, pop FROM pop_ext_df
     """)
+    log.info("    pop rows: 2015+ canonical + %d pre-2015 ext (anos %s)",
+             len(pop_ext), sorted(pop_ext["year"].unique().to_list()))
     con.execute(f"""
         COPY (
           SELECT
@@ -183,15 +212,18 @@ def build_spec07_panel():
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--force", action="store_true", help="rebuild psych_outcomes_panel even if it exists")
+    args = ap.parse_args()
     t0 = time.time()
     con = duckdb.connect()
     con.execute("PRAGMA threads=12")
     con.execute("PRAGMA memory_limit='14GB'")
     con.execute("PRAGMA temp_directory='/tmp/duckdb_paper18'")
-    if not OUT_OUT.exists():
+    if args.force or not OUT_OUT.exists():
         build_outcomes(con)
     else:
-        log.info("psych_outcomes_panel.parquet exists; skip (delete to rebuild)")
+        log.info("psych_outcomes_panel.parquet exists; skip (use --force to rebuild)")
     build_spec07_panel()
     log.info("==== done %.1fs ====", time.time() - t0)
 

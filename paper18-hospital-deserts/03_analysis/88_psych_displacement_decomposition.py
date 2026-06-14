@@ -362,9 +362,13 @@ def write_compact_tex(s: dict) -> None:
         f"{s['n_closures']} PNASH psychiatric closures with sufficient flow support. Exposed "
         r"catchments are municipalities sending $\geq 5\%$ of their pre-closure inpatient flow "
         f"to the closing hospital. The {_n(s['lost_from_closing'])} admissions lost at the closing "
-        r"hospital are not picked up by other hospitals: admissions to other hospitals do not rise "
-        f"(they fall by {_n(abs(other_change))}), so total inpatient psychiatric admissions fall by "
-        f"about {s['net_drop_pct']:.0f}\\%. The lost volume is not observed in inpatient psychiatric "
+        r"hospital are not replaced: in raw terms admissions to other hospitals edge down "
+        f"({_n(s['other_pre'])}$\\to${_n(s['other_post'])}), tracking the secular national decline in "
+        r"psychiatric admissions that control municipalities also experience. Net of that trend the "
+        r"causal event study (online appendix) shows a modest rise at other hospitals "
+        r"that recovers only a small fraction of the lost volume---either way other hospitals come "
+        f"nowhere near absorbing it, and total inpatient psychiatric admissions fall by about "
+        f"{s['net_drop_pct']:.0f}\\%. The lost volume is not observed in inpatient psychiatric "
         r"care; the design observes inpatient admissions only, not outpatient (CAPS) use."
     )
     L = [
@@ -411,8 +415,9 @@ def write_full_tex(panel: pd.DataFrame, s: dict) -> None:
         )
     L += [
         r"\midrule",
-        f"\\multicolumn{{6}}{{l}}{{\\footnotesize Admissions to other hospitals do not rise after "
-        f"closure; total inpatient psychiatric admissions fall by about {s['net_drop_pct']:.0f}\\%.}}\\\\",
+        f"\\multicolumn{{6}}{{l}}{{\\footnotesize Raw catchment means (no trend adjustment): other-hospital "
+        f"admissions edge down with the secular decline; total inpatient psychiatric admissions fall by "
+        f"about {s['net_drop_pct']:.0f}\\%.}}\\\\",
         r"\bottomrule",
         r"\multicolumn{6}{p{0.96\textwidth}}{\footnotesize Notes: Catchment-level mean inpatient psychiatric"
         r" admissions (ICD-10 F00--F99) by event time, across the PNASH psychiatric closures with $\geq 5\%$"

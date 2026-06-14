@@ -70,27 +70,35 @@ Before turning to mortality, it helps to know how large the shock to inpatient
 psychiatric care actually is, and where the admissions go. Inpatient
 psychiatric admissions---admissions with a mental or behavioural primary
 diagnosis (ICD-10 F$00$--F$99$), counted at the municipality of residence
-across \emph{all} hospitals---fall by $\valPsychAdmAtt$ per $1{,}000$ after
-closure (95\% CI $[\valPsychAdmLo, \valPsychAdmHi]$), against a treated-group
-baseline of $\valPsychAdmBase$---a reduction of about $\valPsychAdmPct\%$,
-with no pre-trend ($p = \valPsychAdmPpre$; event-study figure in the online appendix).
+across \emph{all} hospitals---fall by about $\valPsychAdmPct\%$ after closure
+(95\% CI $[\valPsychAdmLo, \valPsychAdmHi]\%$, a Poisson event study on admission
+counts), against a pre-closure treated-group baseline of $\valPsychAdmBase$
+admissions per $1{,}000$ residents. The decline is $\valPsychAdmImpact\%$ on
+impact and deepens to about $\valPsychAdmStable\%$. I estimate counts directly
+rather than the per-capita rate because the municipal population denominator is
+interpolated before $2015$ and injects a spurious pre-trend into the rate that is
+absent from the counts; the count event study has an economically flat pre-period
+(largest pre-closure deviation $\valPsychAdmMaxPre\%$, an order of magnitude below
+the effect) and the estimate survives a relative-magnitudes restriction up to
+$M = \valPsychAdmHonestM$ (HonestDiD; event-study figure in the online appendix).
 
 The decomposition explains where the admissions go.
 Across the \valPsychDispNClosures{} closures with adequate flow support, exposed
 catchments averaged \valPsychClosingPre{} psychiatric admissions per year to the
-closing hospital before closure; admissions to other hospitals do not rise to
-replace them, so total inpatient psychiatric admissions fall
+closing hospital before closure---about $\valClosingShare\%$ of their total.
+After closure that volume goes to zero; admissions to other hospitals rise only
+modestly, so total inpatient psychiatric admissions fall
 (Figure~\ref{fig:where-inpatient-use-goes} and
-Table~\ref{tab:displacement-compact}). The non-absorption is causal, not a trend
-artifact. Re-estimating the staggered event study with the outcome redefined as
-admissions at hospitals \emph{other} than the closing one leaves them
-statistically unchanged (ATT $\valOtherHospATT$ per $1{,}000$, 95\% CI
-$[\valOtherHospLo, \valOtherHospHi]$, against a pre-closure base of
-$\valOtherHospBase$ and flat pre-trends), while the same specification on total
-admissions reproduces the $\valPsychAdmPct\%$ decline (online appendix). Other
-hospitals do not measurably absorb what the closing hospital removed; the loss
-is a net contraction of inpatient psychiatric capacity, not a
-hospital-to-hospital reallocation.
+Table~\ref{tab:displacement-compact}). The partial absorption is causal, not a
+trend artifact. A Poisson event study on admissions at hospitals \emph{other}
+than the closing one puts their rise at $\valOtherHospSR\%$ in the first years
+(aggregate ATT $\valOtherHospPct\%$, 95\% CI
+$[\valOtherHospLo, \valOtherHospHi]\%$, flat pre-trends, $p = \valOtherHospPpre$),
+while the same specification on total admissions reproduces the
+$\valPsychAdmPct\%$ decline (online appendix). The rise recovers only about
+$\valAbsorbFrac\%$ of the lost volume: other hospitals absorb a small share of
+what the closing hospital removed, and the loss is a net contraction of
+inpatient psychiatric capacity, not a hospital-to-hospital reallocation.
 
 \begin{figure}[h!]
     \centering
@@ -114,8 +122,8 @@ The decline is a net loss of inpatient psychiatric \emph{admissions}, not
 necessarily of all mental-health care. What disappeared was real capacity, not
 low-intensity custodial volume: admissions at the closing hospitals were no
 shorter in length of stay than at the hospitals that survived, and bed-days fell
-as steeply as admissions (\valPsychBeddaysDropPct\% against \valPsychAdmPct\%, in
-the online appendix). Where that volume went is only partly
+as steeply as admissions (\valPsychBeddaysDropPct\% against \valPsychDispNetDropPct\%
+in raw catchment means, in the online appendix). Where that volume went is only partly
 identifiable from inpatient records. The plausible destination is the community
 and outpatient care the reform was building---the CAPS rollout that
 \citet{diasFontes2024} study, where hospitalizations also fall but outpatient
