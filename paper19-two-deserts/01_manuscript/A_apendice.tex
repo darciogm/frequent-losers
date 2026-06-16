@@ -1,0 +1,92 @@
+% Apendice tecnico. Honesto: F2/F3 sao dimensoes complementares, nao replicas de
+% F1; e a taxonomia e robusta a limiares. src: 13_appendix_robustness.py
+
+\appendix
+
+\section{Operacionalizações alternativas de fluxo}
+\label{ap:medidas}
+
+O corpo lidera com F1, o burden efetivo de viagem, por sua transparência e
+comparabilidade direta com a distância. Duas operacionalizações alternativas
+testam se o ``deserto de fluxo'' depende dessa escolha de medida. A primeira, F2,
+mede o isolamento do município em uma rede de co-paciência aprendida por
+embeddings (node2vec): a distância latente ao hub mais próximo na rede. A segunda,
+F3, mede fragilidade e concentração dos destinos --- a dependência de hub único
+(a fração das internações que vai para o maior hub externo) e o índice de
+Herfindahl dos destinos.
+
+A Tabela~\ref{tab:corr} mostra a correlação entre as medidas, e o achado é
+informativo justamente por ser negativo. F2 segue de perto a geometria da
+distância ($r=0{,}49$ com a distância ao hospital mais próximo) e correlaciona-se
+fracamente com F1 ($r=0{,}24$): o embedding recupera isolamento geográfico, não
+burden de fluxo. F3 é quase ortogonal a F1 ($r=0{,}20$ para dependência de hub;
+$r=-0{,}24$ para o HHI, que confunde autossuficiência local com dependência de
+hub distante). As três medidas não convergem porque captam dimensões distintas:
+F1 mede \emph{quão longe} está o cuidado usado; F2, \emph{quão isolado} é o
+município na topologia da rede; F3, \emph{quão frágil} é sua dependência de um
+único hub. O relatório não reivindica convergência; reivindica que F1 isola a
+dimensão que conversa com o mapa de distância, e trata F2 e F3 como leituras
+complementares de vulnerabilidade.
+
+\begin{table}[t]
+\centering
+\caption{Correlação entre as medidas de deserto ($N=5.492$ municípios)}
+\label{tab:corr}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+ & Distância & F1 & F2 & F3 hub & F3 HHI \\
+\midrule
+Distância    & 1{,}00 &        &        &        &       \\
+F1 (burden)  & 0{,}55 & 1{,}00 &        &        &       \\
+F2 (embedding) & 0{,}49 & 0{,}24 & 1{,}00 &        &       \\
+F3 (dep.\ de hub) & 0{,}23 & 0{,}20 & 0{,}04 & 1{,}00 &       \\
+F3 (HHI destinos) & 0{,}00 & $-0{,}24$ & $-0{,}13$ & 0{,}19 & 1{,}00 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.78\linewidth}
+\footnotesize
+\textit{Nota:} Correlações de Pearson no nível do município. F2 acompanha a
+distância mais do que o fluxo; F3 mede uma dimensão de fragilidade distinta de
+ambos. Fonte: SIH/DATASUS, embeddings node2vec, IBGE.
+\end{minipage}
+\end{table}
+
+\section{Sensibilidade a limiares de deserto}
+\label{ap:limiares}
+
+A taxonomia de quadrantes do corpo define deserto como o quartil superior de cada
+medida. A Tabela~\ref{tab:limiares} recomputa as contagens sob limiares
+alternativos --- tercil, decil e cortes absolutos em quilômetros. O número de
+municípios em cada quadrante muda com o corte, como esperado, mas a conclusão
+central é estável: a fração dos desertos (por qualquer dos conceitos) sobre a qual
+os dois mapas \emph{discordam} fica entre 57\% e 70\% em todas as regras. O
+quadrante perto-mas-isolado --- o ponto cego de uma política de distância --- é
+sempre substancial; sob o corte absoluto de 60~km para fluxo, chega a 1.153
+municípios. Nenhuma conclusão do corpo depende de um único limiar.
+
+\begin{table}[t]
+\centering
+\caption{Contagem de quadrantes sob limiares alternativos}
+\label{tab:limiares}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Regra (distância / fluxo) & Perto, & Longe, & Deserto & \% \\
+                          & isolado & conectado & pleno & desacordo \\
+\midrule
+Quartil superior (corpo) & 595   & 595 & 778   & 60{,}5 \\
+Tercil superior          & 730   & 730 & 1.099 & 57{,}1 \\
+Decil superior           & 280   & 280 & 270   & 67{,}5 \\
+Absoluto 30 / 60 km      & 1.153 & 296 & 849   & 63{,}1 \\
+Absoluto 50 / 100 km     & 406   & 172 & 246   & 70{,}1 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.80\linewidth}
+\footnotesize
+\textit{Nota:} ``\% desacordo'' $=$ (perto-isolado $+$ longe-conectado) sobre o
+total de municípios deserto por algum conceito. Fonte: SIH/DATASUS, OSRM, IBGE.
+\end{minipage}
+\end{table}
