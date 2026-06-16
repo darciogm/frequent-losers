@@ -1,0 +1,31 @@
+% Secao 3 - Dados e construcao. Reaproveita convencoes do paper18.
+% Disciplina: descritivo. Numeros com % src.
+
+\section{Dados e construção}
+\label{sec:dados}
+
+O relatório combina quatro fontes para o período 2015--2022, todas no nível do
+município de residência. Os fluxos de pacientes vêm do Sistema de Informações
+Hospitalares (SIH/DATASUS): cada Autorização de Internação Hospitalar (AIH)
+registra o município de residência do paciente e o estabelecimento (CNES) onde a
+internação ocorreu, o que permite construir o grafo bipartido
+residência~$\rightarrow$~hospital que define o fluxo. O universo de hospitais
+ativos por ano vem do Cadastro Nacional de Estabelecimentos de Saúde (CNES),
+restrito a estabelecimentos com leito hospitalar instalado. As distâncias e os
+tempos de viagem usam os centroides municipais do IBGE e a malha rodoviária via
+OSRM. A população, denominador das taxas, vem das estimativas IBGE/SIDRA.
+
+Duas disciplinas de construção merecem registro. A primeira é o \emph{firewall}
+entre residência e provedor: toda exposição é atribuída pelo município onde o
+paciente \emph{mora}, nunca pelo município onde o hospital opera, de modo que o
+fluxo mede a dependência revelada do morador, não a atividade do hospital. A
+segunda são as armadilhas conhecidas do SIH: contamos AIH de internação (AIH-1)
+e não as de continuação (AIH-5), para não duplicar episódios, e tratamos o SIH
+como retrato do SUS --- internações na saúde suplementar não aparecem, o que
+subestima a oferta efetiva em municípios de alta penetração privada, ressalva
+que a Seção~\ref{sec:divergencia} incorpora via cobertura ANS.
+
+A amostra cobre 5.588 municípios de residência, 10.450 hospitais com leito ativos
+na janela e 94,0 milhões de internações.% src: bloco cobertura - n_mun_res 5588, n_hosp_beds 10450, n_aih 93.996.098
+O recorte analítico do relatório usa os 5.492 municípios com fluxo suficiente
+para um burden efetivo bem definido.% src: master_muni_panel N=5492 (apos filtro NaN travel_burden)

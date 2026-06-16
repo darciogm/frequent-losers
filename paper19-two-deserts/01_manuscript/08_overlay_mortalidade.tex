@@ -1,0 +1,118 @@
+% Seção 8 — Overlay descritivo com mortalidade evitável.
+% Enquadramento: CAUTELA DE MENSURAÇÃO, não "desertos matam".
+% Disciplina: estritamente associativo. O causal mora no paper18.
+% Números rastreados a 03_analysis/04_build_age_std_mortality.py e
+% mortality_crude_vs_agestd_by_quadrant.csv (% src: ... abaixo).
+
+\section{Overlay com mortalidade evitável: por que o cross-section não enxerga o
+custo do isolamento}
+\label{sec:mortalidade}
+
+Se o deserto de fluxo capta isolamento que a distância não vê, a expectativa
+natural é que ele apareça também na mortalidade: municípios cujos pacientes
+dependem de hubs distantes deveriam acumular mais óbitos por causas que um
+sistema de saúde acessível trataria a tempo. Esta seção testa essa expectativa
+no plano descritivo --- e mostra que ela não se confirma no corte transversal.
+O resultado não enfraquece a tese de mensuração das seções anteriores; ele
+delimita o que um mapa de desertos pode e não pode ser validado contra, e por
+que a pergunta sobre vidas exige o desenho causal que vive em outro lugar.
+
+\subsection{Medida e ajuste por idade}
+
+Usamos mortalidade evitável na definição Nolte--McKee / OCDE 2019 (causas
+``amenable'' ao cuidado, com teto etário padrão de 75 anos), construída a partir
+do SIM por município de residência para 2015--2022.% src: 04_build_age_std_mortality.py (lista importada de paper18 02_build_amenable_mortality.py)
+A taxa bruta, porém, é uma armadilha: os desertos --- de distância ou de fluxo
+--- são sistematicamente mais pobres e mais jovens, e mortalidade bruta cai com
+idade média menor por pura composição demográfica, não por melhor acesso. Para
+separar composição de risco, padronizamos por idade pelo método indireto (razão
+de mortalidade padronizada, SMR), usando a estrutura etária municipal do Censo
+2022 em faixas quinquenais 0--74 combinada com os totais populacionais anuais
+como denominador, e as taxas etárias nacionais como referência.% src: census2022_age_structure.parquet; pop_municipal; nat_rate_a em 04
+A padronização indireta é preferível à direta aqui porque municípios pequenos
+têm contagens etárias esparsas que tornam taxas específicas por faixa instáveis.
+A varredura cobre 3,1 milhões de óbitos evitáveis abaixo de 75 anos; apenas
+0,01\% caem por idade ignorada.% src: log 04 — óbitos banded 3.121.049; dropados 173
+
+\subsection{O overlay não mostra o sinal esperado}
+
+A Tabela~\ref{tab:mort_quadrante} cruza os quadrantes da
+Seção~\ref{sec:divergencia} com a taxa bruta e a taxa padronizada por idade.
+O ajuste etário fecha parte da distância --- a taxa do quadrante
+\emph{perto-mas-isolado} sobe de 175 para 182 por 100 mil --- mas não inverte o
+ordenamento: os três quadrantes de deserto permanecem \emph{abaixo} do quadrante
+conectado, cujo SMR (0,97) é o mais alto da tabela.% src: mortality_crude_vs_agestd_by_quadrant.csv
+No plano contínuo o padrão é o mesmo e, se algo, contrário à intuição: a
+correlação entre a taxa padronizada e o burden de fluxo F1 é $-0{,}14$, e o
+coeficiente de F1 permanece negativo ($-0{,}11$ óbito por 100 mil a cada
+quilômetro de burden) mesmo condicionando a renda municipal e à distância ao
+hospital mais próximo.% src: regressão OLS em 04 / bloco de correlações
+Lido sem cuidado, o corte transversal sugeriria que o isolamento de fluxo
+\emph{protege} --- conclusão que ninguém deveria extrair, e que ilustra
+exatamente o ponto desta seção.
+
+\begin{table}[t]
+\centering
+\caption{Mortalidade evitável por quadrante: bruta vs.\ padronizada por idade}
+\label{tab:mort_quadrante}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Quadrante & Munic. & Taxa bruta & Taxa padroniz. & SMR \\
+          &        & (/100 mil) & (/100 mil)     &     \\
+\midrule
+Perto-mas-isolado (fluxo) & 595   & 175{,}1 & 181{,}8 & 0{,}93 \\
+Longe e isolado           & 778   & 157{,}2 & 169{,}1 & 0{,}87 \\
+Longe-mas-conectado       & 595   & 177{,}5 & 182{,}5 & 0{,}93 \\
+Conectado (referência)    & 3.524 & 191{,}6 & 189{,}3 & 0{,}97 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.86\linewidth}
+\footnotesize
+\textit{Nota:} Mortalidade evitável Nolte--McKee / OCDE 2019, idade $<75$,
+residência, 2015--2022. Padronização indireta (SMR) com estrutura etária do
+Censo 2022 e taxas etárias nacionais; taxa padronizada $=$ SMR $\times$ taxa
+crua nacional (195,5/100 mil). Quadrantes definidos na
+Seção~\ref{sec:divergencia} (top-quartil de cada medida).
+Medianas municipais. Fonte: SIM, IBGE.
+\end{minipage}
+\end{table}
+
+\subsection{Por que a associação simples engana}
+
+Dois mecanismos, ambos de mensuração e não de acesso, empurram o sinal na
+direção errada. O primeiro é composicional. Mesmo depois do ajuste etário, os
+municípios conectados carregam mortalidade mais alta em geral --- a mortalidade
+total bruta é de 741 por 100 mil no quadrante conectado contra cerca de 688 nos
+de fluxo isolado ---,% src: bloco garbage/total-mort por quadrante
+reflexo de um perfil epidemiológico urbano (mais doença cardiovascular e
+crônica em idade comparável) que a padronização por faixas quinquenais reduz mas
+não elimina. O ajuste por idade não é ajuste por epidemiologia.
+
+O segundo é o sub-registro. Causas mal definidas (capítulo R do CID-10)
+deslocam óbitos para fora da lista evitável, e a cobertura do SIM é menor
+justamente nas regiões mais remotas. Aqui, contudo, o garbage-coding é uma
+explicação fraca: a fração de óbitos R96--R99 é de 2,9\% a 4,1\% nos desertos
+contra 3,3\% no conectado --- diferença pequena demais para gerar o gap
+observado.% src: pct_garbage_R99 por quadrante
+Descartá-la importa, porque sobra o mecanismo mais incômodo: o fluxo é
+\emph{endógeno à oferta e à própria sobrevivência}. Um morador que não consegue
+viajar e morre sem diagnóstico oportuno não aparece como internação em outro
+município nem, muitas vezes, como óbito evitável bem classificado. A geografia
+da mortalidade observada já incorpora quem o sistema perdeu antes de contá-lo; o
+corte transversal não tem como recuperar o contrafactual de acesso.
+
+\subsection{O que esta seção contribui}
+
+A lição é metodológica e vale para além do Brasil: mapas de deserto ---
+medidos em quilômetros ou em fluxo --- não devem ser validados contra a
+geografia bruta da mortalidade. A ausência de gradiente descritivo não é
+evidência de que o isolamento não custa vidas; é evidência de que composição
+demográfica, perfil epidemiológico e seleção de sobrevivência contaminam a
+associação simples nos dois sentidos. Estabelecer o custo em saúde do
+isolamento exige variação plausivelmente exógena na oferta e um desenho que
+isole o efeito de um choque de acesso --- precisamente o terreno do desenho de
+perda-de-provedor com exposição por fluxo revelado desenvolvido em trabalho
+relacionado. Este relatório, por construção, para na associação e entrega a
+medida; a pergunta sobre vidas fica explicitamente reservada ao desenho causal.

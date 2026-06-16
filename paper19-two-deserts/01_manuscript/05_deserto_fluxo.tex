@@ -1,0 +1,29 @@
+% Secao 5 - O deserto de fluxo (descritivo). Medida primaria F1.
+
+\section{O deserto de fluxo}
+\label{sec:fluxo}
+
+O deserto de fluxo substitui ``qual o hospital mais próximo'' por ``a que
+distância está o cuidado que o paciente de fato usa''. A medida primária é o
+burden efetivo de fluxo F1: a distância de viagem ponderada pelo número de
+internações em cada destino, de modo que um município cujos pacientes se espalham
+por hubs distantes acumula burden alto mesmo que tenha um hospital ao lado.
+Formalmente, para o município $m$,
+\[
+F1_m \;=\; \frac{\sum_h n_{m,h}\, d\big(m, \text{mun}(h)\big)}{\sum_h n_{m,h}},
+\]
+onde $n_{m,h}$ é o número de internações de residentes de $m$ no hospital $h$ e
+$d(\cdot)$ a distância entre centroides. Operacionalizações alternativas ---
+isolamento em uma rede de co-paciência (embeddings) e concentração dos destinos
+(HHI) --- concordam com F1 e são tratadas como robustez no apêndice.
+
+A Figura~\ref{fig:flow_map} mostra F1 na mesma escala de quilômetros da
+Figura~\ref{fig:distance_map}, e o contraste é o ponto central do relatório. O
+burden efetivo mediano é de 49~km --- mais do triplo da distância mediana ao
+hospital mais próximo --- e 5\% dos municípios superam 136~km.% src: distribuicao f1_km - p50 49, p75 73, p95 136, max 619
+Na mesma paleta, o mapa de fluxo é visivelmente mais quente: vastas áreas do
+interior do Nordeste, do Centro-Oeste e do Norte que a distância pintava como
+``perto'' carregam burden de viagem alto, porque o cuidado efetivamente usado
+está longe. O deserto de fluxo não é um recorte do deserto de distância; é um
+mapa próprio, e a Seção~\ref{sec:divergencia} mede exatamente onde os dois
+divergem e quem mora na diferença.

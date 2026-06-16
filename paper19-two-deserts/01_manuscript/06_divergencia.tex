@@ -1,0 +1,110 @@
+% Secao 6 - o coracao do relatorio: concordancia e divergencia distancia x fluxo.
+% Disciplina: descritivo, associativo. Numeros com % src apontando a script/CSV.
+
+\section{Concordância e divergência entre os dois desertos}
+\label{sec:divergencia}
+
+As seções anteriores construíram duas medidas de deserto hospitalar: a distância
+ao hospital ativo mais próximo, que uma política de acesso baseada em mapa
+enxerga, e o burden efetivo de fluxo F1, que pondera a viagem por onde os
+pacientes de fato internam. Se as duas dissessem a mesma coisa, F1 seria
+redundante e este relatório, desnecessário. Esta seção mostra que não dizem ---
+elas concordam o suficiente para medir o mesmo fenômeno e divergem o suficiente
+para que a escolha da medida mude quem é classificado como desassistido --- e
+caracteriza onde, e para quem, a divergência aparece.
+
+\subsection{Quanto um conceito é redundante com o outro}
+
+A Figura~\ref{fig:scatter} cruza as duas medidas no município. A correlação é
+moderada: $r = 0{,}55$, de modo que a distância ao hospital mais próximo explica
+cerca de 30\% da variação no burden efetivo de fluxo.% src: 11_fig2_scatter; corr 0.551, R2 0.304
+O que sobra não é ruído. Quase toda a massa de pontos está \emph{acima} da
+diagonal $F1 = \text{distância}$: o paciente típico não interna no hospital mais
+próximo, e o burden efetivo mediano (48,5~km) é o triplo da distância mediana ao
+hospital mais próximo (16~km), uma diferença mediana de 32~km que mede o desvio
+revelado em relação ao mapa.% src: 01_build_f1_divergence headline
+A consequência para mensuração é direta. Definindo deserto como o quartil
+superior de cada medida, dos municípios sinalizados como deserto por
+\emph{algum} dos dois conceitos, 60\% o são por apenas um deles; e 43\% dos
+desertos de fluxo são invisíveis ao conceito de distância.% src: bloco síntese - pct_disagree 60.5, pct_flow_missed 43.3
+Trocar quilômetros por fluxo revelado não recalibra uma medida --- redesenha o
+mapa de quem precisa de atenção.
+
+\subsection{O mapa da divergência}
+
+A Figura~\ref{fig:divergencia} pinta cada município pelo quadrante que ocupa, e
+a geografia do desacordo não é aleatória. Os desertos de fluxo ocultos à
+distância (vermelho) concentram-se no interior do Nordeste e do Centro-Oeste:
+municípios com um hospital por perto no mapa, mas cuja necessidade de internação
+escoa para hubs distantes. O padrão inverso (azul) domina a Amazônia, onde a
+distância rodoviária ao hospital mais próximo é grande mas o fluxo efetivo é
+curto --- reflexo de que a malha de estradas não representa o deslocamento real,
+por rio, e de que o atendimento, quando ocorre, ocorre localmente. O deserto
+pleno, em que os dois conceitos concordam, ocupa o Norte mais remoto; a
+concordância de que não há deserto cobre o Sul e o Sudeste populosos.
+
+\subsection{Quem vive em cada quadrante}
+
+A Tabela~\ref{tab:perfis} traça o perfil dos quadrantes e revela três padrões.
+O primeiro desfaz o paradoxo aparente do quadrante perto-mas-isolado: longe de
+não terem oferta, esses municípios têm a \emph{maior} presença de hospital local
+da tabela (74\% têm ao menos um leito hospitalar instalado) e ainda assim 90\%
+de suas internações saem do município.% src: profiles_by_quadrant.csv
+O hospital local existe, mas resolve pouco; a necessidade real --- a que exige
+complexidade --- viaja. É exatamente o tipo de isolamento que a contagem de
+leitos no mapa não captura e o fluxo revela.
+
+O segundo padrão é distributivo. Os três quadrantes de deserto são
+sistematicamente mais pobres (PIB per capita em torno de R\$~13--14~mil) do que o
+quadrante conectado (R\$~22~mil), de modo que a fricção de acesso, medida por
+qualquer dos conceitos, recai sobre os municípios de menor renda. O terceiro
+padrão qualifica o papel do setor privado: a cobertura de saúde suplementar é
+baixa nos desertos (1,7\% a 2,7\%) e bem maior no quadrante conectado (8,3\%).
+Onde o fluxo revela isolamento, não há rede privada que absorva a demanda ---
+o gap morde com força em municípios dependentes do SUS. (A relação dos
+quadrantes com mortalidade evitável é deliberadamente adiada para a
+Seção~\ref{sec:mortalidade}, que mostra por que a associação simples engana.)
+
+\begin{table}[t]
+\centering
+\caption{Perfil dos quadrantes distância $\times$ fluxo}
+\label{tab:perfis}
+\footnotesize
+\begin{tabular}{lrrrrrrr}
+\toprule
+Quadrante & Munic. & Pop. & Dist. & F1 & Fluxo que & Hosp. & PIB pc \\
+          &        & (mi) & (km)  & (km) & sai      & local & (R\$ mil) \\
+\midrule
+Perto, deserto em fluxo & 595   & 9{,}2  & 15 & 91  & 0{,}90 & 74\% & 13{,}2 \\
+Deserto pleno           & 778   & 7{,}7  & 46 & 107 & 1{,}00 & 61\% & 13{,}2 \\
+Longe, conectado        & 595   & 8{,}1  & 35 & 53  & 0{,}69 & 71\% & 14{,}3 \\
+Sem deserto             & 3.524 & 147{,}1& 9  & 38  & 0{,}66 & 71\% & 22{,}3 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.92\linewidth}
+\footnotesize
+\textit{Nota:} Medianas municipais, exceto N e população (soma). ``Fluxo que
+sai'' $=$ fração das internações em hospital fora do município. ``Hosp.\ local''
+$=$ \% de municípios com ao menos um leito hospitalar instalado e ativo na
+janela. Cobertura privada (ANS) mediana, omitida da tabela por brevidade: 2,5\%,
+1,7\%, 2,7\% e 8,3\%, na ordem das linhas. Fonte: SIH/DATASUS, CNES, IBGE, ANS.
+\end{minipage}
+\end{table}
+
+\subsection{Quatro municípios, por inspeção}
+
+Os quadrantes ganham concretude em casos individuais. \textbf{Fonte Boa (AM)}
+está a 165~km do hospital mais próximo pela malha rodoviária, mas 92\% de suas
+internações ocorrem localmente e seu burden efetivo é de apenas 54~km: o mapa o
+declara deserto profundo; o fluxo, não. \textbf{Soledade (PB)} é o espelho: o
+hospital mais próximo está a 23~km, mas 91\% dos pacientes saem e viajam, em
+média efetiva, 229~km --- um deserto de fluxo que a distância classifica como
+atendido. \textbf{Anchieta (SC)} leva o ponto ao extremo: \emph{sedia} um
+hospital (distância zero) e, ainda assim, todas as suas internações deixam o
+município; ter um leito não é ter o cuidado de que se precisa.% src: casos canônicos
+No contraponto, \textbf{Sobral (CE)} --- polo regional do interior --- retém
+seus pacientes (apenas 4\% saem, burden de 10~km) apesar de não ser capital:
+estar no interior não é, por si, ser deserto, desde que o município seja um hub
+de fato. A distinção que separa Soledade de Sobral não aparece em quilômetros;
+aparece no fluxo.

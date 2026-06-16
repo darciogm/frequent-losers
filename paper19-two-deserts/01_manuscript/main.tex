@@ -1,0 +1,65 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\title{\textbf{Dois Desertos: Acesso Hospitalar no Brasil sob\\
+Distância e sob Fluxo Revelado}}
+\author{Darcio Genicolo-Martins\thanks{Insper. Relatório técnico descritivo;
+identificação causal de efeitos de acesso é desenvolvida em trabalho relacionado
+e não é reivindicada aqui. Código e pipeline reprodutível acompanham o relatório.}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Políticas de acesso hospitalar são desenhadas sobre mapas de distância, mas os
+pacientes viajam para onde há cuidado, não para o ponto mais próximo. Este
+relatório descritivo confronta, para os 5.492 municípios brasileiros (2015--2022),
+o deserto de distância (km ao hospital ativo mais próximo) com o deserto de
+fluxo (burden efetivo de viagem, ponderado por onde os residentes de fato
+internam, a partir de 94 milhões de internações do SIH). As duas medidas
+correlacionam-se apenas moderadamente ($r=0{,}55$), e dos municípios sinalizados
+como deserto por algum dos conceitos, 60\% o são por apenas um. O resultado
+central: 595 municípios, com cerca de 9,2 milhões de habitantes, têm hospital
+próximo no mapa mas são desertos de fluxo --- invisíveis a uma política de
+distância --- e recaem desproporcionalmente sobre municípios pobres e dependentes
+do SUS. Um overlay com mortalidade evitável mostra por que a associação simples
+engana e por que a pergunta causal exige outro desenho. Medir acesso por
+quilômetros não é uma aproximação inócua: é um mapa diferente, que erra de forma
+sistemática e identificável.
+
+\medskip
+\noindent\textbf{Palavras-chave:} acesso hospitalar, desertos de saúde, fluxo de
+pacientes, SUS, Brasil. \quad\textbf{JEL:} I11, I14, I18, R12.
+\end{abstract}
+
+\input{00_sumario_executivo.tex}
+
+\input{01_motivacao.tex}
+\input{03_dados.tex}
+\input{04_deserto_distancia.tex}
+\input{fig3_distance_map.tex}
+\input{05_deserto_fluxo.tex}
+\input{fig4_flow_map.tex}
+\input{06_divergencia.tex}
+\input{fig1_divergence_map.tex}
+\input{fig2_scatter.tex}
+\input{08_overlay_mortalidade.tex}
+\input{09_implicacoes.tex}
+\input{10_limitacoes.tex}
+
+% PENDENTE: §7 Validação externa (CIR/RIPSA — depende de crosswalk de região);
+% Apêndice técnico (F2/F3, sensibilidade a limiares).
+
+\end{document}
