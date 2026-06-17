@@ -17,10 +17,11 @@ Herfindahl dos destinos.
 
 A Tabela~\ref{tab:corr} mostra a correlação entre as medidas, e o achado é
 informativo justamente por ser negativo. F2 segue de perto a geometria da
-distância ($r=0{,}49$ com a distância ao hospital mais próximo) e correlaciona-se
-fracamente com F1 ($r=0{,}24$): o embedding recupera isolamento geográfico, não
-burden de fluxo. F3 é quase ortogonal a F1 ($r=0{,}20$ para dependência de hub;
-$r=-0{,}24$ para o HHI, que confunde autossuficiência local com dependência de
+distância ($r=\valCorrFtwoDist$ com a distância ao hospital mais próximo) e
+correlaciona-se fracamente com F1 ($r=\valCorrFFtwo$): o embedding recupera
+isolamento geográfico, não burden de fluxo. F3 é quase ortogonal a F1
+($r=\valCorrFFthree$ para dependência de hub; $r=\valCorrFHHI$ para o HHI, que
+confunde autossuficiência local com dependência de
 hub distante). As três medidas não convergem porque captam dimensões distintas:
 F1 mede \emph{quão longe} está o cuidado usado; F2, \emph{quão isolado} é o
 município na topologia da rede; F3, \emph{quão frágil} é sua dependência de um
@@ -30,7 +31,7 @@ complementares de vulnerabilidade.
 
 \begin{table}[t]
 \centering
-\caption{Correlação entre as medidas de deserto ($N=5.492$ municípios)}
+\caption{Correlação entre as medidas de deserto ($N=\valNmunic$ municípios)}
 \label{tab:corr}
 \small
 \begin{tabular}{lrrrrr}
@@ -38,10 +39,10 @@ complementares de vulnerabilidade.
  & Distância & F1 & F2 & F3 hub & F3 HHI \\
 \midrule
 Distância    & 1{,}00 &        &        &        &       \\
-F1 (burden)  & 0{,}55 & 1{,}00 &        &        &       \\
-F2 (embedding) & 0{,}49 & 0{,}24 & 1{,}00 &        &       \\
-F3 (dep.\ de hub) & 0{,}23 & 0{,}20 & 0{,}04 & 1{,}00 &       \\
-F3 (HHI destinos) & 0{,}00 & $-0{,}24$ & $-0{,}13$ & 0{,}19 & 1{,}00 \\
+F1 (burden)  & \valCorrFD & 1{,}00 &        &        &       \\
+F2 (embedding) & \valCorrFtwoDist & \valCorrFFtwo & 1{,}00 &        &       \\
+F3 (dep.\ de hub) & \valMxFthreeDist & \valCorrFFthree & \valMxFthreeFtwo & 1{,}00 &       \\
+F3 (HHI destinos) & \valMxHHIdist & $\valCorrFHHI$ & $\valMxHHIFtwo$ & \valMxHHIFhub & 1{,}00 \\
 \bottomrule
 \end{tabular}
 \par\smallskip
@@ -61,10 +62,11 @@ medida. A Tabela~\ref{tab:limiares} recomputa as contagens sob limiares
 alternativos --- tercil, decil e cortes absolutos em quilômetros. O número de
 municípios em cada quadrante muda com o corte, como esperado, mas a conclusão
 central é estável: a fração dos desertos (por qualquer dos conceitos) sobre a qual
-os dois mapas \emph{discordam} fica entre 57\% e 70\% em todas as regras. O
-quadrante perto-mas-isolado --- o ponto cego de uma política de distância --- é
-sempre substancial; sob o corte absoluto de 60~km para fluxo, chega a 1.153
-municípios. Nenhuma conclusão do corpo depende de um único limiar.
+os dois mapas \emph{discordam} fica entre \valDisagreeLo\% e \valDisagreeHi\% em
+todas as regras. O quadrante perto-mas-isolado --- o ponto cego de uma política
+de distância --- é sempre substancial; sob o corte absoluto de 60~km para fluxo,
+chega a \valFOabs{} municípios. Nenhuma conclusão do corpo depende de um único
+limiar.
 
 \begin{table}[t]
 \centering

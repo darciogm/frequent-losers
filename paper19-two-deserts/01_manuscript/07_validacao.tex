@@ -6,25 +6,25 @@
 
 Uma medida de deserto construída a partir do próprio fluxo corre o risco de ser
 circular. Para testá-la contra um objeto independente, confrontamos os dois
-conceitos com a regionalização do SUS --- as 293 regiões de saúde que agrupam
+conceitos com a regionalização do SUS --- as \valNregioes{} regiões de saúde que agrupam
 municípios e que existem, por desenho, para conter a referência: o paciente
 deveria ser atendido dentro da própria região. O fluxo revelado permite medir
 quanto essa promessa se cumpre.
 
-O primeiro resultado é que ela se cumpre pela metade. Apenas 56\% das internações
-ocorrem dentro da região de saúde do município de residência; a regionalização
-administrativa contém pouco mais da metade do fluxo real.% src: 14_external_validation - mean_within 0.564
+O primeiro resultado é que ela se cumpre pela metade. Apenas \valWithinMean\% das
+internações ocorrem dentro da região de saúde do município de residência; a
+regionalização administrativa contém pouco mais da metade do fluxo real.% src: 14_external_validation - mean_within 0.564
 E a parte que escapa não é uniforme. Nos municípios perto-mas-isolados, apenas
-46\% das internações ficam na própria região, contra 71\% nos municípios
-conectados, e 65\% deles têm seu principal hub externo \emph{fora} da região de
-saúde designada.% src: by_quadrant - pct_within_region 46.2 vs 71.2; pct_tophub_out 65.4
+\valWithinFO\% das internações ficam na própria região, contra \valWithinNE\% nos
+municípios conectados, e \valTophubOutFO\% deles têm seu principal hub externo
+\emph{fora} da região de saúde designada.% src: by_quadrant - pct_within_region 46.2 vs 71.2; pct_tophub_out 65.4
 Os desertos de fluxo são, precisamente, os municípios em que o desenho de
 regionalização falha em conter a referência.
 
 O segundo resultado é qual conceito recupera melhor essa falha. O burden de fluxo
-F1 correlaciona-se com o escape da região ($r=-0{,}27$ entre contenção
+F1 correlaciona-se com o escape da região ($r=\valCorrWithinF$ entre contenção
 intra-regional e F1) com mais força do que a distância ao hospital mais próximo
-($r=-0{,}13$).% src: corr - r_within_f1 -0.274, r_within_iso -0.126
+($r=\valCorrWithinIso$).% src: corr - r_within_f1 -0.274, r_within_iso -0.126
 Ou seja, a medida de fluxo não apenas é independente da regionalização ---
 construída sem qualquer referência a ela --- como reconstrói, melhor que a
 distância, onde essa regionalização não se sustenta na prática. É a validação que
