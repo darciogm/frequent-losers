@@ -1,0 +1,107 @@
+% Secao - mobilidade medica (lado da oferta). Numeros de 15/16/17.
+% Disciplina: descritivo, associativo. % src aponta a script/CSV.
+
+\section{O lado da oferta: o deserto de fluxo tem dois lados}
+\label{sec:medicos}
+
+A Seção~\ref{sec:divergencia} deixou um enigma. Os municípios perto-mas-isolados
+não são desprovidos de hospital --- têm a maior presença de leito local entre os
+quadrantes de deserto --- e ainda assim 90\% de suas internações escapam para
+hubs distantes. O leito existe; o cuidado, não. A hipótese natural é que falte ao
+hospital local o insumo que retém o paciente: o médico, e em particular o
+especialista. Esta seção leva a hipótese ao cadastro de força de trabalho do SUS,
+e vai além do estoque: pergunta se os médicos também \emph{se movem}, ao longo do
+tempo, na direção em que os pacientes já viajam.
+
+Usamos o cadastro de profissionais do CNES (CNES-PF), vínculo médico $\times$
+estabelecimento $\times$ mês, 2015--2023 --- 128,9 milhões de vínculos médicos
+---, identificando o médico pela família CBO de medicina (verificada contra o
+registro no CRM) e deduplicando-o pelo Cartão Nacional de Saúde, presente em
+100\% dos registros.% src: 15/16; CNS_PROF; CBO 2231/2251/2252/2253 = CONSELHO 71
+A cada médico, em cada ano, atribuímos o \emph{município primário} --- onde
+concentra mais horas ---, e registramos como migração toda mudança de município
+primário entre anos consecutivos.
+
+\subsection{Estoque: menos médicos, menos especialistas, apesar do leito}
+
+A Tabela~\ref{tab:medicos} é direta. Os municípios perto-mas-isolados têm 1,48
+médico por mil habitantes contra 2,22 no quadrante conectado --- uma oferta uma
+vez e meia menor --- e o déficit é mais agudo onde mais importa: especialistas
+(famílias cirúrgica e diagnóstico-terapêutica) são 12,3\% do corpo clínico nos
+desertos de fluxo contra 18,6\% no quadrante conectado, e apenas 5,4\% no deserto
+pleno.% src: physician_supply_panel / bloco especialista por quadrante
+É a peça que faltava ao enigma do leito: o hospital local existe, mas sem a
+densidade médica --- e sobretudo sem o especialista --- que faz o paciente
+permanecer. A oferta não substituída pelo leito é exatamente a que o fluxo
+revela escapando.
+
+\begin{table}[t]
+\centering
+\caption{Oferta e mobilidade médica por quadrante de deserto, 2015--2023}
+\label{tab:medicos}
+\footnotesize
+\begin{tabular}{lrrrr}
+\toprule
+Quadrante & Médicos/ & \% espe- & Retenção & Saldo migr. \\
+          & 1.000    & cialista & anual    & /1.000 méd. \\
+\midrule
+Perto, deserto em fluxo & 1{,}48 & 12{,}3 & 0{,}77 & $-184$ \\
+Deserto pleno           & 1{,}13 & 5{,}4  & 0{,}77 & $-351$ \\
+Longe, conectado        & 1{,}41 & 10{,}5 & 0{,}78 & $-250$ \\
+Sem deserto             & 2{,}22 & 18{,}6 & 0{,}81 & $+2$ \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.82\linewidth}
+\footnotesize
+\textit{Nota:} Medianas municipais, 2015--2023. Especialista $=$ famílias CBO
+cirúrgica e diagnóstico-terapêutica. Retenção $=$ fração dos médicos primários em
+$t$ ainda primários no município em $t+1$. Saldo migratório $=$ (entradas $-$
+saídas) por mil médicos. Fonte: CNES-PF, IBGE.
+\end{minipage}
+\end{table}
+
+\subsection{Dinâmica: os desertos sangram médicos}
+
+A oferta menor não é um estoque estático --- é alimentada por um fluxo de saída.
+A retenção anual de médicos é menor nos desertos (0,77 contra 0,81 no quadrante
+conectado), e o saldo migratório separa nitidamente os dois mundos: os três
+quadrantes de deserto perdem médicos ano após ano --- $-184$ por mil médicos nos
+perto-mas-isolados, $-351$ no deserto pleno --- enquanto o quadrante conectado é
+o único que \emph{ganha} ($+2$).% src: physician_by_quadrant.csv; net_por_1000_med
+O deserto de fluxo, portanto, tem dois lados que apontam na mesma direção: o
+paciente viaja para fora, e o médico também migra para fora.
+
+\subsection{As duas fugas correm juntas --- mas não para o mesmo hub}
+
+A pergunta seguinte é se os dois drenos têm o mesmo destino. A resposta é
+parcial, e a nuance importa. As duas redes --- migração de médicos e fluxo de
+pacientes --- são moderadamente correlacionadas no nível das arestas
+município$\rightarrow$município (correlação de 0,44 sobre 54 mil pares comuns):
+médicos e pacientes deixam os mesmos lugares por corredores parecidos.% src: physician_vs_patient_network.csv; r_log 0.455
+Mas, \emph{dentro} dos desertos de fluxo, os destinos divergem. O principal
+destino dos médicos que saem coincide com o principal hub de pacientes em apenas
+41\% dos municípios perto-mas-isolados, contra 53\% nos conectados, e somente
+16\% dos médicos que partem rumam para o hub que recebe a maior parte dos
+pacientes do município.% src: tophub_match_by_quadrant.csv
+O padrão é coerente: o paciente busca o centro de referência mais próximo que
+resolva seu caso; o médico que deixa o deserto tende a ir mais longe, com
+frequência à capital, por razões de carreira que não são as do paciente. As duas
+fugas esvaziam o deserto, mas não o reabastecem no mesmo ponto.
+
+\subsection{O que esta seção contribui (e o que não)}
+
+O deserto de fluxo não é só um fenômeno de demanda. Ele é duplo: os municípios
+que perdem pacientes para hubs distantes são também os que têm menos médicos,
+menos especialistas e saldo migratório médico negativo --- um arranjo
+auto-coerente em que a ausência do cuidado e a ausência de quem o presta
+caminham juntas. A leitura permanece associativa. A concentração de especialistas
+em centros de referência é, em parte, organização racional do sistema, e nada
+aqui identifica se a saída dos médicos \emph{causa} o esvaziamento do hospital
+local ou apenas o acompanha. Duas limitações de medida acompanham o resultado: o
+CNES capta vínculo de trabalho, não residência --- o campo de município de
+residência do profissional está preenchido em apenas 7\% dos vínculos, o que
+impede separar deslocamento pendular de migração efetiva ---;% src: UFMUNRES fill-rate 7.3%
+e a oferta é medida por presença de vínculo, não por horas efetivamente
+ofertadas no SUS. O custo em saúde desse arranjo de oferta, como o da demanda na
+Seção~\ref{sec:mortalidade}, fica reservado ao desenho causal.
